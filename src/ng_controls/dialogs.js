@@ -1,7 +1,14 @@
-// $Id: dialogs.js 6416 2014-04-22 13:00:23Z nejedly $
-//
-// Copyright (c) 2010-2013  Position s.r.o.
-// All rights reserved.
+﻿/*!
+ * Controls.js
+ * http://controlsjs.com/
+ *
+ * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ *
+ * This version of Controls.js is licensed under the terms of GNU General Public License v3.
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * The commercial license can be purchased at Controls.js website.
+ */
 
 /** 
  *  Group: Dialogs 

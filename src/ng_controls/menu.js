@@ -1,7 +1,14 @@
-// $Id: menu.js 6284 2014-03-31 09:02:55Z kraus $
-//
-// Copyright (c) 2009-2014  Position s.r.o.
-// All rights reserved.
+/*!
+ * Controls.js
+ * http://controlsjs.com/
+ *
+ * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ *
+ * This version of Controls.js is licensed under the terms of GNU General Public License v3.
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * The commercial license can be purchased at Controls.js website.
+ */
 
 /** 
  *  Group: Menu

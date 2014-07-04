@@ -1,7 +1,14 @@
-// $Id: dbviewmodel.js 5568 2013-11-26 08:45:33Z tulach $
-//
-// Copyright (c) 2012-2013  Position s.r.o.
-// All rights reserved.
+﻿/*!
+ * Controls.js
+ * http://controlsjs.com/
+ *
+ * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ *
+ * This version of Controls.js is licensed under the terms of GNU General Public License v3.
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * The commercial license can be purchased at Controls.js website.
+ */
 
 // --- English Resources -------------------------------------------------------
 if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
