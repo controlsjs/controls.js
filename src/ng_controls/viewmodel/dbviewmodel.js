@@ -1093,56 +1093,86 @@ function ngdbdsc_SetViewModel(ds,vm,ovm)
  */
 function Create_ngDBDataSet(def, ref, parent, basetype)
 {
-  ng_MergeDef(def, {
-    Controls: {
-      Paging: {
-        Controls: {
-          NewRecord: {
-            Type: 'ngButton',
-            Data: {
-              ngText: 'dbviewmodel_dataset_new',
-              ngAlt: 'dbviewmodel_dataset_new'
+  if (ngVal(def.EditButtons, true))
+  {
+    ng_MergeDef(def, {
+      Controls: {
+        Paging: {
+          Controls: {
+            NewRecord: {
+              Type: 'ngButton',
+              Data: {
+                ngText: 'dbviewmodel_dataset_new',
+                ngAlt: 'dbviewmodel_dataset_new'
+              },
+              Events: {
+                OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.NewRecord(); }
+              }
             },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.NewRecord(); }
-            }
-          },
-          LoadRecord: {
-            Type: 'ngButton',
-            Data: {
-              ngText: 'dbviewmodel_dataset_edit',
-              ngAlt: 'dbviewmodel_dataset_edit',
-              Enabled: false
+            LoadRecord: {
+              Type: 'ngButton',
+              Data: {
+                ngText: 'dbviewmodel_dataset_edit',
+                ngAlt: 'dbviewmodel_dataset_edit',
+                Enabled: false
+              },
+              Events: {
+                OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.LoadRecord(); }
+              }
             },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.LoadRecord(); }
-            }
-          },
-          DeleteRecord: {
-            Type: 'ngButton',
-            Data: {
-              ngText: 'dbviewmodel_dataset_delete',
-              ngAlt: 'dbviewmodel_dataset_delete',
-              Enabled: false
-            },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.DeleteRecord(); }
-            }
-          },
-          Refresh: {
-            Type: 'ngButton',
-            Data: {
-              ngText: 'dbviewmodel_dataset_refresh',
-              ngAlt: 'dbviewmodel_dataset_refresh'
-            },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.ApplyFilters(); }
+            DeleteRecord: {
+              Type: 'ngButton',
+              Data: {
+                ngText: 'dbviewmodel_dataset_delete',
+                ngAlt: 'dbviewmodel_dataset_delete',
+                Enabled: false
+              },
+              Events: {
+                OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.DeleteRecord(); }
+              }
             }
           }
         }
       }
+    });
+  } else
+  {
+    if ((def.Controls) && (def.Controls.Paging) && (def.Controls.Paging.Controls))
+    {
+      def.Controls.Paging.Controls.NewRecord = null;
+      def.Controls.Paging.Controls.LoadRecord = null;
+      def.Controls.Paging.Controls.DeleteRecord = null;
     }
-  });
+  }
+
+  if (ngVal(def.RefreshButton, true))
+  {
+    ng_MergeDef(def, {
+      Controls: {
+        Paging: {
+          Controls: {
+            Refresh: {
+              Type: 'ngButton',
+              Data: {
+                ngText: 'dbviewmodel_dataset_refresh',
+                ngAlt: 'dbviewmodel_dataset_refresh'
+              },
+              Events: {
+                OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.ApplyFilters(); }
+              }
+            }
+          }
+        }
+      }
+    });
+  } else
+  {
+    if ((def.Controls) && (def.Controls.Paging) && (def.Controls.Paging.Controls))
+    {
+      def.Controls.Paging.Controls.Refresh = null;
+    }
+  }
+
   var c=ngCreateControlAsType(def, ngVal(basetype,'ngDataSet'), ref, parent);
   if(!c) return c;
   
