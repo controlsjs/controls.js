@@ -1,4 +1,4 @@
-// $Id: basic.js 6314 2014-04-08 07:09:52Z tulach $
+// $Id: basic.js 6360 2014-04-14 11:09:25Z tulach $
 //
 // Copyright (c) 2006-2014  Position s.r.o.
 // All rights reserved.
@@ -1840,6 +1840,7 @@ function ng_SetStyleHeight(o,v)
  */
 function ng_OuterWidth(o)
 {
+  var fix7=o.offsetLeft; // IE7 measure fix
   var w=ng_GetStylePx(o.offsetWidth);
   if(!w)
   {
@@ -1865,6 +1866,7 @@ function ng_OuterWidth(o)
  */
 function ng_OuterHeight(o)
 {
+  var fix7=o.offsetLeft; // IE7 measure fix
   var h=ng_GetStylePx(o.offsetHeight);
   if(!h)
   {
@@ -1935,6 +1937,7 @@ function ng_SetOuterHeight(o,v)
 function ng_ClientWidth(o)
 {
   if(!o) return 0;
+  var fix7=o.offsetLeft; // IE7 measure fix
   var w=ng_GetStylePx(o.clientWidth);
   if(!w) 
   {
@@ -1966,6 +1969,7 @@ function ng_ClientWidth(o)
 function ng_ClientHeight(o)
 {
   if(!o) return 0;  
+  var fix7=o.offsetLeft; // IE7 measure fix
   var h=ng_GetStylePx(o.clientHeight);
   if(!h) 
   {
