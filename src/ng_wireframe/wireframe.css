@@ -1,0 +1,992 @@
+.ngApplication
+{
+  position: absolute;
+  left:0%;
+  top:0%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background-color: #FFFFFF;
+}
+
+/* Remove IE10+ text input buttons */
+::-ms-clear {
+    width : 0;
+    height: 0;
+}
+
+::-ms-reveal {
+    width : 0;
+    height: 0;
+}
+
+/* wfrControls ****************************************************************/
+
+.wfrText,
+.wfrButton,
+.wfrCheckBox,
+.wfrRadio,
+.wfrLabel,
+.wfrLink,
+.wfrEdit,
+.wfrGroupBox,
+.wfrPages,
+.wxfrCalendar,
+.wfrSplitButton,
+.wfrDropDown,
+.wfrDropPanel,
+.wfrCalendar,
+.wfrListBox,
+.wfrMenu,
+.wfrMenuBar,
+.wfrMenuBarButton,
+.wfrAboutMessage,
+.wfrDialog,
+.wfrEditFieldError
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size:11px;
+}
+
+/* wfrText ********************************************************************/
+
+.wfrTextTextDisabled
+{
+  color: #a0a0a0;
+}
+
+/* wfrButton ******************************************************************/
+
+.wfrButtonBtn
+{
+  color: #000000;
+}
+
+.wfrButtonText
+{
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.wfrButtonBtn_Focus .wfrButtonText
+{
+  color: #404040;
+}
+
+.wfrButtonBtnGrayed
+{
+  color: #808080;
+}
+
+.wfrButtonBtnGrayed_Focus .wfrButtonText
+{
+  color: #a0a0a0;
+}
+
+.wfrButtonBtnDisabled,
+.wfrButtonBtnDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+/* wfrCheckBox, wfrRadio ******************************************************/
+
+.wfrRadioBtnLeft,
+.wfrRadioBtnLeftGrayed,
+.wfrCheckBoxBtnLeft,
+.wfrCheckBoxBtnLeftGrayed
+{
+  margin-left: 3px;
+}
+
+.wfrRadioBtnLeft_Focus,
+.wfrRadioBtnLeftGrayed_Focus,
+.wfrCheckBoxBtnLeft_Focus,
+.wfrCheckBoxBtnLeftGrayed_Focus
+{
+  text-decoration: underline;
+  margin-left: 3px;
+}
+
+.wfrRadioBtnLeftChecked,
+.wfrCheckBoxBtnLeftChecked
+{
+  margin-left: 3px;
+}
+
+.wfrRadioBtnLeftChecked_Focus,
+.wfrCheckBoxBtnLeftChecked_Focus
+{
+  text-decoration: underline;
+  margin-left: 3px;
+}
+
+.wfrRadioBtnLeftDisabled,
+.wfrRadioBtnLeftDisabled_Focus,
+.wfrCheckBoxBtnLeftDisabled,
+.wfrCheckBoxBtnLeftDisabled_Focus
+{
+  margin-left: 3px;
+  color: #a0a0a0;
+}
+
+.wfrRadioBtnRight,
+.wfrRadioBtnRightGrayed,
+.wfrCheckBoxBtnRight,
+.wfrCheckBoxBtnRightGrayed
+{
+  margin-right: 3px;
+}
+
+.wfrRadioBtnRight_Focus,
+.wfrRadioBtnRightGrayed_Focus,
+.wfrCheckBoxBtnRight_Focus,
+.wfrCheckBoxBtnRightGrayed_Focus
+{
+  text-decoration: underline;
+  margin-right: 3px;
+}
+
+.wfrRadioBtnRightChecked,
+.wfrCheckBoxBtnRightChecked
+{
+  margin-right: 3px;
+}
+
+.wfrRadioBtnRightChecked_Focus,
+.wfrCheckBoxBtnRightChecked_Focus
+{
+  text-decoration: underline;
+  margin-right: 3px;
+}
+
+.wfrRadioBtnRightDisabled,
+.wfrRadioBtnRightDisabled_Focus,
+.wfrCheckBoxBtnRightDisabled,
+.wfrCheckBoxBtnRightDisabled_Focus
+{
+  margin-right: 3px;
+  color: #a0a0a0;
+}
+
+/* wfrLabel ********************************************************************/
+
+.wfrLabelBtnGrayed,
+.wfrLabelBtnGrayed_Focus
+{
+  color: #a0a0a0;
+}
+
+.wfrLabelBtnChecked,
+.wfrLabelBtnChecked_Focus
+{
+  font-weight: bold;
+}
+
+.wfrLabelBtnDisabled,
+.wfrLabelBtnDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+/* wfrLink ********************************************************************/
+
+.wfrLinkBtn
+{
+  text-decoration: underline;
+}
+
+.wfrLinkBtn_Focus
+{
+  text-decoration: underline;
+  color: #0000ee;
+}
+
+.wfrLinkBtnGrayed
+{
+  text-decoration: underline;
+  color: #a0a0a0;
+}
+
+.wfrLinkBtnGrayed_Focus
+{
+  color: #a0a0a0;
+  text-decoration: underline;
+}
+
+.wfrLinkBtnChecked
+{
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.wfrLinkBtnChecked_Focus
+{
+  text-decoration: underline;
+  font-weight: bold;
+  color: #0000ee;
+}
+
+.wfrLinkBtnDisabled,
+.wfrLinkBtnDisabled_Focus
+{
+  text-decoration: underline;
+  color: #a0a0a0;
+}
+
+/* wfrEdit ********************************************************************/
+
+.wfrEditInput,
+.wfrEditInput_Focus,
+.wfrEditInputDisabled,
+.wfrEditInputDisabled_Focus,
+.wfrEditInputHint,
+.wfrEditInputHint_Focus,
+.wfrEditInputHintDisabled,
+.wfrEditInputHintDisabled_Focus
+{
+  padding: 0;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #000000;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+}
+
+.wfrEditInputDisabled,
+.wfrEditInputDisabled_Focus,
+.wfrEditInputHint,
+.wfrEditInputHint_Focus,
+.wfrEditInputHintDisabled,
+.wfrEditInputHintDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+.wfrEdit_Invalid .wfrEditInput,
+.wfrEdit_Invalid .wfrEditInput_Focus
+{
+  color: #ffffff;
+}
+
+/* wfrListBox *****************************************************************/
+
+.wfrListBox
+{
+  font-size:12px;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wfrListBoxText
+{
+  padding-left: 3px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.wfrListBoxDisabled .wfrListBoxText
+{
+  cursor: default;
+}
+
+.wfrListBoxCaption
+{
+  padding-left: 8px;
+}
+.wfrListBox THEAD
+{
+  background-color: #cccccc;
+}
+
+.wfrListBox THEAD TD
+{
+  line-height:28px;
+  vertical-align: top;
+  font-weight: bold;
+}
+
+.wfrListBoxRow,
+.wfrListBoxRowChecked,
+.wfrListBoxRowGrayed,
+.wfrListBoxRow_Focus,
+.wfrListBoxRowChecked_Focus,
+.wfrListBoxRowGrayed_Focus,
+.wfrListBoxRowDisabled,
+.wfrListBoxRowDisabled_Focus
+{
+  padding: 2px 2px 2px 5px;
+}
+
+.wfrListBoxRow TD,
+.wfrListBoxRowChecked TD,
+.wfrListBoxRowGrayed TD,
+.wfrListBoxRow_Focus TD,
+.wfrListBoxRowChecked_Focus TD,
+.wfrListBoxRowGrayed_Focus TD,
+.wfrListBoxRowDisabled TD,
+.wfrListBoxRowDisabled_Focus TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wfrListBoxRow_Focus,
+.wfrListBoxRowChecked_Focus,
+.wfrListBoxRowGrayed_Focus
+{
+  background-color: #e5e5e5;
+}
+
+.wfrListBoxSelected
+{
+  background-color: #bbbbbb;
+  color: #FFFFFF;
+}
+
+.wfrListBoxRowDisabled,
+.wfrListBoxRowDisabled_Focus,
+.wfrListBoxDisabled .wfrListBoxCaption,
+.wfrListBoxDisabled .wfrListBoxText
+{
+  color: #a0a0a0;
+}
+
+/* wfrDropDown *****************************************************************/
+
+.wfrDropDown
+{
+  background-color: #FFFFFF;
+  padding: 2px;
+  z-index:1;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wfrDropDownText
+{
+  padding-left: 3px;
+  line-height: 16px;
+  cursor: default;
+}
+
+.wfrDropDownCaption
+{
+  line-height:20px;
+  padding-left: 5px;
+}
+
+.wfrDropDownRow,
+.wfrDropDownRow TD,
+.wfrDropDownRowChecked,
+.wfrDropDownRowChecked TD,
+.wfrDropDownRowGrayed,
+.wfrDropDownRowGrayed TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wfrDropDownRow_Focus,
+.wfrDropDownRow_Focus TD,
+.wfrDropDownRowChecked_Focus,
+.wfrDropDownRowChecked_Focus TD,
+.wfrDropDownRowGrayed_Focus,
+.wfrDropDownRowGrayed_Focus TD
+{
+  color: #000000;
+  background-color: #e5e5e5;
+  padding: 2px 2px 2px 2px;
+}
+
+.wfrDropDownRowDisabled,
+.wfrDropDownRowDisabled TD,
+.wfrDropDownRowDisabled_Focus,
+.wfrDropDownRowDisabled_Focus TD
+{
+  color: #a0a0a0;
+  padding: 2px 2px 2px 2px;
+}
+
+/* wfrPageListPaging **********************************************************/
+
+.wfrPageListPaging
+{
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 2px;
+}
+
+.wfrPgListPagingButton
+{
+   margin-top: 3px;
+}
+
+.wfrPgListPagingButtonBtn
+{
+   color: #000000;
+}
+
+.wfrPgListPagingButtonText
+{
+  line-height: 22px;
+}
+
+.wfrPgListPagingButtonBtnDisabled,
+.wfrPgListPagingButtonBtnDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+/* wfrGroupBox ****************************************************************/
+
+.wfrGroupBoxCaption
+{
+  margin-left:10px;
+  padding-left:6px;
+  padding-right:6px;
+  background-color: #FFFFFF;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.wfrGroupBoxCaptionDisabled
+{
+  margin-left:10px;
+  padding-left:6px;
+  padding-right:6px;
+  background-color: #FFFFFF;
+  white-space: nowrap;
+  color: #a0a0a0;
+  cursor: default;
+}
+
+/* wfrPages *******************************************************************/
+
+.wfrPagesPage .wfrPagesPageText,
+.wfrPagesPage_Focus .wfrPagesPageText,
+.wfrPagesPageSelected .wfrPagesPageText,
+.wfrPagesPageSelected_Focus .wfrPagesPageText,
+.wfrPagesPageDisabled .wfrPagesPageText,
+.wfrPagesPageDisabled_Focus .wfrPagesPageText
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size:11px;
+}
+
+.wfrPagesControlsPanels
+{
+  background-color: #ffffff;
+}
+
+.wfrPagesPageText
+{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.wfrPagesPageDisabled .wfrPagesPageText,
+.wfrPagesPageDisabled_Focus .wfrPagesPageText
+{
+  color: #a0a0a0;
+}
+
+/* wfrWindow ******************************************************************/
+
+.wfrWindow
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size:11px;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wfrWindowCaption,
+.wfrWindowCaptionDisabled
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size:12px;
+  font-weight: bold;
+  color: #000000;
+  margin: 7px 0px 0px 5px;
+  white-space: nowrap;
+}
+
+.wfrWindowCaptionDisabled
+{
+  color: #a0a0a0;
+}
+
+.wfrWindowControlsPanel
+{
+  background-color: #ffffff;
+}
+
+.wfrWindowFence
+{
+  border: 2px dotted black;
+}
+
+/* wfrDialog ******************************************************************/
+
+.ngModalCurtain
+{
+  background-color: #000000;
+  opacity: 0.4;
+  -moz-opacity: 0.4;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+}
+
+.wfrDialog
+{
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wfrDialogCaption,
+.wfrDialogCaptionDisabled
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size:12px;
+  font-weight: bold;
+  margin: 7px 0px 0px 5px;
+  white-space: nowrap;
+}
+
+.wfrDialogCaption
+{
+  color: #000000;
+}
+
+.wfrDialogCaptionDisabled
+{
+  color: #a0a0a0;
+}
+
+.wfrDialogControlsPanel
+{
+  background-color: #FFFFFF;
+}
+
+.wfrDialogFence
+{
+  border: 2px dotted black;
+}
+
+/* wfrHint ********************************************************************/
+
+.wfrHint
+{
+  z-index: 1000;
+}
+
+.wfrHintControlsPanel
+{
+  background-color: #FFFFFF;
+}
+
+/* wfrTextHint *****************************************************************/
+.wfrTextHint
+{
+  z-index: 1000;
+}
+
+.wfrTextHint .wfrTextText,
+.wfrTextHint .wfrTextTextDisabled
+{
+  font-size:10px;
+}
+
+.wfrTextHintControlsPanel
+{
+  background-color: #e5e5e5;
+  cursor: default;
+}
+
+/* wfrCalendar ****************************************************************/
+.wfrCalendar
+{
+  background-color: #ffffff;
+  z-index:1;
+  -moz-outline: 0px;
+  outline: none;
+  color: #000000;
+  padding: 10px;
+}
+
+.wfrCalendar TD
+{
+  width: 22px;
+  height: 21px;
+  line-height: 21px;
+}
+
+.wfrCalendarMonth
+{
+  text-align: center;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.wfrCalendarMonthDisabled
+{
+  color: #a0a0a0;
+  text-align: center;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.wfrCalendarYear
+{
+  text-align: center;
+  line-height: 18px;
+}
+
+.wfrCalendarYearDisabled
+{
+  color: #a0a0a0;
+  text-align: center;
+  line-height: 18px;
+}
+
+.wfrCalendarWeekDays
+{
+  color: #000000;
+  cursor: default;
+  font-weight: bold;
+  z-index: 200;
+  position: relative;
+  width: 25px;
+  height: 22px;
+  text-align: center;
+  line-height: 22px;
+}
+
+.wfrCalendarWeekDayDisabled
+{
+  color: #a0a0a0;
+}
+
+.wfrCalendarngWeekDayDisabled,
+.wfrCalendarngWeekDayHiliteDisabled
+{
+  color: #a0a0a0;
+}
+
+.wfrCalendarDays
+{
+  z-index: 200;
+  color: #000000;
+  position: relative;
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  line-height: 22px;
+  -moz-user-select: none;
+}
+
+.wfrCalendarNowSelected_Focus,
+.wfrCalendarDaySelected_Focus
+{
+  color: #ffffff;
+}
+
+
+.wfrCalendarNow,
+.wfrCalendarNow_Focus,
+.wfrCalendarNowSelected,
+.wfrCalendarNowSelected_Focus,
+.wfrCalendarNowDisabled,
+.wfrCalendarNowDisabled_Focus,
+.wfrCalendarDaySelected,
+.wfrCalendarDaySelected_Focus
+{
+  font-weight: bold;
+}
+
+.wfrCalendarDayDisabled,
+.wfrCalendarDaySelectedDisabled,
+.wfrCalendarDayDisabled_Focus,
+.wfrCalendarDaySelectedDisabled_Focus,
+.wfrCalendarNowDisabled,
+.wfrCalendarNowDisabled_Focus,
+.wfrCalendarNowSelectedDisabled,
+.wfrCalendarNowSelectedDisabled_Focus,
+.wfrCalendarFastBtnBtnDisabled,
+.wfrCalendarFastBtnBtnDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+.wfrCalendarFastBtn,
+.wfrCalendarFastBtn_Focus
+{
+  margin-top: 5px;
+}
+
+.wfrCalendarFastBtnBtn,
+.wfrCalendarFastBtnBtn_Focus,
+.wfrCalendarFastBtnBtnDisabled,
+.wfrCalendarFastBtnBtnDisabled_Focus
+{
+  width: 46px;
+}
+
+/* wfrMemo ********************************************************************/
+
+.wfrMemoBack
+{
+  background-color: #FFFFFF;
+}
+
+.wfrMemoInput,
+.wfrMemoInput_Focus
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size: 11px;
+  padding: 0;
+  resize: none;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+}
+
+.wfrMemoInputDisabled,
+.wfrMemoInputDisabled_Focus,
+.wfrMemoInputHint,
+.wfrMemoInputHint_Focus,
+.wfrMemoInputHintDisabled,
+.wfrMemoInputHintDisabled_Focus
+{
+  font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
+  font-size: 11px;
+  color: #a0a0a0;
+  padding: 0;
+  resize: none;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+}
+
+.wfrMemo .wfrMemoInput_Focus
+{
+  background-color: #e5e5e5;
+}
+
+.wfrMemoInvalid .wfrMemoInput,
+.wfrMemoInvalid .wfrMemoInput_Focus,
+.wfrMemoInvalid .wfrMemoInputHint,
+.wfrMemoInvalid .wfrMemoInputHint_Focus,
+.wfrMemoInvalid_Focus .wfrMemoInput,
+.wfrMemoInvalid_Focus .wfrMemoInput_Focus,
+.wfrMemoInvalid_Focus .wfrMemoInputHint,
+.wfrMemoInvalid_Focus .wfrMemoInputHint_Focus
+{
+  color: #ffffff;
+}
+
+.wfrMemoInvalid .wfrMemoInput,
+.wfrMemoInvalid .wfrMemoInput_Focus,
+.wfrMemoInvalid_Focus .wfrMemoInput,
+.wfrMemoInvalid_Focus .wfrMemoInput_Focus
+{
+  background-color: #000000;
+}
+
+/* wfrSplitPanel **************************************************************/
+
+.wfrSplitPanelHandle
+{
+  background-color: #ffffff;
+}
+
+.wfrSplitPanelHandle_Focus
+{
+  background-color: #e5e5e5;
+}
+
+.wfrSplitPanelMover
+{
+  background-color: #e5e5e5;
+  opacity: 0.5;
+  -moz-opacity: 0.5;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+}
+
+/* wfrMenuButton **************************************************************/
+
+.wfrSplitButtonText
+{
+  margin-left: 5px;
+  margin-right: 20px;
+}
+
+.wfrSplitButtonBtnGrayed
+{
+  color: #a0a0a0;
+}
+
+.wfrSplitButtonBtnGrayed_Focus .wfrSplitButtonText
+{
+  color: #a0a0a0;
+}
+
+.wfrSplitButtonBtnDisabled,
+.wfrSplitButtonBtnDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+/* wfrMenu ********************************************************************/
+
+.wfrMenu
+{
+  padding: 2px 2px 2px 2px;
+  background-color: #FFFFFF;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wfrMenu:focus
+{
+  -moz-outline: 0px;
+}
+
+.wfrMenuText
+{
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 20px;
+  cursor: default;
+}
+
+.wfrMenuSeparator
+{
+  font-size: 0px;
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  line-height: 2px;
+  height: 2px;
+}
+
+.wfrMenuSeparatorCell
+{
+  padding: 0px 0px 0px 0px !important;
+}
+
+.wfrMenuSubMenu
+{
+  position:absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.wfrMenuCaption
+{
+  line-height:28px;
+  padding-left: 9px;
+}
+
+.wfrMenu THEAD
+{
+  background-color: #cccccc;
+}
+
+.wfrMenuSelected
+{
+  background-color: #bbbbbb;
+  color: #FFFFFF;
+}
+
+.wfrMenuRow,
+.wfrMenuRow TD,
+.wfrMenuRowChecked,
+.wfrMenuRowChecked TD,
+.wfrMenuRowGrayed,
+.wfrMenuRowGrayed TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wfrMenuRow_Focus,
+.wfrMenuRow_Focus TD,
+.wfrMenuRowChecked_Focus,
+.wfrMenuRowChecked_Focus TD,
+.wfrMenuRowGrayed_Focus,
+.wfrMenuRowGrayed_Focus TD
+{
+  background-color: #e5e5e5;
+  color: #000000;
+  padding: 2px 2px 2px 2px;
+}
+
+.wfrMenuRowDisabled,
+.wfrMenuRowDisabled TD,
+.wfrMenuRowDisabled_Focus,
+.wfrMenuRowDisabled_Focus TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wfrMenuDisabled,
+.wfrMenuDisabled_Focus,
+.wfrMenuDisabled .wfrMenuCaption,
+.wfrMenuRowDisabled,
+.wfrMenuRowDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+/* wfrMenuBar Button **********************************************************/
+
+.wfrMenuBarButtonText
+{
+  line-height: 27px;
+  padding-left: 6px;
+  padding-right: 6px;
+  cursor: default;
+}
+
+.wfrMenuBarButtonBtnGrayed,
+.wfrMenuBarButtonBtnGrayed_Focus .wfrMenuBarButtonText
+{
+  color: #a0a0a0;
+}
+
+.wfrMenuBarButtonBtnDisabled,
+.wfrMenuBarButtonBtnDisabled_Focus
+{
+  color: #a0a0a0;
+}
+
+/* wfrAbout *******************************************************************/
+
+.wfrAboutMessage B
+{
+  font-size:16px;
+}
+
+.wfrAboutMessage I
+{
+  font-size:11px;
+  font-style: normal;
+}
+
+/* wfrEditFieldError **********************************************************/
+.wfrEditFieldError
+{
+  z-index: 1000;
+}
+
+.wfrEditFieldErrorControlsPanel
+{
+  background-color: #e5e5e5;
+  cursor: default;
+}

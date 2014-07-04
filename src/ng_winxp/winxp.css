@@ -1,0 +1,1140 @@
+.ngApplication
+{
+  position: absolute;
+  left:0%;
+  top:0%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background-color: #FFFFFF;
+}
+
+/* Remove IE10+ text input buttons */ 
+::-ms-clear {
+    width : 0;
+    height: 0;
+}
+
+::-ms-reveal {
+    width : 0;
+    height: 0;
+}
+
+/* wxpControls ****************************************************************/
+
+.wxpText,
+.wxpButton,
+.wxpRadio,
+.wxpCheckBox,
+.wxpLabel,
+.wxpLink,
+.wxpGroupBox,
+.wxpEdit,
+.wxpPages,
+.wxpCalendar,
+.wxpMenuBar,
+.wxpMenuBarButton,
+.wxpSplitButton
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+}
+
+/* wxpText ********************************************************************/
+
+.wxpTextTextDisabled
+{
+  color: #a0a0a0;
+}
+
+/* wxpGroupBox ****************************************************************/
+
+.wxpGroupBoxCaption
+{
+  margin-left:10px;
+  padding-left:4px;
+  padding-right:4px;
+  background-color: #FFFFFF;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.wxpGroupBoxCaptionDisabled
+{
+  margin-left:10px;
+  padding-left:4px;
+  padding-right:4px;
+  background-color: #FFFFFF;
+  white-space: nowrap;
+  color: #a0a0a0;
+  cursor: default;
+}
+
+/* wxpButton ******************************************************************/
+
+.wxpButtonBtn
+{
+}
+
+.wxpButtonText
+{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.wxpButtonBtn_Focus .wxpButtonText  
+{
+  text-decoration: underline;
+}
+
+.wxpButtonBtnGrayed 
+{
+  color: #a0a0a0;
+}
+
+.wxpButtonBtnGrayed_Focus .wxpButtonText
+{
+  color: #a0a0a0;
+  text-decoration: underline;
+}
+
+.wxpButtonBtnChecked 
+{
+}
+
+.wxpButtonBtnChecked_Focus .wxpButtonText
+{
+  text-decoration: underline;
+}
+
+.wxpButtonBtnDisabled, 
+.wxpButtonBtnDisabled_Focus 
+{
+  color: #a0a0a0;
+}
+
+/* wxpFlatButton ******************************************************************/
+
+.wxpFlatButton
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  border: 1px solid #7F9DB9;
+  line-height: 18px;
+}
+
+.wxpFlatButton_Disabled
+{
+  border: 1px solid #C9C7BA;
+}
+
+.wxpFlatButton_Checked
+{
+  border: 1px solid #FFA615;
+}
+
+
+.wxpFlatButtonBtn
+{
+  color: #7F9DB9; 
+}
+
+.wxpFlatButtonText
+{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.wxpFlatButtonBtn_Focus 
+{
+  color: #7F9DB9;
+}
+
+.wxpFlatButtonBtn_Focus .wxpFlatButtonText  
+{
+  color: #FFA615;
+  text-decoration: underline;
+}
+
+.wxpFlatButtonBtnGrayed 
+{
+  color: #a0a0a0;
+}
+
+.wxpFlatButtonBtnGrayed_Focus .wxpFlatButtonText
+{
+  color: #a0a0a0;
+  text-decoration: underline;
+}
+
+.wxpFlatButtonBtnChecked 
+{
+  color: #FFA615;
+}
+
+.wxpFlatButtonBtnChecked_Focus 
+{
+  color: #FFA615;
+}
+
+.wxpFlatButtonBtnChecked_Focus .wxpFlatButtonText
+{
+  text-decoration: underline;
+}
+
+.wxpFlatButtonBtnDisabled, 
+.wxpFlatButtonBtnDisabled_Focus 
+{
+  color: #a0a0a0;
+}
+
+/* wxpLink ********************************************************************/
+
+.wxpLinkBtn
+{
+  text-decoration: underline;
+}
+
+.wxpLinkBtn_Focus 
+{
+  text-decoration: underline;
+  color: #FFA615;
+}
+
+.wxpLinkBtnGrayed 
+{
+  text-decoration: underline;
+  color: #a0a0a0;
+}
+
+.wxpLinkBtnGrayed_Focus 
+{
+  color: #a0a0a0;
+  text-decoration: underline;
+}
+
+.wxpLinkBtnChecked 
+{
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.wxpLinkBtnChecked_Focus 
+{
+  text-decoration: underline;
+  font-weight: bold;
+  color: #FFA615;
+}
+
+.wxpLinkBtnDisabled, 
+.wxpLinkBtnDisabled_Focus 
+{
+  text-decoration: underline;
+  color: #a0a0a0;
+}
+
+/* wxpLabel ********************************************************************/
+
+.wxpLabelBtn,
+.wxpLabelBtn_Focus 
+{
+}
+
+.wxpLabelBtnGrayed, 
+.wxpLabelBtnGrayed_Focus 
+{
+  color: #a0a0a0;
+}
+
+.wxpLabelBtnChecked, 
+.wxpLabelBtnChecked_Focus 
+{
+  font-weight: bold;
+}
+
+.wxpLabelBtnDisabled, 
+.wxpLabelBtnDisabled_Focus 
+{
+  color: #a0a0a0;
+}
+
+/* wxpRadio, wxpCheckBox ******************************************************/
+
+.wxpRadioText,
+.wxpCheckBoxText
+{
+}
+
+.wxpRadioBtnLeft,
+.wxpRadioBtnLeftGrayed,
+.wxpCheckBoxBtnLeft,
+.wxpCheckBoxBtnLeftGrayed 
+{
+  margin-left: 3px;
+}
+
+.wxpRadioBtnLeft_Focus, 
+.wxpRadioBtnLeftGrayed_Focus, 
+.wxpCheckBoxBtnLeft_Focus, 
+.wxpCheckBoxBtnLeftGrayed_Focus 
+{
+  text-decoration: underline;
+  margin-left: 3px;
+}
+
+.wxpRadioBtnLeftChecked, 
+.wxpCheckBoxBtnLeftChecked 
+{
+  margin-left: 3px;
+}
+
+.wxpRadioBtnLeftChecked_Focus, 
+.wxpCheckBoxBtnLeftChecked_Focus 
+{
+  text-decoration: underline;
+  margin-left: 3px;
+}
+
+.wxpRadioBtnLeftDisabled, 
+.wxpRadioBtnLeftDisabled_Focus, 
+.wxpCheckBoxBtnLeftDisabled, 
+.wxpCheckBoxBtnLeftDisabled_Focus 
+{
+  margin-left: 3px;
+  color: #a0a0a0;
+}
+
+.wxpRadioBtnRight,
+.wxpRadioBtnRightGrayed,
+.wxpCheckBoxBtnRight,
+.wxpCheckBoxBtnRightGrayed 
+{
+  margin-right: 3px;
+}
+
+.wxpRadioBtnRight_Focus, 
+.wxpRadioBtnRightGrayed_Focus, 
+.wxpCheckBoxBtnRight_Focus, 
+.wxpCheckBoxBtnRightGrayed_Focus 
+{
+  text-decoration: underline;
+  margin-right: 3px;
+}
+
+.wxpRadioBtnRightChecked, 
+.wxpCheckBoxBtnRightChecked 
+{
+  margin-right: 3px;
+}
+
+.wxpRadioBtnRightChecked_Focus, 
+.wxpCheckBoxBtnRightChecked_Focus 
+{
+  text-decoration: underline;
+  margin-right: 3px;
+}
+
+.wxpRadioBtnRightDisabled, 
+.wxpRadioBtnRightDisabled_Focus, 
+.wxpCheckBoxBtnRightDisabled, 
+.wxpCheckBoxBtnRightDisabled_Focus 
+{
+  margin-right: 3px;
+  color: #a0a0a0;
+}
+
+/* wxpListBox *****************************************************************/
+
+.wxpListBox
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  border: 1px solid #7F9DB9;
+  padding: 1px 1px 1px 1px;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wxpListBoxDisabled
+{
+  border: 1px solid #C9C7BA;
+}
+
+.wxpListBoxText
+{
+  padding-left: 3px;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.wxpListBoxCaption
+{
+  padding-left: 5px;
+}
+
+.wxpListBox THEAD TD
+{
+  background-color: #EBEADB;
+  line-height:20px;
+  vertical-align: top;
+  border-bottom: 1px solid #CBC7B8;
+}
+
+.wxpListBoxSelected
+{
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpListBoxRow,
+.wxpListBoxRow TD,
+.wxpListBoxRowChecked,
+.wxpListBoxRowChecked TD,
+.wxpListBoxRowGrayed,
+.wxpListBoxRowGrayed TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpListBoxRow_Focus,
+.wxpListBoxRow_Focus TD,
+.wxpListBoxRowChecked_Focus,
+.wxpListBoxRowChecked_Focus TD,
+.wxpListBoxRowGrayed_Focus,
+.wxpListBoxRowGrayed_Focus TD
+{
+  text-decoration: underline;
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpListBoxRowDisabled,
+.wxpListBoxRowDisabled TD,
+.wxpListBoxRowDisabled_Focus,
+.wxpListBoxRowDisabled_Focus TD
+{
+  color: #a0a0a0;
+  padding: 2px 2px 2px 2px;
+}
+
+/* wxpDropDown *****************************************************************/
+
+.wxpDropDown
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  background-color: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  padding: 1px 1px 1px 1px;
+  z-index:1;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wxpDropDownText
+{
+  padding-left: 3px;
+  line-height: 16px;
+  cursor: default;
+}
+
+.wxpDropDownCaption
+{
+  background-color: #EBEADB;
+  line-height:20px;
+  padding-left: 5px;
+  border-bottom: 1px solid #CBC7B8;
+}
+
+.wxpDropDownRow,
+.wxpDropDownRow TD,
+.wxpDropDownRowChecked,
+.wxpDropDownRowChecked TD,
+.wxpDropDownRowGrayed,
+.wxpDropDownRowGrayed TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpDropDownRow_Focus,
+.wxpDropDownRow_Focus TD,
+.wxpDropDownRowChecked_Focus,
+.wxpDropDownRowChecked_Focus TD,
+.wxpDropDownRowGrayed_Focus,
+.wxpDropDownRowGrayed_Focus TD
+{
+  color: #FFFFFF;
+  background-color: #316AC5;
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpDropDownRowDisabled,
+.wxpDropDownRowDisabled TD,
+.wxpDropDownRowDisabled_Focus,
+.wxpDropDownRowDisabled_Focus TD
+{
+  color: #a0a0a0;
+  padding: 2px 2px 2px 2px;
+}
+
+/* wxpEdit ********************************************************************/
+
+.wxpEditInput,
+.wxpEditInput_Focus
+{
+  padding: 1px 0px 0px 0px;
+  margin-top: 3px;
+  font-size: 11px;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0; 
+  border-radius:0;
+  background: transparent;
+}
+
+.wxpEditInputDisabled, 
+.wxpEditInputDisabled_Focus, 
+.wxpEditInputHint,
+.wxpEditInputHint_Focus,
+.wxpEditInputHintDisabled, 
+.wxpEditInputHintDisabled_Focus 
+{
+  padding: 1px 0px 0px 0px;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #a0a0a0;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0; 
+  border-radius:0;
+  background: transparent;
+}
+
+/* wxpMemo ********************************************************************/
+
+.wxpMemoBack
+{
+  background-color: #FFFFFF;
+}
+
+.wxpMemoInput,
+.wxpMemoInput_Focus
+{
+  font-size: 11px;
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  padding: 0;
+  resize: none;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+}
+
+.wxpMemoInputDisabled, 
+.wxpMemoInputDisabled_Focus, 
+.wxpMemoInputHint,
+.wxpMemoInputHint_Focus,
+.wxpMemoInputHintDisabled, 
+.wxpMemoInputHintDisabled_Focus 
+{
+  font-size: 11px;
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  color: #a0a0a0;
+  padding: 0;
+  resize: none;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+}
+
+/* wxpPages *******************************************************************/
+
+.wxpPagesPage
+{
+}
+
+.wxpPagesControlsPanels
+{
+  background-color: #FFFFFF;
+}
+
+.wxpPagesPageText
+{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.wxpPagesPageSelected .wxpPagesPageText,  
+.wxpPagesPageSelected_Focus .wxpPagesPageText  
+{
+}
+
+.wxpPagesPage_Focus .wxpPagesPageText
+{
+  text-decoration: underline;
+}
+
+.wxpPagesPageDisabled .wxpPagesPageText,  
+.wxpPagesPageDisabled_Focus .wxpPagesPageText  
+{
+  color: #a0a0a0;
+}
+
+/* wxpSplitPanel **************************************************************/
+
+.wxpSplitPanelHandle
+{
+  background-color: #FFFFFF;
+}
+
+.wxpSplitPanelHandle_Focus
+{
+  background-color: #AACAE6;
+}
+
+.wxpSplitPanelMover
+{
+  background-color: #AACAE6;
+  opacity: 0.3;
+  -moz-opacity: 0.3;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=30);
+}
+
+/* wxpCalendar ****************************************************************/
+.wxpCalendar TD
+{
+  width: 25px;
+  height: 21px;
+  line-height: 21px;
+}
+
+.wxpCalendarHeader 
+{
+  margin-bottom: 5px;
+}
+
+.wxpCalendarFooter 
+{
+}
+
+.wxpCalendarMonth 
+{
+  text-align: center;
+  line-height: 13px;
+  text-transform: uppercase;
+}
+
+.wxpCalendarMonthDisabled 
+{
+  color: #a0a0a0;
+  text-align: center;
+  line-height: 13px;
+  text-transform: uppercase;
+}
+
+.wxpCalendarYear 
+{
+  text-align: center;
+  line-height: 13px;
+}
+
+.wxpCalendarYearDisabled 
+{
+  color: #a0a0a0;
+  text-align: center;
+  line-height: 13px;
+}
+
+.wxpCalendarWeekDays 
+{  
+  color: #000000;
+  border-bottom: 1px solid #000000;
+  cursor: default;
+  font-weight: bold;
+  z-index: 200;
+  position: relative;
+  width: 25px;
+  height: 21px;
+  text-align: center;
+  line-height: 21px;
+}
+
+.wxpCalendarWeekDayHilite 
+{ 
+  color: #DF6C18;
+}
+
+.wxpCalendarWeekDayDisabled 
+{ 
+  color: #a0a0a0;
+}
+
+.wxpCalendarWeekDayDisabled, 
+.wxpCalendarWeekDayHiliteDisabled 
+{ 
+  color: #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+}
+
+.wxpCalendarDays
+{  
+  z-index: 200;
+  color: #000000;
+  position: relative;
+  width: 19px;
+  height: 21px;
+  text-align: right;
+  padding-right:6px;
+  line-height: 21px;
+  -moz-user-select: none;
+}
+
+.wxpCalendarNow 
+{  
+  font-weight: bold;
+}
+
+.wxpCalendarDay 
+{  
+}
+
+.wxpCalendarNow_Focus 
+{  
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.wxpCalendarDay_Focus 
+{
+  text-decoration: underline;
+}
+
+.wxpCalendarNowSelected 
+{  
+  font-weight: bold;
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpCalendarDaySelected
+{  
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpCalendarNowSelected_Focus 
+{  
+  font-weight: bold;
+  background-color: #316AC5;
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.wxpCalendarDaySelected_Focus
+{  
+  background-color: #316AC5;
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.wxpCalendarDayDisabled, 
+.wxpCalendarDaySelectedDisabled,
+.wxpCalendarDayDisabled_Focus, 
+.wxpCalendarDaySelectedDisabled_Focus 
+{  
+  color: #a0a0a0;
+}
+
+.wxpCalendarNowDisabled, 
+.wxpCalendarNowDisabled_Focus, 
+.wxpCalendarNowSelectedDisabled,
+.wxpCalendarNowSelectedDisabled_Focus 
+{  
+  font-weight: bold;
+  color: #a0a0a0;
+}
+
+/* wxpWindow ******************************************************************/
+
+.wxpWindow
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wxpWindowCaption,
+.wxpWindowCaptionDisabled
+{
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 29px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+
+.wxpWindowControlsPanel
+{
+  background-color: #FFFFFF;
+}
+
+.wxpWindowFence
+{
+  border: 2px dotted black;
+}
+
+/* wxpDialog ******************************************************************/
+
+.ngModalCurtain
+{
+  background-color: #000000;
+  opacity: 0.5;
+  -moz-opacity: 0.5;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+}
+
+.wxpDialog
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wxpDialogCaption,
+.wxpDialogCaptionDisabled
+{
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 29px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+
+.wxpDialogControlsPanel
+{
+  background-color: #FFFFFF;
+}
+
+.wxpDialogFence
+{
+  border: 2px dotted black;
+}
+
+/* wxpMenu ********************************************************************/
+
+.wxpMenu
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  border: 1px solid #ACA899;
+  padding: 2px 2px 2px 2px;
+  background-color: #FFFFFF;
+  -moz-outline: 0px;
+  outline: none;
+}
+
+.wxpMenu:focus
+{
+  -moz-outline: 0px;
+}
+
+.wxpMenuText
+{
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 16px;
+  cursor: default;
+}
+
+.wxpMenuSeparator 
+{
+  border-top: 1px solid #ACA899;
+  margin: 3px 0px 3px 0px;
+  line-height: 0px;
+  font-size: 0px;
+}
+
+.wxpMenuSubMenu
+{
+  position:absolute; 
+  top: 0px; 
+  right: 0px; 
+  _right: 9px; 
+}
+
+.wxpMenuSeparator HR
+{
+  height: 0px;
+  line-height: 1px;
+  width: 100%;
+}
+
+.wxpMenuCaption
+{
+  background-color: #EBEADB;
+  line-height:20px;
+  padding-left: 5px;
+  border-bottom: 1px solid #CBC7B8;
+}
+
+.wxpMenuSelected
+{
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpMenuRow,
+.wxpMenuRow TD,
+.wxpMenuRowChecked,
+.wxpMenuRowChecked TD,
+.wxpMenuRowGrayed,
+.wxpMenuRowGrayed TD
+{
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpMenuRow_Focus,
+.wxpMenuRow_Focus TD,
+.wxpMenuRowChecked_Focus,
+.wxpMenuRowChecked_Focus TD,
+.wxpMenuRowGrayed_Focus,
+.wxpMenuRowGrayed_Focus TD
+{
+  background-color: #316AC5;
+  color: #FFFFFF;
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpMenuRowDisabled,
+.wxpMenuRowDisabled TD
+{
+  color: #a0a0a0;
+  padding: 2px 2px 2px 2px;
+}
+
+.wxpMenuRowDisabled_Focus,
+.wxpMenuRowDisabled_Focus TD
+{
+  background-color: #316AC5;
+  color: #a0a0a0;
+  padding: 2px 2px 2px 2px;
+}
+
+/* wxpMenuBar Button **********************************************************/
+
+.wxpMenuBarButtonBtn
+{
+}
+
+.wxpMenuBarButtonText
+{
+  line-height: 20px;
+  padding-left: 6px;
+  padding-right: 6px;
+  cursor: default;
+}
+
+.wxpMenuBarButtonBtn_Focus .wxpMenuBarButtonText  
+{
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpMenuBarButtonBtnGrayed 
+{
+  color: #a0a0a0;
+}
+
+.wxpMenuBarButtonBtnGrayed_Focus .wxpMenuBarButtonText
+{
+  color: #a0a0a0;
+}
+
+.wxpMenuBarButtonBtnChecked 
+{
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpMenuBarButtonBtnChecked_Focus .wxpMenuBarButtonText
+{          
+  background-color: #316AC5;
+  color: #FFFFFF;
+}
+
+.wxpMenuBarButtonBtnDisabled, 
+.wxpMenuBarButtonBtnDisabled_Focus 
+{
+  color: #a0a0a0;
+}
+
+/* wxpMenuButton **************************************************************/
+
+.wxpSplitButtonBtn
+{
+}
+
+.wxpSplitButtonText
+{
+  margin-left: 5px;
+  margin-right: 10px;
+}
+
+.wxpSplitButtonBtn_Focus .wxpSplitButtonText  
+{
+  text-decoration: underline;
+}
+
+.wxpSplitButtonBtnGrayed 
+{
+  color: #a0a0a0;
+}
+
+.wxpSplitButtonBtnGrayed_Focus .wxpSplitButtonText
+{
+  color: #a0a0a0;
+  text-decoration: underline;
+}
+
+.wxpSplitButtonBtnChecked 
+{
+}
+
+.wxpSplitButtonBtnChecked_Focus .wxpSplitButtonText
+{
+  text-decoration: underline;
+}
+
+.wxpSplitButtonBtnDisabled, 
+.wxpSplitButtonBtnDisabled_Focus 
+{
+  color: #a0a0a0;
+}
+
+/* wxpAbout *******************************************************************/
+
+.wxpAboutMessage
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+}
+
+.wxpAboutMessage B
+{
+  font-size:16px;
+}
+
+.wxpAboutMessage I
+{
+  font-size:11px;
+  font-style: normal;
+}
+
+/* wxpDropPanel ***************************************************************/
+
+.wxpDropPanel
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+}
+
+.wxpDropPanelControlsPanel
+{
+  /*background-color: #FFFFFF;*/
+}
+
+/* wxpHint ********************************************************************/
+
+.wxpHint
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  z-index: 1000;
+}
+
+.wxpHintControlsPanel
+{
+  background-color: #FFFFFF;
+}
+
+/* wxpTextHint *****************************************************************/
+.wxpTextHint
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  z-index: 1000;
+}
+
+.wxpTextHintControlsPanel
+{
+  background-color: #FFFFE1;
+  cursor: default;
+}
+
+/* wxpPageListPaging **********************************************************/
+
+.wxpPageListPaging 
+{
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 2px;
+}
+
+/* wxpPageListPageNo **********************************************************/
+
+.wxpPgListPgNo
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+}
+
+.wxpPgListPgNoInput,
+.wxpPgListPgNoInput_Focus
+{
+  padding: 1px 0px 0px 0px;
+  margin-top: 2px;
+  font-size: 11px;
+  -moz-outline: 0px;
+  outline: none;
+  color: #7F9DB9;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+}
+
+.wxpPgListPgNoInputDisabled, 
+.wxpPgListPgNoInputDisabled_Focus, 
+.wxpPgListPgNoInputHint,
+.wxpPgListPgNoInputHint_Focus,
+.wxpPgListPgNoInputHintDisabled, 
+.wxpPgListPgNoInputHintDisabled_Focus 
+{
+  padding: 1px 0px 0px 0px;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #a0a0a0;
+  -moz-outline: 0px;
+  outline: none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background: transparent;
+}
+
+/* wxpEditFieldError **********************************************************/
+.wxpEditFieldError
+{
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  z-index: 1000;
+}
+
+.wxpEditFieldErrorControlsPanel
+{
+  background-color: #FFD0D0;
+}

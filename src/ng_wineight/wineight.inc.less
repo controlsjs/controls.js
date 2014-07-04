@@ -1,0 +1,77 @@
+.weColorStyle(@name,@color)
+{
+  .we@{name} {
+    background-color: @color !important; 
+  }
+  
+  .we@{name}Text {
+    color: @color !important; 
+  }
+
+  .we@{name}DropDown .weDropDownLightRow_Focus,
+  .we@{name}DropDown .weDropDownLightRow_Focus TD,
+  .we@{name}DropDown .weDropDownLightRowChecked_Focus,
+  .we@{name}DropDown .weDropDownLightRowChecked_Focus TD,
+  .we@{name}DropDown .weDropDownLightRowGrayed_Focus,
+  .we@{name}DropDown .weDropDownLightRowGrayed_Focus TD
+  {
+    color: #FFFFFF;
+    background-color: @color;
+    padding: 2px 15px 2px 15px;
+  }
+
+  .we@{name}ListBox .weListBoxLightSelected,   
+  .we@{name}ListBox .weListBoxLightSelected TD
+  {
+    background-color: @color !important;
+    color: #FFFFFF;
+  }
+
+  .we@{name}MenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText,  
+  .we@{name}MenuBar .weMenuBarLightButtonBtnChecked, 
+  .we@{name}MenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText
+  {
+    background-color: @color;
+    color: #FFFFFF;
+  }
+  
+  .we@{name}Calendar .weCalendarLightNow 
+  {  
+    color: @color;
+    font-weight: bold;
+  }
+  
+  .we@{name}Calendar .weCalendarLightNow_Focus 
+  {  
+    color: @color;
+    font-weight: bold;
+  }
+  
+  .we@{name}Calendar .weCalendarLightNowSelected 
+  {  
+    font-weight: bold;
+    background-color: @color;
+    color: #FFFFFF;
+  }
+  
+  .we@{name}Calendar .weCalendarLightDaySelected
+  {  
+    background-color: @color;
+    color: #FFFFFF;
+  }
+    
+  .we@{name}Menu .weMenuLightRow_Focus,
+  .we@{name}Menu .weMenuLightRow_Focus TD,
+  .we@{name}Menu .weMenuLightRowChecked_Focus,
+  .we@{name}Menu .weMenuLightRowChecked_Focus TD,
+  .we@{name}Menu .weMenuLightRowGrayed_Focus,
+  .we@{name}Menu .weMenuLightRowGrayed_Focus TD,
+  {
+    color: #FFFFFF;
+    background-color: @color;
+    padding: 2px 15px 2px 15px;
+  }
+  
+
+  
+}

@@ -1,0 +1,38 @@
+{
+  "name": "controls.js",
+  "version": "5.0.0",
+  "releaseyear": "2014",
+  "homepage": "http://controlsjs.com/",
+  "author": "Position s.r.o.",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-closure-compiler": "~0.0.21",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-banner": "~0.2.0"
+  },  
+  "licenses": [
+    { "type": "GPL-3.0",             "url": "http://www.gnu.org/licenses/gpl-3.0.html" },
+    { "type": "Commercial Software", "url": "http://controlsjs.com/license.html" }
+  ],
+  "lib_knockout": {
+    "version": "3.0.0",    
+    "homepage": "http://knockoutjs.com/",
+    "licenses": [
+      { "type": "MIT", "url": "http://www.opensource.org/licenses/mit-license.php" }
+    ]
+  },
+  "lib_hammerjs": {
+    "version": "1.0.6",
+    "homepage": "http://eightmedia.github.com/hammer.js",
+    "author": {
+      "name": "Jorik Tangelder",
+      "email": "j.tangelder@gmail.com"
+    },
+    "licenses": [
+      { "type": "MIT", "url": "https://github.com/eightmedia/hammer.js/blob/master/LICENSE" }
+    ]
+  }
+}

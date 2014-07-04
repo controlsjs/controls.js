@@ -1,0 +1,1335 @@
+.ngApplication {
+  position:absolute;
+  left:0%;
+  top:0%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background-color:#FFFFFF;
+}
+::-ms-clear {
+  width:0;
+  height:0;
+}
+::-ms-reveal {
+  width:0;
+  height:0;
+}
+.weWhite { background-color:#FFFFFF !important; }
+.weWhiteText { color:#FFFFFF !important; }
+.weWhiteDropDown .weDropDownLightRow_Focus, .weWhiteDropDown .weDropDownLightRow_Focus TD, .weWhiteDropDown .weDropDownLightRowChecked_Focus, .weWhiteDropDown .weDropDownLightRowChecked_Focus TD, .weWhiteDropDown .weDropDownLightRowGrayed_Focus, .weWhiteDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#FFFFFF;
+  padding:2px 15px 2px 15px;
+}
+.weWhiteListBox .weListBoxLightSelected, .weWhiteListBox .weListBoxLightSelected TD {
+  background-color:#FFFFFF !important;
+  color:#FFFFFF;
+}
+.weWhiteMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weWhiteMenuBar .weMenuBarLightButtonBtnChecked, .weWhiteMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#FFFFFF;
+  color:#FFFFFF;
+}
+.weWhiteCalendar .weCalendarLightNow {
+  color:#FFFFFF;
+  font-weight:bold;
+}
+.weWhiteCalendar .weCalendarLightNow_Focus {
+  color:#FFFFFF;
+  font-weight:bold;
+}
+.weWhiteCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#FFFFFF;
+  color:#FFFFFF;
+}
+.weWhiteCalendar .weCalendarLightDaySelected {
+  background-color:#FFFFFF;
+  color:#FFFFFF;
+}
+.weWhiteMenu .weMenuLightRow_Focus, .weWhiteMenu .weMenuLightRow_Focus TD, .weWhiteMenu .weMenuLightRowChecked_Focus, .weWhiteMenu .weMenuLightRowChecked_Focus TD, .weWhiteMenu .weMenuLightRowGrayed_Focus, .weWhiteMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#FFFFFF;
+  padding:2px 15px 2px 15px;
+}
+.weBlue { background-color:#004D91 !important; }
+.weBlueText { color:#004D91 !important; }
+.weBlueDropDown .weDropDownLightRow_Focus, .weBlueDropDown .weDropDownLightRow_Focus TD, .weBlueDropDown .weDropDownLightRowChecked_Focus, .weBlueDropDown .weDropDownLightRowChecked_Focus TD, .weBlueDropDown .weDropDownLightRowGrayed_Focus, .weBlueDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#004D91;
+  padding:2px 15px 2px 15px;
+}
+.weBlueListBox .weListBoxLightSelected, .weBlueListBox .weListBoxLightSelected TD {
+  background-color:#004D91 !important;
+  color:#FFFFFF;
+}
+.weBlueMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weBlueMenuBar .weMenuBarLightButtonBtnChecked, .weBlueMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#004D91;
+  color:#FFFFFF;
+}
+.weBlueCalendar .weCalendarLightNow {
+  color:#004D91;
+  font-weight:bold;
+}
+.weBlueCalendar .weCalendarLightNow_Focus {
+  color:#004D91;
+  font-weight:bold;
+}
+.weBlueCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#004D91;
+  color:#FFFFFF;
+}
+.weBlueCalendar .weCalendarLightDaySelected {
+  background-color:#004D91;
+  color:#FFFFFF;
+}
+.weBlueMenu .weMenuLightRow_Focus, .weBlueMenu .weMenuLightRow_Focus TD, .weBlueMenu .weMenuLightRowChecked_Focus, .weBlueMenu .weMenuLightRowChecked_Focus TD, .weBlueMenu .weMenuLightRowGrayed_Focus, .weBlueMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#004D91;
+  padding:2px 15px 2px 15px;
+}
+.weGreen { background-color:#00A300 !important; }
+.weGreenText { color:#00A300 !important; }
+.weGreenDropDown .weDropDownLightRow_Focus, .weGreenDropDown .weDropDownLightRow_Focus TD, .weGreenDropDown .weDropDownLightRowChecked_Focus, .weGreenDropDown .weDropDownLightRowChecked_Focus TD, .weGreenDropDown .weDropDownLightRowGrayed_Focus, .weGreenDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#00A300;
+  padding:2px 15px 2px 15px;
+}
+.weGreenListBox .weListBoxLightSelected, .weGreenListBox .weListBoxLightSelected TD {
+  background-color:#00A300 !important;
+  color:#FFFFFF;
+}
+.weGreenMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weGreenMenuBar .weMenuBarLightButtonBtnChecked, .weGreenMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#00A300;
+  color:#FFFFFF;
+}
+.weGreenCalendar .weCalendarLightNow {
+  color:#00A300;
+  font-weight:bold;
+}
+.weGreenCalendar .weCalendarLightNow_Focus {
+  color:#00A300;
+  font-weight:bold;
+}
+.weGreenCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#00A300;
+  color:#FFFFFF;
+}
+.weGreenCalendar .weCalendarLightDaySelected {
+  background-color:#00A300;
+  color:#FFFFFF;
+}
+.weGreenMenu .weMenuLightRow_Focus, .weGreenMenu .weMenuLightRow_Focus TD, .weGreenMenu .weMenuLightRowChecked_Focus, .weGreenMenu .weMenuLightRowChecked_Focus TD, .weGreenMenu .weMenuLightRowGrayed_Focus, .weGreenMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#00A300;
+  padding:2px 15px 2px 15px;
+}
+.weYellow { background-color:#FFC40D !important; }
+.weYellowText { color:#FFC40D !important; }
+.weYellowDropDown .weDropDownLightRow_Focus, .weYellowDropDown .weDropDownLightRow_Focus TD, .weYellowDropDown .weDropDownLightRowChecked_Focus, .weYellowDropDown .weDropDownLightRowChecked_Focus TD, .weYellowDropDown .weDropDownLightRowGrayed_Focus, .weYellowDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#FFC40D;
+  padding:2px 15px 2px 15px;
+}
+.weYellowListBox .weListBoxLightSelected, .weYellowListBox .weListBoxLightSelected TD {
+  background-color:#FFC40D !important;
+  color:#FFFFFF;
+}
+.weYellowMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weYellowMenuBar .weMenuBarLightButtonBtnChecked, .weYellowMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#FFC40D;
+  color:#FFFFFF;
+}
+.weYellowCalendar .weCalendarLightNow {
+  color:#FFC40D;
+  font-weight:bold;
+}
+.weYellowCalendar .weCalendarLightNow_Focus {
+  color:#FFC40D;
+  font-weight:bold;
+}
+.weYellowCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#FFC40D;
+  color:#FFFFFF;
+}
+.weYellowCalendar .weCalendarLightDaySelected {
+  background-color:#FFC40D;
+  color:#FFFFFF;
+}
+.weYellowMenu .weMenuLightRow_Focus, .weYellowMenu .weMenuLightRow_Focus TD, .weYellowMenu .weMenuLightRowChecked_Focus, .weYellowMenu .weMenuLightRowChecked_Focus TD, .weYellowMenu .weMenuLightRowGrayed_Focus, .weYellowMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#FFC40D;
+  padding:2px 15px 2px 15px;
+}
+.weGray { background-color:#525252 !important; }
+.weGrayText { color:#525252 !important; }
+.weGrayDropDown .weDropDownLightRow_Focus, .weGrayDropDown .weDropDownLightRow_Focus TD, .weGrayDropDown .weDropDownLightRowChecked_Focus, .weGrayDropDown .weDropDownLightRowChecked_Focus TD, .weGrayDropDown .weDropDownLightRowGrayed_Focus, .weGrayDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#525252;
+  padding:2px 15px 2px 15px;
+}
+.weGrayListBox .weListBoxLightSelected, .weGrayListBox .weListBoxLightSelected TD {
+  background-color:#525252 !important;
+  color:#FFFFFF;
+}
+.weGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weGrayMenuBar .weMenuBarLightButtonBtnChecked, .weGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#525252;
+  color:#FFFFFF;
+}
+.weGrayCalendar .weCalendarLightNow {
+  color:#525252;
+  font-weight:bold;
+}
+.weGrayCalendar .weCalendarLightNow_Focus {
+  color:#525252;
+  font-weight:bold;
+}
+.weGrayCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#525252;
+  color:#FFFFFF;
+}
+.weGrayCalendar .weCalendarLightDaySelected {
+  background-color:#525252;
+  color:#FFFFFF;
+}
+.weGrayMenu .weMenuLightRow_Focus, .weGrayMenu .weMenuLightRow_Focus TD, .weGrayMenu .weMenuLightRowChecked_Focus, .weGrayMenu .weMenuLightRowChecked_Focus TD, .weGrayMenu .weMenuLightRowGrayed_Focus, .weGrayMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#525252;
+  padding:2px 15px 2px 15px;
+}
+.weLtGray { background-color:#BABABA !important; }
+.weLtGrayText { color:#BABABA !important; }
+.weLtGrayDropDown .weDropDownLightRow_Focus, .weLtGrayDropDown .weDropDownLightRow_Focus TD, .weLtGrayDropDown .weDropDownLightRowChecked_Focus, .weLtGrayDropDown .weDropDownLightRowChecked_Focus TD, .weLtGrayDropDown .weDropDownLightRowGrayed_Focus, .weLtGrayDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#BABABA;
+  padding:2px 15px 2px 15px;
+}
+.weLtGrayListBox .weListBoxLightSelected, .weLtGrayListBox .weListBoxLightSelected TD {
+  background-color:#BABABA !important;
+  color:#FFFFFF;
+}
+.weLtGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weLtGrayMenuBar .weMenuBarLightButtonBtnChecked, .weLtGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#BABABA;
+  color:#FFFFFF;
+}
+.weLtGrayCalendar .weCalendarLightNow {
+  color:#BABABA;
+  font-weight:bold;
+}
+.weLtGrayCalendar .weCalendarLightNow_Focus {
+  color:#BABABA;
+  font-weight:bold;
+}
+.weLtGrayCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#BABABA;
+  color:#FFFFFF;
+}
+.weLtGrayCalendar .weCalendarLightDaySelected {
+  background-color:#BABABA;
+  color:#FFFFFF;
+}
+.weLtGrayMenu .weMenuLightRow_Focus, .weLtGrayMenu .weMenuLightRow_Focus TD, .weLtGrayMenu .weMenuLightRowChecked_Focus, .weLtGrayMenu .weMenuLightRowChecked_Focus TD, .weLtGrayMenu .weMenuLightRowGrayed_Focus, .weLtGrayMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#BABABA;
+  padding:2px 15px 2px 15px;
+}
+.weDkGray { background-color:#1F1F1F !important; }
+.weDkGrayText { color:#1F1F1F !important; }
+.weDkGrayDropDown .weDropDownLightRow_Focus, .weDkGrayDropDown .weDropDownLightRow_Focus TD, .weDkGrayDropDown .weDropDownLightRowChecked_Focus, .weDkGrayDropDown .weDropDownLightRowChecked_Focus TD, .weDkGrayDropDown .weDropDownLightRowGrayed_Focus, .weDkGrayDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#1F1F1F;
+  padding:2px 15px 2px 15px;
+}
+.weDkGrayListBox .weListBoxLightSelected, .weDkGrayListBox .weListBoxLightSelected TD {
+  background-color:#1F1F1F !important;
+  color:#FFFFFF;
+}
+.weDkGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weDkGrayMenuBar .weMenuBarLightButtonBtnChecked, .weDkGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weDkGrayCalendar .weCalendarLightNow {
+  color:#1F1F1F;
+  font-weight:bold;
+}
+.weDkGrayCalendar .weCalendarLightNow_Focus {
+  color:#1F1F1F;
+  font-weight:bold;
+}
+.weDkGrayCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weDkGrayCalendar .weCalendarLightDaySelected {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weDkGrayMenu .weMenuLightRow_Focus, .weDkGrayMenu .weMenuLightRow_Focus TD, .weDkGrayMenu .weMenuLightRowChecked_Focus, .weDkGrayMenu .weMenuLightRowChecked_Focus TD, .weDkGrayMenu .weMenuLightRowGrayed_Focus, .weDkGrayMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#1F1F1F;
+  padding:2px 15px 2px 15px;
+}
+.weMaroon { background-color:#B91D47 !important; }
+.weMaroonText { color:#B91D47 !important; }
+.weMaroonDropDown .weDropDownLightRow_Focus, .weMaroonDropDown .weDropDownLightRow_Focus TD, .weMaroonDropDown .weDropDownLightRowChecked_Focus, .weMaroonDropDown .weDropDownLightRowChecked_Focus TD, .weMaroonDropDown .weDropDownLightRowGrayed_Focus, .weMaroonDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#B91D47;
+  padding:2px 15px 2px 15px;
+}
+.weMaroonListBox .weListBoxLightSelected, .weMaroonListBox .weListBoxLightSelected TD {
+  background-color:#B91D47 !important;
+  color:#FFFFFF;
+}
+.weMaroonMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weMaroonMenuBar .weMenuBarLightButtonBtnChecked, .weMaroonMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#B91D47;
+  color:#FFFFFF;
+}
+.weMaroonCalendar .weCalendarLightNow {
+  color:#B91D47;
+  font-weight:bold;
+}
+.weMaroonCalendar .weCalendarLightNow_Focus {
+  color:#B91D47;
+  font-weight:bold;
+}
+.weMaroonCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#B91D47;
+  color:#FFFFFF;
+}
+.weMaroonCalendar .weCalendarLightDaySelected {
+  background-color:#B91D47;
+  color:#FFFFFF;
+}
+.weMaroonMenu .weMenuLightRow_Focus, .weMaroonMenu .weMenuLightRow_Focus TD, .weMaroonMenu .weMenuLightRowChecked_Focus, .weMaroonMenu .weMenuLightRowChecked_Focus TD, .weMaroonMenu .weMenuLightRowGrayed_Focus, .weMaroonMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#B91D47;
+  padding:2px 15px 2px 15px;
+}
+.weLtBlue { background-color:#2D89EF !important; }
+.weLtBlueText { color:#2D89EF !important; }
+.weLtBlueDropDown .weDropDownLightRow_Focus, .weLtBlueDropDown .weDropDownLightRow_Focus TD, .weLtBlueDropDown .weDropDownLightRowChecked_Focus, .weLtBlueDropDown .weDropDownLightRowChecked_Focus TD, .weLtBlueDropDown .weDropDownLightRowGrayed_Focus, .weLtBlueDropDown .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#2D89EF;
+  padding:2px 15px 2px 15px;
+}
+.weLtBlueListBox .weListBoxLightSelected, .weLtBlueListBox .weListBoxLightSelected TD {
+  background-color:#2D89EF !important;
+  color:#FFFFFF;
+}
+.weLtBlueMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weLtBlueMenuBar .weMenuBarLightButtonBtnChecked, .weLtBlueMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#2D89EF;
+  color:#FFFFFF;
+}
+.weLtBlueCalendar .weCalendarLightNow {
+  color:#2D89EF;
+  font-weight:bold;
+}
+.weLtBlueCalendar .weCalendarLightNow_Focus {
+  color:#2D89EF;
+  font-weight:bold;
+}
+.weLtBlueCalendar .weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#2D89EF;
+  color:#FFFFFF;
+}
+.weLtBlueCalendar .weCalendarLightDaySelected {
+  background-color:#2D89EF;
+  color:#FFFFFF;
+}
+.weLtBlueMenu .weMenuLightRow_Focus, .weLtBlueMenu .weMenuLightRow_Focus TD, .weLtBlueMenu .weMenuLightRowChecked_Focus, .weLtBlueMenu .weMenuLightRowChecked_Focus TD, .weLtBlueMenu .weMenuLightRowGrayed_Focus, .weLtBlueMenu .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#2D89EF;
+  padding:2px 15px 2px 15px;
+}
+.wePanel { background-color:inherit; }
+.weTextLight, .weCheckBoxLight, .weRadioLight, .weEditLight, .weToolBarLight, .wePagesLight, .wePgListLight, .weCalendarLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+}
+.weTextDark, .weCheckBoxDark, .weRadioDark, .wePagesDark, .wePgListDark, .weCalendarDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+}
+.weTextLightTextDisabled, .weTextDarkTextDisabled { color:#BABABA; }
+.weSmallTextLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:10px;
+  color:#1F1F1F;
+}
+.weSmallTextDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:10px;
+  color:#FFFFFF;
+}
+.weSmallTextLightTextDisabled, .weSmallTextDarkTextDisabled { color:#BABABA; }
+.weCaptionLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#1F1F1F;
+}
+.weCaptionDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#FFFFFF;
+}
+.weCaptionLightBtnChecked, .weCaptionLightBtnChecked_Focus, .weCaptionDarkBtnChecked, .weCaptionDarkBtnChecked_Focus { font-weight:bold; }
+.weCaptionLightBtnGrayed, .weCaptionLightBtnGrayed_Focus, .weCaptionLightBtnDisabled, .weCaptionLightBtnDisabled_Focus, .weCaptionDarkBtnGrayed, .weCaptionDarkBtnGrayed_Focus, .weCaptionDarkBtnDisabled, .weCaptionDarkBtnDisabled_Focus { color:#BABABA; }
+.weTitleLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:42px;
+  color:#1F1F1F;
+}
+.weTitleDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  color:#FFFFFF;
+  font-size:42px;
+}
+.weTitleLightBtnChecked, .weTitleLightBtnChecked_Focus, .weTitleDarkBtnChecked, .weTitleDarkBtnChecked_Focus { font-weight:bold; }
+.weTitleLightBtnGrayed, .weTitleLightBtnGrayed_Focus, .weTitleLightBtnDisabled, .weTitleLightBtnDisabled_Focus, .weTitleDarkBtnGrayed, .weTitleDarkBtnGrayed_Focus, .weTitleDarkBtnDisabled, .weTitleDarkBtnDisabled_Focus { color:#BABABA; }
+.weGroupBoxLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weGroupBoxDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weGroupBoxLightControlsPanel {
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weGroupBoxDarkControlsPanel {
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weGroupBoxLightCaption, .weGroupBoxDarkCaption {
+  white-space:nowrap;
+  cursor:default;
+}
+.weGroupBoxLightCaptionDisabled, .weGroupBoxDarkCaptionDisabled {
+  color:#BABABA;
+  white-space:nowrap;
+  cursor:default;
+}
+.weCheckBoxLightBtnDisabled, .weCheckBoxLightBtnDisabled_Focus, .weCheckBoxDarkBtnDisabled, .weCheckBoxDarkBtnDisabled_Focus { color:#BABABA; }
+.weRadioLightBtnDisabled, .weRadioLightBtnDisabled_Focus, .weRadioDarkBtnDisabled, .weRadioDarkBtnDisabled_Focus { color:#BABABA; }
+.weToggleSwitchLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  background-color:#1F1F1F;
+  margin:7px 0px 6px 0px;
+}
+.weToggleSwitchDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  margin:7px 0px 6px 0px;
+}
+.weButtonLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  line-height:32px;
+  background-color:#CCCCCC;
+}
+.weButtonLightText {
+  margin-left:15px;
+  margin-right:15px;
+}
+.weButtonLightBtnChecked, .weButtonLightBtnChecked_Focus { color:#FFFFFF; }
+.weButtonLightBtnDisabled, .weButtonLightBtnDisabled_Focus { color:#BABABA; }
+.weButtonDefaultLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  line-height:32px;
+  background-color:#CCCCCC;
+}
+.weButtonDefaultLightText {
+  margin-left:15px;
+  margin-right:15px;
+  font-weight:bold;
+}
+.weButtonDefaultLightBtnChecked, .weButtonDefaultLightBtnChecked_Focus { color:#FFFFFF; }
+.weButtonDefaultLightBtnDisabled, .weButtonDefaultLightBtnDisabled_Focus { color:#BABABA; }
+.weButtonDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.weButtonDarkText {
+  margin-left:13px;
+  margin-right:13px;
+}
+.weButtonDarkBtnChecked, .weButtonDarkBtnChecked_Focus { color:#1F1F1F; }
+.weButtonDarkBtnDisabled, .weButtonDarkBtnDisabled_Focus { color:#BABABA; }
+.weButtonDefaultDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.weButtonDefaultDarkText {
+  margin-left:13px;
+  margin-right:13px;
+  font-weight:bold;
+}
+.weButtonDefaultDarkBtnChecked, .weButtonDefaultDarkBtnChecked_Focus {
+  background-color:#FFFFFF;
+  color:#1F1F1F;
+}
+.weButtonDefaultDarkBtnDisabled, .weButtonDefaultDarkBtnDisabled_Focus { color:#BABABA; }
+.weAppButtonLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#1F1F1F;
+  line-height:32px;
+}
+.weAppButtonDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.weAppButtonLightBtnChecked, .weAppButtonLightBtnChecked_Focus { color:#FFFFFF; }
+.weAppButtonDarkBtnChecked, .weAppButtonDarkBtnChecked_Focus { color:#1F1F1F; }
+.weAppButtonLightBtnDisabled, .weAppButtonLightBtnDisabled_Focus, .weAppButtonDarkBtnDisabled, .weAppButtonDarkBtnDisabled_Focus { color:#BABABA; }
+.weLinkLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  line-height:32px;
+}
+.weLinkDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.weLinkLightBtn_Focus, .weLinkDarkBtn_Focus { text-decoration:underline; }
+.weLinkLightBtnGrayed, .weLinkDarkBtnGrayed { color:#BABABA; }
+.weLinkLightBtnGrayed_Focus, .weLinkDarkBtnGrayed_Focus {
+  text-decoration:underline;
+  color:#BABABA;
+}
+.weLinkLightBtnChecked, .weLinkDarkBtnChecked { font-weight:bold; }
+.weLinkLightBtnChecked_Focus, .weLinkDarkBtnChecked_Focus {
+  text-decoration:underline;
+  font-weight:bold;
+}
+.weLinkLightBtnDisabled, .weLinkLightBtnDisabled_Focus, .weLinkDarkBtnDisabled, .weLinkDarkBtnDisabled_Focus { color:#BABABA; }
+.weLabelLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  line-height:32px;
+}
+.weLabelDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.weLabelLightBtnChecked, .weLabelLightBtnChecked_Focus, .weLabelDarkBtnChecked, .weLabelDarkBtnChecked_Focus { font-weight:bold; }
+.weLabelLightBtnGrayed, .weLabelLightBtnGrayed_Focus, .weLabelLightBtnDisabled, .weLabelLightBtnDisabled_Focus, .weLabelDarkBtnGrayed, .weLabelDarkBtnGrayed_Focus, .weLabelDarkBtnDisabled, .weLabelDarkBtnDisabled_Focus { color:#BABABA; }
+.weEditDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  background-color:#FFFFFF;
+}
+.weEditLightInput, .weEditLightInput_Focus, .weEditDarkInput, .weEditDarkInput_Focus {
+  padding:0;
+  margin-top:7px;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+}
+.weEditLightInputDisabled, .weEditLightInputDisabled_Focus, .weEditLightInputHint, .weEditLightInputHint_Focus, .weEditLightInputHintDisabled, .weEditLightInputHintDisabled_Focus, .weEditDarkInputDisabled, .weEditDarkInputDisabled_Focus, .weEditDarkInputHint, .weEditDarkInputHint_Focus, .weEditDarkInputHintDisabled, .weEditDarkInputHintDisabled_Focus {
+  padding:0;
+  margin-top:7px;
+  font-size:15px;
+  color:#BABABA;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+}
+.weMemoLight, .weMemoDark { background-color:#FFFFFF; }
+.weMemoLightInput, .weMemoDarkInput {
+  font-size:15px;
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  resize:none;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-appearance:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+}
+.weMemoLightInput_Focus, .weMemoDarkInput_Focus {
+  font-size:15px;
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  resize:none;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-appearance:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+  background-color:#E8E8E8;
+}
+.weMemoLightFocus .weMemoLightInput_Focus, .weMemoDarkFocus .weMemoDarkInput_Focus, .weMemoLightFocus .weMemoLightInputHint_Focus, .weMemoDarkFocus .weMemoDarkInputHint_Focus {
+  font-size:15px;
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  resize:none;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-appearance:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+  background-color:#FFFFFF !important;
+}
+.weMemoLightInputHint, .weMemoDarkInputHint {
+  font-size:15px;
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  color:#BABABA;
+  resize:none;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+}
+.weMemoLightInputHint_Focus, .weMemoDarkInputHint_Focus {
+  font-size:15px;
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  color:#BABABA;
+  resize:none;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+  background-color:#E8E8E8;
+}
+.weMemoLightInputDisabled, .weMemoLightInputDisabled_Focus, .weMemoLightInputHintDisabled, .weMemoLightInputHintDisabled_Focus, .weMemoDarkInputDisabled, .weMemoDarkInputDisabled_Focus, .weMemoDarkInputHintDisabled, .weMemoDarkInputHintDisabled_Focus {
+  font-size:15px;
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  color:#BABABA;
+  resize:none;
+  -moz-outline:0px;
+  outline:none;
+  -webkit-border-radius:0;
+  border-radius:0;
+  background:transparent;
+  background-color:#EAEAEA;
+}
+.wePagesLightControlsPanels, .wePagesDarkControlsPanels {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+}
+.wePagesDarkPageText {
+  padding-left:15px;
+  padding-right:15px;
+}
+.wePagesDarkPageSelected_Focus .wePagesDarkPageText  
+.wePagesDarkPageSelected .wePagesDarkPageText { color:#1F1F1F; }
+.wePagesDarkPage_Focus .wePagesDarkPageText, .wePagesDarkPage .wePagesDarkPageText { color:#FFFFFF; }
+.wePagesLightPage_Focus .wePagesLightPageText, .wePagesLightPage .wePagesLightPageText { color:#1F1F1F; }
+.wePagesLightPageDisabled .wePagesLightPageText, .wePagesLightPageDisabled_Focus .wePagesLightPageText, .wePagesDarkPageDisabled .wePagesDarkPageText, .wePagesDarkPageDisabled_Focus .wePagesDarkPageText { color:#BABABA; }
+.weSectionsLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weSectionsDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weSectionsLightControlsPanels {
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weSectionsDarkControlsPanels {
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weSectionsLightPageText, .weSectionsDarkPageText {
+  padding-left:15px;
+  padding-right:15px;
+}
+.weSectionsDarkSectionselected_Focus .weSectionsDarkPageText, .weSectionsDarkSectionselected .weSectionsDarkPageText { color:#1F1F1F; }
+.weSectionsDarkPage_Focus .weSectionsDarkPageText {
+  color:#FFFFFF;
+  text-decoration:underline;
+}
+.weSectionsDarkPage .weSectionsDarkPageText { color:#FFFFFF; }
+.weSectionsLightPage_Focus .weSectionsLightPageText {
+  color:#1F1F1F;
+  text-decoration:underline;
+}
+.weSectionsLightPage .weSectionsLightPageText { color:#1F1F1F; }
+.weSectionsLightPageDisabled .weSectionsLightPageText, .weSectionsLightPageDisabled_Focus .weSectionsLightPageText, .weSectionsDarkPageDisabled .weSectionsDarkPageText, .weSectionsDarkPageDisabled_Focus .weSectionsDarkPageText { color:#BABABA; }
+.weSplitPanelLight, .weSplitPanelLightControlsPanel {
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weSplitPanelDark, .weSplitPanelDarkControlsPanel {
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weSplitPanelLightMover {
+  background-color:#000000;
+  opacity:0.25;
+  -moz-opacity:0.25;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=25);
+}
+.weSplitPanelDarkMover {
+  background-color:#FFFFFF;
+  opacity:0.25;
+  -moz-opacity:0.25;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=25);
+}
+.weDropPanelLight {
+  background-color:#FFFFFF;
+  z-index:1000;
+}
+.weDropPanelDark {
+  background-color:#1F1F1F;
+  z-index:1000;
+}
+.weListBoxLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weListBoxDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weListBoxLightText, .weListBoxDarkText {
+  line-height:34px;
+  cursor:default;
+}
+.weListBoxLightCaption {
+  font-size:20px;
+  padding:2px 15px 2px 15px;
+  cursor:default;
+}
+.weListBoxDarkCaption {
+  font-size:20px;
+  padding:2px 15px 2px 15px;
+  cursor:default;
+}
+.weListBoxLightHeader, .weListBoxDarkHeader { padding-bottom:2px; }
+.weListBoxLightHeader THEAD TD {
+  line-height:34px;
+  vertical-align:top;
+  background-color:inherit;
+  border-bottom:1px solid #1F1F1F;
+  padding-bottom:0px !important;
+}
+.weListBoxLight THEAD TD {
+  line-height:34px;
+  vertical-align:top;
+  background-color:inherit;
+  border-bottom:1px solid #1F1F1F;
+  padding-bottom:0px !important;
+}
+.weListBoxDark THEAD TD {
+  line-height:34px;
+  vertical-align:top;
+  background-color:inherit;
+  border-bottom:1px solid #FFFFFF;
+  padding-bottom:2px;
+}
+.weListBoxLightDisabled THEAD TD, .weListBoxDarkDisabled THEAD TD {
+  line-height:34px;
+  vertical-align:top;
+  background-color:inherit;
+  color:#BABABA !important;
+  border-bottom:1px solid #BABABA !important;
+  padding-bottom:2px;
+}
+.weListBoxLightSelected {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weListBoxDarkSelected, .weListBoxDarkSelected TD {
+  background-color:#FFFFFF !important;
+  color:#1F1F1F !important;
+}
+.weListBoxLightRow, .weListBoxLightRow TD, .weListBoxLightRowChecked, .weListBoxLightRowChecked TD, .weListBoxLightRowGrayed, .weListBoxLightRowGrayed TD, .weListBoxDarkRow, .weListBoxDarkRow TD, .weListBoxDarkRowChecked, .weListBoxDarkRowChecked TD, .weListBoxDarkRowGrayed, .weListBoxDarkRowGrayed TD { padding:2px 15px 2px 15px; }
+.weListBoxLightRow_Focus, .weListBoxLightRowChecked_Focus, .weListBoxLightRowGrayed_Focus, .weListBoxLightRow_Focus TD, .weListBoxLightRowChecked_Focus TD, .weListBoxLightRowGrayed_Focus TD {
+  padding:2px 15px 2px 15px;
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+}
+.weListBoxDarkRow_Focus, .weListBoxDarkRowChecked_Focus, .weListBoxDarkRowGrayed_Focus, .weListBoxDarkRow_Focus TD, .weListBoxDarkRowChecked_Focus TD, .weListBoxDarkRowGrayed_Focus TD {
+  padding:2px 15px 2px 15px;
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+}
+.weListBoxLightRowDisabled, .weListBoxLightRowDisabled TD, .weListBoxLightRowDisabled_Focus, .weListBoxLightRowDisabled_Focus TD, .weListBoxDarkRowDisabled, .weListBoxDarkRowDisabled TD, .weListBoxDarkRowDisabled_Focus, .weListBoxDarkRowDisabled_Focus TD {
+  color:#BABABA;
+  padding:2px 15px 2px 15px;
+}
+.weTextListBoxLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weTextListBoxDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weTextListBoxLightCaption, .weTextListBoxDarkCaption {
+  font-size:20px;
+  padding:2px 0px 2px 0px;
+  border-bottom:1px solid #CBC7B8;
+}
+.weTextListBoxLight THEAD TD, .weTextListBoxDark THEAD TD {
+  line-height:34px;
+  vertical-align:top;
+  background-color:inherit;
+  padding-bottom:2px;
+}
+.weTextListBoxLightSelected {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weTextListBoxDarkSelected {
+  background-color:#FFFFFF;
+  color:#1F1F1F;
+}
+.weTextListBoxLightRow, .weTextListBoxLightRow TD, .weTextListBoxLightRowChecked, .weTextListBoxLightRowChecked TD, .weTextListBoxLightRowGrayed, .weTextListBoxLightRowGrayed TD, .weTextListBoxDarkRow, .weTextListBoxDarkRow TD, .weTextListBoxDarkRowChecked, .weTextListBoxDarkRowChecked TD, .weTextListBoxDarkRowGrayed, .weTextListBoxDarkRowGrayed TD { padding:2px 0px 2px 0px; }
+.weTextListBoxLightRow_Focus, .weTextListBoxLightRow_Focus TD, .weTextListBoxLightRowChecked_Focus, .weTextListBoxLightRowChecked_Focus TD, .weTextListBoxLightRowGrayed_Focus, .weTextListBoxLightRowGrayed_Focus TD, .weTextListBoxDarkRow_Focus, .weTextListBoxDarkRow_Focus TD, .weTextListBoxDarkRowChecked_Focus, .weTextListBoxDarkRowChecked_Focus TD, .weTextListBoxDarkRowGrayed_Focus, .weTextListBoxDarkRowGrayed_Focus TD { padding:2px 0px 2px 0px; }
+.weTextListBoxLightRowDisabled, .weTextListBoxLightRowDisabled TD, .weTextListBoxLightRowDisabled_Focus, .weTextListBoxLightRowDisabled_Focus TD, .weTextListBoxDarkRowDisabled, .weTextListBoxDarkRowDisabled TD, .weTextListBoxDarkRowDisabled_Focus, .weTextListBoxDarkRowDisabled_Focus TD {
+  color:#BABABA;
+  padding:2px 0px 2px 0px;
+}
+.weDropDownLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+  border:2px solid #1F1F1F;
+}
+.weDropDownDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#FFFFFF;
+  background-color:inherit;
+  border:2px solid #FFFFFF;
+}
+.weDropDownLightDisabled, .weDropDownDarkDisabled { border:2px solid #BABABA; }
+.weDropDownLightText, .weDropDownDarkText {
+  padding-left:4px;
+  line-height:34px;
+  cursor:default;
+}
+.weDropDownLightCaption, .weDropDownDarkCaption {
+  font-size:20px;
+  padding:2px 0px 2px 0px;
+  border-bottom:1px solid #CBC7B8;
+  cursor:default;
+}
+.weDropDownLight THEAD TD, .weDropDownDark THEAD TD {
+  line-height:34px;
+  vertical-align:top;
+  background-color:inherit;
+  padding-bottom:2px;
+}
+.weDropDownLightSelected, .weDropDownDarkSelected {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weDropDownLightRow, .weDropDownLightRow TD, .weDropDownLightRowChecked, .weDropDownLightRowChecked TD, .weDropDownLightRowGrayed, .weDropDownLightRowGrayed TD, .weDropDownDarkRow, .weDropDownDarkRow TD, .weDropDownDarkRowChecked, .weDropDownDarkRowChecked TD, .weDropDownDarkRowGrayed, .weDropDownDarkRowGrayed TD { padding:2px 15px 2px 15px; }
+.weDropDownLightRow_Focus, .weDropDownLightRow_Focus TD, .weDropDownLightRowChecked_Focus, .weDropDownLightRowChecked_Focus TD, .weDropDownLightRowGrayed_Focus, .weDropDownLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#E8E8E8;
+  padding:2px 15px 2px 15px;
+}
+.weDropDownDarkRow_Focus, .weDropDownDarkRow_Focus TD, .weDropDownDarkRowChecked_Focus, .weDropDownDarkRowChecked_Focus TD, .weDropDownDarkRowGrayed_Focus, .weDropDownDarkRowGrayed_Focus TD {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+  padding:2px 15px 2px 15px;
+}
+.weDropDownLightRowDisabled, .weDropDownLightRowDisabled TD, .weDropDownLightRowDisabled_Focus, .weDropDownLightRowDisabled_Focus TD, .weDropDownDarkRowDisabled, .weDropDownDarkRowDisabled TD, .weDropDownDarkRowDisabled_Focus, .weDropDownDarkRowDisabled_Focus TD {
+  color:#BABABA;
+  padding:2px 15px 2px 15px;
+}
+.wePageListLight, .wePageListDark { background-color:inherit; }
+.wePageListPagingLight, .wePageListPagingDark { margin-top:4px; }
+.wePageButtonLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  line-height:32px;
+  background-color:#CCCCCC;
+}
+.wePageButtonLightText {
+  margin-left:12px;
+  margin-right:12px;
+}
+.wePageButtonLightBtnChecked, .wePageButtonLightBtnChecked_Focus {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.wePageButtonLightBtnDisabled, .wePageButtonLightBtnDisabled_Focus { color:#BABABA; }
+.wePageButtonDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.wePageButtonDarkText {
+  margin-left:10px;
+  margin-right:10px;
+}
+.wePageButtonDarkBtnChecked, .wePageButtonDarkBtnChecked_Focus {
+  background-color:#FFFFFF;
+  color:#1F1F1F;
+}
+.wePageButtonDarkBtnDisabled, .wePageButtonDarkBtnDisabled_Focus { color:#BABABA; }
+.weProgressBar {
+  background-color:#BABABA;
+  font-size:1px;
+  line-height:1px;
+  height:6px;
+}
+.weWindowLight, .weWindowDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+}
+.weWindowLightButton, .weWindowDarkButton {
+  margin-left:34px;
+  margin-top:-7px;
+}
+.weWindowLightCaption {
+  font-size:20px;
+  white-space:nowrap;
+  padding-top:6px;
+  z-index:1;
+}
+.weWindowDarkCaption {
+  color:#FFFFFF;
+  font-size:20px;
+  white-space:nowrap;
+  padding-top:6px;
+  z-index:1;
+}
+.weWindowLightControlsPanel {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+}
+.weWindowDarkControlsPanel {
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weWindowLightFence { border:4px dotted #1F1F1F; }
+.weWindowDarkFence { border:4px dotted #FFFFFF; }
+.ngModalCurtain {
+  background-color:#1F1F1F;
+  opacity:0.5;
+  -moz-opacity:0.5;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+}
+.weDialogLight, .weDialogDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+}
+.weDialogLightButton, .weDialogDarkButton {
+  margin-left:34px;
+  margin-top:-7px;
+}
+.weDialogLightCaption {
+  font-size:20px;
+  white-space:nowrap;
+  padding-top:6px;
+  z-index:1;
+}
+.weDialogDarkCaption {
+  color:#FFFFFF;
+  font-size:20px;
+  white-space:nowrap;
+  padding-top:6px;
+  z-index:1;
+}
+.weDialogLightControlsPanel {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+}
+.weDialogDarkControlsPanel {
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weDialogLightFence { border:4px dotted #1F1F1f F; }
+.weDialogDarkFence { border:4px dotted #FFFFFF; }
+.weHint {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  z-index:1000;
+}
+.weHintControlsPanel {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+}
+.weTextHint {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  z-index:1000;
+}
+.weTextHintControlsPanel {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+}
+.weAboutMessageLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+}
+.weAboutMessageDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+}
+.weAboutMessageLight B, .weAboutMessageDark B {
+  font-size:20px;
+  font-weight:normal;
+}
+.weAboutMessageLight I, .weAboutMessageDark I {
+  font-size:15px;
+  font-style:normal;
+}
+.weAboutListText B {
+  font-size:15px;
+  font-weight:normal;
+  text-decoration:underline;
+  cursor:pointer;
+}
+.weCalendarLight TD, .weCalendarDark TD {
+  width:25px;
+  height:21px;
+  line-height:21px;
+}
+.weCalendarLightHeader, .weCalendarDarkHeader { margin-bottom:5px; }
+.weCalBtn {
+  margin-top:5px;
+  margin-right:5px;
+}
+.weCalendarLightMonth, .weCalendarDarkMonth {
+  text-align:center;
+  line-height:32px;
+  font-size:20px;
+  cursor:default;
+}
+.weCalendarLightMonthDisabled, .weCalendarDarkMonthDisabled {
+  color:#BABABA;
+  text-align:center;
+  line-height:32px;
+  font-size:20px;
+  cursor:default;
+}
+.weCalendarLightYear, .weCalendarDarkYear {
+  text-align:center;
+  line-height:13px;
+  font-size:10px;
+  cursor:default;
+}
+.weCalendarLightYearDisabled, .weCalendarDarkYearDisabled {
+  color:#BABABA;
+  text-align:center;
+  line-height:13px;
+  font-size:10px;
+  cursor:default;
+}
+.weCalendarLightWeekDays {
+  color:#1F1F1F;
+  border-bottom:1px solid #1F1F1F;
+  cursor:default;
+  font-weight:bold;
+  z-index:200;
+  position:relative;
+  width:33px;
+  height:32px;
+  text-align:center;
+  line-height:32px;
+  font-size:10px;
+  text-transform:uppercase;
+}
+.weCalendarDarkWeekDays {
+  color:#FFFFFF;
+  border-bottom:1px solid #FFFFFF;
+  cursor:default;
+  font-weight:bold;
+  z-index:200;
+  position:relative;
+  width:33px;
+  height:32px;
+  text-align:center;
+  line-height:32px;
+  font-size:10px;
+  text-transform:uppercase;
+}
+.weCalendarLightWeekDayDisabled, .weCalendarDarkWeekDayDisabled { color:#BABABA; }
+.weCalendarLightWeekDayDisabled, .weCalendarDarkWeekDayHiliteDisabled {
+  color:#BABABA;
+  border-bottom:1px solid #BABABA;
+}
+.weCalendarLightDays {
+  z-index:200;
+  color:#1F1F1F;
+  position:relative;
+  width:33px;
+  height:32px;
+  text-align:center;
+  line-height:33px;
+  -moz-user-select:none;
+}
+.weCalendarDarkDays {
+  z-index:200;
+  color:#FFFFFF;
+  position:relative;
+  width:33px;
+  height:32px;
+  text-align:center;
+  line-height:33px;
+  -moz-user-select:none;
+}
+.weCalendarLightNow {
+  color:#1F1F1F;
+  font-weight:bold;
+}
+.weCalendarLightNow_Focus {
+  color:#1F1F1F;
+  font-weight:bold;
+}
+.weCalendarDarkNow, .weCalendarDarkNow_Focus {
+  color:#FFFFFF;
+  font-weight:bold;
+}
+.weCalendarLightNowSelected {
+  font-weight:bold;
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weCalendarLightDaySelected {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weCalendarDarkNowSelected {
+  font-weight:bold;
+  background-color:#FFFFFF;
+  color:#1F1F1F;
+}
+.weCalendarDarkDaySelected {
+  background-color:#FFFFFF;
+  color:#1F1F1F;
+}
+.weCalendarLightDaySelected_Focus {
+  background-color:#A0A0A0;
+  color:#FFFFFF;
+}
+.weCalendarLightNowSelected_Focus {
+  background-color:#A0A0A0;
+  font-weight:bold;
+  color:#FFFFFF;
+}
+.weCalendarDarkNowSelected_Focus {
+  background-color:#C7C7C7;
+  font-weight:bold;
+  color:#1F1F1F;
+}
+.weCalendarDarkDaySelected_Focus {
+  background-color:#C7C7C7;
+  color:#1F1F1F;
+}
+.weCalendarLightDayDisabled, .weCalendarLightDaySelectedDisabled, .weCalendarLightDayDisabled_Focus, .weCalendarLightDaySelectedDisabled_Focus, .weCalendarDarkDayDisabled, .weCalendarDarkDaySelectedDisabled, .weCalendarDarkDayDisabled_Focus, .weCalendarDarkDaySelectedDisabled_Focus { color:#BABABA; }
+.weCalendarLightNowDisabled, .weCalendarLightNowDisabled_Focus, .weCalendarLightNowSelectedDisabled, .weCalendarLightNowSelectedDisabled_Focus, .weCalendarDarkNowDisabled, .weCalendarDarkNowDisabled_Focus, .weCalendarDarkNowSelectedDisabled, .weCalendarDarkNowSelectedDisabled_Focus {
+  font-weight:bold;
+  color:#BABABA;
+}
+.weMenuLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  border:2px solid #1F1F1F;
+  -moz-outline:0px;
+  outline:none;
+  color:#1F1F1F;
+  padding-top:6px;
+  padding-bottom:6px;
+  background-color:#FFFFFF;
+}
+.weMenuDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  border:2px solid #FFFFFF;
+  -moz-outline:0px;
+  outline:none;
+  color:#FFFFFF;
+  padding-top:6px;
+  padding-bottom:6px;
+  background-color:inherit;
+}
+.weMenuLightText, .weMenuDarkText {
+  padding-left:4px;
+  line-height:34px;
+  cursor:default;
+}
+.weMenuLightSeparator {
+  border-top:1px solid #1F1F1F;
+  margin:10px 15px 10px 15px;
+  line-height:0px;
+  font-size:0px;
+}
+.weMenuDarkSeparator {
+  border-top:1px solid #FFFFFF;
+  margin:10px 15px 10px 15px;
+  line-height:0px;
+  font-size:0px;
+}
+TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
+.weMenuLightSubMenu, .weMenuDarkSubMenu {
+  position:absolute;
+  top:0px;
+  right:-8px;
+  _right:1px;
+}
+.weMenuLightSeparator HR, .weMenuDarkSeparator HR {
+  height:0px;
+  line-height:2px;
+  width:100%;
+}
+.weMenuLightCaption, .weMenuDarkCaption { padding-left:5px; }
+.weMenuLight THEAD TD {
+  background-color:#EBEADB;
+  line-height:34px;
+  vertical-align:top;
+  border-bottom:1px solid #CBC7B8;
+}
+.weMenuDark THEAD TD {
+  background-color:#EBEADB;
+  line-height:34px;
+  vertical-align:top;
+  border-bottom:1px solid #CBC7B8;
+}
+.weMenuLightSelected {
+  background-color:#CCCCCC;
+  color:#1F1F1F;
+}
+.weMenuDarkSelected {
+  background-color:#C7C7C7;
+  color:#FFFFFF;
+}
+.weMenuLightRow, .weMenuLightRow TD, .weMenuLightRowChecked, .weMenuLightRowChecked TD, .weMenuLightRowGrayed, .weMenuLightRowGrayed TD, .weMenuDarkRow, .weMenuDarkRow TD, .weMenuDarkRowChecked, .weMenuDarkRowChecked TD, .weMenuDarkRowGrayed, .weMenuDarkRowGrayed TD { padding:2px 15px 2px 15px; }
+.weMenuLightRow_Focus, .weMenuLightRow_Focus TD, .weMenuLightRowChecked_Focus, .weMenuLightRowChecked_Focus TD, .weMenuLightRowGrayed_Focus, .weMenuLightRowGrayed_Focus TD {
+  color:#FFFFFF;
+  background-color:#E8E8E8;
+  padding:2px 15px 2px 15px;
+}
+.weMenuDarkRow_Focus, .weMenuDarkRow_Focus TD, .weMenuDarkRowChecked_Focus, .weMenuDarkRowChecked_Focus TD, .weMenuDarkRowGrayed_Focus, .weMenuDarkRowGrayed_Focus TD {
+  color:#1F1F1F;
+  background-color:#FFFFFF;
+  padding:2px 15px 2px 15px;
+}
+.weMenuLightRowDisabled, .weMenuLightRowDisabled TD, .weMenuLightRowDisabled_Focus, .weMenuLightRowDisabled_Focus TD, .weMenuDarkRowDisabled, .weMenuDarkRowDisabled TD, .weMenuDarkRowDisabled_Focus, .weMenuDarkRowDisabled_Focus TD {
+  color:#BABABA;
+  padding:2px 15px 2px 15px;
+}
+.weMenuBarLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#1F1F1F;
+}
+.weMenuBarDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:20px;
+  color:#FFFFFF;
+}
+.weMenuBarLightButtonText, .weMenuBarDarkButtonText {
+  line-height:32px;
+  padding-left:15px;
+  padding-right:15px;
+  cursor:default;
+}
+.weMenuBarLightButtonBtnGrayed, .weMenuBarLightButtonBtnGrayed_Focus .weMenuBarLightButtonText, .weMenuBarDarkButtonBtnGrayed, .weMenuBarDarkButtonBtnGrayed_Focus .weMenuBarDarkButtonText { color:#a0a0a0; }
+.weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weMenuBarLightButtonBtnChecked, .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weMenuBarDarkButtonBtn_Focus .weMenuBarDarkButtonText, .weMenuBarDarkButtonBtnChecked, .weMenuBarDarkButtonBtnChecked_Focus .weMenuBarDarkButtonText {
+  background-color:#FFFFFF;
+  color:#1F1F1F;
+}
+.weMenuBarLightButtonBtnDisabled, .weMenuBarLightButtonBtnDisabled_Focus, .weMenuBarDarkButtonBtnDisabled, .weMenuBarDarkButtonBtnDisabled_Focus { color:#BABABA; }
+.weSplitButtonLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  line-height:32px;
+  background-color:#CCCCCC;
+}
+.weSplitButtonLightText {
+  margin-left:15px;
+  margin-right:42px;
+}
+.weSplitButtonLightBtnChecked, .weSplitButtonLightBtnChecked_Focus { color:#FFFFFF; }
+.weSplitButtonLightBtnDisabled, .weSplitButtonLightBtnDisabled_Focus { color:#BABABA; }
+.weSplitButtonDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  line-height:32px;
+}
+.weSplitButtonDarkText {
+  margin-left:13px;
+  margin-right:42px;
+}
+.weSplitButtonDarkBtnChecked, .weSplitButtonDarkBtnChecked_Focus { color:#1F1F1F; }
+.weSplitButtonDarkBtnDisabled, .weSplitButtonDarkBtnDisabled_Focus { color:#BABABA; }
