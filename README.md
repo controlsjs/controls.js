@@ -59,3 +59,9 @@ If you prefer to re-build it from sources perform the following steps:
      `grunt`
 
    Now you'll find the built files in 'build\' directory.
+
+
+================================================================================
+
+*Copyright &copy; Position s.r.o. All rights reserved.*
+
