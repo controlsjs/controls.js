@@ -2974,31 +2974,26 @@ var WinEightControls = {
           Controls: {
             New: {
               Type: 'weButton',
-              Theme: th,
-              W: 60
+              Theme: th
             },
             Delete: {
               Type: 'weButton',
               Theme: th,
-              W: 60,
               Data: {
                 ToolBarHPadding: 20
               }
             },
             Insert: {
               Type: 'weButton',
-              Theme: th,
-              W: 60
+              Theme: th
             },
             Update: {
               Type: 'weButton',
-              Theme: th,
-              W: 60
+              Theme: th
             },
             Cancel: {
               Type: 'weButton',
-              Theme: th,
-              W: 60
+              Theme: th
             }
           }
         });
