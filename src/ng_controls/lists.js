@@ -1,4 +1,4 @@
-// $Id: lists.js 6357 2014-04-11 21:33:13Z tulach $
+// $Id: lists.js 6361 2014-04-14 11:10:11Z tulach $
 //
 // Copyright (c) 2008-2014  Position s.r.o.
 // All rights reserved.
@@ -2639,7 +2639,7 @@ function ngl_UpdateColumns()
   var hdr=document.getElementById(this.ID+'_TH');
   if(!hdr) return;
 
-  ng_SetClientWidth(hdr,ng_ClientWidth(tb.firstChild.firstChild));
+  ng_SetClientWidth(hdr,ng_ClientWidth(tb));
   ng_SetClientWidth(fhdr,ng_ClientWidth(cb));
   var origf=tb.firstChild.firstChild.firstChild;
   var newf=fhdr.firstChild.firstChild.firstChild.firstChild;
