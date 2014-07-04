@@ -9,7 +9,7 @@ from JavaScript, and the propagation of web based Operating Systems.
 
 - **Latest stable release:** [Download 5.0.0](http://controlsjs.com/#DOWNLOADS)
 | [On-line Documentation](http://controlsjs.com/docs/5.0.0/)
-- **Development snapshot:** [Download 5.0.x](https://github.com/controlsjs/test/archive/master.zip)
+- **Development snapshot:** [Download 5.0.x](https://github.com/controlsjs/controls.js/archive/master.zip)
 
 For more details, see Controls.js website:
 http://controlsjs.com
