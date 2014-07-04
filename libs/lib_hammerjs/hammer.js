@@ -616,17 +616,24 @@ var Event = Hammer.event = {
       }
 
       // mouse isn't pressed
-      else if(((isMouse && !mouseBtn) || (isPointer && Utils.inStr(srcEventType, 'move') && ev.pressure==0 && PointerEvent.matchType(POINTER_MOUSE, ev) ))) {        
-        if(last_move_event) { 
-          // IE>=9 does not firing end events on scrollbars, 
-          // simulate end event when move occured without button down
-          et = EVENT_END;  
-          srcEventType=srcEventType.replace('move','up'); 
-          should_detect = true;
+      else {
+        if((isMouse && !mouseBtn) 
+         ||(isPointer && ('buttons' in ev) && (!ev.buttons)
+                      && Utils.inStr(srcEventType, 'move') 
+                      && PointerEvent.matchType(POINTER_MOUSE, ev) 
+                       
+            )) 
+        {        
+          if(last_move_event) { 
+            // IE>=9 does not firing end events on scrollbars, 
+            // simulate end event when move occured without button down
+            et = EVENT_END;  
+            srcEventType=srcEventType.replace('move','up'); 
+            should_detect = true;
+          }
+          else should_detect = false;
         }
-        else should_detect = false;
       }
-
 
       // we are in a touch event, set the touch triggered bool to true,
       // this for the conflicts that may occur on ios and android
