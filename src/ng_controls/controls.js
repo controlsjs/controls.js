@@ -1,61 +1,61 @@
-// $Id: controls.js 6440 2014-04-25 11:03:22Z kraus $
+// $Id: controls.js 6715 2014-06-10 08:32:17Z nejedly $
 //
 // Copyright (c) 2008-2014  Position s.r.o.
 // All rights reserved.
 
 
-/** 
+/**
  *  Variable: ngControlsVer
  *  Main version of the Controls framework.
- */  
+ */
 var ngControlsVer    = 5;
-/** 
+/**
  *  Variable: ngControlsSubVer
  *  Subversion of the Controls framework.
- */  
+ */
 var ngControlsSubVer = 0;
-/** 
+/**
  *  Variable: ngControlsAPIVersion
  *  Version of the Controls framework evaluated as string.
- */  
+ */
 var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
-/** 
+/**
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
- */  
+ */
 var ngControlsCopyright = 'Copyright &copy 2008-2014 Position s.r.o.';
 
-/** 
+/**
  *  Variable: ngApp
  *  Reference to running <ngApplication> object.
- */  
+ */
 var ngApp = null;
-/** 
+/**
  *  Variable: ngc_Lang
  *  Application languages resource strings/objects.
- */  
-/*<>*/ 
+ */
+/*<>*/
 if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
 ngc_Lang['en']['ngAppOldControlsVersion']='Application requires newer version of Controls.js!\nRequired %s.%s, used %s.%s.\n\nApplication terminated!';
 
-/** 
+/**
  *  Variable: ngIE6AlignFix
  *  If TRUE, the controls API fixes right align property in IE6. Turn off
- *  if you don't care about pixels precision and prefer slightly faster rendering.   
- *  
+ *  if you don't care about pixels precision and prefer slightly faster rendering.
+ *
  *  Default value: *true*
- */  
+ */
 var ngIE6AlignFix = true;
 
 /**
  *  Function: ngLang
  *  Defines resource string/object.
- *  
+ *
  *  Syntax: *ngLang* (string id, mixed data [,string lng])
- *  
- *  Returns: 
- *  -       
+ *
+ *  Returns:
+ *  -
  */
 function ngLang(id,data,lng)
 {
@@ -75,11 +75,11 @@ var ng_cur_lng_stack = new Array();
 /**
  *  Function: ngBeginLang
  *  Begins block of locale definition with id lngid.
- *  
+ *
  *  Syntax: *ngLang* (string lngid)
- *  
- *  Returns: 
- *  -       
+ *
+ *  Returns:
+ *  -
  */
 function ngBeginLang(lng)
 {
@@ -90,11 +90,11 @@ function ngBeginLang(lng)
 /**
  *  Function: ngBeginLang
  *  End block of locale definition.
- *  
+ *
  *  Syntax: *ngLang* (string lngid)
- *  
- *  Returns: 
- *  Actual locale id.       
+ *
+ *  Returns:
+ *  Actual locale id.
  */
 function ngEndLang()
 {
@@ -105,21 +105,21 @@ function ngEndLang()
 /**
  *  Function: ngTxt
  *  Gets locale text.
- *  
+ *
  *  Syntax: string *ngTxt* (string id [, mixed defaultvalue])
- *  
- *  Returns: 
- *  Locale text.         
+ *
+ *  Returns:
+ *  Locale text.
  */
 function ngTxt(t, defval)
 {
-  var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en'); 
+  var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en');
 
   function gettxt(def,t)
   {
     var l=def[lang];
     var txt=(typeof l === 'undefined' ? l : l[t]);
-    if((typeof txt==='undefined')&&(lang!='en')) 
+    if((typeof txt==='undefined')&&(lang!='en'))
     {
       l=def['en'];
       txt=(typeof l === 'undefined' ? l : l[t]);
@@ -130,11 +130,11 @@ function ngTxt(t, defval)
   if((typeof ngDevice !== 'undefined')&&(typeof ngc_Lang['DEV_'+ngDevice] !== 'undefined'))
   {
     txt=gettxt(ngc_Lang['DEV_'+ngDevice],t);
-    if(typeof txt==='undefined') txt=gettxt(ngc_Lang,t);     
-  }  
+    if(typeof txt==='undefined') txt=gettxt(ngc_Lang,t);
+  }
   else txt=gettxt(ngc_Lang,t);
-  
-  if(typeof txt==='undefined') 
+
+  if(typeof txt==='undefined')
   {
     txt=defval;
     if(typeof txt==='undefined') txt=t;
@@ -145,21 +145,21 @@ function ngTxt(t, defval)
 /**
  *  Function: ngRes
  *  Gets locale resource object.
- *  
+ *
  *  Syntax: object *ngRes* (string id)
- *  
- *  Returns: 
- *  Locale resource object.         
+ *
+ *  Returns:
+ *  Locale resource object.
  */
 function ngRes(rid)
 {
-  var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en'); 
+  var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en');
 
   function getres(def,rid)
   {
     var le=def['en'];
-    var eres=(typeof le === 'undefined' ? le : le[rid]);  
-    if(lang=='en') return ng_CopyVar(eres); 
+    var eres=(typeof le === 'undefined' ? le : le[rid]);
+    if(lang=='en') return ng_CopyVar(eres);
 
     var l=def[lang];
     var res=(typeof l === 'undefined' ? l : l[rid]);
@@ -168,7 +168,7 @@ function ngRes(rid)
 
     var r=ng_CopyVar(res);
     ng_MergeDef(r,eres,true);
-    return r;  
+    return r;
   }
 
   if((typeof ngDevice !== 'undefined')&&(typeof ngc_Lang['DEV_'+ngDevice] !== 'undefined'))
@@ -176,7 +176,7 @@ function ngRes(rid)
     var dres=getres(ngc_Lang['DEV_'+ngDevice],rid);
     if(typeof dres !== 'undefined') return dres;
   }
-  return getres(ngc_Lang,rid);   
+  return getres(ngc_Lang,rid);
 }
 
 // --- Functions ---------------------------------------------------------------
@@ -201,12 +201,12 @@ function ng_OutlineHTML(t,c)
 {
   c=ngVal(c,'');
   if(c=='') return t;
-  
+
   var html=new ngStringBuilder;
   for(var i=0;i<3;i++)
     for(var j=0;j<3;j++)
     {
-      if((i!=1)||(j!=1)) 
+      if((i!=1)||(j!=1))
       {
         html.append("<span style=\"position: absolute; left:"+(i-1)+"px; top:"+(j-1)+"px; color: "+c+"\">");
         html.append(t);
@@ -251,7 +251,7 @@ function ng_Align(o)
       else  if(o.style.bottom!='') aret|=2;
     }
   }
-  
+
   if(ret)
   {
     var po=o.parentNode;
@@ -266,13 +266,13 @@ function ng_Align(o)
         if(w<0) w=0;
         ng_SetOuterWidth(o,w)
       }
-      else if(ret & 1) 
+      else if(ret & 1)
       {
         w=ng_OuterWidth(o);
         o.style.pixelLeft=(pw-r-w);
       }
-    } 
-    
+    }
+
     if(ret & 10)
     {
       var ph,h;
@@ -284,13 +284,13 @@ function ng_Align(o)
         if(h<0) h=0;
         ng_SetOuterHeight(o,h);
       }
-      else if(ret & 2) 
+      else if(ret & 2)
       {
         h=ng_OuterHeight(o);
         o.style.pixelTop=(ph-b-h);
       }
     }
-  } 
+  }
   return ret|aret;
 }
 
@@ -306,7 +306,7 @@ function ng_SetOpacity(o,v)
 
 function ng_CanSelectElm(e)
 {
-  if((e)&&(e.style.visibility!=='hidden')&&(e.style.display!=='none')&&(!e.disabled)) 
+  if((e)&&(e.style.visibility!=='hidden')&&(e.style.display!=='none')&&(!e.disabled))
   {
     switch(e.nodeName)
     {
@@ -320,15 +320,15 @@ function ng_CanSelectElm(e)
 
 function ng_CanFocusElm(e)
 {
-  if((e)&&(e.style.visibility!=='hidden')&&(e.style.display!=='none')&&(!e.disabled)) 
+  if((e)&&(e.style.visibility!=='hidden')&&(e.style.display!=='none')&&(!e.disabled))
   {
-    if((ngIExplorer)&&(e.attributes.tabIndex)&&(e.attributes.tabIndex.specified)) return true; 
+    if((ngIExplorer)&&(e.attributes.tabIndex)&&(e.attributes.tabIndex.specified)) return true;
 
     switch(e.nodeName)
     {
       case 'A':
       case 'AREA':
-      //case 'BODY': // IE only :( 
+      //case 'BODY': // IE only :(
       case 'BUTTON':
       case 'FRAME':
       case 'IFRAME':
@@ -347,7 +347,7 @@ function ng_CanFocusElm(e)
 
 // --- Images ------------------------------------------------------------------
 
-var ng_CreateImageHTML = function(id,url,left,top,width, height, style, attr, innerHTML) 
+var ng_CreateImageHTML = function(id,url,left,top,width, height, style, attr, innerHTML)
 {
   if(ngIExplorer6) ng_CreateImageHTML=ng_CreateImageHTMLIE6;
   else             ng_CreateImageHTML=ng_CreateImageHTMLNotIE6;
@@ -361,7 +361,7 @@ function ng_CreateImageHTMLNotIE6(id,url,left,top,width, height, style, attr, in
   if(typeof innerHTML==='undefined') innerHTML='';
   if(url!='')
     style = "background: transparent url('"+url+"') no-repeat scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";" + style;
-  else 
+  else
     if(ngIExplorer) style = "background: transparent url('"+ngEmptyURL+"');" + style;
   return '<span id="'+id+'" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+width+'px;height:'+height+'px;'+style+'" '+attr+'>'+innerHTML+'</span>';
 }
@@ -372,8 +372,8 @@ function ng_CreateImageHTMLIE6(id,url,left,top,width, height, style, attr, inner
   if(typeof style==='undefined') style='';
   if(typeof innerHTML==='undefined') innerHTML='';
   if(url!='')
-    innerHTML = '<span id="'+id+'_png" unselectable="on" style="position:absolute;font-size:0;line-height:0;left:'+(-left)+'px;top:'+(-top)+'px;width:'+(left+width)+'px;height:'+(top+height)+'px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\''+url+'\');"></span>'+innerHTML; 
-  else 
+    innerHTML = '<span id="'+id+'_png" unselectable="on" style="position:absolute;font-size:0;line-height:0;left:'+(-left)+'px;top:'+(-top)+'px;width:'+(left+width)+'px;height:'+(top+height)+'px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\''+url+'\');"></span>'+innerHTML;
+  else
     style = "background: transparent url('"+ngEmptyURL+"');" + style;
   return '<span id="'+id+'" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+width+'px;height:'+height+'px;'+style+'" '+attr+'>'+innerHTML+'</span>';
 }
@@ -385,7 +385,7 @@ function ng_CreateImageHTMLSW(id,l,w,url,left,top,width,height, style, attr, inn
   if(typeof innerHTML==='undefined') innerHTML='';
   if((typeof width === 'undefined')||(url==''))
   {
-    if((ngIExplorer6)&&(url!='')) 
+    if((ngIExplorer6)&&(url!=''))
     {
       var img=ng_PreloadImage(url);
       if(!img) return '';
@@ -395,7 +395,7 @@ function ng_CreateImageHTMLSW(id,l,w,url,left,top,width,height, style, attr, inn
     {
       if(url!='')
         style = "background: transparent url('"+url+"') repeat-x scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";" + style;
-      else 
+      else
         if(ngIExplorer) style = "background: transparent url('"+ngEmptyURL+"');" + style;
       return '<span id="'+id+'_1" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+w+'px;height:'+height+'px;'+style+'left:'+l+'px;" '+attr+'>'+innerHTML+'</span>';
     }
@@ -408,7 +408,7 @@ function ng_CreateImageHTMLSW(id,l,w,url,left,top,width,height, style, attr, inn
     if(w<width) width=w;
     html.append(ng_CreateImageHTML(id+'_'+i,url,left,top,width,height,style+'left:'+l+'px;',attr,innerHTML))
     w-=width;
-    l+=width;    
+    l+=width;
     i++;
   }
   return html.toString();
@@ -421,7 +421,7 @@ function ng_CreateImageHTMLSH(id,t,h,url,left,top,width,height, style, attr,inne
   if(typeof innerHTML==='undefined') innerHTML='';
   if((typeof height==='undefined')||(url==''))
   {
-    if((ngIExplorer6)&&(url!='')) 
+    if((ngIExplorer6)&&(url!=''))
     {
       var img=ng_PreloadImage(url);
       if(!img) return '';
@@ -431,7 +431,7 @@ function ng_CreateImageHTMLSH(id,t,h,url,left,top,width,height, style, attr,inne
     {
       if(url!='')
         style = "background: transparent url('"+url+"') repeat-y scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";" + style;
-      else 
+      else
         if(ngIExplorer) style = "background: transparent url('"+ngEmptyURL+"');" + style;
       return '<span id="'+id+'_1" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+width+'px;height:'+h+'px;'+style+'top:'+t+'px" '+attr+'>'+innerHTML+'</span>';
     }
@@ -444,7 +444,7 @@ function ng_CreateImageHTMLSH(id,t,h,url,left,top,width,height, style, attr,inne
     if(h<height) height=h;
     html.append(ng_CreateImageHTML(id+'_'+i,url,left,top,width,height,style+'top:'+t+'px;',attr,innerHTML))
     h-=height;
-    t+=height;    
+    t+=height;
     i++;
   }
   return html.toString();
@@ -458,12 +458,12 @@ function ng_SwapImageHTML(id, left, top)
   {
     o=document.getElementById(id+'_png');
     if(o)
-    {        
+    {
       o.style.pixelLeft=-left;
       o.style.pixelTop=-top;
       return;
     }
-  }     
+  }
   o=document.getElementById(id);
   if(o) o.style.backgroundPosition=(-left)+"px "+(-top)+(top==0 ? "pt" : "px");
 }
@@ -472,7 +472,7 @@ function ng_CreateBoxHTML(id, url, left, top, width, height, innersize, images, 
 {
   var img;
   var html=new ngStringBuilder;
-  
+
   var noimg = {L:0,T:0,W:0,H:0};
   style='position:absolute;'+style;
   var dp=new Object;
@@ -494,7 +494,7 @@ function ng_CreateBoxHTML(id, url, left, top, width, height, innersize, images, 
   }
   img=dp.LeftTop;
   if(img.W) html.append(ng_CreateImageHTML(id+'_LT', ngVal(img.Src,url), img.L,img.T,img.W,img.H, style+"left:"+left+"px;top: "+top+"px;"));
-  
+
   img=dp.Top;
   if(img.W) html.append(ng_CreateImageHTMLSW(id+'_T', dp.LeftTop.W,(width-dp.LeftTop.W-dp.RightTop.W), ngVal(img.Src,url), img.L,img.T,img.W,img.H, style+"top: "+top+"px;"));
 
@@ -509,19 +509,19 @@ function ng_CreateBoxHTML(id, url, left, top, width, height, innersize, images, 
 
   img=dp.LeftBottom;
   if(img.W) html.append(ng_CreateImageHTML(id+'_LB', ngVal(img.Src,url), img.L,img.T,img.W,img.H, style+"left:"+left+"px;top: "+(top+height-img.H)+"px;"));
-  
+
   img=dp.Bottom;
-  if(img.W) html.append(ng_CreateImageHTMLSW(id+'_B', dp.LeftBottom.W,(width-dp.LeftBottom.W-dp.RightBottom.W), ngVal(img.Src,url), img.L,img.T,img.W,img.H, style+"top: "+(top+height-img.H)+"px;")); 
+  if(img.W) html.append(ng_CreateImageHTMLSW(id+'_B', dp.LeftBottom.W,(width-dp.LeftBottom.W-dp.RightBottom.W), ngVal(img.Src,url), img.L,img.T,img.W,img.H, style+"top: "+(top+height-img.H)+"px;"));
 
   img=dp.RightBottom;
   if(img.W) html.append(ng_CreateImageHTML(id+'_RB', ngVal(img.Src,url), img.L,img.T,img.W,img.H, style+"left:"+(left+width-img.W)+"px;top: "+(top+height-img.H)+"px;"));
-  
+
   if(typeof innerHTML !== 'undefined')
   {
     html.append('<div id="'+id+'_C" style="'+style+'overflow:auto; left:'+(left+dp.Left.W)+'px;top:'+(top+dp.Top.W)+'px;width:'+(width-dp.Left.W-dp.Right.W)+'px;height:'+(height-dp.Top.H-dp.Bottom.H)+'px;">');
     html.append(innerHTML);
     html.append('</div>');
-  }  
+  }
   return html.toString();
 }
 
@@ -534,13 +534,13 @@ var ssVertical   = 5;
 
 function ng_SetScrollBars(o, v)
 {
-  if(o) 
+  if(o)
     switch(v)
     {
       case ssNone:       o.style.overflow='hidden'; o.style.overflowX='hidden'; o.style.overflowY='hidden'; break;
       case ssAuto:       o.style.overflow='auto';   o.style.overflowX='auto';   o.style.overflowY='auto';   break;
       case ssBoth:       o.style.overflow='scroll'; o.style.overflowX='scroll'; o.style.overflowY='scroll'; break;
-      case ssHorizontal: o.style.overflow='scroll'; o.style.overflowX='scroll'; o.style.overflowY='hidden'; break;  
+      case ssHorizontal: o.style.overflow='scroll'; o.style.overflowX='scroll'; o.style.overflowY='hidden'; break;
       case ssVertical:   o.style.overflow='scroll'; o.style.overflowX='hidden'; o.style.overflowY='scroll'; break;
       case ssDefault:    o.style.overflow='visible'; o.style.overflowX='visible'; o.style.overflowY='visible'; break;
     }
@@ -550,7 +550,7 @@ function ng_GetScrollBars(o)
 {
   var ox=ng_GetCurrentStyle(o,'overflow-x');
   var oy=ng_GetCurrentStyle(o,'overflow-y');
-  if((ox=='')||(oy=='')) 
+  if((ox=='')||(oy==''))
   {
     var of=ng_GetCurrentStyle(o,'overflow');
     if(of=='') of='hidden';
@@ -563,11 +563,11 @@ function ng_GetScrollBars(o)
     if((ox=='scroll')&&(oy=='scroll')) sb=ssBoth;
     else {
       if((ox=='visible')&&(oy=='visible')) sb=ssDefault;
-      else {          
+      else {
         if(ox=='scroll') sb=ssHorizontal;
         else if(oy=='scroll') sb=ssVertical;
       }
-    }          
+    }
   }
   return sb;
 }
@@ -581,45 +581,45 @@ var ngMouseInControls = new Array();
 
 /**
  *  Function: ngGetControlById
- *  Gets control object by ID.  
- * 
+ *  Gets control object by ID.
+ *
  *  Syntax:
  *    object *ngGetControlById* (string id [, string ctrltype])
- *     
+ *
  *  Parameters:
  *    id - control ID
- *    ctrltype - control type 
- *      
+ *    ctrltype - control type
+ *
  *  Returns:
  *    Reference to control object.
- */  
+ */
 function ngGetControlById(id, type)
 {
   if(id=='') return null;
   var c=ngControlsIDs[id];
   if(!c) return null;
-  if((typeof type !== 'undefined')&&(ngVal(c.CtrlType,-1)!=type)) return null;  
+  if((typeof type !== 'undefined')&&(ngVal(c.CtrlType,-1)!=type)) return null;
   return c;
 }
 
 /**
  *  Function: ngGetControlByElement
- *  Gets control object by DOM element.  
- * 
+ *  Gets control object by DOM element.
+ *
  *  Syntax:
  *    object *ngGetControlByElement* (mixed elm [, string ctrltype])
- *     
+ *
  *  Parameters:
  *    elm - DOM element or element id
- *    ctrltype - control type 
- *      
+ *    ctrltype - control type
+ *
  *  Returns:
  *    Reference to element's parent control object.
- */  
+ */
 function ngGetControlByElement(elm, type)
 {
   if(typeof elm==='string') elm=document.getElementById(elm);
-  if(!elm) return null;  
+  if(!elm) return null;
   var c,p=elm;
   while((p)&&(p!==document))
   {
@@ -633,7 +633,7 @@ function ngGetControlByElement(elm, type)
 function ngRegisterControlType(type, def)
 {
   if(typeof type!=='string') return;
-  
+
   switch(typeof def)
   {
     case 'function':
@@ -657,7 +657,7 @@ function ngRegisterControlType(type, def)
       ngRegisterControlType(type, function(cdef,ref,parent) {
         return ngCreateControlAsType(cdef, def, ref, parent);
       });
-      break; 
+      break;
   }
 }
 
@@ -709,25 +709,25 @@ function ngControlCreated(obj)
 
 // --- ngCreateControls --------------------------------------------------------
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array(); 
+if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 
 function ngUsrCtrlSetImages(obj, images)
 {
   if((typeof obj !== 'object')||(!obj)) return;
-  if(typeof obj._noMerge==='undefined') obj._noMerge=true;      
+  if(typeof obj._noMerge==='undefined') obj._noMerge=true;
   if(typeof obj.Src==='undefined') obj.Src=images;
   for(var i in obj)
-    if(typeof obj[i] === 'object') ngUsrCtrlSetImages(obj[i], images); 
+    if(typeof obj[i] === 'object') ngUsrCtrlSetImages(obj[i], images);
 }
 
 function ngUsrCtrlSetImagesArray(obj, images)
 {
   if((typeof obj !== 'object')||(!obj)) return;
-  if(typeof obj._noMerge==='undefined') obj._noMerge=true;      
+  if(typeof obj._noMerge==='undefined') obj._noMerge=true;
   if(typeof obj.Src==='undefined') obj.Src=images[0];
   else if(typeof obj.Src==='number') obj.Src=images[obj.Src];
   for(var i in obj)
-    if(typeof obj[i] === 'object') ngUsrCtrlSetImagesArray(obj[i], images); 
+    if(typeof obj[i] === 'object') ngUsrCtrlSetImagesArray(obj[i], images);
 }
 
 function ngInitUserControls()
@@ -739,13 +739,13 @@ function ngInitUserControls()
     uc=ngUserControls[i];
     if(typeof uc === 'undefined') continue;
     if(typeof uc.OnInit === 'function') uc.OnInit();
-    if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages)) 
+    if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages))
     {
       uc.ControlImages=ng_URL(uc.ControlImages);
       ng_PreloadImage(uc.ControlImages);
       ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
     }
-    else if((typeof uc.ControlImages === 'object')&&(typeof uc.ControlImages.length === 'number')) 
+    else if((typeof uc.ControlImages === 'object')&&(typeof uc.ControlImages.length === 'number'))
     {
       for(var j=0;j<uc.ControlImages.length;j++)
       {
@@ -754,33 +754,33 @@ function ngInitUserControls()
       }
       if(uc.ControlImages.length>0) ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
     }
-  } 
+  }
 }
 
 
 /**
  *  Function: ng_MergeDef
  *  Merges two control definitions.
- *   
+ *
  *  Syntax:
  *    void *ng_MergeDef* (mixed dst, mixed def [, bool allowundefined=false, function callback])
- *    
+ *
  *  Parameters:
- *    dst - destination definition 
+ *    dst - destination definition
  *    def - definition to be merged
  *    allowundefined - if FALSE (default), undefined values in parameter var are ignored
- *    callback - optional callback function 
- *    
+ *    callback - optional callback function
+ *
  *  Returns:
- *    - 
- */       
+ *    -
+ */
 function ng_MergeDef(dst,def,allowundefined,callback)
 {
   function merge_events(d,o,before)
   {
     var isdarr,isoarr,j;
     var isdfnc,isofnc;
-    
+
     for(var i in o)
     {
       if((typeof d[i]==='undefined')||(d[i]===null)) { d[i]=o[i]; continue; }
@@ -812,51 +812,51 @@ function ng_MergeDef(dst,def,allowundefined,callback)
             }
           }
         }
-      }      
+      }
     }
   }
-  
+
   def=ng_CopyVar(def);
   if(!ngVal(allowundefined,false)) def=ng_CleanUndefined(def);
   ng_MergeVar(dst,def,true,function(d,o) {
-    
+
     if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return false;
-    if(d._noMerge===true) return false;      
-        
+    if(d._noMerge===true) return false;
+
     if((typeof d.Events === 'object')&&(typeof o.Events === 'object')&&(d.Events)&&(o.Events))
     {
       merge_events(d.Events,o.Events,false);
       delete o.Events;
-    }    
+    }
     if((typeof d.AfterEvents === 'object')&&(typeof o.AfterEvents === 'object')&&(d.AfterEvents)&&(o.AfterEvents))
     {
       merge_events(d.AfterEvents,o.AfterEvents,false);
       delete o.AfterEvents;
-    }    
+    }
     if((typeof d.BeforeEvents === 'object')&&(typeof o.BeforeEvents === 'object')&&(d.BeforeEvents)&&(o.BeforeEvents))
     {
       merge_events(d.BeforeEvents,o.BeforeEvents,true);
       delete o.BeforeEvents;
-    }    
-    return true;  
+    }
+    return true;
   });
 }
 
 /**
  *  Function: ngCreateControl
- *  Creates control by definition. 
- * 
+ *  Creates control by definition.
+ *
  *  Syntax:
  *    object *ngCreateControl* (object def, object ref, mixed parent)
- *     
+ *
  *  Parameters:
  *    def - control definition
  *    ref - reference owner (object where reference to control is stored)
- *    parent - string ID or object of parent DIV element 
- *      
+ *    parent - string ID or object of parent DIV element
+ *
  *  Returns:
  *    Reference to new control object.
- */  
+ */
 function ngCreateControl(d,ref,parent)
 {
   var j,c,uc;
@@ -879,35 +879,35 @@ function ngCreateControl(d,ref,parent)
   }
   finally
   {
-    d.CtrlInheritanceDepth--;  
+    d.CtrlInheritanceDepth--;
   }
-  if(!c) 
+  if(!c)
   {
     ngDEBUGWARN('Component type "%s" not found.',ngVal(d.Type,''),d);
     return null;
   }
-  
+
   c.CtrlInheritedFrom[c.CtrlInheritedFrom.length] = d.Type;
   c.DefType = d.Type;
   c.Owner = ref;
-  
+
   if(typeof d.Data !== 'undefined')
     for(var i in d.Data)
       c[i]=d.Data[i];
 
   if(!d.CtrlInheritanceDepth) // do it only on top component
-  {  
+  {
     if(typeof d.BeforeEvents !== 'undefined')
       for(var i in d.BeforeEvents)
         c.AddEvent(d.BeforeEvents[i],i);
-  
+
     if(typeof d.AfterEvents !== 'undefined') // alias to d.Events
       for(var i in d.AfterEvents)
-        c.AddEvent(i,d.AfterEvents[i]);  
+        c.AddEvent(i,d.AfterEvents[i]);
 
     if(typeof d.Events !== 'undefined')
       for(var i in d.Events)
-        c.AddEvent(i,d.Events[i]);  
+        c.AddEvent(i,d.Events[i]);
 
     if(typeof d.OverrideEvents !== 'undefined') // alias to d.Data
       for(var i in d.OverrideEvents)
@@ -917,13 +917,13 @@ function ngCreateControl(d,ref,parent)
     if((typeof c.ngText !== 'undefined')&&(ngVal(c.Text,'')==''))
       c.Text=ngTxt(c.ngText);
     if((typeof c.ngTextD !== 'undefined')&&(!c.OnGetText))
-      c.OnGetText = ngc_GetResText;      
-  
+      c.OnGetText = ngc_GetResText;
+
     if((typeof c.ngAlt !== 'undefined')&&(ngVal(c.Alt,'')==''))
       c.Alt=ngTxt(c.ngAlt);
     if((typeof c.ngAltD !== 'undefined')&&(!c.OnGetAlt))
       c.OnGetAlt = ngc_GetResAlt;
-  
+
     if((typeof c.ngHint !== 'undefined')&&(ngVal(c.Hint,'')==''))
       c.Hint=ngTxt(c.ngHint);
     if((typeof c.ngHintD !== 'undefined')&&(!c.OnGetHint))
@@ -936,31 +936,31 @@ function ngCreateControl(d,ref,parent)
       uc=ngUserControls[j];
       if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
     }
-  return c;      
+  return c;
 }
 
 /**
  *  Function: ngCreateControlAsType
  *  Creates control by definition and type. Control type is passed as parameter
- *  and type in definition is ignored.     
- * 
+ *  and type in definition is ignored.
+ *
  *  Syntax:
  *    object *ngCreateControlAsType* (object def, string ctrltype, object ref, mixed parent)
- *     
+ *
  *  Parameters:
  *    def - control definition
- *    ctrltype - control type 
+ *    ctrltype - control type
  *    ref - reference owner (object where reference to control is stored)
- *    parent - string ID or object of parent DIV element 
- *      
+ *    parent - string ID or object of parent DIV element
+ *
  *  Returns:
  *    Reference to new control object.
- */  
+ */
 function ngCreateControlAsType(def,type, ref,parent)
 {
   var oldtype = def.Type;
   def.Type = type;
-   
+
   var ret = ngCreateControl(def,ref,parent);
   def.Type = oldtype;
   if(ret) ret.DefType=def.Type;
@@ -975,7 +975,7 @@ function ngCreateControls(defs,ref,parent,options)
   var uc,i,j,c,d,oc,celm,parentCtrl=null;
   if(typeof ref === 'undefined') ref=new Object;
   if(typeof defs === 'undefined') return ref;
-  if(typeof options === 'undefined') 
+  if(typeof options === 'undefined')
   {
     if(ngCreateControlsOptions) options = ngCreateControlsOptions;
     else options = new Object;
@@ -983,7 +983,7 @@ function ngCreateControls(defs,ref,parent,options)
   var oldoptions=ngCreateControlsOptions;
   ngCreateControlsOptions=options;
   try
-  {  
+  {
     if(!options.CreatedControls) ng_SetByRef(options,'CreatedControls',new Array());
     ngCreateControlsLevel++;
     try
@@ -991,7 +991,7 @@ function ngCreateControls(defs,ref,parent,options)
       if(typeof parent === 'undefined') parent=ngApp.Elm();
       if(typeof parent === 'string') parentCtrl=ngGetControlById(parent);
       else
-      {    
+      {
         if((typeof parent === 'object')&&(parent))
         {
           if(typeof parent.Elm === 'function')
@@ -1000,20 +1000,20 @@ function ngCreateControls(defs,ref,parent,options)
             parent=parent.Elm();
           }
           else if(ngVal(parent.id,'')!='') parentCtrl=ngGetControlById(parent.id);
-        }  
-      }    
+        }
+      }
       for(i in defs)
-      {                            
+      {
         if((options.ModifyControls)&&(typeof options.ModifyControls[i]!=='undefined'))
         {
           d=options.ModifyControls[i];
           delete options.ModifyControls[i];
           if((typeof d !== 'object')||(!d)) continue;
-    
+
           ng_MergeDef(d,defs[i]);
           defs[i]=d;
         }
-        else 
+        else
         {
           d=defs[i];
           if((typeof d !== 'object')||(!d)) continue;
@@ -1030,7 +1030,7 @@ function ngCreateControls(defs,ref,parent,options)
         if((c)&&(i!=''))
         {
           ngAddChildControl(parentCtrl,c);
-  
+
           var cinfo=new Object;
           cinfo.Control=c;
           cinfo.Options=null;
@@ -1039,16 +1039,16 @@ function ngCreateControls(defs,ref,parent,options)
           delete d.OnCreated;
           celm=c.Create(d, ref);
           d.OnCreated=cinfo.OnCreated;
-    
-          if((ngHASDEBUG())&&(typeof ref[i]!=='undefined')&&(ref[i]!==null)) 
+
+          if((ngHASDEBUG())&&(typeof ref[i]!=='undefined')&&(ref[i]!==null))
           {
             ngDEBUGWARN('Reference "%s" was overwritten by %o. References: %o',i,c,ref);
           }
           ref[i]=c;
-  
+
           cinfo.OnCreated=d.OnCreated;
           options.CreatedControls[options.CreatedControls.length]=cinfo;
-  
+
           var prefs=ngVal(d.ParentReferences,true);
           if(!prefs)
           {
@@ -1073,7 +1073,7 @@ function ngCreateControls(defs,ref,parent,options)
               {
                 ng_MergeDef(d.ModifyControls, options.ModifyControls, true);
                 options.ModifyControls=d.ModifyControls;
-              }   
+              }
               ngCreateControls(d.Controls,(prefs ? ref : nref),c.ID,options);
             }
             finally
@@ -1082,12 +1082,12 @@ function ngCreateControls(defs,ref,parent,options)
               if((!oldmodify)&&(ngHASDEBUG())&&(options.ModifyControls))
               {
                 for(var q in options.ModifyControls)
-                  ngDEBUGWARN('Component referenced by "%s" doesn\'t have an subcomponent "%s" which should be modified.',i,q,ref); 
+                  ngDEBUGWARN('Component referenced by "%s" doesn\'t have an subcomponent "%s" which should be modified.',i,q,ref);
               }
               options.ModifyControls=oldmodify;
             }
           }
-          else if(cinfo.OnCreated) cinfo.Options = ng_CopyVar(options);  
+          else if(cinfo.OnCreated) cinfo.Options = ng_CopyVar(options);
         }
         else if(i!='') ngDEBUGWARN('Component referenced by "%s" was not created.',i,ref);
       }
@@ -1105,7 +1105,7 @@ function ngCreateControls(defs,ref,parent,options)
         cinfo=options.CreatedControls[i];
         oc=cinfo.OnCreated;
         cinfo.OnCreated=null;
-        if(oc) 
+        if(oc)
         {
           ngCreateControlsOptions=cinfo.Options;
           c=cinfo.Control;
@@ -1132,7 +1132,7 @@ function ngCloneRefs(ref,lref)
     {
       c=lref[i];
       c.Owner=ref;
-      if((typeof ref[i]!=='undefined')&&(ref[i]!==null)) 
+      if((typeof ref[i]!=='undefined')&&(ref[i]!==null))
       {
         ngDEBUGWARN('Reference "%s" was overwritten by %o. References: %o',i,c,ref);
       }
@@ -1174,7 +1174,7 @@ function ngUpdateControls(ref)
       if(upd_id[p.ID]) break;
       p=p.ParentControl;
     }
-    if((!p)&&(typeof c.Update==='function')) c.Update(true); 
+    if((!p)&&(typeof c.Update==='function')) c.Update(true);
   }
 }
 
@@ -1210,16 +1210,16 @@ function ngDisposeControls(ref)
 function ngCreateControlHTML(props)
 {
   if(typeof props==='undefined') props=new Object;
-  if(typeof props==='string') 
+  if(typeof props==='string')
   {
     var np=new Object;
     np.id=props;
-    props=np; 
+    props=np;
   }
   var id=ngVal(props.id,'');
 
   if(id=='') id=ngCreateControlId(props.Type);
-  
+
   var left=props.L;
   var top=props.T;
   var right=props.R;
@@ -1233,35 +1233,35 @@ function ngCreateControlHTML(props)
   if(typeof bottom === 'number') bottom+='px';
   if(typeof width === 'number') width+='px';
   if(typeof height === 'number') height+='px';
-  
+
   var attrs='';
-  var html='<DIV id="'+id+'"'; 
+  var html='<DIV id="'+id+'"';
 
   if(typeof props.className !== 'undefined') html+=' class="'+props.className+'"';
-  
+
   html+=' style="position: absolute; display:none;';
   if(typeof top !== 'undefined') html+='top: '+top+';';
   if(typeof left !== 'undefined') html+='left: '+left+';';
   if(typeof width !== 'undefined') html+='width: '+width+';';
   if(typeof height !== 'undefined') html+='height: '+height+';';
-  
-  if((typeof props.B !== 'undefined')||(typeof props.R !== 'undefined')) 
+
+  if((typeof props.B !== 'undefined')||(typeof props.R !== 'undefined'))
   {
     if(ngIExplorer6)
     {
       var alignfix=ngVal(props.IE6AlignFix, ngIE6AlignFix);
       if((alignfix)||((typeof props.T !== 'undefined')&&(typeof props.B !== 'undefined')))
-      {          
-        if(typeof props.T !== 'undefined') attrs+='FT="'+props.T+'" '; 
-        if(typeof props.B !== 'undefined') attrs+='FB="'+props.B+'" '; 
+      {
+        if(typeof props.T !== 'undefined') attrs+='FT="'+props.T+'" ';
+        if(typeof props.B !== 'undefined') attrs+='FB="'+props.B+'" ';
       }
       else
       {
         if(typeof bottom !== 'undefined') html+='bottom: '+bottom+';';
       }
-       
+
       if((alignfix)||((typeof props.L !== 'undefined')&&(typeof props.R !== 'undefined')))
-      {          
+      {
         if(typeof props.R !== 'undefined') attrs+='FR="'+props.R+'" ';
         if(typeof props.L !== 'undefined') attrs+='FL="'+props.L+'" ';
       }
@@ -1283,7 +1283,7 @@ function ngCreateControlHTML(props)
 }
 
 // --- ngControl (abstract) ----------------------------------------------------
- 
+
 function ngc_Elm()
 {
   return document.getElementById(this.ID);
@@ -1291,10 +1291,10 @@ function ngc_Elm()
 
 function ngc_CtrlInheritsFrom(type)
 {
-  if(typeof this.CtrlInheritedFrom !== 'undefined') 
+  if(typeof this.CtrlInheritedFrom !== 'undefined')
     for(var i=0;i<this.CtrlInheritedFrom.length;i++)
       if(this.CtrlInheritedFrom[i]==type) return true;
-  return false;  
+  return false;
 }
 
 function ngc_Create(props, ref)
@@ -1308,18 +1308,18 @@ function ngc_Create(props, ref)
 
   if(id=='') id=ngCreateControlId(props.Type);
 
-  var f = document.getElementById(id);  
+  var f = document.getElementById(id);
   var nd = f;
-  if(!nd) 
+  if(!nd)
   {
-    if(props.OnCreateHTMLElement) 
+    if(props.OnCreateHTMLElement)
     {
       nd=props.OnCreateHTMLElement(props,ref,this);
       if(!nd) return null;
-    } 
+    }
     else nd=document.createElement('div');
     nd.id=id;
-    nd.style.display='none';          
+    nd.style.display='none';
   }
   else
   {
@@ -1336,31 +1336,31 @@ function ngc_Create(props, ref)
     { this.Bounds.W=ng_StyleWidth(f); }
     if((ngVal(this.Bounds.T,'') == '')||(ngVal(this.Bounds.B,'') == ''))
     { this.Bounds.H=ng_StyleHeight(f); }
-    
+
     ng_SetInnerHTML(f,'');
   }
   nd.style.position='absolute';
   if(typeof props.className !== 'undefined') nd.className=props.className;
-  
+
   var sb=ngVal(props.ScrollBars,this.ScrollBars);
   ng_SetScrollBars(nd, ngVal(sb, ssNone));
-  this.ScrollBars=sb;   
-  
+  this.ScrollBars=sb;
+
   if(typeof props.L !== 'undefined') this.Bounds.L=props.L;
   if(typeof props.T !== 'undefined') this.Bounds.T=props.T;
   if(typeof props.R !== 'undefined') this.Bounds.R=props.R;
   if(typeof props.B !== 'undefined') this.Bounds.B=props.B;
   if(typeof props.W !== 'undefined') this.Bounds.W=props.W;
   if(typeof props.H !== 'undefined') this.Bounds.H=props.H;
-  
+
   if(typeof props.innerHTML !== 'undefined') ng_SetInnerHTML(nd,props.innerHTML);
   if(typeof props.Opacity !== 'undefined') ng_SetOpacity(nd,props.Opacity);
   if(typeof props.style !== 'undefined')
   {
-    for(var i in props.style) 
-      nd.style[i]=props.style[i]; 
+    for(var i in props.style)
+      nd.style[i]=props.style[i];
   }
-  
+
   if(!f) parent.appendChild(nd);
 
   if(id!='') ngControlsIDs[id]=this;
@@ -1371,7 +1371,7 @@ function ngc_Create(props, ref)
   this.Attach(nd);
   this.SetBounds();
   if(this.DoCreate) this.DoCreate(props, ref, nd,parent);
-  
+
   if(props.OnCreated) props.OnCreated(this, ref);
   return nd;
 }
@@ -1379,7 +1379,7 @@ function ngc_Create(props, ref)
 function ngc_SetBounds(props)
 {
   var changed=false;
-  if(typeof props!=='undefined') 
+  if(typeof props!=='undefined')
   {
     if(typeof this.Bounds === 'undefined') this.Bounds=new Object;
     for(var i in props)
@@ -1392,7 +1392,7 @@ function ngc_SetBounds(props)
         case 'B':
         case 'W':
         case 'H':
-          if((this.Bounds[i]!=props[i])||(typeof this.Bounds[i]!==typeof props[i])) { this.Bounds[i]=props[i]; changed=true; } 
+          if((this.Bounds[i]!=props[i])||(typeof this.Bounds[i]!==typeof props[i])) { this.Bounds[i]=props[i]; changed=true; }
           break;
         case 'IE6AlignFix':
           if(this.IE6AlignFix!=props.IE6AlignFix) { this.IE6AlignFix=props.IE6AlignFix; if(ngIExplorer6) changed=true; }
@@ -1404,7 +1404,7 @@ function ngc_SetBounds(props)
   if(changed)
   {
     var o = this.Elm();
-    if(o) 
+    if(o)
     {
       props=this.Bounds;
       if(typeof props==='undefined') return changed;
@@ -1413,7 +1413,7 @@ function ngc_SetBounds(props)
       delete props.IE6AlignFix;
     }
   }
-  return changed;  
+  return changed;
 }
 
 function ngc_SetScrollBars(v)
@@ -1423,10 +1423,10 @@ function ngc_SetScrollBars(v)
 }
 
 function ngc_SetPopup(p)
-{  
+{
   if(this.IsPopup!=p)
   {
-    if(this.Visible) 
+    if(this.Visible)
     {
       if(p) ngc_ActivatePopup(this);
       else  ngc_DeactivatePopup(this);
@@ -1454,22 +1454,22 @@ function ngc_Attach(o)
   {
     if(this.ID!='') delete ngControlsIDs[this.ID];
     if(id!='') ngControlsIDs[id]=this;
-    this.ID=id; 
+    this.ID=id;
   }
-  if(o) 
+  if(o)
   {
-    if(o.className!='') 
+    if(o.className!='')
     {
-      var bcls=o.className;  
+      var bcls=o.className;
       var bi=bcls.indexOf(' ');
-      if(bi>=0) bcls=bcls.substr(0,bi);  
+      if(bi>=0) bcls=bcls.substr(0,bi);
       this.BaseClassName=bcls;
     }
     if(this.DoSetVisible) this.DoSetVisible(o, this.Visible);
     else
     {
       o.style.display=(this.Visible ? 'block' : 'none');
-    }    
+    }
 
     var t=this.CtrlType;
     o.onmouseover = function(e) { ngc_Enter(e, this, t); }
@@ -1479,18 +1479,18 @@ function ngc_Attach(o)
     o.style.msTouchAction='none';
   }
   if((id!='')&&(this.DoAttach)) this.DoAttach(o,oid);
-  
-  var has_scroll=((typeof this.ScrollBars !== 'undefined')&&(this.ScrollBars!==ssNone)); 
-  if((o)&&(!o.ngpointers)&&((this.DoAcceptGestures)||(has_scroll)||(typeof this.Gestures !== 'undefined'))) 
-  {  
+
+  var has_scroll=((typeof this.ScrollBars !== 'undefined')&&(this.ScrollBars!==ssNone));
+  if((o)&&(!o.ngpointers)&&((this.DoAcceptGestures)||(has_scroll)||(typeof this.Gestures !== 'undefined')))
+  {
     var gestures=((typeof this.Gestures === 'object')&&(this.Gestures) ? ng_CopyVar(this.Gestures) : {});
     if((has_scroll)&&(typeof gestures.drag === 'undefined')) gestures.drag=true;
     if(this.DoAcceptGestures) this.DoAcceptGestures(o,gestures);
     if(!ng_EmptyVar(gestures)) {
       var g=[];
-      for(var i in gestures) 
+      for(var i in gestures)
         if(gestures[i]) g.push(i);
-      if(g.length>0) 
+      if(g.length>0)
         ngc_PtrListener(this, o, 'control', g);
     }
   }
@@ -1514,10 +1514,10 @@ function ngc_Release()
     if(this.DoRelease) this.DoRelease(o);
     else
     {
-      o.style.display='none'; 
+      o.style.display='none';
       ng_SetInnerHTML(o,'');
     }
-  } 
+  }
 }
 
 function ngc_Dispose()
@@ -1526,21 +1526,21 @@ function ngc_Dispose()
   if(typeof cc !== 'undefined')
   {
     var c;
-    for(var i=cc.length-1;i>=0;i--) 
+    for(var i=cc.length-1;i>=0;i--)
     {
       c=cc[i];
       if((c)&&(typeof c.Dispose === 'function')) c.Dispose();
     }
   }
 
-  var id=this.ID; 
+  var id=this.ID;
   if((!this.DoDispose)||(ngVal(this.DoDispose(),false)))
   {
     ngRemoveChildControl(this.ParentControl,this);
     var o=this.Elm();
-    if(o) 
+    if(o)
     {
-      o.style.display='none'; 
+      o.style.display='none';
       ng_SetInnerHTML(o,'');
       if(o.parentNode) o.parentNode.removeChild(o);
     }
@@ -1552,7 +1552,7 @@ function ngc_Dispose()
     catch(e)
     {
     }
-  }  
+  }
   if(id!='') delete ngControlsIDs[id];
 }
 
@@ -1586,7 +1586,7 @@ function ngc_SetEnabled(v,p)
     }
 
     if(this.DoSetEnabled) this.DoSetEnabled(v);
-    else 
+    else
     {
       this.Enabled=v;
       if(this.Update) this.Update();
@@ -1618,10 +1618,10 @@ function ngc_SetVisible(v)
         }
         else ngc_DeactivatePopup(this);
         if(this.DoSetVisible) this.DoSetVisible(o, v);
-        else 
-        { 
-          o.style.display=(v ? 'block' : 'none'); 
-          o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none 
+        else
+        {
+          o.style.display=(v ? 'block' : 'none');
+          o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none
         }
         if((!v)&&(!ngIExplorer))
         {
@@ -1679,7 +1679,7 @@ function ngc_Update(recursive)
   if(o)
   {
     o.style.display = (this.Visible ? 'block' : 'none');
-    if(ngIExplorer6) 
+    if(ngIExplorer6)
     {
       var cw=ng_ClientWidth(o);
       var ch=ng_ClientHeight(o);
@@ -1693,27 +1693,27 @@ function ngc_Update(recursive)
     {
       var cc=this.ChildControls;
       if(typeof cc !== 'undefined')
-      {      
+      {
         var c;
-        for(var i=0;i<cc.length;i++) 
-        { 
-          c=cc[i]; 
+        for(var i=0;i<cc.length;i++)
+        {
+          c=cc[i];
           if(c.Update) c.Update(true);
         }
       }
-    }    
-  }       
+    }
+  }
 
   if(!ret) return;
-  
+
   if(o)
   {
     ret=this.Align(o);
-    if(ngIExplorer6) 
+    if(ngIExplorer6)
     {
       if((this.DoUpdate)&&((ret & 4)||(ret & 8))) this.DoUpdate(o);
 
-      var nw,nh;      
+      var nw,nh;
       ng_BeginMeasureElement(o);
       for(var i=0;i<2;i++)
       {
@@ -1723,15 +1723,15 @@ function ngc_Update(recursive)
         {
           var cc=this.ChildControls;
           if(typeof cc !== 'undefined')
-          {      
-            for(var i=0;i<cc.length;i++) 
+          {
+            for(var i=0;i<cc.length;i++)
             {
               ret=cc[i].Align();
               if((ret & 4)||(ret & 8)) cc[i].Update();
-            } 
+            }
           }
         } else break;
-        cw=nw; ch=nh;        
+        cw=nw; ch=nh;
       }
       ng_EndMeasureElement(o);
     }
@@ -1758,9 +1758,9 @@ function ngc_Enter(e, elm, type)
     var mi = ngMouseInControls[o.ID];
     if((typeof mi !== 'undefined')&&(mi.Element)&&(mi.Object)&&(ng_inDOM(mi.Element)))
     {
-      if(mi.Object===o) return; // already in control  
-      ngc_Leave(e, mi.Element, mi.Object.CtrlType); 
-    }        
+      if(mi.Object===o) return; // already in control
+      ngc_Leave(e, mi.Element, mi.Object.CtrlType);
+    }
 
     try {
       mi=new Object();
@@ -1787,8 +1787,8 @@ function ngc_Leave(e, elm, type)
   if(o)
   {
     var mi = ngMouseInControls[o.ID];
-    if(typeof mi === 'undefined') return; 
-    delete ngMouseInControls[o.ID]; 
+    if(typeof mi === 'undefined') return;
+    delete ngMouseInControls[o.ID];
 
     try {
       mi.LeaveElement=elm;
@@ -1816,13 +1816,13 @@ function ngc_Focus(e, elm, type)
 function ngc_Blur(e, elm, type)
 {
   if(!e) e=window.event;
-  if(ngIExplorer) 
+  if(ngIExplorer)
   {
     // IE fires onfocus and onblur events even tabindex attribute is not set (DIVs with dimensions)
     // check if new focused item is child element and if yes refocus original
 
     var ai=document.activeElement;
-    if((ai)&&(!ng_CanFocusElm(ai))) 
+    if((ai)&&(!ng_CanFocusElm(ai)))
     {
       var p=ai.parentNode;
       while((p)&&(p!=document))
@@ -1830,13 +1830,13 @@ function ngc_Blur(e, elm, type)
         if(p==elm)
         {
           elm.focus();
-          return;          
+          return;
         }
         p=p.parentNode;
-      }    
+      }
     }
   }
-  var o=ngGetControlByElement(elm, type);  
+  var o=ngGetControlByElement(elm, type);
   if((o)&&(o.ControlHasFocus))
   {
     try {
@@ -1853,7 +1853,7 @@ function ngc_CtrlBringToFront(c)
 {
   var cc=this.ChildControls;
   if((typeof cc === 'undefined')||(!cc.length)) return;
-  
+
   for(var i=0;i<cc.length;i++)
     if(cc[i]==c)
     {
@@ -1867,7 +1867,7 @@ function ngc_CtrlSendToBack(c)
 {
   var cc=this.ChildControls;
   if((typeof cc === 'undefined')||(!cc.length)) return;
-  
+
   for(var i=0;i<cc.length;i++)
     if(cc[i]==c)
     {
@@ -1911,19 +1911,19 @@ function ngc_CtrlInsertBefore(c,p)
   ngc_ctrlInsert(cc,c,p,0);
 }
 
-function ngc_GetResText() 
-{ 
-  return ngTxt(this.ngTextD); 
+function ngc_GetResText()
+{
+  return ngTxt(this.ngTextD);
 }
 
-function ngc_GetResAlt() 
-{ 
-  return ngTxt(this.ngAltD); 
+function ngc_GetResAlt()
+{
+  return ngTxt(this.ngAltD);
 }
 
-function ngc_GetResHint() 
-{ 
-  return ngTxt(this.ngHintD); 
+function ngc_GetResHint()
+{
+  return ngTxt(this.ngHintD);
 }
 
 function ngc_GetText()
@@ -1962,16 +1962,16 @@ function ngc_SetText(text)
 
 /**
  *  Class: ngControl
- *  This is an abstract class for all visual controls. 
+ *  This is an abstract class for all visual controls.
  *
  *  Syntax:
  *    new *ngControl* (object obj, string id, string ctrltype)
- *    
+ *
  *  Parameters:
  *    obj - implementation of control object
  *    id - control ID
  *    ctrltype -  control type
- */    
+ */
 function ngControl(obj, id, type)
 {
   /*
@@ -2105,40 +2105,40 @@ function ngControl(obj, id, type)
    *  Control identificator.
    *  Type: string
    */
-  obj.ID = ngVal(id,''); 
+  obj.ID = ngVal(id,'');
 
   /*  Variable: CtrlType
-   *  Control type. 
-   *  Type: string  
+   *  Control type.
+   *  Type: string
    */
   obj.CtrlType = type;
 
   /*  Variable: CtrlInheritedFrom
-   *  Control inheritance info. 
-   *  Type: array  
+   *  Control inheritance info.
+   *  Type: array
    */
   obj.CtrlInheritedFrom = [ ];
 
   /*  Variable: BaseClassName
-   *  Control CSS base class. 
-   *  Type: string  
+   *  Control CSS base class.
+   *  Type: string
    */
   obj.BaseClassName = type;
 
   /*  Variable: Enabled
-   *  Controls whether the control responds to mouse, keyboard. 
-   *  Type: bool  
+   *  Controls whether the control responds to mouse, keyboard.
+   *  Type: bool
    */
   obj.Enabled = true;
 
   /*  Variable: Visible
-   *  Determines whether the control is visible. 
-   *  Type: bool  
+   *  Determines whether the control is visible.
+   *  Type: bool
    */
   obj.Visible = true;
 
   /*  Variable: Bounds
-   *  Specifies the position of the control. 
+   *  Specifies the position of the control.
    *  Type: object
    */
   obj.Bounds = new Object;
@@ -2146,24 +2146,24 @@ function ngControl(obj, id, type)
   /*  Variable: Owner
    *  If present, contains reference to object which holds reference to the
    *  control.
-   *  Type: object   
+   *  Type: object
    */
   //obj.Owner = null;
   /*  Variable: ParentControl
    *  If present, contains reference to the parent of the control.
-   *  Type: object   
+   *  Type: object
    */
   //obj.ParentControl = null;
 
   /*  Variable: ChildControls
    *  If present, contains references to child controls.
-   *  Type: array  
+   *  Type: array
    */
   //obj.ChildControls = new Array();
   /*  Variable: Gestures
-   *  If present, the properties of object represents gestures and values 
+   *  If present, the properties of object represents gestures and values
    *  specifies if gesture is enabled or not (true/false).
-   *  Type: object  
+   *  Type: object
    */
   //obj.Gestures = undefined;
 
@@ -2171,277 +2171,277 @@ function ngControl(obj, id, type)
   /*
    *  Group: Methods
    */
-  
+
   /*  Function: Enable
-   *  Enables control.   
-   *   
+   *  Enables control.
+   *
    *  Syntax:
    *    void *Enable* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Enable = ngc_Enable;
 
   /*  Function: Disable
-   *  Disables control.   
-   *   
+   *  Disables control.
+   *
    *  Syntax:
    *    void *Disable* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Disable = ngc_Disable;
 
   /*  Function: SetEnabled
-   *  Sets enabled state of the control.   
-   *   
+   *  Sets enabled state of the control.
+   *
    *  Syntax:
    *    void *SetEnabled* (bool enabled [, object parent])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetEnabled = ngc_SetEnabled;
 
   /*  Function: SetVisible
-   *  Sets control visibility.   
-   *   
+   *  Sets control visibility.
+   *
    *  Syntax:
    *    void *SetVisible* (bool visible)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetVisible = ngc_SetVisible;
 
   /*  Function: SetFocus
-   *  Sets focus on the control.   
-   *   
+   *  Sets focus on the control.
+   *
    *  Syntax:
    *    void *SetFocus* ([bool state=true])
-   *     
-   *  Parameters:              
-   *    state - control is focused if TRUE or blured if FALSE    
-   *     
+   *
+   *  Parameters:
+   *    state - control is focused if TRUE or blured if FALSE
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetFocus = ngc_SetFocus;
 
   /*  Function: Elm
    *  Gets access to container DIV element object.
-   *   
+   *
    *  Syntax:
    *    object *Elm* ()
-   *   
+   *
    *  Returns:
-   *    Element object.     
+   *    Element object.
    */
   obj.Elm = ngc_Elm;
-    
+
   /*  Function: CtrlInheritsFrom
    *  Checks if control is inherited from given type.
-   *   
+   *
    *  Syntax:
    *    bool *CtrlInheritsFrom* (string type)
-   *   
+   *
    *  Returns:
-   *    TRUE if control is an ancestor of given type.      
+   *    TRUE if control is an ancestor of given type.
    */
   obj.CtrlInheritsFrom = ngc_CtrlInheritsFrom;
-  
+
   /*  Function: Create
    *  Creates control DIV container.
-   *   
+   *
    *  Syntax:
    *    void *Create* (props, ref)
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Create = ngc_Create;
 
   /*  Function: Dispose
-   *  Destroys the control.     
-   *   
+   *  Destroys the control.
+   *
    *  Syntax:
    *    void *Dispose* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Dispose = ngc_Dispose;
 
   /*  Function: SetBounds
-   *  Updates or sets position of the control.   
-   *   
+   *  Updates or sets position of the control.
+   *
    *  Syntax:
    *    void *SetBounds* ([object props])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetBounds = ngc_SetBounds;
 
   /*  Function: SetScrollBars
-   *  Sets scroll bars apperance.   
-   *   
+   *  Sets scroll bars apperance.
+   *
    *  Syntax:
    *    void *SetScrollBars* (integer type)
-   *     
+   *
    *  Parameters:
-   *    type - ssNone, ssAuto, ssBoth, ssVertical, ssHorizontal   
-   *   
+   *    type - ssNone, ssAuto, ssBoth, ssVertical, ssHorizontal
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetScrollBars = ngc_SetScrollBars;
   /*  Function: SetPopup
-   *  Sets if control work as popup.   
-   *   
+   *  Sets if control work as popup.
+   *
    *  Syntax:
    *    void *SetPopup* (bool state)
-   *     
+   *
    *  Parameters:
-   *    state - if TRUE, control work as popup      
-   *   
+   *    state - if TRUE, control work as popup
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetPopup = ngc_SetPopup;
   /*  Function: SetOpacity
-   *  Sets control opacity.   
-   *   
+   *  Sets control opacity.
+   *
    *  Syntax:
    *    void *SetOpacity* (double opacity)
-   *     
+   *
    *  Parameters:
-   *    opacity - control opacity from interval <0,1>   
-   *   
+   *    opacity - control opacity from interval <0,1>
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetOpacity = ngc_SetOpacity;
-  
+
   /*  Function: Align
    *  Aligns control to its position.
-   *      
+   *
    *  Syntax:
    *    int *Align* (object elm)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    Align flags.     
+   *    Align flags.
    */
   obj.Align = ngc_Align;
 
   /*  Function: Attach
    *  Attaches control to DIV container.
-   *   
+   *
    *  Syntax:
    *    void *Attach* ([mixed id])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Attach = ngc_Attach;
 
   /*  Function: Release
-   *  Clears control's DIV container.    
-   *   
+   *  Clears control's DIV container.
+   *
    *  Syntax:
    *    void *Release* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Release = ngc_Release;
 
   /*  Function: Update
-   *  Redraws control.   
-   *   
+   *  Redraws control.
+   *
    *  Syntax:
    *    void *Update* (bool recursive)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Update = ngc_Update;
-  
+
   /*
    *  Group: Events
    */
   /*  Function: AddEvent
-   *  Adds new function to the event handler (callback).   
-   *   
+   *  Adds new function to the event handler (callback).
+   *
    *  Syntax:
    *    void *AddEvent* (string event, function handler)
-   *    
+   *
    *    void *AddEvent* (function handler, string event)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.AddEvent = ngObjAddEvent;
   /*  Function: RemoveEvent
-   *  Removes function from the event handler (callback).   
-   *   
+   *  Removes function from the event handler (callback).
+   *
    *  Syntax:
    *    void *RemoveEvent* (string event, function handler)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.RemoveEvent = ngObjRemoveEvent;
 
   /*
    *  Event: OnSetEnabled
-   */     
+   */
   obj.OnSetEnabled     = null;
   /*
    *  Event: OnEnabledChanged
-   */     
+   */
   obj.OnEnabledChanged = null;
   /*
    *  Event: OnSetVisible
-   */     
+   */
   obj.OnSetVisible     = null;
   /*
    *  Event: OnVisibleChanged
-   */     
+   */
   obj.OnVisibleChanged = null;
   /*
    *  Event: OnUpdate
-   */     
+   */
   obj.OnUpdate         = null;
   /*
    *  Event: OnUpdated
-   */     
+   */
   obj.OnUpdated        = null;
   /*
    *  Event: OnMouseEnter
@@ -2457,7 +2457,7 @@ function ngControl(obj, id, type)
 function ngcs_Create(props, ref)
 {
   var id=ngVal(props.ID,'');
-  if(id=='') 
+  if(id=='')
   {
     if(typeof props.Data === 'object') id=ngVal(props.Data.ID,'');
     if(id=='') id=ngCreateControlId(props.Type);
@@ -2465,23 +2465,23 @@ function ngcs_Create(props, ref)
   this.ID=id;
   if(id!='') ngControlsIDs[id]=this;
 
-  if(this.DoCreate) this.DoCreate(props, ref);  
+  if(this.DoCreate) this.DoCreate(props, ref);
   if(props.OnCreated) props.OnCreated(this, ref);
   return null;
 }
 
 /**
  *  Class: ngSysControl
- *  This is an abstract class for all non-visual controls. 
+ *  This is an abstract class for all non-visual controls.
  *
  *  Syntax:
  *    new *ngSysControl* (object obj, string id, string ctrltype)
- *    
+ *
  *  Parameters:
  *    obj - implementation of control object
  *    id - control ID
  *    ctrltype -  control type
- */    
+ */
 function ngSysControl(obj, id, type)
 {
   /*
@@ -2492,40 +2492,40 @@ function ngSysControl(obj, id, type)
    *  Control identificator.
    *  Type: string
    */
-  obj.ID = ngVal(id,''); 
+  obj.ID = ngVal(id,'');
 
   /*  Variable: CtrlType
-   *  Control type. 
-   *  Type: string  
+   *  Control type.
+   *  Type: string
    */
   obj.CtrlType = type;
   /*  Variable: CtrlInheritedFrom
-   *  Control inheritance info. 
-   *  Type: array  
+   *  Control inheritance info.
+   *  Type: array
    */
   obj.CtrlInheritedFrom = [ ];
 
   /*  Variable: Enabled
-   *  Controls whether the control responds to mouse, keyboard. 
-   *  Type: bool  
+   *  Controls whether the control responds to mouse, keyboard.
+   *  Type: bool
    */
   obj.Enabled = true;
 
   /*  Variable: Owner
    *  If present, contains reference to object which holds reference to the
    *  control.
-   *  Type: object   
+   *  Type: object
    */
   //obj.Owner = null;
   /*  Variable: ParentControl
    *  If present, contains reference to the parent of the control.
-   *  Type: object   
+   *  Type: object
    */
   //obj.ParentControl = null;
 
   /*  Variable: ChildControls
    *  If present, contains references to child controls.
-   *  Type: array  
+   *  Type: array
    */
   //obj.ChildControls = new Array();
 
@@ -2533,127 +2533,127 @@ function ngSysControl(obj, id, type)
   /*
    *  Group: Methods
    */
-  
+
   /*  Function: CtrlInheritsFrom
    *  Checks if control is inherited from given type.
-   *   
+   *
    *  Syntax:
    *    bool *CtrlInheritsFrom* (string type)
-   *   
+   *
    *  Returns:
-   *    TRUE if control is an ancestor of given type.      
+   *    TRUE if control is an ancestor of given type.
    */
   obj.CtrlInheritsFrom = ngc_CtrlInheritsFrom;
   /*  Function: Enable
-   *  Enables control.   
-   *   
+   *  Enables control.
+   *
    *  Syntax:
    *    void *Enable* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Enable = ngc_Enable;
 
   /*  Function: Disable
-   *  Disables control.   
-   *   
+   *  Disables control.
+   *
    *  Syntax:
    *    void *Disable* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Disable = ngc_Disable;
 
   /*  Function: SetEnabled
-   *  Sets enabled state of the control.   
-   *   
+   *  Sets enabled state of the control.
+   *
    *  Syntax:
    *    void *SetEnabled* (bool enabled [, object parent])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.SetEnabled = ngc_SetEnabled;
 
   /*  Function: Elm
    *  Gets access to container DIV element object.
-   *   
+   *
    *  Syntax:
    *    object *Elm* ()
-   *   
+   *
    *  Returns:
-   *    Element object.     
+   *    Element object.
    */
   obj.Elm = function() { return null; }
-    
+
   /*  Function: Create
    *  Creates control.
-   *   
+   *
    *  Syntax:
    *    void *Create* (props, ref)
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Create = ngcs_Create;
   /*  Function: Dispose
-   *  Destroys the control.     
-   *   
+   *  Destroys the control.
+   *
    *  Syntax:
    *    void *Dispose* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.Dispose = ngc_Dispose;
-  
+
   /*
    *  Group: Events
    */
   /*  Function: AddEvent
-   *  Adds new function to the event handler (callback).   
-   *   
+   *  Adds new function to the event handler (callback).
+   *
    *  Syntax:
    *    void *AddEvent* (string event, function handler)
-   *    
+   *
    *    void *AddEvent* (function handler, string event)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.AddEvent = ngObjAddEvent;
   /*  Function: RemoveEvent
-   *  Removes function from the event handler (callback).   
-   *   
+   *  Removes function from the event handler (callback).
+   *
    *  Syntax:
    *    void *RemoveEvent* (string event, function handler)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   obj.RemoveEvent = ngObjRemoveEvent;
 
   /*
    *  Event: OnSetEnabled
-   */     
+   */
   obj.OnSetEnabled     = null;
   /*
    *  Event: OnEnabledChanged
-   */     
+   */
   obj.OnEnabledChanged = null;
 }
 
@@ -2686,13 +2686,13 @@ function ngSavePropState(parentobj, prop, recursive, states)
 {
   if(!parentobj) return null;
   if(typeof prop==='undefined') prop='Enabled';
-  if(typeof states==='undefined') 
+  if(typeof states==='undefined')
   {
     states=new Object;
     states['_Prop']=prop;
     states['_Parent']=parentobj;
   }
-  
+
   var v=parentobj[prop];
   states[parentobj.ID]=v;
   if((ngVal(recursive,false))&&(typeof parentobj.ChildControls !== 'undefined'))
@@ -2703,7 +2703,7 @@ function ngSavePropState(parentobj, prop, recursive, states)
       ngSavePropState(parentobj.ChildControls[i],prop,true,states);
     }
   }
-  return states;  
+  return states;
 }
 
 function ngRestorePropState(states, update)
@@ -2748,14 +2748,14 @@ function ngc_HidePopups()
   {
     var dd=ngc_ActivePopups[popupgrp];
     if(dd) ngc_HidePopup(dd);
-  } 
-} 
+  }
+}
 
 function ngc_GetPopupGroup(ctrl)
 {
   var popupgrp=ctrl.PopupGroup;
   if((typeof popupgrp==='undefined')||(popupgrp=='')) popupgrp='default';
-  return popupgrp; 
+  return popupgrp;
 }
 
 function ngc_HidePopup(ctrl)
@@ -2769,7 +2769,7 @@ function ngc_HidePopup(ctrl)
   {
     ctrl.SetVisible(false);
     if(!ctrl.Visible) ret=true;
-    if((ret)&&(ngc_ActivePopups[popupgrp]===ctrl)) // safe check if SetVisible don't call ngc_DeactivatePopup 
+    if((ret)&&(ngc_ActivePopups[popupgrp]===ctrl)) // safe check if SetVisible don't call ngc_DeactivatePopup
       ngc_ActivePopups[popupgrp]=null;
   }
   return ret;
@@ -2779,7 +2779,7 @@ function ngc_DeactivatePopup(ctrl)
 {
   if(!ctrl) return;
   var popupgrp=ngc_GetPopupGroup(ctrl);
-  
+
   var dd=ngc_ActivePopups[popupgrp];
   if(dd===ctrl) ngc_ActivePopups[popupgrp]=null;
 }
@@ -2800,13 +2800,13 @@ function ngc_ActivatePopup(ctrl)
   if(!ngc_PopupsInitialized)
   {
     ngc_PopupsInitialized=true;
-                                 
+
     function onmousewheel(e)
     {
       for(var popupgrp in ngc_ActivePopups)
       {
         var dd=ngc_ActivePopups[popupgrp];
-        if(dd) 
+        if(dd)
         {
           if (!e) e = window.event;
           var t = e.target || e.srcElement || e.originalTarget;
@@ -2814,13 +2814,13 @@ function ngc_ActivatePopup(ctrl)
           if(t)
           {
             if((!dd.OnIsInsidePopup)||(!ngVal(dd.OnIsInsidePopup(dd,t,1,e),true)))
-            {  
+            {
               if(typeof dd.IsInsidePopup === 'function')
               {
                 if(!ngVal(dd.IsInsidePopup(t,1,e),true)) t=null;
               }
               else
-              { 
+              {
                 var ad=(dd ? dd.Elm() : null);
                 while(t)
                 {
@@ -2834,25 +2834,20 @@ function ngc_ActivatePopup(ctrl)
         }
       }
     }
-    
-    function onresize(e) 
-    {
-      ngc_HidePopups();
-    }
-    
+
     function onpointerdown(pi)
     {
       var ret=true;
       for(var popupgrp in ngc_ActivePopups)
       {
         var dd=ngc_ActivePopups[popupgrp];
-        if(dd) 
+        if(dd)
         {
           var t=pi.GetTarget();
-          if(t) 
+          if(t)
           {
             if(t)
-            {  
+            {
               if((!dd.OnIsInsidePopup)||(!ngVal(dd.OnIsInsidePopup(dd,t,0,pi),true)))
               {
                 if(typeof dd.IsInsidePopup === 'function')
@@ -2860,7 +2855,7 @@ function ngc_ActivatePopup(ctrl)
                   if(!ngVal(dd.IsInsidePopup(t,0,pi),true)) t=null;
                 }
                 else
-                { 
+                {
                   var ad=(dd ? dd.Elm() : null);
                   while(t)
                   {
@@ -2879,31 +2874,30 @@ function ngc_ActivatePopup(ctrl)
               else if((!dd.OnClickOutside)||(ngVal(dd.OnClickOutside(dd,pi),false)))
                 ngc_HidePopup(dd);
               ret=false;
-              ng_DocumentDeselect();  
+              ng_DocumentDeselect();
               pi.EventPreventDefault();
               pi.StopPropagation=true;
               ngc_disabledocselect(pi.StartElement);
             }
           }
-        }      
+        }
       }
-      return ret;  
-    }    
+      return ret;
+    }
 
     document.onmousewheel = ngAddEvent(document.onmousewheel, onmousewheel);
-    if (window.addEventListener) 
-      window.addEventListener('DOMMouseScroll', onmousewheel, false);    
-    window.onresize = ngAddEvent(window.onresize, onresize);  
+    if (window.addEventListener)
+      window.addEventListener('DOMMouseScroll', onmousewheel, false);
     ngOnPointerDown = ngAddEvent(ngOnPointerDown,onpointerdown);
   }
-  
+
   var dd=ngc_ActivePopups[popupgrp];
   if(typeof dd==='undefined') // not initialized
   {
     ngc_ActivePopups[popupgrp]=null;
     dd=null;
   }
-  if(dd!==ctrl) ngc_HidePopup(dd); 
+  if(dd!==ctrl) ngc_HidePopup(dd);
   if(ngc_ActivePopups[popupgrp]!==null) return false; // cannot hide previous Popup
 
   ngc_ActivePopups[popupgrp]=ctrl;
@@ -2912,7 +2906,7 @@ function ngc_ActivatePopup(ctrl)
 
 // --- Pointer events ----------------------------------------------------------
 
-var ngOnPointerDown = null; 
+var ngOnPointerDown = null;
 
 var ngDblClickMouseTimeout = 500;
 var ngDblClickMouseThreshold = 10;
@@ -2935,7 +2929,7 @@ function ngc_enabledocselect()
   {
     ngc_docselectinfo=null;
     if(typeof dsi.oldonselect != 'undefined') document.onselectstart=dsi.oldonselect;
-    if(dsi.elm) dsi.elm.style.MozUserSelect=dsi.oldmozuserselect;    
+    if(dsi.elm) dsi.elm.style.MozUserSelect=dsi.oldmozuserselect;
   }
 }
 
@@ -2960,13 +2954,13 @@ function ngc_ptrevignore(e)
   if((e)&&(e.gesture)) e=e.gesture.srcEvent;
   if((e)&&(ngIExplorerVersion<=8)) {
     e={ ts: new Date().getTime(),
-        type: e.type, 
+        type: e.type,
         button: e.button,
-        clientX: e.clientX, 
+        clientX: e.clientX,
         clientY: e.clientY,
         altKey: e.altKey,
         ctrlKey: e.ctrlKey,
-        srcElement: e.srcElement 
+        srcElement: e.srcElement
       }
   }
   ngPtrIgnoredEvent=e;
@@ -2981,7 +2975,7 @@ function ngc_ptrevisignored(e)
     if(ie===e) return true;
     if(ngIExplorerVersion<=8) {
       // in IE<=8 window.event returns always new instance :(
-      if((ie.type===e.type)&&(ie.clientX===e.clientX)&&(ie.clientY===e.clientY)&&(ie.altKey===e.altKey)&&(ie.ctrlKey===e.ctrlKey)&&(ie.srcElement===e.srcElement)&&(ie.button===e.button)) 
+      if((ie.type===e.type)&&(ie.clientX===e.clientX)&&(ie.clientY===e.clientY)&&(ie.altKey===e.altKey)&&(ie.ctrlKey===e.ctrlKey)&&(ie.srcElement===e.srcElement)&&(ie.button===e.button))
       {
         if((new Date().getTime()-ie.ts)<500) return true;
       }
@@ -2989,7 +2983,7 @@ function ngc_ptrevisignored(e)
   }
   return false;
 }
-  
+
 function ngc_ptrstart(c, eid, elm, e, gestures)
 {
   if(!e) e = window.event;
@@ -3000,7 +2994,7 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
   ngUsingTouch=touch;
 
   if((!e.gesture)&&((e.button!=0) && (!ngIExplorer || e.button!=1))) // not left click
-    return;        
+    return;
 
   var pos=ngc_DoGetPointerPos(c,e,null);
 
@@ -3021,47 +3015,47 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
     }
     return this.Target;
   }
-  
+
   function gettargetctrl(type)
   {
     var ot=this.Target;
     var target=this.GetTarget();
-    if(typeof type!=='undefined') 
+    if(typeof type!=='undefined')
       return ngGetControlByElement(target,type);
-      
-    if((!this.TargetControl)||(ot!==this.Target))      
+
+    if((!this.TargetControl)||(ot!==this.Target))
       this.TargetControl=ngGetControlByElement(target);
     return this.TargetControl;
   }
 
   function inelm(p,ielm)
-  {                                         
+  {
     var t=p.GetTarget();
     var tc;
     while(t)
     {
       if(t==ielm) return true;
       tc=ngGetControlById(t.id);
-      if(tc) 
+      if(tc)
       {
-        p.TargetControl=tc;        
+        p.TargetControl=tc;
         break;
       }
       t=t.parentNode;
     }
     return false;
-  }    
+  }
 
   function insrcelm()
   {
     return inelm(this,this.SrcElement);
   }
-  
+
   function indstelm()
   {
     return inelm(this,this.DstElement);
   }
-  
+
   function preventdefault()
   {
     if(e) {
@@ -3076,7 +3070,7 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       }
     }
   }
-  
+
   function stoppropagation()
   {
     var e=this.Event;
@@ -3086,18 +3080,18 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       else e.cancelBubble = true;
     }
   }
-  var pi={ 
+  var pi={
       Owner: c,
       X: pos.x,
       Y: pos.y,
       StartX: pos.x,
-      StartY: pos.y,        
+      StartY: pos.y,
       StartElement: elm,
       StartTime: new Date().getTime(),
       StartEvent: e,
       StartEventID: eid,
       Event: e,
-      EventID: eid,        
+      EventID: eid,
       CanFocus: true,
       Gestures: ng_CopyVar(gestures),
       Touch: touch,
@@ -3107,51 +3101,51 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       SrcTarget: e.target || e.srcElement || e.originalTarget,
       SrcElement: elm,
       DstElement: elm,
-      IsInSrcElement: insrcelm,           
+      IsInSrcElement: insrcelm,
       IsInDstElement: indstelm,
       PreventDefault: true,
       PreventSelect: true,
       DocumentDeselect: true,
       //StopPropagation: undefined,
-      EventPreventDefault: preventdefault, 
+      EventPreventDefault: preventdefault,
       EventStopPropagation: stoppropagation,
-      OnGesture: null,          
+      OnGesture: null,
       OnPointerUp: null
-  };    
+  };
   if(pi.SrcTarget)
   {
     if(pi.SrcTarget.onclick) pi.PreventDefault=false;
-    else 
+    else
     {
       if(ng_CanFocusElm(pi.SrcTarget)) pi.PreventDefault=false;
       if(ng_CanSelectElm(pi.SrcTarget)) pi.PreventSelect=false;
     }
   }
 
-  if((ngOnPointerDown)&&(!ngVal(ngOnPointerDown(pi),false))) 
+  if((ngOnPointerDown)&&(!ngVal(ngOnPointerDown(pi),false)))
   {
     if(pi.StopPropagation) ngc_ptrevignore(e);
     return;
   }
-  if(c) 
+  if(c)
   {
     var dci=c.DblClickInfo;
-    if(dci) 
+    if(dci)
     {
       var threshold = (pi.Touch ? ngDblClickTouchThreshold : ngDblClickMouseThreshold);
       if((Math.abs(pi.X-dci.X)<threshold)&&(Math.abs(pi.Y-dci.Y)<threshold))
-      {            
+      {
         if(dci.Timer) clearTimeout(dci.Timer);
         pi.DblClickInfo=dci;
       }
       delete c.DblClickInfo;
     }
-    if((c.DoPointerDown)&&(!ngVal(c.DoPointerDown(pi),false))) 
+    if((c.DoPointerDown)&&(!ngVal(c.DoPointerDown(pi),false)))
     {
       if(pi.StopPropagation) ngc_ptrevignore(e);
       return;
     }
-    if((c.OnPointerDown)&&(!ngVal(c.OnPointerDown(c, pi),false))) 
+    if((c.OnPointerDown)&&(!ngVal(c.OnPointerDown(c, pi),false)))
     {
       if(pi.StopPropagation) ngc_ptrevignore(e);
       return;
@@ -3159,30 +3153,30 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
     if(c.Enabled)
     {
       ngCurrentPtrControl=c;
-  
+
       c.PointerInfo = pi;
-      if(touch) 
+      if(touch)
       {
         c.Touching = true;
         delete c.MouseDown;
-      } 
-      else 
+      }
+      else
       {
         c.MouseDown = true;
         delete c.Touching;
       }
     }
-    if(pi.Touch) 
-    {  
+    if(pi.Touch)
+    {
       ngc_Enter(e, elm, c.CtrlType);
     }
     if(c.Enabled)
-    {    
+    {
       if(c.DoPtrStart) c.DoPtrStart(pi);
       if(c.OnPtrStart) c.OnPtrStart(c, pi);
     }
   }
-  if((pi.CanFocus)&&(pi.PreventDefault)) 
+  if((pi.CanFocus)&&(pi.PreventDefault))
   {
     var ai=document.activeElement;
     var doblur=true;
@@ -3201,14 +3195,14 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
           }
         }
         else p.focus();
-        doblur=false; 
+        doblur=false;
         break;
       }
       if(p==ai) {doblur=false; break;}
       p=p.parentNode;
-    }            
+    }
     if((doblur)&&(ai)) ai.blur();
-  }            
+  }
   if(pi.DocumentDeselect) ng_DocumentDeselect();
   if(pi.PreventSelect) ngc_disabledocselect(pi.StartElement);
   if(pi.PreventDefault) pi.EventPreventDefault();
@@ -3223,7 +3217,7 @@ function ngc_ptrend(e)
   {
     ngCurrentPtrControl = null;
   }
-  else    
+  else
   {
     c=ngCurrentPtrDblClick; // IE<9 doesn't fire MouseDown on double click
     if(!c) return false;
@@ -3233,40 +3227,40 @@ function ngc_ptrend(e)
 
   ngc_ptrevignore(null);
   ngCurrentPtrDblClick = null;
-  
+
   var pi=c.PointerInfo;
-  if(pi) 
+  if(pi)
   {
     pi.Event=e;
     pi.EndEvent=e;
     pi.EndEventID=pi.EventID;
-    c.GetPointerPos(e);    
+    c.GetPointerPos(e);
     pi.EndX=pi.X;
     pi.EndY=pi.Y;
     pi.EndTime=new Date().getTime();
-    if((pi.Touch)&&(c.MouseInControl)) 
+    if((pi.Touch)&&(c.MouseInControl))
     {
       ngc_Leave(e, pi.StartElement, c.CtrlType);
     }
   }
-  
+
   var ret=false;
   if(pi.OnPointerUp) pi.OnPointerUp(pi);
-  
-  if((!c.OnPointerUp)||(ngVal(c.OnPointerUp(c, pi),false))) 
+
+  if((!c.OnPointerUp)||(ngVal(c.OnPointerUp(c, pi),false)))
   {
-    ret=true;             
+    ret=true;
 
     if((pi)&&((pi.Gestures.tap)||(pi.Gestures.doubletap)))
-    { 
+    {
       if((pi.GetTargetControl()==c)||(pi.EndTime-pi.StartTime<200))
       {
         var dci=null;
-        if((pi.Gestures.doubletap)&&(c.DoPtrDblClick)) 
+        if((pi.Gestures.doubletap)&&(c.DoPtrDblClick))
         {
           dci=pi.DblClickInfo;
           if(!dci)
-          {          
+          {
             if(typeof pi.Click === 'undefined') pi.Click=true;
             if(pi.DblClick!==false) {
               dci={
@@ -3280,7 +3274,7 @@ function ngc_ptrend(e)
           }
           else
           {
-            ngCurrentPtrDblClick=null; 
+            ngCurrentPtrDblClick=null;
             if(dci.Timer) clearTimeout(dci.Timer);
 
             pi.DblClickStartTime=dci.StartTime;
@@ -3289,7 +3283,7 @@ function ngc_ptrend(e)
 
             // clear selection caused by double click
             ng_DocumentDeselect();
-            
+
             if(typeof pi.DblClick === 'undefined') pi.DblClick=true;
 
             dci=null;
@@ -3301,7 +3295,7 @@ function ngc_ptrend(e)
 
     if(c.DoPtrEnd) c.DoPtrEnd(pi);
     if(c.OnPtrEnd) c.OnPtrEnd(c, pi);
-    
+
     var doclick=((pi.Click)&&(c.DoPtrClick));
     if(dci)
     {
@@ -3310,11 +3304,11 @@ function ngc_ptrend(e)
       dci.Timer=setTimeout(function () {
         clearTimeout(dci.Timer);
         delete c.DblClickInfo;
-        ngCurrentPtrDblClick=null; 
+        ngCurrentPtrDblClick=null;
         if((doclick)&&(c.DoPtrClick)) c.DoPtrClick(pi);
       },Math.round((pi.Touch ? ngDblClickTouchTimeout : ngDblClickMouseTimeout)/2));
     }
-    else 
+    else
     {
       if(doclick)
       {
@@ -3324,44 +3318,44 @@ function ngc_ptrend(e)
         },1);
       }
     }
-              
-    if((pi.DblClick)&&(c.DoPtrDblClick)) 
+
+    if((pi.DblClick)&&(c.DoPtrDblClick))
     {
       c.DoPtrDblClick(pi);
-    }        
+    }
   }
   delete c.MouseDown;
   delete c.Touching;
   return ret;
 }
-             
+
 function ngc_HandleScrollGesture(c,pi,elm)
 {
-  if(pi.Gesture==='drag') 
+  if(pi.Gesture==='drag')
   {
     var dx=Math.round(pi.X-pi.StartX);
     var dy=Math.round(pi.Y-pi.StartY);
     if((dx)||(dy)) {
-    
+
       if(typeof pi.ScrollControl === 'undefined')
       {
         var e=(elm ? elm : c.Elm());
         if(!e) return false;
-               
+
         var st;
-        if(elm) 
+        if(elm)
         {
           if(typeof e.sbtype!=='undefined') st=e.sbtype; // has saved scroll bar type (Android)
           else
-          { 
+          {
             st=ng_GetScrollBars(e);
             if(ngAndroid) e.sbtype=st; // ScrollBars are set to ssNone on Android, save scroll bar type
           }
         }
         else
-        {         
+        {
           st=c.ScrollBars;
-          if(typeof st==='undefined') {                                        
+          if(typeof st==='undefined') {
             st=ng_GetScrollBars(e);
             c.ScrollBars=st;
           }
@@ -3377,16 +3371,16 @@ function ngc_HandleScrollGesture(c,pi,elm)
         if((e.scrollHeight > e.clientHeight)||(e.scrollWidth > e.clientWidth)) // has overflow content
         {
           var ost=e.scrollTop;
-          var osl=e.scrollLeft;      
-  
+          var osl=e.scrollLeft;
+
           if((st===ssAuto)||(st===ssBoth)||(st===ssHorizontal))
             e.scrollLeft=osl-dx;
           if((st===ssAuto)||(st===ssBoth)||(st===ssVertical))
             e.scrollTop=ost-dy;
-  
+
           pi.ScrollControl = c;
           pi.ScrollElm  = e;
-          pi.ScrollTop  = ost;      
+          pi.ScrollTop  = ost;
           pi.ScrollLeft = osl;
           pi.ScrollType=st;
           return true;
@@ -3397,7 +3391,7 @@ function ngc_HandleScrollGesture(c,pi,elm)
         {
           var st=pi.ScrollType;
           if(st===ssNone) return false;
-          
+
           var stop,sleft;
           if((st===ssAuto)||(st===ssBoth)||(st===ssHorizontal))
             sleft = pi.ScrollLeft-dx;
@@ -3405,7 +3399,7 @@ function ngc_HandleScrollGesture(c,pi,elm)
             stop = pi.ScrollTop -dy;
           if(sleft<0) sleft=0;
           if(stop<0) stop=0;
-            
+
           if(((typeof sleft!=='undefined')||(typeof stop!=='undefined'))
            &&((sleft != pi.ScrollLeft)||(stop != pi.ScrollTop)))
           {
@@ -3414,10 +3408,10 @@ function ngc_HandleScrollGesture(c,pi,elm)
               clearTimeout(pi.ScrollTimer); pi.ScrollTimer=null;
               if(typeof stop!=='undefined') pi.ScrollElm.scrollTop=stop;
               if(typeof sleft!=='undefined') pi.ScrollElm.scrollLeft=sleft;
-            },1);            
+            },1);
           }
 
-          if((Math.abs(dx)>20)||(Math.abs(dy)>20)) 
+          if((Math.abs(dx)>20)||(Math.abs(dy)>20))
           {
             delete pi.Gestures.tap;
             delete pi.Gestures.doubletap;
@@ -3440,39 +3434,39 @@ function ngc_HandleScrollGesture(c,pi,elm)
   }
   return false;
 }
-             
+
 function ngc_ptrgesture(e,gesture)
 {
   if(e.ngGestureHandled) return false;
 
   var c=ngCurrentPtrControl;
   if(!c) return false;
-  
+
   var pi=c.PointerInfo;
   if(!pi) return false;
-   
+
   gesture=ngVal(gesture,e.type);
 
   pi.Event=e;
   pi.Gesture=gesture;
-  
+
   if(pi.OnGesture) pi.OnGesture(pi);
 
   var ret=false;
-  if(gesture==='drag') 
+  if(gesture==='drag')
   {
     if(!c.Visible)
     {
       ngc_ptrend(e);
       return false;
     }
-    c.GetPointerPos(e);    
+    c.GetPointerPos(e);
     if(pi.Touch)
     {
       var tc=pi.GetTargetControl();
       if((c.MouseInControl)&&(tc!=c))  ngc_Leave(e, c.Elm(), c.CtrlType);
       if((!c.MouseInControl)&&(tc==c)) ngc_Enter(e, c.Elm(), c.CtrlType);
-    }                
+    }
     if(pi.Gestures.drag)
     {
       if(c.DoPtrDrag) ret=ngVal(c.DoPtrDrag(pi),true);
@@ -3481,7 +3475,7 @@ function ngc_ptrgesture(e,gesture)
     }
   }
 
-  if(!pi.Touch) 
+  if(!pi.Touch)
   {
     if(typeof ngAcceptMouseGestures !== 'undefined') {
       if(!ngAcceptMouseGestures) return false;
@@ -3495,8 +3489,8 @@ function ngc_ptrgesture(e,gesture)
     while((p)&&(pi.Gesture!=''))
     {
       accept=true;
-      if((typeof p.AcceptGestures !== 'undefined')&&(!p.AcceptGestures)) accept=false;             
-      if(!pi.Touch) 
+      if((typeof p.AcceptGestures !== 'undefined')&&(!p.AcceptGestures)) accept=false;
+      if(!pi.Touch)
       {
         if(typeof p.AcceptMouseGestures !== 'undefined') {
           if(!p.AcceptMouseGestures) accept=false;
@@ -3509,13 +3503,13 @@ function ngc_ptrgesture(e,gesture)
         if(p.OnGesture) ret=ngVal(p.OnGesture(p,pi),true) || ret;
         if(!ret) ret=ngc_HandleScrollGesture(p,pi);
         if(ret) break;
-      }    
+      }
       p=p.ParentControl;
     }
-    if(ret) e.ngGestureHandled=true; 
+    if(ret) e.ngGestureHandled=true;
   }
-  finally 
-  {  
+  finally
+  {
     delete pi.Gesture;
   }
   return ret;
@@ -3531,7 +3525,7 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
   if(typeof eid==='undefined') eid='';
 
   if(c.DoAcceptPtrGestures) c.DoAcceptPtrGestures(elm,eid,gestures,ev);
-  
+
   var gstates={};
   for(var i=0;i<gestures.length;i++)
   {
@@ -3567,8 +3561,8 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
   {
     elm.ngpointers={}; // must be object for IE<8 which serialize 'common' element property values into innerHTML
     if(!ngPointersInitialized) ngc_InitPointers();
-    if(!c.GetPointerPos) c.GetPointerPos = ngc_GetPointerPos;    
-  
+    if(!c.GetPointerPos) c.GetPointerPos = ngc_GetPointerPos;
+
     if(ngHammerJS()) // HammerJS library is present
     {
       var opts={ drag_min_distance : 1, hold_threshold: 30 };
@@ -3584,11 +3578,11 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
       {
         Hammer.defaults.stop_browser_behavior.userSelect=ous;
       }
-  
+
       function touch(e)
-      {           
+      {
         if(!e.gesture) return;
-                
+
         switch(e.type)
         {
           case 'touch':
@@ -3609,13 +3603,13 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
             break;
         }
       }
-      for(var t=0; t<gestures.length; t++) 
+      for(var t=0; t<gestures.length; t++)
           elm.addEventListener(gestures[t], touch, false);
 
       if(ev)
-      {    
+      {
         // Check if hammer is not already registered on some parent node,
-        // if yes, event delegation is not needed 
+        // if yes, event delegation is not needed
         var found=false;
         var p=elm.parentNode;
         while(p)
@@ -3628,15 +3622,15 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
       }
     }
     else
-    {    
-      if(!ev) 
+    {
+      if(!ev)
       {
         if(elm.addEventListener) { // W3C DOM
           elm.addEventListener('mousedown',mousedown,false);
         }
-        else 
-        if(elm.attachEvent) // IE DOM 
-        {  
+        else
+        if(elm.attachEvent) // IE DOM
+        {
           elm.attachEvent("onmousedown",mousedown);
         }
         else { // No much to do
@@ -3645,14 +3639,14 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
       }
     }
   }
-  
+
   if(ev) mousedown(ev);
 }
 
 function ngc_PtrEvents(c, eid, gestures, elm)
 {
   if(!c) return '';
-  
+
   if(typeof gestures === 'undefined') gestures='';
   else if(typeof gestures!=='string') gestures=gestures.join(' ');
   if(typeof eid==='undefined') eid='';
@@ -3670,9 +3664,9 @@ function ngc_PtrEvents(c, eid, gestures, elm)
     if(elm.addEventListener) { // W3C DOM
       elm.addEventListener(evs[k],mousedown,false);
     }
-    else 
-    if(elm.attachEvent) // IE DOM 
-    {  
+    else
+    if(elm.attachEvent) // IE DOM
+    {
       elm.attachEvent('on'+evs[k],mousedown);
     }
     else { // No much to do
@@ -3684,12 +3678,12 @@ function ngc_PtrEvents(c, eid, gestures, elm)
 function ngc_PtrEventsHTML(c, eid, gestures)
 {
   if(!c) return '';
-  
+
   if(typeof gestures === 'undefined') gestures='';
   else if(typeof gestures!=='string') gestures=gestures.join(' ');
   if(typeof eid==='undefined') eid='';
 
-  if(!c.GetPointerPos) c.GetPointerPos = ngc_GetPointerPos;    
+  if(!c.GetPointerPos) c.GetPointerPos = ngc_GetPointerPos;
   return ngPtrHTMLStartEvents('','ngc_ptrev(event,this,\''+gestures+'\',\''+eid+'\')');
 }
 
@@ -3702,19 +3696,19 @@ function ngc_ptrev(e,elm,gestures,eid)
   if(!e) e = window.event;
   ngc_PtrListener(c, elm, eid, gestures, e);
 }
-  
-function ngc_DoGetPointerPos(c,e,pi) 
+
+function ngc_DoGetPointerPos(c,e,pi)
 {
   var ret;
   if (!e) e = window.event;
   if (!e) return;
   if((c)&&(typeof pi === 'undefined')) pi=c.PointerInfo;
-  
+
   if((e.gesture)&&(Hammer)) // Hammer event
   {
     var px=e.gesture.center.pageX;
     var py=e.gesture.center.pageY;
-    if(c) 
+    if(c)
     {
       if(e.gesture.pointerType===Hammer.POINTER_MOUSE)
       {
@@ -3724,19 +3718,19 @@ function ngc_DoGetPointerPos(c,e,pi)
       else
       {
         c.TouchX=px;
-        c.TouchY=py;    
+        c.TouchY=py;
       }
     }
     if(pi) {
       pi.X=px;
       pi.Y=py;
     }
-    return new ScreenPt(px,py);      
+    return new ScreenPt(px,py);
   }
   else
   {
     var ox,oy;
-    
+
     if(c) {
       ox = c.MouseX;
       oy = c.MouseY;
@@ -3745,33 +3739,33 @@ function ngc_DoGetPointerPos(c,e,pi)
       ox = 0;
       oy = 0;
     }
-    
+
     var px = (e.clientX ? e.clientX : e.offsetX);
     var py = (e.clientY ? e.clientY : e.offsetY);
 
     // IE fix, include frame size if not in fullscreen
-    if((ngIExplorer)&&(ngIExplorerVersion<=7)&&(screen.width>document.body.offsetWidth)) // fixed in IE8  
+    if((ngIExplorer)&&(ngIExplorerVersion<=7)&&(screen.width>document.body.offsetWidth)) // fixed in IE8
     {
       px-=2;
       py-=2;
     }
     // firefox fix:
-    if(isNaN(px)) px=ox;                    
+    if(isNaN(px)) px=ox;
     if(isNaN(py)) py=oy;
-    
+
     if(c) {
-      c.MouseX = px; 
+      c.MouseX = px;
       c.MouseY = py;
     }
     if(pi) {
       pi.X=px;
       pi.Y=py;
-    }                    
-    return new ScreenPt(px,py);      
-  }                    
+    }
+    return new ScreenPt(px,py);
+  }
 }
 
-function ngc_GetPointerPos(e) 
+function ngc_GetPointerPos(e)
 {
   return ngc_DoGetPointerPos(this,e)
 }
@@ -3786,12 +3780,12 @@ function ngc_InitPointers()
     {
       ngc_ptrstart(null, 'document', document.body, e, ['touch']);
     }
-    
+
     function mouse_up(e)
     {
       ngc_ptrend(e);
     }
-    
+
     function mouse_move(e)
     {
       var c=ngCurrentPtrControl;
@@ -3808,20 +3802,20 @@ function ngc_InitPointers()
         ngc_ptrgesture(e,'drag');
       }
     }
-    
+
     function mouse_out(e)
     {
       if (!e) e = window.event;
-    
-      if((ngCurrentPtrControl)&&(!ngIExplorer)&&(!e.relatedTarget)) // moved outside window, stop mousedown  
+
+      if((ngCurrentPtrControl)&&(!ngIExplorer)&&(!e.relatedTarget)) // moved outside window, stop mousedown
       {
         mouse_up(e);
       }
       return true;
     }
-    
+
     document.onmousedown   = ngAddEvent(doc_mouse_down, document.onmousedown); // handle top-level/document mouse down
-    document.onmousemove   = ngAddEvent(mouse_move, document.onmousemove); 
+    document.onmousemove   = ngAddEvent(mouse_move, document.onmousemove);
     document.onmouseup     = ngAddEvent(mouse_up, document.onmouseup);
     document.onmouseout    = ngAddEvent(document.onmouseout, mouse_out);
   }
@@ -3832,9 +3826,9 @@ function ngc_InitPointers()
       if((e.gesture)&&(e.type==='touch'))
         ngc_ptrstart(null,'document',document.body,e,['touch']);
     }
-    document.hammer=Hammer(document); 
+    document.hammer=Hammer(document);
     document.addEventListener('touch', touch, false); // handle top-level/document touch
-  }  
+  }
   ngPointersInitialized = true;
 }
 
@@ -3844,7 +3838,7 @@ function ngc_ChangeImage(dp)
 {
   ng_SwapImageHTML(dp.id, dp.aL, dp.aT);
   var o=document.getElementById(dp.id);
-  if(o) 
+  if(o)
   {
     if((dp.L!=dp.oL)||(dp.T!=dp.oT))
     {
@@ -3861,7 +3855,7 @@ function ngc_ChangeImage(dp)
       if(!ng_nullAttr(o.getAttribute('oT'))) o.setAttribute('oT','');
     }
     return true;
-  }          
+  }
   return false;
 }
 
@@ -3883,7 +3877,7 @@ function ngc_ChangeImg(id,state,enabled,image)
   {
     var dp=ngc_ImgProps(id, state, enabled, image);
     ngc_ChangeImage(dp);
-  }  
+  }
 }
 
 function ngc_ChangeImgS(id,state,enabled,image)
@@ -3892,7 +3886,7 @@ function ngc_ChangeImgS(id,state,enabled,image)
   {
     var dp=ngc_ImgProps(id, state, enabled, image);
     ngc_ChangeImageS(dp);
-  }  
+  }
 }
 
 function ngc_ChangeBox(id,state,enabled,images)
@@ -3906,7 +3900,7 @@ function ngc_ChangeBox(id,state,enabled,images)
     ngc_ChangeImgS(id+'_R',state,enabled,images.Right);
   if(typeof images.Bottom !== 'undefined')
     ngc_ChangeImgS(id+'_B',state,enabled,images.Bottom);
-  if(typeof images.LeftTop !== 'undefined') 
+  if(typeof images.LeftTop !== 'undefined')
     ngc_ChangeImg(id+'_LT',state,enabled,images.LeftTop);
   if(typeof images.RightTop !== 'undefined')
     ngc_ChangeImg(id+'_RT',state,enabled,images.RightTop);
@@ -3999,36 +3993,36 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
   var ltstyle,tstyle,rtstyle,lstyle,rstyle,lbstyle,bstyle,rbstyle,cstyle;
   var ltattrs,tattrs,rtattrs,lattrs,rattrs,lbattrs,battrs,rbattrs,cattrs;
   var sz,d1,d2;
-  
+
   var noimg = {L:0,T:0,aL:0,aT:0,oT:0,oL:0,W:0,H:0};
   var gstyle='position:absolute;';
   if(typeof style==='string') gstyle+=style;
   if(typeof style==='object')
   {
-    ltstyle=ngVal(style.LeftTop,''); 
-    tstyle=ngVal(style.Top,''); 
-    rtstyle=ngVal(style.RightTop,''); 
-    lstyle=ngVal(style.Left,''); 
-    rstyle=ngVal(style.Right,''); 
-    lbstyle=ngVal(style.LeftBottom,''); 
-    bstyle=ngVal(style.Bottom,''); 
-    rbstyle=ngVal(style.RightBottom,''); 
-    cstyle=ngVal(style.Content,''); 
+    ltstyle=ngVal(style.LeftTop,'');
+    tstyle=ngVal(style.Top,'');
+    rtstyle=ngVal(style.RightTop,'');
+    lstyle=ngVal(style.Left,'');
+    rstyle=ngVal(style.Right,'');
+    lbstyle=ngVal(style.LeftBottom,'');
+    bstyle=ngVal(style.Bottom,'');
+    rbstyle=ngVal(style.RightBottom,'');
+    cstyle=ngVal(style.Content,'');
   }
   else ltstyle=tstyle=rtstyle=lstyle=rstyle=lbstyle=bstyle=rbstyle=cstyle='';
   var gattrs='';
   if(typeof attrs==='string') gattrs+=attrs;
   if(typeof attrs==='object')
   {
-    ltattrs=ngVal(attrs.LeftTop,''); 
-    tattrs=ngVal(attrs.Top,''); 
-    rtattrs=ngVal(attrs.RightTop,''); 
-    lattrs=ngVal(attrs.Left,''); 
-    rattrs=ngVal(attrs.Right,''); 
-    lbattrs=ngVal(attrs.LeftBottom,''); 
-    battrs=ngVal(attrs.Bottom,''); 
-    rbattrs=ngVal(attrs.RightBottom,''); 
-    cattrs=ngVal(attrs.Content,''); 
+    ltattrs=ngVal(attrs.LeftTop,'');
+    tattrs=ngVal(attrs.Top,'');
+    rtattrs=ngVal(attrs.RightTop,'');
+    lattrs=ngVal(attrs.Left,'');
+    rattrs=ngVal(attrs.Right,'');
+    lbattrs=ngVal(attrs.LeftBottom,'');
+    battrs=ngVal(attrs.Bottom,'');
+    rbattrs=ngVal(attrs.RightBottom,'');
+    cattrs=ngVal(attrs.Content,'');
   }
   else ltattrs=tattrs=rtattrs=lattrs=rattrs=lbattrs=battrs=rbattrs=cattrs='';
 
@@ -4058,7 +4052,7 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
     dp.RightTop.W-=d2;
     dp.RightTop.L+=d2;
     dp.RightTop.oL+=d2;
-    dp.RightTop.aL+=d2;        
+    dp.RightTop.aL+=d2;
   }
   sz=dp.LeftBottom.W+dp.RightBottom.W;
   if(sz>width)
@@ -4069,7 +4063,7 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
     dp.RightBottom.W-=d2;
     dp.RightBottom.L+=d2;
     dp.RightBottom.oL+=d2;
-    dp.RightBottom.aL+=d2;        
+    dp.RightBottom.aL+=d2;
   }
   sz=dp.LeftTop.H+dp.LeftBottom.H;
   if(sz>height)
@@ -4080,7 +4074,7 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
     dp.LeftBottom.H-=d2;
     dp.LeftBottom.T+=d2;
     dp.LeftBottom.oT+=d2;
-    dp.LeftBottom.aT+=d2;        
+    dp.LeftBottom.aT+=d2;
   }
   sz=dp.RightTop.H+dp.RightBottom.H;
   if(sz>height)
@@ -4091,12 +4085,12 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
     dp.RightBottom.H-=d2;
     dp.RightBottom.T+=d2;
     dp.RightBottom.oT+=d2;
-    dp.RightBottom.aT+=d2;        
+    dp.RightBottom.aT+=d2;
   }
-  
+
   img=dp.LeftTop;
   if(img.W) ngc_Img(html,img,gstyle+ltstyle+"left:"+left+"px;top: "+top+"px;",gattrs+ltattrs);
-  
+
   img=dp.Top;
   if(img.H) ngc_ImgSW(html,img,dp.LeftTop.W,(width-dp.LeftTop.W-dp.RightTop.W),gstyle+tstyle+"top: "+top+"px;",gattrs+tattrs);
 
@@ -4111,19 +4105,19 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
 
   img=dp.LeftBottom;
   if(img.W) ngc_Img(html,img,gstyle+lbstyle+"left:"+left+"px;top: "+(top+height-img.H)+"px;",gattrs+lbattrs);
-  
+
   img=dp.Bottom;
   if(img.H) ngc_ImgSW(html,img,dp.LeftBottom.W,(width-dp.LeftBottom.W-dp.RightBottom.W),gstyle+bstyle+"top: "+(top+height-img.H)+"px;",gattrs+battrs);
 
   img=dp.RightBottom;
   if(img.W) ngc_Img(html,img,gstyle+rbstyle+"left:"+(left+width-img.W)+"px;top: "+(top+height-img.H)+"px;",gattrs+rbattrs);
-  
+
   if(typeof innerHTML !== 'undefined')
   {
     html.append('<div id="'+id+'_CB" style="'+gstyle+cstyle+'left:'+(left+dp.Left.W)+'px;top:'+(top+dp.Top.H)+'px;width:'+(width-dp.Left.W-dp.Right.W)+'px;height:'+(height-dp.Top.H-dp.Bottom.H)+'px;" '+gattrs+cattrs+'>');
     html.append(innerHTML);
     html.append('</div>');
-  }  
+  }
 }
 
 function ngc_ImgProps(id, s, enabled, o)
@@ -4137,7 +4131,7 @@ function ngc_ImgProps(id, s, enabled, o)
   {
     switch(s)
     {
-      case 0: 
+      case 0:
       case false:
         v.L=o.DL; v.T=o.DT;
         v.oL=o.oDL; v.oT=o.oDT;
@@ -4156,7 +4150,7 @@ function ngc_ImgProps(id, s, enabled, o)
     v.T=ngVal(v.T, o.DT);
     v.oL=ngVal(v.oL, o.oDL);
     v.oT=ngVal(v.oT, o.oDT);
-    
+
     if((typeof v.L === 'undefined')&&(typeof v.T === 'undefined')) enabled=true;
     else
     {
@@ -4168,7 +4162,7 @@ function ngc_ImgProps(id, s, enabled, o)
   {
     switch(s)
     {
-      case 0: 
+      case 0:
       case false:
         v.L=o.L; v.T=o.T;
         v.oL=o.oL; v.oT=o.oT;
@@ -4190,7 +4184,7 @@ function ngc_ImgProps(id, s, enabled, o)
   }
   v.oL=ngVal(v.oL, v.L);
   v.oT=ngVal(v.oT, v.T);
-  
+
   v.aL=v.L; v.aT=v.T;
 
   return v;
@@ -4211,7 +4205,7 @@ function nga_Elm()
 {
   var appid=ngVal(this.ElmID,'ngApp');
   if(appid=='') appid='ngApp';
-  
+
   var o=document.getElementById(appid);
   if(!o) o=document.body;
   return o;
@@ -4240,18 +4234,18 @@ function nga_DoRunFinal()
   if((ngApp.OnRun)&&(!ngVal(ngApp.OnRun(),false))) return;
 
   if(typeof ngMain === 'function') ngMain();
-  
+
   ngApp.SetOnParamsChanged = nga_SetOnParamsChanged;
   ngApp.SetOnParamsChanged(ngApp.OnParamsChanged);
-  
+
   if(ngApp.OnRunFinished) ngApp.OnRunFinished();
   if(ngApp.OnRunInternalFinished) ngApp.OnRunInternalFinished();
 
   var o=document.getElementById('ngAppLoading');
-  if(o) o.className='ngAppLoaded'; 
+  if(o) o.className='ngAppLoaded';
 
   // IE7 Fix redraw
-  var fix7=document.body.offsetLeft;  
+  var fix7=document.body.offsetLeft;
 }
 
 function nga_DoRun()
@@ -4261,7 +4255,7 @@ function nga_DoRun()
   // Language detection
   var lng=ngVal(ngApp.StartParams.Lang,'');
   if(lng=='') lng=ngVal(ng_GET('lang'),'');
-  
+
   if(lng=='cs') lng='cz';
   if((lng=='')||(typeof ngc_Lang[lng]==='undefined'))
   {
@@ -4270,7 +4264,7 @@ function nga_DoRun()
     else if (navigator.language) // FF
       lng = navigator.language;
     if(lng=='cs') lng='cz';
-    if((lng=='')||(typeof ngc_Lang[lng]==='undefined')) 
+    if((lng=='')||(typeof ngc_Lang[lng]==='undefined'))
     {
       if((lng=='cz')&&(typeof ngc_Lang['sk']!=='undefined')) lng='sk';
       else
@@ -4284,7 +4278,7 @@ function nga_DoRun()
 
   // Controls version check
   var reqver,reqsubver;
-  if(typeof ngApp.StartParams.ReqControlsVer === 'undefined') 
+  if(typeof ngApp.StartParams.ReqControlsVer === 'undefined')
   {
     reqver=ngControlsVer;
     reqsubver=ngControlsSubVer;
@@ -4298,10 +4292,10 @@ function nga_DoRun()
   {
     var o=document.getElementById('ngAppLoading');
     if(o) o.style.display='none';
-        
+
     alert(ng_sprintf(ngTxt('ngAppOldControlsVersion'),reqver,reqsubver,ngControlsVer,ngControlsSubVer));
     return;
-  }  
+  }
 
   ng_PreloadImagesBegin();
   ngControlImages=ng_URL(ngControlImages);
@@ -4309,7 +4303,7 @@ function nga_DoRun()
   if(ngControlImages!='') ng_PreloadImage(ngControlImages);
 
   try{ window.focus(); } catch(e) { } // FF3 fix
-  
+
   if(typeof ngInit === 'function') ngInit();
   ng_PreloadImagesEnd(nga_DoRunFinal);
 }
@@ -4338,57 +4332,57 @@ function ng_SetBounds(o,props)
   var bottom=props.B;
   var width=props.W;
   var height=props.H;
-  
+
   if(typeof left === 'number')   left+='px';
   if(typeof right === 'number')  right+='px';
   if(typeof top === 'number')    top+='px';
   if(typeof bottom === 'number') bottom+='px';
   if(typeof width === 'number')  width =(width <=0 ? '0px' : width+'px');
-  if(typeof height === 'number') height=(height<=0 ? '0px' : height+'px'); 
+  if(typeof height === 'number') height=(height<=0 ? '0px' : height+'px');
 
   if(typeof top !== 'undefined') o.style.top=top;
   else o.style.top='';
   if(typeof left !== 'undefined') o.style.left=left;
   else o.style.left='';
-  
-  if((typeof props.B !== 'undefined')||(typeof props.R !== 'undefined')) 
+
+  if((typeof props.B !== 'undefined')||(typeof props.R !== 'undefined'))
   {
     if(ngIExplorer6)
     {
       var alignfix=ngVal(props.IE6AlignFix, ngIE6AlignFix);
       if((typeof props.B !== 'undefined')&&((alignfix)||(typeof props.T !== 'undefined')))
-      {          
+      {
         if((typeof props.T === 'undefined')||(typeof props.H === 'undefined'))
         {
-          if(typeof props.T !== 'undefined') o.setAttribute('FT',props.T); 
-          else if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT',''); 
+          if(typeof props.T !== 'undefined') o.setAttribute('FT',props.T);
+          else if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT','');
           if(typeof props.B !== 'undefined') o.setAttribute('FB',props.B);
           else if(!ng_nullAttr(o.getAttribute('FB'))) o.setAttribute('FB','');
-        } 
+        }
       }
       else
       {
-        if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT',''); 
-        if(!ng_nullAttr(o.getAttribute('FB'))) o.setAttribute('FB',''); 
+        if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT','');
+        if(!ng_nullAttr(o.getAttribute('FB'))) o.setAttribute('FB','');
 
         if(typeof bottom !== 'undefined') o.style.bottom=bottom;
         else o.style.bottom='';
       }
-       
+
       if((typeof props.R !== 'undefined')&&((alignfix)||(typeof props.L !== 'undefined')))
-      {          
+      {
         if((typeof props.L === 'undefined')||(typeof props.W === 'undefined'))
         {
-          if(typeof props.L !== 'undefined') o.setAttribute('FL',props.L); 
-          else if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL',''); 
+          if(typeof props.L !== 'undefined') o.setAttribute('FL',props.L);
+          else if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL','');
           if(typeof props.R !== 'undefined') o.setAttribute('FR',props.R);
           else if(!ng_nullAttr(o.getAttribute('FR'))) o.setAttribute('FR','');
-        } 
+        }
       }
       else
       {
-        if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL',''); 
-        if(!ng_nullAttr(o.getAttribute('FR'))) o.setAttribute('FR',''); 
+        if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL','');
+        if(!ng_nullAttr(o.getAttribute('FR'))) o.setAttribute('FR','');
 
         if(typeof right !== 'undefined') o.style.right=right;
         else o.style.right='';
@@ -4404,10 +4398,10 @@ function ng_SetBounds(o,props)
   }
   else
   {
-    if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT',''); 
-    if(!ng_nullAttr(o.getAttribute('FB'))) o.setAttribute('FB',''); 
-    if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL',''); 
-    if(!ng_nullAttr(o.getAttribute('FR'))) o.setAttribute('FR',''); 
+    if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT','');
+    if(!ng_nullAttr(o.getAttribute('FB'))) o.setAttribute('FB','');
+    if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL','');
+    if(!ng_nullAttr(o.getAttribute('FR'))) o.setAttribute('FR','');
   }
   if(typeof width !== 'undefined') o.style.width=width;
   else o.style.width='';
@@ -4426,28 +4420,28 @@ var ngAutoResizeTimer=null;
 function ng_StartAutoResize(o,ref)
 {
   if(typeof o === 'string') o=document.getElementById(o);
-  if((!o)||(o.id=='')) return;  
+  if((!o)||(o.id=='')) return;
 
-  if(!ngAutoResize) ngAutoResize=new Array(); 
-  if(!ngAutoResizeRefs) ngAutoResizeRefs=new Array(); 
-  if(typeof ngAutoResize[o.id] === 'undefined') 
+  if(!ngAutoResize) ngAutoResize=new Array();
+  if(!ngAutoResizeRefs) ngAutoResizeRefs=new Array();
+  if(typeof ngAutoResize[o.id] === 'undefined')
   {
     ngAutoResizeCnt++;
     ngAutoResize[o.id]=ngAutoRSync;
   }
   var r=ngAutoResizeRefs[o.id];
-  if(typeof r === 'undefined') 
+  if(typeof r === 'undefined')
   {
     r=new Array;
     ngAutoResizeRefs[o.id]=r;
   }
-  r[ref]=true;     
+  r[ref]=true;
 }
 
 function ng_EndAutoResize(o,ref)
 {
   if(typeof o === 'string') o=document.getElementById(o);
-  if((!o)||(o.id=='')) return;  
+  if((!o)||(o.id=='')) return;
 
   if((ngAutoResize)&&(typeof ngAutoResize[o.id] !== 'undefined'))
   {
@@ -4470,7 +4464,7 @@ function ng_EndAutoResize(o,ref)
 function ng_SetAutoResize(o)
 {
   if(typeof o === 'string') o=document.getElementById(o);
-  if((!o)||(o.id=='')) return;  
+  if((!o)||(o.id=='')) return;
   var r=o.getAttribute('FR');
   var b=o.getAttribute('FB');
   if((!ng_nullAttr(r))||(!ng_nullAttr(b))||((o.style.left!='')&&(o.style.right!=''))||((o.style.top!='')&&(o.style.bottom!='')))
@@ -4481,7 +4475,7 @@ function ng_SetAutoResize(o)
   else
   {
     ng_EndAutoResize(o,'bounds');
-  }  
+  }
 }
 
 function nga_OnResize(e)
@@ -4495,17 +4489,19 @@ function nga_OnResize(e)
   var ae=ngApp.Elm();
   if(ae)
   {
+    if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
+    delete ngApp.MobileKeyboardTimer;
+
     var aw=ng_ClientWidth(ae);
     var ah=ng_ClientHeight(ae);
     if((aw===ngApp.LastResizeW)&&(ah===ngApp.LastResizeH)) return;
 
-    if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
-    delete ngApp.MobileKeyboardTimer;    
-
     ngApp.LastResizeW=aw;
     ngApp.LastResizeH=ah;
   }
-  
+
+  ngc_HidePopups();
+
   if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
   if((ngApp.OnDeviceChanged)||((ngAutoResize)&&(ngAutoResizeCnt>0))) ngAutoResizeTimer=setTimeout("nga_DoResize()", 100);
 }
@@ -4513,7 +4509,7 @@ function nga_OnResize(e)
 function nga_DoResizeElement(id)
 {
   var o=document.getElementById(id);
-  if((!o)||(ngAutoResize[id]==ngAutoRSync)) return; 
+  if((!o)||(ngAutoResize[id]==ngAutoRSync)) return;
 
   var pobjs=new Array();
   var p=o.parentNode;
@@ -4522,12 +4518,12 @@ function nga_DoResizeElement(id)
     if(ngAutoResize[p.id]) pobjs[pobjs.length]=p.id;
     p=p.parentNode;
   }
-  
+
   for(var i=pobjs.length-1;i>=0;i--)
     nga_DoResizeElement(pobjs[i]);
-  
+
   c=ngGetControlById(id);
-  if(!c) 
+  if(!c)
   {
     r=ng_Align(o);
     ngAutoResize[id]=ngAutoRSync;
@@ -4536,7 +4532,7 @@ function nga_DoResizeElement(id)
   po=c.ParentControl;
   while(po)
   {
-    if(typeof ngAutoResize[po.ID] !== 'undefined') return; 
+    if(typeof ngAutoResize[po.ID] !== 'undefined') return;
     po=po.ParentControl;
   }
   nga_DoResizeControl(c,true);
@@ -4546,7 +4542,7 @@ function nga_DoResizeControl(c,doupdate)
 {
   var update=false;
   if(typeof ngAutoResize[c.ID] !== 'undefined')
-  { 
+  {
     if(doupdate)
     {
       var r=c.Align(c.ID);
@@ -4571,7 +4567,7 @@ function nga_DoResize(e)
     if(ngDevice!=device)
     {
       if(ngVal(ngApp.OnDeviceChanged(device),false))
-        ngDevice=device;    
+        ngDevice=device;
     }
   }
   if((!ngAutoResize)||(ngAutoResizeCnt<=0)) return;
@@ -4591,19 +4587,19 @@ function nga_sendRPCRequest(url,nocache)
 {
   var lngmodified=false,devmodified=false,dbgmodified=false;
   if(typeof this.Params === 'object')
-  {  
+  {
     if((typeof ngDevice !== 'undefined')&&(typeof this.Params.appdevice === 'undefined')) {
-      this.Params.appdevice=ngDevice;      
+      this.Params.appdevice=ngDevice;
       devmodified=true;
     }
-  
+
     if((typeof this.Params.lang === 'undefined')&&(typeof ngApp === 'object')) {
       this.Params.lang=ngApp.Lang;
       lngmodified=true;
     }
-    
+
     if((ngHASDEBUG())&&(typeof this.Params.appdebug === 'undefined')) {
-      this.Params.appdebug=ngDEBUG;      
+      this.Params.appdebug=ngDEBUG;
       dbgmodified=true;
     }
   }
@@ -4611,7 +4607,7 @@ function nga_sendRPCRequest(url,nocache)
   if(lngmodified) delete this.Params.lang;
   if(devmodified) delete this.Params.appdevice;
   if(dbgmodified) delete this.Params.appdebug;
-  
+
   return ret;
 }
 
@@ -4636,12 +4632,12 @@ function nga_BuildURLParams(url, type)
 
       t=ngVal(pi.Type, APPPARAM_URL);
       if(!(t & type)) continue;
-      
+
       v=this.Param(i);
       if(!ngVal(pi.Persist,false)) continue;
 
       client=t & APPPARAM_CLIENT;
-      if(typeof pi.Encode === 'function') 
+      if(typeof pi.Encode === 'function')
       {
         if((typeof v==='undefined')||(typeof v==='function')) continue;
         v=pi.Encode(i)+'='+pi.Encode(v);
@@ -4652,13 +4648,13 @@ function nga_BuildURLParams(url, type)
         else
         {
           if((typeof v==='undefined')||(typeof v==='function')) continue;
-                
-          if(client) v=ng_HashEncode(i)+'='+ng_HashEncode(v);          
+
+          if(client) v=ng_HashEncode(i)+'='+ng_HashEncode(v);
           else       v=ng_URLEncode(i)+'='+ng_URLEncode(v);
         }
       }
 
-      if((typeof v==='undefined')||(typeof v==='function')) continue;      
+      if((typeof v==='undefined')||(typeof v==='function')) continue;
       if(client)
       {
         if(hash!='') hash+='@';
@@ -4667,7 +4663,7 @@ function nga_BuildURLParams(url, type)
       else url=ng_AddURLParam(url,v)
     }
   }
-  if(hash!='') 
+  if(hash!='')
   {
     if(url.indexOf('#')!=-1) url=url+'@';
     else url=url+'#';
@@ -4710,14 +4706,14 @@ function nga_CallServerEx(url, params, nocache)
   if(url=='') return;
   var rpc=this.GetRPC();
   var oldparams=rpc.Params;
-  if(typeof params!=='undefined') rpc.Params=params;  
+  if(typeof params!=='undefined') rpc.Params=params;
   rpc.sendRequest(url, nocache);
   rpc.Params=oldparams;
 }
 
 function nga_Param(p)
 {
-  if(!this.params_parsed) 
+  if(!this.params_parsed)
   {
     this.params_parsed=true;
     this.ParseParams();
@@ -4729,7 +4725,7 @@ function nga_Param(p)
 
 function nga_SetParam(p, v, type)
 {
-  if(!this.params_parsed) 
+  if(!this.params_parsed)
   {
     this.params_parsed=true;
     this.ParseParams();
@@ -4742,7 +4738,7 @@ function nga_SetParam(p, v, type)
     return;
   }
   if(p=='') return;
-  
+
   this.BeginUpdateParams();
   if(this.OnSetParam) v=this.OnSetParam(this,p,v,type);
   var changed=false;
@@ -4750,7 +4746,7 @@ function nga_SetParam(p, v, type)
   ngURLParams[p] = v;
   if(typeof v === 'undefined')
   {
-    if(typeof this.ParamInfo !== 'undefined') 
+    if(typeof this.ParamInfo !== 'undefined')
     {
       var pi = this.ParamInfo[p];
       if(typeof pi !=='undefined' && (pi.Type & APPPARAM_CLIENT)&&(changed)) this.params_changed=true;
@@ -4799,7 +4795,7 @@ function nga_ParamType(p)
   if(typeof this.ParamInfo === 'undefined') return undefined;
   var pi = this.ParamInfo[p];
   if((typeof pi === 'undefined')||(!pi)) return undefined;
-  return ngVal(pi.Type,APPPARAM_URL); 
+  return ngVal(pi.Type,APPPARAM_URL);
 }
 
 function nga_PersistParam(p, v)
@@ -4812,7 +4808,7 @@ function nga_PersistParam(p, v)
   }
   if(p=='') return;
   v=ngVal(v,true);
-  
+
   if(typeof this.ParamInfo === 'undefined')
   {
     if(v) this.ParamInfo = new Array();
@@ -4882,10 +4878,10 @@ function nga_ParseParams(url)
   var i2=url.indexOf('#');
   var url1='';
   var url2='';
-  if(i2>=0) 
+  if(i2>=0)
   {
     url2=url.substr(i2+1);
-    url=url.substr(0,i2);  
+    url=url.substr(0,i2);
   }
   if(i1>=0) url1=url.substr(i1+1);
   var urlparams=nga_ParseParams2(url1,'&');
@@ -4901,23 +4897,23 @@ function nga_ParseParams(url)
   for(var i in urlparams)
   {
     pi = this.ParamInfo[i];
-    if(typeof pi === 'undefined') 
-    { 
+    if(typeof pi === 'undefined')
+    {
       pi=new Object;
       this.ParamInfo[i]=pi;
-    }  
+    }
     pi.Type=APPPARAM_URL;
 
     v=urlparams[i];
-    if(typeof pi.Decode === 'function') 
+    if(typeof pi.Decode === 'function')
     {
       if((typeof v==='undefined')||(typeof v==='function')) continue;
       v=pi.Decode(v);
-    }  
-    else 
+    }
+    else
     {
-      if(this.OnDecodeParam) v=this.OnDecodeParam(this, i, v); 
-      else 
+      if(this.OnDecodeParam) v=this.OnDecodeParam(this, i, v);
+      else
       {
         if((typeof v==='undefined')||(typeof v==='function')) continue;
         v=ng_unescape(v);
@@ -4930,23 +4926,23 @@ function nga_ParseParams(url)
   for(var i in clientparams)
   {
     pi = this.ParamInfo[i];
-    if(typeof pi === 'undefined') 
+    if(typeof pi === 'undefined')
     {
-      pi=new Object; 
+      pi=new Object;
       this.ParamInfo[i]=pi;
     }
     pi.Type=APPPARAM_CLIENT;
 
     v=clientparams[i];
-    if(typeof pi.Decode === 'function') 
+    if(typeof pi.Decode === 'function')
     {
       if((typeof v==='undefined')||(typeof v==='function')) continue;
       v=pi.Decode(v);
     }
-    else 
+    else
     {
-      if(this.OnDecodeParam) v=this.OnDecodeParam(this, i, v); 
-      else 
+      if(this.OnDecodeParam) v=this.OnDecodeParam(this, i, v);
+      else
       {
         if((typeof v==='undefined')||(typeof v==='function')) continue;
         v=ng_unescape(v);
@@ -4964,30 +4960,30 @@ function nga_UpdateParams()
 {
   this.params_changed=false;
   if(typeof this.ParamInfo === 'undefined') return;
-  
+
   var params='';
   var pi,v;
   for(var i in this.ParamInfo)
   {
     pi = this.ParamInfo[i];
-    if((typeof pi === 'undefined')||(!pi)) continue;    
+    if((typeof pi === 'undefined')||(!pi)) continue;
     if(!(ngVal(pi.Type,APPPARAM_URL)&APPPARAM_CLIENT)) continue;
     v=this.Param(i);
-    if(!ngVal(pi.Persist,false)) 
+    if(!ngVal(pi.Persist,false))
     {
       delete this.ParamInfo[i];
       delete ngURLParams[i];
       continue;
     }
-    if(typeof pi.Encode === 'function') 
+    if(typeof pi.Encode === 'function')
     {
       if((typeof v === 'undefined')||(typeof v === 'function')) continue;
       v=pi.Encode(i)+'='+pi.Encode(v);
     }
-    else 
+    else
     {
       if(this.OnEncodeParam) v=this.OnEncodeParam(this, i, v);
-      else 
+      else
       {
         if((typeof v === 'undefined')||(typeof v === 'function')) continue;
         v=ng_HashEncode(i)+'='+ng_HashEncode(v);
@@ -5012,24 +5008,24 @@ function nga_UpdateParams()
     var o=document.getElementById('ngAppHistFix');
     if((o)&&(ngIExplorer)) nga_WriteIFRAMEHistory(o,params);
     nga_CheckParamChange();
-  }    
+  }
 }
 
 function nga_WriteIFRAMEHistory(elm, hash)
 {
   if(ngWinStoreApp) return;
-  
+
   var doc=(elm.contentDocument ? elm.contentDocument : elm.contentWindow.document);
   if(doc)
   {
     doc.open();
     doc.write('<html><body onload="if(parent) { if(parent.window.location.hash!=\''+hash+'\') { parent.window.location.hash=\''+hash+'\'; parent.nga_CheckParamChange(); } }"></body></html>');
     doc.close();
-  }           
+  }
 }
 
 var nga_CheckParamChangeMode;
- 
+
 function nga_CheckParamChange()
 {
   if(typeof nga_CheckParamChangeMode==='undefined')
@@ -5040,13 +5036,13 @@ function nga_CheckParamChange()
       window.onhashchange = ngAddEvent(window.onhashchange,nga_CheckParamChange);
       nga_CheckParamChangeMode=1; // event
     }
-  }  
+  }
   if((typeof ngApp !== 'object') || (!ngApp)) return;
   if(ngApp.url_history_timer) clearTimeout(ngApp.url_history_timer); ngApp.url_history_timer=null;
   try
   {
     if(ngApp.LocationHash!=window.location.hash)
-    { 
+    {
       ngApp.DoParamsChanged();
     }
     if(!nga_CheckParamChangeMode)
@@ -5083,11 +5079,11 @@ function nga_InitParamsChanged()
       o=document.createElement("img");
       o.src="javascript:location.href='javascript:nga_CheckParamChange();';";
     }
-    if(o) 
+    if(o)
     {
       var parent=(typeof ngApp !== 'undefined' ? ngApp.Elm() : document.body);
 
-      o.id="ngAppHistFix";      
+      o.id="ngAppHistFix";
       o.style.visibility="hidden";
       o.style.position="absolute";
       o.style.left="0px";
@@ -5103,7 +5099,7 @@ function nga_InitParamsChanged()
 
 function nga_SetOnParamsChanged(fnc)
 {
-  this.OnParamsChanged=fnc;  
+  this.OnParamsChanged=fnc;
   if(typeof fnc === 'function') nga_InitParamsChanged();
 }
 
@@ -5119,14 +5115,14 @@ function nga_RegisterAPI(id, api, version, owner)
   if(typeof api !== 'object') return false;
   api.StrVersion=ngVal(version,ngVal(api.StrVersion,ngVal(''+api.Version,'1.0')));
   api.Version=nga_FloatVersion(api.StrVersion);
-    
-  if(typeof owner==='undefined') 
+
+  if(typeof owner==='undefined')
   {
     if((typeof ngCurModule !== 'undefined')&&(ngCurModule)) owner=ngCurModule;
     else owner=this;
   }
   if(typeof api.Owner==='undefined') api.Owner=owner;
-  
+
   var apidock=this.APIs[id];
   if(typeof apidock==='undefined')
   {
@@ -5137,10 +5133,10 @@ function nga_RegisterAPI(id, api, version, owner)
   }
   var lapi,i;
   for(i=0;i<apidock.Versions.length;i++)
-  {   
+  {
     lapi=apidock.Versions[i];
-    if(lapi.Version==api.Version)  
-    {  
+    if(lapi.Version==api.Version)
+    {
       if(lapi.Owner==api.Owner) // already exists
         return false;
       break;
@@ -5159,20 +5155,20 @@ function nga_UnregisterAPI(id, owner, version)
   if(ngVal(id,'')=='') return false;
   var apidock=this.APIs[id];
   if(typeof apidock==='undefined') return false;
-  
+
   version=ngVal(version,'');
-  
+
   if((typeof owner==='undefined')&&(version=='')) // delete all
   {
     delete this.APIs[id];
     return true;
   }
-  
-  var ver=(version!='' ? nga_FloatVersion(version) : 0); 
+
+  var ver=(version!='' ? nga_FloatVersion(version) : 0);
 
   var api,i,ret=false;
   for(var i=apidock.Versions.length-1;i>=0;i--)
-  {   
+  {
     api=apidock.Versions[i];
     if(((typeof owner!=='undefined')&&(api.Owner==owner))
     ||((version!='')&&(api.Version==ver)))
@@ -5193,14 +5189,14 @@ function nga_GetAPIAll(id, minreqversion, maxreqversion)
   var apis=apidock.Versions;
 
   if(!apis.length) return found; // no APIs versions
-  
+
   minreqversion=ngVal(minreqversion,'');
   maxreqversion=ngVal(maxreqversion,'');
 
   var j,api=null;
-  var minreqver=(minreqversion!='' ? nga_FloatVersion(minreqversion) : 0);  
-  var maxreqver=(maxreqversion!='' ? nga_FloatVersion(maxreqversion) : 0);  
-  var owners=new Array();  
+  var minreqver=(minreqversion!='' ? nga_FloatVersion(minreqversion) : 0);
+  var maxreqver=(maxreqversion!='' ? nga_FloatVersion(maxreqversion) : 0);
+  var owners=new Array();
   for(var i=0;i<apis.length;i++)
   {
     api=apis[i];
@@ -5221,13 +5217,13 @@ function nga_GetAPIAllByStrVersion(id, strver)
   var found=new Array();
   var apidock=this.APIs[id];
   if(typeof apidock==='undefined') return found; // API not exists
-  
+
   var j,api,apis=apidock.Versions;
-  var owners=new Array();  
+  var owners=new Array();
   for(var i=0;i<apis.length;i++)
   {
     api=apis[i];
-    if(api.StrVersion!=strver) continue; 
+    if(api.StrVersion!=strver) continue;
 
     for(j=owners.length-1;j>=0;j--)
       if(owners[j]==api.Owner) break;
@@ -5245,16 +5241,16 @@ function nga_GetAPI(id, minreqversion, maxreqversion)
   var apis=apidock.Versions;
 
   if(!apis.length) return null; // no APIs versions
-  
+
   minreqversion=ngVal(minreqversion,'');
   maxreqversion=ngVal(maxreqversion,'');
 
   if((minreqversion=='')&&(maxreqversion=='')) // take top most version
     return apis[0];
-  
+
   var api=null;
-  var minreqver=(minreqversion!='' ? nga_FloatVersion(minreqversion) : 0);  
-  var maxreqver=(maxreqversion!='' ? nga_FloatVersion(maxreqversion) : 0);  
+  var minreqver=(minreqversion!='' ? nga_FloatVersion(minreqversion) : 0);
+  var maxreqver=(maxreqversion!='' ? nga_FloatVersion(maxreqversion) : 0);
   for(var i=0;i<apis.length;i++)
   {
     api=apis[i];
@@ -5270,7 +5266,7 @@ function nga_GetAPIByStrVersion(id, strver)
 {
   var apidock=this.APIs[id];
   if(typeof apidock==='undefined') return null; // API not exists
-  
+
   var apis=apidock.Versions;
   for(var i=0;i<apis.length;i++)
     if(apis[i].StrVersion==strver) return apis[i];
@@ -5282,21 +5278,21 @@ function nga_ProcessInvokeLater()
   if(!ngApp) return;
   clearTimeout(ngApp.invokelater_timer);
   ngApp.invokelater_timer=null;
-  
+
   if(ngApp.invokelater_events.length>0)
   {
     var fnc=ngApp.invokelater_events[0];
     ngApp.invokelater_events.splice(0,1);
     if(typeof fnc==='function') fnc();
     if(ngApp.invokelater_events.length>0)
-      ngApp.invokelater_timer=setTimeout("nga_ProcessInvokeLater()",1);    
+      ngApp.invokelater_timer=setTimeout("nga_ProcessInvokeLater()",1);
   }
 }
 
 function nga_InvokeLater(fnc)
 {
   if(typeof fnc!=='function') return;
-  
+
   if(!this.invokelater_timer)
     this.invokelater_timer=setTimeout("nga_ProcessInvokeLater()",1);
   this.invokelater_events.push(fnc);
@@ -5304,14 +5300,14 @@ function nga_InvokeLater(fnc)
 
 /**
  *  Class: ngApplication
- *  This class encapsulates web application.  
+ *  This class encapsulates web application.
  *
  *  Syntax:
  *    new *ngApplication* ([object startparams = { }, string elm = 'ngApp', bool autorun=true])
- *    
+ *
  *  Parameters:
- *    startparams - application startup parameters 
- *    elm - application container DIV id 
+ *    startparams - application startup parameters
+ *    elm - application container DIV id
  *    autorun - run application after object creation
  */
 function ngApplication(startparams, elm, autorun)
@@ -5320,7 +5316,7 @@ function ngApplication(startparams, elm, autorun)
 
   if(typeof startparams !== 'undefined') this.StartParams=startparams;
   else this.StartParams=new Object;
-   
+
   if(ngIExplorer6) // fix background image cache in IE6
   {
     try {
@@ -5330,12 +5326,12 @@ function ngApplication(startparams, elm, autorun)
 
   /*
    *  Group: Properties
-   */  
+   */
   /*  Variable: AppPath
    *  ...
    *  Type: string
    */
-  this.AppPath='';    
+  this.AppPath='';
   try
   {
     var path=''+window.location.href;
@@ -5347,7 +5343,7 @@ function ngApplication(startparams, elm, autorun)
     if(i<0) i=path.lastIndexOf('.html');
     if(i<0) i=path.lastIndexOf('.asp');
     if(i<0) i=path.lastIndexOf('.jsp');
-    if(i>0) { 
+    if(i>0) {
       i=path.lastIndexOf('/'); // strip script name
       if(i>0)
       {
@@ -5369,7 +5365,7 @@ function ngApplication(startparams, elm, autorun)
   {
   }
 
-   
+
   /*  Variable: Lang
    *  ...
    *  Type: string
@@ -5381,7 +5377,7 @@ function ngApplication(startparams, elm, autorun)
    */
   if(typeof elm==='object') elm=elm.id;
   this.ElmID = ngVal(elm,'ngApp');
-  
+
   /*  Variable: StartParams
    *  ...
    *  Type: object
@@ -5409,248 +5405,248 @@ function ngApplication(startparams, elm, autorun)
    *  Group: Methods
    */
   /*  Function: GetLang
-   *  Gets existing application language.   
-   *   
+   *  Gets existing application language.
+   *
    *  Syntax:
    *    string *GetLang* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.GetLang=nga_GetLang;
   /*  Function: Text
-   *  Gets resource string by application language.   
-   *   
+   *  Gets resource string by application language.
+   *
    *  Syntax:
    *    string *Text* (string restext, string defval)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Text=nga_Text;
   /*  Function: Resource
-   *  Gets resource by application language.   
-   *   
+   *  Gets resource by application language.
+   *
    *  Syntax:
    *    object *Resource* (string resid)
-   *     
+   *
    *  Returns:
-   *    -     
-   */ 
+   *    -
+   */
   this.Resource=nga_Resource;
   /*  Function: Run
-   *  Executes the application.   
-   *   
+   *  Executes the application.
+   *
    *  Syntax:
    *    void *Run* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Run=nga_Run;
   /*  Function: SetTitle
-   *  Sets application title.   
-   *   
+   *  Sets application title.
+   *
    *  Syntax:
    *    void *SetTitle* (string restext)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetTitle=nga_SetTitle;
   /*  Function: MessageBox
-   *  Displays a message to user.    
-   *   
+   *  Displays a message to user.
+   *
    *  Syntax:
    *    bool *MessageBox* (string restext [, bool yesno=false])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.MessageBox=nga_MessageBox;
   /*  Function: Alert
-   *  Displays a message to user.    
-   *   
+   *  Displays a message to user.
+   *
    *  Syntax:
    *    void *Alert* (string restext)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Alert=nga_MessageBox;
   /*  Function: Confirm
-   *  Displays a message with Yes or No buttons to user.    
-   *   
+   *  Displays a message with Yes or No buttons to user.
+   *
    *  Syntax:
    *    bool *Confirm* (string restext)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Confirm=function(t) { return this.MessageBox(t,true); }
 
   this.params_parsed = false;
-  
+
   /*  Function: Param
-   *  Gets application input parameter (from URL).    
-   *   
+   *  Gets application input parameter (from URL).
+   *
    *  Syntax:
    *    string *Param* (string paramname)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Param = nga_Param;
 
   /*  Function: SetParam
-   *  Sets application parameter value (and optionaly its type).    
-   *   
+   *  Sets application parameter value (and optionaly its type).
+   *
    *  Syntax:
    *    void *SetParam* (mixed param, string value[, int type])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetParam = nga_SetParam;
   /*  Function: SetClientParam
-   *  Sets application client parameter value.    
-   *   
+   *  Sets application client parameter value.
+   *
    *  Syntax:
    *    void *SetClientParam* (mixed param, string value)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetClientParam = nga_SetClientParam;
   /*  Function: SetURLParam
-   *  Sets application URL parameter value.    
-   *   
+   *  Sets application URL parameter value.
+   *
    *  Syntax:
    *    void *SetURLParam* (mixed param, string value)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetURLParam = nga_SetURLParam;
   /*  Function: SetServerParam
-   *  Sets application server parameter value.    
-   *   
+   *  Sets application server parameter value.
+   *
    *  Syntax:
    *    void *SetServerParam* (mixed param, string value)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetServerParam = nga_SetServerParam;
 
   /*  Function: ParamType
-   *  Gets application parameter type.    
-   *   
+   *  Gets application parameter type.
+   *
    *  Syntax:
    *    enum *ParamType* (string paramname)
-   *     
+   *
    *  Constants:
    *    APPPARAM_SERVER - ...
    *    APPPARAM_CLIENT - ...
-   *    APPPARAM_URL - ...  
-   *        
+   *    APPPARAM_URL - ...
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.ParamType = nga_ParamType;
   /*  Function: SetParamType
-   *  Sets application parameter type.    
-   *   
+   *  Sets application parameter type.
+   *
    *  Syntax:
    *    void *SetParamType* (mixed param, enum paramtype)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetParamType=nga_SetParamType;
 
   /*  Function: SetParamEncodingFnc
-   *  Sets application parameter encoding and decoding functions.    
-   *   
+   *  Sets application parameter encoding and decoding functions.
+   *
    *  Syntax:
    *    void *SetParamEncodingFnc* (string paramname, function encodefnc, function decodefnc)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetParamEncodingFnc = nga_SetParamEncodingFnc;
 
   /*  Function: PersistParam
-   *  Sets application parameter persistence.    
-   *   
+   *  Sets application parameter persistence.
+   *
    *  Syntax:
    *    void *PersistParam* (mixed param [, bool persistent=true])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
-  this.PersistParam = nga_PersistParam; 
+  this.PersistParam = nga_PersistParam;
 
   /*  Function: ParseParams
-   *  Parse application parameters from browser's or given URL.    
-   *   
+   *  Parse application parameters from browser's or given URL.
+   *
    *  Syntax:
    *    void *ParseParams* ([string url])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.ParseParams = nga_ParseParams;
   /*  Function: UpdateParams
-   *  Update application client parameters.    
-   *   
+   *  Update application client parameters.
+   *
    *  Syntax:
    *    void *UpdateParams* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.UpdateParams = nga_UpdateParams;
   this.DoParamsChanged = nga_DoParamsChanged;
-  
+
   this.params_changed = false;
   this.params_update_cnt = 0;
   /*  Function: BeginUpdateParams
-   *  Prevents the updating of application client parameters until the <EndUpdateParams> method is called.    
-   *   
+   *  Prevents the updating of application client parameters until the <EndUpdateParams> method is called.
+   *
    *  Syntax:
    *    void *BeginUpdateParams* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.BeginUpdateParams = nga_BeginUpdateParams;
   /*  Function: EndUpdateParams
-   *  Performs application client parameters update deferred by a call to <BeginUpdateParams>.    
-   *   
+   *  Performs application client parameters update deferred by a call to <BeginUpdateParams>.
+   *
    *  Syntax:
    *    void *EndUpdateParams* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.EndUpdateParams = nga_EndUpdateParams;
-  
+
   this.url_history_timer=null;
   this.invokelater_events = new Array();
 
   /*  Function: InvokeLater
-   *  Invokes event after all remaining JavaScript code is executed 
+   *  Invokes event after all remaining JavaScript code is executed
    *  and flow is returned back to browser.
-   *   
+   *
    *  Syntax:
    *    void *InvokeLater* (function event)
-   *     
+   *
    *  Parameters:
-   *    event - event to be called   
-   *      
+   *    event - event to be called
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.InvokeLater=nga_InvokeLater;
 
@@ -5659,186 +5655,186 @@ function ngApplication(startparams, elm, autorun)
 
   /*  Function: Call
    *  Call application on another URL.
-   *   
+   *
    *  Syntax:
    *    void *Call* (string url)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Call=nga_Call;
-   
+
   this.RPC=null;
   this.CallServerURL = nga_CallServerURL;
-  
+
   ngOnRPCCreated=ngAddEvent(ngOnRPCCreated, nga_AddRPCLang);
-  
+
   /*  Function: CallServer
    *  Call server on specified URL.
-   *   
+   *
    *  Syntax:
    *    void *CallServer* (string url, bool nocache)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.CallServer=nga_CallServer;
   /*  Function: CallServerEx
    *  Call server on specified URL with parameters.
-   *   
+   *
    *  Syntax:
    *    void *CallServerEx* (string url, object parameters, bool nocache)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.CallServerEx=nga_CallServerEx;
   this.GetRPC=nga_GetRPC;
-  
+
   /*  Function: Elm
    *  Gets access to application container DIV element object.
-   *   
+   *
    *  Syntax:
    *    object *Elm* ()
-   *   
+   *
    *  Returns:
-   *    Element object.     
+   *    Element object.
    */
   this.Elm = nga_Elm;
-  
+
   this.AddEvent = ngObjAddEvent;
   this.RemoveEvent = ngObjRemoveEvent;
   this.SetOnParamsChanged = nga_SetOnParamsChanged2;
-  
+
   this.APIs = new Object;
 
   /*  Function: RegisterAPI
    *  Registers new application API.
-   *  
+   *
    *  Syntax:
    *    bool *RegisterAPI* (string id, object api, string version, mixed owner)
-   *              
+   *
    *  Returns:
-   *    TRUE if API was successfuly registered.      
+   *    TRUE if API was successfuly registered.
    */
   this.RegisterAPI = nga_RegisterAPI;
 
   /*  Function: UnregisterAPI
    *  Unregisters existing application API.
-   *  
+   *
    *  Syntax:
    *    bool *UnregisterAPI* (string id [, mixed owner, string version])
-   *              
+   *
    *  Returns:
-   *    TRUE if API was successfuly unregistered.      
+   *    TRUE if API was successfuly unregistered.
    */
   this.UnregisterAPI = nga_UnregisterAPI;
 
   /*  Function: GetAPI
    *  Gets application API by selected id.
-   *  
+   *
    *  Syntax:
    *    object *GetAPI* (string id [, string minreqversion, string maxreqversion])
-   *              
+   *
    *  Returns:
-   *    API object or null if not found.      
+   *    API object or null if not found.
    */
   this.GetAPI = nga_GetAPI;
 
   /*  Function: GetAPIAll
    *  Gets all application API by selected id.
-   *  
+   *
    *  Syntax:
    *    array *GetAPIAll* (string id [, string minreqversion, string maxreqversion])
-   *              
+   *
    *  Returns:
-   *    list of APIs      
+   *    list of APIs
    */
   this.GetAPIAll = nga_GetAPIAll;
 
   /*  Function: GetAPIByStrVersion
    *  Gets exact application API by its string version.
-   *  
+   *
    *  Syntax:
    *    object *GetAPIByStrVersion* (string id, string strversion)
-   *              
+   *
    *  Returns:
-   *    API object or null if not found.      
+   *    API object or null if not found.
    */
   this.GetAPIByStrVersion = nga_GetAPIByStrVersion;
 
   /*  Function: GetAPIAllByStrVersion
    *  Gets all APIs which matches exact string version.
-   *  
+   *
    *  Syntax:
    *    array *GetAPIAllByStrVersion* (string id, string strversion)
-   *              
+   *
    *  Returns:
-   *    list of APIs      
+   *    list of APIs
    */
   this.GetAPIAllByStrVersion = nga_GetAPIAllByStrVersion;
-  
+
   /*
    *  Group: Events
    */
   /*
    *  Event: OnRun
-   */     
+   */
   this.OnRun = null;
   /*
    *  Event: OnRunFinished
-   */     
+   */
   this.OnRunFinished = null;
   this.OnRunInternalFinished = null;
-  
+
   /*
    *  Event: OnParamsChanged
-   */     
+   */
   this.OnParamsChanged = null;
   this.OnInternalParamsChanged = null;
-  
+
   /*
    *  Event: OnSetParam
-   */     
+   */
   this.OnSetParam = null;
   /*
    *  Event: OnGetParam
-   */     
+   */
   this.OnGetParam = null;
   /*
    *  Event: OnDecodeParam
-   */     
+   */
   this.OnDecodeParam = null;
   /*
    *  Event: OnEncodeParam
-   */     
+   */
   this.OnEncodeParam = null;
-  
+
   /*
    *  Event: OnCallURL
-   */     
+   */
   this.OnCallURL = null;
   /*
    *  Event: OnCall
-   */     
+   */
   this.OnCall = null;
   /*
    *  Event: OnCallServerURL
-   */     
+   */
   this.OnCallServerURL = null;
   /*
    *  Event: OnServerCall
-   */     
+   */
   this.OnServerCall = null;
-  
+
   /*
    *  Event: OnMapParamsChanged
-   */     
-  //this.OnMapParamsChanged = null; - defined in controls_map.js  
+   */
+  //this.OnMapParamsChanged = null; - defined in controls_map.js
 
   /*
    *  Event: OnDeviceChanged
-   */     
+   */
   this.OnDeviceChanged = null
 
   var ae=this.Elm();
@@ -5847,22 +5843,22 @@ function ngApplication(startparams, elm, autorun)
     ngApp.LastResizeH=ng_ClientHeight(ae);
   }
   window.onresize = ngAddEvent(window.onresize, nga_OnResize);
-  
-  if(ngVal(autorun,true)) this.Run(); 
+
+  if(ngVal(autorun,true)) this.Run();
 }
 
 // --- ngControls --------------------------------------------------------------
 
 /**
  *  Class: ngControls
- *  This class represents references to a group of controls. 
+ *  This class represents references to a group of controls.
  *
  *  Syntax:
  *    new *ngControls* (object defs [, mixed parent])
- *    
+ *
  *  Parameters:
  *    defs - controls definition
- *    parent - parent DIV container 
+ *    parent - parent DIV container
  */
 function ngControls(defs,parent)
 {
@@ -5875,60 +5871,60 @@ function ngControls(defs,parent)
     if(o) parent=o;
   }
   if(typeof defs === 'object') ngCreateControls(defs,this,parent);
-  
+
   /*
    *  Group: Methods
    */
 
   /*  Function: Update
-   *  Redraws all controls.   
-   *   
+   *  Redraws all controls.
+   *
    *  Syntax:
    *    void *Update* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Update = function() { ngUpdateControls(this); }
 
   /*  Function: Release
-   *  Clears all control's DIV containers.    
-   *   
+   *  Clears all control's DIV containers.
+   *
    *  Syntax:
    *    void *Release* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Release = function() { ngReleaseControls(this); }
 
   /*  Function: Dispose
-   *  Destroys all controls.    
-   *   
+   *  Destroys all controls.
+   *
    *  Syntax:
    *    void *Dispose* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Dispose = function() { ngDisposeControls(this); }
 
   /*  Function: AddControls
-   *  Adds controls.    
-   *   
+   *  Adds controls.
+   *
    *  Syntax:
    *    void *AddControls* (defs, parent)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.AddControls = function(defs, parent) { ngCreateControls(defs,this,parent); }
 }
@@ -5942,22 +5938,22 @@ function ngp_DoRelease(o)
 
 /**
  *  Class: ngPanel
- *  This class implements a generic panel control. 
+ *  This class implements a generic panel control.
  *
  *  Syntax:
  *    new *ngPanel* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 
 function ngPanel(id)
 {
   ngControl(this, id, 'ngPanel');
-  this.DoRelease = ngp_DoRelease;  
+  this.DoRelease = ngp_DoRelease;
   ngControlCreated(this);
 }
 
@@ -5972,7 +5968,7 @@ function ngPanel(id)
 /*  Variable: ParentReferences
  *  ...
  *  Type: bool
- *  Default value: *false*         
+ *  Default value: *false*
  */
 /*<>*/
 
@@ -5993,10 +5989,10 @@ function ngt_DoCreate(d, ref, elm, parent)
     as=(as == 'horizontal' ? 'auto' : 'vertical');
 
   if(as!='')
-  {    
+  {
     if((!d.Data)||(typeof d.Data.AutoSizeMode === 'undefined')) this.AutoSizeMode=as;
-    if((!d.Data)||(typeof d.Data.AutoSize === 'undefined')) this.AutoSize=true;    
-  }  
+    if((!d.Data)||(typeof d.Data.AutoSize === 'undefined')) this.AutoSize=true;
+  }
 }
 
 function ngt_DoUpdate(o)
@@ -6011,10 +6007,10 @@ function ngt_DoUpdate(o)
 
   var dstyle='';
   if((this.AutoSize)&&((this.AutoSizeMode=='auto')||(this.AutoSizeMode=='horizontal')))
-    dstyle+='white-space: nowrap; ';  
+    dstyle+='white-space: nowrap; ';
   if((!this.AutoSize)||(this.AutoSizeMode=='vertical')) dstyle+='width:'+ng_ClientWidth(o)+'px; ';
   if((!this.AutoSize)||(this.AutoSizeMode=='horizontal')) dstyle+='height:'+ng_ClientHeight(o)+'px; ';
-  
+
   var html=new ngStringBuilder;
   html.append('<span id="'+this.ID+'_T" class="'+cclass+'Text'+(this.Enabled ? '': 'Disabled')+'" style="position:absolute;'+dstyle+'text-align:'+this.TextAlign+';"');
   if(alt!='') html.append(' title="'+ng_htmlEncode(alt)+'"');
@@ -6025,7 +6021,7 @@ function ngt_DoUpdate(o)
   if(this.AutoSize)
   {
     var o2=document.getElementById(this.ID+'_T');
-    if(o2) 
+    if(o2)
     {
       if((this.AutoSizeMode=='auto')||(this.AutoSizeMode=='horizontal'))
       {
@@ -6034,13 +6030,13 @@ function ngt_DoUpdate(o)
         ng_SetStyleWidth(o,tw);
         ng_SetStyleWidth(o2,tw);;
       }
-      
+
       if((this.AutoSizeMode=='auto')||(this.AutoSizeMode=='vertical'))
       {
         var th=ng_ClientHeight(o2);
         if((typeof this.MinHeight !== 'undefined')&&(th<this.MinHeight)) th=this.MinHeight;
         ng_SetStyleHeight(o,th);
-        ng_SetStyleHeight(o2,th); 
+        ng_SetStyleHeight(o2,th);
       }
       var changed=false;
       if((typeof this.Bounds.T === 'undefined')||(typeof this.Bounds.B === 'undefined'))
@@ -6062,14 +6058,14 @@ function ngt_DoUpdate(o)
         }
       }
       if(changed) this.SetBounds();
-    }          
+    }
   }
   return true;
 }
 
 function ngt_DoPtrStart(pi)
 {
-  if((this.CanSelect)&&(pi.EventID=='control')) 
+  if((this.CanSelect)&&(pi.EventID=='control'))
   {
     pi.PreventDefault=false;
     pi.DocumentDeselect=false;
@@ -6085,16 +6081,16 @@ function ngt_DoAcceptGestures(o,gestures)
 
 /**
  *  Class: ngText
- *  This class implements a generic static text control. 
+ *  This class implements a generic static text control.
  *
  *  Syntax:
  *    new *ngText* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 
 function ngText(id)
@@ -6104,7 +6100,7 @@ function ngText(id)
   this.DoUpdate = ngt_DoUpdate;
   this.DoPtrStart = ngt_DoPtrStart;
   this.DoAcceptGestures=ngt_DoAcceptGestures;
-  
+
   /*
    *  Group: Properties
    */
@@ -6112,7 +6108,7 @@ function ngText(id)
   /*  Variable: TextAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.TextAlign = 'left';
 
@@ -6125,28 +6121,28 @@ function ngText(id)
   /*  Variable: AutoSizeMode
    *  ...
    *  Type: string
-   *  Default value: *'auto'*   
+   *  Default value: *'auto'*
    */
   this.AutoSizeMode='auto';
   /*  Variable: MinWidth
    *  ...
    *  Type: integer
-   *  Default value: *undefined*   
+   *  Default value: *undefined*
    */
   // this.MinWidth = undefined;
   /*  Variable: MinHeight
    *  ...
    *  Type: integer
-   *  Default value: *undefined*   
+   *  Default value: *undefined*
    */
   // this.MinHeight = undefined;
-  
+
   /*  Variable: Text
    *  ...
    *  Type: string
    */
   this.Text = '';
-  
+
   /*  Variable: Alt
    *  ...
    *  Type: string
@@ -6156,69 +6152,69 @@ function ngText(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.HTMLEncode = false;
   /*  Variable: CanSelect
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.CanSelect = true;
-    
+
   /*
    *  Group: Methods
    */
   /*  Function: SetText
-   *  Sets new text content.   
-   *   
+   *  Sets new text content.
+   *
    *  Syntax:
    *    void *SetText* (string text)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
-  this.SetText = ngc_SetText;  
+  this.SetText = ngc_SetText;
   /*  Function: GetText
-   *  Gets text content.   
-   *   
+   *  Gets text content.
+   *
    *  Syntax:
    *    string *GetText* (void)
-   *     
+   *
    *  Returns:
-   *    Text content.     
+   *    Text content.
    */
   this.GetText=ngc_GetText;
-  
+
   /*  Function: GetAlt
-   *  Gets alt text.   
-   *   
+   *  Gets alt text.
+   *
    *  Syntax:
    *    string *GetAlt* (void)
-   *     
+   *
    *  Returns:
-   *    Alt text.     
+   *    Alt text.
    */
   this.GetAlt=ngc_GetAlt;
-  
+
   /*
    *  Group: Events
    */
   /*
    *  Event: OnSetText
-   */     
+   */
   this.OnSetText = null;
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
-    
+
   ngControlCreated(this);
 }
 
@@ -6235,17 +6231,17 @@ function ngi_DoCreate(d, ref, elm, parent)
 function ngi_DoUpdate(o)
 {
   var alt=this.GetAlt();
-  var image=this.GetImg();  
-  
+  var image=this.GetImg();
+
   var html=new ngStringBuilder;
   if(image)
   {
     var dp=ngc_ImgProps(this.ID+'_I', 0, this.Enabled, image);
-    if(typeof dp.W === 'undefined') 
+    if(typeof dp.W === 'undefined')
     {
       ngc_ImgSW(html,dp,0,ng_ClientWidth(o),"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
       if(this.AutoSize)
-      {                   
+      {
         ng_SetClientHeight(o,dp.H);
         var cbh=ng_StyleHeight(o);
         if(this.Bounds.H!=cbh)
@@ -6261,7 +6257,7 @@ function ngi_DoUpdate(o)
       {
         ngc_ImgSH(html,dp,0,ng_ClientHeight(o),"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
         if(this.AutoSize)
-        {                   
+        {
           ng_SetClientWidth(o,dp.W);
           var cbw=ng_StyleWidth(o);
           if(this.Bounds.W!=cbw)
@@ -6271,11 +6267,11 @@ function ngi_DoUpdate(o)
           }
         }
       }
-      else 
+      else
       {
         ngc_Img(html,dp,"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
         if(this.AutoSize)
-        {                   
+        {
           ng_SetClientWidth(o,dp.W);
           ng_SetClientHeight(o,dp.H);
           var cbw=ng_StyleWidth(o);
@@ -6287,8 +6283,8 @@ function ngi_DoUpdate(o)
             this.SetBounds();
           }
         }
-      }      
-    }    
+      }
+    }
   }
   ng_SetInnerHTML(o,html.toString());
   return true;
@@ -6296,16 +6292,16 @@ function ngi_DoUpdate(o)
 
 /**
  *  Class: ngImage
- *  This class implements a generic image control. 
+ *  This class implements a generic image control.
  *
  *  Syntax:
  *    new *ngImage* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngImage(id)
 {
@@ -6336,24 +6332,24 @@ function ngImage(id)
    *  Group: Methods
    */
   /*  Function: GetAlt
-   *  Gets alt text.   
-   *   
+   *  Gets alt text.
+   *
    *  Syntax:
    *    string *GetAlt* (void)
-   *     
+   *
    *  Returns:
-   *    Alt text.     
+   *    Alt text.
    */
   this.GetAlt=ngc_GetAlt;
 
   /*  Function: GetImg
-   *  Gets image.   
-   *   
+   *  Gets image.
+   *
    *  Syntax:
    *    object *GetImg* (void)
-   *     
+   *
    *  Returns:
-   *    The image.     
+   *    The image.
    */
   this.GetImg=ngc_GetImg;
 
@@ -6362,11 +6358,11 @@ function ngImage(id)
    */
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
   /*
    *  Event: OnGetImg
-   */     
+   */
   this.OnGetImg = null;
 
   ngControlCreated(this);
@@ -6386,8 +6382,8 @@ function imgm_DoPtrStart(pi)
   if(eid.substr(0,3)==='shp')
   {
     var inelm=pi.IsInSrcElement();
-    if(!inelm) // elementFromPoint has problem to detect area elements (FireFox) 
-    {      
+    if(!inelm) // elementFromPoint has problem to detect area elements (FireFox)
+    {
       pi.SrcElement=document.getElementById(this.ID+'_HM');
     }
     if(pi.Touch) {
@@ -6403,7 +6399,7 @@ function imgm_DoPtrDrag(pi)
   var eid=pi.EventID;
   if(eid.substr(0,3)==='shp')
   {
-    if(pi.Touch) 
+    if(pi.Touch)
     {
       var bi=parseInt(eid.substring(3,eid.length));
       var inelm=pi.IsInSrcElement();
@@ -6427,9 +6423,9 @@ function imgm_DoPtrEnd(pi)
 {
   var eid=pi.EventID;
   if(eid.substr(0,3)==='shp')
-  {    
+  {
     if((pi.Touch)&&(pi.InShapeElm)) {
-      var bi=parseInt(eid.substring(3,eid.length));    
+      var bi=parseInt(eid.substring(3,eid.length));
       imgm_LeaveShape(this,bi);
     }
     delete pi.InShapeElm;
@@ -6462,7 +6458,7 @@ function imgm_LeaveShape(p,bi)
   if((bi>=0)&&(bi<p.Shapes.length))
   {
     var s=ngVal(p.Shapes[bi],null);
-    ngc_ChangeImg(p.ID+'_I', 0, p.Enabled, p.GetImg());      
+    ngc_ChangeImg(p.ID+'_I', 0, p.Enabled, p.GetImg());
     var o=p.Elm();
     try { if(o) o.style.cursor=ngVal(p.Cursor,'default'); } catch(e) { }
 
@@ -6477,7 +6473,7 @@ function imgm_EnterShape(p,bi)
   {
     var s=ngVal(p.Shapes[bi],null);
     var img=(s ? ngVal(s.Img,null) : null);
-    ngc_ChangeImg(p.ID+'_I', 0, p.Enabled, img);      
+    ngc_ChangeImg(p.ID+'_I', 0, p.Enabled, img);
     var clickev=((p.OnShapeClick)||((s)&&(s.OnClick)))&&(p.Enabled);
     var o=p.Elm();
     try { if(o) o.style.cursor=(s && s.Cursor ? s.Cursor : (clickev ? 'pointer' : 'default')); } catch(e) { }
@@ -6524,10 +6520,10 @@ function ngimgmap_DoMouseLeave(e, mi)
 function ngimgmap_DoUpdate(o)
 {
   var salt;
-  
+
   var alt=this.GetAlt();
-  var image=this.GetImg();  
-  
+  var image=this.GetImg();
+
   var html=new ngStringBuilder;
   if(image)
   {
@@ -6555,22 +6551,22 @@ function ngimgmap_DoUpdate(o)
   {
     var s=this.Shapes[i];
     if(ngVal(s.Coords,'')=='') continue;
-    
+
     if(this.OnGetShapeAlt) salt=ngVal(this.OnGetShapeAlt(this,i),'');
     else salt=ngVal(s.Alt,'');
-    
+
     var clickev=((this.OnShapeClick)||(s.OnClick))&&(this.Enabled);
     imgmap.append('<area shape="'+ngVal(s.Shape,'rect')+'" coords="'+s.Coords+'" title="'+ng_htmlEncode(salt)+'"');
     if(clickev)
     {
-      imgmap.append(' '+ngc_PtrEventsHTML(this,'shp'+i,'tap drag')); 
+      imgmap.append(' '+ngc_PtrEventsHTML(this,'shp'+i,'tap drag'));
     }
-    imgmap.append(' onmouseover="imgm_MO(event,this,\''+this.ID+'\','+i+');" onmouseout="imgm_MU(event,this,\''+this.ID+'\','+i+')" />');    
+    imgmap.append(' onmouseover="imgm_MO(event,this,\''+this.ID+'\','+i+');" onmouseout="imgm_MU(event,this,\''+this.ID+'\','+i+')" />');
   }
   if(!imgmap.empty())
   {
     if(ngFireFox1x) imgmap.append('<area href="javascript:imgm_nop();" shape="rect" coords="0,0,'+w+','+h+'" />');
-    
+
     html.append('<img id="'+this.ID+'_HM" src="'+ngEmptyURL+'" style="position:absolute; width:'+w+'px; height:'+h+'px; z-index: 10;" alt="'+ng_htmlEncode(alt)+'" border="0" usemap="#'+this.ID+'_IMAP" />');
     html.append('<map id="'+this.ID+'_IM" name="'+this.ID+'_IMAP">');
     html.append(imgmap);
@@ -6582,16 +6578,16 @@ function ngimgmap_DoUpdate(o)
 
 /**
  *  Class: ngImageMap
- *  This class implements a generic imagemap control. 
+ *  This class implements a generic imagemap control.
  *
  *  Syntax:
  *    new *ngImageMap* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngImageMap(id)
 {
@@ -6629,7 +6625,7 @@ function ngImageMap(id)
    *  Type: bool
    */
   this.AutoSize = true;
-  
+
   /*  Variable: Shapes
    *  ...
    *  Type: array
@@ -6639,24 +6635,24 @@ function ngImageMap(id)
    *  Group: Methods
    */
   /*  Function: GetAlt
-   *  Gets alt text.   
-   *   
+   *  Gets alt text.
+   *
    *  Syntax:
    *    string *GetAlt* (void)
-   *     
+   *
    *  Returns:
-   *    Alt text.     
+   *    Alt text.
    */
   this.GetAlt=ngc_GetAlt;
 
   /*  Function: GetImg
-   *  Gets image.   
-   *   
+   *  Gets image.
+   *
    *  Syntax:
    *    object *GetImg* (void)
-   *     
+   *
    *  Returns:
-   *    The image.     
+   *    The image.
    */
   this.GetImg=ngc_GetImg;
 
@@ -6665,40 +6661,40 @@ function ngImageMap(id)
    */
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
   /*
    *  Event: OnGetImg
-   */     
+   */
   this.OnGetImg = null;
-  
+
   /*
    *  Event: OnGetShapeAlt
-   */     
+   */
   this.OnGetShapeAlt = null;
 
   /*
-   *  Event: OnShapeClick   
-   */       
-  this.OnShapeClick = null;  
+   *  Event: OnShapeClick
+   */
+  this.OnShapeClick = null;
   /*
-   *  Event: OnMouseEnter   
-   */       
-  this.OnMouseEnter = null;  
-  /*   
-   *  Event: OnMouseLeave   
-   */       
+   *  Event: OnMouseEnter
+   */
+  this.OnMouseEnter = null;
+  /*
+   *  Event: OnMouseLeave
+   */
   this.OnMouseLeave = null;
 
   /*
-   *  Event: OnMouseShapeEnter   
-   */       
-  this.OnMouseShapeEnter = null;  
-  /*   
-   *  Event: OnMouseShapeLeave   
-   */       
+   *  Event: OnMouseShapeEnter
+   */
+  this.OnMouseShapeEnter = null;
+  /*
+   *  Event: OnMouseShapeLeave
+   */
   this.OnMouseShapeLeave = null;
-    
+
   ngControlCreated(this);
 }
 
@@ -6724,21 +6720,21 @@ function ngact_Check(state)
   {
     this.Checked=state;
     if(this.OnCheckChanged) this.OnCheckChanged(this);
-    if(this.Checked==state) 
+    if(this.Checked==state)
     {
       var cc=this.ActionControls;
       if(cc)
-      {      
+      {
         var c;
         this.in_action_check = true;
-        for(var i=0;i<cc.length;i++) 
-        { 
-          c=cc[i]; 
+        for(var i=0;i<cc.length;i++)
+        {
+          c=cc[i];
           if(c.Control.ActionCheck) c.Control.ActionCheck(state, c.Data);
         }
         this.in_action_check = false;
       }
-    }  
+    }
   }
 }
 
@@ -6752,12 +6748,12 @@ function ngact_Click(e)
 
   var cc=this.ActionControls;
   if(cc)
-  {      
+  {
     var c;
     this.in_action_click = true;
-    for(var i=0;i<cc.length;i++) 
-    { 
-      c=cc[i]; 
+    for(var i=0;i<cc.length;i++)
+    {
+      c=cc[i];
       if(c.Control.ActionClick) c.Control.ActionClick(e,c.Data);
     }
     this.in_action_click = false;
@@ -6772,15 +6768,15 @@ function ngact_AddControl(ctrl,data)
   if(!this.ActionControls) this.ActionControls=new Array();
   var cc=this.ActionControls;
   if(cc)
-  {      
+  {
     var c;
-    for(var i=0;i<cc.length;i++) 
-    { 
+    for(var i=0;i<cc.length;i++)
+    {
       c=cc[i];
       if((c.Control==ctrl)&&(c.Data==data)) return;
     }
     cc[cc.length] = { Control: ctrl, Data: data };
-  } 
+  }
 }
 
 function ngact_RemoveControl(ctrl, data)
@@ -6790,15 +6786,15 @@ function ngact_RemoveControl(ctrl, data)
   data=ngVal(data,null);
   var cc=this.ActionControls;
   if(cc)
-  {      
+  {
     var c;
-    for(var i=cc.length-1;i>=0;i--) 
-    { 
+    for(var i=cc.length-1;i>=0;i--)
+    {
       c=cc[i];
       if((c.Control==ctrl)&&(c.Data==data)) cc.splice(i, 1);
     }
     if(!cc.length) this.ActionControls=null;
-  }   
+  }
 }
 
 function ngact_SetVisible(v)
@@ -6813,12 +6809,12 @@ function ngact_SetVisible(v)
     {
       var cc=this.ActionControls;
       if(cc)
-      {      
+      {
         var c;
         this.in_action_visible = true;
-        for(var i=0;i<cc.length;i++) 
-        { 
-          c=cc[i]; 
+        for(var i=0;i<cc.length;i++)
+        {
+          c=cc[i];
           if(c.Control.ActionSetVisible) c.Control.ActionSetVisible(v, c.Data);
         }
         this.in_action_visible = false;
@@ -6833,30 +6829,30 @@ function ngact_Update()
 
   var cc=this.ActionControls;
   if(cc)
-  {      
+  {
     var c;
-    for(var i=0;i<cc.length;i++) 
-    { 
-      c=cc[i]; 
+    for(var i=0;i<cc.length;i++)
+    {
+      c=cc[i];
       if(c.Control.ActionUpdate) c.Control.ActionUpdate(c.Data);
     }
   }
-  
+
   if(this.OnUpdated) this.OnUpdated(this,null);
 }
 
 /**
  *  Class: ngSysAction
- *  This class implements action non-visual control. 
+ *  This class implements action non-visual control.
  *
  *  Syntax:
  *    new *ngSysAction* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngSysAction(id, text)
 {
@@ -6876,77 +6872,77 @@ function ngSysAction(id, text)
    *  Type: string
    */
   this.Alt = '';
-  
+
   /*  Variable: Checked
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   //this.Checked = undefined;
   //optional:
   /*  Variable: RadioGroup
    *  ...
    *  Type: string
-   *  Default value: *undefined*   
+   *  Default value: *undefined*
    */
   // this.RadioGroup = undefined;
-  
+
   /*  Variable: Img
    *  ...
    *  Type: object
    */
   //this.Img = undefined;
   /*  Variable: Visible
-   *  Determines whether the control is visible. 
-   *  Type: bool  
+   *  Determines whether the control is visible.
+   *  Type: bool
    */
   this.Visible = true;
-  
+
 
   this.ActionControls = null;
-    
+
   /*
    *  Group: Methods
    */
   /*  Function: Check
-   *  Sets new button check state.   
-   *   
+   *  Sets new button check state.
+   *
    *  Syntax:
    *    void *Check* (int newval)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Check = ngact_Check;
 
   /*  Function: Click
-   *  Clicks the button.   
-   *   
+   *  Clicks the button.
+   *
    *  Syntax:
    *    void *Click* ([event ev])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Click = ngact_Click;
 
   /*  Function: SetText
-   *  Sets new button text.   
-   *   
+   *  Sets new button text.
+   *
    *  Syntax:
    *    void *SetText* (string text)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetText = ngc_SetText;
-  
+
   this.Update = ngact_Update;
   this.GetImg = ngc_GetImg;
   this.GetText = ngc_GetText;
@@ -6964,42 +6960,42 @@ function ngSysAction(id, text)
    */
   /*
    *  Event: OnSetText
-   */     
+   */
   this.OnSetText = null;
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
-  
+
   /*
    *  Event: OnCheckChanged
-   */     
+   */
   this.OnCheckChanged = null;
-      
+
   /*
    *  Event: OnClick
-   */     
+   */
   this.OnClick = null;
-    
+
   /*
    *  Event: OnGetImg
-   */     
+   */
   this.OnGetImg = null;
   /*
    *  Event: OnSetVisible
-   */     
+   */
   this.OnSetVisible     = null;
   /*
    *  Event: OnVisibleChanged
-   */     
-  this.OnVisibleChanged = null;  
+   */
+  this.OnVisibleChanged = null;
   /*
    *  Event: OnUpdate
-   */     
+   */
   this.OnUpdate = null;
 
   ngControlCreated(this);
@@ -7020,12 +7016,12 @@ function ngb_SimpleRect(b)
     for(var j=-1;j<3;j++)
     {
       img=b.GetImg(j)
-      if(!img) continue; 
+      if(!img) continue;
       if(j!=1) r.W+=img.W;
       if(img.H>r.H) r.H=img.H;
     }
-  } 
-  else 
+  }
+  else
   {
     r.W=b.Bounds.W;
     r.H=b.Bounds.H;
@@ -7034,8 +7030,8 @@ function ngb_SimpleRect(b)
 }
 
 function ngb_GetClassName(cls)
-{  
-  if(this.OnGetClassName) 
+{
+  if(this.OnGetClassName)
   {
     var text=this.GetText();
 
@@ -7057,7 +7053,7 @@ function ngb_GetClassName(cls)
 
 function ngb_Check(state)
 {
-  var action = this.GetAction();  
+  var action = this.GetAction();
   if((action)&&(!action.in_action_check))
   {
     action.Check(state);
@@ -7068,19 +7064,19 @@ function ngb_Check(state)
   {
     this.Checked=state;
     if(this.OnCheckChanged) this.OnCheckChanged(this);
-    if(this.Checked==state) this.Update();  
+    if(this.Checked==state) this.Update();
   }
 }
 
 function ngb_Click(e)
 {
-  var action = this.GetAction();  
-  if((action)&&(!action.in_action_click)) 
+  var action = this.GetAction();
+  if((action)&&(!action.in_action_click))
   {
     action.Click(e);
     return;
   }
-  
+
   if(typeof e === 'undefined') e=new Object;
   e.Owner = this;
   e.btn = this;
@@ -7100,9 +7096,9 @@ function ngb_GetImg(idx)
 {
   var image=null;
   if(this.OnGetImg) image=this.OnGetImg(this, idx);
-  else 
+  else
   {
-    switch(idx) 
+    switch(idx)
     {
       case -1: image=this.Img; break;
       case 0: image=this.LeftImg; break;
@@ -7121,22 +7117,22 @@ function ngb_DoCreate(d, ref, elm, parent)
 
 function ngb_SetAction(ac)
 {
-  if(typeof ac === 'string') 
+  if(typeof ac === 'string')
   {
     ac=ngGetControlById(ac);
     if(!ac) return null;
   }
   ac=ngVal(ac,null);
-  
+
   var oac=ngVal(this.Action,null);
   if(oac == ac) return ac;
 
-  if((oac)&&(oac.RemoveControl)) oac.RemoveControl(this);  
+  if((oac)&&(oac.RemoveControl)) oac.RemoveControl(this);
   this.Action=ac;
   if((ac)&&(ac.AddControl)) ac.AddControl(this);
   this.SyncAction();
   this.Update();
-  return ac;    
+  return ac;
 }
 
 function ngb_GetAction()
@@ -7164,7 +7160,7 @@ function ngb_DoUpdate(o)
 {
   var action = this.GetAction();
   this.SyncAction(action);
-  
+
   var cclass=this.BaseClassName;
 
   var state=ngVal(this.Checked,0);
@@ -7177,18 +7173,18 @@ function ngb_DoUpdate(o)
       ngb_RadioGroups[this.RadioGroup]=this;
       if(uncheck && typeof uncheck.Check=='function') uncheck.Check(0);
     }
-  
-  var html=new ngStringBuilder;  
+
+  var html=new ngStringBuilder;
   var image,dp,bdp,event;
   if((ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
-  var w=ng_ClientWidth(o),aw=-1,tw=0,ctw=0,th=0,lw=0,rw=0;  
+  var w=ng_ClientWidth(o),aw=-1,tw=0,ctw=0,th=0,lw=0,rw=0;
 
-  var text=this.GetText();  
+  var text=this.GetText();
   var alt=this.GetAlt();
   if(this.HTMLEncode) text=ng_htmlEncode(text);
-    
+
   var btnimage=this.GetImg(-1);
-  if(btnimage) 
+  if(btnimage)
   {
     bdp=ngc_ImgProps(this.ID+'_I', imgstate, this.Enabled, btnimage);
     if(bdp.H>th) th=bdp.H;
@@ -7201,7 +7197,7 @@ function ngb_DoUpdate(o)
   {
     ng_SetInnerHTML(o,'<div id="'+this.ID+'_T" class="'+txtclass+'" style="position:absolute; visibility: hidden; white-space: nowrap;"><div class="'+cclass+'Text">'+text+'</div></div>');
     var o2=document.getElementById(this.ID+'_T');
-    if(o2) 
+    if(o2)
     {
       ng_BeginMeasureElement(o2);
       ctw=ng_ClientWidth(o2)
@@ -7210,18 +7206,18 @@ function ngb_DoUpdate(o)
       ng_EndMeasureElement(o2);
       if(mh>th) th=mh;
     }
-  } 
-  if(this.AutoSize) 
-  { 
-    aw=tw; 
-    if(btnimage) aw+=this.ImgIndent+bdp.W; 
+  }
+  if(this.AutoSize)
+  {
+    aw=tw;
+    if(btnimage) aw+=this.ImgIndent+bdp.W;
   }
 
   var images=null;
   image=this.GetImg(0);
   if(image)
   {
-    if(!images) images=new ngStringBuilder;    
+    if(!images) images=new ngStringBuilder;
     dp=ngc_ImgProps(this.ID+'_IL', imgstate, this.Enabled, image);
     ngc_Img(images,dp,"position:absolute; left: 0px;",ngVal(image.Attrs,''));
     lw=dp.W;
@@ -7231,7 +7227,7 @@ function ngb_DoUpdate(o)
   image=this.GetImg(2);
   if(image)
   {
-    if(!images) images=new ngStringBuilder;    
+    if(!images) images=new ngStringBuilder;
     dp=ngc_ImgProps(this.ID+'_IR', imgstate, this.Enabled, image);
     rw=dp.W;
   }
@@ -7252,17 +7248,17 @@ function ngb_DoUpdate(o)
   image=this.GetImg(1);
   if(image)
   {
-    if(!images) images=new ngStringBuilder;    
+    if(!images) images=new ngStringBuilder;
     dp=ngc_ImgProps(this.ID+'_IM', imgstate, this.Enabled, image);
     ngc_ImgSW(images,dp,lw,(aw>=0 ? aw : bw-lw-rw),'',ngVal(image.Attrs,''));
     if(dp.H>th) th=dp.H;
   }
-  
+
   var hasclick=(this.Enabled)&&(action ? (action.OnClick)||(this.OnClick) : this.OnClick);
   var hasdblclick=(this.OnDblClick)&&(this.Enabled);
   var gestures='';
   if(hasclick) gestures='tap';
-  if(hasdblclick)  
+  if(hasdblclick)
   {
     if(gestures!='') gestures+=' ';
     gestures+='doubletap';
@@ -7271,7 +7267,7 @@ function ngb_DoUpdate(o)
   if(typeof this.Cursor !== 'undefined')
   {
     if(this.Cursor!='') html.append('cursor:'+this.Cursor+';');
-  } 
+  }
   else html.append(hasclick || hasdblclick ? 'cursor:pointer;' : 'cursor:default;');
   html.append('">');
   if(btnimage)
@@ -7307,19 +7303,19 @@ function ngb_DoUpdate(o)
   ng_SetInnerHTML(o,html.toString());
 
   var cbw=this.Bounds.W;
-  if(this.AutoSize) 
+  if(this.AutoSize)
   {
     if(ng_ClientWidth(o)!=bw)
     {
       ng_SetClientWidth(o,bw);
       cbw=ng_StyleWidth(o);
-    }  
+    }
   }
   ng_SetClientHeight(o,th);
   var cbh=ng_StyleHeight(o);
   if((cbw!=this.Bounds.W)||(cbh!=this.Bounds.H))
   {
-    this.Bounds.W=cbw;  
+    this.Bounds.W=cbw;
     this.Bounds.H=cbh;
     this.SetBounds();
   }
@@ -7353,7 +7349,7 @@ function ngb_DoMouseLeave(e, mi)
     var cn=o.className;
     var i=cn.indexOf('_Focus');
     if(i>=0) cn=cn.substring(0,i);
-    o.className=cn; 
+    o.className=cn;
   }
   ngc_LeaveImg(this.ID+'_I');
   ngc_LeaveImg(this.ID+'_IL');
@@ -7377,7 +7373,7 @@ function ngb_DoPtrDblClick(pi)
 
 function ngb_SetText(text)
 {
-  var action = this.GetAction();  
+  var action = this.GetAction();
   if(action)
   {
     action.SetText(text);
@@ -7394,7 +7390,7 @@ function ngb_SetText(text)
 
 function ngb_SetVisible(s)
 {
-  var action = this.GetAction();  
+  var action = this.GetAction();
   if((action)&&(!action.in_action_visible))
   {
     action.SetVisible(s);
@@ -7405,7 +7401,7 @@ function ngb_SetVisible(s)
 
 function ngb_SetEnabled(s)
 {
-  var action = this.GetAction();  
+  var action = this.GetAction();
   if(action)
   {
     action.SetEnabled(s);
@@ -7416,16 +7412,16 @@ function ngb_SetEnabled(s)
 
 /**
  *  Class: ngButton
- *  This class implements a generic button control. 
+ *  This class implements a generic button control.
  *
  *  Syntax:
  *    new *ngButton* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngButton(id, text)
 {
@@ -7448,7 +7444,7 @@ function ngButton(id, text)
   /*  Variable: TextAlign
    *  ...
    *  Type: string
-   *  Default value: 'center'   
+   *  Default value: 'center'
    */
   this.TextAlign = 'center';
 
@@ -7461,48 +7457,48 @@ function ngButton(id, text)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.HTMLEncode = false;
 
   /*  Variable: AutoSize
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.AutoSize = true;
   /*  Variable: MinWidth
    *  ...
    *  Type: integer
-   *  Default value: *undefined*   
+   *  Default value: *undefined*
    */
   // this.MinWidth = undefined;
-  
+
   /*  Variable: Checked
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.Checked = 0;
   //optional:
   /*  Variable: RadioGroup
    *  ...
    *  Type: string
-   *  Default value: *undefined*   
+   *  Default value: *undefined*
    */
   // this.RadioGroup = undefined;
 
   /*  Variable: Cursor
    *  ...
    *  Type: string
-   *  Default value: *'pointer'*   
+   *  Default value: *'pointer'*
    */
   // this.Cursor = 'pointer';
 
   /*  Variable: ReadOnly
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   // this.ReadOnly = false;
 
@@ -7519,17 +7515,17 @@ function ngButton(id, text)
   /*  Variable: ImgAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.ImgAlign = 'left';
-  
+
   /*  Variable: ImgIndent
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.ImgIndent = 0;
-  
+
   /*  Variable: LeftImg
    *  ...
    *  Type: object
@@ -7552,65 +7548,65 @@ function ngButton(id, text)
    *  Group: Methods
    */
   /*  Function: Check
-   *  Sets new button check state.   
-   *   
+   *  Sets new button check state.
+   *
    *  Syntax:
    *    void *Check* (int newval)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Check = ngb_Check;
 
   /*  Function: Click
-   *  Clicks the button.   
-   *   
+   *  Clicks the button.
+   *
    *  Syntax:
    *    void *Click* ([event ev])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.Click = ngb_Click;
 
   /*  Function: SetText
-   *  Sets new button text.   
-   *   
+   *  Sets new button text.
+   *
    *  Syntax:
    *    void *SetText* (string text)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetText = ngb_SetText;
   /*  Function: GetText
-   *  Gets text content.   
-   *   
+   *  Gets text content.
+   *
    *  Syntax:
    *    string *GetText* (void)
-   *     
+   *
    *  Returns:
-   *    Text content.     
+   *    Text content.
    */
   this.GetText=ngc_GetText;
-  
+
   /*  Function: GetAlt
-   *  Gets alt text.   
-   *   
+   *  Gets alt text.
+   *
    *  Syntax:
    *    string *GetAlt* (void)
-   *     
+   *
    *  Returns:
-   *    Alt text.     
+   *    Alt text.
    */
   this.GetAlt=ngc_GetAlt;
-  
+
   this.GetImg = ngb_GetImg;
   this.GetClassName = ngb_GetClassName;
   this.DoCreate = ngb_DoCreate;
@@ -7619,7 +7615,7 @@ function ngButton(id, text)
   this.SetVisible = ngb_SetVisible;
   this.DefaultSetEnabled = this.SetEnabled;
   this.SetEnabled = ngb_SetEnabled;
-  
+
   this.GetAction = ngb_GetAction;
   this.SetAction = ngb_SetAction;
   this.SyncAction = ngb_SyncAction;
@@ -7633,50 +7629,50 @@ function ngButton(id, text)
    */
   /*
    *  Event: OnSetText
-   */     
+   */
   this.OnSetText = null;
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
-  
+
   /*
    *  Event: OnCheckChanged
-   */     
+   */
   this.OnCheckChanged = null;
-      
+
   /*
    *  Event: OnDblClick
-   */     
+   */
   this.OnDblClick = null;
   /*
    *  Event: OnClick
-   */     
+   */
   this.OnClick = null;
-  
+
   /*
    *  Event: OnMouseEnter
-   */     
+   */
   this.OnMouseEnter = null;
   /*
    *  Event: OnMouseLeave
-   */     
+   */
   this.OnMouseLeave = null;
-  
+
   /*
    *  Event: OnGetImg
-   */     
+   */
   this.OnGetImg = null;
-  
+
   /*
    *  Event: OnGetClassName
-   */     
+   */
   this.OnGetClassName = null;
-    
+
   ngControlCreated(this);
 }
 
@@ -7691,7 +7687,7 @@ function ngButton(id, text)
 /*  Variable: AllowGrayed
  *  ...
  *  Type: bool
- *  Default value: *false*         
+ *  Default value: *false*
  */
 /*<>*/
 
@@ -7704,7 +7700,7 @@ function ngButton(id, text)
 /*  Variable: AllowGrayed
  *  ...
  *  Type: bool
- *  Default value: *false*         
+ *  Default value: *false*
  */
 /*<>*/
 
@@ -7712,13 +7708,13 @@ function ngRadioCheckBox_Create(d, ref, parent)
 {
   var c=ngCreateControlAsType(d, 'ngButton', ref, parent);
   if(!c) return c;
-  c.OnClick = function(e) 
-  { 
+  c.OnClick = function(e)
+  {
     var b=e.Owner;
     if((!b)||(b.Action)) return;
     if(typeof b.RadioGroup !== 'undefined') b.Check(1);
-    else 
-    {            
+    else
+    {
       var s=ngVal(b.Checked,0);
       switch(s)
       {
@@ -7736,7 +7732,7 @@ function ngRadioCheckBox_Create(d, ref, parent)
           break;
       }
       b.Check(s);
-    } 
+    }
   }
   if(typeof c.ReadOnly === 'undefined')    c.ReadOnly=false;
   if(typeof c.AllowGrayed === 'undefined') c.AllowGrayed=false;
@@ -7755,9 +7751,9 @@ function ngg_DoUpdate(o)
 
   var html=new ngStringBuilder;
   var w=ng_ClientWidth(o);
-  var h=ng_ClientHeight(o);  
+  var h=ng_ClientHeight(o);
   var l=0,t=0;
-  
+
   var text=this.GetText();
   if(this.HTMLEncode) text=ng_htmlEncode(text);
 
@@ -7777,9 +7773,9 @@ function ngg_DoUpdate(o)
     this.ControlsPanel.Bounds.L=0;
     this.ControlsPanel.Bounds.R=0;
     this.ControlsPanel.Bounds.B=0;
-  }  
+  }
   this.ControlsPanel.SetBounds();
-  
+
   if(text!='') html.append('<div id="'+this.ID+'_C" class="'+cclass+(this.Enabled ? "Caption" : "CaptionDisabled")+'" style="position: absolute; left: '+l+'px;top: '+t+'px;">'+text+'</div>');
   ng_SetInnerHTML(frame,html.toString());
   return true;
@@ -7791,15 +7787,15 @@ function ngg_SetClientRect(v)
 
   var noimg = {L:0,T:0,aL:0,aT:0,oT:0,oL:0,W:0,H:0};
   var dp=new Object;
-  
-  if(typeof v.W !== 'undefined') 
+
+  if(typeof v.W !== 'undefined')
   {
     dp.Left =((!this.ControlsInside) || typeof this.Frame.Left == 'undefined' ? noimg : ngc_ImgProps(this.ID+'_L', 0, this.Enabled, this.Frame.Left));
     dp.Right =((!this.ControlsInside) || typeof this.Frame.Right == 'undefined' ? noimg : ngc_ImgProps(this.ID+'_R', 0, this.Enabled, this.Frame.Right));
     this.Bounds.W=v.W+dp.Left.W+dp.Right.W;
     delete this.Bounds.R;
   }
-  
+
   if(typeof v.H !== 'undefined')
   {
     dp.Top =((!this.ControlsInside) || typeof this.Frame.Top == 'undefined' ? noimg : ngc_ImgProps(this.ID+'_B', 0, this.Enabled, this.Frame.Top));
@@ -7807,12 +7803,12 @@ function ngg_SetClientRect(v)
 
     this.Bounds.H=v.H+dp.Top.H+dp.Bottom.H;
     delete this.Bounds.B;
-  }  
+  }
 }
 
 function ngg_GetClientRect()
 {
-  var w,h;  
+  var w,h;
   if(ngVal(this.ControlsPanel,false))
   {
     var o=this.ControlsPanel.Elm();
@@ -7821,7 +7817,7 @@ function ngg_GetClientRect()
       w=ng_ClientWidth(o);
       h=ng_ClientHeight(o);
     }
-  }  
+  }
   return { W: w, H: h};
 }
 
@@ -7850,18 +7846,18 @@ function ngg_DoCreate(def, ref, elm, parent)
     id: this.ID+'_P',
     ScrollBars: ssAuto,
     L:0,T:0,R:0,B:0
-  }); 
+  });
   ldefs.ControlsPanel.Controls=def.Controls;
   ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
-  
+
   var lref=ngCreateControls(ldefs,undefined,this.ID);
-  if(!ngVal(def.ParentReferences,true)) 
+  if(!ngVal(def.ParentReferences,true))
   {
     this.Controls = new Object;
-    this.Controls.Owner = this; 
+    this.Controls.Owner = this;
     this.Controls.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent,ldefs.ControlsPanel.id)); }
     ref=this.Controls;
-  }  
+  }
   this.ControlsPanel=lref.ControlsPanel;
   this.ControlsPanel.Owner=this;
   delete lref.ControlsPanel;
@@ -7880,16 +7876,16 @@ function ngg_DoCreate(def, ref, elm, parent)
 
 /**
  *  Class: ngGroup
- *  This class implements a generic group control. 
+ *  This class implements a generic group control.
  *
  *  Syntax:
  *    new *ngGroup* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngGroup(id)
 {
@@ -7927,7 +7923,7 @@ function ngGroup(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.HTMLEncode = false;
   /*  Variable: Frame
@@ -7938,44 +7934,44 @@ function ngGroup(id)
   /*  Variable: ControlsInside
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.ControlsInside = true;
-  
+
   /*
    *  Group: Methods
    */
   /*  Function: GetText
-   *  Gets text content.   
-   *   
+   *  Gets text content.
+   *
    *  Syntax:
    *    string *GetText* (void)
-   *     
+   *
    *  Returns:
-   *    Text content.     
+   *    Text content.
    */
   this.GetText=ngc_GetText;
   /*  Function: GetClientRect
-   *  Gets client rectangle dimensions.   
-   *   
+   *  Gets client rectangle dimensions.
+   *
    *  Syntax:
    *    object *GetClientRect* ()
-   *     
+   *
    *  Returns:
-   *    Rectangle dimensions in format { W: width, H: height }.     
+   *    Rectangle dimensions in format { W: width, H: height }.
    */
   this.GetClientRect = ngg_GetClientRect;
-  
+
   /*  Function: SetClientRect
-   *  Sets client rectangle dimensions.   
-   *   
+   *  Sets client rectangle dimensions.
+   *
    *  Syntax:
    *    void *SetClientRect* (object rect)
-   *     
+   *
    *  Parameters:
    *    rect - { W: width, H: height }
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetClientRect = ngg_SetClientRect;
 
@@ -7988,7 +7984,7 @@ function ngGroup(id)
    */
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
 
   ngControlCreated(this);
@@ -8026,45 +8022,45 @@ var KEY_DELETE = 46;
 var KEY_LWIN = 91;
 var KEY_RWIN = 92;
 var KEY_APPS = 93;
-var KEY_NUMPAD0 = 96;  
-var KEY_NUMPAD1 = 97;  
-var KEY_NUMPAD2 = 98;  
-var KEY_NUMPAD3 = 99;  
-var KEY_NUMPAD4 = 100;  
-var KEY_NUMPAD5 = 101;  
-var KEY_NUMPAD6 = 102;  
-var KEY_NUMPAD7 = 103;  
-var KEY_NUMPAD8 = 104;  
+var KEY_NUMPAD0 = 96;
+var KEY_NUMPAD1 = 97;
+var KEY_NUMPAD2 = 98;
+var KEY_NUMPAD3 = 99;
+var KEY_NUMPAD4 = 100;
+var KEY_NUMPAD5 = 101;
+var KEY_NUMPAD6 = 102;
+var KEY_NUMPAD7 = 103;
+var KEY_NUMPAD8 = 104;
 var KEY_NUMPAD9 = 105;
 var KEY_MULTIPLY = 106;
-var KEY_ADD = 107;  
-var KEY_SUBSTRACT = 109;  
-var KEY_DECIMAL = 110;  
-var KEY_DIVIDE = 111;  
-var KEY_F1 = 112;  
-var KEY_F2 = 113;  
-var KEY_F3 = 114;  
-var KEY_F4 = 115;  
-var KEY_F5 = 116;  
-var KEY_F6 = 117;  
-var KEY_F7 = 118;  
-var KEY_F8 = 119;  
-var KEY_F9 = 120;  
-var KEY_F10 = 121;  
-var KEY_F11 = 122;  
-var KEY_F12 = 123;  
-var KEY_NUMLOCK = 144;  
-var KEY_SCROLL = 145;  
+var KEY_ADD = 107;
+var KEY_SUBSTRACT = 109;
+var KEY_DECIMAL = 110;
+var KEY_DIVIDE = 111;
+var KEY_F1 = 112;
+var KEY_F2 = 113;
+var KEY_F3 = 114;
+var KEY_F4 = 115;
+var KEY_F5 = 116;
+var KEY_F6 = 117;
+var KEY_F7 = 118;
+var KEY_F8 = 119;
+var KEY_F9 = 120;
+var KEY_F10 = 121;
+var KEY_F11 = 122;
+var KEY_F12 = 123;
+var KEY_NUMLOCK = 144;
+var KEY_SCROLL = 145;
 
 function nge_HintStyle(c)
 {
   // FireFox on Android doesn't process key events :(
   // therefore hint must be hidden on focus.
-  // Default browser and Doplhin has problems with hint style, phone keyboard and showing keyboard  
+  // Default browser and Doplhin has problems with hint style, phone keyboard and showing keyboard
   if((ngAndroid)&&(!ngChrome)) return ngHintHideOnFocus;
-  
-  // Password requires input type changing which cause to lose caret position, 
-  // thus hint style must be ngHintHideOnFocus. 
+
+  // Password requires input type changing which cause to lose caret position,
+  // thus hint style must be ngHintHideOnFocus.
   if(c)
   {
     if(c.Password) return ngHintHideOnFocus;
@@ -8080,12 +8076,12 @@ function nge_SuggestionResults(id,txt,data)
 {
   var c=ngGetControlById(id);
   if((!c)||(!ngVal(c.Suggestion,false))) return;
-  
+
   if(txt!=c.GetText()) return;
-  
+
   var dd=c.DropDownControl;
   if(!dd) return;
-  
+
   if((c.OnSuggestionData)&&(!ngVal(c.OnSuggestionData(c,txt,data),false))) return;
 
   if(c.OnSuggestionResults)
@@ -8093,9 +8089,9 @@ function nge_SuggestionResults(id,txt,data)
     var res=new Object;
     res.found=false;
     res.needupdate=false;
-    
+
     if(!ngVal(c.OnSuggestionResults(c,txt,data,res),false)) return;
-    
+
     if((dd.Visible)&&(res.needupdate)&&(res.found))
     {
       dd.SetItemFocus(null);
@@ -8117,14 +8113,14 @@ function nge_SuggestionResults(id,txt,data)
       }
       c.SuggestionFound=true;
     }
-  }  
-  if(c.SuggestionFound) 
+  }
+  if(c.SuggestionFound)
   {
     var dd=c.DropDownControl;
     if(dd) dd.SetItemFocus(null);
     c.DropDown();
-  } 
-  else 
+  }
+  else
   {
     c.HideDropDown();
   }
@@ -8136,19 +8132,19 @@ function nge_Suggestion(id)
   if((!c)||(!ngVal(c.Suggestion,false))) return;
   if(c.SuggestionTimer) clearTimeout(c.SuggestionTimer);
   c.SuggestionTimer=null;
-  
+
   var txt=c.GetText();
   if(txt=='') { c.HideDropDown(); c.SuggestionLastSearch=''; return; }
   if(ngVal(c.SuggestionLastSearch,'')!=txt)
   {
-    if(c.OnSuggestionSearch) 
+    if(c.OnSuggestionSearch)
     {
       var res=new Object;
       res.found=false;
       res.needupdate=false;
-      
+
       if(!ngVal(c.OnSuggestionSearch(c,txt,res),false)) return;
-      
+
       var dd=c.DropDownControl;
       if((dd)&&(dd.Visible)&&(res.needupdate)&&(res.found))
       {
@@ -8166,7 +8162,7 @@ function nge_Suggestion(id)
       var ignorecase=ngVal(c.SuggestionIgnoreCase,true);
       var partial=ngVal(c.SuggestionPartial,2);
       if(c.OnSuggestionURL) url=c.OnSuggestionURL(c,url);
-      else 
+      else
       {
         if(url!='')
         {
@@ -8179,10 +8175,10 @@ function nge_Suggestion(id)
       {
         if(!c.SuggestionRPC) c.SuggestionRPC=new ngRPC(c.ID);
         c.SuggestionRPC.sendRequest(url);
-        return;        
+        return;
       }
       else // Client suggestions
-      {        
+      {
         var found=false;
         var needupdate=false;
         var dd=c.DropDownControl;
@@ -8191,7 +8187,7 @@ function nge_Suggestion(id)
           if(ignorecase) txt=txt.toLowerCase();
           var cid='';
           if(dd.Columns.length>0) cid=ngVal(c.SuggestionSearchColumn,dd.Columns[0].ID);
-    
+
           var t,v;
           if(c.OnSuggestionCompareItem) partial=-1;
           else if(partial==-1) partial=2;
@@ -8214,13 +8210,13 @@ function nge_Suggestion(id)
               default:
                 v=(t==txt);
                 break;
-            }        
+            }
             if(it.Visible!=v)
             {
               it.Visible=v;
               needupdate=true;
             }
-            if(it.Visible) found=true;  
+            if(it.Visible) found=true;
             return true;
           });
           if((dd.Visible)&&(needupdate)&&(found))
@@ -8228,7 +8224,7 @@ function nge_Suggestion(id)
             dd.SetItemFocus(null);
             dd.Update();
           }
-        } 
+        }
         c.SuggestionFound=found;
       }
     }
@@ -8250,7 +8246,7 @@ function nge_SuggestionRefresh(forcerequery, delay)
 
   if(this.SuggestionTimer) clearTimeout(this.SuggestionTimer);
 
-  if(ngVal(forcerequery,false)) this.SuggestionLastSearch=''; 
+  if(ngVal(forcerequery,false)) this.SuggestionLastSearch='';
 
   var o=dd.Elm();
   if((o)&&(o.style.height!=''))
@@ -8262,11 +8258,11 @@ function nge_SuggestionRefresh(forcerequery, delay)
   this.SuggestionTimer=setTimeout("nge_Suggestion('"+this.ID+"')",delay);
 }
 
-function nge_GetCaretPos() 
+function nge_GetCaretPos()
 {
   var to=(this.ControlHasFocus ? document.getElementById(this.ID+'_T') : null);
   if(!to) return; // undefined
-  
+
   var pos = 0;
   // IE Support
   if (document.selection) {
@@ -8306,10 +8302,10 @@ function nge_TextChanged(event, elm, edit)
   if(typeof edit==='undefined') edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
   if(edit)
   {
-    var v=elm.value;    
-    
+    var v=elm.value;
+
     if((!edit.HintVisible)&&(edit.Text!=v))
-    {      
+    {
       edit.Text=v;
       if(edit.OnTextChanged) edit.OnTextChanged(edit);
       elm.className = edit.GetClassName('Input');
@@ -8318,7 +8314,7 @@ function nge_TextChanged(event, elm, edit)
     if(((v == '')&&((!edit.HasFocus)||(nge_HintStyle(edit)===ngHintHideOnInput))) || (edit.HintVisible))
     {
       var hint=edit.GetHint();
-      if(hint!='') { 
+      if(hint!='') {
         nge_ShowHint(edit,elm,hint);
         edit.SetCaretPos(0);
       }
@@ -8347,24 +8343,24 @@ function nge_KeyDown(e,elm)
         case 40: // Down
         case 8:  // Backspace
         case 46: // Delete
-        case 33: // PgUp 
-        case 34: // PgDown 
+        case 33: // PgUp
+        case 34: // PgDown
           if(e.preventDefault) e.preventDefault();
           e.returnValue = false;
           break;
       }
-    } 
+    }
 
-    if(ngVal(edit.Suggestion,false)) // Suggestion keys 
+    if(ngVal(edit.Suggestion,false)) // Suggestion keys
     {
       var dd=edit.DropDownControl;
       switch(e.keyCode)
       {
-        case 33: // PgUp 
-        case 34: // PgDown 
+        case 33: // PgUp
+        case 34: // PgDown
         case 38: // Up
         case 40: // Down
-          if((dd)&&(dd.Visible)) 
+          if((dd)&&(dd.Visible))
           {
             var o=dd.Elm();
             if((o)&&(o.onkeydown)) o.onkeydown(e);
@@ -8377,7 +8373,7 @@ function nge_KeyDown(e,elm)
           if((dd)&&(dd.Visible))
           {
             var it=dd.GetItemFocus();
-            if((it)&&(typeof it.Items !== 'undefined')&&(it.Items.length>0)) 
+            if((it)&&(typeof it.Items !== 'undefined')&&(it.Items.length>0))
             {
               if(e.keyCode==37) dd.Collapse(it);
               else dd.Expand(it);
@@ -8385,9 +8381,9 @@ function nge_KeyDown(e,elm)
               e.returnValue = false;
             }
           }
-          break;                 
+          break;
       }
-    }    
+    }
   }
 }
 
@@ -8396,22 +8392,22 @@ function nge_DefFormButton2(ctrl, t)
   var c,cc=ctrl.ChildControls;
   if(typeof cc !== 'undefined')
   {
-    for(var i=0;i<cc.length;i++) 
+    for(var i=0;i<cc.length;i++)
     {
       c=cc[i];
       if((c)&&(c.Click)&&(c.Enabled)&&(c.Visible)&&(ngVal(c.FormID,'')==''))
       {
-        if(((t)&&(ngVal(c.Default,false)))||((!t)&&(ngVal(c.Cancel,false)))) {          
+        if(((t)&&(ngVal(c.Default,false)))||((!t)&&(ngVal(c.Cancel,false)))) {
           var timer=setTimeout(function () { // Fire Click later
             clearTimeout(timer);
-            if(typeof c.Click==='function') c.Click(); 
-          },10); 
-          return true; 
+            if(typeof c.Click==='function') c.Click();
+          },10);
+          return true;
         }
       }
     }
 
-    for(var i=0;i<cc.length;i++) 
+    for(var i=0;i<cc.length;i++)
     {
       c=cc[i];
       if((ngVal(c.FormID,'')=='')&&(c.Visible)&&(nge_DefFormButton2(c,t))) return true;
@@ -8424,29 +8420,29 @@ function nge_DefFormButton(ctrl, t)
 {
   var p=ctrl.ParentControl;
   if(p)
-  {    
+  {
     var c,cc=p.ChildControls;
     if(typeof cc !== 'undefined')
-      for(var i=0;i<cc.length;i++) 
+      for(var i=0;i<cc.length;i++)
       {
         c=cc[i];
         if((c)&&(c!=ctrl)&&(c.Click)&&(c.Enabled)&&(c.Visible)&&(ngVal(c.FormID,'')==''))
         {
-          if(((t)&&(ngVal(c.Default,false)))||((!t)&&(ngVal(c.Cancel,false)))) 
-          { 
+          if(((t)&&(ngVal(c.Default,false)))||((!t)&&(ngVal(c.Cancel,false))))
+          {
             var timer=setTimeout(function () { // Fire Click later
-              clearTimeout(timer); 
+              clearTimeout(timer);
               if(typeof c.Click==='function') c.Click();
             },10);
             return true;
-          } 
+          }
         }
       }
-      
+
     if((ngVal(p.FormID,'')=='')&&(nge_DefFormButton(p, t))) return true;
 
     if(typeof cc !== 'undefined')
-      for(var i=0;i<cc.length;i++) 
+      for(var i=0;i<cc.length;i++)
       {
         c=cc[i];
         if((c)&&(c!=ctrl)&&(c.Visible)&&(ngVal(c.FormID,'')=='')&&(nge_DefFormButton2(c,t))) return true;
@@ -8477,15 +8473,15 @@ function nge_KeyUpHint(edit,elm,clsid)
       for(ev=val.length-1,eh=hint.length-1;(ev>=0)&&(eh>=0);ev--,eh--)
         if(val.charAt(ev)!=hint.charAt(eh)) break;
 
-      if((ev>=0)||(eh>=0)) 
+      if((ev>=0)||(eh>=0))
       {
         if(eh>=0) {
-          for(s=0;(s<ev)&&(s<hint.length);s++)          
+          for(s=0;(s<ev)&&(s<hint.length);s++)
             if(val.charAt(s)!=hint.charAt(s)) break;
           if(s===hint.length) {
             ev=val.length-1;
           }
-        }        
+        }
         nge_HideHint(edit,elm,val.substr(s,ev-s+1));
       }
     }
@@ -8503,7 +8499,7 @@ function nge_KeyUp(e,elm)
     nge_KeyUpHint(edit,elm,'Input');
 
     if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
-    
+
     nge_TextChanged(e,elm,edit);
     if(ngVal(edit.Suggestion,false)) // Suggestion keys
     {
@@ -8526,9 +8522,9 @@ function nge_KeyUp(e,elm)
           if((dd)&&(dd.Visible))
           {
             var fi=dd.GetItemFocus();
-            if(fi) 
+            if(fi)
             {
-              if((e.keyCode==39)&&(fi)&&(typeof fi.Items !== 'undefined')&&(fi.Items.length>0)) 
+              if((e.keyCode==39)&&(fi)&&(typeof fi.Items !== 'undefined')&&(fi.Items.length>0))
                 break;
               dd.SetItemFocus(null);
               if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
@@ -8536,13 +8532,13 @@ function nge_KeyUp(e,elm)
               dd.SelectDropDownItem(fi);
               edit=null;
             }
-          }     
-          break;           
-        case 33: // PgUp 
-        case 34: // PgDown 
+          }
+          break;
+        case 33: // PgUp
+        case 34: // PgDown
         case 38: // Up
         case 40: // Down
-          if((dd)&&(dd.Visible)) 
+          if((dd)&&(dd.Visible))
           {
             var o=dd.Elm();
             if((o)&&(o.onkeyup)) o.onkeyup(e);
@@ -8557,12 +8553,12 @@ function nge_KeyUp(e,elm)
             edit.SuggestionTimer=null;
             edit.HideDropDown();
           }
-          else 
+          else
           {
             edit.SuggestionRefresh();
           }
           if(e.keyCode==40) edit=null;
-          break; 
+          break;
       }
     }
     if((e.keyCode==40)&&(edit)) edit.DropDown(); // Down
@@ -8578,30 +8574,31 @@ function nge_KeyUp(e,elm)
           if((ngVal(btn.Default,false))&&(typeof btn.Click === 'function'))
           {
             var timer=setTimeout(function () { // Fire Click later
-              clearTimeout(timer); 
+              clearTimeout(timer);
               if(typeof btn.Click==='function') btn.Click(e);
-            },10); 
+            },10);
             handled=true;
             break;
           }
         }
-      }    
+      }
       if((!handled)&&(nge_DefFormButton(edit, 1))) handled=true;
-      if((!handled)&&(edit.Buttons)&&(edit.Buttons.length>0)&&(typeof edit.Buttons[0].Click === 'function'))
+      if((!handled)&&(edit.Buttons)&&(edit.Buttons.length>0)&&(edit.Buttons[0].Default!==false)&&(typeof edit.Buttons[0].Click === 'function'))
       {
         btn=edit.Buttons[0];
         var timer=setTimeout(function () { // Fire Click later
-          clearTimeout(timer); 
+          clearTimeout(timer);
           if(typeof btn.Click==='function') btn.Click(e);
-        },10); 
+        },10);
         handled=true;
       }
+
       if(handled)
       {
         edit.SetFocus(false);
-        if(e.stopPropagation) e.stopPropagation();         
+        if(e.stopPropagation) e.stopPropagation();
         else e.cancelBubble = true;
-      }    
+      }
     }
     if((e.keyCode==27)&&(edit)) // Escape
     {
@@ -8615,21 +8612,21 @@ function nge_KeyUp(e,elm)
           if((ngVal(btn.Cancel,false))&&(typeof btn.Click === 'function'))
           {
             var timer=setTimeout(function () { // Fire Click later
-              clearTimeout(timer); 
+              clearTimeout(timer);
               if(typeof btn.Click==='function') btn.Click(e);
-            },10); 
+            },10);
             handled=true;
             break;
           }
         }
-      }    
+      }
       if((!handled)&&(nge_DefFormButton(edit, 0))) handled=true;
       if(handled)
       {
         edit.SetFocus(false);
-        if(e.stopPropagation) e.stopPropagation();         
+        if(e.stopPropagation) e.stopPropagation();
         else e.cancelBubble = true;
-      } 
+      }
     }
   }
 }
@@ -8641,11 +8638,11 @@ function nge_SetText(text)
   {
     this.Text=text;
     var o=document.getElementById(this.ID+'_T');
-    if(o) 
+    if(o)
     {
       var hintvisible=false;
-      if(text=='') 
-      {    
+      if(text=='')
+      {
         var hint=this.GetHint();
         if((hint!='')&&((!this.HasFocus)||(nge_HintStyle(this)===ngHintHideOnInput))) {
           hintvisible=true;
@@ -8690,15 +8687,15 @@ function nge_DoPtrStart(pi)
     else
     {
       pi.PreventDefault=false;
-    }    
+    }
   }
 }
 
 function nge_DoPtrClick(pi)
 {
   if(pi.EventID==='control')
-  {                     
-    if((this.DropDownType==ngeDropDownList)&&(this.DropDownControl)) 
+  {
+    if((this.DropDownType==ngeDropDownList)&&(this.DropDownControl))
     {
       if(this.DropDownControl.Visible) this.HideDropDown();
       else this.DropDown();
@@ -8706,7 +8703,7 @@ function nge_DoPtrClick(pi)
     else
     {
       if((this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos(0);
-    }    
+    }
   }
 }
 
@@ -8752,7 +8749,7 @@ function nge_BeginMobileKeyboard()
       clearTimeout(ngApp.MobileKeyboardTimer);
       nge_EndMobileKeyboard();
     },3000);
-        
+
     ng_SetClientHeight(ae,ng_ClientHeight(ae));
     ae.style.bottom='';
     ae.style.marginBottom=ng_WindowHeight();
@@ -8766,7 +8763,7 @@ function nge_EndMobileKeyboard()
   {
     if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
     delete ngApp.MobileKeyboardTimer;
-    
+
     if(ngMobileKeyboardActive===2) return;
     ngMobileKeyboardActive=2;
     ngApp.InvokeLater(function() {
@@ -8792,11 +8789,11 @@ function nge_DoFocus(e, elm)
   if(this.HintVisible) this.SetCaretPos(0);
   if((this.DropDownControl)&&(this.DropDownControl.Visible)) this.HideDropDown();
   if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
-  
-  if((this.Text == '')&&(nge_HintStyle(this)===ngHintHideOnFocus)) 
+
+  if((this.Text == '')&&(nge_HintStyle(this)===ngHintHideOnFocus))
   {
     nge_HideHint(this,elm,'')
-  }  
+  }
 }
 
 function nge_DoSetEnabled(v)
@@ -8820,7 +8817,7 @@ function nge_DoBlur(e, elm)
   if((this.Text == '')&&(!this.HintVisible))
   {
     var o=document.getElementById(this.ID+'_T');
-    if(o) 
+    if(o)
     {
       var hint=this.GetHint();
       if(hint!='') {
@@ -8833,7 +8830,7 @@ function nge_DoBlur(e, elm)
 
 function nge_ShowHint(c,o,hint)
 {
-  c.HintVisible=true; 
+  c.HintVisible=true;
   o.className = c.GetClassName('Input',hint);
   o.value=hint;
   if(ngIExplorer && ngIExplorerVersion<=8)
@@ -8892,7 +8889,7 @@ function nge_OnDropDownSetVisible(l,v)
         if(e)
         {
           if((e.OnHideDropDown)&&(!ngVal(e.OnHideDropDown(e,l),false))) return false;
-          if(typeof l.DoHideDropDown === 'function') 
+          if(typeof l.DoHideDropDown === 'function')
           {
             l.DoHideDropDown(this);
             return false;
@@ -8922,7 +8919,7 @@ function nge_IsInsidePopup(t,intype,e)
   {
     if((t===ac)||(t===ad)) break;
     t=t.parentNode;
-  }      
+  }
   return (t ? true : false);
 }
 
@@ -8931,12 +8928,12 @@ function nge_DropDown()
   if((!this.Enabled)||(this.ReadOnly)) return;
   var l=this.DropDownControl;
   if(!l) return;
-  
+
   if((this.OnDropDown)&&(!ngVal(this.OnDropDown(this,l),false))) return;
 
   var po=this.Elm();
   var o=l.Elm();
-  if((o)&&(po)) 
+  if((o)&&(po))
   {
     if(!l.Visible)
     {
@@ -8951,17 +8948,17 @@ function nge_DropDown()
       l.SetFocus();
     }
     if(!l.Visible) return;
-    
+
     o=l.Elm();
     if(!o) return;
 
     ng_BeginMeasureElement(po);
-    var ew=ng_OuterWidth(po); 
-    var eh=ng_OuterHeight(po); 
+    var ew=ng_OuterWidth(po);
+    var eh=ng_OuterHeight(po);
     ng_EndMeasureElement(po);
 
     ng_BeginMeasureElement(o);
-    var lw=ng_OuterWidth(o); 
+    var lw=ng_OuterWidth(o);
     var lh=ng_OuterHeight(o);
     ng_EndMeasureElement(o);
 
@@ -8973,21 +8970,21 @@ function nge_DropDown()
     }
     else if(lw<ew) { ng_SetOuterWidth(o,ew); lw=ew; }
     var maxh=ngVal(l.MaxHeight,150);
-    if(lh>maxh) { ng_SetOuterHeight(o,maxh); lh=maxh; } 
+    if(lh>maxh) { ng_SetOuterHeight(o,maxh); lh=maxh; }
 
     if(((pos.x+lw<=ng_WindowWidth()-20)&&(this.DropDownAlign=='left'))||((pos.x+ew-lw)<0))
     {
       o.style.left=pos.x+'px';
     }
-    else o.style.left=(pos.x+ew-lw)+'px'; 
-    
+    else o.style.left=(pos.x+ew-lw)+'px';
+
     if((pos.y+eh+lh>ng_WindowHeight()-20)&&((pos.y-lh)>=0))
     {
       o.style.top=(pos.y-lh)+'px';
     }
     else o.style.top=(pos.y+eh)+'px';
     o.style.zIndex='100000';
-    
+
     l.Update();
     if(typeof l.DoDropDownFinished === 'function') l.DoDropDownFinished(this);
   }
@@ -9011,7 +9008,7 @@ function nge_SetDropDownControl(l)
     l.IsPopup=true;
     l.AddEvent(nge_OnDropDownSetVisible,'OnSetVisible');
     l.AddEvent('IsInsidePopup',nge_IsInsidePopup);
-    
+
     if(typeof l.SetDropDownOwner === 'function') l.SetDropDownOwner(this);
   }
 }
@@ -9021,7 +9018,7 @@ function nge_GetClassName(cls, hint)
   if(typeof hint === 'undefined') hint=this.GetHint();
   var text=this.GetText();
 
-  if(this.OnGetClassName) 
+  if(this.OnGetClassName)
   {
     var c=this.OnGetClassName(this, cls, text, hint);
     if(ngVal(c,'')!='') cls=c;
@@ -9034,9 +9031,9 @@ function nge_GetClassName(cls, hint)
 function nge_DoUpdate(o)
 {
   var html=new ngStringBuilder;
-  
+
   var cclass=this.BaseClassName;
-  
+
   var image,dp;
   if((ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
   var width=ng_ClientWidth(o);
@@ -9049,7 +9046,7 @@ function nge_DoUpdate(o)
   else image=this.LeftImg;
   if(image)
   {
-    if(!images) images=new ngStringBuilder;    
+    if(!images) images=new ngStringBuilder;
     dp=ngc_ImgProps(this.ID+'_IL', (this.ControlHasFocus ? 1 : 0), this.Enabled, image);
     ngc_Img(images,dp,"position:absolute; left: 0px;",ngVal(image.Attrs,''));
     lw=dp.W;
@@ -9060,7 +9057,7 @@ function nge_DoUpdate(o)
   else image=this.RightImg;
   if(image)
   {
-    if(!images) images=new ngStringBuilder;    
+    if(!images) images=new ngStringBuilder;
     dp=ngc_ImgProps(this.ID+'_IR', (this.ControlHasFocus ? 1 : 0), this.Enabled, image);
     ngc_Img(images,dp,"position:absolute; left: "+(width-dp.W)+"px;",ngVal(image.Attrs,''));
     rw=dp.W;
@@ -9071,13 +9068,13 @@ function nge_DoUpdate(o)
   else image=this.MiddleImg;
   if(image)
   {
-    if(!images) images=new ngStringBuilder;    
+    if(!images) images=new ngStringBuilder;
     dp=ngc_ImgProps(this.ID+'_IM', (this.ControlHasFocus ? 1 : 0), this.Enabled, image);
     ngc_ImgSW(images,dp,lw,width-lw-rw,'',ngVal(image.Attrs,''));
     if(dp.H>th) th=dp.H;
   }
   var readonly=(!this.Enabled)||(this.ReadOnly)||(this.DropDownType == ngeDropDownList);
-  // If focused, we cannot use innerHTML because the input element must not be removed from DOM   
+  // If focused, we cannot use innerHTML because the input element must not be removed from DOM
   var to=(this.ControlHasFocus ? document.getElementById(this.ID+'_T') : null);
   if(to) {
     var ts=o.firstChild; // get top span
@@ -9094,15 +9091,15 @@ function nge_DoUpdate(o)
     else        ts.removeAttribute("title");
   }
   else html.append('<span '+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+'>');
-  
+
   if((this.Buttons)&&(this.Buttons.length>0))
-  {    
+  {
     var b,img,a,br;
     for(var i=0;i<this.Buttons.length;i++)
     {
       b=this.Buttons[i];
       b.Enabled=this.Enabled;
-      if((b.BaseClassName=='')||(b.BaseClassName==b.CtrlType)) b.BaseClassName=cclass+'Button'; 
+      if((b.BaseClassName=='')||(b.BaseClassName==b.CtrlType)) b.BaseClassName=cclass+'Button';
       if(!b.Visible) continue;
       if(b.ID=='') b.Attach(this.ID+'_B'+(i+1));
       br=ngb_SimpleRect(b);
@@ -9113,7 +9110,7 @@ function nge_DoUpdate(o)
         b.Bounds.L=(lw+bl);
         lw+=br.W;
       }
-      else 
+      else
       {
         b.Bounds.L=(w-rw-bw-br.W);
         bw+=br.W;
@@ -9123,7 +9120,7 @@ function nge_DoUpdate(o)
       html.append('<div id="'+b.ID+'" class="'+b.BaseClassName+'" style="position: absolute; z-index:1; left:'+b.Bounds.L+'px; top: 0px; width: '+br.W+'px; height: '+br.H+'px"></div>');
     }
   }
-  
+
   ng_SetClientHeight(o,th);
   var cbh=ng_StyleHeight(o);
   if(this.Bounds.H!=cbh)
@@ -9142,12 +9139,12 @@ function nge_DoUpdate(o)
     {
       nx=n.previousSibling;
       if(n!=to) ts.removeChild(n);
-      n=nx;      
-    }      
-    
+      n=nx;
+    }
+
     // create DOM before input element
     var temp = document.createElement('div');
-    ng_SetInnerHTML(temp,html.toString());     
+    ng_SetInnerHTML(temp,html.toString());
 
     // insert DOM before input element
     n=temp.firstChild;
@@ -9157,19 +9154,19 @@ function nge_DoUpdate(o)
       ts.insertBefore(n, to);
       n=nx;
     }
-    
+
     // update input element
     to.className=this.GetClassName('Input',hint);
-    
+
     if(!ngIExplorer || ngIExplorerVersion>8)
     {
       if((this.Password)&&(!this.HintVisible))    to.setAttribute("type","password");
       else                                        to.setAttribute("type","text");
     }
-    
+
     if((this.MaxLength>0)&&(!this.HintVisible)) to.setAttribute("maxlength",this.MaxLength);
     else                                        to.removeAttribute("maxlength");
-    
+
     if(readonly)
     {
       to.setAttribute("readonly","readonly");
@@ -9181,7 +9178,7 @@ function nge_DoUpdate(o)
     to.style.left=(lw+bl)+'px';
     to.style.top=this.OffsetTop+'px';
     to.style.width=tw+'px';
-    if((this.HintVisible)&&(to.value!=hint)) 
+    if((this.HintVisible)&&(to.value!=hint))
     {
       to.value=hint;
       this.SetCaretPos(0);
@@ -9193,11 +9190,11 @@ function nge_DoUpdate(o)
       html.append('<span style="position: absolute;z-index:0;left:0px;">');
       html.append(images);
       html.append('</span>');
-      
+
       // create DOM after input element
       temp = document.createElement('div');
-      ng_SetInnerHTML(temp,html.toString());     
-  
+      ng_SetInnerHTML(temp,html.toString());
+
       // append DOM after input element
       n=temp.firstChild;
       while(n)
@@ -9205,7 +9202,7 @@ function nge_DoUpdate(o)
         nx=n.nextSibling;
         ts.appendChild(n);
         n=nx;
-      }    
+      }
     }
   }
   else
@@ -9231,10 +9228,10 @@ function nge_DoUpdate(o)
     }
     html.append('</span>');
     ng_SetInnerHTML(o,html.toString());
-  }  
+  }
 
   if((this.Buttons)&&(this.Buttons.length>0))
-  {    
+  {
     var b,biw,img;
     for(var i=0;i<this.Buttons.length;i++)
     {
@@ -9250,18 +9247,18 @@ function nge_SetFocus(state)
 {
   state=ngVal(state,true);
   if(state==this.HasFocus) return;
-  
+
   var o=document.getElementById(this.ID+'_T');
-  if(o) 
-  { 
-    try { 
-      if(state) 
+  if(o)
+  {
+    try {
+      if(state)
       {
         o.focus();
         if((this.SelectOnFocus)&&(!this.HintVisible)) o.select();
-      } 
-      else o.blur(); 
-    } catch(e) { } 
+      }
+      else o.blur();
+    } catch(e) { }
   }
 }
 
@@ -9272,20 +9269,20 @@ function nge_SetReadOnly(ro)
 
   this.ReadOnly=ro;
   var o=document.getElementById(this.ID+'_T');
-  if(o) 
+  if(o)
   {
-    if(ro) 
+    if(ro)
     {
       o.setAttribute("readonly","readonly");
       o.style.cursor='default';
       if((ngIExplorer)&&(this.ControlHasFocus)) this.SetFocus(false);
     }
-    else   
+    else
     {
       o.removeAttribute("readonly");
       o.style.cursor='';
     }
-  } 
+  }
 }
 
 function nge_DoMouseEnter(e, mi, elm)
@@ -9314,7 +9311,7 @@ function nge_DoMouseLeave(e, mi)
     var cn=o.className;
     var i=cn.indexOf('_Focus');
     if(i>=0) cn=cn.substring(0,i);
-    o.className=cn; 
+    o.className=cn;
   }
   ngc_LeaveImg(this.ID+'_IL');
   ngc_LeaveImgS(this.ID+'_IM');
@@ -9331,7 +9328,7 @@ function nge_DoCreate(d, ref, elm, parent)
       Data: {
         Visible: false
       }
-    });   
+    });
     var lref=ngCreateControls({ Control: d.DropDown });
     if(typeof lref.Control !== 'undefined') // dropdown successfuly created
     {
@@ -9346,20 +9343,20 @@ function nge_DoCreate(d, ref, elm, parent)
     for(var i=0;i<d.Buttons.length;i++)
     {
       b=ng_CopyVar(d.Buttons[i]);
-      ldefs['B'+i]=b;      
+      ldefs['B'+i]=b;
     }
     var lref=ngCreateControls(ldefs,undefined,null);
     if((typeof this.Buttons !== 'object')||(!this.Buttons)) this.Buttons=new Array();
     for(var i=0;i<d.Buttons.length;i++)
     {
       b=lref['B'+i];
-      if(b) 
+      if(b)
       {
         b.Owner=this;
         this.Buttons[this.Buttons.length]=b;
       }
-    }    
-    if(!this.Buttons.length) this.Buttons=null; 
+    }
+    if(!this.Buttons.length) this.Buttons=null;
   }
 }
 
@@ -9372,26 +9369,26 @@ function nge_DoDispose()
 
 /**
  *  Class: ngEdit
- *  This class implements a generic edit control. 
+ *  This class implements a generic edit control.
  *
  *  Syntax:
  *    new *ngEdit* ([string id, string text=''])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    text - edit text 
- *    
+ *    text - edit text
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngEdit(id, text)
 {
   ngControl(this, id, 'ngEdit');
   this.DoCreate = nge_DoCreate;
-  this.DoDispose = nge_DoDispose;  
+  this.DoDispose = nge_DoDispose;
   this.DoAcceptGestures = nge_DoAcceptGestures;
-  this.DoGesture = nge_DoGesture; 
-  
+  this.DoGesture = nge_DoGesture;
+
   /*
    *  Group: Definition
    */
@@ -9401,7 +9398,7 @@ function ngEdit(id, text)
    *  Type: object
    */
   /*<>*/
-  
+
   /*
    *  Group: Properties
    */
@@ -9418,7 +9415,7 @@ function ngEdit(id, text)
   /*  Variable: TextAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.TextAlign = 'left';
   /*  Variable: Alt
@@ -9435,23 +9432,23 @@ function ngEdit(id, text)
    *  ...
    *  Type: integer
    */
-  //this.HintStyle = undefined;  
+  //this.HintStyle = undefined;
   /*  Variable: ReadOnly
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.ReadOnly = false;
   /*  Variable: Password
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.Password = false;
   /*  Variable: MaxLength
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.MaxLength = 0;
 
@@ -9473,109 +9470,109 @@ function ngEdit(id, text)
   /*  Variable: OffsetTop
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.OffsetTop = 0;
 
   /*  Variable: HasFocus
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.HasFocus=false;
 
   /*  Variable: SelectOnFocus
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.SelectOnFocus=true;
-  
+
   /*  Variable: Buttons
    *  ...
    *  Type: array
-   *  Default value: *null*   
+   *  Default value: *null*
    */
   this.Buttons = null;
 
   /*  Variable: DropDownType
    *  ...
    *  Type: enum
-   *  
+   *
    *  Constants:
    *  ngeDropDownEdit - ...
    *  ngeDropDownList - ...
-   *           
-   *  Default value: *ngeDropDownEdit*   
+   *
+   *  Default value: *ngeDropDownEdit*
    */
   this.DropDownType = ngeDropDownEdit;
 
   /*  Variable: DropDownControl
    *  ...
    *  Type: object
-   *  Default value: *null*   
+   *  Default value: *null*
    */
   this.DropDownControl = null;
 
   /*  Variable: DropDownWidth
    *  ...
    *  Type: integer
-   *  Default value: *undefined*   
+   *  Default value: *undefined*
    */
   this.DropDownWidth = undefined;
   /*  Variable: DropDownAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.DropDownAlign = 'left';
 
   /*  Variable: Suggestion
    *  ...
    *  Type: bool
-   *  Default value: *false*         
+   *  Default value: *false*
    */
   //this.Suggestion=false;
-  
+
   /*  Variable: SuggestionDelay
    *  ...
    *  Type: int
-   *  Default value: *200*         
+   *  Default value: *200*
    */
   //this.SuggestionDelay=200;
-  
+
   /*  Variable: SuggestionSearchColumn
    *  ...
    *  Type: string
-   *  Default value: *''*         
+   *  Default value: *''*
    */
   //this.SuggestionSearchColumn='';
-  
+
   /*  Variable: SuggestionIgnoreCase
    *  ...
    *  Type: bool
-   *  Default value: *true*         
+   *  Default value: *true*
    */
   //this.SuggestionIgnoreCase=true;
-  
+
   /*  Variable: SuggestionPartial
    *  ...
    *  Type: int
-   *  Default value: *2*         
+   *  Default value: *2*
    */
   //this.SuggestionPartial=2
-  
+
   /*  Variable: SuggestionURL
    *  ...
    *  Type: string
-   *  Default value: *''*         
+   *  Default value: *''*
    */
   //this.SuggestionURL='';
-  
+
   /*  Variable: SuggestionType
    *  ...
    *  Type: string
-   *  Default value: *''*         
+   *  Default value: *''*
    */
   //this.SuggestionType='';
 
@@ -9583,82 +9580,82 @@ function ngEdit(id, text)
    *  Group: Methods
    */
   /*  Function: SetText
-   *  Sets edit text.   
-   *   
+   *  Sets edit text.
+   *
    *  Syntax:
    *    void *SetText* (string text)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetText = nge_SetText;
   /*  Function: GetText
-   *  Gets edit text.   
-   *   
+   *  Gets edit text.
+   *
    *  Syntax:
    *    string *GetText* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.GetText = ngc_GetText;
   /*  Function: GetAlt
-   *  Gets alt text.   
-   *   
+   *  Gets alt text.
+   *
    *  Syntax:
    *    string *GetAlt* (void)
-   *     
+   *
    *  Returns:
-   *    Alt text.     
+   *    Alt text.
    */
   this.GetAlt=ngc_GetAlt;
   /*  Function: GetHint
-   *  Gets hint text.   
-   *   
+   *  Gets hint text.
+   *
    *  Syntax:
    *    string *GetHint* (void)
-   *     
+   *
    *  Returns:
-   *    Hint text.     
+   *    Hint text.
    */
   this.GetHint=ngc_GetHint;
-  
+
   /*  Function: SetReadOnly
-   *  Sets readonly state of control.   
-   *   
+   *  Sets readonly state of control.
+   *
    *  Syntax:
    *    void *SetReadOnly* ([bool ro=true])
-   *     
+   *
    *  Parameters:
    *    ro - readonly state
-   *             
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetReadOnly=nge_SetReadOnly;
 
   /*  Function: GetCaretPos
-   *  Gets caret position.   
-   *   
+   *  Gets caret position.
+   *
    *  Syntax:
    *    int *GetCaretPos* ()
-   *     
+   *
    *  Returns:
-   *    Caret position or undefined if edit is not focused.     
+   *    Caret position or undefined if edit is not focused.
    */
   this.GetCaretPos = nge_GetCaretPos;
-  
+
   /*  Function: SetCaretPos
-   *  Sets caret position.   
-   *   
+   *  Sets caret position.
+   *
    *  Syntax:
    *    void *SetCaretPos* (int pos)
-   *     
+   *
    *  Parameters:
    *    ro - caret position
-   *       
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetCaretPos = nge_SetCaretPos;
 
@@ -9672,145 +9669,145 @@ function ngEdit(id, text)
   this.DoPtrClick = nge_DoPtrClick;
 
   /*  Function: SetDropDownControl
-   *  Assigns drop down control to edit box.   
-   *   
+   *  Assigns drop down control to edit box.
+   *
    *  Syntax:
    *    void *SetDropDownControl* (object control)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetDropDownControl = nge_SetDropDownControl;
   /*  Function: DropDown
-   *  Shows drop down.   
-   *   
+   *  Shows drop down.
+   *
    *  Syntax:
    *    void *DropDown* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.DropDown = nge_DropDown;
   /*  Function: HideDropDown
-   *  Hides drop down.   
-   *   
+   *  Hides drop down.
+   *
    *  Syntax:
    *    void *HideDropDown* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.HideDropDown = nge_HideDropDown;
-  
+
   /*  Function: SuggestionRefresh
-   *  Refreshes suggestion content.   
-   *   
+   *  Refreshes suggestion content.
+   *
    *  Syntax:
    *    void *SuggestionRefresh* ([bool forcerequery=false, delay=undefined])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SuggestionRefresh = nge_SuggestionRefresh;
 
   this.DoUpdateImages = nge_DoUpdateImages;
   this.DoUpdate = nge_DoUpdate;
   this.SetFocus = nge_SetFocus;
-  
+
   /*
    *  Group: Events
    */
   /*
    *  Event: OnSetText
-   */     
+   */
   this.OnSetText = null;
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
-  
+
   /*
    *  Event: OnTextChanged
-   */     
+   */
   this.OnTextChanged = null;
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
   /*
    *  Event: OnGetHint
-   */     
+   */
   this.OnGetHint = null;
   /*
    *  Event: OnGetClassName
-   */     
+   */
   this.OnGetClassName = null;
-  
+
   /*
    *  Event: OnDropDown
-   */     
+   */
   this.OnDropDown = null;
   /*
    *  Event: OnHideDropDown
-   */     
+   */
   this.OnHideDropDown = null;
   /*
    *  Event: OnClickOutside
    */
   this.OnClickOutside = null;
-  
+
   /*
    *  Event: OnKeyDown
-   */     
+   */
   this.OnKeyDown = null;
   /*
    *  Event: OnKeyUp
-   */     
+   */
   this.OnKeyUp = null;
   /*
    *  Event: OnKeyPress
-   */     
+   */
   this.OnKeyPress = null;
-  
+
   /*
    *  Event: OnMouseEnter
-   */     
+   */
   this.OnMouseEnter = null;
   /*
    *  Event: OnMouseLeave
-   */     
+   */
   this.OnMouseLeave = null;
-  
+
   /*
    *  Event: OnFocus
-   */     
+   */
   this.OnFocus = null;
   /*
    *  Event: OnBlur
-   */     
+   */
   this.OnBlur = null;
 
   /*
    *  Event: OnGetImg
-   */     
+   */
   this.OnGetImg = null;
-    
+
   /*
    *  Event: OnSuggestionSetText
    */
-  // c.OnSuggestionSetText=null;             
+  // c.OnSuggestionSetText=null;
   /*
    *  Event: OnSuggestionSearch
    */
-  // c.OnSuggestionSearch=null;             
+  // c.OnSuggestionSearch=null;
   /*
    *  Event: OnSuggestionCompareItem
    */
-  // c.OnSuggestionCompareItem=null;             
+  // c.OnSuggestionCompareItem=null;
   /*
    *  Event: OnSuggestionURL
    */
-  // c.OnSuggestionURL=null;             
+  // c.OnSuggestionURL=null;
   /*
    *  Event: OnSuggestionResults
    */
@@ -9819,7 +9816,7 @@ function ngEdit(id, text)
    *  Event: OnSuggestionData
    */
   // c.OnSuggestionData=null;
-               
+
   ngControlCreated(this);
 }
 
@@ -9838,15 +9835,15 @@ function ngDropDown_Add(c)
     }
   }
 
-  b.OnClick = function(ci) 
-  {         
+  b.OnClick = function(ci)
+  {
     var e=(ci.Owner ? ci.Owner.Parent : null);
-    if(e) 
+    if(e)
     {
       var l=e.DropDownControl;
       if((l)&&(l.Visible)) e.HideDropDown();
       else e.DropDown();
-    } 
+    }
   }
   c.Buttons=new Array(b);
 }
@@ -9863,13 +9860,13 @@ function ngDropDown_Create(def, ref, parent,basetype,dropdownlist)
   var c=ngCreateControlAsType(def, ngVal(basetype,'ngEdit'), ref, parent);
   if(!c) return c;
 
-  if(dropdownlist) 
+  if(dropdownlist)
   {
     c.DropDownType=ngeDropDownList;
     c.SelectOnFocus=true;
   }
   ngDropDown_Add(c);
-  if(typeof def.DropDown === 'undefined') def.DropDown=new Object; 
+  if(typeof def.DropDown === 'undefined') def.DropDown=new Object;
   return c;
 }
 
@@ -9878,7 +9875,7 @@ function ngDropDown_Create(def, ref, parent,basetype,dropdownlist)
 function ngedn_GetText(e)
 {
   var n=parseInt(e.Text);
-  if((e.Text=='')||(isNaN(n))) 
+  if((e.Text=='')||(isNaN(n)))
   {
     n=ngVal(e.DefaultNum,0);
     e.Text=''+n;
@@ -9886,7 +9883,7 @@ function ngedn_GetText(e)
   if((typeof this.MinNum !== 'undefined')&&(n<e.MinNum)) e.Text=''+e.MinNum;
   if((typeof this.MaxNum !== 'undefined')&&(n>e.MaxNum)) e.Text=''+e.MaxNum;
   return e.Text;
-}              
+}
 
 /*  Class: ngEditNum
  *  Standard edit number control with spin buttons (based on <ngEdit>).
@@ -9900,10 +9897,10 @@ function ngEditNum_Create(def, ref, parent)
    */
   /*  Variable: ArrowsAlign
    *
-   *  Constants: 
-   *    'left' - ...  
-   *    'right' - ...         
-   *    'both' - ...         
+   *  Constants:
+   *    'left' - ...
+   *    'right' - ...
+   *    'both' - ...
    */
   /*<>*/
   var align=ngVal(def.ArrowsAlign, 'right');
@@ -9911,17 +9908,17 @@ function ngEditNum_Create(def, ref, parent)
    *
    *  Constants:
    *    'none' - ...
-   *    'leftright' - ...                    
-   *    'updown' - ...                  
+   *    'leftright' - ...
+   *    'updown' - ...
    */
   /*<>*/
   var type=ngVal(def.Arrows,'leftright');
-  
+
   var c=ngCreateControlAsType(def, 'ngEdit', ref, parent);
   if(!c) return c;
   c.TextAlign=(align=='both' ? 'center' : 'right');
   c.OnGetText = ngedn_GetText;
-  
+
   c.AddEvent('OnKeyUp',function(e,elm) {
     switch(e.keyCode)
     {
@@ -9936,14 +9933,14 @@ function ngEditNum_Create(def, ref, parent)
   /*  Variable: Step
    *  ...
    *  Type: integer
-   *  Default value: *1*         
+   *  Default value: *1*
    */
   /*<>*/
   c.Step=1;
   /*  Variable: StepRound
    *  ...
    *  Type: bool
-   *  Default value: *false*         
+   *  Default value: *false*
    */
   /*<>*/
   /*  Variable: MinNum
@@ -9959,24 +9956,24 @@ function ngEditNum_Create(def, ref, parent)
   /*  Variable: DefaultNum
    *  ...
    *  Type: integer
-   *  Default value: *0*         
+   *  Default value: *0*
    */
   /*<>*/
   c.DefaultNum=0;
-  
+
   /*
    *  Group: Methods
    */
   /*  Function: DoUp
    *  Increase value by <Step>.
-   *   
+   *
    *  Syntax:
    *    void *DoUp* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.DoUp = function() {
     var n=this.GetNum();
@@ -9988,14 +9985,14 @@ function ngEditNum_Create(def, ref, parent)
   }
   /*  Function: DoDown
    *  Decrease value by <Step>.
-   *   
+   *
    *  Syntax:
    *    void *DoDown* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.DoDown = function() {
     var n=this.GetNum();
@@ -10007,14 +10004,14 @@ function ngEditNum_Create(def, ref, parent)
   }
   /*  Function: GetNum
    *  Gets number.
-   *   
+   *
    *  Syntax:
    *    int *GetNum* ()
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.GetNum = function() {
     if(this.OnGetNum) return this.OnGetNum(this);
@@ -10026,17 +10023,17 @@ function ngEditNum_Create(def, ref, parent)
   };
   /*  Function: SetNum
    *  Sets number.
-   *   
+   *
    *  Syntax:
    *    void *SetNum* (int n)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.SetNum = function(n) {
-    if(isNaN(n)) n=this.DefaultNum; 
+    if(isNaN(n)) n=this.DefaultNum;
     n=ngVal(n,this.DefaultNum);
     n=ngVal(n,0);
     if(this.OnSetNum) { this.OnSetNum(this,n); return; }
@@ -10058,18 +10055,20 @@ function ngEditNum_Create(def, ref, parent)
   {
     c.ButtonUp=new ngButton();
     if(align=='left') c.ButtonUp.ButtonAlign='left';
-    c.ButtonUp.OnClick = function(ci) 
-    {     
+    c.ButtonUp.Default = false;
+    c.ButtonUp.OnClick = function(ci)
+    {
       var e=(ci.Owner ? ci.Owner.Parent : null);
       if(!e) return;
       if((e.OnUp)&&(!ngVal(e.OnUp(ci, e.GetNum()),false))) return;
       e.DoUp();
       if(!ci.Owner.Touching) e.SetFocus();
-    }          
+    }
     c.ButtonDown=new ngButton();
     if((align=='left')||(align=='both')) c.ButtonDown.ButtonAlign='left';
-    c.ButtonDown.OnClick = function(ci) 
-    {     
+    c.ButtonDown.Default = false;
+    c.ButtonDown.OnClick = function(ci)
+    {
       var e=(ci.Owner ? ci.Owner.Parent : null);
       if(!e) return;
       if((e.OnDown)&&(!ngVal(e.OnDown(ci, e.GetNum()),false))) return;
@@ -10077,7 +10076,7 @@ function ngEditNum_Create(def, ref, parent)
       if(!ci.Owner.Touching) e.SetFocus();
     }
     if(align=='left') c.Buttons=new Array(c.ButtonDown,c.ButtonUp);
-    else              c.Buttons=new Array(c.ButtonUp,c.ButtonDown);      
+    else              c.Buttons=new Array(c.ButtonUp,c.ButtonDown);
   }
 
   /*
@@ -10112,11 +10111,11 @@ function ngem_TextChanged(event, elm, edit)
       if(edit.OnTextChanged) edit.OnTextChanged(edit);
       elm.className = edit.GetClassName('Input');
     }
-    
+
     if(((v == '')&&((!edit.HasFocus)||(nge_HintStyle(edit)===ngHintHideOnInput))) || (edit.HintVisible))
     {
       var hint=edit.GetHint();
-      if(hint!='') { 
+      if(hint!='') {
         edit.HintVisible=true;
         elm.className = edit.GetClassName('Input',hint);
         elm.value=hint;
@@ -10159,21 +10158,21 @@ function ngem_KeyDown(e,elm)
         case 40: // Down
         case 8:  // Backspace
         case 46: // Delete
-        case 33: // PgUp 
-        case 34: // PgDown 
+        case 33: // PgUp
+        case 34: // PgDown
           if(e.preventDefault) e.preventDefault();
           e.returnValue = false;
           break;
       }
-    } 
-    
+    }
+
     if(e.keyCode==13)
     {
       // prevent parent window(s) fire default button
       var pc=edit.ParentControl;
       while(pc)
       {
-        if(pc.CtrlType=='ngWindow') pc.IgnoreDefFormBtn=true; 
+        if(pc.CtrlType=='ngWindow') pc.IgnoreDefFormBtn=true;
         pc=pc.ParentControl;
       }
     }
@@ -10189,8 +10188,8 @@ function ngem_KeyUp(e,elm)
   {
     e.Owner=edit;
     nge_KeyUpHint(edit,elm,'Input');
-    
-    if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e),false))) return false;    
+
+    if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e),false))) return false;
     ngem_TextChanged(e,elm,edit);
     if((e.keyCode==27)&&(edit))
     {
@@ -10206,11 +10205,11 @@ function ngem_SetText(text)
   {
     this.Text=text;
     var o=document.getElementById(this.ID+'_T');
-    if(o) 
+    if(o)
     {
       this.HintVisible=false;
-      if(text=='') 
-      {    
+      if(text=='')
+      {
         var hint=this.GetHint();
         if((hint!='')&&((!this.HasFocus)||(nge_HintStyle(this)===ngHintHideOnInput))) {
           this.HintVisible=true;
@@ -10234,12 +10233,12 @@ function ngem_DoFocus(e, elm)
   if(this.HintVisible) this.SetCaretPos(0);
   if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
 
-  if((this.Text == '')&&(nge_HintStyle(this)===ngHintHideOnFocus)) 
+  if((this.Text == '')&&(nge_HintStyle(this)===ngHintHideOnFocus))
   {
     this.HintVisible=false;
     elm.value='';
     elm.className = this.GetClassName('Input');
-  }  
+  }
 }
 
 function ngem_DoBlur(e, elm)
@@ -10250,11 +10249,11 @@ function ngem_DoBlur(e, elm)
   if((this.Text == '')&&(!this.HintVisible))
   {
     var o=document.getElementById(this.ID+'_T');
-    if(o) 
+    if(o)
     {
       var hint=this.GetHint();
       if(hint!='') {
-        this.HintVisible=true; 
+        this.HintVisible=true;
         o.className = this.GetClassName('Input',hint);
         o.value=hint;
       }
@@ -10264,7 +10263,7 @@ function ngem_DoBlur(e, elm)
 }
 
 function ngem_DoUpdateImages()
-{  
+{
   ngc_ChangeBox(this.ID, (this.HasFocus ? 1 : 0), this.Enabled, this.Frame);
 }
 
@@ -10283,14 +10282,14 @@ function ngem_DoUpdate(o)
 
   var alt=this.GetAlt();
   var hint=(((!this.ControlHasFocus)||(nge_HintStyle(this)===ngHintHideOnInput)) ? this.GetHint() : '');
-  
+
   l+=dp.Left.W; w-=(dp.Left.W + dp.Right.W);
   t+=dp.Top.H;  h-=(dp.Top.H + dp.Bottom.H);
   if(w<0) w=0;
   if(h<0) h=0;
-  
+
   var readonly=(!this.Enabled)||(this.ReadOnly);
-  // If focused, we cannot use innerHTML because the input element must not be removed from DOM   
+  // If focused, we cannot use innerHTML because the input element must not be removed from DOM
   var to=(this.ControlHasFocus ? document.getElementById(this.ID+'_T') : null);
   if(to) // updating DOM
   {
@@ -10300,12 +10299,12 @@ function ngem_DoUpdate(o)
     {
       nx=n.previousSibling;
       if(n!=to) o.removeChild(n);
-      n=nx;      
-    }      
+      n=nx;
+    }
 
     // create DOM before input element
     var temp = document.createElement('div');
-    ng_SetInnerHTML(temp,html.toString());     
+    ng_SetInnerHTML(temp,html.toString());
 
     // insert DOM before input element
     n=temp.firstChild;
@@ -10314,12 +10313,12 @@ function ngem_DoUpdate(o)
       nx=n.nextSibling;
       o.insertBefore(n, to);
       n=nx;
-    }    
-    
+    }
+
     // update input element
     to.className=this.GetClassName('Input',hint);
     if(alt!='')  to.setAttribute("title",alt);
-    else         to.removeAttribute("title"); 
+    else         to.removeAttribute("title");
     if(readonly)
     {
       to.setAttribute("readonly","readonly");
@@ -10331,14 +10330,14 @@ function ngem_DoUpdate(o)
     to.style.top=t+'px';
     to.style.width=w+'px';
     to.style.height=h+'px';
-    if((this.HintVisible)&&(to.value!=hint)) 
+    if((this.HintVisible)&&(to.value!=hint))
     {
       to.value=hint;
       this.SetCaretPos(0);
     }
   }
   else
-  {   
+  {
     this.HintVisible=(this.Text=='')&&(hint!='');
     html.append('<textarea ');
     if(alt!='') html.append('title="'+ng_htmlEncode(alt)+'" ');
@@ -10350,7 +10349,7 @@ function ngem_DoUpdate(o)
     html.append('>');
     html.append(ng_htmlEncode(this.Text == '' ? hint : this.Text));
     html.append('</textarea>');
-  
+
     ng_SetInnerHTML(o,html.toString());
   }
   return true;
@@ -10380,7 +10379,7 @@ function ngem_DoMouseLeave(e, mi)
     var cn=o.className;
     var i=cn.indexOf('_Focus');
     if(i>=0) cn=cn.substring(0,i);
-    o.className=cn; 
+    o.className=cn;
   }
   ngc_LeaveBox(this.ID);
 }
@@ -10409,24 +10408,24 @@ function ngem_DoPtrClick(pi)
 
 /**
  *  Class: ngMemo
- *  This class implements a generic memo control. 
+ *  This class implements a generic memo control.
  *
  *  Syntax:
  *    new *ngMemo* ([string id, string text=''])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    text - memo text 
- *    
+ *    text - memo text
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngMemo(id, text)
 {
   ngControl(this, id, 'ngMemo');
 
   this.DoAcceptGestures = ngem_DoAcceptGestures;
-  this.DoGesture = nge_DoGesture; 
+  this.DoGesture = nge_DoGesture;
   this.DoPtrStart = ngem_DoPtrStart;
   this.DoPtrClick = ngem_DoPtrClick;
 
@@ -10446,7 +10445,7 @@ function ngMemo(id, text)
   /*  Variable: TextAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.TextAlign = 'left';
   /*  Variable: Alt
@@ -10463,11 +10462,11 @@ function ngMemo(id, text)
    *  ...
    *  Type: integer
    */
-  //this.HintStyle = undefined;  
+  //this.HintStyle = undefined;
   /*  Variable: ReadOnly
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.ReadOnly = false;
   /*  Variable: Frame
@@ -10479,97 +10478,97 @@ function ngMemo(id, text)
   /*  Variable: HasFocus
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.HasFocus=false;
 
   /*  Variable: SelectOnFocus
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.SelectOnFocus=true;
-  
+
   /*
    *  Group: Methods
    */
   /*  Function: SetText
-   *  Sets memo text.   
-   *   
+   *  Sets memo text.
+   *
    *  Syntax:
    *    void *SetText* (string text)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetText = ngem_SetText;
   /*  Function: GetText
-   *  Gets memo text.   
-   *   
+   *  Gets memo text.
+   *
    *  Syntax:
    *    string *GetText* ()
-   *     
+   *
    *  Returns:
-   *    Memo text.     
+   *    Memo text.
    */
   this.GetText = ngc_GetText;
   /*  Function: GetAlt
-   *  Gets alt text.   
-   *   
+   *  Gets alt text.
+   *
    *  Syntax:
    *    string *GetAlt* (void)
-   *     
+   *
    *  Returns:
-   *    Alt text.     
+   *    Alt text.
    */
   this.GetAlt=ngc_GetAlt;
   /*  Function: GetHint
-   *  Gets hint text.   
-   *   
+   *  Gets hint text.
+   *
    *  Syntax:
    *    string *GetHint* (void)
-   *     
+   *
    *  Returns:
-   *    Hint text.     
+   *    Hint text.
    */
   this.GetHint=ngc_GetHint;
-  
+
   /*  Function: SetReadOnly
-   *  Sets readonly state of control.   
-   *   
+   *  Sets readonly state of control.
+   *
    *  Syntax:
    *    void *SetReadOnly* ([bool ro=true])
-   *     
+   *
    *  Parameters:
    *    ro - readonly state
-   *             
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetReadOnly=nge_SetReadOnly;
 
   /*  Function: GetCaretPos
-   *  Gets caret position.   
-   *   
+   *  Gets caret position.
+   *
    *  Syntax:
    *    int *GetCaretPos* ()
-   *     
+   *
    *  Returns:
-   *    Caret position or undefined if edit is not focused.     
+   *    Caret position or undefined if edit is not focused.
    */
   this.GetCaretPos = nge_GetCaretPos;
-    
+
   /*  Function: SetCaretPos
-   *  Sets caret position.   
-   *   
+   *  Sets caret position.
+   *
    *  Syntax:
    *    void *SetCaretPos* (int pos)
-   *     
+   *
    *  Parameters:
    *    ro - caret position
-   *       
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetCaretPos = nge_SetCaretPos;
 
@@ -10583,65 +10582,65 @@ function ngMemo(id, text)
   this.DoUpdateImages = ngem_DoUpdateImages;
   this.DoUpdate = ngem_DoUpdate;
   this.SetFocus = nge_SetFocus;
-  
+
   /*
    *  Group: Events
    */
   /*
    *  Event: OnSetText
-   */     
+   */
   this.OnSetText = null;
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
-  
+
   /*
    *  Event: OnTextChanged
-   */     
+   */
   this.OnTextChanged = null;
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
   /*
    *  Event: OnGetHint
-   */     
+   */
   this.OnGetHint = null;
   /*
    *  Event: OnGetClassName
-   */     
+   */
   this.OnGetClassName = null;
-  
+
   /*
    *  Event: OnKeyDown
-   */     
+   */
   this.OnKeyDown = null;
   /*
    *  Event: OnKeyUp
-   */     
+   */
   this.OnKeyUp = null;
   /*
    *  Event: OnKeyPress
-   */     
+   */
   this.OnKeyPress = null;
-  
+
   /*
    *  Event: OnMouseEnter
-   */     
+   */
   this.OnMouseEnter = null;
   /*
    *  Event: OnMouseLeave
-   */     
+   */
   this.OnMouseLeave = null;
-  
+
   /*
    *  Event: OnFocus
-   */     
+   */
   this.OnFocus = null;
   /*
    *  Event: OnBlur
-   */     
+   */
   this.OnBlur = null;
 
   ngControlCreated(this);
@@ -10679,9 +10678,9 @@ function ngpg_DoPtrDblClick(pi)
 function ngpg_DoPtrStart(pi)
 {
   if(pi.Touch)
-  {    
+  {
     var eid=pi.EventID;
-    if(eid.substr(0,4)==='page') 
+    if(eid.substr(0,4)==='page')
     {
       ngpg_EnterPg(pi.Event,pi.SrcElement);
     }
@@ -10691,12 +10690,12 @@ function ngpg_DoPtrStart(pi)
 function ngpg_DoPtrDrag(pi)
 {
   if(pi.Touch)
-  { 
+  {
     var eid=pi.EventID;
-    if(eid.substr(0,4)==='page') 
+    if(eid.substr(0,4)==='page')
     {
-      if(!pi.IsInSrcElement()) 
-      {      
+      if(!pi.IsInSrcElement())
+      {
         if(ngpg_CurrentPageId==pi.SrcElement.id)
           ngpg_LeavePg(pi.Event,pi.SrcElement);
       }
@@ -10712,13 +10711,13 @@ function ngpg_DoPtrDrag(pi)
 
 function ngpg_DoPtrEnd(pi)
 {
-  if(pi.Touch) 
+  if(pi.Touch)
   {
     var eid=pi.EventID;
-    if(eid.substr(0,4)==='page') 
+    if(eid.substr(0,4)==='page')
     {
-      if(pi.IsInSrcElement()) 
-      {      
+      if(pi.IsInSrcElement())
+      {
         if(ngpg_CurrentPageId==pi.SrcElement.id)
           ngpg_LeavePg(pi.Event,pi.SrcElement);
       }
@@ -10732,7 +10731,7 @@ function ngpg_EnterPg(e,elm)
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
 
   var cn=elm.className;
-  if(ngpg_CurrentPageId!='') 
+  if(ngpg_CurrentPageId!='')
   {
     var o=document.getElementById(ngpg_CurrentPageId);
     ngpg_LeavePg(e,o);
@@ -10740,7 +10739,7 @@ function ngpg_EnterPg(e,elm)
   ngpg_CurrentPageId=elm.id;
   var i=cn.indexOf('_Focus');
   if(i<0) cn=cn+'_Focus';
-  elm.className=cn; 
+  elm.className=cn;
   ngc_EnterImg(elm.id+'_IL');
   ngc_EnterImgS(elm.id+'_IM');
   ngc_EnterImg(elm.id+'_IR');
@@ -10755,7 +10754,7 @@ function ngpg_LeavePg(e,elm)
   if(ngpg_CurrentPageId==elm.id) ngpg_CurrentPageId='';
   var i=cn.indexOf('_Focus');
   if(i>=0) cn=cn.substring(0,i);
-  elm.className=cn; 
+  elm.className=cn;
   ngc_LeaveImg(elm.id+'_IL');
   ngc_LeaveImgS(elm.id+'_IM');
   ngc_LeaveImg(elm.id+'_IR');
@@ -10763,28 +10762,28 @@ function ngpg_LeavePg(e,elm)
 
 function ngpg_ChangePageState(p, s)
 {
-  var pid=this.ID+'_'+p;  
+  var pid=this.ID+'_'+p;
   var o=document.getElementById(pid);
   if(o)
-  {            
+  {
     var co=this.Elm();
     if(!co) return;
     var cclass=this.BaseClassName;
 
     var cn='';
     var pimage=(this.PageImages.length ? this.PageImages[p % this.PageImages.length] : new Object);
-    
+
     var enabled=((this.Enabled)&&(this.Pages[p])&&(ngVal(this.Pages[p].Enabled,true)));
     if(!enabled) cn='PageDisabled';
     else cn=(s ? 'PageSelected' : 'Page');
-    
+
     var i=o.className.indexOf('_Focus');
-    if(i>=0) cn+='_Focus'; 
+    if(i>=0) cn+='_Focus';
     o.className=cclass + cn;
-    if(pimage.LeftImg) ngc_ChangeImage(ngpg_ImgDrawProps(pid+'_IL', s, enabled, pimage.LeftImg));        
-    if(pimage.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(pid+'_IM', s, enabled, pimage.MiddleImg));        
+    if(pimage.LeftImg) ngc_ChangeImage(ngpg_ImgDrawProps(pid+'_IL', s, enabled, pimage.LeftImg));
+    if(pimage.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(pid+'_IM', s, enabled, pimage.MiddleImg));
     if(pimage.RightImg) ngc_ChangeImage(ngpg_ImgDrawProps(pid+'_IR', s, enabled, pimage.RightImg));
-  }        
+  }
 }
 
 function ngpg_GetPageByText(txt)
@@ -10841,7 +10840,7 @@ function ngpg_GetPageByControl(ctrl)
     for(i=0;i<this.Pages.length;i++)
       if(p==this.Pages[i].ControlsPanel) return i;
     p=p.ParentControl;
-  }  
+  }
   return -1;
 }
 
@@ -10862,7 +10861,7 @@ function ngpg_SetPageByControl(ctrl)
 
 function ngpg_SetPage(p)
 {
-  if(typeof p === 'string')  
+  if(typeof p === 'string')
   {
     var s=p;
     p=this.GetPageById(s);
@@ -10877,10 +10876,10 @@ function ngpg_SetPage(p)
 
     var op=this.Page;
     this.Page=p;
-    
+
     var pg=this.Pages[op];
     if((typeof pg!=='undefined')&&(pg.ControlsPanel))
-      pg.ControlsPanel.SetVisible(false); 
+      pg.ControlsPanel.SetVisible(false);
 
     if(this.PagesVisible)
     {
@@ -10894,8 +10893,8 @@ function ngpg_SetPage(p)
 
     pg=this.Pages[p];
     if((typeof pg!=='undefined')&&(pg.ControlsPanel))
-      pg.ControlsPanel.SetVisible(true); 
-    
+      pg.ControlsPanel.SetVisible(true);
+
     if(this.OnPageChanged) this.OnPageChanged(this,op);
   }
 }
@@ -10912,13 +10911,13 @@ function ngpg_DoRelease(o)
 {
   o.style.display='none';
   this.row1pages = new Array();
-} 
+}
 
 function ngpg_DoUpdate(o)
 {
   var frame=document.getElementById(this.ID+'_F');
   if(!frame) return true;
-  
+
   var cclass=this.BaseClassName;
 
   var html=new ngStringBuilder;
@@ -10929,10 +10928,10 @@ function ngpg_DoUpdate(o)
   if(this.PagesVisible)
   {
     var i,j,dp,pid,image,pimage,x,y, tx, txtclass, tw, rh=0, th,tl,mw, s, text, alt;
-  
+
     var swapy = (this.PagesVAlign == 'bottom');
     var swapx = (this.PagesAlign == 'right');
-  
+
     var pw=w-this.PagesIndent;
     if((this.PagesSize>0)&&(pw>this.PagesSize)) pw=this.PagesSize;
     if(this.PagesSize<0) pw+=this.PagesSize;
@@ -10947,15 +10946,15 @@ function ngpg_DoUpdate(o)
       else image=this.Frame.RightTop;
     }
     if(typeof image !== 'undefined') pw-=image.W;
-  
-  
+
+
     var tab,pg,enabled;
     var row = new Object;
     row.Tabs = new Array();
     var rows = new Array();
     rows[0]=row;
     var selrow = 0;
-    
+
     y=0; x=0;
     for(i=0,j=0;i<this.Pages.length;i++)
     {
@@ -10969,19 +10968,19 @@ function ngpg_DoUpdate(o)
 
       if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, i),'');
       else alt=ngVal((pg ? pg.Alt : ''),'');
-                         
-      enabled=(this.Enabled)&&(ngVal(pg.Enabled,true)); 
-      if(enabled) 
+
+      enabled=(this.Enabled)&&(ngVal(pg.Enabled,true));
+      if(enabled)
       {
         if(s) txtclass='PageSelected';
         else  txtclass='Page';
       }
       else txtclass='PageDisabled';
       txtclass=cclass+txtclass;
-      
+
       pid=this.ID+'_'+i;
       pimage=(this.PageImages.length ? this.PageImages[j] : new Object);
-  
+
       tab = new Object;
       tab.Enabled = enabled;
       tab.Page = i;
@@ -10989,12 +10988,12 @@ function ngpg_DoUpdate(o)
       tab.Alt = alt;
       tab.id=pid;
       tab.txtclass=txtclass;
-  
+
       th=0;
       tw=0;
       tx=0;
       mw=0;
-  
+
       image=pimage.LeftImg;
       if(image)
       {
@@ -11016,7 +11015,7 @@ function ngpg_DoUpdate(o)
         dp=ngpg_ImgDrawProps(pid+'_IR', s, enabled, image);
         dp.Attrs=image.Attrs;
         mw+=dp.W;
-        tab.RightImg = dp;      
+        tab.RightImg = dp;
       } else tab.RightImg = null;
       image=pimage.Separator;
       if(image)
@@ -11032,18 +11031,18 @@ function ngpg_DoUpdate(o)
       {
         ng_SetInnerHTML(frame,'<div id="'+this.ID+'_T" class="'+txtclass+'" style="position:absolute; visibility: hidden; white-space: nowrap;"><div class="'+cclass+'PageText">'+text+'</div></div>');
         var o2=document.getElementById(this.ID+'_T');
-        if(o2) 
-        {       
+        if(o2)
+        {
           if(typeof pg.W!=='undefined') tw=pg.W-mw;
           else
-          {             
+          {
             tw=ng_ClientWidth(o2);
             if((typeof pg.MinWidth!=='undefined')&&(tw+mw<pg.MinWidth)) tw=pg.MinWidth-mw;
-          }            
+          }
           th=ng_ClientHeight(o2);
         }
       }
-  
+
       dp = tab.LeftImg;
       if(dp)
       {
@@ -11060,16 +11059,16 @@ function ngpg_DoUpdate(o)
         if(dp.H>th) th=dp.H;
         tx+=dp.W;
       }
-  
+
       dp=tab.Separator;
       if((dp)&&(dp.H>th)) th=dp.H;
-  
-      tab.w=tx; 
+
+      tab.w=tx;
       tab.tw=tw;
       tab.th=th;
-      
+
       if((x+tx>pw)&&(row.Tabs.length>0))
-      { 
+      {
         dp=row.Tabs[row.Tabs.length-1];
         if(dp.Separator) { x-=dp.Separator.W; dp.w-=dp.Separator.W; }
         dp.Separator=null;
@@ -11081,54 +11080,54 @@ function ngpg_DoUpdate(o)
         rows[rows.length]=row;
         if((this.MaxRows>0)&&(rows.length>this.MaxRows)) break;
         y=y+rh; // changed from y+=rh - IE9 strange bug
-        x=0; rh=0; 
+        x=0; rh=0;
       }
       if(image) { tx+=image.W;  tab.w=tx; }
       if(th>rh) rh=th;
       row.Tabs[row.Tabs.length] = tab;
       if(s) selrow=rows.length-1;
-      
+
       x+=tx;
       j++; if(j>=this.PageImages.length) j=0;
     }
     if(row.Tabs.length>0)
     {
       dp=row.Tabs[row.Tabs.length-1];
-      if(dp.Separator) { x-=dp.Separator.W; dp.w-=dp.Separator.W; }    
+      if(dp.Separator) { x-=dp.Separator.W; dp.w-=dp.Separator.W; }
       dp.Separator=null;
-      
+
       row.h=rh;
       row.w=x;
     } else rows.length=rows.length-1;
     y-=(this.RowOverlap * (rows.length-1));
-    var ch=y+rh;                      
+    var ch=y+rh;
     for(i=0;i<this.Pages.length;i++)
     {
       pg=this.Pages[i];
       if((pg)&&(pg.ControlsPanel))
-      { 
-        if(swapy) 
+      {
+        if(swapy)
         {
-          if(pg.ControlsPanel.Bounds.B != ch) 
+          if(pg.ControlsPanel.Bounds.B != ch)
           {
             pg.ControlsPanel.Bounds.B = ch;
             pg.ControlsPanel.SetBounds();
           }
         }
-        else 
+        else
         {
           if(pg.ControlsPanel.Bounds.T != ch)
           {
             pg.ControlsPanel.Bounds.T = ch;
             pg.ControlsPanel.SetBounds();
           }
-        }    
+        }
       }
     }
 
     if(swapy) { ngc_ImgBox(html, this.ID, 'ngPages', 0, this.Enabled, 0,0,w,h-y,false, this.Frame); y=h; }
     else      { ngc_ImgBox(html, this.ID, 'ngPages', 0, this.Enabled, 0,y,w,h-y,false, this.Frame); y=0; }
-            
+
     dp=new Array(rows.length);
     for(j=selrow,i=0;i<rows.length;i++)
     {
@@ -11136,17 +11135,17 @@ function ngpg_DoUpdate(o)
       if(j>=rows.length) j=0;
     }
     rows=dp;
-    
+
     // Draw tabs
     for(i=0;i<rows.length;i++)
     {
       row=rows[i];
       if((!swapy)||(i>0)) row.h-=this.RowOverlap;
       if((rows.length>1)&&(row.Tabs.length>0))
-      {    
+      {
         tw=Math.floor((pw-row.w)/row.Tabs.length);
         tx=0;
-        x=0;      
+        x=0;
         for(j=0;j<row.Tabs.length;j++)
         {
           tab=row.Tabs[j];
@@ -11156,8 +11155,8 @@ function ngpg_DoUpdate(o)
           tx+=tab.tw;
           if(tab.RightImg) tx+=tab.RightImg.W;
           if(tab.Separator) tx+=tab.Separator.W;
-        } 
-        tx=pw-tx;   
+        }
+        tx=pw-tx;
         if(tx>0)
         {
           x=Math.floor(row.Tabs.length/(tx));
@@ -11167,7 +11166,7 @@ function ngpg_DoUpdate(o)
             tab=row.Tabs[j];
             if(!(j%x)) { tab.tw++; tab.w++; tx--; }
           }
-         }  
+         }
       }
       if(swapy) y-=row.h;
       x=this.PagesIndent;
@@ -11177,7 +11176,7 @@ function ngpg_DoUpdate(o)
         if(i==rows.length-1) this.row1pages[tab.Page]=true;
         tx=0;
         html.append('<div style="position:absolute; left:'+(swapx ? w-x-tab.w : x)+'px; top:'+y+'px;">');
-  
+
         if(swapx)
         {
           image=tab.Separator;
@@ -11185,7 +11184,7 @@ function ngpg_DoUpdate(o)
         }
         html.append('<div id="'+tab.id+'" class="'+tab.txtclass+'" ');
         if(tab.Alt!='') html.append('title="'+tab.Alt+'" ');
-        if(tab.Enabled) 
+        if(tab.Enabled)
         {
           if(typeof this.Cursor !== 'undefined')
           {
@@ -11205,7 +11204,7 @@ function ngpg_DoUpdate(o)
         if(image) { ngc_Img(html,image,"position:absolute; left: "+tx+"px;",ngVal(image.Attrs,''));  tx+=image.W; }
         html.append('<div id="'+tab.id+'_T" style="position:absolute; left:'+tl+'px; overflow: hidden; top:0px; width:'+tab.tw+'px; text-align: '+this.TextAlign+'; white-space: nowrap;'+(tab.th>0 ? 'line-height:'+tab.th+'px;' : '')+'"><div class="'+cclass+'PageText">'+tab.Text+'</div></div>');
         html.append('</div>');
-        
+
         if(!swapx)
         {
           image=tab.Separator;
@@ -11216,8 +11215,8 @@ function ngpg_DoUpdate(o)
       }
       if(!swapy) y+=row.h;
     }
-  } else ngc_ImgBox(html, this.ID, 'ngPages', 0, this.Enabled, 0,0,w,h, false, this.Frame); 
-   
+  } else ngc_ImgBox(html, this.ID, 'ngPages', 0, this.Enabled, 0,0,w,h, false, this.Frame);
+
   ng_SetInnerHTML(frame,html.toString());
   return true;
 }
@@ -11242,7 +11241,7 @@ function ngpg_DoCreate(d, ref, elm, parent)
       ldefs.ControlsPanel = new Object;
       ng_MergeDef(ldefs.ControlsPanel, p.ControlsPanel);
       ng_MergeDef(ldefs.ControlsPanel, d.ControlsPanel);
-        
+
       ng_MergeDef(ldefs.ControlsPanel, {
         Type: 'ngPanel',
         className: pgclass,
@@ -11256,9 +11255,9 @@ function ngpg_DoCreate(d, ref, elm, parent)
       ldefs.ControlsPanel.Controls=p.Controls;
       ldefs.ControlsPanel.ModifyControls=p.ModifyControls;
       if(i==this.Page) ldefs.ControlsPanel.Data.Visible=true;
-      
+
       var lref=ngCreateControls(ldefs,undefined,this.ID);
-      if(!ngVal(d.ParentReferences,true)) 
+      if(!ngVal(d.ParentReferences,true))
       {
         (function (pg,pgid,pages) {
           pg.Controls = new Object;
@@ -11284,16 +11283,16 @@ function ngpg_DoCreate(d, ref, elm, parent)
 
 /**
  *  Class: ngPages
- *  This class implements a generic page control. 
+ *  This class implements a generic page control.
  *
  *  Syntax:
  *    new *ngPages* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngPages(id)
 {
@@ -11321,55 +11320,55 @@ function ngPages(id)
   /*  Variable: Page
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.Page = 0;
   /*  Variable: PagesVisible
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.PagesVisible = true;
   /*  Variable: PagesIndent
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
-  this.PagesIndent = 0;  
+  this.PagesIndent = 0;
   /*  Variable: PagesSize
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
-  this.PagesSize = 0;  
+  this.PagesSize = 0;
   /*  Variable: MaxRows
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
-  this.MaxRows = 0;  
+  this.MaxRows = 0;
   /*  Variable: PagesAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.PagesAlign = 'left';
   /*  Variable: PagesVAlign
    *  ...
    *  Type: string
-   *  Default value: *'top'*   
+   *  Default value: *'top'*
    */
   this.PagesVAlign = 'top';
   /*  Variable: TextAlign
    *  ...
    *  Type: string
-   *  Default value: *'center'*   
+   *  Default value: *'center'*
    */
   this.TextAlign = 'center';
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.HTMLEncode = false;
 
@@ -11378,12 +11377,12 @@ function ngPages(id)
    *  Type: array
    */
   this.Pages = new Array();
-    
+
   /*  Variable: RowOverlap
    *  ...
    *  Type: int
-   *  Default value: *0*   
-   */    
+   *  Default value: *0*
+   */
   this.RowOverlap = 0;
   /*  Variable: PageImages
    *  ...
@@ -11400,27 +11399,27 @@ function ngPages(id)
    *  Group: Methods
    */
   /*  Function: SetPage
-   *  Sets current page index.   
-   *   
+   *  Sets current page index.
+   *
    *  Syntax:
    *    void *SetPage* (mixed page)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetPage = ngpg_SetPage;
-  
+
   /*  Function: GetPageById
-   *  Gets page index by page id.   
-   *   
+   *  Gets page index by page id.
+   *
    *  Syntax:
    *    int *GetPageById* (string id)
-   *     
+   *
    *  Returns:
    *    Page index or -1 if not found.
    */
   this.GetPageById = ngpg_GetPageById;
-  
+
   /*  Function: GetIdByPage
    *  Gets page id by page index.
    *
@@ -11431,57 +11430,57 @@ function ngPages(id)
    *    Page id or empty string if not found.
    */
   this.GetIdByPage = ngpg_GetIdByPage;
-  
+
   /*  Function: GetPageObjById
-   *  Gets page object by page id.   
-   *   
+   *  Gets page object by page id.
+   *
    *  Syntax:
    *    object *GetPageObjById* (string id)
-   *     
+   *
    *  Returns:
    *    Page object or null if not found.
    */
   this.GetPageObjById = ngpg_GetPageObjById;
-  
+
   /*  Function: GetPageByText
-   *  Gets page index by page text caption.   
-   *   
+   *  Gets page index by page text caption.
+   *
    *  Syntax:
    *    int *GetPageByText* (string text)
-   *     
+   *
    *  Returns:
    *    Page index or -1 if not found.
    */
   this.GetPageByText = ngpg_GetPageByText;
-  
+
   /*  Function: GetPageByControl
-   *  Gets page index by control placed on page.   
-   *   
+   *  Gets page index by control placed on page.
+   *
    *  Syntax:
    *    int *GetPageByControl* (object control)
-   *     
+   *
    *  Returns:
    *    Page index or -1 if not found.
    */
   this.GetPageByControl = ngpg_GetPageByControl;
 
   /*  Function: GetPageObjByControl
-   *  Gets page object by control placed on page.   
-   *   
+   *  Gets page object by control placed on page.
+   *
    *  Syntax:
    *    int *GetPageObjByControl* (object control)
-   *     
+   *
    *  Returns:
    *    Page object or null if not found.
    */
   this.GetPageObjByControl = ngpg_GetPageObjByControl;
 
   /*  Function: SetPageByControl
-   *  Sets page by control placed on page.   
-   *   
+   *  Sets page by control placed on page.
+   *
    *  Syntax:
    *    bool *SetPageByControl* (object control)
-   *     
+   *
    *  Returns:
    *    TRUE if page was successfuly set.
    */
@@ -11502,29 +11501,29 @@ function ngPages(id)
    */
   /*
    *  Event: OnPageChanging
-   */     
+   */
   this.OnPageChanging = null;
   /*
    *  Event: OnPageChanged
-   */     
+   */
   this.OnPageChanged = null;
-  
+
   /*
    *  Event: OnGetText
-   */     
+   */
   this.OnGetText = null;
   /*
    *  Event: OnGetAlt
-   */     
+   */
   this.OnGetAlt = null;
-  
+
   /*
    *  Event: OnClick
-   */     
+   */
   this.OnClick = null;
   /*
    *  Event: OnDblClick
-   */     
+   */
   this.OnDblClick = null;
 
   ngControlCreated(this);
@@ -11556,17 +11555,17 @@ function ngtb_DoRelease(o)
 function ngtbc_OnSetVisible(c,v)
 {
   if((!ngVal(c.ToolBarAutoUpdate,true))||(ngVal(c.ToolBarIgnore,false))||(!c.ParentControl)) return true;
-  
+
   if(c.ID!='')
   {
     var o = c.Elm();
     if(o)
     {
       if(c.DoSetVisible) c.DoSetVisible(o, v);
-      else 
-      { 
-        o.style.display=(v ? 'block' : 'none'); 
-        o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none 
+      else
+      {
+        o.style.display=(v ? 'block' : 'none');
+        o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none
       }
       // IE7 redraw fix
       var fix7=document.body.offsetLeft;
@@ -11614,13 +11613,13 @@ function ngtbc_DoUpdate(o)
       if((this.tb_height!=ch+vpadding)||(this.tb_width!=cw+hpadding)) changed=true;
     }
     if(changed)
-    {    
+    {
       this.ParentControl.Update();
       return true;
-    }  
+    }
   }
 
-  if(typeof this.ngc_DoUpdate==='function') 
+  if(typeof this.ngc_DoUpdate==='function')
     return this.ngc_DoUpdate(o);
 
   return true;
@@ -11629,7 +11628,7 @@ function ngtbc_DoUpdate(o)
 function ngtb_RegisterControl(c)
 {
   if((typeof c!=='object')||(!c)||(c.tb_fncregistered)) return;
-  
+
   if(c.DoUpdate!=ngtbc_DoUpdate)
   {
     c.ngc_DoUpdate=c.DoUpdate;
@@ -11642,14 +11641,14 @@ function ngtb_RegisterControl(c)
 function ngtb_UnreegisterControl(c)
 {
   if((typeof c!=='object')||(!c)) return;
-  
+
   if(c.DoUpdate==ngtbc_DoUpdate)
   {
-    if(typeof c.ngc_DoUpdate === 'function') 
+    if(typeof c.ngc_DoUpdate === 'function')
     {
       c.DoUpdate=c.ngc_DoUpdate;
       delete c.ngc_DoUpdate;
-    } 
+    }
     c.RemoveEvent(ngtbc_OnSetVisible,'OnSetVisible');
   }
   if(typeof c.tb_fncregistered!=='undefined')
@@ -11670,48 +11669,48 @@ function ngtb_Update(recursive)
   this.tb_update=true;
 
   recursive=ngVal(recursive,true);
-  
+
   var onupdated=this.OnUpdated;
   this.OnUpdated=null;
   try
   {
     this.ngc_Update(recursive);
-  
+
     this.tb_update=false;
-  
+
     var to=this.Elm();
-    if(!to) return;  
-  
+    if(!to) return;
+
     var cc=this.ChildControls;
     if(typeof cc === 'undefined') return;
-  
+
     to.style.display = (this.Visible ? 'block' : 'none');
-  
+
     if((this.AutoSize)&&(ngIExplorer)) // IE7 Measure fix
     {
-      if(this.Vertical) 
+      if(this.Vertical)
       {
         if(ng_GetStylePx(to.style.width)==0) to.style.width='1px';
       }
-      else 
+      else
       {
         if(ng_GetStylePx(to.style.height)==0) to.style.height='1px';
       }
     }
-  
+
     var w=ng_ClientWidth(to);
     var h=ng_ClientHeight(to);
-  
+
     var o,c,cw,ch,x=0,y=0,mw=0,mh=0,sw=0,sh=0,wrap,ix,iy;
     var vpadding,hpadding,lastnowrap=-1;
-    
+
     this.tb_update=true;
-    for(var i=0;i<cc.length;i++) 
+    for(var i=0;i<cc.length;i++)
     {
       c=cc[i];
       if(ngVal(c.ToolBarIgnore,false)) continue;
       if(!c.tb_fncregistered) ngtb_RegisterControl(c);
-      if(!c.Visible) continue;    
+      if(!c.Visible) continue;
       if(!recursive) c.Update(false);
       o=c.Elm();
       if(!o) continue;
@@ -11733,13 +11732,13 @@ function ngtb_Update(recursive)
         ch=ng_OuterHeight(o);
         ng_EndMeasureElement(o);
       }
-  
+
       wrap=false;
       if(this.Vertical)
       {
         ix=ngVal(c.ToolBarIndent,0); iy=0;
         cw+=ix;
-        
+
         if(((this.Wrapable)&&(y+ch>h))||(ngVal(c.ToolBarBreak,false))) { x+=mw+hpadding; y=0; mw=0; wrap=true; }
         if(cw>mw) mw=cw;
       }
@@ -11747,7 +11746,7 @@ function ngtb_Update(recursive)
       {
         iy=ngVal(c.ToolBarIndent,0); ix=0;
         ch+=iy;
-              
+
         if(((this.Wrapable)&&(x+cw>w))||(ngVal(c.ToolBarBreak,false))) { y+=mh+vpadding; x=0; mh=0; wrap=true; }
         if(ch>mh) mh=ch;
       }
@@ -11764,16 +11763,16 @@ function ngtb_Update(recursive)
         i=oldi;
         c=cc[i];
       }
-  
+
       if(this.HAlign == 'right') c.Bounds.R = x+ix;
       else c.Bounds.L = x+ix;
       if(this.VAlign == 'bottom') c.Bounds.B = y+iy;
       else c.Bounds.T = y+iy;
       c.SetBounds();
-  
+
       if(x+cw>sw) sw=x+cw;
-      if(y+ch>sh) sh=y+ch;  
-  
+      if(y+ch>sh) sh=y+ch;
+
       c.tb_indent=c.ToolBarIndent;
       c.tb_width=cw+hpadding;
       c.tb_height=ch+vpadding;
@@ -11782,8 +11781,8 @@ function ngtb_Update(recursive)
     }
     if(this.AutoSize)
     {
-      var changed=false; 
-      if(this.Vertical) 
+      var changed=false;
+      if(this.Vertical)
       {
         ng_SetClientWidth(to,sw);
         var cbw=ng_StyleWidth(to);
@@ -11794,7 +11793,7 @@ function ngtb_Update(recursive)
           this.SetBounds();
         }
       }
-      else 
+      else
       {
         ng_SetClientHeight(to,sh);
         var cbh=ng_StyleHeight(to);
@@ -11810,23 +11809,23 @@ function ngtb_Update(recursive)
     this.tb_update=false;
     this.OnUpdated=onupdated;
     if(this.OnUpdated) this.OnUpdated(this,to);
-  } finally {  
+  } finally {
     this.OnUpdated=onupdated;
   }
 }
 
 /**
  *  Class: ngToolBar
- *  This class implements a generic toolbar control. 
+ *  This class implements a generic toolbar control.
  *
  *  Syntax:
  *    new *ngToolBar* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngToolBar(id)
 {
@@ -11838,45 +11837,45 @@ function ngToolBar(id)
   /*  Variable: AutoSize
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.AutoSize = false;
   /*  Variable: Vertical
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.Vertical = false;
-  
+
   /*  Variable: VPadding
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.VPadding = 0;
   /*  Variable: HPadding
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.HPadding = 0;
 
   /*  Variable: VAlign
    *  ...
    *  Type: string
-   *  Default value: *'top'*   
+   *  Default value: *'top'*
    */
   this.VAlign = 'top';
   /*  Variable: HAlign
    *  ...
    *  Type: string
-   *  Default value: *'left'*   
+   *  Default value: *'left'*
    */
   this.HAlign = 'left';
   /*  Variable: Wrapable
    *  ...
    *  Type: bool
-   *  Default value: *true*   
+   *  Default value: *true*
    */
   this.Wrapable = true;
 
@@ -11884,47 +11883,47 @@ function ngToolBar(id)
    *  Group: Methods
    */
   /*  Function: CtrlBringToFront
-   *   
+   *
    *  Syntax:
    *    void *CtrlBringToFront* (object ctrl)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.CtrlBringToFront=ngc_CtrlBringToFront;
   /*  Function: CtrlSendToBack
-   *   
+   *
    *  Syntax:
    *    void *CtrlSendToBack* (object ctrl)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.CtrlSendToBack=ngc_CtrlSendToBack;
   /*  Function: CtrlInsertAfter
-   *   
+   *
    *  Syntax:
    *    void *CtrlInsertAfter* (object ctrl, object whichctrl)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.CtrlInsertAfter=ngc_CtrlInsertAfter;
   /*  Function: CtrlInsertBefore
-   *   
+   *
    *  Syntax:
    *    void *CtrlInsertBefore* (object ctrl, object whichctrl)
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.CtrlInsertBefore=ngc_CtrlInsertBefore;
 
@@ -11934,55 +11933,55 @@ function ngToolBar(id)
   /*  Variable: ToolBarIgnore
    *  ...
    *  Type: bool
-   *  Default value: *false*         
+   *  Default value: *false*
    */
   /*<>*/
   /*  Variable: ToolBarAutoUpdate
    *  ...
    *  Type: bool
-   *  Default value: *true*         
+   *  Default value: *true*
    */
   /*<>*/
   /*  Variable: ToolBarIndent
    *  ...
    *  Type: integer
-   *  Default value: *0*         
+   *  Default value: *0*
    */
   /*<>*/
   /*  Variable: ToolBarHPadding
    *  ...
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   /*<>*/
   /*  Variable: ToolBarVPadding
    *  ...
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   /*<>*/
   /*  Variable: ToolBarWidth
    *  ...
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   /*<>*/
   /*  Variable: ToolBarHeight
    *  ...
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   /*<>*/
   /*  Variable: ToolBarBreak
    *  ...
    *  Type: bool
-   *  Default value: *false*         
+   *  Default value: *false*
    */
   /*<>*/
   /*  Variable: ToolBarNoWrap
    *  ...
    *  Type: bool
-   *  Default value: *false*         
+   *  Default value: *false*
    */
   /*<>*/
 
@@ -12001,13 +12000,13 @@ function npb_DoUpdate(o)
   var p=(this.process_cnt ? 25 : this.Position);
   if(p<0) p=0;
   if(p>100) p=100;
-  
+
   var html=new ngStringBuilder;
   var image,dp;
   if((ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
   var w=ng_ClientWidth(o);
   var th=0,lw=0,rw=0;
-  
+
   image=this.LeftImg;
   if(image)
   {
@@ -12032,7 +12031,7 @@ function npb_DoUpdate(o)
     dp=ngc_ImgProps(this.ID+'_IM', 0, this.Enabled, image);
     ngc_ImgSW(html,dp,lw,pw,'',ngVal(image.Attrs,''));
     if(dp.H>th) th=dp.H;
-  }  
+  }
 
   image=this.BarImg;
   if(image)
@@ -12058,11 +12057,11 @@ function npb_DoUpdate(o)
       ngc_ImgSW(html,dp,lw,p,'',ngVal(image.Attrs,''));
       if(dp.H>th) th=dp.H;
     }
-  }  
+  }
   ng_SetClientHeight(o,th);
   var cbh=ng_StyleHeight(o);
   if(this.Bounds.H!=cbh)
-  {  
+  {
     this.Bounds.H=cbh;
     this.SetBounds();
   }
@@ -12073,7 +12072,7 @@ function npb_DoUpdate(o)
 function npb_SetPosition(p)
 {
   if(p==this.Position) return;
-  
+
   this.Position=p;
   if(!this.process_cnt) this.Update();
 }
@@ -12086,11 +12085,11 @@ function npb_UpdateProcess(cid)
     if(c.process_timer) clearTimeout(c.process_timer); c.process_timer=null;
 
     var o=c.Elm();
-    if(o) 
+    if(o)
     {
       var dp,lw=0;
       var w=ng_ClientWidth(o);
-      
+
       var image=c.LeftImg;
       if(image)
       {
@@ -12103,12 +12102,12 @@ function npb_UpdateProcess(cid)
       {
         dp=ngc_ImgProps(c.ID+'_IR', 0, c.Enabled, image);
         w-=dp.W;
-      }    
+      }
       image=c.BarImg;
       if(image)
       {
         dp=ngc_ImgProps(c.ID+'_B', 0, c.Enabled, image);
-  
+
         var p=c.process_pos;
         var s=(w/10);
         if(s<=0) s=1;
@@ -12127,12 +12126,12 @@ function npb_UpdateProcess(cid)
         for(var i=1;i<100;i++)
         {
           o=document.getElementById(bid+i);
-          if(!o) break;        
+          if(!o) break;
           ng_setLeftTop(o,lw,0);
           lw+=dp.W;
         }
         c.process_timer=setTimeout("npb_UpdateProcess('"+c.ID+"')",120);
-      }    
+      }
     }
   }
 }
@@ -12184,40 +12183,40 @@ function ngpb_OnVisibleChanged(c)
 
 /**
  *  Class: ngProgressBar
- *  This class implements a generic progress bar control. 
+ *  This class implements a generic progress bar control.
  *
  *  Syntax:
  *    new *ngProgressBar* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 function ngProgressBar(id)
 {
   ngControl(this, id, 'ngProgressBar');
-  
+
   this.DoDispose = npb_DoDispose;
   this.OnVisibleChanged=ngpb_OnVisibleChanged
-  
+
   /*
    *  Group: Properties
    */
   /*  Variable: Position
    *  ...
    *  Type: int
-   *  Default value: *0*   
+   *  Default value: *0*
    */
   this.Position = 0;
   /*  Variable: Smooth
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.Smooth = false;
-  
+
   /*  Variable: LeftImg
    *  ...
    *  Type: object
@@ -12243,13 +12242,13 @@ function ngProgressBar(id)
    *  Group: Methods
    */
   /*  Function: SetPosition
-   *  Sets position of progress in interval 0-100.   
-   *   
+   *  Sets position of progress in interval 0-100.
+   *
    *  Syntax:
    *    void *SetPosition* (int pos)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetPosition = npb_SetPosition;
 
@@ -12257,28 +12256,28 @@ function ngProgressBar(id)
   this.process_timer = null;
 
   /*  Function: BeginProcess
-   *  Starts waiting animation.   
-   *   
+   *  Starts waiting animation.
+   *
    *  Syntax:
    *    void *BeginProcess* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.BeginProcess = npb_BeginProcess;
   /*  Function: EndProcess
-   *  Ends waiting animation.   
-   *   
+   *  Ends waiting animation.
+   *
    *  Syntax:
    *    void *EndProcess* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.EndProcess = npb_EndProcess;
 
   this.DoUpdate = npb_DoUpdate;
-  
+
   // events
   ngControlCreated(this);
 }
@@ -12302,11 +12301,11 @@ function ngwb_DoUpdate(o)
   ng_SetClientHeight(frame,h);
 
   var url=this.GetURL();
-  if(frame.src!=this.opened_url) 
+  if(frame.src!=this.opened_url)
   {
     frame.src=url;
     this.opened_url=frame.src;
-  }  
+  }
   return true;
 }
 
@@ -12319,7 +12318,7 @@ function ngwb_SetURL(url)
   {
     br.src=url;
     this.opened_url=br.src;
-  }    
+  }
 }
 
 function ngwb_GetURL()
@@ -12357,7 +12356,7 @@ function ngwb_SetHTML(html, allowdelayed)
     if(html=='') return;
   }
   if(this.opened_url!='') this.SetURL('about:blank');
-  
+
   var doc=this.GetDocument();
   if(doc)
   {
@@ -12369,13 +12368,13 @@ function ngwb_SetHTML(html, allowdelayed)
         if(html)
           for(var i in html)
             doc.write(html[i]);
-      } 
+      }
       else doc.write(html);
       doc.close();
       return;
     }
     catch(e)
-    { 
+    {
     }
   }
   if(ngVal(allowdelayed, true))
@@ -12384,23 +12383,23 @@ function ngwb_SetHTML(html, allowdelayed)
     var c=this;
     this.set_html_timeout=setTimeout(function(e) {
       if(c.set_html_timeout) clearTimeout(c.set_html_timeout); c.set_html_timeout=null;
-      c.SetHTML(html,false); 
+      c.SetHTML(html,false);
     },200);
   }
 }
 
 /**
  *  Class: ngWebBrowser
- *  This class implements a web browser control. 
+ *  This class implements a web browser control.
  *
  *  Syntax:
  *    new *ngWebBrowser* ([string id])
- *    
+ *
  *  Parameters:
  *    id - parent element
- *    
+ *
  *  See also:
- *    Abstract class <ngControl>.    
+ *    Abstract class <ngControl>.
  */
 
 function ngWebBrowser(id)
@@ -12408,7 +12407,7 @@ function ngWebBrowser(id)
   ngControl(this, id, 'ngWebBrowser');
   this.DoCreate = ngwb_DoCreate;
   this.DoUpdate = ngwb_DoUpdate;
-  
+
   /*
    *  Group: Properties
    */
@@ -12417,76 +12416,76 @@ function ngWebBrowser(id)
    *  Type: string
    */
   this.URL = '';
-    
+
   /*
    *  Group: Methods
    */
   /*  Function: SetURL
-   *  Sets browser URL.   
-   *   
+   *  Sets browser URL.
+   *
    *  Syntax:
    *    void *SetURL* (string url)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetURL = ngwb_SetURL;
   /*  Function: GetURL
-   *  Gets browser URL.   
-   *   
+   *  Gets browser URL.
+   *
    *  Syntax:
    *    string *GetURL* ()
-   *     
+   *
    *  Returns:
    *    The URL.
    */
   this.GetURL = ngwb_GetURL;
   /*  Function: SetHTML
-   *  Sets HTML code directly into browser.   
-   *   
+   *  Sets HTML code directly into browser.
+   *
    *  Syntax:
    *    void *SetHTML* (string html [, bool allowdelayed=true])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetHTML = ngwb_SetHTML;
   /*  Function: GetBrowser
    *  Gets browser IFRAME element.
-   *   
+   *
    *  Syntax:
    *    object *GetBrowser* ()
-   *     
+   *
    *  Returns:
    *    IFRAME element.
    */
   this.GetBrowser = ngwb_GetBrowser;
   /*  Function: GetDocument
-   *  Gets browser document object.   
-   *   
+   *  Gets browser document object.
+   *
    *  Syntax:
    *    object *GetDocument* ()
-   *     
+   *
    *  Returns:
    *    Document object.
    */
   this.GetDocument = ngwb_GetDocument;
-  
+
   /*
    *  Group: Events
    */
   /*
    *  Event: OnSetURL
-   */     
+   */
   this.OnSetURL = null;
   /*
    *  Event: OnGetURL
-   */     
+   */
   this.OnGetURL = null;
   /*
    *  Event: OnSetHTML
-   */     
+   */
   this.OnSetHTML = null;
-    
+
   ngControlCreated(this);
 }
