@@ -4214,6 +4214,14 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
 
 function npgl_ShowLoading(v)
 {
+  if((v)&&(this.OnShowLoading)) { 
+    this.OnShowLoading(this);
+    return;
+  }
+  if((!v)&&(this.OnHideLoading)) {
+    this.OnHideLoading(this);
+    return;
+  }
   if((typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
 }
 
@@ -4229,16 +4237,7 @@ function npgl_DoUpdateAfter(o)
   if(pl.loading_displayed!=this.Loading)
   {
     pl.loading_displayed=this.Loading;
-    if(this.Loading)
-    {
-      if(pl.OnShowLoading) pl.OnShowLoading(pl);
-      else pl.ShowLoading(true);
-    }
-    else
-    {
-      if(pl.OnHideLoading) pl.OnHideLoading(pl);
-      else pl.ShowLoading(false);
-    }
+    pl.ShowLoading(this.Loading ? true : false);
   }
   if(this.Loading)
   {
@@ -5656,6 +5655,19 @@ function Create_ngPageList(def, ref, parent)
 
   def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
 
+    // Handle focus
+    c._DefaultSetFocus=c.SetFocus;
+    c.SetFocus=function(s) {
+      if(ngVal(s,true)) {
+        if(c.List) c.List.SetFocus(true);
+        else c._DefaultSetFocus(true);
+      }
+      else
+      {
+        if(c.List) c.List.SetFocus(false);
+        c._DefaultSetFocus(false);      
+      }
+    }
     // Group pages in paging and save visibility
     if(c.Controls.Paging)
     {
