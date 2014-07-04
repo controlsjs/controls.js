@@ -1003,7 +1003,7 @@ var WireframeControls = {
               L: 15, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 43 : 15),
               Data: {
                 Visible: false
-              }              
+              }
             },
             Paging: {
               H:27,
@@ -1326,6 +1326,7 @@ var WireframeControls = {
         var c = Create_wfrDropDown(def,ref,parent, ngVal(basetype,'ngEditDate'),false);
         if(!c){return c;}
         c.DropDownButton.LeftImg = WFRImages.Calendar.EditButton;
+        c.DropDownButton.Default = false;
         c.RightImg = null;
         return c;
       }
