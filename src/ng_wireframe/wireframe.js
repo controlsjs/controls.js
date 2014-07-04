@@ -338,9 +338,9 @@ var WireframeControls = {
     },
 
     MenuBar: {
-      LeftImg:   { L: -6, T: -27, W: 6, H: 27, oL: 15, oT: 1, SL: 29, ST: 1, DL: 57, DT: 1, oSL: 43, oST: 1 },
-      MiddleImg: { L: 0, T: -27, ST: 56, oT: 28, DT: 112, oST: 84, H: 27, Src: 1 },
-      RightImg:  { L: -6, T: -27, W: 6, H: 27, oL: 22, oT: 1, SL: 36, ST: 1, DL: 64, DT: 1, oSL: 50, oST: 1 }
+      LeftImg:   { L: -6, T: -27, W: 6, H: 27, oL: 15, oT: 1, SL: 29, ST: 1, DL: -6, DT: -27, oSL: 43, oST: 1 },
+      MiddleImg: { L: 0, T: -27, ST: 56, oT: 28, DT: -27, oST: 84, H: 27, Src: 1 },
+      RightImg:  { L: -6, T: -27, W: 6, H: 27, oL: 22, oT: 1, SL: 36, ST: 1, DL: -6, DT: -27, oSL: 50, oST: 1 }
     },
 
     ProgressBar: {
@@ -1738,7 +1738,7 @@ var WireframeControls = {
               },
               Icon: {
                 Type: 'ngImage',
-                L: 15, T: 25, W: ic.W, H: ic.H,
+                L: 15, T: 20, W: ic.W, H: ic.H,
                 Data: {
                   Img: ic
                 }
@@ -1749,9 +1749,9 @@ var WireframeControls = {
               }
             }
           });
-        }
-        if(def.Controls.Content.Controls.Check){
-          def.Controls.Content.Controls.Check.L = ic.W + 10;
+          if(def.Controls.Content.Controls.Check){
+            def.Controls.Content.Controls.Check.L = ic.W + 10;
+          }
         }
         return ngCreateControlAsType(def, 'wfrMessageDlg', ref, parent);
       });
