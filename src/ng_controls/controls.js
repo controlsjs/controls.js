@@ -1,4 +1,4 @@
-// $Id: controls.js 6374 2014-04-17 07:54:03Z tulach $
+// $Id: controls.js 6440 2014-04-25 11:03:22Z kraus $
 //
 // Copyright (c) 2008-2014  Position s.r.o.
 // All rights reserved.
@@ -6376,7 +6376,7 @@ function ngImage(id)
 
 function ngimgmap_DoCreate(d, ref, elm, parent)
 {
-  if(((typeof d.W !== 'undefined')||((typeof d.L !== 'undefined')&&(typeof d.R !== 'undefined')))&&(d.Data)&&(typeof d.Data.AutoSize === 'undefined'))
+  if(((typeof d.W !== 'undefined')||((typeof d.L !== 'undefined')&&(typeof d.R !== 'undefined')))&&((typeof d.Data === 'undefined')||(typeof d.Data.AutoSize === 'undefined')))
     this.AutoSize=false;
 }
 
@@ -7115,7 +7115,7 @@ function ngb_GetImg(idx)
 
 function ngb_DoCreate(d, ref, elm, parent)
 {
-  if(((typeof d.W !== 'undefined')||((typeof d.L !== 'undefined')&&(typeof d.R !== 'undefined')))&&(d.Data)&&(typeof d.Data.AutoSize === 'undefined'))
+  if(((typeof d.W !== 'undefined')||((typeof d.L !== 'undefined')&&(typeof d.R !== 'undefined')))&&((typeof d.Data === 'undefined')||(typeof d.Data.AutoSize === 'undefined')))
     this.AutoSize=false;
 }
 

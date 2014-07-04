@@ -1,4 +1,4 @@
-// $Id: window.js 6179 2014-03-18 21:37:51Z tulach $
+// $Id: window.js 6440 2014-04-25 11:03:22Z kraus $
 //
 // Copyright (c) 2008-2013  Position s.r.o.
 // All rights reserved.
@@ -1076,7 +1076,7 @@ function ngw_DoCreate(def, ref, elm, parent)
 
   if(((typeof def.W !== 'undefined')||(typeof def.CW !== 'undefined')||((typeof def.L !== 'undefined')&&(typeof def.R !== 'undefined')))
    &&((typeof def.H !== 'undefined')||(typeof def.CH !== 'undefined')||((typeof def.T !== 'undefined')&&(typeof def.B !== 'undefined')))
-   &&(def.Data)&&(typeof def.Data.AutoSize === 'undefined'))
+   &&((typeof def.Data === 'undefined')||(typeof def.Data.AutoSize === 'undefined')))
     this.AutoSize=false;
 
   if((typeof def.CW !== 'undefined')||(typeof def.CH !== 'undefined'))
@@ -2095,7 +2095,7 @@ function ngh_DoCreate(def, ref, elm, parent)
 
   if(((typeof def.W !== 'undefined')||(typeof def.CW !== 'undefined')||((typeof def.L !== 'undefined')&&(typeof def.R !== 'undefined')))
    &&((typeof def.H !== 'undefined')||(typeof def.CH !== 'undefined')||((typeof def.T !== 'undefined')&&(typeof def.B !== 'undefined')))
-   &&(def.Data)&&(typeof def.Data.AutoSize === 'undefined'))
+   &&((typeof def.Data === 'undefined')||(typeof def.Data.AutoSize === 'undefined')))
     this.AutoSize=false;
 
   if((typeof def.CW !== 'undefined')||(typeof def.CH !== 'undefined'))
