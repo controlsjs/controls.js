@@ -1,4 +1,4 @@
-// $Id: wineight.js 6359 2014-04-13 18:12:00Z tulach $
+// $Id: wineight.js 6413 2014-04-22 10:43:55Z kraus $
 //
 // Copyright (c) 2014  Position s.r.o.
 // All rights reserved.
@@ -2779,10 +2779,9 @@ var WinEightControls = {
        */
       /*<>*/
       
-      function Create_weEditFieldDef(def,th)
+      function Create_weEditFieldDef(def)
       {
         ng_MergeDef(def,{
-          className: (th ? 'weEditLight' : 'weEditDark'),
           Data: {
             HintX: 19, HintY: 27
           },
@@ -2794,7 +2793,8 @@ var WinEightControls = {
       
       function Create_weEditField(def,ref,parent) {
         var th=theme(def);
-        Create_weEditFieldDef(def,th);
+        Create_weEditFieldDef(def);
+        if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
         Prepare_DropDown(def);
         var c=ngCreateControlAsType(def, 'ngEditField', ref, parent);
         if(c) {
@@ -2821,7 +2821,7 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weEditNumField', function(def,ref,parent) { 
-        Create_weEditFieldDef(def,theme(def));
+        Create_weEditFieldDef(def);
         return Create_weEditNum(def,ref,parent,'ngEditNumField'); 
       });
   
@@ -2829,7 +2829,7 @@ var WinEightControls = {
        *  Standard color edit field control (based on <weColorEdit>).
        */
       ngRegisterControlType('weColorEditField', function(def,ref,parent) { 
-        Create_weEditFieldDef(def,theme(def));
+        Create_weEditFieldDef(def);
         return Create_weColorEdit(def,ref,parent,'ngDropDownField'); 
       });
   
@@ -2837,7 +2837,7 @@ var WinEightControls = {
        *  Standard drop down field control (based on <ngDropDownField>).
        */
       ngRegisterControlType('weDropDownField', function(def,ref,parent) {
-        Create_weEditFieldDef(def,theme(def)); 
+        Create_weEditFieldDef(def);
         return Create_weDropDown(def,ref,parent,'ngDropDownField',false); 
       });
   
@@ -2845,7 +2845,7 @@ var WinEightControls = {
        *  Standard drop down list field control (based on <ngDropDownListField>).
        */
       ngRegisterControlType('weDropDownListField', function(def,ref,parent) {
-        Create_weEditFieldDef(def,theme(def)); 
+        Create_weEditFieldDef(def);
         return Create_weDropDown(def,ref,parent,'ngDropDownListField',true); 
       });
   
@@ -2854,7 +2854,7 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weEditDateField', function(def,ref,parent) { 
-        Create_weEditFieldDef(def,theme(def)); 
+        Create_weEditFieldDef(def);
         return Create_weEditDate(def,ref,parent,'ngEditDateField'); 
       });
   
@@ -2863,7 +2863,7 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weEditTimeField', function(def,ref,parent) { 
-        Create_weEditFieldDef(def,theme(def)); 
+        Create_weEditFieldDef(def);
         return Create_weEditTime(def,ref,parent,'ngEditTimeField'); 
       });
   
@@ -2872,7 +2872,7 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weMemoField', function(def,ref,parent) { 
-        Create_weEditFieldDef(def,theme(def)); 
+        Create_weEditFieldDef(def);
         return Create_weMemo(def,ref,parent,'ngMemoField'); 
       });
     }
