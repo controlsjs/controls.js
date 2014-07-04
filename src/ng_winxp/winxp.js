@@ -1,4 +1,4 @@
-// $Id: winxp.js 6375 2014-04-17 08:19:58Z tulach $
+// $Id: winxp.js 6438 2014-04-25 10:38:50Z tulach $
 //
 // Copyright (c) 2008-2013  Position s.r.o.
 // All rights reserved.
@@ -32,9 +32,9 @@ var WinXPControls = {
     RadioRight: { L: 127, T: 25, oL: 143, SL: 159, oSL: 175, DL: 207, DSL: 191, W: 15, H: 16 },
     
     Button: {
-      LeftImg: { L: 0, T: 1, oL: 12, W: 4, H: 23, SL: 24, DL: 47 },
-      MiddleImg: { L: 0, T: 253, ST: 277, DT: 301, H: 23, Src: 1, oT: 326 },
-      RightImg: { L: 8, T: 1, oL: 19, W: 4, H: 23, SL: 31, DL: 54 },
+      LeftImg: { L: 0, T: 1, oL: 12, W: 4, H: 23, SL: 24, DL: 47, oSL: 36 },
+      MiddleImg: { L: 0, T: 253, ST: 277, DT: 301, H: 23, Src: 1, oT: 326, oST: 350 },
+      RightImg: { L: 8, T: 1, oL: 19, W: 4, H: 23, SL: 31, DL: 54, oSL: 43 },
       MenuRightImg: { L: 6, T: 42, oL: 23, SL: 40, oSL: 58, DL: 76, W: 11, H: 23 },
       
       MenuRightBtnImg: { L: 1, T: 42, oL: 18, SL: 35, oSL: 53, DL: 71, W: 16, H: 23 }
