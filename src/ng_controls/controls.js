@@ -1,4 +1,4 @@
-// $Id: controls.js 6358 2014-04-13 17:58:35Z tulach $
+// $Id: controls.js 6374 2014-04-17 07:54:03Z tulach $
 //
 // Copyright (c) 2008-2014  Position s.r.o.
 // All rights reserved.
@@ -3268,13 +3268,15 @@ function ngc_ptrend(e)
           if(!dci)
           {          
             if(typeof pi.Click === 'undefined') pi.Click=true;
-            dci={
-              StartElement: pi.StartElement,
-              StartTime: pi.StartTime,
-              EndTime: pi.EndTime,
-              X: pi.X,
-              Y: pi.Y
-            };
+            if(pi.DblClick!==false) {
+              dci={
+                StartElement: pi.StartElement,
+                StartTime: pi.StartTime,
+                EndTime: pi.EndTime,
+                X: pi.X,
+                Y: pi.Y
+              };
+            }
           }
           else
           {
@@ -3300,25 +3302,26 @@ function ngc_ptrend(e)
     if(c.DoPtrEnd) c.DoPtrEnd(pi);
     if(c.OnPtrEnd) c.OnPtrEnd(c, pi);
     
-    if(pi.Click)
+    var doclick=((pi.Click)&&(c.DoPtrClick));
+    if(dci)
     {
-      if(dci)
-      {
-        ngCurrentPtrDblClick=c;
-        c.DblClickInfo=dci;
-        dci.Timer=setTimeout(function () {
-          clearTimeout(dci.Timer);
-          delete c.DblClickInfo;
-          ngCurrentPtrDblClick=null; 
-          if(c.DoPtrClick) c.DoPtrClick(pi);
-        },Math.round((pi.Touch ? ngDblClickTouchTimeout : ngDblClickMouseTimeout)/2));
-      }
-      else 
+      ngCurrentPtrDblClick=c;
+      c.DblClickInfo=dci;
+      dci.Timer=setTimeout(function () {
+        clearTimeout(dci.Timer);
+        delete c.DblClickInfo;
+        ngCurrentPtrDblClick=null; 
+        if((doclick)&&(c.DoPtrClick)) c.DoPtrClick(pi);
+      },Math.round((pi.Touch ? ngDblClickTouchTimeout : ngDblClickMouseTimeout)/2));
+    }
+    else 
+    {
+      if(doclick)
       {
         var timer=setTimeout(function () {
           clearTimeout(timer);
           if(c.DoPtrClick) c.DoPtrClick(pi);
-        },1);        
+        },1);
       }
     }
               
