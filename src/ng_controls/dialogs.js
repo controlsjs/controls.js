@@ -1,4 +1,4 @@
-// $Id: dialogs.js 6350 2014-04-11 09:13:04Z kraus $
+// $Id: dialogs.js 6416 2014-04-22 13:00:23Z nejedly $
 //
 // Copyright (c) 2010-2013  Position s.r.o.
 // All rights reserved.
@@ -167,11 +167,13 @@ function dlgbx_Center()
   if((po)&&(po==document.body)) po=null;
   var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
   var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight()); 
-
-  var b=this.Bounds;
   
-  b.L=Math.round((pw-b.W)/2);
-  b.T=Math.round(0.40*ph-(b.H/2));
+  var b=this.Bounds;
+  var w=ng_ClientWidth(o);
+  var h=ng_ClientHeight(o);
+
+  b.L=Math.round((pw-w)/2);
+  b.T=Math.round(0.40*ph-(h/2));
   if(b.T<0) b.T=0;
   
   this.SetBounds();
