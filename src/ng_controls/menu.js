@@ -1345,29 +1345,41 @@ function ngmn_GetMenu(path, create, parent, oncreatefnc, userdata)
   return ngGetMenu(parent, path, create, oncreatefnc, userdata);
 }
 
-function ngmn_GetMenuItemByIDCallback(list, it, parent, fi)
-{
-  if((it.ID)&&(it.ID==fi.ID)) {
-    fi.found.Menu=list;
-    fi.found.Item=it;
-    return false;
-  }
-  if((it.SubMenu)&&(fi.Recursive))
-  {
-    it.SubMenu.Scan(ngmn_GetMenuItemByIDCallback, null, fi);
-    if(fi.found.Menu) return false;
-  }
-  return true;
-}
-
 function ngmn_GetMenuItemByID(id, recursive)
 {
-  var fi=new Object;
-  fi.ID=id;
-  fi.Recursive=ngVal(recursive,true);
-  fi.found={ Menu: null, Item: null };
-  this.Scan(ngmn_GetMenuItemByIDCallback, null, fi);
-  return fi.found;
+  var found={ Menu: null, Item: null };
+ 
+  this.ScanMenu(function(list, it, parent, data) {
+    if((it.ID)&&(it.ID==id)) {
+      found.Menu=list;
+      found.Item=it;
+      return false;
+    }
+    return true;
+  },recursive,null);
+  return found;
+}
+
+function ngmn_ScanMenu(fnc, recursive, parent, userdata)
+{
+  if(typeof fnc !== 'function') return false;
+  recursive=ngVal(recursive,true);
+
+  var cancel=false;
+  function scanfnc(list, it, parent, data) {
+    if(!fnc(list, it, parent, userdata)) {
+      cancel=true;
+      return false;
+    }
+
+    if((it.SubMenu)&&(recursive))
+    {
+      it.SubMenu.Scan(scanfnc, null);
+      if(cancel) return false;
+    }     
+    return true;    
+  }  
+  return this.Scan(scanfnc, parent);
 }
 
 // --- ngMenuBar ---------------------------------------------------------------
@@ -2142,6 +2154,16 @@ function Create_ngMenu(def, ref, parent)
    *    -     
    */
   c.GetMenuItemByID = ngmn_GetMenuItemByID;
+  /*  Function: ScanMenu
+   *  Recursive scan items in menu and its submenus.
+   *
+   *  Syntax:
+   *    int *ScanMenu* (function scanfnc [, recursive=true, object parent=null, mixed userdata])
+   *
+   *  Returns:
+   *    -
+   */
+  c.ScanMenu = ngmn_ScanMenu;
   /*  Function: GetMenu
    *  Gets (or creates) menu item.
    *   
