@@ -1,4 +1,4 @@
-// $Id: winxp.js 6345 2014-04-09 19:44:17Z tulach $
+// $Id: winxp.js 6375 2014-04-17 08:19:58Z tulach $
 //
 // Copyright (c) 2008-2013  Position s.r.o.
 // All rights reserved.
@@ -1642,13 +1642,12 @@ var WinXPControls = {
          */
         /*<>*/
         def.DlgIcon=ngVal(def.DlgIcon,mbIconInformation);
-        var cdef=null;
         var ic=null;
         if(typeof def.DlgIcon === 'object') ic=def.DlgIcon;
         else if(typeof def.DlgIcon !== 'undefined') ic=ngVal(winimages.DlgIcons[def.DlgIcon],null);
         if(ic)
         {  
-          cdef={
+          ng_MergeDef(def,{
             Data: {          
             },
             /*
@@ -1666,7 +1665,6 @@ var WinXPControls = {
                */     
               Icon: {
                 Type: 'stdImage',
-  //              style: { border: '1px solid red' },
                 L: 15, T: 15, W: ic.W, H: ic.H,
                 Data: {
                   Img: ic
@@ -1678,10 +1676,9 @@ var WinXPControls = {
                 }
               }
             }
-          };
+          });
+          if(def.Controls.Content.Controls.Check) def.Controls.Content.Controls.Check.L=ic.W+10;
         }
-        if(cdef) ng_MergeDef(def, cdef);
-        if(def.Controls.Content.Controls.Check) def.Controls.Content.Controls.Check.L=ic.W+10;
         return ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
       });
   
