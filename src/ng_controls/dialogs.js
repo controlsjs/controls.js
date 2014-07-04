@@ -829,4 +829,4 @@ ngUserControls['dialogs'] = {
       return ngCreateControlAsType(def, def.DialogType, ref, parent);
     });
   }
-}
+};
