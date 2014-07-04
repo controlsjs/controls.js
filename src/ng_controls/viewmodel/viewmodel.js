@@ -1,4 +1,4 @@
-﻿/*!
+/*!
  * Controls.js
  * http://controlsjs.com/
  *
