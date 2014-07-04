@@ -1,4 +1,4 @@
-// $Id: winxp.js 6438 2014-04-25 10:38:50Z tulach $
+// $Id: winxp.js 6717 2014-06-10 08:34:29Z nejedly $
 //
 // Copyright (c) 2008-2013  Position s.r.o.
 // All rights reserved.
@@ -11,32 +11,32 @@ var mbIconQuestion    = 'question';
 var mbIconError       = 'err';
 /**
  *  Variable: WinXPControls
- *  Reference to WinXP control definitions.   
+ *  Reference to WinXP control definitions.
  */
 var WinXPControls = {
 
-  ControlImages: [ 
+  ControlImages: [
     'winxp_base.png?7',
     'winxp_hbox.png?5',
     'winxp_vbox.png?5'
   ],
-  
-  Images: { 
-           
+
+  Images: {
+
     CheckBox: { L: 1, T: 25, oL: 17, SL: 33, oSL: 49, GL: 65, oGL: 81, DL: 97, DSL: 113, W: 13, H: 16 },
     CheckBoxLeft: { L: 1, T: 25, oL: 17, SL: 33, oSL: 49, GL: 65, oGL: 81, DL: 97, DSL: 113, W: 15, H: 16 },
     CheckBoxRight: { L: -1, T: 25, oL: 15, SL: 31, oSL: 47, GL: 63, oGL: 79, DL: 95, DSL: 111, W: 15, H: 16 },
-    
+
     Radio: { L: 129, T: 25, oL: 145, SL: 161, oSL: 177, DL: 209, DSL: 193, W: 13, H: 16 },
     RadioLeft: { L: 129, T: 25, oL: 145, SL: 161, oSL: 177, DL: 209, DSL: 193, W: 15, H: 16 },
     RadioRight: { L: 127, T: 25, oL: 143, SL: 159, oSL: 175, DL: 207, DSL: 191, W: 15, H: 16 },
-    
+
     Button: {
       LeftImg: { L: 0, T: 1, oL: 12, W: 4, H: 23, SL: 24, DL: 47, oSL: 36 },
       MiddleImg: { L: 0, T: 253, ST: 277, DT: 301, H: 23, Src: 1, oT: 326, oST: 350 },
       RightImg: { L: 8, T: 1, oL: 19, W: 4, H: 23, SL: 31, DL: 54, oSL: 43 },
       MenuRightImg: { L: 6, T: 42, oL: 23, SL: 40, oSL: 58, DL: 76, W: 11, H: 23 },
-      
+
       MenuRightBtnImg: { L: 1, T: 42, oL: 18, SL: 35, oSL: 53, DL: 71, W: 16, H: 23 }
     },
 
@@ -48,34 +48,34 @@ var WinXPControls = {
 
     Edit: {
       LeftImg: { L: 70, T: 2, W: 2, H: 21, DL: 86 },
-    
+
       MiddleImg: { L: 0, T: 486, DT: 532, H: 21, Src: 1 },
-    
+
       RightImg: { L: 75, T: 2, W: 2, H: 21, DL: 91 },
 
       LeftImgReq: { L: 78, T: 2, W: 2, H: 21, DL: 86 },
-    
+
       MiddleImgReq: { L: 0, T: 509, DT: 532, H: 21, Src: 1 },
-    
+
       RightImgReq: { L: 83, T: 2, W: 2, H: 21, DL: 91 },
-      ArrowLeft: { L: 28, T: 82, W: 9, H: 21, oL: 79, DL: 130 },      
+      ArrowLeft: { L: 28, T: 82, W: 9, H: 21, oL: 79, DL: 130 },
       ArrowRight: { L: 40, T: 82, W: 9, H: 21, oL: 91, DL: 142 },
-      ArrowDown: { L: 0, T: 80, W: 13, H: 21, oL: 51, DL: 102 },      
+      ArrowDown: { L: 0, T: 80, W: 13, H: 21, oL: 51, DL: 102 },
       ArrowUp: { L: 14, T: 80, W: 13, H: 21, oL: 65, DL: 116 }
     },
-    
+
     SubMenu: { L: 330, T: 54, DT: 71, W: 10, H: 16 },
-    
+
     MenuCheckBox: { L: 359, T: -14, oST: 42, ST: 56, DT: -14, DST: 73, W: 14, H: 14 },
-    
+
     MenuRadio: { L: 374, T: -14, oST: 42, ST: 56, DT: -14, DST: 73, W: 14, H: 14 },
 
     SubMenuWhite: { L: 330, T: 40, DT: 71, W: 10, H: 16 },
-    
+
     MenuCheckBoxWhite: { L: 359, T: -14, ST: 42, DT: -14, DST: 73, W: 14, H: 14 },
-    
+
     MenuRadioWhite: { L: 374, T: -14, ST: 42, DT: -14, DST: 73, W: 14, H: 14 },
-  
+
     GroupBox: {
       LeftTop: { L: 361, T: -5, W: 5, H: 11 },
       Top: { L: 0, T: 48, H: 8, Src: 1 },
@@ -145,9 +145,9 @@ var WinXPControls = {
       RightBottom: { L: 369, T: 37, W: 5, H: 23 },
       RightBottom2: { L: 373, T: 35, W: 1, H: 23 }
     },
-    
+
     PagesUp: new Array(
-     { 
+     {
        LeftImg: { L: 361, SL: 346, DSL: 346, T: 2, W: 5, H: 20 },
        MiddleImg: { L: 0, T: 444, H: 20, Src: 1, ST: 398, DST: 398 },
        RightImg: { L: 369, SL: 350, DSL: 350, T: 2, W: 5, H: 20 },
@@ -155,50 +155,50 @@ var WinXPControls = {
      }
     ),
     PagesDown: new Array(
-     { 
+     {
        LeftImg: { L: 361, SL: 346, DSL: 346, T: 21, W: 5, H: 20 },
        MiddleImg: { L: 0, T: 444, H: 20, Src: 1, ST: 421, DST: 421 },
        RightImg: { L: 369, SL: 350, DSL: 350, T: 21, W: 5, H: 20 },
        Separator: { L: 340, T: 21, W: 6, H: 20 }
      }
     ),
-    
+
     ProgressBar: {
       LeftImg: { L: 118, T: 2, W: 4, H: 17 },
       MiddleImg: { L: 0, T: 602, H: 17, Src: 1 },
       RightImg: { L: 133, T: 2, W: 3, H: 17 },
-      BarImg: { L: 123, T: 2, W: 8, H: 17 }     
+      BarImg: { L: 123, T: 2, W: 8, H: 17 }
     },
-    
+
     TreeImgPlusMinus: { L: 242, T: 26, W: 17, H: 16, SL: 226 },
-    
+
     TreeImgTriangle: { L: 260, T: 26, W: 15, H: 16, SL: 276 },
-    
+
     TreeImgFolder: { L: 309, T: 26, W: 20, H: 16, SL: 290 },
-    
+
     DropDown: { L: 137, T: 0, oL: 154, DL: 171, W: 16, H: 21 },
 
     Elipsis: { L: 188, T: 0, oL: 207, DL: 226, W: 18, H: 21 },
-    
+
     Search: { L: 245, T: 0, oL: 264, DL: 283, W: 18, H: 21 },
-    
+
     Calendar: { L: 301, T: -2, W: 19, H: 21, DL: 320 },
-    
+
     VSplitMover: {
       L: 94, T: 0,
-      W: 8, 
+      W: 8,
       Src: 2
     },
-    
+
     VSplitMoverLeft: {
       L: 101, T: 0,
-      W: 8, 
+      W: 8,
       Src: 2
     },
 
     VSplitMoverRight: {
       L: 87, T: 0,
-      W: 8, 
+      W: 8,
       Src: 2
     },
 
@@ -206,7 +206,7 @@ var WinXPControls = {
 
     VSplitNone: {
       L: -8, T: 0,
-      W: 8, H: 1 
+      W: 8, H: 1
     },
 
     HSplitMover: { L: 0, T: 238, H: 8, Src: 1 },
@@ -219,14 +219,14 @@ var WinXPControls = {
 
     HSplitNone: {
       L: 0, T: -8,
-      W: 1, H: 8 
+      W: 1, H: 8
     },
 
     PgListPgNo: {
       LeftImg: { L: 94, T: 2, DL: 100, W: 2, H: 20 },
-    
+
       MiddleImg: { L: 0, T: 556, DL: 0, H: 20, Src: 1 },
-    
+
       RightImg: { L: 97, T: 2, DL: 103, W: 2, H: 20 }
     },
 
@@ -250,21 +250,21 @@ var WinXPControls = {
     WinRestoreBtn: { L: 228, T: 40, oL: 251, W: 23, H: 24 },
 
     WinHelpBtn: { L: 273, T: 40, oL: 296, W: 23, H: 24 },
-    
-    WindowCaption: {    
+
+    WindowCaption: {
       LeftImg: { L: 83, T: 139, W: 40, H: 29 },
       MiddleImg: { L: 0, T: 0, H: 29, Src: 1 },
       RightImg: { L: 124, T: 139, W: 40, H: 29 }
     },
 
     ArrowDown: { L: 0, T: 86, W: 13, H: 9, oL: 51, DL: 102 },
-    
+
     ArrowUp: { L: 14, T: 86, W: 13, H: 9, oL: 65, DL: 116 },
-    
+
     ArrowLeft: { L: 29, T: 86, W: 9, H: 13, oL: 80, DL: 131 },
-    
+
     ArrowRight: { L: 40, T: 86, W: 9, H: 13, oL: 91, DL: 142 },
-    
+
     PagingFirst: { L: -1, T: 66, oL: 83, DL: 167, W: 18, H: 18 },
     PagingPrev: { L: 20, T: 66, oL: 104, DL: 188, W: 18, H: 18 },
     PagingNext: { L: 39, T: 66, oL: 123, DL: 207, W: 18, H: 18 },
@@ -283,7 +283,7 @@ var WinXPControls = {
       err:      { L: 291, T: 66, W: 20, H: 20 },
       warn:     { L: 311, T: 66, W: 20, H: 20 }
     },
-    
+
     Hint: {
       LeftTop: { L: 20, T: 139, W: 30, H: 18 },
       Top: { L: 0, T: 114, H: 5, Src: 1 },
@@ -296,22 +296,22 @@ var WinXPControls = {
     },
     HintAnchors: {
       topleft:     { L: 15, T: -11, HX: 22, HY: 0,
-                     Img: { L: 350, T: 89, W: 29, H: 16 } }, 
+                     Img: { L: 350, T: 89, W: 29, H: 16 } },
       topright:    { R: 22, T: -11, HX: 6, HY: 0,
                      Img: { L: 318, T: 89, W: 29, H: 16 } },
       bottomright: { R: 22, B: -2, HX: 10, HY: 15,
                      Img: { L: 314, T: 106, W: 34, H: 17 } },
       bottomleft:  { L: 15, B: -2, HX: 22, HY: 15,
-                     Img: { L: 350, T: 106, W: 34, H: 17 } }, 
+                     Img: { L: 350, T: 106, W: 34, H: 17 } },
 
       lefttop:     { L: -9, T: 13, HX: 0, HY: 22,
-                     Img: { L: 237, T: 91, W: 16, H: 29 } }, 
+                     Img: { L: 237, T: 91, W: 16, H: 29 } },
       leftbottom:  { L: -9, B: 23, HX: 0, HY: 6,
-                     Img: { L: 255, T: 91, W: 16, H: 29 } }, 
+                     Img: { L: 255, T: 91, W: 16, H: 29 } },
       righttop:    { R: -3, T: 13, HX: 15, HY: 22,
-                     Img: { L: 293, T: 91, W: 17, H: 34 } }, 
+                     Img: { L: 293, T: 91, W: 17, H: 34 } },
       rightbottom: { R: -3, B: 22, HX: 15, HY: 10,
-                     Img: { L: 274, T: 87, W: 17, H: 34 } } 
+                     Img: { L: 274, T: 87, W: 17, H: 34 } }
     },
 
     TextHint: {
@@ -330,12 +330,12 @@ var WinXPControls = {
       topright:    { R: 15, T: -15, HX: 0, HY: 0 },
       bottomright: { R: 15, B: -5, HX: 0, HY: 0 }
     },
-    
+
     BtnArrowUp:    { SL: 122, T: 104, oSL: 148, L: 174, oL: 200, W: 25, H: 14 },
     BtnArrowDown:  { SL: 122, T: 119, oSL: 148, L: 174, oL: 200, W: 25, H: 14 },
     BtnArrowLeft:  { L: 1, T: 104, oL: 31, SL: 61, oSL: 92, W: 14, H: 25 },
     BtnArrowRight: { L: 16, T: 104, oL: 46, SL: 76, oSL: 107, W: 14, H: 25 },
-    
+
     DropPanel: {
       Left: { L: 79, T: 0, W: 7, Src: 2 },
       Right: { L: 79, T: 0, W: 7, Src: 2 },
@@ -350,9 +350,9 @@ var WinXPControls = {
         Right: { L: 104, T: 173, W: 6, H: 14 }
       }
     },
-    
+
     Close: { L: 205, T: 87, oL: 215, SL: 215, DL: 225, W: 10, H: 10 }
-    
+
   },
 
   OnControlCreated: function(def,c) {
@@ -391,8 +391,8 @@ var WinXPControls = {
           if(!c.OnGetClassName) c.OnGetClassName=function(c,cls,text) { return 'BtnRight'; };
         }
         break;
-      case 'stdPages':      
-        if(c.PagesVAlign=='bottom') 
+      case 'stdPages':
+        if(c.PagesVAlign=='bottom')
         {
           if(ng_EmptyVar(c.Frame))
           {
@@ -403,13 +403,13 @@ var WinXPControls = {
               else c.Frame.LeftBottom=c.Frame.LeftBottom2;
             }
           }
-          if(ng_EmptyVar(c.PageImages)) 
+          if(ng_EmptyVar(c.PageImages))
           {
             c.PageImages= this.Images.PagesDown;
             c.RowOverlap=1;
-          }          
+          }
         }
-        else 
+        else
         {
           if(ng_EmptyVar(c.Frame))
           {
@@ -420,7 +420,7 @@ var WinXPControls = {
               else c.Frame.LeftTop=c.Frame.LeftTop2;
             }
           }
-          if(ng_EmptyVar(c.PageImages)) 
+          if(ng_EmptyVar(c.PageImages))
           {
             c.PageImages= this.Images.PagesUp;
             c.RowOverlap=1;
@@ -434,7 +434,7 @@ var WinXPControls = {
     var libpath=ngLibPath('ng_winxp');
     // Init images
     for(var i=0;i<this.ControlImages.length;i++)
-      this.ControlImages[i]=libpath+this.ControlImages[i];    
+      this.ControlImages[i]=libpath+this.ControlImages[i];
     var winimages=this.Images;
     var winxp=this;
 
@@ -444,22 +444,22 @@ var WinXPControls = {
 
     /*  Class: stdPanel
      *  Standard panel control (based on <ngPanel>).
-     */ 
+     */
     /*<>*/
     ngRegisterControlType('stdPanel', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngPanel', ref, parent); });
     /*  Class: stdFrame
      *  Standard frame control (based on <ngFrame>).
-     */ 
+     */
     /*<>*/
     ngRegisterControlType('stdFrame', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngFrame', ref, parent); });
     /*  Class: stdAlignPanel
      *  Standard panel control (based on <ngAlignPanel (ngAlignFrame)>).
-     */ 
+     */
     /*<>*/
     ngRegisterControlType('stdAlignPanel', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngAlignPanel', ref, parent); });
     /*  Class: stdAlignFrame
      *  Standard Frame control (based on <ngAlignPanel (ngAlignFrame)>).
-     */ 
+     */
     /*<>*/
     ngRegisterControlType('stdAlignFrame', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngAlignFrame', ref, parent); });
 
@@ -467,7 +467,7 @@ var WinXPControls = {
      *  Standard text control (based on <ngText>).
      */
     /*<>*/
-    ngRegisterControlType('stdText', function(def,ref,parent) { 
+    ngRegisterControlType('stdText', function(def,ref,parent) {
       if(typeof def.className === 'undefined') def.className='wxpText';
       return ngCreateControlAsType(def, 'ngText', ref, parent);
     });
@@ -527,7 +527,7 @@ var WinXPControls = {
       c.AddEvent('DoUpdate',function(o) {
         var cn=o.className;
         var idx=cn.indexOf(' ');
-        if(this.Enabled) { 
+        if(this.Enabled) {
           if(idx>=0) cn=cn.substring(0,idx);
           if(this.Checked) cn=cn+' '+cn+'Checked';
           o.className=cn;
@@ -535,7 +535,7 @@ var WinXPControls = {
         else {
           if(idx>=0) cn=cn.substring(0,idx);
           o.className=cn+' '+cn+'Disabled';
-        }          
+        }
         return true;
       });
 /*      if(c) {
@@ -578,9 +578,9 @@ var WinXPControls = {
       if(typeof def.className === 'undefined') def.className='wxpGroupBox';
       return ngCreateControlAsType(def, 'ngGroup', ref, parent);
     }
-    ngRegisterControlType('stdGroup', Create_stdGroup); 
+    ngRegisterControlType('stdGroup', Create_stdGroup);
     ngRegisterControlType('stdGroupBox', Create_stdGroup);
-      
+
     /*  Class: stdEdit
      *  Standard edit control (based on <ngEdit>).
      */
@@ -593,7 +593,7 @@ var WinXPControls = {
       /*  Variable: Invalid
        *  ...
        *  Type: bool
-       *  Default value: *false*          
+       *  Default value: *false*
        */
       var req=ngVal(c.Invalid,false);
       c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
@@ -604,14 +604,14 @@ var WinXPControls = {
        */
       /*  Function: SetInvalid
        *  Sets (visual) invalid state of control.
-       *   
+       *
        *  Syntax:
        *    void *SetInvalid* (bool r [,bool update=true])
-       *     
+       *
        *  Parameters:
-       *    -         
+       *    -
        *  Returns:
-       *    -     
+       *    -
        */
       c.SetInvalid=function(r,update) {
         if(!r)
@@ -629,13 +629,13 @@ var WinXPControls = {
         c.Invalid=r;
         if(ngVal(update,true))
         {
-          if(c.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IL', 0, c.Enabled, c.LeftImg));        
-          if(c.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(c.ID+'_IM', 0, c.Enabled, c.MiddleImg));        
+          if(c.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IL', 0, c.Enabled, c.LeftImg));
+          if(c.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(c.ID+'_IM', 0, c.Enabled, c.MiddleImg));
           if(c.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IR', 0, c.Enabled, c.RightImg));
         }
-      }      
+      }
     }
-    
+
     function Create_stdEdit(def,ref,parent) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
@@ -647,7 +647,7 @@ var WinXPControls = {
     }
     ngRegisterControlType('stdEdit', Create_stdEdit);
     ngRegisterControlType('stdEditBox', Create_stdEdit);
-            
+
     /*  Class: stdEditBoxBtn
      *  Standard edit control with elipsis button (based on <stdEdit>).
      */
@@ -659,8 +659,8 @@ var WinXPControls = {
       if(!c) return c;
       var b=new ngButton();
       b.LeftImg=winimages.Elipsis;
-      b.OnClick = function(ci) 
-      {     
+      b.OnClick = function(ci)
+      {
         var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
         if((e)&&(e.OnElipsis)) e.OnElipsis(ci, e.GetText());
       }
@@ -670,18 +670,18 @@ var WinXPControls = {
        */
       /*  Function: Elipsis
        *  Invokes elipsis.
-       *   
+       *
        *  Syntax:
        *    void *Elipsis* ()
-       *     
+       *
        *  Parameters:
-       *    -         
+       *    -
        *  Returns:
-       *    -     
+       *    -
        */
       c.Elipsis=function() {
         b.Click();
-      }      
+      }
       /*
        *  Group: Events
        */
@@ -691,8 +691,8 @@ var WinXPControls = {
       // c.OnElipsis=null;
       return c;
     }
-            
-    ngRegisterControlType('stdEditBoxBtn', function(def,ref,parent) { return Create_stdEditBoxBtn(def,ref,parent); });             
+
+    ngRegisterControlType('stdEditBoxBtn', function(def,ref,parent) { return Create_stdEditBoxBtn(def,ref,parent); });
 
     /*  Class: stdSearchBox
      *  Standard search box control (based on <stdEdit>).
@@ -709,8 +709,8 @@ var WinXPControls = {
       var b=new ngButton();
       b.LeftImg=winimages.Search;
       b.Default=true;
-      b.OnClick = function(ci) 
-      {     
+      b.OnClick = function(ci)
+      {
         var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
         if((e)&&(e.OnSearch)) e.OnSearch(ci, e.GetText());
       }
@@ -720,20 +720,20 @@ var WinXPControls = {
        */
       /*  Function: Search
        *  Invokes search.
-       *   
+       *
        *  Syntax:
        *    void *Search* ([string txt])
-       *     
+       *
        *  Parameters:
-       *    txt - search text  
-       *             
+       *    txt - search text
+       *
        *  Returns:
-       *    -     
+       *    -
        */
       c.Search=function(t) {
         if(typeof t !== 'undefined') this.SetText(t);
         b.Click();
-      }      
+      }
       /*
        *  Group: Events
        */
@@ -743,7 +743,7 @@ var WinXPControls = {
       // c.OnSearch=null;
       return c;
     }
-    ngRegisterControlType('stdSearchBox', function(def,ref,parent) { return Create_stdSearchBox(def,ref,parent); });             
+    ngRegisterControlType('stdSearchBox', function(def,ref,parent) { return Create_stdSearchBox(def,ref,parent); });
 
     /*  Class: stdEditNum
      *  Standard edit number control with spin buttons (based on <ngEditNum>).
@@ -757,8 +757,8 @@ var WinXPControls = {
      *
      *  Constants:
      *    'none' - ...
-     *    'leftright' - ...                    
-     *    'updown' - ...                  
+     *    'leftright' - ...
+     *    'updown' - ...
      */
     /*<>*/
     /*
@@ -767,21 +767,21 @@ var WinXPControls = {
     /*  Variable: Invalid
      *  ...
      *  Type: bool
-     *  Default value: *false*          
+     *  Default value: *false*
      */
     /*
      *  Group: Methods
      */
     /*  Function: SetInvalid
      *  Sets (visual) invalid state of control.
-     *   
+     *
      *  Syntax:
      *    void *SetInvalid* (bool r [,bool update=true])
-     *     
+     *
      *  Parameters:
-     *    -         
+     *    -
      *  Returns:
-     *    -     
+     *    -
      */
     function Create_stdEditNum(def,ref,parent, basetype)
     {
@@ -810,21 +810,21 @@ var WinXPControls = {
     /*  Variable: Invalid
      *  ...
      *  Type: bool
-     *  Default value: *false*          
+     *  Default value: *false*
      */
     /*
      *  Group: Methods
      */
     /*  Function: SetInvalid
      *  Sets (visual) invalid state of control.
-     *   
+     *
      *  Syntax:
      *    void *SetInvalid* (bool r [,bool update=true])
-     *     
+     *
      *  Parameters:
-     *    -         
+     *    -
      *  Returns:
-     *    -     
+     *    -
      */
     function Create_stdColorEdit(def,ref,parent,basetype)
     {
@@ -842,14 +842,14 @@ var WinXPControls = {
        */
       /*  Function: GetColor
        *  Gets edited color value.
-       *   
+       *
        *  Syntax:
        *    string *GetColor* ()
-       *     
+       *
        *  Parameters:
-       *   
+       *
        *  Returns:
-       *    -     
+       *    -
        */
       c.GetColor = function() {
         var col=this.GetText();
@@ -864,7 +864,7 @@ var WinXPControls = {
       b.Bounds.W=29;
       b.AutoSize=false;
       b.OnGetText = function(e) {
-        var c=this.Enabled ? this.Parent.GetColor() : 'CCCCCC'; 
+        var c=this.Enabled ? this.Parent.GetColor() : 'CCCCCC';
         return '<div style="margin:3px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width: 23px; height:13px; border: 1px solid '+(this.Enabled ? 'black' : '#A0A0A0')+'; background-color: #'+c+'"></div>';
       }
       c.OnTextChanged = function(e) {
@@ -885,21 +885,21 @@ var WinXPControls = {
     /*  Variable: Invalid
      *  ...
      *  Type: bool
-     *  Default value: *false*          
+     *  Default value: *false*
      */
     /*
      *  Group: Methods
      */
     /*  Function: SetInvalid
      *  Sets (visual) invalid state of control.
-     *   
+     *
      *  Syntax:
      *    void *SetInvalid* (bool r [,bool update=true])
-     *     
+     *
      *  Parameters:
-     *    -         
+     *    -
      *  Returns:
-     *    -     
+     *    -
      */
     function Create_stdDropDown(def,ref,parent,basetype,dropdownlist) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
@@ -911,7 +911,7 @@ var WinXPControls = {
       return c;
     }
     ngRegisterControlType('stdDropDown', function(def,ref,parent) { return Create_stdDropDown(def,ref,parent,'ngEdit',false); });
-    
+
     /*  Class: stdDropDownList
      *  Standard drop down list control (based on <ngDropDownList>).
      */
@@ -922,25 +922,25 @@ var WinXPControls = {
     /*  Variable: Invalid
      *  ...
      *  Type: bool
-     *  Default value: *false*          
+     *  Default value: *false*
      */
     /*
      *  Group: Methods
      */
     /*  Function: SetInvalid
      *  Sets (visual) invalid state of control.
-     *   
+     *
      *  Syntax:
      *    void *SetInvalid* (bool r [,bool update=true])
-     *     
+     *
      *  Parameters:
-     *    -         
+     *    -
      *  Returns:
-     *    -     
+     *    -
      */
     ngRegisterControlType('stdDropDownList', function(def,ref,parent) { return Create_stdDropDown(def,ref,parent,'ngEdit',true); });
-    
-    
+
+
     /*  Class: stdMemo
      *  Standard memo control (based on <ngMemo>).
      */
@@ -948,14 +948,14 @@ var WinXPControls = {
     function Create_stdMemo(def,ref,parent,basetype) {
       if(typeof def.className === 'undefined') def.className='wxpMemo';
       var c=ngCreateControlAsType(def, ngVal(basetype, 'ngMemo'), ref, parent);
-      if(!c) return; 
+      if(!c) return;
       /*
        *  Group: Properties
        */
       /*  Variable: Invalid
        *  ...
        *  Type: bool
-       *  Default value: *false*          
+       *  Default value: *false*
        */
       var req=ngVal(c.Invalid,false);
       c.Frame=(req ? winimages.MemoReq : winimages.Memo);
@@ -964,22 +964,22 @@ var WinXPControls = {
        */
       /*  Function: SetInvalid
        *  Sets (visual) invalid state of control.
-       *   
+       *
        *  Syntax:
        *    void *SetInvalid* (bool r [,bool update=true])
-       *     
+       *
        *  Parameters:
-       *    -         
+       *    -
        *  Returns:
-       *    -     
+       *    -
        */
       c.SetInvalid=function(r,update) {
         c.Frame=(r ? winimages.MemoReq : winimages.Memo);
         c.Invalid=r;
         if(ngVal(update,true)) c.Update();
-      }      
+      }
       return c;
-    } 
+    }
     ngRegisterControlType('stdMemo', function(def,ref,parent) { return Create_stdMemo(def,ref,parent); });
     /*  Class: stdPages
      *  Standard pages control (based on <ngPages>).
@@ -997,10 +997,10 @@ var WinXPControls = {
       if(typeof def.className === 'undefined') def.className='wxpToolBar';
       return ngCreateControlAsType(def, 'ngToolBar', ref, parent);
     });
-    
+
     /*  Class: stdWebBrowser
      *  Standard web browser control (based on <ngWebBrowser>).
-     */ 
+     */
     /*<>*/
     ngRegisterControlType('stdWebBrowser', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngWebBrowser', ref, parent); });
 
@@ -1025,18 +1025,18 @@ var WinXPControls = {
     ngRegisterControlType('stdProgressDot', function(def,ref,parent) {
       ng_MergeDef(def, {
         className: 'wxpLabel',
-        Data: { 
+        Data: {
           TextAlign: 'center'
         }
       });
       ng_PreloadImage(libpath+'loading.gif');
       var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
       if(c)
-      { 
-        c.AddEvent(function (b) { 
+      {
+        c.AddEvent(function (b) {
           var txt=ngTxt(b.Text);
           if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+txt+'</span>';
-          return '<img src="'+libpath+'loading.gif" align="top" />'+txt; 
+          return '<img src="'+libpath+'loading.gif" align="top" />'+txt;
         }, 'OnGetText');
       }
       return c;
@@ -1044,9 +1044,9 @@ var WinXPControls = {
 
     /**
      * List Controls
-     */          
-    if(ngUserControls['list']) 
-    { 
+     */
+    if(ngUserControls['list'])
+    {
       /*  Class: stdList
        *  Standard list control (based on <ngList>).
        */
@@ -1058,17 +1058,17 @@ var WinXPControls = {
         c.AddEvent('DoUpdate',function(o) {
           var cn=o.className;
           var idx=cn.indexOf(' ');
-          if(this.Enabled) { 
-            if(idx>=0) o.className=cn.substring(0,idx); 
+          if(this.Enabled) {
+            if(idx>=0) o.className=cn.substring(0,idx);
           }
           else {
             if(idx<0) o.className=cn+' '+cn+'Disabled';
-          }          
+          }
           return true;
         });
-        c.OnGetCheckImg = function(list,item) { 
-          if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;       
-          if(typeof item.RadioGroup!=='undefined') return winimages.RadioLeft;         
+        c.OnGetCheckImg = function(list,item) {
+          if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
+          if(typeof item.RadioGroup!=='undefined') return winimages.RadioLeft;
           return winimages.CheckBoxLeft;
         }
         /*
@@ -1076,11 +1076,11 @@ var WinXPControls = {
          */
         /*
          *  Variable: TreeImg
-         *  
+         *
          *  Constants:
          *    'triangle' - ...
          *    'folder' - ...
-         *    'plusminus' - ...                                             
+         *    'plusminus' - ...
          */
         /*<>*/
         switch(ngVal(def.TreeImg, (def.Type == 'stdTreeList' ? 'plusminus' : '')))
@@ -1098,7 +1098,7 @@ var WinXPControls = {
        *  Standard list control (based on <ngPageList>).
        */
       /*<>*/
-      
+
       this.stdPageListPagingControlsDef=function()
       {
         return {
@@ -1159,87 +1159,87 @@ var WinXPControls = {
           }
         };
       }
-      
+
       function Create_stdPageList(def,ref,parent,controltype,listtype)
       {
         ng_MergeDef(def, {
           className: 'wxpListBox',
           /*
            *  Group: Controls
-           */  
-          Controls: { 
+           */
+          Controls: {
             /*  Object: List
-             *  <stdList>     
-             */     
+             *  <stdList>
+             */
             List: {
               Type: ngVal(listtype,'stdList'),
               style: { border: '0px' }
             },
             /*  Object: Loading
-             *  <stdProgressDot>     
-             */     
+             *  <stdProgressDot>
+             */
             Loading: {
               Type: 'stdProgressDot',
               L: 10, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
               Data: {
                 Visible: false
-              }              
+              }
             },
             /*  Object: Paging
-             *  <ngToolBar>     
-             */     
+             *  <ngToolBar>
+             */
             Paging: {
               className: 'wxpPageListPaging',
               /*  Object: FirstPage
-               *  <stdFlatButton>         
-               */  
+               *  <stdFlatButton>
+               */
               /*  Object: PrevPage
-               *  <stdFlatButton>         
-               */  
+               *  <stdFlatButton>
+               */
               /*  Object: PageNo
-               *  <stdEdit>         
-               */  
+               *  <stdEdit>
+               */
               /*
                *  Object: Page0
-               *  <stdFlatButton>         
-               */  
+               *  <stdFlatButton>
+               */
               /*
                *  Object: NextPage
-               *  <stdFlatButton>         
-               */  
+               *  <stdFlatButton>
+               */
               /*
                *  Object: LastPage
-               *  <stdFlatButton>         
-               */  
+               *  <stdFlatButton>
+               */
               Controls: winxp.stdPageListPagingControlsDef()
             }
           }
         });
-                
+
         var c=ngCreateControlAsType(def, ngVal(controltype,'ngPageList'), ref, parent);
         if(!c) return c;
         c.AddEvent('DoUpdate',function(o) {
           var cn=o.className;
           var idx=cn.indexOf(' ');
-          if(this.Enabled) { 
-            if(idx>=0) o.className=cn.substring(0,idx); 
+          if(this.Enabled) {
+            if(idx>=0) o.className=cn.substring(0,idx);
           }
           else {
             if(idx<0) o.className=cn+' '+cn+'Disabled';
-          }          
+          }
           return true;
         });
         return c;
-      }    
+      }
       ngRegisterControlType('stdPageList', function (def,ref,parent) { return Create_stdPageList(def,ref,parent,'ngPageList'); });
       ngRegisterControlType('stdPageTreeList', function (def,ref,parent) { return Create_stdPageList(def,ref,parent,'ngPageList','stdTreeList'); });
     }
-    
+
     /**
      * Panels Controls
-     */          
-    if(ngUserControls['panels']) 
-    { 
+     */
+    if(ngUserControls['panels'])
+    {
       /*  Class: stdSplitPanel
        *  Standard split panel control (based on <ngSplitPanel>).
        */
@@ -1249,19 +1249,19 @@ var WinXPControls = {
          */
         /*
          *  Variable: Mover
-         *  
+         *
          *  Constants:
          *    'handle' - ...
-         *    'both' - ...                                             
-         *    'controls1' - ...                                             
-         *    'controls2' - ...                                             
+         *    'both' - ...
+         *    'controls1' - ...
+         *    'controls2' - ...
          *    'none' - ...
          */
         /*<>*/
       ngRegisterControlType('stdSplitPanel', function(def,ref,parent) {
         if(typeof def.className === 'undefined') def.className='wxpSplitPanel';
         var c=ngCreateControlAsType(def, 'ngSplitPanel', ref, parent);
-        if(c) 
+        if(c)
         {
           var vsplit=(c.PanelAlign=='left')||(c.PanelAlign=='right');
           var mover=ngVal(def.Mover,'handle');
@@ -1288,7 +1288,7 @@ var WinXPControls = {
             ControlsPanel: {
               style: { backgroundColor: '#FFFFFF'}
             },
-            Data: {            
+            Data: {
               Frame: {
                 Left: winimages.DropPanel.Left,
                 Right: winimages.DropPanel.Right
@@ -1301,7 +1301,7 @@ var WinXPControls = {
               {
                 var image=null;
                 var btntop=(b.Owner && typeof b.Owner.Bounds.T == 'undefined');
-                switch(idx) 
+                switch(idx)
                 {
                   case -1: image=(btntop ? winimages.BtnArrowDown : winimages.BtnArrowUp); break;
                   case 0: image=(btntop ? winimages.DropPanel.TopButton.Left : winimages.DropPanel.BottomButton.Left); break;
@@ -1319,9 +1319,9 @@ var WinXPControls = {
 
     /**
      * Window Controls
-     */          
-    if(ngUserControls['window']) 
-    { 
+     */
+    if(ngUserControls['window'])
+    {
       /*  Class: stdWindow
        *  Standard window control (based on <ngWindow>).
        */
@@ -1359,13 +1359,13 @@ var WinXPControls = {
           b=new ngButton;
           c.CloseButton=b;
           b.LeftImg=winimages.WinCloseBtn;
-          b.OnClick = function(ci) 
-          {     
+          b.OnClick = function(ci)
+          {
             var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
             if((e)&&(e.Close)) e.Close(e);
           }
           if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;      
+          c.Buttons[c.Buttons.length]=b;
         }
         /*
          *  Variable: HelpBtn
@@ -1378,13 +1378,13 @@ var WinXPControls = {
           b=new ngButton;
           c.HelpButton=b;
           b.LeftImg=winimages.WinHelpBtn;
-          b.OnClick = function(ci) 
-          {     
+          b.OnClick = function(ci)
+          {
             var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
             if((e)&&(e.OnHelp)) e.OnHelp(e);
           }
           if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;      
+          c.Buttons[c.Buttons.length]=b;
         }
         /*
          *  Variable: MaxBtn
@@ -1396,26 +1396,26 @@ var WinXPControls = {
         {
           b=new ngButton;
           c.MaxButton=b;
-          c.OnDblClick = function(e) 
-          {     
+          c.OnDblClick = function(e)
+          {
             if(e.win)
             {
               if(e.win.MaxButton) e.win.MaxButton.Click();
             }
           }
           c.AddEvent(function(o) {
-            // update button state before update         
+            // update button state before update
             var s=(c.IsMaximized() ? 1 : 0);
             if((c.MaxButton)&&(c.MaxButton.Checked!=s)) c.MaxButton.Check(s);
-            return true;  
+            return true;
           }, 'DoUpdate');
           b.LeftImg=winimages.WinMaxBtn;
-          b.OnClick = function(ci) 
-          {     
+          b.OnClick = function(ci)
+          {
             var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
             if(e)
             {
-              ci.Owner.Check(e.IsMaximized() ? 0 : 1);    
+              ci.Owner.Check(e.IsMaximized() ? 0 : 1);
               if(ci.Owner.Checked)
               {
                 if(e.Maximize) e.Maximize(e);
@@ -1427,7 +1427,7 @@ var WinXPControls = {
             }
           }
           if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;      
+          c.Buttons[c.Buttons.length]=b;
         }
         /*
          *  Variable: MinBtn
@@ -1441,17 +1441,17 @@ var WinXPControls = {
           c.MinButton=b;
           b.LeftImg=winimages.WinMinBtn;
           c.AddEvent(function(o) {
-            // update button state before update         
+            // update button state before update
             var s=(c.IsMinimized() ? 1 : 0);
             if((c.MinButton)&&(c.MinButton.Checked!=s)) c.MinButton.Check(s);
-            return true;  
+            return true;
           }, 'DoUpdate');
-          b.OnClick = function(ci) 
-          {     
+          b.OnClick = function(ci)
+          {
             var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
             if(e)
             {
-              ci.Owner.Check(e.IsMinimized() ? 0 : 1);    
+              ci.Owner.Check(e.IsMinimized() ? 0 : 1);
               if(ci.Owner.Checked)
               {
                 if(e.Minimize) e.Minimize(e);
@@ -1463,13 +1463,13 @@ var WinXPControls = {
             }
           }
           if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;      
+          c.Buttons[c.Buttons.length]=b;
         }
         return c;
       }
       ngRegisterControlType('stdWindow', Create_stdWindow);
       ngRegisterControlType('stdDialog', Create_stdWindow);
-  
+
       /*  Class: stdHint
        *  Standard hint control (based on <ngHint>).
        */
@@ -1477,14 +1477,14 @@ var WinXPControls = {
       ngRegisterControlType('stdHint', function(def,ref,parent) {
         if(typeof def.className === 'undefined') def.className='wxpHint';
         var c=ngCreateControlAsType(def, 'ngHint', ref, parent);
-        if(c) 
-        { 
+        if(c)
+        {
           c.Frame=ng_CopyVar(winimages.Hint);
           c.Anchors=ng_CopyVar(winimages.HintAnchors);
         }
         return c;
       });
-  
+
       /*  Class: stdTextHint
        *  Standard hint text control (based on <ngTextHint>).
        */
@@ -1494,11 +1494,11 @@ var WinXPControls = {
           className: 'wxpTextHint',
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             /*  Object: Hint
-             *  <stdText>     
-             */     
+             *  <stdText>
+             */
             Hint: {
               Type: 'stdText',
               L: 5, T: 2
@@ -1506,8 +1506,8 @@ var WinXPControls = {
           }
         });
         var c=ngCreateControlAsType(def, 'ngTextHint', ref, parent);
-        if(c) 
-        { 
+        if(c)
+        {
           c.Frame=ng_CopyVar(winimages.TextHint);
           c.Anchors=ng_CopyVar(winimages.TextHintAnchors);
         }
@@ -1517,15 +1517,15 @@ var WinXPControls = {
 
     /**
      * Dialogs Controls
-     */          
-    if(ngUserControls['dialogs']) 
+     */
+    if(ngUserControls['dialogs'])
     {
       /*  Class: stdMessageDlg
        *  Standard message box dialog (based on <ngMessageDlg>).
        */
       /*<>*/
       ngRegisterControlType('stdMessageDlg', function(def,ref,parent) {
-  
+
         /*
          *  Group: Definition
          */
@@ -1533,32 +1533,32 @@ var WinXPControls = {
          *  Variable: DlgCheckBox
          *  ...
          *  Type: object
-         *  Default value: *undefined*       
+         *  Default value: *undefined*
          */
         /*<>*/
         ng_MergeDef(def, {
           DialogType: 'stdDialog',
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             /*  Object: Message
-             *  <stdText>     
-             */     
+             *  <stdText>
+             */
             Message: {
               Type: 'stdText'
   //            style: { border: '1px solid red' }
             },
             /*  Object: Content
-             *  <ngPanel>     
-             */     
+             *  <ngPanel>
+             */
             Content: {
               Type: 'ngPanel',
               L: 15, R: 15, H: 15
-            },            
+            },
             /*  Object: Buttons
-             *  <ngToolBar>     
-             */     
+             *  <ngToolBar>
+             */
             Buttons: {
               Type: 'ngToolBar',
               H: 23,
@@ -1567,35 +1567,35 @@ var WinXPControls = {
               },
               Controls: {
                 /*  Object: OK
-                 *  <stdButton>     
-                 */     
+                 *  <stdButton>
+                 */
                 OK: {
                   Type: 'stdButton',
                   W: 80
                 },
                 /*  Object: Yes
-                 *  <stdButton>     
-                 */     
+                 *  <stdButton>
+                 */
                 Yes: {
                   Type: 'stdButton',
                   W: 80
                 },
                 /*  Object: No
-                 *  <stdButton>     
-                 */     
+                 *  <stdButton>
+                 */
                 No: {
                   Type: 'stdButton',
                   W: 80
                 },
                 /*  Object: Cancel
-                 *  <stdButton>     
-                 */     
+                 *  <stdButton>
+                 */
                 Cancel: {
                   Type: 'stdButton',
                   W: 80
                 }
               }
-                        
+
             }
           }
         });
@@ -1606,8 +1606,8 @@ var WinXPControls = {
               Content: {
                 Controls: {
                   /*  Object: CheckBox
-                   *  <stdCheckBox> (if DlgCheckBox defined)    
-                   */     
+                   *  <stdCheckBox> (if DlgCheckBox defined)
+                   */
                   CheckBox: {
                     Type: 'stdCheckBox',
                     L: 0, B: 10,
@@ -1615,20 +1615,20 @@ var WinXPControls = {
                   }
                 }
               }
-            } 
+            }
           });
           def.Controls.Content.H+=25;
-        }      
+        }
         if(def.DialogType=='stdMessageDlg') def.DialogType='stdDialog';
-        return ngCreateControlAsType(def, 'ngMessageDlg', ref, parent);                
+        return ngCreateControlAsType(def, 'ngMessageDlg', ref, parent);
       });
-  
+
       /*  Class: dlgMessageBox
        *  Message box dialog (based on <stdMessageDlg>).
        */
       /*<>*/
       ngRegisterControlType('dlgMessageBox', function(def,ref,parent) {
-        
+
         delete def.DialogType;
         def.DlgButtons=ngVal(def.DlgButtons,mbOK);
         /*
@@ -1638,7 +1638,7 @@ var WinXPControls = {
          *  Variable: DlgIcon
          *  ...
          *  Type: mixed
-         *  Default value: *mbIconInformation*       
+         *  Default value: *mbIconInformation*
          */
         /*<>*/
         def.DlgIcon=ngVal(def.DlgIcon,mbIconInformation);
@@ -1646,30 +1646,30 @@ var WinXPControls = {
         if(typeof def.DlgIcon === 'object') ic=def.DlgIcon;
         else if(typeof def.DlgIcon !== 'undefined') ic=ngVal(winimages.DlgIcons[def.DlgIcon],null);
         if(ic)
-        {  
+        {
           ng_MergeDef(def,{
-            Data: {          
+            Data: {
             },
             /*
              *  Group: Controls
-             */  
+             */
             Controls: {
               Message: {
                 L: 15+ic.W+10, T: 25,
                 Data: {
                   MinHeight: (typeof def.DlgCheckBox !== 'undefined' ? (ic.H>=30 ? ic.H-30 : 0) : ic.H-10)
                 }
-              },            
+              },
               /*  Object: Icon
-               *  <stdImage>     
-               */     
+               *  <stdImage>
+               */
               Icon: {
                 Type: 'stdImage',
                 L: 15, T: 15, W: ic.W, H: ic.H,
                 Data: {
                   Img: ic
                 }
-              },            
+              },
               Content: {
                 H: 10,
                 Controls: {
@@ -1681,7 +1681,7 @@ var WinXPControls = {
         }
         return ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
       });
-  
+
       /*  Class: dlgInputBox
        *  Input box dialog (based on <stdMessageDlg>).
        */
@@ -1693,28 +1693,28 @@ var WinXPControls = {
        *  Variable: DlgAllowEmpty
        *  ...
        *  Type: bool
-       *  Default value: *false*       
+       *  Default value: *false*
        */
       /*<>*/
       /*
        *  Variable: DlgHint
        *  ...
        *  Type: string
-       *  Default value: *''*       
+       *  Default value: *''*
        */
       /*<>*/
       function Create_dlgEditBox(def,ref,parent) {
-        
+
         delete def.DialogType;
         def.DlgAllowEmpty=ngVal(def.DlgAllowEmpty,false);
         var cdef={
           DialogType: 'stdMessageDlg',
-          DlgButtons: mbOK|mbCancel,        
-          Data: {          
+          DlgButtons: mbOK|mbCancel,
+          Data: {
           },
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             Message: {
               Data: {
@@ -1725,13 +1725,13 @@ var WinXPControls = {
               H: 30,
               Controls: {
                 /*  Object: Edit
-                 *  <stdEdit>     
-                 */     
+                 *  <stdEdit>
+                 */
                 Edit: {
                   Type: 'stdEdit',
                   L: 0, T: 2, R: 0,
                   Data: {
-                  }          
+                  }
                 }
               }
             },
@@ -1743,7 +1743,7 @@ var WinXPControls = {
               }
             }
           }
-        };      
+        };
         var edit=cdef.Controls.Content.Controls.Edit;
         switch(def.Type)
         {
@@ -1756,7 +1756,7 @@ var WinXPControls = {
           case 'dlgDropDownListBox':
             edit.Type=(def.Type=='dlgDropDownBox' ? 'stdDropDown' : 'stdDropDownList');
             edit.DropDown={ Type: 'stdList', Data: {  } };
-            if(typeof def.DlgItems!=='undefined') edit.DropDown.Data.Items=def.DlgItems;          
+            if(typeof def.DlgItems!=='undefined') edit.DropDown.Data.Items=def.DlgItems;
             break;
         }
         if(typeof def.DlgHint !== 'undefined') edit.Data.Hint=def.DlgHint;
@@ -1766,7 +1766,7 @@ var WinXPControls = {
             c.Owner.OK.SetEnabled(c.GetText()!='');
             return true;
           };
-          cdef.Controls.Buttons.Controls.OK.Data.Enabled=false;     
+          cdef.Controls.Buttons.Controls.OK.Data.Enabled=false;
         }
         ng_MergeDef(def, cdef);
         var c=ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
@@ -1781,9 +1781,9 @@ var WinXPControls = {
         }
         return c;
       };
-  
+
       ngRegisterControlType('dlgInputBox', Create_dlgEditBox);
-  
+
       /*  Class: dlgDropDownBox
        *  Dropdown dialog (based on <stdMessageDlg>).
        */
@@ -1795,29 +1795,29 @@ var WinXPControls = {
        *  Variable: DlgAllowEmpty
        *  ...
        *  Type: bool
-       *  Default value: *false*       
+       *  Default value: *false*
        */
       /*<>*/
       /*
        *  Variable: DlgHint
        *  ...
        *  Type: string
-       *  Default value: *''*       
+       *  Default value: *''*
        */
       /*<>*/
       /*
        *  Variable: DlgItems
        *  ...
        *  Type: array
-       *  Default value: *[]*       
+       *  Default value: *[]*
        */
       /*<>*/
       /*
        *  Group: Controls
-       */  
+       */
       /*  Object: Edit
-       *  <stdDropDown>     
-       */     
+       *  <stdDropDown>
+       */
       ngRegisterControlType('dlgDropDownBox', Create_dlgEditBox);
       /*  Class: dlgDropDownListBox
        *  Dropdown list dialog (based on <stdMessageDlg>).
@@ -1830,31 +1830,31 @@ var WinXPControls = {
        *  Variable: DlgAllowEmpty
        *  ...
        *  Type: bool
-       *  Default value: *false*       
+       *  Default value: *false*
        */
       /*<>*/
       /*
        *  Variable: DlgHint
        *  ...
        *  Type: string
-       *  Default value: *''*       
+       *  Default value: *''*
        */
       /*<>*/
       /*
        *  Variable: DlgItems
        *  ...
        *  Type: array
-       *  Default value: *[]*       
+       *  Default value: *[]*
        */
       /*<>*/
       /*
        *  Group: Controls
-       */  
+       */
       /*  Object: Edit
-       *  <stdDropDownList>     
-       */     
+       *  <stdDropDownList>
+       */
       ngRegisterControlType('dlgDropDownListBox', Create_dlgEditBox);
-  
+
       /*  Class: dlgMemoBox
        *  Input memo dialog (based on <stdMessageDlg>).
        */
@@ -1866,24 +1866,24 @@ var WinXPControls = {
        *  Variable: DlgAllowEmpty
        *  ...
        *  Type: bool
-       *  Default value: *false*       
+       *  Default value: *false*
        */
       /*<>*/
       /*
        *  Variable: DlgItems
        *  ...
        *  Type: array
-       *  Default value: *[]*       
+       *  Default value: *[]*
        */
       /*<>*/
       /*
        *  Group: Controls
-       */  
+       */
       /*  Object: Edit
-       *  <stdMemo>     
-       */     
+       *  <stdMemo>
+       */
       ngRegisterControlType('dlgMemoBox', Create_dlgEditBox);
-  
+
       /*  Class: dlgListBox
        *  List box dialog (based on <stdMessageDlg>).
        */
@@ -1895,14 +1895,14 @@ var WinXPControls = {
        *  Variable: DlgAllowEmpty
        *  ...
        *  Type: bool
-       *  Default value: *false*       
+       *  Default value: *false*
        */
       /*<>*/
       /*
        *  Variable: DlgHint
        *  ...
        *  Type: string
-       *  Default value: *''*       
+       *  Default value: *''*
        */
       /*<>*/
       ngRegisterControlType('dlgListBox', function(def,ref,parent) {
@@ -1911,11 +1911,11 @@ var WinXPControls = {
         var cdef={
           DialogType: 'stdMessageDlg',
           DlgButtons: mbOK|mbCancel,
-          Data: {          
+          Data: {
           },
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             Message: {
               Data: {
@@ -1926,14 +1926,14 @@ var WinXPControls = {
               H: 265,
               Controls: {
                 /*  Object: List
-                 *  <stdList>     
-                 */     
+                 *  <stdList>
+                 */
                 List: {
                   Type: 'stdList',
                   L: 0, T: 2, R: 0, H: 250,
                   Data: {
                     SelectType: nglSelectSingle
-                  }                                  
+                  }
                 }
               }
             },
@@ -1947,38 +1947,38 @@ var WinXPControls = {
           }
         };
         var list=cdef.Controls.Content.Controls.List;
-        if(typeof def.DlgItems!=='undefined') list.Data.Items=def.DlgItems;          
+        if(typeof def.DlgItems!=='undefined') list.Data.Items=def.DlgItems;
         if(!def.DlgAllowEmpty)
         {
           list.Data.OnSelectChanged = function(c) {
             if(c.Owner.OK.SetEnabled) c.Owner.OK.SetEnabled(c.SelCount>0);
             return true;
           };
-          cdef.Controls.Buttons.Controls.OK.Data.Enabled=false;     
+          cdef.Controls.Buttons.Controls.OK.Data.Enabled=false;
         }
         ng_MergeDef(def, cdef);
-        
+
         var c=ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
         c.AddEvent('OnVisibleChanged', function (c) {
           if(c.Visible) c.Controls.List.SetFocus();
         });
         return c;
       });
-  
+
       /*  Class: dlgProgressBox
        *  Progress box dialog (based on <stdMessageDlg>).
        */
       /*<>*/
       ngRegisterControlType('dlgProgressBox', function(def,ref,parent) {
-        
+
         delete def.DialogType;
         ng_MergeDef(def, {
           DlgButtons: mbNone,
-          Data: {          
+          Data: {
           },
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             Message: {
               Data: {
@@ -1989,33 +1989,33 @@ var WinXPControls = {
               H: 30,
               Controls: {
                 /*  Object: Progress
-                 *  <stdProgressBar>     
-                 */     
+                 *  <stdProgressBar>
+                 */
                 Progress: {
                   Type: 'stdProgressBar',
-                  L: 0, T: 5, R: 0                  
+                  L: 0, T: 5, R: 0
                 }
               }
-            }            
+            }
           }
         });
         return ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
       });
-  
+
       /*  Class: dlgWaitBox
        *  Wait box dialog (based on <stdMessageDlg>).
        */
       /*<>*/
       ngRegisterControlType('dlgWaitBox', function(def,ref,parent) {
-        
+
         delete def.DialogType;
         ng_MergeDef(def, {
           DlgButtons: mbNone,
-          Data: {          
+          Data: {
           },
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             Message: {
               L: 40,
@@ -2023,11 +2023,11 @@ var WinXPControls = {
               }
             },
             /*  Object: Progress
-             *  <stdProgressDot>     
-             */     
+             *  <stdProgressDot>
+             */
             Progress: {
               Type: 'stdProgressDot',
-              L: 15, T: 15                  
+              L: 15, T: 15
             },
             Content: {
               Data: {
@@ -2046,10 +2046,10 @@ var WinXPControls = {
         var cdef={
           DialogType: 'dlgMessageBox',
           DlgIcon: null,
-  
+
           /*
            *  Group: Controls
-           */  
+           */
           Controls: {
             Message: {
               className: 'wxpAboutMessage',
@@ -2059,11 +2059,11 @@ var WinXPControls = {
               }
             },
             Content: {
-  //            H: 125, 
+  //            H: 125,
               Controls: {
                 /*  Object: AppInfo
-                 *  <stdList>     
-                 */     
+                 *  <stdList>
+                 */
                 AppInfo: {
                   Type: 'stdTreeList',
                   style: { border: '0px' },
@@ -2073,11 +2073,11 @@ var WinXPControls = {
   //                  ListIndent: 0,
                     DefaultIndent: 0
                   }
-                }              
+                }
               }
             }
           }
-  
+
         };
         if((typeof def.DlgIcon === 'object')&&(def.DlgIcon))
         {
@@ -2086,12 +2086,12 @@ var WinXPControls = {
         ng_MergeDef(def, cdef);
         return ngCreateControlAsType(def, 'ngAboutDlg', ref, parent);
       });
-    }      
+    }
 
     /**
      * Calendar Controls
-     */          
-    if(ngUserControls['calendar']) 
+     */
+    if(ngUserControls['calendar'])
     {
       /*  Class: stdCalendar
        *  Standard calendar control (based on <ngCalendar>).
@@ -2117,8 +2117,8 @@ var WinXPControls = {
           b.RightImg=winimages.Button.RightImg;
           b.className='wxpButton';
         }
-        //c.ImgWeekDay = winimages.Elipsis; 
-        //c.ImgDay = winimages.Elipsis; 
+        //c.ImgWeekDay = winimages.Elipsis;
+        //c.ImgDay = winimages.Elipsis;
         return c;
       });
 
@@ -2127,36 +2127,37 @@ var WinXPControls = {
        */
       /*<>*/
       function Create_stdEditDate(def,ref,parent,basetype) {
-        ng_MergeDef(def, { 
-          className: 'wxpEdit', 
-          DropDown: { 
+        ng_MergeDef(def, {
+          className: 'wxpEdit',
+          DropDown: {
             className: 'wxpCalendar wxpDropDown',
             Type: 'stdCalendar',
-            style: { padding: '10px' } 
-          } 
+            style: { padding: '10px' }
+          }
         });
         var c=Create_stdDropDown(def,ref,parent, ngVal(basetype,'ngEditDate'),false);
         if(!c) return c;
         winxp.stdEdit_AddProperties(c);
         c.DropDownButton.LeftImg=winimages.Calendar;
         c.DropDownButton.Alt = ngTxt('calendar');
+        c.DropDownButton.Default = false;
         return c;
       }
-      
+
       ngRegisterControlType('stdEditDate', function(def,ref,parent) { return Create_stdEditDate(def,ref,parent); });
-  
+
       /*  Class: stdEditTime
        *  Standard edit date control (based on <ngEditTime>).
        */
       /*<>*/
       function Create_stdEditTime(def,ref,parent,basetype) {
         var div=1;
-        ng_MergeDef(def, { 
+        ng_MergeDef(def, {
           className: 'wxpEdit',
           Data: {
   //          DropDownWidth: 100,
   //          DropDownAlign: 'right'
-          }, 
+          },
           Events: {
             OnDropDown: function (e,l) {
               if(!l.Items.length)
@@ -2180,33 +2181,34 @@ var WinXPControls = {
               return false;
             }
           },
-          DropDown: { 
+          DropDown: {
             className: 'wxpDropDown',
             Type: 'stdList'
-          } 
+          }
         });
         div=ngVal(def.DropDown.HourDivider,2);
         if(div<=0) div=1;
         div=60/div;
         var c=ngCreateControlAsType(def, ngVal(basetype,'ngEditTime'), ref, parent);
         if(!c) return c;
-  
+
         if(def.Type == 'ngDropDownList') c.DropDownType=ngeDropDownList;
         ngDropDown_Add(c);
-        
+
         winxp.stdEdit_AddProperties(c);
         c.DropDownButton.LeftImg=winimages.DropDown;
+        c.DropDownButton.Default = false;
         if(typeof def.DropDown.className === 'undefined') def.DropDown.className='wxpDropDown';
         return c;
       }
-      
+
       ngRegisterControlType('stdEditTime', function(def,ref,parent) { return Create_stdEditTime(def,ref,parent); });
     }
-          
+
     /**
      * Menu Controls
-     */          
-    if(ngUserControls['menu']) 
+     */
+    if(ngUserControls['menu'])
     {
       /*  Class: stdMenu
        *  Standard menu control (based on <ngMenu>).
@@ -2215,19 +2217,19 @@ var WinXPControls = {
       ngRegisterControlType('stdMenu', function(def,ref,parent) {
         ng_MergeDef(def, {
           className: 'wxpMenu',
-          Data: { 
+          Data: {
             SubMenuImg: winimages.SubMenu,
             SubMenuDef: { Type: 'stdMenu' }
           }
         });
         var c=ngCreateControlAsType(def, 'ngMenu', ref, parent);
-        if(c) 
+        if(c)
         {
-          c.OnGetCheckImg = function(list,item) { 
+          c.OnGetCheckImg = function(list,item) {
             if((typeof item.Checked==='undefined')||(!list.ShowCheckboxes)) return null;
-            //if(typeof item.RadioGroup!=='undefined') return WinXPControls.Images.Radio;         
+            //if(typeof item.RadioGroup!=='undefined') return WinXPControls.Images.Radio;
             return WinXPControls.Images.MenuCheckBox;
-          }        
+          }
         }
         return c;
       });
@@ -2263,8 +2265,8 @@ var WinXPControls = {
 
     /**
      * ViewModel Controls
-     */          
-    if(ngUserControls['viewmodel_controls']) 
+     */
+    if(ngUserControls['viewmodel_controls'])
     {
       /*  Class: stdViewModelForm
        *  View model form control (based on <ngViewModelForm>).
@@ -2279,26 +2281,26 @@ var WinXPControls = {
           }
         });
         var c=ngCreateControlAsType(def, ngVal(base_type,'ngViewModelForm'), ref, parent);
-        if(c) 
-        {            
+        if(c)
+        {
           c.AddEvent('OnShowErrorMsg', function(form,msg) {
             if(typeof ngMessageDlg==='function') {
               ngMessageDlg('dlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), null , { DlgIcon: mbIconError });
             }
             else alert(msg);
-            return true;        
+            return true;
           });
         }
-        return c; 
+        return c;
       }
-      
+
       ngRegisterControlType('stdViewModelForm', function(def,ref,parent) { return Create_stdViewModelForm(def,ref,parent); } );
 
       /*  Class: stdEditField
        *  Standard drop down control (based on <ngEditField>).
        */
       /*<>*/
-      
+
       function Create_stdEditFieldDef(def)
       {
         ng_MergeDef(def,{
@@ -2311,7 +2313,7 @@ var WinXPControls = {
           }
         });
       }
-      
+
       function Create_stdEditField(def,ref,parent) {
         Create_stdEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className='wxpEdit';
@@ -2323,83 +2325,83 @@ var WinXPControls = {
         return c;
       }
       ngRegisterControlType('stdEditField', Create_stdEditField);
-  
+
       /*  Class: stdSearchBoxField
        *  Standard search box field control (based on <stdSearchBox>).
        */
       /*<>*/
       ngRegisterControlType('stdSearchBoxField', function(def,ref,parent) { return Create_stdSearchBox(def,ref,parent,'stdEditField'); });
-                   
+
       /*  Class: stdEditBoxBtnField
        *  Standard edit field control with elipsis button (based on <stdEditBoxBtn>).
        */
       /*<>*/
-      ngRegisterControlType('stdEditBoxBtnField', function(def,ref,parent) { return Create_stdEditBoxBtn(def,ref,parent,'stdEditField'); });             
-  
+      ngRegisterControlType('stdEditBoxBtnField', function(def,ref,parent) { return Create_stdEditBoxBtn(def,ref,parent,'stdEditField'); });
+
       /*  Class: stdEditNumField
        *  Standard drop down field control (based on <ngEditNumField>).
        */
       /*<>*/
-      ngRegisterControlType('stdEditNumField', function(def,ref,parent) { 
+      ngRegisterControlType('stdEditNumField', function(def,ref,parent) {
         Create_stdEditFieldDef(def);
-        return Create_stdEditNum(def,ref,parent,'ngEditNumField'); 
+        return Create_stdEditNum(def,ref,parent,'ngEditNumField');
       });
-  
+
       /*  Class: stdColorEditField
        *  Standard color edit field control (based on <stdColorEdit>).
        */
-      ngRegisterControlType('stdColorEditField', function(def,ref,parent) { 
+      ngRegisterControlType('stdColorEditField', function(def,ref,parent) {
         Create_stdEditFieldDef(def);
-        return Create_stdColorEdit(def,ref,parent,'ngDropDownField'); 
+        return Create_stdColorEdit(def,ref,parent,'ngDropDownField');
       });
-  
+
       /*  Class: stdDropDownField
        *  Standard drop down field control (based on <ngDropDownField>).
        */
       ngRegisterControlType('stdDropDownField', function(def,ref,parent) {
-        Create_stdEditFieldDef(def); 
-        return Create_stdDropDown(def,ref,parent,'ngDropDownField',false); 
+        Create_stdEditFieldDef(def);
+        return Create_stdDropDown(def,ref,parent,'ngDropDownField',false);
       });
-  
+
       /*  Class: stdDropDownListField
        *  Standard drop down list field control (based on <ngDropDownListField>).
        */
       ngRegisterControlType('stdDropDownListField', function(def,ref,parent) {
-        Create_stdEditFieldDef(def); 
-        return Create_stdDropDown(def,ref,parent,'ngDropDownListField',true); 
+        Create_stdEditFieldDef(def);
+        return Create_stdDropDown(def,ref,parent,'ngDropDownListField',true);
       });
-  
+
       /*  Class: stdEditDateField
        *  Standard edit date field control (based on <ngEditDate>).
        */
       /*<>*/
-      ngRegisterControlType('stdEditDateField', function(def,ref,parent) { 
-        Create_stdEditFieldDef(def); 
-        return Create_stdEditDate(def,ref,parent,'ngEditDateField'); 
+      ngRegisterControlType('stdEditDateField', function(def,ref,parent) {
+        Create_stdEditFieldDef(def);
+        return Create_stdEditDate(def,ref,parent,'ngEditDateField');
       });
-  
+
       /*  Class: stdEditTimeField
        *  Standard edit date field control (based on <ngEditTime>).
        */
       /*<>*/
-      ngRegisterControlType('stdEditTimeField', function(def,ref,parent) { 
-        Create_stdEditFieldDef(def); 
-        return Create_stdEditTime(def,ref,parent,'ngEditTimeField'); 
+      ngRegisterControlType('stdEditTimeField', function(def,ref,parent) {
+        Create_stdEditFieldDef(def);
+        return Create_stdEditTime(def,ref,parent,'ngEditTimeField');
       });
-  
+
       /*  Class: stdMemoField
        *  Standard memo field control (based on <ngMemoField>).
        */
       /*<>*/
-      ngRegisterControlType('stdMemoField', function(def,ref,parent) { 
-        Create_stdEditFieldDef(def); 
-        return Create_stdMemo(def,ref,parent,'ngMemoField'); 
-      });  
-    } 
+      ngRegisterControlType('stdMemoField', function(def,ref,parent) {
+        Create_stdEditFieldDef(def);
+        return Create_stdMemo(def,ref,parent,'ngMemoField');
+      });
+    }
 
     /**
      * ViewModel DataSet Controls
-     */          
+     */
     if(ngUserControls['viewmodel_dataset'])
     {
       /*  Class: stdDataSet
@@ -2411,21 +2413,21 @@ var WinXPControls = {
 
     /**
      * DB ViewModel Controls
-     */          
-    if(ngUserControls['dbviewmodel']) 
+     */
+    if(ngUserControls['dbviewmodel'])
     {
       /*  Class: stdDBViewModelForm
        *  View model form control (based on <ngDBViewModelForm>).
        */
       /*<>*/
-      ngRegisterControlType('stdDBViewModelForm',  function(def,ref,parent) { 
+      ngRegisterControlType('stdDBViewModelForm',  function(def,ref,parent) {
         var c=Create_stdViewModelForm(def,ref,parent,'ngDBViewModelForm');
         if(c)
         {
           c.AddEvent('OnDeleteQuery',function(form,querytxt,successfnc,failfnc) {
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('dlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), function(c) { 
-                if(c.DialogResult==mbYes) 
+              ngMessageDlg('dlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), function(c) {
+                if(c.DialogResult==mbYes)
                 {
                   if(typeof successfnc === 'function') successfnc(form);
                 }
@@ -2434,7 +2436,7 @@ var WinXPControls = {
                   if(typeof failfnc === 'function') failfnc(form);
                 }
                 c.Hide();
-                return true; 
+                return true;
               }, { DlgIcon: mbIconQuestion, DlgButtons: mbYes | mbNo | mbDefButton2 });
               return false;
             }
@@ -2451,11 +2453,11 @@ var WinXPControls = {
               return true;
             }
           });
-    
+
           c.AddEvent('OnChangedQuery',function(form,querytxt,successfnc,failfnc) {
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('dlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), function(c) { 
-                if(c.DialogResult==mbYes) 
+              ngMessageDlg('dlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), function(c) {
+                if(c.DialogResult==mbYes)
                 {
                   if(typeof successfnc === 'function') successfnc(form);
                 }
@@ -2464,7 +2466,7 @@ var WinXPControls = {
                   if(typeof failfnc === 'function') failfnc(form);
                 }
                 c.Hide();
-                return true; 
+                return true;
               }, { DlgIcon: mbIconWarning, DlgButtons: mbYes | mbNo | mbDefButton2 });
               return false;
             }
@@ -2482,14 +2484,14 @@ var WinXPControls = {
             }
           });
         }
-        return c; 
+        return c;
       });
 
       /*  Class: stdDBToolBar
        *  Standard ViewModel database toolbar control (based on <ngDBToolBar>).
        */
-      ngRegisterControlType('stdDBToolBar', function (def,ref,parent) { 
-        ng_MergeDef(def, {         
+      ngRegisterControlType('stdDBToolBar', function (def,ref,parent) {
+        ng_MergeDef(def, {
           W: 260,
           className: 'wxpToolBar',
            Data: {
@@ -2506,7 +2508,7 @@ var WinXPControls = {
               Data: {
                 ToolBarHPadding: 10
               }
-            },         
+            },
             Insert: {
               Type: 'stdButton',
               W: 60
@@ -2528,7 +2530,7 @@ var WinXPControls = {
        *  Standard dataset control (based on <ngDBDataSet>).
        */
       /*<>*/
-      ngRegisterControlType('stdDBDataSet', function (def,ref,parent) { 
+      ngRegisterControlType('stdDBDataSet', function (def,ref,parent) {
         ng_MergeDef(def, {
           Controls: {
             Paging: {
@@ -2561,9 +2563,9 @@ var WinXPControls = {
             }
           }
         });
-        return Create_stdPageList(def,ref,parent,'ngDBDataSet'); 
+        return Create_stdPageList(def,ref,parent,'ngDBDataSet');
       });
-      
+
     }
   }
 };
