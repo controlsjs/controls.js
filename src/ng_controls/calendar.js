@@ -1,4 +1,4 @@
-﻿/*!
+/*!
  * Controls.js
  * http://controlsjs.com/
  *
@@ -558,9 +558,9 @@ function ngcal_UpdateCalendar()
       else image=(now && this.ImgNow ? this.ImgNow : this.ImgDay);
       if(image) ngc_ChangeImage(ngcal_DayImgDrawProps(cid+'I', (selected ? 1 : 0), enabled, image));
 
-      if(this.OnGetDayAlt) alt=ngVal(this.OnGetGetDayAlt(this, display_date, col, row),'');
+      if(this.OnGetDayAlt) alt=ngVal(this.OnGetDayAlt(this, display_date, col, row),'');
       else alt=this.FormatDate(display_date);
-      if(this.OnGetDayText) text=ngVal(this.OnGetGetDayText(this, display_date, col, row),'');
+      if(this.OnGetDayText) text=ngVal(this.OnGetDayText(this, display_date, col, row),'');
       else text=display_day;
 
       ng_SetInnerHTML(od,text);
@@ -639,9 +639,9 @@ function ngcal_DoUpdate(o)
     if(hilite) cn+='Hilite';
     if(!this.Enabled) cn+='Disabled';
     
-    if(this.OnGetWeekDayAlt) alt=ngVal(this.OnGetGetWeekDayAlt(this,w),'');
+    if(this.OnGetWeekDayAlt) alt=ngVal(this.OnGetWeekDayAlt(this,w),'');
     else alt=days_title[w];
-    if(this.OnGetWeekDayText) text=ngVal(this.OnGetGetWeekDayText(this,w),'');
+    if(this.OnGetWeekDayText) text=ngVal(this.OnGetWeekDayText(this,w),'');
     else text=days[w];
         
     html.append('<div class="'+cclass+'WeekDays '+cclass+cn+'" title="'+ng_htmlEncode(alt)+'">'+text+'</div></td>')
@@ -1508,11 +1508,11 @@ function Create_ngEditTime(def, ref, parent)
    *  Group: Events
    */
   /*
-   *  Event: OnFormatDate
+   *  Event: OnFormatTime
    */     
   c.OnFormatTime = null;
   /*
-   *  Event: OnParseDate
+   *  Event: OnParseTime
    */     
   c.OnParseTime = null;
   return c;

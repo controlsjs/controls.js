@@ -3248,11 +3248,10 @@ function ngc_ptrend(e)
     {
       ngc_Leave(e, pi.StartElement, c.CtrlType);
     }
+    if(pi.OnPointerUp) pi.OnPointerUp(pi);
   }
 
   var ret=false;
-  if(pi.OnPointerUp) pi.OnPointerUp(pi);
-
   if((!c.OnPointerUp)||(ngVal(c.OnPointerUp(c, pi),false)))
   {
     ret=true;

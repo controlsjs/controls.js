@@ -655,7 +655,7 @@ function ngw_DoPtrDrag(pi)
       rect.H=mh;
     }
     
-    if(this.OnMouseSizing) this.OnMouseSizing(this,rect);
+    if(this.OnMouseResizing) this.OnMouseResizing(this,rect);
 
     o.style.overflow='visible';
     o.style.overflowX='visible';
@@ -755,7 +755,7 @@ function ngw_DoPtrEnd(pi)
         if(this.MouseType & 4) rect.T+=rect.H-this.MaxHeight; 
         rect.H=this.MaxHeight;
       }  
-      if(this.OnMouseSizing) this.OnMouseSizing(this,rect);
+      if(this.OnMouseResizing) this.OnMouseResizing(this,rect);
 
       var f=document.getElementById(this.ID+'_M');
       if(f) f.style.display="none";
@@ -765,7 +765,7 @@ function ngw_DoPtrEnd(pi)
       this.SetBounds();
       this.Update();
 
-      if(this.OnMouseSize) this.OnMouseSize(this);
+      if(this.OnMouseResize) this.OnMouseResize(this);
     }
   }
   this.MouseType = -1;
@@ -2352,7 +2352,7 @@ function ngHint(id)
    *  ...
    *  Type: array
    */
-  this.Anchors = null;
+  this.PreferredAnchors = null;
     
   /*  Variable: Frame
    *  ...

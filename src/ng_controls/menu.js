@@ -854,7 +854,7 @@ function ngmn_HideSubMenu()
   var m=this.ActiveSubMenu;
   if(m)
   {
-    if((this.OnHideSubMenu)&&(!ngVal(this.OnHideSubMenu,false))) return;
+    if((this.OnHideSubMenu)&&(!ngVal(this.OnHideSubMenu(),false))) return;
     this.ClearSelected();
     m.SetVisible(false);
     this.ActiveSubMenu=null;
