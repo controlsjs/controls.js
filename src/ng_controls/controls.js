@@ -3227,6 +3227,22 @@ function ngc_ptrend(e)
   {
     c=ngCurrentPtrDblClick; // IE<9 doesn't fire MouseDown on double click
     if(!c) return false;
+    
+    var dci=c.DblClickInfo;
+    if(dci)
+    {
+      var pi=c.PointerInfo;
+      if(pi) 
+      {
+        var threshold = (pi.Touch ? ngDblClickTouchThreshold : ngDblClickMouseThreshold);
+        if((Math.abs(pi.X-dci.X)<threshold)&&(Math.abs(pi.Y-dci.Y)<threshold))
+        {
+          if(dci.Timer) clearTimeout(dci.Timer);
+          pi.DblClickInfo=dci;
+        }
+      }
+      delete c.DblClickInfo;
+    }
   }
 
   if(!e) e=window.event;
