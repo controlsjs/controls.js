@@ -3592,7 +3592,7 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
       var ous=Hammer.defaults.stop_browser_behavior.userSelect;
       try
       {
-        Hammer.defaults.stop_browser_behavior.userSelect=''; // allow mouse selection by default
+        Hammer.defaults.stop_browser_behavior.userSelect='text'; // allow mouse selection by default
         elm.hammer=Hammer(elm, opts);
       }
       finally
