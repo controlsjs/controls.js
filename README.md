@@ -14,10 +14,10 @@ http://controlsjs.com
 
 ### Downloads
 
-- **Latest stable release  (+ Build, Examples and Templates):**
+Latest stable release  (+ Build, Examples and Templates):
 [Download 5.0.0](http://controlsjs.com/#DOWNLOADS)
 
-- **Development snapshot:**
+Development snapshot:
 [Download 5.0.x](https://github.com/controlsjs/controls.js/archive/master.zip)
 
 
