@@ -536,9 +536,17 @@ function ngvmf_OnCommandRequest(vm,rpc)
   {
     if((form.OnCommandRequest)&&(!ngVal(form.OnCommandRequest(form,rpc),false))) return false;
 
-    if(form.OnShowLoading) form.OnShowLoading(form);
-    else form.ShowLoading(true);
-    if(form.DisableOnCommand) form.DisableControls();
+    form.ShowLoading(true);
+
+    if(form.DisableOnCommand) {
+      if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
+      form.disable_ctrls_timer=setTimeout(function() {
+        if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
+        delete form.disable_ctrls_timer;
+        
+        if(form.DisableOnCommand) form.DisableControls();
+      },1);
+    }
   }
   return true;
 }
@@ -549,7 +557,11 @@ function ngvmf_OnCommandCancel(vm)
   if(form)
   {
     if(form.OnCommandResults) form.OnCommandCancel(form);
-    if(form.DisableOnCommand) form.EnableControls();
+    if(form.disable_ctrls_timer) {
+      clearTimeout(form.disable_ctrls_timer);
+      delete form.disable_ctrls_timer;
+    }
+    else if(form.DisableOnCommand) form.EnableControls();
   }
 }
 
@@ -559,7 +571,11 @@ function ngvmf_OnCommandResults(vm,cmd,sresults)
   if(form)
   {
     if(form.OnCommandResults) form.OnCommandResults(form,cmd,sresults);
-    if(form.DisableOnCommand) form.EnableControls();
+    if(form.disable_ctrls_timer) {
+      clearTimeout(form.disable_ctrls_timer);
+      delete form.disable_ctrls_timer;
+    }
+    else if(form.DisableOnCommand) form.EnableControls();
   }
   return true;
 }
@@ -568,8 +584,7 @@ function ngvmf_OnCommandFinished(vm,cmd,sresults)
   var form=vm.ViewModelForm;
   if(form)
   {
-    if(form.OnHideLoading) form.OnHideLoading(form);
-    else form.ShowLoading(false);
+    form.ShowLoading(false);
     if(form.OnCommandFinished) form.OnCommandFinished(form,cmd,sresults);
   }
   return true;
@@ -938,6 +953,9 @@ function ngvmf_SetViewModel(vm)
 
 function ngvmf_ShowLoading(v)
 {
+  if((v)&&(this.OnShowLoading)) { this.OnShowLoading(this); return; }
+  if((!v)&&(this.OnHideLoading)) { this.OnHideLoading(this); return; }
+
   if(ng_typeObject(this.Controls)&&(typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
 }
 
