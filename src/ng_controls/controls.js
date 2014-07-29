@@ -5018,7 +5018,6 @@ function nga_UpdateParams()
 
   if(window.location.hash!=params)
   {
-    ngApp.LocationHash = params;
     try
     {
       window.location.hash=params;
@@ -5026,6 +5025,7 @@ function nga_UpdateParams()
     catch(e)
     {
     }
+    this.LocationHash = window.location.hash;
     var o=document.getElementById('ngAppHistFix');
     if((o)&&(ngIExplorer)) nga_WriteIFRAMEHistory(o,params);
     nga_CheckParamChange();
