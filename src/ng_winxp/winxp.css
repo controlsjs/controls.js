@@ -493,8 +493,10 @@
 .wxpEditInput,
 .wxpEditInput_Focus
 {
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   padding: 1px 0px 0px 0px;
-  margin-top: 3px;
+  margin-top: 2px;
+  height: 14px;
   font-size: 11px;
   -moz-outline: 0px;
   outline: none;
@@ -510,8 +512,10 @@
 .wxpEditInputHintDisabled, 
 .wxpEditInputHintDisabled_Focus 
 {
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   padding: 1px 0px 0px 0px;
-  margin-top: 3px;
+  margin-top: 2px;
+  height: 14px;
   font-size: 11px;
   color: #a0a0a0;
   -moz-outline: 0px;

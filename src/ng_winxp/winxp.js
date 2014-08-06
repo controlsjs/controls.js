@@ -602,10 +602,10 @@ var WinXPControls = {
        *  Type: bool
        *  Default value: *false*
        */
-      var req=ngVal(c.Invalid,false);
-      c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
-      c.MiddleImg=(req ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
-      c.RightImg=(req ? winimages.Edit.RightImgReq : winimages.Edit.RightImg);
+      c.Invalid=ngVal(c.Invalid,false);
+      c.LeftImg=(c.Invalid ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
+      c.MiddleImg=(c.Invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
+      c.RightImg=(c.Invalid ? winimages.Edit.RightImgReq : winimages.Edit.RightImg);
       /*
        *  Group: Methods
        */
@@ -882,6 +882,85 @@ var WinXPControls = {
     ngRegisterControlType('stdColorEdit', function(def,ref,parent) { return Create_stdColorEdit(def,ref,parent); });
     ngRegisterControlType('stdColorEditBox', function(def,ref,parent) { return Create_stdColorEdit(def,ref,parent); });
 
+    /*  Class: stdMaskEdit
+     *  Standard mask edit control (based on <ngMaskEdit>).
+     */
+    function Create_stdMaskEdit(def, ref, parent)
+    {
+      if (typeof(def.Data)==='undefined') def.Data = new Object();
+      var invalid = ngVal(def.Data.Invalid, false);
+
+      ng_MergeDef(def, {
+        H: winimages.Edit.MiddleImg.H,
+        Data: {
+          LeftDef: {
+            W: winimages.Edit.LeftImg.W,
+            Data: {
+              LeftImg: (invalid ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg),
+              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+              RightImg: null
+            }
+          },
+          EditDef: {
+            Type: 'stdEdit',
+            Data: {
+              LeftImg: null,
+              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+              RightImg: null
+            }
+          },
+          StaticDef: {
+            Type: 'stdLabel',
+            Data: {
+              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg)
+            }
+          },
+          RightDef: {
+            W: winimages.Edit.RightImg.W,
+            Data: {
+              LeftImg: null,
+              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+              RightImg: (invalid ? winimages.Edit.RightImgReq : winimages.Edit.RightImg)
+            }
+          }
+        }
+      });
+
+      var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
+      if (!c) return c;
+
+      c.DoInvalid = function (ctrl, state, update) {
+        if (typeof(ctrl)=='undefined') return false;
+        state  = ngVal(state, true);
+        update = ngVal(update, true);
+
+        if (!state)
+        {
+          if (ctrl.LeftImg)   ctrl.LeftImg   = winimages.Edit.LeftImg;
+          if (ctrl.MiddleImg) ctrl.MiddleImg = winimages.Edit.MiddleImg;
+          if (ctrl.RightImg)  ctrl.RightImg  = winimages.Edit.RightImg;
+        } else
+        {
+          if (ctrl.LeftImg)   ctrl.LeftImg   = winimages.Edit.LeftImgReq;
+          if (ctrl.MiddleImg) ctrl.MiddleImg = winimages.Edit.MiddleImgReq;
+          if (ctrl.RightImg)  ctrl.RightImg  = winimages.Edit.RightImgReq;
+        }
+
+        if (update)
+        {
+          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', 0, ctrl.Enabled, ctrl.LeftImg));
+          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', 0, ctrl.Enabled, ctrl.MiddleImg));
+          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', 0, ctrl.Enabled, ctrl.RightImg));
+        }
+
+        return true;
+      }
+
+      return c;
+    }
+    ngRegisterControlType('stdMaskEdit', function(def,ref,parent) { return Create_stdMaskEdit(def,ref,parent); });
+    ngRegisterControlType('stdMaskEditBox', function(def,ref,parent) { return Create_stdMaskEdit(def,ref,parent); });
+
     /*  Class: stdDropDown
      *  Standard drop down control (based on <ngDropDown>).
      */
@@ -964,8 +1043,8 @@ var WinXPControls = {
        *  Type: bool
        *  Default value: *false*
        */
-      var req=ngVal(c.Invalid,false);
-      c.Frame=(req ? winimages.MemoReq : winimages.Memo);
+      c.Invalid=ngVal(c.Invalid,false);
+      c.Frame=(c.Invalid ? winimages.MemoReq : winimages.Memo);
       /*
        *  Group: Methods
        */
