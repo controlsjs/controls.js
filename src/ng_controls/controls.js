@@ -8032,8 +8032,8 @@ var KEY_CAPITAL = 20;
 var KEY_ESC = 27;
 var KEY_PRIOR = 33;
 var KEY_NEXT = 34;
-var KEY_HOME = 35;
-var KEY_END = 36;
+var KEY_END = 35;
+var KEY_HOME = 36;
 var KEY_LEFT = 37;
 var KEY_UP = 38;
 var KEY_RIGHT = 39;
@@ -8337,7 +8337,7 @@ function nge_TextChanged(event, elm, edit)
       var hint=edit.GetHint();
       if(hint!='') {
         nge_ShowHint(edit,elm,hint);
-        edit.SetCaretPos(0);
+        if(edit.LockHintCaretPos) edit.SetCaretPos((edit.TextAlign==='right' ? edit.GetHint().length : 0));
       }
       else nge_HideHint(edit,elm);
     }
@@ -8351,8 +8351,8 @@ function nge_KeyDown(e,elm)
   if((edit)&&(edit.Enabled))
   {
     e.Owner=edit;
-    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e),false))) return false;
-    if(edit.HintVisible)
+    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
+    if((edit.LockHintCaretPos)&&(edit.HintVisible))
     {
       switch(e.keyCode)
       {
@@ -8723,7 +8723,7 @@ function nge_DoPtrClick(pi)
     }
     else
     {
-      if((this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos(0);
+      if((this.LockHintCaretPos)&&(this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
     }
   }
 }
@@ -8807,7 +8807,7 @@ function nge_DoFocus(e, elm)
   this.DoUpdateImages();
   nge_BeginMobileKeyboard();
 
-  if(this.HintVisible) this.SetCaretPos(0);
+  if((this.LockHintCaretPos)&&(this.HintVisible)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
   if((this.DropDownControl)&&(this.DropDownControl.Visible)) this.HideDropDown();
   if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
 
@@ -9152,6 +9152,7 @@ function nge_DoUpdate(o)
 
   var tw=(w-bw-bl-lw-rw-2);
   if(tw<0) tw=0;
+  var paddingRight_CF=(((((ngIExplorer)&&(ngIExplorerVersion<11))||(ngOpera))&&(this.TextAlign==='right')) ? '1px' : '');  //Cursor fix, see http://blog.lysender.com/2008/12/disappearing-cursor-on-textbox/
   if(to) // updating DOM
   {
     // remove all except the input element
@@ -9196,13 +9197,14 @@ function nge_DoUpdate(o)
     else to.removeAttribute("readonly");
 
     to.style.textAlign=this.TextAlign;
+    if(paddingRight_CF!='') to.style.paddingRight = paddingRight_CF;
     to.style.left=(lw+bl)+'px';
     to.style.top=this.OffsetTop+'px';
     to.style.width=tw+'px';
     if((this.HintVisible)&&(to.value!=hint))
     {
       to.value=hint;
-      this.SetCaretPos(0);
+      if(this.LockHintCaretPos) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
     }
 
     if(images)
@@ -9234,7 +9236,7 @@ function nge_DoUpdate(o)
     else html.append('"text" ');
     if(readonly) html.append('readonly="readonly" ');
     html.append('id="'+this.ID+'_T" class="'+this.GetClassName('Input',hint));
-    html.append('" style="border:0px; white-space: nowrap;text-align:'+this.TextAlign+';position: absolute; z-index:1;left:'+(lw+bl)+'px;top:'+this.OffsetTop+'px;width:'+(tw)+'px;');
+    html.append('" style="border:0px; white-space: nowrap;text-align:'+this.TextAlign+';position: absolute; z-index:1;left:'+(lw+bl)+'px;top:'+this.OffsetTop+'px;width:'+(tw)+'px;'+(paddingRight_CF!='' ? 'padding-right:'+paddingRight_CF+';' : ''));
     if(readonly) html.append("cursor: default;");
     html.append('" value="'+ng_htmlEncode(this.Text=='' ? hint : this.Text)+'" ');
     if((this.MaxLength>0)&&(!this.HintVisible)) html.append('maxlength="'+this.MaxLength+'" ');
@@ -9596,6 +9598,13 @@ function ngEdit(id, text)
    *  Default value: *''*
    */
   //this.SuggestionType='';
+
+  /*  Variable: LockHintCaretPos
+   *  ...
+   *  Type: bool
+   *  Default value: *true*
+   */
+  this.LockHintCaretPos = true;
 
   /*
    *  Group: Methods
@@ -10140,7 +10149,7 @@ function ngem_TextChanged(event, elm, edit)
         edit.HintVisible=true;
         elm.className = edit.GetClassName('Input',hint);
         elm.value=hint;
-        edit.SetCaretPos(0);
+        if(edit.LockHintCaretPos) edit.SetCaretPos((edit.TextAlign==='right' ? edit.GetHint().length : 0));
       }
       else edit.HintVisible=false;
     }
@@ -10154,7 +10163,7 @@ function ngem_KeyPress(e,elm)
   if((edit)&&(edit.Enabled))
   {
     e.Owner=edit;
-    if((edit.OnKeyPress)&&(!ngVal(edit.OnKeyPress(e),false))) return false;
+    if((edit.OnKeyPress)&&(!ngVal(edit.OnKeyPress(e,elm),false))) return false;
   }
 }
 
@@ -10165,9 +10174,9 @@ function ngem_KeyDown(e,elm)
   if((edit)&&(edit.Enabled))
   {
     e.Owner=edit;
-    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e),false))) return false;
+    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
 
-    if(edit.HintVisible)
+    if((edit.LockHintCaretPos)&&(edit.HintVisible))
     {
       switch(e.keyCode)
       {
@@ -10210,7 +10219,7 @@ function ngem_KeyUp(e,elm)
     e.Owner=edit;
     nge_KeyUpHint(edit,elm,'Input');
 
-    if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e),false))) return false;
+    if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
     ngem_TextChanged(e,elm,edit);
     if((e.keyCode==27)&&(edit))
     {
@@ -10251,7 +10260,7 @@ function ngem_DoFocus(e, elm)
   this.DoUpdateImages();
   nge_BeginMobileKeyboard();
 
-  if(this.HintVisible) this.SetCaretPos(0);
+  if((this.LockHintCaretPos)&&(this.HintVisible)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
   if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
 
   if((this.Text == '')&&(nge_HintStyle(this)===ngHintHideOnFocus))
@@ -10354,7 +10363,7 @@ function ngem_DoUpdate(o)
     if((this.HintVisible)&&(to.value!=hint))
     {
       to.value=hint;
-      this.SetCaretPos(0);
+      if(this.LockHintCaretPos) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
     }
   }
   else
@@ -10423,7 +10432,7 @@ function ngem_DoPtrClick(pi)
 {
   if(pi.EventID==='control')
   {
-    if((this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos(0);
+    if((this.LockHintCaretPos)&&(this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
   }
 }
 
@@ -10509,6 +10518,13 @@ function ngMemo(id, text)
    *  Default value: *true*
    */
   this.SelectOnFocus=true;
+
+  /*  Variable: LockHintCaretPos
+   *  ...
+   *  Type: bool
+   *  Default value: *true*
+   */
+  this.LockHintCaretPos = true;
 
   /*
    *  Group: Methods
