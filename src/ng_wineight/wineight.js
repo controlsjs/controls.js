@@ -1140,7 +1140,7 @@ var WinEightControls = {
       if (!c) return c;
 
       c.DoInvalid = function (ctrl, state, update) {
-        if (typeof(ctrl)=='undefined') return false;
+        if (typeof(ctrl)==='undefined') return false;
         state  = ngVal(state, true);
         update = ngVal(update, true);
 

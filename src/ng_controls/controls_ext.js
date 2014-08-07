@@ -7,7 +7,8 @@ var ControlsExt = {
      */
     ngRegisterControlType('ngMaskEdit', function(def, ref, parent) {
       if (typeof(def.Data)==='undefined') def.Data = new Object();
-      var mask = ngVal(def.Data.Mask, '');
+      var mask             = ngVal(def.Data.Mask, '');
+      var lockHintCaretPos = ngVal(def.Data.LockHintCaretPos, false);
 
       ng_MergeDef(def, {
         ParentReferences: false,
@@ -19,7 +20,7 @@ var ControlsExt = {
           EditDef: {
             Type: 'ngEdit',
             Data: {
-              LockHintCaretPos: false,
+              LockHintCaretPos: lockHintCaretPos,
               TextAlign: 'right'
             }
           },
@@ -37,7 +38,7 @@ var ControlsExt = {
         return true;
       });
 
-      if (((typeof(def.W)=== 'undefined') && ((typeof(def.L)=== 'undefined') || (typeof(def.R)=== 'undefined'))) && (typeof(def.Data.AutoSize)=== 'undefined'))
+      if (((typeof(def.W)==='undefined') && ((typeof(def.L)==='undefined') || (typeof(def.R)==='undefined'))) && (typeof(def.Data.AutoSize)==='undefined'))
         def.Data.AutoSize=true;
 
       var c = ngCreateControlAsType(def, 'ngToolBar', ref, parent);
@@ -112,7 +113,7 @@ var ControlsExt = {
       c.AutoSize = undefined;
       /*  Variable: CharWidth
        *  ...
-       *  Type: bool
+       *  Type: int
        *  Default value: *10*
        */
       c.CharWidth = 10;
@@ -159,6 +160,13 @@ var ControlsExt = {
        */
       c.Invalid = false;
 
+      /*  Variable: LockHintCaretPos
+       *  ...
+       *  Type: bool
+       *  Default value: *false*
+       */
+      c.LockHintCaretPos = false;
+
       //===== STANDARS METHODS =====
 
       /*
@@ -198,7 +206,7 @@ var ControlsExt = {
        */
       c.SetText = function (text) {
         if (c.OnSetText) text = c.OnSetText(text, c);
-        if (typeof(text)=='undefined') return;
+        if (typeof(text)==='undefined') return;
 
         c.Clear();
         if (text=='') return;
@@ -333,7 +341,7 @@ var ControlsExt = {
         for (var i in c.Controls)
         {
           maskType = ngVal(c.Controls[i].MaskType, '');
-          if ((maskType==='') || ((editOnly) && (maskType!=='Edit'))) continue;
+          if ((maskType=='') || ((editOnly) && (maskType!='Edit'))) continue;
 
           var rawText = ngVal(c.Controls[i].GetText(), '');
           var text    = (((rawText=='') && (typeof(c.Controls[i].DefaultValue)!=='undefined')) ? c.Controls[i].DefaultValue : rawText);
@@ -540,7 +548,7 @@ var ControlsExt = {
             c.OnCreatePart(c, partInfo, def, parts);
           }
           if (i<c.PartDefs.length) ng_MergeDef(def, c.PartDefs[i]);
-          ng_MergeDef(def, parts.type[i]==='Edit' ? c.EditDef : c.StaticDef);
+          ng_MergeDef(def, parts.type[i]=='Edit' ? c.EditDef : c.StaticDef);
 
           if (i<c.PartWidths.length) partWidth = c.PartWidths[i];
           else partWidth = undefined;
@@ -548,7 +556,7 @@ var ControlsExt = {
           if (i<c.PartDefaultValues.length) partDefaultValue = c.PartDefaultValues[i];
           else partDefaultValue = undefined;
 
-          if (parts.type[i]==='Edit')
+          if (parts.type[i]=='Edit')
           {
             if (typeof(partWidth)==='undefined') partWidth = parts.mask[i].length*c.CharWidth;
             ng_MergeDef(def, {
@@ -645,7 +653,7 @@ var ControlsExt = {
                   break;
                 }
 
-                return true;
+                return (ctrl.LockHintCaretPos ? false : true);
               },
               OnTextChanged: function (o) {
                 if (typeof(o)==='undefined') return false;
@@ -858,7 +866,7 @@ var ControlsExt = {
        *    -
        */
       c.SetInvalidPart = function (part, state, update) {
-        if ((typeof(part)=='undefined') || (typeof(c.DoInvalid)!='function')) return false;
+        if ((typeof(part)==='undefined') || (typeof(c.DoInvalid)!='function')) return false;
         state  = ngVal(state, true);
         update = ngVal(update, true);
 
@@ -885,10 +893,10 @@ var ControlsExt = {
         for (var i=parts.length-1;i>=0;i-=2)
         {
           regExp = '';
-          for (var j=0;j<=i;j++) regExp += (parts[j].Type==='Edit' ? '(.*)' : '('+parts[j].RegExp.substring(1, parts[j].RegExp.length-1)+')');
+          for (var j=0;j<=i;j++) regExp += (parts[j].Type=='Edit' ? '(.*)' : '('+parts[j].RegExp.substring(1, parts[j].RegExp.length-1)+')');
 
-          if ((i===parts.length-1) && (parts[i].Type!=='Edit')) i++;
-          if ((i>0) || (regExp!=='(.*)')) regExps.push(regExp);
+          if ((i==parts.length-1) && (parts[i].Type!='Edit')) i++;
+          if ((i>0) || (regExp!='(.*)')) regExps.push(regExp);
         }
 
         var re, result;
@@ -944,8 +952,6 @@ var ControlsExt = {
         var parts = o.Owner.Owner.GetParts();
         parts.push({ Control: o.Owner.LeftHolder });
         parts.push({ Control: o.Owner.RightHolder });
-
-        //for (var i=0;i<parts.length;i++) if ((type==='blur') && (parts[i].Control===o)) return true;
 
         for (var i=0;i<parts.length;i++)
         {
@@ -1024,5 +1030,5 @@ var ControlsExt = {
   }
 };
 
-if (typeof(ngUserControls)=='undefined') ngUserControls = new Array();
+if (typeof(ngUserControls)==='undefined') ngUserControls = new Array();
 ngUserControls['controls_ext'] = ControlsExt;
