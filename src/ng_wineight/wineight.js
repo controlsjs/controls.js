@@ -782,13 +782,13 @@ var WinEightControls = {
             else rightbtn=true;
           }
         }
-        if (c.LeftImg)
+        //if (c.LeftImg)
         {
           if(leftbtn) c.LeftImg=(req ? img.LeftImgBtnReq : img.LeftImgBtn);
           else        c.LeftImg=(req ? img.LeftImgReq    : img.LeftImg);
         }
-        if (c.MiddleImg) c.MiddleImg=(req ? img.MiddleImgReq : img.MiddleImg);
-        if (c.RightImg)
+        /*if (c.MiddleImg)*/ c.MiddleImg=(req ? img.MiddleImgReq : img.MiddleImg);
+        //if (c.RightImg)
         {
           if(rightbtn) c.RightImg=(req ? img.RightImgBtnReq : img.RightImgBtn);
           else         c.RightImg=(req ? img.RightImgReq    : img.RightImg);
