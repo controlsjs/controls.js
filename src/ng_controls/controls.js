@@ -8853,7 +8853,7 @@ function nge_ShowHint(c,o,hint)
 {
   c.HintVisible=true;
   o.className = c.GetClassName('Input',hint);
-  o.value=hint;
+  if(o.value!=hint) o.value=hint;
   if(ngIExplorer && ngIExplorerVersion<=8)
   {
     if(o.getAttribute("type")!=="text")
