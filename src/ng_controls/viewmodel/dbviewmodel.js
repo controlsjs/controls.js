@@ -172,7 +172,10 @@ function ngdbvm_CancelEdits()
 function ngdbvm_LoadRecord(primarykeyvalues,options) 
 {
   if(ng_typeObject(primarykeyvalues))
+  {
+    primarykeyvalues._OriginalRecord=ng_CopyVar(primarykeyvalues); // prevent IsChanged detection
     this.SetValues(primarykeyvalues);
+  }
   else 
     if(!ng_isEmpty(primarykeyvalues)) 
       return false;
@@ -205,7 +208,10 @@ function ngdbvm_UpdateRecord(values,options)
 function ngdbvm_DeleteRecord(primarykeyvalues,options) 
 { 
   if(ng_typeObject(primarykeyvalues))
+  {
+    primarykeyvalues._OriginalRecord=ng_CopyVar(primarykeyvalues); // prevent IsChanged detection
     this.SetValues(primarykeyvalues);
+  }
   else 
     if(!ng_isEmpty(primarykeyvalues)) 
       return false;
@@ -262,7 +268,7 @@ function ngdbvm_IsChanged()
     if(ko.isObservable(val)) val=val();
     if(ngIsFieldDef(instance))
     {
-      if((instance.PrivateField)||(instance.Attrs['PrimaryKey'])) return true;
+      if(instance.PrivateField) return true;
       try {
         val=instance.TypedValue(val);
       } catch(e) { }
@@ -391,7 +397,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
         
         if(ngIsFieldDef(instance))
         {
-          if((instance.PrivateField)||(instance.Attrs['PrimaryKey'])) return true;
+          if(instance.PrivateField) return true;
         }
         
         var orig=vm.GetFieldByID('_OriginalRecord.'+path);
