@@ -1107,6 +1107,7 @@ var WinEightControls = {
       var th  = theme(def);
       var img = (th ? winimages.EditLight : winimages.EditDark);
 
+      delete def.H;
       ng_MergeDef(def, {
         H: img.MiddleImg.H,
         Data: {

@@ -890,6 +890,7 @@ var WinXPControls = {
       if (typeof(def.Data)==='undefined') def.Data = new Object();
       var invalid = ngVal(def.Data.Invalid, false);
 
+      delete def.H;
       ng_MergeDef(def, {
         H: winimages.Edit.MiddleImg.H,
         Data: {
