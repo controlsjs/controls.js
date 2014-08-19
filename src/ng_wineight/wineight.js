@@ -768,30 +768,36 @@ var WinEightControls = {
        */
       var req=ngVal(c.Invalid,false);
 
-      var leftbtn=false;
-      var rightbtn=false;
+      var leftimg=(req ? img.LeftImgReq : img.LeftImg);
+      var rightimg=(req ? img.RightImgReq : img.RightImg);
+
+      c.LeftImg=leftimg;
+      c.MiddleImg=(req ? img.MiddleImgReq : img.MiddleImg);
+      c.RightImg=rightimg;
+
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-        if(c.Buttons)
+        if((c.LeftImg===leftimg)||(c.RightImg===rightimg))
         {
-          var a,b;
-          for(var i=0;(i<c.Buttons.length)&&((!leftbtn)||(!rightbtn));i++)
+          var leftbtn=false;
+          var rightbtn=false;
+          var req=ngVal(c.Invalid,false);
+
+          if(c.Buttons)
           {
-            b=c.Buttons[i];
-            a=ngVal(b.ButtonAlign,'');
-            if(a=='left') leftbtn=true;
-            else rightbtn=true;
+            var a,b;
+            for(var i=0;(i<c.Buttons.length)&&((!leftbtn)||(!rightbtn));i++)
+            {
+              b=c.Buttons[i];
+              a=ngVal(b.ButtonAlign,'');
+              if(a=='left') leftbtn=true;
+              else rightbtn=true;
+            }
           }
-        }
-        //if (c.LeftImg)
-        {
-          if(leftbtn) c.LeftImg=(req ? img.LeftImgBtnReq : img.LeftImgBtn);
-          else        c.LeftImg=(req ? img.LeftImgReq    : img.LeftImg);
-        }
-        /*if (c.MiddleImg)*/ c.MiddleImg=(req ? img.MiddleImgReq : img.MiddleImg);
-        //if (c.RightImg)
-        {
-          if(rightbtn) c.RightImg=(req ? img.RightImgBtnReq : img.RightImgBtn);
-          else         c.RightImg=(req ? img.RightImgReq    : img.RightImg);
+
+          if((c.LeftImg===leftimg)&&(leftbtn))
+            c.LeftImg=(req ? img.LeftImgBtnReq : img.LeftImgBtn);
+          if((c.RightImg===rightimg)&&(rightbtn))
+            c.RightImg=(req ? img.RightImgBtnReq : img.RightImgBtn);
         }
       });
 
