@@ -775,11 +775,12 @@ var WinEightControls = {
       c.MiddleImg=(req ? img.MiddleImgReq : img.MiddleImg);
       c.RightImg=rightimg;
 
+      var leftbtn=false;
+      var rightbtn=false;
+
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
         if((c.LeftImg===leftimg)||(c.RightImg===rightimg))
         {
-          var leftbtn=false;
-          var rightbtn=false;
           var req=ngVal(c.Invalid,false);
 
           if(c.Buttons)
