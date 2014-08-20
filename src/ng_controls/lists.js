@@ -694,7 +694,7 @@ function ngl_UpdateChecked(it,recursion,setall,id,level)
 {
   var list=it;
   if((typeof list === 'undefined')||(list===null)) list=this;
-  if((typeof it==='undefined')||(it===null)) { it={ Checked: setall, CheckGroup: true }; recursion=true; id=''; }
+  if((typeof it==='undefined')||(it===null)) { it={ }; recursion=ngVal(recursion,true); id=''; }
   if(typeof id==='undefined') id=(list==this ? '' : this.ItemId(it));
 
   level=ngVal(level,0);
@@ -797,14 +797,43 @@ function ngl_CheckItem(it, state)
   }
 }
 
-function ngl_CheckAll(it)
+function ngl_CheckAllItems(it,state,respectcheckgroup)
 {
-  this.UpdateChecked(it,true,true);
+  state=ngVal(state,1);
+  if(ngVal(respectcheckgroup,false))
+  {
+    if((typeof it==='undefined')||(it===null)) it={ Checked: state, CheckGroup: true, Items: this.Items };
+    this.UpdateChecked(it,true,state,'');
+  }
+  else
+  {
+    var self=this;
+    function checkitems(it)
+    {
+      var list=it;
+      if((typeof list==='undefined')||(list===null)) list=self;
+      else self.CheckItem(it,state);
+      if((typeof list.Items !== 'undefined')&&(list.Items.length>0))
+      {
+        for(var i=0;i<list.Items.length;i++)
+        {
+          if(!list.Items[i]) continue;
+          checkitems(list.Items[i]);
+        }
+      }
+    }
+    checkitems(it);
+  }
 }
 
-function ngl_UncheckAll(it)
+function ngl_CheckAll(it,respectcheckgroup)
 {
-  this.UpdateChecked(it,true,false);
+  this.CheckAllItems(it,1,respectcheckgroup);
+}
+
+function ngl_UncheckAll(it,respectcheckgroup)
+{
+  this.CheckAllItems(it,0,respectcheckgroup);
 }
 
 function ngl_GetChecked()
@@ -3378,7 +3407,7 @@ function ngList(id)
    *  Sets item check state.
    *
    *  Syntax:
-   *    void *CheckItem* (object item [, enum state = nglChecked])
+   *    void *CheckItem* (object item [, enum state=nglChecked])
    *
    *  Constants:
    *    nglUnchecked (0) - ...
@@ -3389,11 +3418,21 @@ function ngList(id)
    *    -
    */
   this.CheckItem = ngl_CheckItem;
+  /*  Function: CheckAllItems
+   *  Checks all subitems of item.
+   *
+   *  Syntax:
+   *    void *CheckAllItems* ([object parent=null, enum state=nglChecked, bool respectcheckgroup=false])
+   *
+   *  Returns:
+   *    -
+   */
+  this.CheckAllItems = ngl_CheckAllItems;
   /*  Function: CheckAll
    *  Checks all items in tree.
    *
    *  Syntax:
-   *    void *CheckAll* ([object parent=null])
+   *    void *CheckAll* ([object parent=null, bool respectcheckgroup=false])
    *
    *  Returns:
    *    -
@@ -3403,7 +3442,7 @@ function ngList(id)
    *  Unchecks all items in tree.
    *
    *  Syntax:
-   *    void *UncheckAll* ([object parent=null])
+   *    void *UncheckAll* ([object parent=null, bool respectcheckgroup=false])
    *
    *  Returns:
    *    -
