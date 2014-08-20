@@ -235,13 +235,15 @@ function ngdbvm_PrimaryKeyNames()
 function ngdbvm_GetPrimaryKeyValues(useoriginalifavailable)
 {
   var names=this.PrimaryKeyNames();
-  if((ngVal(useoriginalifavailable,true))&&(ng_typeObject(this.ViewModel._OriginalRecord)))
+  useoriginalifavailable=ngVal(useoriginalifavailable,true);
+  if((useoriginalifavailable)&&(ng_typeObject(this.ViewModel._OriginalRecord)))
   {
     for(var i=0;i<names.length;i++)
       names[i]='_OriginalRecord.'+names[i];  
   }
+  else useoriginalifavailable=false;
   var values=this.GetValues(false,names);
-  if(ng_typeObject(values._OriginalRecord)) values=values._OriginalRecord;
+  if(useoriginalifavailable) values=values._OriginalRecord;
   return values; 
 }
   
@@ -442,7 +444,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
         if(!ng_isEmptyOrNull(vm.CancelEditsValues)) 
         {
           vm.SetValues(vm.CancelEditsValues);
-          vm.Command('load');
+          c.LoadRecord(vm.GetPrimaryKeyValues(false));
         }
         return true;      
       case 'load':   vm.ViewModel._RecordState(recStateLoading); break;
@@ -459,9 +461,11 @@ function Create_ngSysDBViewModel(def,ref,parent)
       case 'new':
         if(ng_isEmpty(options.ValueNames)) options.ValueNames=ngVal(vm.GetCommandValueNames(cmd,options,true),[]);
         break;
-      case 'load':            
-      case 'delete':
       case 'cancel':
+        options.ValueNames=[];
+        break;
+      case 'load':
+      case 'delete':
         var pk=vm.PrimaryKeyNames();
         if(pk.length>0)
         {
@@ -477,6 +481,19 @@ function Create_ngSysDBViewModel(def,ref,parent)
           options.ValueNames=names;
         }
         break;
+    }
+    if(!ng_isEmpty(options.ValueNames)) // Add _OriginalRecord values if not included
+    {
+      var val,path,vn=options.ValueNames, newvn=[];
+      for(var i=vn.length-1;i>=0;i--)
+      {
+        path='_OriginalRecord.'+vn[i];
+        val=vm.GetFieldByID(path);
+        if(ng_isEmpty(val)) continue;
+        newvn.push(path);
+      }
+      for(var i=0;i<newvn.length;i++)
+        if(!ng_inArray(newvn[i],vn)) vn.push(newvn[i]);
     }
     switch(cmd)
     {
