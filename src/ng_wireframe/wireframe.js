@@ -18,7 +18,7 @@ if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
  */
 var WireframeControls = {
   ControlImages: [
-    'wireframe_base.png?3',
+    'wireframe_base.png?4',
     'wireframe_h.png?3',
     'wireframe_v.png?3',
     'wireframe_dot.gif?3'
@@ -90,6 +90,10 @@ var WireframeControls = {
         Bottom: { L: 0, T: 325, H: 2, DT: 378, Src: 1 },
         RightBottom: { L: 7, T: 115, W: 2, H: 2, DL: 24 }
       }
+    },
+
+    Time: {
+      EditButton: {L: 541, T: 1, oL: 569, DL: 597, W: 27, H: 27 },
     },
 
     ColorPreview: { L: 385, T: 1, DL: 421, W: 35, H: 27},
@@ -365,7 +369,8 @@ var WireframeControls = {
     PulseIcon:   { L: 1, T: 241, W: 18, H: 27, oL: 20, DL: 39 },
     ElipsisIcon: { L: 95, T: 156, W: 27, H: 27, oT: 184, DT: 212 },
     SearchIcon:  { L: 123, T: 156, W: 27, H: 27, oT: 184, DT: 212 },
-    CalendarIcon: { L: 95, T: 240, W: 27, H: 27, oL: 123, DL: 151 }
+    CalendarIcon: { L: 95, T: 240, W: 27, H: 27, oL: 123, DL: 151 },
+    ClockIcon: { L: 95, T: 268, W: 27, H: 27, oL: 123, DL: 151 }
   },
 
   OnControlCreated: function(def,c) {
@@ -746,6 +751,92 @@ var WireframeControls = {
     ngRegisterControlType('wfrColorEditBox', function(def,ref,parent){
       return Create_wfrColorEdit(def,ref,parent);
     });
+
+    /*  Class: wfrMaskEdit
+     *  "Wireframe" skin mask edit control (based on <ngMaskEdit>).
+     */
+    function Create_wfrMaskEdit(def, ref, parent)
+    {
+      if (typeof(def.Data)==='undefined') def.Data = new Object();
+      var invalid = ngVal(def.Data.Invalid, false);
+
+      if(typeof def.className === 'undefined'){
+        def.className = 'wfrMaskEdit';
+      }
+
+      delete def.H;
+      ng_MergeDef(def, {
+        H: WFRImages.Edit.MiddleImg.H,
+        Data: {
+          LeftDef: {
+            W: WFRImages.Edit.LeftImg.W,
+            Data: {
+              LeftImg: (invalid ? WFRImages.Edit.LeftImgReq : WFRImages.Edit.LeftImg),
+              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+              RightImg: null
+            }
+          },
+          EditDef: {
+            Type: 'wfrEdit',
+            Data: {
+              LeftImg: null,
+              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+              RightImg: null
+            }
+          },
+          StaticDef: {
+            Type: 'wfrLabel',
+            Data: {
+              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg)
+            }
+          },
+          RightDef: {
+            W: WFRImages.Edit.RightImg.W,
+            Data: {
+              LeftImg: null,
+              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+              RightImg: (invalid ? WFRImages.Edit.RightImgReq : WFRImages.Edit.RightImg)
+            }
+          }
+        }
+      });
+
+      var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
+      if (!c) return c;
+
+      c.DoInvalid = function (ctrl, state, update) {
+        if (typeof(ctrl)==='undefined') return false;
+        state  = ngVal(state, true);
+        update = ngVal(update, true);
+
+        if (!state)
+        {
+          if (ctrl.LeftImg)   ctrl.LeftImg   = WFRImages.Edit.LeftImg;
+          if (ctrl.MiddleImg) ctrl.MiddleImg = WFRImages.Edit.MiddleImg;
+          if (ctrl.RightImg)  ctrl.RightImg  = WFRImages.Edit.RightImg;
+        } else
+        {
+          if (ctrl.LeftImg)   ctrl.LeftImg   = WFRImages.Edit.LeftImgReq;
+          if (ctrl.MiddleImg) ctrl.MiddleImg = WFRImages.Edit.MiddleImgReq;
+          if (ctrl.RightImg)  ctrl.RightImg  = WFRImages.Edit.RightImgReq;
+        }
+
+        ctrl.Elm().className = (!state) ? ctrl.BaseClassName : ctrl.BaseClassName+' '+ctrl.BaseClassName+'_Invalid';
+
+        if (update)
+        {
+          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', 0, ctrl.Enabled, ctrl.LeftImg));
+          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', 0, ctrl.Enabled, ctrl.MiddleImg));
+          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', 0, ctrl.Enabled, ctrl.RightImg));
+        }
+
+        return true;
+      }
+
+      return c;
+    }
+    ngRegisterControlType('wfrMaskEdit', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
+    ngRegisterControlType('wfrMaskEditBox', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
 
     /** Class: wfrDropDown
      *  "Wireframe" skin drop down control (based on <ngDropDown>).
@@ -1321,7 +1412,7 @@ var WireframeControls = {
         return c;
       });
 
-      /** Class: stdEditDate
+      /** Class: wfrEditDate
        *  "Wireframe" skin edit date control (based on <ngEditDate>).
        */
       function Create_wfrEditDate(def,ref,parent,basetype) {
@@ -1342,6 +1433,63 @@ var WireframeControls = {
 
       ngRegisterControlType('wfrEditDate', function(def,ref,parent){
         return Create_wfrEditDate(def,ref,parent);
+      });
+
+      /** Class: wfrEditTime
+       *  "Wireframe" skin edit time control (based on <ngEditDate>).
+       */
+      function Create_wfrEditTime(def,ref,parent,basetype) {
+        var div=1;
+        ng_MergeDef(def, {
+          className: 'wfrEdit',
+          Data: {},
+          Events: {
+            OnDropDown: function (e,l) {
+              if(!l.Items.length)
+              {
+                l.BeginUpdate();
+                var items=[];
+                for(var i=0;i<24;i++)
+                  for(var j=0;j<60;j+=div)
+                  {
+                    var d=new Date(0,0,0,i,j,0);
+                    items.push({Text:ng_FormatTime(d,ng_TimeFormat(false,true)),Time:d});
+                  }
+                l.AddItems(items);
+                l.EndUpdate();
+              }
+              return true;
+            },
+            OnListItemChanged: function(e,l,it,oit) {
+              e.SetDate(it.Time);
+              if(e.HideDropDown) e.HideDropDown();
+              return false;
+            }
+          },
+          DropDown: {
+            className: 'wfrDropDown',
+            Type: 'wfrList'
+          }
+        });
+        div=ngVal(def.DropDown.HourDivider,2);
+        if(div<=0) div=1;
+        div=60/div;
+        var c=ngCreateControlAsType(def, ngVal(basetype,'ngEditTime'), ref, parent);
+        if(!c) return c;
+
+        if(def.Type == 'ngDropDownList') c.DropDownType=ngeDropDownList;
+        ngDropDown_Add(c);
+
+        WFR.wfrEdit_AddProperties(c);
+        c.DropDownButton.LeftImg = WFRImages.Time.EditButton;
+        c.DropDownButton.Default = false;
+        c.RightImg = null;
+        if(typeof def.DropDown.className === 'undefined') def.DropDown.className='wfrDropDown';
+        return c;
+      }
+
+      ngRegisterControlType('wfrEditTime', function(def,ref,parent){
+        return Create_wfrEditTime(def,ref,parent);
       });
     }
 

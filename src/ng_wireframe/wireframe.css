@@ -285,6 +285,20 @@
   color: #ffffff;
 }
 
+/* wfrMaskEdit ********************************************************************/
+
+.wfrMaskEdit .wfrLabelText
+{
+  line-height: 17px;
+  margin-top: 4px;
+  padding-right: 1px;
+}
+
+.wfrMaskEdit .wfrLabel_Invalid .wfrLabelText
+{
+  color: #ffffff;
+}
+
 /* wfrListBox *****************************************************************/
 
 .wfrListBox
