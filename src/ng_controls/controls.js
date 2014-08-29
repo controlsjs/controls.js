@@ -143,7 +143,11 @@ function ngTxt(t, defval)
   if(typeof txt==='undefined')
   {
     txt=defval;
-    if(typeof txt==='undefined') txt=t;
+    if(typeof txt==='undefined')
+    {
+      txt=t;
+      if(ngHASDEBUG()) ngDEBUGWARN('[ngTxt] Missing string for ID "%s"',t);
+    }
   }
   return txt;
 }
@@ -165,12 +169,27 @@ function ngRes(rid)
   {
     var le=def['en'];
     var eres=(typeof le === 'undefined' ? le : le[rid]);
-    if(lang=='en') return ng_CopyVar(eres);
+    if(lang=='en')
+    {
+      if((ngHASDEBUG())&&(typeof eres==='undefined'))
+        ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
+      return ng_CopyVar(eres);
+    }
 
     var l=def[lang];
     var res=(typeof l === 'undefined' ? l : l[rid]);
-    if(typeof res === 'undefined') return ng_CopyVar(eres);
-    if(typeof eres === 'undefined') return ng_CopyVar(res);
+    if(typeof res === 'undefined')
+    {
+      if((ngHASDEBUG())&&(typeof eres==='undefined'))
+        ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
+      return ng_CopyVar(eres);
+    }
+    if(typeof eres === 'undefined')
+    {
+      if((ngHASDEBUG())&&(typeof res==='undefined'))
+        ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
+      return ng_CopyVar(res);
+    }
 
     var r=ng_CopyVar(res);
     ng_MergeDef(r,eres,true);
