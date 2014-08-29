@@ -93,7 +93,7 @@ var WireframeControls = {
     },
 
     Time: {
-      EditButton: {L: 541, T: 1, oL: 569, DL: 597, W: 27, H: 27 },
+      EditButton: {L: 541, T: 1, oL: 569, DL: 597, W: 27, H: 27 }
     },
 
     ColorPreview: { L: 385, T: 1, DL: 421, W: 35, H: 27},
@@ -574,7 +574,7 @@ var WireframeControls = {
       c.MiddleImg = (req ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg);
       c.RightImg = (req ? WFRImages.Edit.RightImgReq : WFRImages.Edit.RightImg);
 
-      c.SetInvalid = function(r,update)
+      c.DoSetInvalid = function(r,update)
       {
         if(!r){
           if(c.LeftImg){
@@ -601,17 +601,8 @@ var WireframeControls = {
 
         c.Elm().className = (!r) ? 'wfrEdit' : 'wfrEdit wfrEdit_Invalid';
 
-        c.Invalid = r;
-        if(ngVal(update,true)){
-          if(c.LeftImg){
-            ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IL', 0, c.Enabled, c.LeftImg));
-          }
-          if(c.MiddleImg){
-            ngc_ChangeImageS(ngpg_ImgDrawProps(c.ID+'_IM', 0, c.Enabled, c.MiddleImg));
-          }
-          if(c.RightImg){
-            ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IR', 0, c.Enabled, c.RightImg));
-          }
+        if(update){
+          c.DoUpdateImages();
         }
       }
     }
@@ -804,7 +795,7 @@ var WireframeControls = {
       var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
       if (!c) return c;
 
-      c.DoInvalid = function (ctrl, state, update) {
+      c.DoSetInvalid = function (ctrl, state, update) {
         if (typeof(ctrl)==='undefined') return false;
         state  = ngVal(state, true);
         update = ngVal(update, true);
@@ -825,9 +816,11 @@ var WireframeControls = {
 
         if (update)
         {
-          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', 0, ctrl.Enabled, ctrl.LeftImg));
-          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', 0, ctrl.Enabled, ctrl.MiddleImg));
-          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', 0, ctrl.Enabled, ctrl.RightImg));
+          var focus = (c.HasFocus ? 1 : 0);
+
+          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
+          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
+          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
         }
 
         return true;
@@ -1506,7 +1499,7 @@ var WireframeControls = {
       var req = ngVal(c.Invalid,false);
         c.Frame = (req ? WFRImages.Memo.ReqFrame : WFRImages.Memo.Frame);
 
-      c.SetInvalid = function(r,update){
+      c.DoSetInvalid = function(r,update){
         c.Frame = (r ? WFRImages.Memo.ReqFrame :  WFRImages.Memo.Frame);
         var o = c.Elm();
         if(o){
@@ -1519,8 +1512,7 @@ var WireframeControls = {
             o.className = ((r) ? 'wfrMemo wfrMemoInvalid' : 'wfrMemo') + o.className.substring(idx,cn.length);
           }
         }
-        c.Invalid = r;
-        if(ngVal(update,true)){c.Update();}
+        if(update){c.DoUpdateImages();}
       }
 
       c.AddEvent('OnFocus', function(c){

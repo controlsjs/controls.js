@@ -821,10 +821,8 @@ var ControlsExt = {
         return true;
       }
 
-      //===== VISUAL METHODS =====
-
       /*  Function: SetInvalid
-       *  Sets (visual) invalid state of control.
+       *  Sets invalid state of control.
        *
        *  Syntax:
        *    bool *SetInvalid* ([bool state = true, bool update = true])
@@ -837,22 +835,25 @@ var ControlsExt = {
        *    -
        */
       c.SetInvalid = function (state, update) {
-        if (typeof(c.DoInvalid)!='function') return false;
-
         state  = ngVal(state, true);
         update = ngVal(update, true);
 
-        c.DoInvalid(c.Controls.LeftHolder, state, update);
-        c.DoInvalid(c.Controls.RightHolder, state, update);
-        c.SetInvalidPart(-1, state, update);
+        if (c.Invalid==state) return true;
+        if ((c.OnSetInvalid) && (!ngVal(c.OnSetInvalid(c, state, update), false))) return false;
 
         c.Invalid = state;
+        if (typeof(c.DoSetInvalid)==='function')
+        {
+          c.DoSetInvalid(c.Controls.LeftHolder, state, update);
+          c.DoSetInvalid(c.Controls.RightHolder, state, update);
+        }
+        c.SetInvalidPart(-1, state, update);
 
         return true;
       }
 
       /*  Function: SetInvalidPart
-       *  Sets (visual) invalid state of part of control.
+       *  Sets invalid state of part of control.
        *
        *  Syntax:
        *    bool *SetInvalidPart* (int part [, bool state = true, bool update = true])
@@ -866,12 +867,17 @@ var ControlsExt = {
        *    -
        */
       c.SetInvalidPart = function (part, state, update) {
-        if ((typeof(part)==='undefined') || (typeof(c.DoInvalid)!='function')) return false;
+        if (typeof(part)==='undefined') return false;
         state  = ngVal(state, true);
         update = ngVal(update, true);
 
-        var parts = c.GetParts(part);
-        for (var i=0;i<parts.length;i++) c.DoInvalid(parts[i].Control, state, update);
+        if ((c.OnSetInvalidPart) && (!ngVal(c.OnSetInvalidPart(c, part, state, update), false))) return false;
+
+        if (typeof(c.DoSetInvalid)==='function')
+        {
+          var parts = c.GetParts(part);
+          for (var i=0;i<parts.length;i++) c.DoSetInvalid(parts[i].Control, state, update);
+        }
 
         return true;
       }
@@ -1010,6 +1016,15 @@ var ControlsExt = {
        *  Event: OnValidate
        */
       c.OnValidate = null;
+
+      /*
+       *  Event: OnSetInvalid
+       */
+      c.OnSetInvalid = null;
+      /*
+       *  Event: OnSetInvalidPart
+       */
+      c.OnSetInvalidPart = null;
 
       /*
        *  Event: OnCreatePart

@@ -594,52 +594,25 @@ var WinXPControls = {
     /*<>*/
     this.stdEdit_AddProperties=function(c)
     {
-      /*
-       *  Group: Properties
-       */
-      /*  Variable: Invalid
-       *  ...
-       *  Type: bool
-       *  Default value: *false*
-       */
-      c.Invalid=ngVal(c.Invalid,false);
-      c.LeftImg=(c.Invalid ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
-      c.MiddleImg=(c.Invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
-      c.RightImg=(c.Invalid ? winimages.Edit.RightImgReq : winimages.Edit.RightImg);
-      /*
-       *  Group: Methods
-       */
-      /*  Function: SetInvalid
-       *  Sets (visual) invalid state of control.
-       *
-       *  Syntax:
-       *    void *SetInvalid* (bool r [,bool update=true])
-       *
-       *  Parameters:
-       *    -
-       *  Returns:
-       *    -
-       */
-      c.SetInvalid=function(r,update) {
+      var req=ngVal(c.Invalid,false);
+      c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
+      c.MiddleImg=(req ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
+      c.RightImg=(req ? winimages.Edit.RightImgReq : winimages.Edit.RightImg);
+      
+      c.DoSetInvalid=function(r,update) {
         if(!r)
         {
-          c.LeftImg=winimages.Edit.LeftImg;
-          c.MiddleImg=winimages.Edit.MiddleImg;
-          c.RightImg=winimages.Edit.RightImg;
+          if(c.LeftImg) c.LeftImg=winimages.Edit.LeftImg;
+          if(c.MiddleImg) c.MiddleImg=winimages.Edit.MiddleImg;
+          if(c.RightImg) c.RightImg=winimages.Edit.RightImg;
         }
         else
         {
-          c.LeftImg=winimages.Edit.LeftImgReq;
-          c.MiddleImg=winimages.Edit.MiddleImgReq;
-          c.RightImg=winimages.Edit.RightImgReq;
+          if(c.LeftImg) c.LeftImg=winimages.Edit.LeftImgReq;
+          if(c.MiddleImg) c.MiddleImg=winimages.Edit.MiddleImgReq;
+          if(c.RightImg) c.RightImg=winimages.Edit.RightImgReq;
         }
-        c.Invalid=r;
-        if(ngVal(update,true))
-        {
-          if(c.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IL', 0, c.Enabled, c.LeftImg));
-          if(c.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(c.ID+'_IM', 0, c.Enabled, c.MiddleImg));
-          if(c.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IR', 0, c.Enabled, c.RightImg));
-        }
+        if(update) c.DoUpdateImages();
       }
     }
 
@@ -930,7 +903,7 @@ var WinXPControls = {
       var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
       if (!c) return c;
 
-      c.DoInvalid = function (ctrl, state, update) {
+      c.DoSetInvalid = function (ctrl, state, update) {
         if (typeof(ctrl)==='undefined') return false;
         state  = ngVal(state, true);
         update = ngVal(update, true);
@@ -949,9 +922,11 @@ var WinXPControls = {
 
         if (update)
         {
-          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', 0, ctrl.Enabled, ctrl.LeftImg));
-          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', 0, ctrl.Enabled, ctrl.MiddleImg));
-          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', 0, ctrl.Enabled, ctrl.RightImg));
+          var focus = (c.HasFocus ? 1 : 0);
+
+          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
+          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
+          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
         }
 
         return true;
@@ -1036,34 +1011,13 @@ var WinXPControls = {
       if(typeof def.className === 'undefined') def.className='wxpMemo';
       var c=ngCreateControlAsType(def, ngVal(basetype, 'ngMemo'), ref, parent);
       if(!c) return;
-      /*
-       *  Group: Properties
-       */
-      /*  Variable: Invalid
-       *  ...
-       *  Type: bool
-       *  Default value: *false*
-       */
-      c.Invalid=ngVal(c.Invalid,false);
-      c.Frame=(c.Invalid ? winimages.MemoReq : winimages.Memo);
-      /*
-       *  Group: Methods
-       */
-      /*  Function: SetInvalid
-       *  Sets (visual) invalid state of control.
-       *
-       *  Syntax:
-       *    void *SetInvalid* (bool r [,bool update=true])
-       *
-       *  Parameters:
-       *    -
-       *  Returns:
-       *    -
-       */
-      c.SetInvalid=function(r,update) {
+      
+      var req=ngVal(c.Invalid,false);
+      c.Frame=(req ? winimages.MemoReq : winimages.Memo);
+
+      c.DoSetInvalid=function(r,update) {
         c.Frame=(r ? winimages.MemoReq : winimages.Memo);
-        c.Invalid=r;
-        if(ngVal(update,true)) c.Update();
+        if(update) c.DoUpdateImages();
       }
       return c;
     }

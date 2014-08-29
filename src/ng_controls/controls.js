@@ -9285,6 +9285,20 @@ function nge_SetFocus(state)
   }
 }
 
+function nge_SetInvalid(state, update)
+{
+  state  = ngVal(state, true);
+  update = ngVal(update, true);
+
+  if (this.Invalid==state) return true;
+  if ((this.OnSetInvalid) && (!ngVal(this.OnSetInvalid(this, state, update), false))) return false;
+
+  this.Invalid = state;
+  if (typeof(this.DoSetInvalid)==='function') this.DoSetInvalid(state, update);
+
+  return true;
+}
+
 function nge_SetReadOnly(ro)
 {
   ro=ngVal(ro,true);
@@ -9550,6 +9564,20 @@ function ngEdit(id, text)
    */
   this.DropDownAlign = 'left';
 
+  /*  Variable: LockHintCaretPos
+   *  ...
+   *  Type: bool
+   *  Default value: *true*
+   */
+  this.LockHintCaretPos = true;
+
+  /*  Variable: Invalid
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.Invalid = false;
+
   /*  Variable: Suggestion
    *  ...
    *  Type: bool
@@ -9598,13 +9626,6 @@ function ngEdit(id, text)
    *  Default value: *''*
    */
   //this.SuggestionType='';
-
-  /*  Variable: LockHintCaretPos
-   *  ...
-   *  Type: bool
-   *  Default value: *true*
-   */
-  this.LockHintCaretPos = true;
 
   /*
    *  Group: Methods
@@ -9744,6 +9765,21 @@ function ngEdit(id, text)
   this.DoUpdate = nge_DoUpdate;
   this.SetFocus = nge_SetFocus;
 
+  /*  Function: SetInvalid
+   *  Sets invalid state of control.
+   *
+   *  Syntax:
+   *    bool *SetInvalid* ([bool state = true, bool update = true])
+   *
+   *  Parameters:
+   *    state - ...
+   *    update - ...
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetInvalid = nge_SetInvalid;
+
   /*
    *  Group: Events
    */
@@ -9816,6 +9852,11 @@ function ngEdit(id, text)
    *  Event: OnBlur
    */
   this.OnBlur = null;
+
+  /*
+   *  Event: OnSetInvalid
+   */
+  this.OnSetInvalid = null;
 
   /*
    *  Event: OnGetImg
@@ -10526,6 +10567,13 @@ function ngMemo(id, text)
    */
   this.LockHintCaretPos = true;
 
+  /*  Variable: Invalid
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.Invalid = false;
+
   /*
    *  Group: Methods
    */
@@ -10620,6 +10668,21 @@ function ngMemo(id, text)
   this.DoUpdate = ngem_DoUpdate;
   this.SetFocus = nge_SetFocus;
 
+  /*  Function: SetInvalid
+   *  Sets invalid state of control.
+   *
+   *  Syntax:
+   *    bool *SetInvalid* ([bool state = true, bool update = true])
+   *
+   *  Parameters:
+   *    state - ...
+   *    update - ...
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetInvalid = nge_SetInvalid;
+
   /*
    *  Group: Events
    */
@@ -10679,6 +10742,11 @@ function ngMemo(id, text)
    *  Event: OnBlur
    */
   this.OnBlur = null;
+
+  /*
+   *  Event: OnSetInvalid
+   */
+  this.OnSetInvalid = null;
 
   ngControlCreated(this);
 }

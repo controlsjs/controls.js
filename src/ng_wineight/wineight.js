@@ -113,11 +113,11 @@ var WinEightControls = {
       MiddleImg: { L: 0, T: 0, H: 32, ST: 66, DT: 99, Src: 1, oT: 33, oST: 66 },
       RightImg: { L: 16, T: 207, W: 15, H: 32, SL: 80, DL: 112, oL: 48, oSL: 80 },
       RightImgBtn: { L: 29, T: 207, W: 2, H: 32, SL: 93, DL: 125, oL: 61, oSL: 93 },
-      LeftImgReq: { L: 128, T: 207, W: 15, H: 32, DL: 96, oL: 161 },
-      LeftImgBtnReq: { L: 128, T: 207, W: 2, H: 32, DL: 96, oL: 161 },
-      MiddleImgReq: { L: 0, T: 132, H: 32, DT: 99, Src: 1, oT: 165 },
-      RightImgReq: { L: 144, T: 207, W: 15, H: 32, DL: 112, oL: 177 },
-      RightImgBtnReq: { L: 157, T: 207, W: 2, H: 32, DL: 125, oL: 190 }
+      LeftImgReq: { L: 128, T: 207, W: 15, H: 32, SL: 128, DL: 96, oL: 161, oSL: 128 },
+      LeftImgBtnReq: { L: 128, T: 207, W: 2, H: 32, SL: 128, DL: 96, oL: 161, oSL: 128 },
+      MiddleImgReq: { L: 0, T: 132, H: 32, ST: 132, DT: 99, Src: 1, oT: 165, oST: 132 },
+      RightImgReq: { L: 144, T: 207, W: 15, H: 32, SL: 144, DL: 112, oL: 177, oSL: 144 },
+      RightImgBtnReq: { L: 157, T: 207, W: 2, H: 32, SL: 157, DL: 125, oL: 190, oSL: 157 }
     },
     EditDark: {
       LeftImg: { L: 0, T: 198, H: 32, DT: 264, Src: 1, oT: 231, ST: 198, oST: 198, W: 15 },
@@ -758,14 +758,6 @@ var WinEightControls = {
     this.weEdit_AddProperties=function(def,c,th)
     {
       var img=(th ? winimages.EditLight : winimages.EditDark);
-      /*
-       *  Group: Properties
-       */
-      /*  Variable: Invalid
-       *  ...
-       *  Type: bool
-       *  Default value: *false*
-       */
       var req=ngVal(c.Invalid,false);
 
       var leftimg=(req ? img.LeftImgReq : img.LeftImg);
@@ -802,40 +794,20 @@ var WinEightControls = {
         }
       });
 
-      /*
-       *  Group: Methods
-       */
-      /*  Function: SetInvalid
-       *  Sets (visual) invalid state of control.
-       *
-       *  Syntax:
-       *    void *SetInvalid* (bool r [,bool update=true])
-       *
-       *  Parameters:
-       *    -
-       *  Returns:
-       *    -
-       */
-      c.SetInvalid=function(r,update) {
+      c.DoSetInvalid=function(r,update) {
         if(!r)
         {
-          c.LeftImg=(leftbtn ? img.LeftImgBtn : img.LeftImg);
-          c.MiddleImg=img.MiddleImg;
-          c.RightImg=(rightbtn ? img.RightImgBtn : img.RightImg);
+          if(c.LeftImg) c.LeftImg=(leftbtn ? img.LeftImgBtn : img.LeftImg);
+          if(c.MiddleImg) c.MiddleImg=img.MiddleImg;
+          if(c.RightImg) c.RightImg=(rightbtn ? img.RightImgBtn : img.RightImg);
         }
         else
         {
-          c.LeftImg=(leftbtn ? img.LeftImgBtnReq : img.LeftImgReq);
-          c.MiddleImg=img.MiddleImgReq;
-          c.RightImg=(rightbtn ? img.RightImgBtnReq : img.RightImgReq);
+          if(c.LeftImg) c.LeftImg=(leftbtn ? img.LeftImgBtnReq : img.LeftImgReq);
+          if(c.MiddleImg) c.MiddleImg=img.MiddleImgReq;
+          if(c.RightImg) c.RightImg=(rightbtn ? img.RightImgBtnReq : img.RightImgReq);
         }
-        c.Invalid=r;
-        if(ngVal(update,true))
-        {
-          if(c.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IL', 0, c.Enabled, c.LeftImg));
-          if(c.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(c.ID+'_IM', 0, c.Enabled, c.MiddleImg));
-          if(c.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(c.ID+'_IR', 0, c.Enabled, c.RightImg));
-        }
+        if(update) c.DoUpdateImages();
       }
     }
 
@@ -1147,7 +1119,7 @@ var WinEightControls = {
       var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
       if (!c) return c;
 
-      c.DoInvalid = function (ctrl, state, update) {
+      c.DoSetInvalid = function (ctrl, state, update) {
         if (typeof(ctrl)==='undefined') return false;
         state  = ngVal(state, true);
         update = ngVal(update, true);
@@ -1166,9 +1138,11 @@ var WinEightControls = {
 
         if (update)
         {
-          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', 0, ctrl.Enabled, ctrl.LeftImg));
-          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', 0, ctrl.Enabled, ctrl.MiddleImg));
-          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', 0, ctrl.Enabled, ctrl.RightImg));
+          var focus = (c.HasFocus ? 1 : 0);
+
+          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
+          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
+          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
         }
 
         return true;
@@ -1289,41 +1263,18 @@ var WinEightControls = {
         return true;
       });
 
-
-      /*
-       *  Group: Properties
-       */
-      /*  Variable: Invalid
-       *  ...
-       *  Type: bool
-       *  Default value: *false*
-       */
       var req=ngVal(c.Invalid,false);
       if(th)
         c.Frame=(req ? winimages.MemoReqLight : winimages.MemoLight);
       else
         c.Frame=(req ? winimages.MemoReqDark : winimages.MemoDark);
-      /*
-       *  Group: Methods
-       */
-      /*  Function: SetInvalid
-       *  Sets (visual) invalid state of control.
-       *
-       *  Syntax:
-       *    void *SetInvalid* (bool r [,bool update=true])
-       *
-       *  Parameters:
-       *    -
-       *  Returns:
-       *    -
-       */
-      c.SetInvalid=function(r,update) {
+
+      c.DoSetInvalid=function(r,update) {
         if(th)
           c.Frame=(r ? winimages.MemoReqLight : winimages.MemoLight);
         else
           c.Frame=(r ? winimages.MemoReqDark : winimages.MemoDark);
-        c.Invalid=r;
-        if(ngVal(update,true)) c.DoUpdateImages();
+        if(update) c.DoUpdateImages();
       }
       return c;
     }
