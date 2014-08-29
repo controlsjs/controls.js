@@ -243,6 +243,7 @@ var ngDEBUGERROR;
     ngDEBUGWARN=nop;
     ngDEBUGERROR=nop;
   }
+  if(typeof window.cl === 'undefined') window.cl = ngDEBUGLOG;  //Alias for console.log();
 })();
 
 /** 
