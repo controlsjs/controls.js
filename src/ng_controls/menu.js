@@ -1061,7 +1061,7 @@ function ngmn_MenuText(list, it, col)
   if(typeof it.OnGetText === 'function') txt=ngVal(it.OnGetText(list, it, col),'');
   else 
   {
-    if(this.Columns.length>0)
+    if(list.Columns.length>0)
     {
       txt=ngVal(it.Text[col.ID],'');
       if(txt=='') txt='&nbsp;';
@@ -1069,7 +1069,7 @@ function ngmn_MenuText(list, it, col)
     else txt=it.Text;
   }
   var image=list.SubMenuImg;
-  if((it.SubMenu)&&(image))
+  if((it.SubMenu)&&(image)&&((list.Columns.length<=0)||(col.ID==list.Columns[list.Columns.length-1].ID)))
   {
     var id=list.ItemId(it);
     var dp=ngl_ItemImgDrawProps(list.ID+'_'+id+'M', (list.Enabled)&&(ngVal(it.Enabled,true)), image);
