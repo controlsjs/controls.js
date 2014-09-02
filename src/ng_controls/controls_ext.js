@@ -601,6 +601,14 @@ var ControlsExt = {
               OnKeyDown: function (e, elm) {
                 if ((typeof(e)==='undefined') || (typeof(e.Owner.GetCaretPos)==='undefined') || (ngiOS)) return false;
                 e.Owner.cursorPos = e.Owner.GetCaretPos();
+                if((e.keyCode==KEY_BACK)&&(e.Owner.HintVisible)) { 
+                  e.Owner.backHintVisible=true; 
+                  if(e.preventDefault)
+                    e.preventDefault();
+                  else
+                    e.returnValue = false;
+                  return false; 
+                }
                 return true;
               },
               OnKeyUp: function (e, elm) {
@@ -628,8 +636,10 @@ var ControlsExt = {
                     ctrl.SetFocusPart(part.ID);
                     part.Control.SetCaretPos(caretPos);
                   break;
-                  case KEY_LEFT:
                   case KEY_BACK:
+                    if(e.Owner.backHintVisible) oldCurPos=newCurPos;
+                    delete e.Owner.backHintVisible;
+                  case KEY_LEFT:
                   case KEY_RIGHT:
                     if (oldCurPos==newCurPos)
                     {
