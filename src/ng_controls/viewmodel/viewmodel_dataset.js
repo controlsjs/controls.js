@@ -56,9 +56,9 @@ function ngdsc_ColumnCaption(l,col,idx)
     if(vm) 
     {
       var fd=vm.GetFieldByID(col.ID);
-      if(ngIsFieldDef(fd)) txt=fd.GetDisplayName(false);
-        
-      if(txt=='') txt=ngTxt('VM.'+vm.Namespace+'.'+col.ID);    
+      if(ngIsFieldDef(fd)) txt=fd.GetDisplayName(false); 
+      if(txt=='') txt=ngTxt('VM.'+vm.Namespace+'.'+col.ID,col.ID);
+      if((txt==col.ID)&&(txt.substr(0,8)==='Columns.')) txt=txt.substring(8,txt.length);
     }
   }
   var sd=ds.GetColumnSortDir(col.ID);
@@ -199,9 +199,14 @@ function ngdsc_ColumnText(l,it,col)
   return ng_toString(val);
 }
 
-function ngdsc_GetValues(vm,values)
+function ngdsc_GetValues(vm,values, writableonly, valuenames, errors, convtimestamps, serialize)
 {
+  // Remove Columns.* which are used only for formating and do not contains any usable data
   delete values.Columns;
+  var remove=[];
+  for(var e in errors)
+    if(e.substr(0,8)=='Columns.') remove.push(e);
+  for(var r in remove) delete errors[remove[r]];
 }
 
 function ngdsc_LoadData(ds, list, idx, cnt)
