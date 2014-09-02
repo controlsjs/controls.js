@@ -139,8 +139,8 @@ function ngMessageDlg(type, text, caption, onclose, def)
   });
   if(def.DlgLangTxt)
   {
-    if(typeof caption!=='undefined') caption=ngTxt(caption);
-    if(typeof text!=='undefined')    text   =ngTxt(text);
+    if(typeof caption!=='undefined') caption=ngTxt(caption, caption);
+    if(typeof text!=='undefined')    text   =ngTxt(text, text);
   }  
   if(def.DlgHtmlEncode)
   {

@@ -2216,7 +2216,7 @@ var WireframeControls = {
       if(c){
         c.AddEvent(
           function (b){
-            var txt = ngTxt(b.Text);
+            var txt = ngTxt(b.Text, '');
             if(txt !== ''){
               txt = '&nbsp;<span style="line-height: 22px">' + txt + '</span>';
             }
@@ -2248,7 +2248,7 @@ var WireframeControls = {
         if(c){
           c.AddEvent('OnShowErrorMsg', function(form,msg){
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('dlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), null , { DlgIcon: mbIconError });
+              ngMessageDlg('dlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), null , { DlgIcon: mbIconError });
             }
             else alert(msg);
             return true;

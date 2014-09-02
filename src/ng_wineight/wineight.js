@@ -1364,7 +1364,7 @@ var WinEightControls = {
       if(c)
       {
         c.AddEvent(function (b) {
-          var txt=ngTxt(b.Text);
+          var txt=ngTxt(b.Text,'');
           if(txt!='') txt='&nbsp;<span style="line-height: '+h+'px">'+txt+'</span>';
           return '<img src="'+img+'" align="top" />'+txt;
         }, 'OnGetText');
@@ -2819,7 +2819,7 @@ var WinEightControls = {
         {
           c.AddEvent('OnShowErrorMsg', function(form,msg) {
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('weDlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), null /*, { DlgIcon: mbIconError }*/);
+              ngMessageDlg('weDlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), null /*, { DlgIcon: mbIconError }*/);
             }
             else alert(msg);
             return true;
@@ -2947,7 +2947,7 @@ var WinEightControls = {
         {
           c.AddEvent('OnDeleteQuery',function(form,querytxt,successfnc,failfnc) {
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('weDlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), function(c) {
+              ngMessageDlg('weDlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), function(c) {
                 if(c.DialogResult==mbYes)
                 {
                   if(typeof successfnc === 'function') successfnc(form);
@@ -2977,7 +2977,7 @@ var WinEightControls = {
 
           c.AddEvent('OnChangedQuery',function(form,querytxt,successfnc,failfnc) {
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('weDlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption)), function(c) {
+              ngMessageDlg('weDlgMessageBox',querytxt,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), function(c) {
                 if(c.DialogResult==mbYes)
                 {
                   if(typeof successfnc === 'function') successfnc(form);
