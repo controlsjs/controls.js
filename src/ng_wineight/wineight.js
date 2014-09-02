@@ -811,7 +811,7 @@ var WinEightControls = {
       }
     }
 
-    function Prepare_DropDown(def)
+    this.Prepare_DropDown=function(def)
     {
       if((def.DropDown)&&(typeof def.DropDown === 'object'))
       {
@@ -832,7 +832,7 @@ var WinEightControls = {
     function Create_weEdit(def,ref,parent) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
-      Prepare_DropDown(def);
+      wineight.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, 'ngEdit', ref, parent);
       if(c) {
         wineight.weEdit_AddProperties(def,c,th);
@@ -854,7 +854,7 @@ var WinEightControls = {
     function Create_weEditBoxBtn(def,ref,parent,basetype) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
-      Prepare_DropDown(def);
+      wineight.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, ngVal(basetype,'weEdit'), ref, parent);
       if(!c) return c;
       var b=new ngButton();
@@ -902,7 +902,7 @@ var WinEightControls = {
     {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
-      Prepare_DropDown(def);
+      wineight.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, ngVal(basetype,'weEdit'), ref, parent);
       if(!c) return c;
       if(typeof def.DropDown !== 'undefined') c.Suggestion=true;
@@ -976,7 +976,7 @@ var WinEightControls = {
     {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
-      Prepare_DropDown(def);
+      wineight.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, ngVal(basetype,'ngEditNum'), ref, parent);
       if(!c) return c;
       wineight.weEdit_AddProperties(def,c,th);
@@ -1025,7 +1025,7 @@ var WinEightControls = {
         Data: { TextAlign: 'center' },
         DropDown: null//{ className: 'weDropDown', Type: 'wePanel' }
       });
-      Prepare_DropDown(def);
+      wineight.Prepare_DropDown(def);
       var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngEdit'));
       if(!c) return c;
 
@@ -1186,7 +1186,7 @@ var WinEightControls = {
       if(!c) return c;
       wineight.weEdit_AddProperties(def,c,th);
       c.DropDownButton.LeftImg=winimages.DropDown;
-      Prepare_DropDown(def);
+      wineight.Prepare_DropDown(def);
       return c;
     }
     ngRegisterControlType('weDropDown', function(def,ref,parent) { return Create_weDropDown(def,ref,parent,'ngEdit'); });
@@ -2629,7 +2629,7 @@ var WinEightControls = {
             style: { padding: '10px' }
           }
         });
-        Prepare_DropDown(def);
+        wineight.Prepare_DropDown(def);
         var dth=theme(def.DropDown);
         def.DropDown.className=(dth ? 'weCalendarLight we'+colorscheme(def)+'Calendar ' : 'weCalendarDark ')+def.DropDown.className;
 
@@ -2684,7 +2684,7 @@ var WinEightControls = {
             Type: 'weList'
           }
         });
-        Prepare_DropDown(def);
+        wineight.Prepare_DropDown(def);
 
         div=ngVal(def.DropDown.HourDivider,2);
         if(div<=0) div=1;
@@ -2698,7 +2698,7 @@ var WinEightControls = {
         wineight.weEdit_AddProperties(def,c,th);
         c.DropDownButton.LeftImg=winimages.DropDown;
         c.DropDownButton.Default = false;
-        Prepare_DropDown(def);
+        wineight.Prepare_DropDown(def);
         return c;
       }
 
@@ -2851,7 +2851,7 @@ var WinEightControls = {
         var th=theme(def);
         Create_weEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
-        Prepare_DropDown(def);
+        wineight.Prepare_DropDown(def);
         var c=ngCreateControlAsType(def, 'ngEditField', ref, parent);
         if(c) {
           wineight.weEdit_AddProperties(def,c,th);
@@ -3012,12 +3012,12 @@ var WinEightControls = {
        */
       function Create_weDBToolBar(def,ref,parent) {
         var th=theme(def);
+        if(typeof def.className === 'undefined') def.className='weToolBar' + (typeof def.ColorScheme === 'undefined' ? '' : ' we'+def.ColorScheme);
         ng_MergeDef(def, {
           W: 260,
-          className: 'weToolBar',
-           Data: {
-             HPadding: 10
-           },
+          Data: {
+            HPadding: 10
+          },
           Controls: {
             New: {
               Type: 'weButton',
