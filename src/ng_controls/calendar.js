@@ -192,11 +192,11 @@ function ngcal_MD(e,elm)
   ii.row--;
   ii.col--;
   var date=c.DisplayedDates[ii.row*7+ii.col];
-  e.cal=this;
+  e.cal=c;
   e.caldate=date;
   e.calrow=ii.row;
   e.calcol=ii.col;
-  if((this.OnDayClick)&&(!ngVal(this.OnDayClick(e),false))) return;
+  if((c.OnDayClick)&&(!ngVal(c.OnDayClick(e),false))) return;
   
   if(!c.SelectType) return;
 
@@ -1033,16 +1033,16 @@ function ngCalendar(id)
 
   /*  Variable: BlockedDates
    *  ...
-   *  Type: array
+   *  Type: object
    *  Default value: *{}*   
    */
-  this.BlockedDates = new Array();
+  this.BlockedDates = {};
   /*  Variable: BlockedWeekDays
    *  ...
-   *  Type: array
+   *  Type: object
    *  Default value: *{}*   
    */
-  this.BlockedWeekDays = new Array();
+  this.BlockedWeekDays = {};
   /*  Variable: MinDate
    *  ...
    *  Type: date
@@ -1455,8 +1455,8 @@ function Create_ngEditTime(def, ref, parent)
    */
   c.FormatTime = function(d)
   {
-    if(this.OnFormatTime) return this.OnFormatTime(this, d);
-    return ng_FormatTime(d,this.TimeFormat);
+    if(c.OnFormatTime) return c.OnFormatTime(c, d);
+    return ng_FormatTime(d,c.TimeFormat);
   }        
   /*  Function: ParseTime
    *  Parses date from string.
@@ -1471,8 +1471,8 @@ function Create_ngEditTime(def, ref, parent)
    */
   c.ParseTime = function(d)
   {
-    if(this.OnParseTime) return this.OnParseTime(this, d);
-    return ng_ParseTime(d,this.DateFormat);
+    if(c.OnParseTime) return c.OnParseTime(c, d);
+    return ng_ParseTime(d,c.DateFormat);
   }
   /*  Function: GetDate
    *  Gets edited date.
@@ -1487,7 +1487,7 @@ function Create_ngEditTime(def, ref, parent)
    */              
   c.GetDate = function()
   {
-    return this.ParseTime(this.GetText());
+    return c.ParseTime(c.GetText());
   }
   /*  Function: SetDate
    *  Sets edited date.
@@ -1502,7 +1502,7 @@ function Create_ngEditTime(def, ref, parent)
    */              
   c.SetDate = function(d)
   {
-    this.SetText(this.FormatTime(d));
+    c.SetText(c.FormatTime(d));
   }                 
   /*
    *  Group: Events
