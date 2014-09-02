@@ -1648,18 +1648,6 @@ function ngc_SetVisible(v)
           o.style.display=(v ? 'block' : 'none');
           o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none
         }
-        if((!v)&&(!ngIExplorer))
-        {
-          function blur_hidden(c)
-          {
-            if(c.SetFocus) c.SetFocus(false);
-            var cc=c.ChildControls;
-            if(typeof cc !== 'undefined')
-              for(var i=0;i<cc.length;i++)
-                blur_hidden(cc[i]);
-          }
-          blur_hidden(this);
-        }
         // IE7 redraw fix
         var fix7=document.body.offsetLeft;
       }
@@ -1674,6 +1662,22 @@ function ngc_SetVisible(v)
       if(o) { var fix7=o.offsetLeft; }
 
       if(this.OnVisibleChanged) this.OnVisibleChanged(this);
+
+      if((!v)&&(!ngIExplorer))
+      {
+        // Events onblur and onmouseout (Update+SetVisible) not invoked properly
+        var simmoevent={ type: 'mouseout' };
+        function fix_blur_mouseout(c)
+        {
+          if(c.SetFocus) c.SetFocus(false);
+          var cc=c.ChildControls;
+          if(typeof cc !== 'undefined')
+            for(var i=0;i<cc.length;i++)
+              fix_blur_mouseout(cc[i]);
+          ngc_Leave(simmoevent, c.Elm(), c.CtrlType);
+        }
+        fix_blur_mouseout(this);
+      }
     }
     else ngc_DeactivatePopup(this);
   }
@@ -8337,6 +8341,11 @@ function nge_SetCaretPos(pos)
   }
 }
 
+function nge_SetHintCaret(c)
+{
+  c.SetCaretPos((c.TextAlign==='right' ? c.GetHint().length : 0));
+}
+
 function nge_TextChanged(event, elm, edit)
 {
   if(typeof edit==='undefined') edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
@@ -8351,12 +8360,13 @@ function nge_TextChanged(event, elm, edit)
       elm.className = edit.GetClassName('Input');
     }
 
-    if(((v == '')&&((!edit.HasFocus)||(nge_HintStyle(edit)===ngHintHideOnInput))) || (edit.HintVisible))
+    var hintvisible=edit.HintVisible;
+    if(((v == '')&&((!edit.HasFocus)||(nge_HintStyle(edit)===ngHintHideOnInput))) || (hintvisible))
     {
       var hint=edit.GetHint();
       if(hint!='') {
         nge_ShowHint(edit,elm,hint);
-        if(edit.LockHintCaretPos) edit.SetCaretPos((edit.TextAlign==='right' ? edit.GetHint().length : 0));
+        if((edit.LockHintCaretPos)||(!hintvisible)) nge_SetHintCaret(edit);
       }
       else nge_HideHint(edit,elm);
     }
@@ -8518,9 +8528,8 @@ function nge_KeyUpHint(edit,elm,clsid)
         if(eh>=0) {
           for(s=0;(s<ev)&&(s<hint.length);s++)
             if(val.charAt(s)!=hint.charAt(s)) break;
-          if(s===hint.length) {
-            ev=val.length-1;
-          }
+          if(s===hint.length) ev=val.length-1;
+          if(s<eh) ev=s-1;
         }
         nge_HideHint(edit,elm,val.substr(s,ev-s+1));
       }
@@ -8742,7 +8751,7 @@ function nge_DoPtrClick(pi)
     }
     else
     {
-      if((this.LockHintCaretPos)&&(this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
+      if((this.LockHintCaretPos)&&(this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) nge_SetHintCaret(this);
     }
   }
 }
@@ -8826,7 +8835,7 @@ function nge_DoFocus(e, elm)
   this.DoUpdateImages();
   nge_BeginMobileKeyboard();
 
-  if((this.LockHintCaretPos)&&(this.HintVisible)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
+  if((this.LockHintCaretPos)&&(this.HintVisible)) nge_SetHintCaret(this);
   if((this.DropDownControl)&&(this.DropDownControl.Visible)) this.HideDropDown();
   if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
 
@@ -9012,17 +9021,33 @@ function nge_DropDown()
     var maxh=ngVal(l.MaxHeight,150);
     if(lh>maxh) { ng_SetOuterHeight(o,maxh); lh=maxh; }
 
-    if(((pos.x+lw<=ng_WindowWidth()-20)&&(this.DropDownAlign=='left'))||((pos.x+ew-lw)<0))
+    var wh=ng_WindowHeight();
+    var ww=ng_WindowWidth();
+    var left,top;
+    if(((pos.x+lw<=ww-20)&&(this.DropDownAlign=='left'))||((pos.x+ew-lw)<0))
     {
-      o.style.left=pos.x+'px';
+      if(pos.x+lw>ww) {
+        left=ww-lw;
+        if(left<0) left=0;
+      }
+      else left=pos.x;
     }
-    else o.style.left=(pos.x+ew-lw)+'px';
+    else left=pos.x+ew-lw;
 
-    if((pos.y+eh+lh>ng_WindowHeight()-20)&&((pos.y-lh)>=0))
+    if((pos.y+eh+lh>wh-20)&&((pos.y-lh)>=0))
     {
-      o.style.top=(pos.y-lh)+'px';
+      top=pos.y-lh;
     }
-    else o.style.top=(pos.y+eh)+'px';
+    else 
+    {
+      if(pos.y+eh+lh>wh) {
+        top=wh-lh;
+        if(top<0) top=0;
+      }
+      else top=pos.y+eh;
+    }
+    o.style.left=left+'px';
+    o.style.top=top+'px';
     o.style.zIndex='100000';
 
     l.Update();
@@ -9223,7 +9248,7 @@ function nge_DoUpdate(o)
     if((this.HintVisible)&&(to.value!=hint))
     {
       to.value=hint;
-      if(this.LockHintCaretPos) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
+      if(this.LockHintCaretPos) nge_SetHintCaret(this);
     }
 
     if(images)
@@ -10189,6 +10214,19 @@ function ngEditNum_Create(def, ref, parent)
 
 // --- ngMemo ------------------------------------------------------------------
 
+function ngem_SetHintCaret(c)
+{
+  var p=0;
+  if(c.TextAlign==='right')
+  {
+    var hint=c.GetHint();
+    p=hint.indexOf('\n');
+    if(p<0) p=hint.indexOf('\r');
+    if(p<0) p=hint.length;
+  }  
+  c.SetCaretPos(p);
+}
+
 function ngem_TextChanged(event, elm, edit)
 {
   if(typeof edit==='undefined') edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
@@ -10202,14 +10240,15 @@ function ngem_TextChanged(event, elm, edit)
       elm.className = edit.GetClassName('Input');
     }
 
-    if(((v == '')&&((!edit.HasFocus)||(nge_HintStyle(edit)===ngHintHideOnInput))) || (edit.HintVisible))
+    var hintvisible=edit.HintVisible;
+    if(((v == '')&&((!edit.HasFocus)||(nge_HintStyle(edit)===ngHintHideOnInput))) || (hintvisible))
     {
       var hint=edit.GetHint();
       if(hint!='') {
         edit.HintVisible=true;
         elm.className = edit.GetClassName('Input',hint);
         elm.value=hint;
-        if(edit.LockHintCaretPos) edit.SetCaretPos((edit.TextAlign==='right' ? edit.GetHint().length : 0));
+        if((edit.LockHintCaretPos)||(!hintvisible)) ngem_SetHintCaret(edit);
       }
       else edit.HintVisible=false;
     }
@@ -10320,7 +10359,7 @@ function ngem_DoFocus(e, elm)
   this.DoUpdateImages();
   nge_BeginMobileKeyboard();
 
-  if((this.LockHintCaretPos)&&(this.HintVisible)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
+  if((this.LockHintCaretPos)&&(this.HintVisible)) ngem_SetHintCaret(this);
   if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
 
   if((this.Text == '')&&(nge_HintStyle(this)===ngHintHideOnFocus))
@@ -10423,7 +10462,7 @@ function ngem_DoUpdate(o)
     if((this.HintVisible)&&(to.value!=hint))
     {
       to.value=hint;
-      if(this.LockHintCaretPos) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
+      if(this.LockHintCaretPos) ngem_SetHintCaret(this);
     }
   }
   else
@@ -10492,7 +10531,7 @@ function ngem_DoPtrClick(pi)
 {
   if(pi.EventID==='control')
   {
-    if((this.LockHintCaretPos)&&(this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) this.SetCaretPos((this.TextAlign==='right' ? this.GetHint().length : 0));
+    if((this.LockHintCaretPos)&&(this.HintVisible)&&(nge_HintStyle(this)===ngHintHideOnInput)) ngem_SetHintCaret(this);
   }
 }
 
