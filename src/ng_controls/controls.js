@@ -726,6 +726,7 @@ function ngCreateControlId(baseid)
 }
 
 var ngOnCreateControl = null;
+var ngOnCreateUnknownControl = null;
 
 function ngControlCreated(obj)
 {
@@ -901,6 +902,11 @@ function ngCreateControl(d,ref,parent)
       var createfnc=ngRegisteredControlTypes[d.Type];
       if(typeof createfnc === 'function') c=createfnc(d, ref, parent);
     }
+    if(!c)
+    {
+      if(typeof ngOnCreateUnknownControl === 'function')
+        c=ngOnCreateUnknownControl(d,ref,parent);
+    }
   }
   finally
   {
@@ -961,6 +967,18 @@ function ngCreateControl(d,ref,parent)
       uc=ngUserControls[j];
       if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
     }
+
+  if(ngHASDEBUG())
+  {
+    if(typeof d.DesignInfo==='object')
+    {
+      if(typeof c.DesignInfo==='object') ng_MergeVar(d.DesignInfo,c.DesignInfo);
+      c.DesignInfo=d.DesignInfo;
+    }
+    delete d.DesignInfo;
+  } 
+  else delete c.DesignInfo;
+
   return c;
 }
 
@@ -2688,10 +2706,13 @@ function ngSysControl(obj, id, type)
 
 // --- ngControl - children ----------------------------------------------------
 
+var ngOnAddChildControl = null;
+
 function ngAddChildControl(parentobj, obj)
 {
   if((!parentobj)||(!obj)) return;
   if(typeof parentobj.ChildControls === 'undefined') parentobj.ChildControls = new Array();
+  if (ngOnAddChildControl) ngOnAddChildControl(parentobj,obj);
   parentobj.ChildControls[parentobj.ChildControls.length]=obj;
   if(!obj.ParentControl) obj.ParentControl=parentobj;
 }
