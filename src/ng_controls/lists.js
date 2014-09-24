@@ -4465,6 +4465,7 @@ function npgl_SetPagingType(pt, update)
   else pt=this.PagingType;
 
   if(pt==plPagingUser) return;
+  var c;
   var changed=false, update_paging=false;
   var first=((pt & plPaging_First)!=0);
   var prev=((pt & plPaging_Prev)!=0);
@@ -5235,7 +5236,7 @@ function Create_ngPageList(def, ref, parent)
     ng_MergeDef(def.Controls.Paging.Controls, bdef);
   }
 
-  c=ngCreateControlAsType(def, 'ngFrame', ref, parent);
+  var c=ngCreateControlAsType(def, 'ngFrame', ref, parent);
   if(!c) return c;
   /*
    *  Group: Properties
