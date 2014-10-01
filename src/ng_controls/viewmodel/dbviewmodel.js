@@ -171,6 +171,7 @@ function ngdbvm_CancelEdits()
 
 function ngdbvm_LoadRecord(primarykeyvalues,options) 
 {
+  if(this.ResetRecordOnLoad) this.ResetRecord();
   if(ng_typeObject(primarykeyvalues))
   {
     primarykeyvalues._OriginalRecord=ng_CopyVar(primarykeyvalues); // prevent IsChanged detection
@@ -337,6 +338,9 @@ function Create_ngSysDBViewModel(def,ref,parent)
   /*
    *  Group: Properties
    */
+   
+  c.ResetRecordOnLoad = true;
+  
   c.DBDataSets=new Array();
   c.CancelEditsValues = null;
   c.recordchangesupdate=0;
@@ -990,6 +994,13 @@ function ngdbdsc_OnClick(e)
   return true;
 }
 
+function ngdbdsc_OnClickItem(e)
+{
+  var ds=e.list.Owner.Owner;
+  if((!ds)||(ds.LoadOnSelect)||(!ds.LoadOnClick)) return;
+  ds.LoadRecord(e.listItem);
+}
+
 function ngdbdsc_OnDblClickItem(e)
 {
   var ds=e.list.Owner.Owner;
@@ -1116,8 +1127,10 @@ function ngdbdsc_SetViewModel(ds,vm,ovm)
  */
 function Create_ngDBDataSet(def, ref, parent, basetype)
 {
+  var hasbuttons=false;
   if (ngVal(def.EditButtons, true))
   {
+    hasbuttons=true;
     ng_MergeDef(def, {
       Controls: {
         Paging: {
@@ -1170,6 +1183,7 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
 
   if (ngVal(def.RefreshButton, true))
   {
+    hasbuttons=true;
     ng_MergeDef(def, {
       Controls: {
         Paging: {
@@ -1209,13 +1223,14 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
       if(list.SelectType==nglSelectNone) list.SelectType=nglSelectSingle;
       list.AddEvent('OnSelectChanged', ngdbdsc_SelectChanged);
       list.AddEvent('OnClick', ngdbdsc_OnClick);
+      list.AddEvent('OnClickItem', ngdbdsc_OnClickItem);
       list.AddEvent('OnDblClickItem', ngdbdsc_OnDblClickItem);
       list.AddEvent('OnDrawItem', ngdbdsc_DrawItem);
       list.AddEvent(ngdbdsc_DoUpdateBefore,'DoUpdate');
     }
   });
 
-  c.DisplayPaging = plDisplayPagingNotEmpty;
+  c.DisplayPaging = (hasbuttons ? plDisplayPagingAlways : plDisplayPagingNotEmpty);
   c.PagingType = plPagingDataSetEx;
   c.PagingInside = false;
 
@@ -1226,7 +1241,8 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
    */
   c.DBViewModel = null;
 
-  c.LoadOnSelect = false;
+  c.LoadOnSelect   = false;
+  c.LoadOnClick    = false;
   c.LoadOnDblClick = true;
   
   c.AutoSelectDBVMRecord = true;
