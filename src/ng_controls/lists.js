@@ -4825,6 +4825,8 @@ function npgl_AsyncTimeout(lid)
 
 function npgl_Refresh()
 {
+  var undefined;
+  this.MaxLength = undefined;
   this.InvalidateData(this.TopIndex,this.DisplayedItems);
 }
 
