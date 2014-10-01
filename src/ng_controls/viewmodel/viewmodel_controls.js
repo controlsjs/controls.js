@@ -82,7 +82,14 @@ function ng_Bindings(bindings)
 
 function ngApplyBindings(ctrl, viewModel, databind)
 {
-  if(ng_typeString(viewModel)) viewModel=getViewModelById(viewModel);
+  if(ng_typeString(viewModel))
+  {
+    var vm=getViewModelById(viewModel);
+    if(!vm) ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
+    viewModel=vm;
+  }
+  if(!viewModel) ngDEBUGERROR('ViewModel for control "'+ctrl.ID+'" not found!');
+
   if((!ctrl)||(!viewModel)||(ngVal(databind,'')=='')) return false;
 
   if(viewModel.ViewModel) viewModel=viewModel.ViewModel;
@@ -929,24 +936,28 @@ function ngvmf_SetViewModel(vm)
   var ovm=this.ViewModel;
   if(ng_typeObject(ovm))
   {
-    ovm.RemoveEvent('OnShowErrors',ngvmf_OnShowErrors);
-    ovm.RemoveEvent(ngvmf_OnCommand,'OnCommand');
-    ovm.RemoveEvent('OnCommandRequest',ngvmf_OnCommandRequest);
-    ovm.RemoveEvent('OnCommandResults',ngvmf_OnCommandResults);
-    ovm.RemoveEvent('OnCommandFinished',ngvmf_OnCommandFinished);
-    ovm.RemoveEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+    if(typeof ovm.RemoveEvent === 'function') { // check if not pure ViewModel
+      ovm.RemoveEvent('OnShowErrors',ngvmf_OnShowErrors);
+      ovm.RemoveEvent(ngvmf_OnCommand,'OnCommand');
+      ovm.RemoveEvent('OnCommandRequest',ngvmf_OnCommandRequest);
+      ovm.RemoveEvent('OnCommandResults',ngvmf_OnCommandResults);
+      ovm.RemoveEvent('OnCommandFinished',ngvmf_OnCommandFinished);
+      ovm.RemoveEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+    }
     delete ovm.ViewModelForm;
   }
   this.ViewModel=vm;
   if(ng_typeObject(vm))
   {
     vm.ViewModelForm=this;
-    vm.AddEvent('OnShowErrors',ngvmf_OnShowErrors);
-    vm.AddEvent(ngvmf_OnCommand,'OnCommand');
-    vm.AddEvent('OnCommandRequest',ngvmf_OnCommandRequest);
-    vm.AddEvent('OnCommandResults',ngvmf_OnCommandResults);
-    vm.AddEvent('OnCommandFinished',ngvmf_OnCommandFinished);
-    vm.AddEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+    if(typeof vm.AddEvent === 'function') { // check if not pure ViewModel
+      vm.AddEvent('OnShowErrors',ngvmf_OnShowErrors);
+      vm.AddEvent(ngvmf_OnCommand,'OnCommand');
+      vm.AddEvent('OnCommandRequest',ngvmf_OnCommandRequest);
+      vm.AddEvent('OnCommandResults',ngvmf_OnCommandResults);
+      vm.AddEvent('OnCommandFinished',ngvmf_OnCommandFinished);
+      vm.AddEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+    }
   }
   if(this.OnSetViewModel) this.OnSetViewModel(this,vm,ovm);
 }
@@ -1154,6 +1165,8 @@ function ngve_HideErrorHint()
 
 function ngve_SetErrorState(state)
 {
+  if(this.ErrorState == state) return;
+  
   if((this.OnSetErrorState)&&(!ngVal(this.OnSetErrorState(this,state),false))) return;
 
   this.ErrorState = state;
@@ -2032,6 +2045,36 @@ ngUserControls['viewmodel_controls'] = {
       }
     };
 
+    function getkeyfieldvalue(it,key)
+    {
+      var k=key.split('.');
+      if(k.length<1) return; // undefined
+      for(var i=0;i<k.length-1;i++)
+      {
+        if((typeof it!=='object')||(it===null)) return; // undefined
+        it=it[k[i]];
+      }
+      if((typeof it!=='object')||(it===null)) return; // undefined
+      return it[k[k.length-1]];
+    }
+
+    function setkeyfieldvalue(it,key, val)
+    {
+      var k=key.split('.');
+      if(k.length<1) return false;
+      var nit;
+      for(var i=0;i<k.length-1;i++)
+      {
+        if((typeof it!=='object')||(it===null)) return false;
+        nit=it[k[i]];
+        if((typeof nit!=='object')||(nit===null)) nit=it[k[i]]={};
+        it=nit;
+      }
+      if((typeof it!=='object')||(it===null)) return false;
+      it[k[k.length-1]]=val;
+      return true;
+    }
+
     function value_update(c, valueAccessor) {
 
       if(c.CtrlType=='ngList')
@@ -2041,7 +2084,7 @@ ngUserControls['viewmodel_controls'] = {
         {
           var selval;
           var keyfield=ngVal(e.LookupKeyField, 'Value');
-          if(e.ListItem) selval=e.ListItem[keyfield];
+          if(e.ListItem) selval=getkeyfieldvalue(e.ListItem,keyfield);
         }
       }
 
@@ -2059,10 +2102,10 @@ ngUserControls['viewmodel_controls'] = {
               j++;
               break;
             case 2://"deleted":
-              if((keyfield)&&(typeof selval!=='undefined')&&(editScript[i].value[keyfield]==selval))
+              if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(getkeyfieldvalue(editScript[i].value,keyfield),selval)))
               {
                 e.ListItem = { };
-                e.ListItem[keyfield]=selval;
+                setkeyfieldvalue(e.ListItem,keyfield,selval);
                 e.SetText('');
               }
               c.Delete(j,parent);
@@ -2079,7 +2122,7 @@ ngUserControls['viewmodel_controls'] = {
               if(ng_IsArrayVar(items))
                 synclist(items, parent.Items[j]);
 
-              if((keyfield)&&(typeof selval!=='undefined')&&(typeof item==='object')&&(item[keyfield]==selval))
+              if((keyfield)&&(typeof selval!=='undefined')&&(typeof item==='object')&&(ng_VarEquals(getkeyfieldvalue(item,keyfield),selval)))
                 c.SelectDropDownItem(item);
 
               j++;
@@ -2126,7 +2169,7 @@ ngUserControls['viewmodel_controls'] = {
               if((keyfield)&&(typeof selval!=='undefined'))
               {
                 e.ListItem = { };
-                e.ListItem[keyfield]=selval;
+                setkeyfieldvalue(e.ListItem,keyfield,selval);
                 e.SetText('');
               }
             }
@@ -2162,7 +2205,7 @@ ngUserControls['viewmodel_controls'] = {
             if(!ng_isEmpty(val))
             {
               list.Scan(function(list,it,parent,userdata) {
-                if(ng_VarEquals(it[keyfield],val))
+                if(ng_VarEquals(getkeyfieldvalue(it,keyfield),val))
                 {
                   found=it;
                   return false;
@@ -2173,7 +2216,7 @@ ngUserControls['viewmodel_controls'] = {
             if(!found)
             {
               c.ListItem = { };
-              c.ListItem[keyfield]=ng_CopyVar(val);
+              setkeyfieldvalue(c.ListItem,keyfield,ng_CopyVar(val));
               c.SetText('');
             }
             else
@@ -2190,9 +2233,10 @@ ngUserControls['viewmodel_controls'] = {
           c.LookupKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
           c.AddEvent(function(e,l,it,oit) {
             var keyfield=ngVal(e.LookupKeyField, 'Value');
-            if(!ng_isEmpty(it[keyfield]))
+            var kfval=getkeyfieldvalue(it,keyfield);
+            if(!ng_isEmpty(kfval))
             {
-              value_write('Lookup',ng_CopyVar(it[keyfield]),e, valueAccessor, allBindingsAccessor);
+              value_write('Lookup',ng_CopyVar(kfval),e, valueAccessor, allBindingsAccessor);
             }
             return true;
           },'OnListItemChanged');
@@ -2202,11 +2246,11 @@ ngUserControls['viewmodel_controls'] = {
 
             var keyfield=ngVal(e.LookupKeyField, 'Value');
             var list=e.DropDownControl;
-            var selval=(e.ListItem ? e.ListItem[keyfield] : undefined);
+            var selval=(e.ListItem ? getkeyfieldvalue(e.ListItem,keyfield) : undefined);
             if(!ng_isEmpty(selval))
             {
               list.Scan(function(list,it,parent,userdata) {
-                if(ng_VarEquals(it[keyfield],selval))
+                if(ng_VarEquals(getkeyfieldvalue(it,keyfield),selval))
                 {
                   list.SelectDropDownItem(it);
                   return false;
@@ -2238,7 +2282,7 @@ ngUserControls['viewmodel_controls'] = {
               c.Scan(function(c,it,parent,userdata) {
                 for(var j=0;j<val.length;j++)
                 {
-                  if(ng_VarEquals(it[keyfield],val[j]))
+                  if(ng_VarEquals(getkeyfieldvalue(it,keyfield),val[j]))
                   {
                     var id=c.ItemId(it);
                     if(id!='')
@@ -2267,11 +2311,12 @@ ngUserControls['viewmodel_controls'] = {
             var keyfield=ngVal(c.SelectKeyField, 'Value');
             var selected=list.GetSelected();
             var val=new Array();
-            var s;
+            var s,sval;
             for(var i in selected)
             {
               s=selected[i];
-              if(s[keyfield] != 'undefined') val.push(ng_CopyVar(s[keyfield]));
+              sval=getkeyfieldvalue(s,keyfield);
+              if(sval != 'undefined') val.push(ng_CopyVar(sval));
             }
             c['binding_updatingSelected']=false;
             value_write('Selected',val,c, valueAccessor, allBindingsAccessor);
@@ -2304,7 +2349,7 @@ ngUserControls['viewmodel_controls'] = {
                 var check=0;
                 if(!ng_isEmpty(val))
                   for(var j=0;j<val.length;j++)
-                    if(ng_VarEquals(it[keyfield],val[j]))
+                    if(ng_VarEquals(getkeyfieldvalue(it,keyfield),val[j]))
                     {
                       check=1;
                       break;
@@ -2334,8 +2379,11 @@ ngUserControls['viewmodel_controls'] = {
               var keyfield=ngVal(c.CheckedKeyField, 'Value');
               var val=new Array();
               c.Scan(function(c,it,parent,userdata) {
-                if((ngVal(it.Checked,0))&&(typeof it[keyfield]!=='undefined'))
-                  val.push(ng_CopyVar(it[keyfield]));
+                if(ngVal(it.Checked,0))
+                {
+                  var sval=getkeyfieldvalue(it,keyfield);
+                  if(typeof sval!=='undefined') val.push(ng_CopyVar(sval));
+                }
                 return true;
               });
               c['binding_updatingChecked']=false;
