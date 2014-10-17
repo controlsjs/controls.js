@@ -1661,18 +1661,16 @@ function ngmn_PopupMouseMenu(e)
   var c=ngGetControlById(this.id);
   if((!c)||(!c.PopupMenu)||(!ngVal(c.Enabled,true))) return true;
 
-  var mx = (e.clientX ? e.clientX : e.offsetX);
-  var my = (e.clientY ? e.clientY : e.offsetY);
-  if((isNaN(mx))||(isNaN(my))) return;   // firefox fix:
-  mx-=ng_findMousePosX(document.body);
-  my-=ng_findMousePosY(document.body);
-  c.PopupMenu.Popup(mx,my);
+  var pos=ngc_DoGetPointerPos(null,e,null);
+  if(typeof pos.x === 'undefined') return true;
+  var mpos=ng_ParentPosition(ngApp ? ngApp.Elm() : document.body);
+  pos.x-=mpos.x;
+  pos.y-=mpos.y;
+  c.PopupMenu.Popup(pos.x,pos.y);
 
-  if (window.event) {
-    e.cancelBubble=true;
-  } else {
-    e.stopPropagation();
-  }  
+  if(e.stopPropagation) e.stopPropagation();
+  else e.cancelBubble = true;
+  ngc_ptrevignore(e);
   return true;
 }
 
@@ -1683,7 +1681,11 @@ function ngmn_DoPopupAttach(elm)
   
   if(elm.ngAddEvent) return;
   elm.ngAddEvent = ngObjAddEvent;
-  elm.ngAddEvent('onmousedown',ngmn_PopupMouseMenu);        
+
+  if (window.navigator.msPointerEnabled)
+    elm.addEventListener("MSPointerDown", ngmn_PopupMouseMenu, false);
+  else
+    elm.ngAddEvent('onmousedown',ngmn_PopupMouseMenu);
 }
 
 function ngmn_DoAcceptGestures(o,gestures)
@@ -1814,6 +1816,12 @@ function nga_DoPopupMenu(e)
   if (!e) e = window.event;
   if(ngCurrentAppPopupMenu)
   {
+    var pos=ngc_DoGetPointerPos(null,e,null);
+    if(typeof pos.x === 'undefined') return true;
+    var mpos=ng_ParentPosition(ngApp ? ngApp.Elm() : document.body);
+    pos.x-=mpos.x;
+    pos.y-=mpos.y;
+
     var timer=setTimeout(function() {
       clearTimeout(timer);
       var menu=ngCurrentAppPopupMenu;
@@ -1821,14 +1829,8 @@ function nga_DoPopupMenu(e)
       if((menu)&&(typeof menu.Popup === 'function'))
       {  
         ngCurrentAppPopupMenu=null;
-        var mx = (e.clientX ? e.clientX : e.offsetX);
-        var my = (e.clientY ? e.clientY : e.offsetY);
-        // firefox fix:
-        if((isNaN(mx))||(isNaN(my))) return;
         if(e.preventDefault) e.preventDefault();
-        mx-=ng_findMousePosX(document.body);
-        my-=ng_findMousePosY(document.body);
-        menu.Popup(mx,my);
+        menu.Popup(pos.x,pos.y);
       }
     },10);
   }                    
