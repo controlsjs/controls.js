@@ -1354,7 +1354,7 @@ function ng_DocumentDeselect()
 function ng_DocumentScrollX()
 {
   var scrOfX = 0;
-  if( typeof( window.pageYOffset ) == 'number' ) {
+  if( typeof( window.pageYOffset ) === 'number' ) {
     scrOfX = window.pageXOffset;
   } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
     scrOfX = document.body.scrollLeft;
@@ -1377,7 +1377,7 @@ function ng_DocumentScrollX()
 function ng_DocumentScrollY()
 {
   var scrOfY = 0;
-  if( typeof( window.pageYOffset ) == 'number' ) {
+  if( typeof( window.pageYOffset ) === 'number' ) {
     scrOfY = window.pageYOffset;
   } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
     scrOfY = document.body.scrollTop;
@@ -1385,149 +1385,6 @@ function ng_DocumentScrollY()
     scrOfY = document.documentElement.scrollTop;
   }
   return scrOfY;
-}
-
-/**
- *  Function: ng_findPosX
- *  Determines horizontal offset of the element relative to its super parent.  
- *  
- *  Syntax:
- *    int *ng_findPosX* (object obj)
- *    
- *  Parameters:
- *    obj - element object
- *    
- *  Returns:
- *    Horizontal position of element in pixels. 
- */         
-function ng_findPosX(obj)
-{
-	var curleft = 0;
-	if (obj.offsetParent)
-	{
-		while (obj.offsetParent)
-		{
-			curleft += obj.offsetLeft
-			obj = obj.offsetParent;
-		}
-	}
-	else if (obj.x)
-		curleft += obj.x;
-	return curleft;
-}
-
-/**
- *  Function: ng_findPosY
- *  Determines vertical offset of the element relative to its super parent.  
- *  
- *  Syntax:
- *    int *ng_findPosY* (object obj)
- *    
- *  Parameters:
- *    obj - element object
- *    
- *  Returns:
- *    Vertical position of element in pixels. 
- */         
-function ng_findPosY(obj)
-{
-	var curtop = 0;
-	if (obj.offsetParent)
-	{
-		while (obj.offsetParent)
-		{
-			curtop += obj.offsetTop
-			obj = obj.offsetParent;
-		}
-	}
-	else if (obj.y)
-		curtop += obj.y;
-	return curtop;
-}
-
-/**
- *  Function: ng_findMousePosX
- *  Determines horizontal element offset to absolute mouse position.  
- *  
- *  Syntax:
- *    int *ng_findMousePosX* (object obj)
- *    
- *  Parameters:
- *    obj - element object
- *    
- *  Returns:
- *    Offset to be substracted from the absolute mouse position. 
- */         
-function ng_findMousePosX(obj)
-{
-	var curleft = 0;
-	if(obj.offsetParent)
-	{
-		while(obj.offsetParent)
-		{
-			curleft += obj.offsetLeft;
-			curleft -= obj.scrollLeft;
-			if(ngFireFox)
-			{
-			  if((ng_GetCurrentStyle(obj,'overflow')!=='auto')||((ngFireFox1x)||(ngFireFox2x)))
-  			  curleft+=2*ng_GetCurrentStylePx(obj,'border-left-width');
-  			else
-  			  curleft+=ng_GetCurrentStylePx(obj,'border-left-width');
-      }
-      else
-      {
-        if((!ngOpera)) //Opera 10.5 still doesn't need this !!!
-			    curleft +=ng_GetCurrentStylePx(obj,'border-left-width');
-      }
-
-			obj = obj.offsetParent;
-		}
-	}
-	else if(obj.x) curleft += obj.x;
-	curleft -= ng_DocumentScrollX();
-	return curleft;
-}
-
-/**
- *  Function: ng_findMousePosY
- *  Determines vertical element offset to absolute mouse position.  
- *  
- *  Syntax:
- *    int *ng_findMousePosY* (object obj)
- *    
- *  Parameters:
- *    obj - element object
- *    
- *  Returns:
- *    Offset to be substracted from the absolute mouse position. 
- */         
-function ng_findMousePosY(obj)
-{
-	var curtop = 0;
-	if(obj.offsetParent)
-	{
-		while(obj.offsetParent)
-		{
-			curtop += obj.offsetTop;
-			curtop -= obj.scrollTop;
-			if(ngFireFox)
-			{
-			  if((ng_GetCurrentStyle(obj,'overflow')!=='auto')||((ngFireFox1x)||(ngFireFox2x)))
-  			  curtop+=2*ng_GetCurrentStylePx(obj,'border-top-width');
-  			else
-  			  curtop+=ng_GetCurrentStylePx(obj,'border-top-width');
-      }
-      else
-      {
-        if(!ngOpera) //Opera 10.5 still doesn't need this !!!
-			    curtop +=ng_GetCurrentStylePx(obj,'border-top-width');
-      }
-			obj = obj.offsetParent;
-		}
-	}
-	else if(obj.y) curtop += obj.y;
-  curtop -=ng_DocumentScrollY();
-	return curtop;
 }
 
 /**
@@ -1547,42 +1404,35 @@ function ng_findMousePosY(obj)
 function ng_ParentPosition(o, parent)
 {
   var n=o,pn;
-  var pos=new Object; 
-  pos.x=0;
-  pos.y=0;    
+  var x=0,y=0;
   if(typeof parent === 'undefined') parent=document.body;
-  while((n)&&(n!=parent))
-  {
+  var docelm=document.documentElement;
+  while((n)&&(n!=parent)&&(n!=docelm)) {
     pn=n.offsetParent;
-		pos.x += n.offsetLeft + ng_GetCurrentStylePx(n,'border-left-width');
-		pos.y += n.offsetTop + ng_GetCurrentStylePx(n,'border-top-width');
-		if((pn)&&(pn!=parent))
-		{
-		  pos.x -= pn.scrollLeft;
-		  pos.y -= pn.scrollTop;
-    }
-		if(ngFireFox)
-		{
-		  if((ng_GetCurrentStyle(n,'overflow')!=='auto')||((ngFireFox1x)||(ngFireFox2x)))
-		  {
-		    pos.x+=ng_GetCurrentStylePx(n,'border-left-width');
-		    pos.y+=ng_GetCurrentStylePx(n,'border-top-width');
-		  }
-		  
-    }
-    else
+    x += (n.offsetLeft + n.clientLeft);
+    y += (n.offsetTop + n.clientTop);
+    if(pn)
     {
-      if(ngOpera)
-      {
-		    pos.x -=ng_GetCurrentStylePx(n,'border-left-width');
-		    pos.y -=ng_GetCurrentStylePx(n,'border-top-width');
+      if((pn!=docelm)&&(pn!=document.body)) {
+  		  x -= pn.scrollLeft;
+  		  y -= pn.scrollTop;
 		  }
+  		if(ngFireFox) {
+		    x+=ng_GetCurrentStylePx(pn,'border-left-width');
+		    y+=ng_GetCurrentStylePx(pn,'border-top-width');
+      }
+      else
+      {
+        if(ngOpera) {
+  		    x-=ng_GetCurrentStylePx(pn,'border-left-width');
+  		    y-=ng_GetCurrentStylePx(pn,'border-top-width');
+  		  }
+      }
     }
     n=pn;
   }
-  return pos;
+  return {x: x, y: y};
 }
-
 
 /**
  *  Function: ng_nullAttr
@@ -1951,7 +1801,7 @@ function ng_ClientWidth(o)
     ng_BeginMeasureElement(o);
     w=ng_GetStylePx(o.clientWidth);
     ng_EndMeasureElement(o);
-    if(!w)
+    if((!w)&&(o.style.width!=''))
     {
       w=ng_StyleWidth(o);
       w+=ng_GetCurrentStylePx(o,'padding-left') + ng_GetCurrentStylePx(o,'padding-right');
@@ -1983,7 +1833,7 @@ function ng_ClientHeight(o)
     ng_BeginMeasureElement(o);
     h=ng_GetStylePx(o.clientHeight);
     ng_EndMeasureElement(o);
-    if(!h)
+    if((!h)&&(o.style.height!=''))
     {
       h=ng_StyleHeight(o);
       h+=ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom');
