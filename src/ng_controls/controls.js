@@ -10052,8 +10052,12 @@ function ngedn_GetText(e)
   var n=parseInt(e.Text);
   if((e.Text=='')||(isNaN(n)))
   {
-    n=ngVal(e.DefaultNum,0);
-    e.Text=''+n;
+    if(typeof e.DefaultNum!=='undefined')
+    {
+      n=e.DefaultNum;
+      e.Text=''+n;
+    }
+    else return e.Text;
   }
   if((typeof this.MinNum !== 'undefined')&&(n<e.MinNum)) e.Text=''+e.MinNum;
   if((typeof this.MaxNum !== 'undefined')&&(n>e.MaxNum)) e.Text=''+e.MaxNum;
@@ -10097,8 +10101,8 @@ function ngEditNum_Create(def, ref, parent)
   c.AddEvent('OnKeyUp',function(e,elm) {
     switch(e.keyCode)
     {
-      case 38: this.DoUp();   return false;
-      case 40: this.DoDown(); return false;
+      case 38: if(!c.ReadOnly) this.DoUp();   return false;
+      case 40: if(!c.ReadOnly) this.DoDown(); return false;
     }
     return true;
   });
@@ -10191,7 +10195,7 @@ function ngEditNum_Create(def, ref, parent)
   c.GetNum = function() {
     if(this.OnGetNum) return this.OnGetNum(this);
     var n=parseInt(this.GetText());
-    if(isNaN(n)) return undefined;
+    if(isNaN(n)) return;// undefined;
     if((typeof this.MinNum !== 'undefined')&&(n<this.MinNum)) n=this.MinNum;
     if((typeof this.MaxNum !== 'undefined')&&(n>this.MaxNum)) n=this.MaxNum;
     return n;
@@ -10208,8 +10212,7 @@ function ngEditNum_Create(def, ref, parent)
    *    -
    */
   c.SetNum = function(n) {
-    if(isNaN(n)) n=this.DefaultNum;
-    n=ngVal(n,this.DefaultNum);
+    if((isNaN(n))||(typeof n==='undefined')) n=this.DefaultNum;
     n=ngVal(n,0);
     if(this.OnSetNum) { this.OnSetNum(this,n); return; }
     if((typeof this.MinNum !== 'undefined')&&(n<this.MinNum)) n=this.MinNum;
@@ -10234,7 +10237,7 @@ function ngEditNum_Create(def, ref, parent)
     c.ButtonUp.OnClick = function(ci)
     {
       var e=(ci.Owner ? ci.Owner.Parent : null);
-      if(!e) return;
+      if((!e)||(e.ReadOnly)) return;
       if((e.OnUp)&&(!ngVal(e.OnUp(ci, e.GetNum()),false))) return;
       e.DoUp();
       if(!ci.Owner.Touching) e.SetFocus();
@@ -10245,7 +10248,7 @@ function ngEditNum_Create(def, ref, parent)
     c.ButtonDown.OnClick = function(ci)
     {
       var e=(ci.Owner ? ci.Owner.Parent : null);
-      if(!e) return;
+      if((!e)||(e.ReadOnly)) return;
       if((e.OnDown)&&(!ngVal(e.OnDown(ci, e.GetNum()),false))) return;
       e.DoDown();
       if(!ci.Owner.Touching) e.SetFocus();
