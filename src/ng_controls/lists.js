@@ -1630,11 +1630,16 @@ function ngl_ClickItem(it, e)
     if(e.listIgnoreSelect)
     {
       this.ignore_select=new Date().getTime();
+      if(it.OnClickItem) it.OnClickItem(e);
       if(this.OnClickItem) this.OnClickItem(e);
     }
   }
   else
-    if((!e.listIgnoreSelect)&&(this.OnClickItem)) this.OnClickItem(e);
+    if(!e.listIgnoreSelect)
+    {
+      if(it.OnClickItem) it.OnClickItem(e);
+      if(this.OnClickItem) this.OnClickItem(e);
+    }
 }
 
 function ngl_DoMouseEnter(e, mi, elm)
