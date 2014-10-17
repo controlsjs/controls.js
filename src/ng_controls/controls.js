@@ -2971,6 +2971,8 @@ var ngPointersInitialized = false;
 var ngAcceptMouseGestures;
 
 var ngc_docselectinfo=null;
+var ngc_elmfromptcheck=false;
+var ngc_elmfromptrel=true;
 
 function ngc_enabledocselect()
 {
@@ -3034,6 +3036,33 @@ function ngc_ptrevisignored(e)
   return false;
 }
 
+function ngc_elementFromPoint(x,y)
+{
+  if(!document.elementFromPoint) return null;
+  
+  var sx,sy;
+  if((!ngc_elmfromptcheck)||(ngc_elmfromptrel)) {
+    sx=ng_DocumentScrollX();
+    sy=ng_DocumentScrollY();
+  }
+
+  if((!ngc_elmfromptcheck)&&((sy>0)||(sx>0)))
+  {
+    ngc_elmfromptcheck=true;
+    var doc=null;
+    if(sy>0) doc=document.elementFromPoint(0,sy+ng_WindowHeight()-1);
+    else     doc=document.elementFromPoint(sx+ng_WindowWidth()-1, 0);
+    ngc_elmfromptrel = (doc===null)||(doc.tagName.toUpperCase()==='HTML');
+  }
+
+  if(ngc_elmfromptrel)
+  {
+    x-=sx;
+    y-=sy;
+  }
+  return document.elementFromPoint(x,y);
+}
+
 function ngc_ptrstart(c, eid, elm, e, gestures)
 {
   if(!e) e = window.event;
@@ -3056,7 +3085,7 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
      ||(this.TargetX!=this.X)||(this.TargetY!=this.Y))
     {
       var target;
-      if(document.elementFromPoint) target=document.elementFromPoint(this.X, this.Y);
+      if(document.elementFromPoint) target=ngc_elementFromPoint(this.X,this.Y);
       else target = e.target || e.srcElement || e.originalTarget;
       this.Target=target;
       this.TargetX=this.X;
@@ -3773,6 +3802,11 @@ function ngc_DoGetPointerPos(c,e,pi)
   {
     var px=e.gesture.center.pageX;
     var py=e.gesture.center.pageY;
+    if(typeof px === 'undefined')
+    {
+      px=e.gesture.center.clientX+ng_DocumentScrollX();
+      py=e.gesture.center.clientY+ng_DocumentScrollY();
+    }
     if(c)
     {
       if(e.gesture.pointerType===Hammer.POINTER_MOUSE)
@@ -3805,8 +3839,13 @@ function ngc_DoGetPointerPos(c,e,pi)
       oy = 0;
     }
 
-    var px = (e.clientX ? e.clientX : e.offsetX);
-    var py = (e.clientY ? e.clientY : e.offsetY);
+    var px = e.pageX;
+    var py = e.pageY;
+    if(typeof px === 'undefined')
+    {
+      px=e.clientX+ng_DocumentScrollX();
+      py=e.clientY+ng_DocumentScrollY();
+    }
 
     // IE fix, include frame size if not in fullscreen
     if((ngIExplorer)&&(ngIExplorerVersion<=7)&&(screen.width>document.body.offsetWidth)) // fixed in IE8
@@ -4587,14 +4626,14 @@ function nga_DoResizeElement(id)
   for(var i=pobjs.length-1;i>=0;i--)
     nga_DoResizeElement(pobjs[i]);
 
-  c=ngGetControlById(id);
+  var c=ngGetControlById(id);
   if(!c)
   {
-    r=ng_Align(o);
+    var r=ng_Align(o);
     ngAutoResize[id]=ngAutoRSync;
     return;
   }
-  po=c.ParentControl;
+  var po=c.ParentControl;
   while(po)
   {
     if(typeof ngAutoResize[po.ID] !== 'undefined') return;
