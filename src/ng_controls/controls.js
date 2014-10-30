@@ -10049,7 +10049,7 @@ function ngDropDown_Create(def, ref, parent,basetype,dropdownlist)
 
 function ngedn_GetText(e)
 {
-  var n=parseInt(e.Text);
+  var n=parseInt(e.Text,10);
   if((e.Text=='')||(isNaN(n)))
   {
     if(typeof e.DefaultNum!=='undefined')
@@ -10059,8 +10059,8 @@ function ngedn_GetText(e)
     }
     else return e.Text;
   }
-  if((typeof this.MinNum !== 'undefined')&&(n<e.MinNum)) e.Text=''+e.MinNum;
-  if((typeof this.MaxNum !== 'undefined')&&(n>e.MaxNum)) e.Text=''+e.MaxNum;
+  if((typeof e.MinNum !== 'undefined')&&(n<e.MinNum)) e.Text=''+e.MinNum;
+  if((typeof e.MaxNum !== 'undefined')&&(n>e.MaxNum)) e.Text=''+e.MaxNum;
   return e.Text;
 }
 
@@ -10156,10 +10156,13 @@ function ngEditNum_Create(def, ref, parent)
    */
   c.DoUp = function() {
     var n=this.GetNum();
-    var nn=n;
-    if(ngVal(this.StepRound,false)) nn=Math.ceil(n/this.Step)*this.Step;
-    if(n==nn) n+=this.Step;
-    else n=nn;
+    if(typeof n!=='undefined')
+    {
+      var nn=n;
+      if(ngVal(this.StepRound,false)) nn=Math.ceil(n/this.Step)*this.Step;
+      if(n==nn) n+=this.Step;
+      else n=nn;
+    }
     this.SetNum(n);
   }
   /*  Function: DoDown
@@ -10175,10 +10178,13 @@ function ngEditNum_Create(def, ref, parent)
    */
   c.DoDown = function() {
     var n=this.GetNum();
-    var nn=n;
-    if(ngVal(this.StepRound,false))  nn=Math.floor(n/this.Step)*this.Step;
-    if(n==nn) n-=this.Step;
-    else n=nn;
+    if(typeof n!=='undefined')
+    {
+      var nn=n;
+      if(ngVal(this.StepRound,false))  nn=Math.floor(n/this.Step)*this.Step;
+      if(n==nn) n-=this.Step;
+      else n=nn;
+    }
     this.SetNum(n);
   }
   /*  Function: GetNum
@@ -10194,7 +10200,7 @@ function ngEditNum_Create(def, ref, parent)
    */
   c.GetNum = function() {
     if(this.OnGetNum) return this.OnGetNum(this);
-    var n=parseInt(this.GetText());
+    var n=parseInt(this.GetText(),10);
     if(isNaN(n)) return;// undefined;
     if((typeof this.MinNum !== 'undefined')&&(n<this.MinNum)) n=this.MinNum;
     if((typeof this.MaxNum !== 'undefined')&&(n>this.MaxNum)) n=this.MaxNum;
