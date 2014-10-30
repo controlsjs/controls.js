@@ -1907,9 +1907,13 @@ function ngl_KeyDown(e)
 {
   if(!e) e=window.event;
   ngl_FocusTime=new Date().getTime();
+
   var l=ngGetControlById(this.id, 'ngList');
   if((l)&&(l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==l)) return;
+
     e.Owner=l;
     if((l.OnKeyDown)&&(!ngVal(l.OnKeyDown(e),false))) return false;
     var ieKey=e.keyCode;
@@ -2043,6 +2047,8 @@ function ngl_KeyUp(e)
   var l=ngGetControlById(this.id, 'ngList');
   if((l)&&(l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==l)) return;
     e.Owner=l;
     if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
   }

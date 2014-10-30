@@ -8439,6 +8439,9 @@ function nge_KeyDown(e,elm)
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
   if((edit)&&(edit.Enabled))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==edit)) return;
+
     e.Owner=edit;
     if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
     if((edit.LockHintCaretPos)&&(edit.HintVisible))
@@ -8567,6 +8570,9 @@ function nge_KeyPress(e,elm)
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
   if((edit)&&(edit.Enabled))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==edit)) return;
+
     e.Owner=edit;
     if((edit.OnKeyPress)&&(!ngVal(edit.OnKeyPress(e,elm),false))) return false;
   }
@@ -8604,6 +8610,9 @@ function nge_KeyUp(e,elm)
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
   if((edit)&&(edit.Enabled))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==edit)) return;
+
     e.Owner=edit;
     nge_KeyUpHint(edit,elm,'Input');
 
@@ -10330,6 +10339,9 @@ function ngem_KeyPress(e,elm)
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
   if((edit)&&(edit.Enabled))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==edit)) return;
+
     e.Owner=edit;
     if((edit.OnKeyPress)&&(!ngVal(edit.OnKeyPress(e,elm),false))) return false;
   }
@@ -10341,6 +10353,9 @@ function ngem_KeyDown(e,elm)
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
   if((edit)&&(edit.Enabled))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==edit)) return;
+
     e.Owner=edit;
     if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
 
@@ -10384,6 +10399,9 @@ function ngem_KeyUp(e,elm)
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
   if((edit)&&(edit.Enabled))
   {
+    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
+    if((et)&&(et!==edit)) return;
+
     e.Owner=edit;
     nge_KeyUpHint(edit,elm,'Input');
 
