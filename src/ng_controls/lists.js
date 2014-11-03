@@ -1911,29 +1911,14 @@ function ngl_KeyDown(e)
   var l=ngGetControlById(this.id, 'ngList');
   if((l)&&(l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
   {
+    var edit=l.DropDownOwner;
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
-    if((et)&&(et!==l)) return;
+    if((et)&&(et!==l)&&(et!=edit)) return;
 
     e.Owner=l;
     if((l.OnKeyDown)&&(!ngVal(l.OnKeyDown(e),false))) return false;
+    
     var ieKey=e.keyCode;
-
-    var edit=this.DropDownOwner;
-    if((edit)&&(ngVal(edit.Suggestion,false))) // Suggestion keys
-    {
-      switch(ieKey)
-      {
-        case 33: // PgUp
-        case 34: // PgDown
-        case 38: // Up
-        case 35: // End
-        case 36: // Home
-        case 40: // Down
-          ieKey=0;
-          break;
-      }
-      edit.SetFocus();
-    }
     switch(ieKey)
     {
       case 9:  // Tab
@@ -2047,8 +2032,9 @@ function ngl_KeyUp(e)
   var l=ngGetControlById(this.id, 'ngList');
   if((l)&&(l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
   {
+    var edit=l.DropDownOwner;
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
-    if((et)&&(et!==l)) return;
+    if((et)&&(et!==l)&&(et!=edit)) return;
     e.Owner=l;
     if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
   }
