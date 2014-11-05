@@ -976,7 +976,7 @@ function ngCreateControl(d,ref,parent)
       c.DesignInfo=d.DesignInfo;
     }
     delete d.DesignInfo;
-  } 
+  }
   else delete c.DesignInfo;
 
   return c;
@@ -3039,7 +3039,7 @@ function ngc_ptrevisignored(e)
 function ngc_elementFromPoint(x,y)
 {
   if(!document.elementFromPoint) return null;
-  
+
   var sx,sy;
   if((!ngc_elmfromptcheck)||(ngc_elmfromptrel)) {
     sx=ng_DocumentScrollX();
@@ -3300,12 +3300,12 @@ function ngc_ptrend(e)
   {
     c=ngCurrentPtrDblClick; // IE<9 doesn't fire MouseDown on double click
     if(!c) return false;
-    
+
     var dci=c.DblClickInfo;
     if(dci)
     {
       var pi=c.PointerInfo;
-      if(pi) 
+      if(pi)
       {
         var threshold = (pi.Touch ? ngDblClickTouchThreshold : ngDblClickMouseThreshold);
         if((Math.abs(pi.X-dci.X)<threshold)&&(Math.abs(pi.Y-dci.Y)<threshold))
@@ -9107,7 +9107,7 @@ function nge_DropDown()
     {
       top=pos.y-lh;
     }
-    else 
+    else
     {
       if(pos.y+eh+lh>wh) {
         top=wh-lh;
@@ -9118,6 +9118,9 @@ function nge_DropDown()
     o.style.left=left+'px';
     o.style.top=top+'px';
     o.style.zIndex='100000';
+
+    l.Bounds.L=left;
+    l.Bounds.T=top;
 
     l.Update();
     if(typeof l.DoDropDownFinished === 'function') l.DoDropDownFinished(this);
@@ -10301,7 +10304,7 @@ function ngem_SetHintCaret(c)
     p=hint.indexOf('\n');
     if(p<0) p=hint.indexOf('\r');
     if(p<0) p=hint.length;
-  }  
+  }
   c.SetCaretPos(p);
 }
 
