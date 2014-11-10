@@ -11827,7 +11827,8 @@ function ngtbc_OnSetVisible(c,v)
   if(c.Visible!=v)
   {
     c.Visible=v;
-    c.ParentControl.Update();
+    if(v) c.Update(true);
+    c.ParentControl.Update(false);
     if(c.OnVisibleChanged) c.OnVisibleChanged(c);
   }
   return false;
