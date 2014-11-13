@@ -664,7 +664,7 @@
   padding-left:15px;
   padding-right:15px;
 }
-.wePagesDarkPageSelected_Focus .wePagesDarkPageText  
+.wePagesDarkPageSelected_Focus .wePagesDarkPageText
 .wePagesDarkPageSelected .wePagesDarkPageText { color:#1F1F1F; }
 .wePagesDarkPage_Focus .wePagesDarkPageText, .wePagesDarkPage .wePagesDarkPageText { color:#FFFFFF; }
 .wePagesLightPage_Focus .wePagesLightPageText, .wePagesLightPage .wePagesLightPageText { color:#1F1F1F; }
@@ -1345,3 +1345,15 @@ TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
 }
 .weSplitButtonDarkBtnChecked, .weSplitButtonDarkBtnChecked_Focus { color:#1F1F1F; }
 .weSplitButtonDarkBtnDisabled, .weSplitButtonDarkBtnDisabled_Focus { color:#BABABA; }
+
+.weColorPickerSliderLight,
+.weColorPickerSatValLight
+{
+ border: 2px solid #bababa;
+}
+
+.weColorPickerSliderDark,
+.weColorPickerSatValDark
+{
+ border: 2px solid #ffffff;
+}

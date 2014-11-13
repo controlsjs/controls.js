@@ -32,8 +32,8 @@ var WinEightControls = {
   },
 
   ControlImages: [
-    'img/we_base.png?1',
-    'img/we_hbox.png?1',
+    'img/we_base.png?2',
+    'img/we_hbox.png?2',
     'img/we_vbox.png?1',
     'img/we_icons.png?1',
 
@@ -120,11 +120,11 @@ var WinEightControls = {
       RightImgBtnReq: { L: 157, T: 207, W: 2, H: 32, SL: 157, DL: 125, oL: 190, oSL: 157 }
     },
     EditDark: {
-      LeftImg: { L: 0, T: 198, H: 32, DT: 264, Src: 1, oT: 231, ST: 198, oST: 198, W: 15 },
-      LeftImgBtn: { L: 0, T: 198, H: 32, DT: 264, Src: 1, oT: 231, ST: 198, oST: 198, W: 2 },
+      LeftImg: { L: 268, T: 243, H: 32, DL: 300, oL: 284, SL: 268, oSL: 268, W: 15 },
+      LeftImgBtn: { L: 268, T: 243, H: 32, DL: 300, oL: 284, SL: 268, oSL: 268, W: 2 },
       MiddleImg: { L: 0, T: 198, H: 32, DT: 264, Src: 1, oT: 231, ST: 198, oST: 198 },
-      RightImg: { L: 0, T: 198, H: 32, DT: 264, Src: 1, oT: 231, ST: 198, oST: 198, W: 15 },
-      RightImgBtn: { L: 0, T: 198, H: 32, DT: 264, Src: 1, oT: 231, ST: 198, oST: 198, W: 2 },
+      RightImg: { L: 268, T: 243, H: 32, DL: 300, oL: 284, SL: 268, oSL: 268, W: 15 },
+      RightImgBtn: { L: 268, T: 243, H: 32, DL: 300, oL: 284, SL: 268, oSL: 268, W: 2 },
       LeftImgReq: { L: 128, T: 207, W: 15, H: 32, DL: 193, oL: 161, SL: 128, oSL: 128 },
       LeftImgBtnReq: { L: 128, T: 207, W: 2, H: 32, DL: 193, oL: 161, SL: 128, oSL: 128 },
       MiddleImgReq: { L: 0, T: 132, H: 32, DT: 264, Src: 1, oT: 165, ST: 132, oST: 132 },
@@ -162,14 +162,14 @@ var WinEightControls = {
     },
 
     MemoDark: {
-      LeftTop: { L: 0, T: 199, W: 15, H: 13, DT: 101, Src: 1, oT: 231, ST: 199, oST: 199 },
+      LeftTop: { L: 268, T: 243, W: 15, H: 13, DL: 300, oL: 284, SL: 268, oSL: 268 },
       Top: { L: 0, T: 199, H: 13, DT: 101, Src: 1, oT: 231, ST: 199, oST: 199 },
-      RightTop: { L: 0, T: 199, W: 15, H: 13, DT: 101, Src: 1, oT: 231, ST: 199, oST: 199 },
+      RightTop: { L: 268, T: 243, W: 15, H: 13, DL: 300, oL: 284, SL: 268, oSL: 268 },
       Left: { L: 0, T: 0, W: 15, DL: 109, Src: 2, oL: 48, SL: 0, oSL: 0 },
       Right: { L: 0, T: 0, W: 15, DL: 110, Src: 2, oL: 47, SL: 0, oSL: 0 },
-      LeftBottom: { L: 0, T: 217, W: 15, H: 13, DT: 116, Src: 1, oT: 250, ST: 217, oST: 217 },
+      LeftBottom: { L: 268, T: 262, W: 15, H: 13, DL: 300, oL: 284, SL: 268, oSL: 268 },
       Bottom: { L: 0, T: 217, H: 13, DT: 116, Src: 1, oT: 250, ST: 217, oST: 217 },
-      RightBottom: { L: 0, T: 217, W: 15, H: 13, DT: 116, Src: 1, oT: 250, ST: 217, oST: 217 }
+      RightBottom: { L: 268, T: 262, W: 15, H: 13, DL: 300, oL: 284, SL: 268, oSL: 268 }
     },
     MemoReqDark: {
       LeftTop: { L: 128, T: 207, W: 15, H: 13, DL: 193, oL: 161, SL: 128, oSL: 128 },
@@ -370,6 +370,49 @@ var WinEightControls = {
 
     CalendarImgDayLight: { L: -33, T: 297, W: 33, H: 33, oL: 0, oSL: 0, DL: -33, Src: 1 },
     CalendarImgDayDark: { L: 0, T: -33, W: 33, H: 33, Src: 1, oT: 693, DT: -33 },
+
+    ColorButtonLight: {
+      LeftImg: { L: 0, T: 207, H: 32, W: 2, DL: 96 },
+      MiddleImg: { L: 0, T: 726, H: 32, DT: 759, Src: 1 },
+      RightImg: { L: 0, T: 207, H: 32, W: 2, DL: 96 },
+      Background: { L: 5, T: 858, H: 28, Src: 1 }
+    },
+    ColorButtonDark: {
+      LeftImg: { L: 268, T: 243, H: 32, W: 2, DL: 300 },
+      MiddleImg: { L: 0, T: 792, H: 32, DT: 825, Src: 1 },
+      RightImg: { L: 268, T: 243, H: 32, W: 2, DL: 300 },
+      Background: { L: 5, T: 858, H: 28, Src: 1 }
+    },
+    ColorPickerLight: {
+      HorizontalSliderCursor: { L: 283, T: 170, W: 16, H: 28 },
+      VerticalSliderCursor: { L: 321, T: 170, W: 28, H: 16 },
+      AlphaSliderBackground: { L: 0, T: 860, H: 28, Src: 1 },
+      PreviewIcon: { L: 0, T: 928, W: 33, H: 32, Src: 3 },
+      SatValCursor: { L: 355, T: 170, W: 10, H: 10}
+    },
+    ColorPickerDark: {
+      HorizontalSliderCursor: { L: 300, T: 170, W: 16, H: 28 },
+      VerticalSliderCursor: { L: 321, T: 187, W: 28, H: 16 },
+      AlphaSliderBackground: { L: 0, T: 860, H: 28, Src: 1 },
+      PreviewIcon: { L: 33, T: 928, W: 33, H: 32, Src: 3 },
+      SatValCursor: { L: 355, T: 187, W: 10, H: 10}
+    },
+    ColorPickerDropDownLight: {
+      DropDownButton: {
+        LeftImg: { L: 0, T: 209, H: 28, W: 2, DL: 96, SL: 64 },
+        LeftImgReq: { L: 128, T: 209, H: 28, W: 2, DL: 64 },
+        Background: { L: 5, T: 860, H: 28, Src: 1 },
+        Img: { L: -80, T: -28, H: 28, W: 80 }
+      }
+    },
+    ColorPickerDropDownDark: {
+      DropDownButton: {
+        LeftImg: { L: 0, T: 308, H: 28, W: 2, DL: 32, SL: 0, oL: 16, oDL: 32, oSL: 0 },
+        LeftImgReq: { L: 128, T: 209, H: 28, W: 2, oL: 161, DL: 32, DT:308, oDL: 32 },
+        Background: { L: 5, T: 860, H: 28, Src: 1 },
+        Img: { L: -76, T: -28, H: 28, W: 76 }
+      }
+    },
 
     SubMenuLight: { L: 0, T: 768, W: 32, H: 32, Src: 3, SL: 33, DL: 66, oL: 33 },
     SubMenuDark: { L: 33, T: 768, W: 32, H: 32, Src: 3, SL: 0, DL: 66, oL: 0 },
@@ -2703,6 +2746,621 @@ var WinEightControls = {
       }
 
       ngRegisterControlType('weEditTime', function(def,ref,parent) { return Create_weEditTime(def,ref,parent); });
+    }
+
+    /**
+     * Color Controls
+     */
+    if(ngUserControls['ngColorControls'])
+    {
+
+      /**  Class: weColorPickerBox
+       *  Standard color picker box control (based on <ngColorPickerBox>).
+       */
+      ngRegisterControlType('weColorPickerBox', function(def,ref,parent) {
+        var th = theme(def);
+        var images = (th) ? winimages.ColorPickerLight : winimages.ColorPickerDark;
+
+        ng_MergeDef(def, {
+          className: (th) ? 'weColorPickerLight' : 'weColorPickerDark',
+          Data: {
+            AutoHeight: true,
+            AsToolbar: true,
+            Vertical: true
+          },
+          Controls: {
+            ModeBar: {
+              L:0, R:0, H:42,
+              Controls: {
+                Bar: {
+                  L:10, R:10, T:10, H:32,
+                  Controls: {
+                    Env_H_SV: {
+                      L:0, T:0, W:'33%', B:0,
+                      Controls: {
+                        H_SV: {
+                          L:0, T:0, R:1,
+                          Type: 'weButton', Theme: th,
+                          Events: { OnClick: function(){this.Check(true);return true;}}
+                        }
+                      }
+                    },
+                    Env_HSV: {
+                      L:'33%', R:'33%', T:0, B:0,
+                      Controls: {
+                        HSV: {
+                          L:1, R:1, T:0,
+                          Type: 'weButton', Theme: th,
+                          Events: { OnClick: function(){this.Check(true);return true;}}
+                        }
+                      }
+                    },
+                    Env_RGB: {
+                      R:0,T:0, W:'33%', B:0,
+                      Controls: {
+                        RGB: {
+                          R:0,T:0, L:1,
+                          Type: 'weButton', Theme: th,
+                          Events: { OnClick: function(){this.Check(true);return true;}}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              Events:{
+                OnModeChanged: function(mode){
+                  var showLabels = (mode !== 'h_sv');
+                  var sliderTop = (mode === 'h_sv') ? 10: 32;
+                  var sliderPanelH = (mode === 'h_sv') ? 42: 64;
+
+                  var controls = this.Owner;
+                  controls.HueLabel.SetVisible(showLabels);
+                  controls.AlphaLabel.SetVisible(showLabels);
+                  controls.SatValLabel.SetVisible(showLabels);
+                  controls.FromLabel.SetVisible(showLabels);
+                  controls.ToLabel.SetVisible(showLabels);
+                  controls.Hue.SetBounds({T:sliderTop});
+                  controls.Alpha.SetBounds({T:sliderTop});
+                  controls.SatVal.SetBounds({T:sliderTop});
+                  controls.From.SetBounds({T:sliderTop});
+                  controls.To.SetBounds({T:sliderTop});
+                  controls.PreviewIcon.SetBounds({T:sliderTop});
+                  controls.Hue_Panel.SetBounds({H:sliderPanelH});
+                  controls.Alpha_Panel.SetBounds({H:sliderPanelH});
+                  controls.Preview_Panel.SetBounds({H:sliderPanelH});
+                  controls.Hue_Panel.Update();
+                  controls.Alpha_Panel.Update();
+                  controls.Preview_Panel.Update();
+                }
+              }
+            },
+            Hue_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Hue: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  }
+                },
+                HueEdit: {
+                  Type: 'weEdit',
+                  R:10,W:80,T:32,
+                  Theme: th
+                },
+                HueLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Saturation_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Saturation: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  }
+                },
+                SaturationEdit: {
+                  Type: 'weEdit',
+                  R:10, W:80, T:32,
+                  Theme: th
+                },
+                SaturationLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Value_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Value: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  }
+                },
+                ValueEdit: {
+                  Type: 'weEdit',
+                  R:10, W:80, T:32,
+                  Theme: th
+                },
+                ValueLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Red_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Red: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  }
+                },
+                RedEdit: {
+                  Type: 'weEdit',
+                  R:10, W:80, T:32,
+                  Theme: th
+                },
+                RedLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Green_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Green: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  }
+                },
+                GreenEdit: {
+                  Type: 'weEdit',
+                  R:10, W:80, T:32,
+                  Theme: th
+                },
+                GreenLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Blue_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Blue: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  }
+                },
+                BlueEdit: {
+                  Type: 'weEdit',
+                  R:10, W:80, T:32,
+                  Theme: th
+                },
+                BlueLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Alpha_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                Alpha: {
+                  L:10,T:32,R:10,H:28,
+                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+                  Data: {
+                    WithEditBounds: { R:92 },
+                    WithoutEditBounds: { R:10 }
+                  },
+                  Controls: {
+                    Plane: {
+                      Data: { Img: images.AlphaSliderBackground }
+                    }
+                  }
+                },
+                AlphaEdit: {
+                  Type: 'weEdit',
+                  R:10, W:80, T:32,
+                  Theme: th
+                },
+                AlphaLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            SatVal_Panel: {
+              L:0,H:258,R:0,
+              Controls: {
+                SatVal: {
+                  L:10,R:10,T:32,B:0,
+                  className: (th) ? 'weColorPickerSatValLight' : 'weColorPickerSatValDark',
+                  Controls: {
+                    Cursor: {
+                      Type: 'ngImage',
+                      Data: { Img: images.SatValCursor }
+                    }
+                  }
+                },
+                SatValLabel: {
+                  Type: 'weLabel',
+                  L:10,R:10,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Hex_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                AHexEdit: {
+                  Type: 'weEdit',
+                  L:10,W:120,T:32,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                },
+                HexEdit: {
+                  Type: 'weEdit',
+                  R:10,W:120,T:32,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                },
+                HexLabel: {
+                  Type: 'weLabel',
+                  R:10,W:140,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'right' }
+                },
+                AHexLabel: {
+                  Type: 'weLabel',
+                  L:10,W:140,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Preview_Panel: {
+              L:0,R:0,H:64,
+              Controls: {
+                From: {
+                  Type: 'weColorButton',
+                  L:10, T:32, W:120,
+                  Theme: th
+                },
+                FromLabel: {
+                  Type: 'weLabel',
+                  L:10,W:140,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'left' }
+                },
+                To: {
+                  Type: 'weColorButton',
+                  R:10, T:32, W:120,
+                  Theme: th
+                },
+                ToLabel: {
+                  Type: 'weLabel',
+                  R:10,W:140,T:0,
+                  Theme: th,
+                  Data: { TextAlign: 'right' }
+                },
+                PreviewIcon: {
+                  Type: 'ngButton',
+                  L:'50%',T:32,
+                  style: { marginLeft: '-16px' },
+                  Data: { Img: images.PreviewIcon }
+                }
+              }
+            }
+          }
+        });
+
+        var hs = images.HorizontalSliderCursor;
+        var vs = images.VerticalSliderCursor;
+
+        ng_MergeDef(def, {
+          Controls: {
+            Hue_Panel: {Controls: {Hue: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Hue_Panel.Controls.Hue.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Saturation_Panel: {Controls: {Saturation: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Saturation_Panel.Controls.Saturation.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Value_Panel: {Controls: {Value :{Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Value_Panel.Controls.Value.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Red_Panel: {Controls: {Red: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Red_Panel.Controls.Red.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Green_Panel: {Controls: {Green: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Green_Panel.Controls.Green.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Blue_Panel: {Controls: {Blue: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Blue_Panel.Controls.Blue.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Alpha_Panel: {Controls: {Alpha: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Alpha_Panel.Controls.Alpha.Data.Vertical)? vs : hs
+              }
+            }}}}}
+          }
+        });
+
+        var c = ngCreateControlAsType(def, 'ngColorPickerBox', ref, parent);
+        if(!c){return c;}
+
+        c.DoAutoHeight = function(height){return height+10;}
+
+        return c;
+      });
+
+      /**  Class: weColorButton
+       *  Standard color button control (based on <ngColorButton>).
+       */
+      ngRegisterControlType('weColorButton', function(def,ref,parent) {
+        var th = theme(def);
+        var images = (th) ? winimages.ColorButtonLight
+          : winimages.ColorButtonDark;
+
+        ng_MergeDef(def, {
+          Data: {
+            BackgroundImg: images.Background,
+            LeftImg: images.LeftImg,
+            MiddleImg: images.MiddleImg,
+            RightImg:images.RightImg
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngColorButton', ref, parent);
+
+      });
+
+      /**  Class: weColorPickerDropDown
+       *  Standard color picker drop down control (based on <weDropDown>).
+       */
+      ngRegisterControlType('weColorPickerDropDown', function(def,ref,parent) {
+        var th = theme(def);
+
+        ng_MergeDef(def, {
+          CreateFrom: 'weDropDown',
+          Data: {
+            TextAlign: 'center',
+            DropDownAlign: 'right'
+          },
+          DropDown: {
+            W:296, H:418,
+            Type: 'weColorPickerBox',
+            Theme: WE_LIGHT,
+            Layout : (def.Data && (def.Data.AllowAlpha === false)) ? ngCopLayout_Default : ngCopLayout_Default | ngColorPickerA,
+            Data: {
+              AutoHeight: true,
+              MaxHeight: 600
+            },
+            Controls: {
+              ModeBar: {
+                Events:{
+                  OnModeChanged: function(mode){
+                    var edit = this.Owner.Owner.Owner;
+                    if(edit.DropDownControl.Visible){
+                      edit.DropDown();
+                    }
+                  }
+                }
+              },
+              Hue_Panel: {}, Saturation_Panel: {}, Value_Panel: {},
+              Red_Panel: {}, Green_Panel: {}, Blue_Panel: {},
+              Alpha_Panel: {},
+              SatVal_Panel: {
+                H: (def.Data && (def.Data.AllowAlpha === false)) ? 236 : 194
+              },
+              Hex_Panel: {}, Preview_Panel: {},
+              Buttons: {
+                Type: 'ngPanel',
+                L:0,R:0,H:42,
+                Controls: {
+                  Submit: {
+                    Type: 'weButton',
+                    L:10,T:10, W:133,
+                    Theme: WE_LIGHT
+                  },
+                  Cancel: {
+                    Type: 'weButton',
+                    R:10,T:10, W:133,
+                    Theme: WE_LIGHT
+                  }
+                }
+              }
+            }
+          },
+          Events: {
+            OnFocus: function(){
+              this.DropDownButton.Check(true);
+            },
+            OnBlur: function(){
+              this.DropDownButton.Check(false);
+            },
+            OnSetInvalid: function(edit,state){
+              var th = this.DropDownButton.Theme;
+              var images = (th)
+                ? winimages.ColorPickerDropDownLight.DropDownButton
+                : winimages.ColorPickerDropDownDark.DropDownButton;
+              this.DropDownButton.LeftImg = (state)
+                ? images.LeftImgReq : images.LeftImg;
+              this.DropDownButton.Update();
+              return true;
+            },
+            OnMouseEnter: function(edit){
+              if(this.DropDownButton){
+                this.DropDownButton.DoMouseEnter();
+              }
+            },
+            OnMouseLeave: function(edit){
+              if(this.DropDownButton){
+                this.DropDownButton.DoMouseLeave();
+              }
+            }
+          }
+        });
+
+        var c = ngCreateControlAsType(def, 'ngColorPickerDropDown', ref, parent);
+        if(!c) return c;
+
+        var images = (th)
+          ? winimages.ColorPickerDropDownLight.DropDownButton
+          : winimages.ColorPickerDropDownDark.DropDownButton;
+        var req = !!c.Invalid;
+
+        c.DropDownButton.BackgroundImg = images.Background;
+        c.DropDownButton.LeftImg = (req) ? images.LeftImgReq : images.LeftImg;
+        c.DropDownButton.Img = images.Img;
+        c.DropDownButton.MiddleImg = null;
+        c.DropDownButton.RightImg = null;
+        c.DropDownButton.Default = false;
+        c.DropDownButton.Theme = th;
+        c.DropDownButton.AddEvent('OnUpdate',function(){
+          this.Elm().style.marginTop = '2px';
+          return true;
+        });
+        return c;
+      });
+
+      /**  Class: weColorPickerHint
+       *  Standard color picker hint control (based on <weHint>).
+       */
+
+      ngRegisterControlType('weColorPickerHint', function(def,ref,parent) {
+        var th = theme(def);
+
+        var layout = ngCopLayout_Default | ngColorPickerHex | ngColorPickerAHex;
+        if(def.Data && (def.Data.AllowAlpha) !== false){ layout = layout | ngColorPickerA; }
+
+
+        ng_MergeDef(def, {
+          CreateFrom: 'weHint',
+          Controls: {
+            Picker: {
+              Type: 'weColorPickerBox',
+              Theme: WE_LIGHT,
+              Data: { AutoHeight: true },
+              W:296,
+              Layout : layout,
+              Controls: {
+                ModeBar: {
+                  Events:{
+                    OnModeChanged: function(mode){
+                      var picker = this.Owner.Owner;
+                      picker.ParentControl.ParentControl.Update(false);
+                    }
+                  }
+                },
+                Hue_Panel: {}, Saturation_Panel: {}, Value_Panel: {},
+                Red_Panel: {}, Green_Panel: {}, Blue_Panel: {},
+                Alpha_Panel: {},
+                SatVal_Panel: {
+                  H: (def.Data && (def.Data.AllowAlpha === false)) ? 236 : 194
+                },
+                Hex_Panel: {}, Preview_Panel: {},
+                Buttons: {
+                  Type: 'ngPanel',
+                  L:0,R:0,H:42,
+                  Controls: {
+                    Submit: {
+                      Type: 'weButton',
+                      L:10,T:10, W:133,
+                      Theme: WE_LIGHT
+                    },
+                    Cancel: {
+                      Type: 'weButton',
+                      R:10,T:10, W:133,
+                      Theme: WE_LIGHT
+                    }
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngColorPickerHint', ref, parent);
+      });
+
+      /**  Class: weColorPickerButton
+       *  Standard color picker button control (based on <weColorButton>).
+       */
+
+      ngRegisterControlType('weColorPickerButton', function(def,ref,parent) {
+        var th = theme(def);
+
+        ng_MergeDef(def, {
+          CreateFrom: 'weColorButton',
+          Data: {
+            HintDef: {
+              Type: 'weColorPickerHint',
+              Theme: th
+            }
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngColorPickerButton', ref, parent);
+      });
     }
 
     /**
