@@ -743,93 +743,96 @@ var WireframeControls = {
       return Create_wfrColorEdit(def,ref,parent);
     });
 
-    /*  Class: wfrMaskEdit
-     *  "Wireframe" skin mask edit control (based on <ngMaskEdit>).
-     */
-    function Create_wfrMaskEdit(def, ref, parent)
+    if (ngUserControls['controls_ext'])
     {
-      if (typeof(def.Data)==='undefined') def.Data = new Object();
-      var invalid = ngVal(def.Data.Invalid, false);
+      /*  Class: wfrMaskEdit
+       *  "Wireframe" skin mask edit control (based on <ngMaskEdit>).
+       */
+      function Create_wfrMaskEdit(def, ref, parent)
+      {
+        if (typeof(def.Data)==='undefined') def.Data = new Object();
+        var invalid = ngVal(def.Data.Invalid, false);
 
-      if(typeof def.className === 'undefined'){
-        def.className = 'wfrMaskEdit';
-      }
+        if(typeof def.className === 'undefined'){
+          def.className = 'wfrMaskEdit';
+        }
 
-      delete def.H;
-      ng_MergeDef(def, {
-        H: WFRImages.Edit.MiddleImg.H,
-        Data: {
-          LeftDef: {
-            W: WFRImages.Edit.LeftImg.W,
-            Data: {
-              LeftImg: (invalid ? WFRImages.Edit.LeftImgReq : WFRImages.Edit.LeftImg),
-              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
-              RightImg: null
-            }
-          },
-          EditDef: {
-            Type: 'wfrEdit',
-            Data: {
-              LeftImg: null,
-              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
-              RightImg: null
-            }
-          },
-          StaticDef: {
-            Type: 'wfrLabel',
-            Data: {
-              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg)
-            }
-          },
-          RightDef: {
-            W: WFRImages.Edit.RightImg.W,
-            Data: {
-              LeftImg: null,
-              MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
-              RightImg: (invalid ? WFRImages.Edit.RightImgReq : WFRImages.Edit.RightImg)
+        delete def.H;
+        ng_MergeDef(def, {
+          H: WFRImages.Edit.MiddleImg.H,
+          Data: {
+            LeftDef: {
+              W: WFRImages.Edit.LeftImg.W,
+              Data: {
+                LeftImg: (invalid ? WFRImages.Edit.LeftImgReq : WFRImages.Edit.LeftImg),
+                MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+                RightImg: null
+              }
+            },
+            EditDef: {
+              Type: 'wfrEdit',
+              Data: {
+                LeftImg: null,
+                MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+                RightImg: null
+              }
+            },
+            StaticDef: {
+              Type: 'wfrLabel',
+              Data: {
+                MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg)
+              }
+            },
+            RightDef: {
+              W: WFRImages.Edit.RightImg.W,
+              Data: {
+                LeftImg: null,
+                MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+                RightImg: (invalid ? WFRImages.Edit.RightImgReq : WFRImages.Edit.RightImg)
+              }
             }
           }
+        });
+
+        var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
+        if (!c) return c;
+
+        c.DoSetInvalid = function (ctrl, state, update) {
+          if (typeof(ctrl)==='undefined') return false;
+          state  = ngVal(state, true);
+          update = ngVal(update, true);
+
+          if (!state)
+          {
+            if (ctrl.LeftImg)   ctrl.LeftImg   = WFRImages.Edit.LeftImg;
+            if (ctrl.MiddleImg) ctrl.MiddleImg = WFRImages.Edit.MiddleImg;
+            if (ctrl.RightImg)  ctrl.RightImg  = WFRImages.Edit.RightImg;
+          } else
+          {
+            if (ctrl.LeftImg)   ctrl.LeftImg   = WFRImages.Edit.LeftImgReq;
+            if (ctrl.MiddleImg) ctrl.MiddleImg = WFRImages.Edit.MiddleImgReq;
+            if (ctrl.RightImg)  ctrl.RightImg  = WFRImages.Edit.RightImgReq;
+          }
+
+          ctrl.Elm().className = (!state) ? ctrl.BaseClassName : ctrl.BaseClassName+' '+ctrl.BaseClassName+'_Invalid';
+
+          if (update)
+          {
+            var focus = (c.HasFocus ? 1 : 0);
+
+            if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
+            if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
+            if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
+          }
+
+          return true;
         }
-      });
 
-      var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
-      if (!c) return c;
-
-      c.DoSetInvalid = function (ctrl, state, update) {
-        if (typeof(ctrl)==='undefined') return false;
-        state  = ngVal(state, true);
-        update = ngVal(update, true);
-
-        if (!state)
-        {
-          if (ctrl.LeftImg)   ctrl.LeftImg   = WFRImages.Edit.LeftImg;
-          if (ctrl.MiddleImg) ctrl.MiddleImg = WFRImages.Edit.MiddleImg;
-          if (ctrl.RightImg)  ctrl.RightImg  = WFRImages.Edit.RightImg;
-        } else
-        {
-          if (ctrl.LeftImg)   ctrl.LeftImg   = WFRImages.Edit.LeftImgReq;
-          if (ctrl.MiddleImg) ctrl.MiddleImg = WFRImages.Edit.MiddleImgReq;
-          if (ctrl.RightImg)  ctrl.RightImg  = WFRImages.Edit.RightImgReq;
-        }
-
-        ctrl.Elm().className = (!state) ? ctrl.BaseClassName : ctrl.BaseClassName+' '+ctrl.BaseClassName+'_Invalid';
-
-        if (update)
-        {
-          var focus = (c.HasFocus ? 1 : 0);
-
-          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
-          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
-          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
-        }
-
-        return true;
+        return c;
       }
-
-      return c;
+      ngRegisterControlType('wfrMaskEdit', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
+      ngRegisterControlType('wfrMaskEditBox', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
     }
-    ngRegisterControlType('wfrMaskEdit', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
-    ngRegisterControlType('wfrMaskEditBox', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
 
     /** Class: wfrDropDown
      *  "Wireframe" skin drop down control (based on <ngDropDown>).

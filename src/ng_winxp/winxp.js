@@ -855,87 +855,90 @@ var WinXPControls = {
     ngRegisterControlType('stdColorEdit', function(def,ref,parent) { return Create_stdColorEdit(def,ref,parent); });
     ngRegisterControlType('stdColorEditBox', function(def,ref,parent) { return Create_stdColorEdit(def,ref,parent); });
 
-    /*  Class: stdMaskEdit
-     *  Standard mask edit control (based on <ngMaskEdit>).
-     */
-    function Create_stdMaskEdit(def, ref, parent)
+    if (ngUserControls['controls_ext'])
     {
-      if (typeof(def.Data)==='undefined') def.Data = new Object();
-      var invalid = ngVal(def.Data.Invalid, false);
+      /*  Class: stdMaskEdit
+       *  Standard mask edit control (based on <ngMaskEdit>).
+       */
+      function Create_stdMaskEdit(def, ref, parent)
+      {
+        if (typeof(def.Data)==='undefined') def.Data = new Object();
+        var invalid = ngVal(def.Data.Invalid, false);
 
-      delete def.H;
-      ng_MergeDef(def, {
-        H: winimages.Edit.MiddleImg.H,
-        Data: {
-          LeftDef: {
-            W: winimages.Edit.LeftImg.W,
-            Data: {
-              LeftImg: (invalid ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg),
-              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
-              RightImg: null
-            }
-          },
-          EditDef: {
-            Type: 'stdEdit',
-            Data: {
-              LeftImg: null,
-              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
-              RightImg: null
-            }
-          },
-          StaticDef: {
-            Type: 'stdLabel',
-            Data: {
-              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg)
-            }
-          },
-          RightDef: {
-            W: winimages.Edit.RightImg.W,
-            Data: {
-              LeftImg: null,
-              MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
-              RightImg: (invalid ? winimages.Edit.RightImgReq : winimages.Edit.RightImg)
+        delete def.H;
+        ng_MergeDef(def, {
+          H: winimages.Edit.MiddleImg.H,
+          Data: {
+            LeftDef: {
+              W: winimages.Edit.LeftImg.W,
+              Data: {
+                LeftImg: (invalid ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg),
+                MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+                RightImg: null
+              }
+            },
+            EditDef: {
+              Type: 'stdEdit',
+              Data: {
+                LeftImg: null,
+                MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+                RightImg: null
+              }
+            },
+            StaticDef: {
+              Type: 'stdLabel',
+              Data: {
+                MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg)
+              }
+            },
+            RightDef: {
+              W: winimages.Edit.RightImg.W,
+              Data: {
+                LeftImg: null,
+                MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+                RightImg: (invalid ? winimages.Edit.RightImgReq : winimages.Edit.RightImg)
+              }
             }
           }
+        });
+
+        var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
+        if (!c) return c;
+
+        c.DoSetInvalid = function (ctrl, state, update) {
+          if (typeof(ctrl)==='undefined') return false;
+          state  = ngVal(state, true);
+          update = ngVal(update, true);
+
+          if (!state)
+          {
+            if (ctrl.LeftImg)   ctrl.LeftImg   = winimages.Edit.LeftImg;
+            if (ctrl.MiddleImg) ctrl.MiddleImg = winimages.Edit.MiddleImg;
+            if (ctrl.RightImg)  ctrl.RightImg  = winimages.Edit.RightImg;
+          } else
+          {
+            if (ctrl.LeftImg)   ctrl.LeftImg   = winimages.Edit.LeftImgReq;
+            if (ctrl.MiddleImg) ctrl.MiddleImg = winimages.Edit.MiddleImgReq;
+            if (ctrl.RightImg)  ctrl.RightImg  = winimages.Edit.RightImgReq;
+          }
+
+          if (update)
+          {
+            var focus = (c.HasFocus ? 1 : 0);
+
+            if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
+            if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
+            if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
+          }
+
+          return true;
         }
-      });
 
-      var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
-      if (!c) return c;
-
-      c.DoSetInvalid = function (ctrl, state, update) {
-        if (typeof(ctrl)==='undefined') return false;
-        state  = ngVal(state, true);
-        update = ngVal(update, true);
-
-        if (!state)
-        {
-          if (ctrl.LeftImg)   ctrl.LeftImg   = winimages.Edit.LeftImg;
-          if (ctrl.MiddleImg) ctrl.MiddleImg = winimages.Edit.MiddleImg;
-          if (ctrl.RightImg)  ctrl.RightImg  = winimages.Edit.RightImg;
-        } else
-        {
-          if (ctrl.LeftImg)   ctrl.LeftImg   = winimages.Edit.LeftImgReq;
-          if (ctrl.MiddleImg) ctrl.MiddleImg = winimages.Edit.MiddleImgReq;
-          if (ctrl.RightImg)  ctrl.RightImg  = winimages.Edit.RightImgReq;
-        }
-
-        if (update)
-        {
-          var focus = (c.HasFocus ? 1 : 0);
-
-          if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
-          if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
-          if (ctrl.RightImg)  ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IR', focus, ctrl.Enabled, ctrl.RightImg));
-        }
-
-        return true;
+        return c;
       }
-
-      return c;
+      ngRegisterControlType('stdMaskEdit', function(def,ref,parent) { return Create_stdMaskEdit(def,ref,parent); });
+      ngRegisterControlType('stdMaskEditBox', function(def,ref,parent) { return Create_stdMaskEdit(def,ref,parent); });
     }
-    ngRegisterControlType('stdMaskEdit', function(def,ref,parent) { return Create_stdMaskEdit(def,ref,parent); });
-    ngRegisterControlType('stdMaskEditBox', function(def,ref,parent) { return Create_stdMaskEdit(def,ref,parent); });
 
     /*  Class: stdDropDown
      *  Standard drop down control (based on <ngDropDown>).
