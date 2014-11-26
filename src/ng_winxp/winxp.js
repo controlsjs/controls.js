@@ -855,7 +855,7 @@ var WinXPControls = {
     ngRegisterControlType('stdColorEdit', function(def,ref,parent) { return Create_stdColorEdit(def,ref,parent); });
     ngRegisterControlType('stdColorEditBox', function(def,ref,parent) { return Create_stdColorEdit(def,ref,parent); });
 
-    if (ngUserControls['controls_ext'])
+    if (ngUserControls['maskedit'])
     {
       /*  Class: stdMaskEdit
        *  Standard mask edit control (based on <ngMaskEdit>).

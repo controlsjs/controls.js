@@ -743,7 +743,7 @@ var WireframeControls = {
       return Create_wfrColorEdit(def,ref,parent);
     });
 
-    if (ngUserControls['controls_ext'])
+    if (ngUserControls['maskedit'])
     {
       /*  Class: wfrMaskEdit
        *  "Wireframe" skin mask edit control (based on <ngMaskEdit>).

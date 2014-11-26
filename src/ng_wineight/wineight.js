@@ -1111,7 +1111,7 @@ var WinEightControls = {
     ngRegisterControlType('weColorEdit', function(def,ref,parent) { return Create_weColorEdit(def,ref,parent); });
     ngRegisterControlType('weColorEditBox', function(def,ref,parent) { return Create_weColorEdit(def,ref,parent); });
 
-    if (ngUserControls['controls_ext'])
+    if (ngUserControls['maskedit'])
     {
       /*  Class: weMaskEdit
        *  Standard mask edit control (based on <ngMaskEdit>).

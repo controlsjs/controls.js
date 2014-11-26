@@ -1,4 +1,4 @@
-var ControlsExt = {
+var MaskEdit = {
 
   OnInit: function() {
 
@@ -1056,4 +1056,4 @@ var ControlsExt = {
 };
 
 if (typeof(ngUserControls)==='undefined') ngUserControls = new Array();
-ngUserControls['controls_ext'] = ControlsExt;
+ngUserControls['maskedit'] = MaskEdit;
