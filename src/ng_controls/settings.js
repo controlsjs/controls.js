@@ -95,7 +95,7 @@ function ngset_Clear()
   for(var i in this.Settings)
   {
     this.BeginUpdate();
-    this.Settings = new Array();
+    this.Settings = {};
     this.changed=true;
     this.EndUpdate();
     break;
@@ -106,8 +106,12 @@ function ngset_Clear()
 
 function ngset_Load()
 {
-  if(!this.rpc) this.rpc=new ngRPC();
-  this.rpc.sendRequest(ng_AddURLParam(this.StorageURL,'load=1&id='+this.SettingsID));  
+  if((this.OnSettingsLoading)&&(!ngVal(this.OnSettingsLoading(this),false))) return;
+  if(this.StorageURL!='')
+  {
+    if(!this.rpc) this.rpc=new ngRPC();
+    this.rpc.sendRequest(ng_AddURLParam(this.StorageURL,'load=1&id='+this.SettingsID));
+  }
 }
 
 function ngset_IsValidName(n)
@@ -155,28 +159,31 @@ function ngset_Save()
 
   if(this.save_timer) { clearTimeout(this.save_timer); this.save_timer=null; }
   
-  // build params
-  var i,params=this.BuildSettingsStr(this.Settings);
   // save to cookies
   var url=this.StorageURL;
-  var c=1;
-  if(params!='')
+  if(url!='')
   {
-    while(params!='')
+    // build params
+    var i,params=this.BuildSettingsStr(this.Settings);
+    var c=1;
+    if(params!='')
     {
-      ngSetCookieByURL('_ngs'+c,params.substr(0,ngsCookieMaxLen),this.StorageExpires,url,false);
-      params=params.substring(ngsCookieMaxLen,params.length);
-      c++;
-      if(c>50) break;
+      while(params!='')
+      {
+        ngSetCookieByURL('_ngs'+c,params.substr(0,ngsCookieMaxLen),this.StorageExpires,url,false);
+        params=params.substring(ngsCookieMaxLen,params.length);
+        c++;
+        if(c>50) break;
+      }
     }
+    // clear rest
+    var expires=ngCookieExpires(-3600);
+    for(i=c;i<=50;i++)
+      ngSetCookieByURL('_ngs'+i,'',expires,url,false);
+
+    this.changed=false;
+    if(this.OnSettingsSaved) this.OnSettingsSaved(this);
   }
-  // clear rest
-  var expires=ngCookieExpires(-3600);
-  for(i=c;i<=50;i++)
-    ngSetCookieByURL('_ngs'+i,'',expires,url,false);
-    
-  this.changed=false;
-  if(this.OnSettingsSaved) this.OnSettingsSaved(this);
 }
 
 function ngset_do_load(id,data)
@@ -217,7 +224,7 @@ function ngSettings(id, storageurl)
   this.save_timer = null;
   ngSettingsByID[id]=this;
   this.SettingsID = id;
-  this.Settings = new Array();  
+  this.Settings = {};
   
   /*
    *  Group: Properties
@@ -372,6 +379,10 @@ function ngSettings(id, storageurl)
    *  Event: OnSettingsSaved
    */     
   this.OnSettingsSaved = null;
+  /*
+   *  Event: OnSettingsLoading
+   */
+  this.OnSettingsLoading = null;
   /*
    *  Event: OnSettingsLoaded
    */     
