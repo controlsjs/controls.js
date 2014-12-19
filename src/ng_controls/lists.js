@@ -4941,7 +4941,7 @@ function npglSetAsyncDataCallback(lid, idx, data, length)
 {
   var l=ngGetControlById(lid, 'ngPanel');
   if(!l) return false;
-  if(typeof length!=='undefined') l.SetLength(length);
+  if((typeof length!=='undefined')&&(length!==null)) l.SetLength(length);
   l.SetAsyncData(idx,data);
   return true;
 }
