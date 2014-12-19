@@ -24,6 +24,7 @@ var nglSelectNone = 0;
 var nglSelectSingle = 1;
 var nglSelectMulti = 2;
 var nglSelectMultiExt = 3;
+var nglSelectSingleExt = 4;
 
 var nglClickRow = 0;
 var nglClickText = 1;
@@ -573,10 +574,10 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
       if(it.OnExpanded) it.OnExpanded(this,it);
       if(this.OnExpanded) this.OnExpanded(this,it);
     }
-    this.UpdateColumns();    
+    this.UpdateColumns();
   }
   this.UpdateFrame();
-  
+
   return l;
 }
 
@@ -587,7 +588,7 @@ function ngl_Collapse(it)
   if((this.OnCollapsing)&&(!ngVal(this.OnCollapsing(this,it),false))) return;
   it.Collapsed=true;
   this.UpdateCollapsed(it,false);
-  this.UpdateColumns();    
+  this.UpdateColumns();
   if(it.OnCollapsed) it.OnCollapsed(this,it);
   if(this.OnCollapsed) this.OnCollapsed(this,it);
 }
@@ -599,7 +600,7 @@ function ngl_Expand(it)
   if((this.OnExpanding)&&(!ngVal(this.OnExpanding(this,it),false))) return;
   it.Collapsed=false;
   this.UpdateCollapsed(it,false);
-  this.UpdateColumns();    
+  this.UpdateColumns();
   if(it.OnExpanded) it.OnExpanded(this,it);
   if(this.OnExpanded) this.OnExpanded(this,it);
 }
@@ -842,7 +843,7 @@ function ngl_GetChecked()
   this.Scan(function (list, item, parent, userData) {
     if (item.Checked) ret.push(item);
     return true;
-  }); 
+  });
   return ret;
 }
 
@@ -1298,13 +1299,13 @@ function ngl_SelectDropDownItem(it)
         if(typeof it.Text === 'string') t=it.Text;
         else if((this.Columns.length>0)&&(typeof it.Text==='object')) t=it.Text[this.Columns[0]];
         if((ngVal(dd.Suggestion,false))&&(dd.OnSuggestionSetText))
-        { 
+        {
           var undefined;
           t=dd.OnSuggestionSetText(t,it);
           if(t=='') t=undefined;
-        }        
+        }
       }
-      if(dd.OnListItemGetText) t=dd.OnListItemGetText(dd,this,it,t);      
+      if(dd.OnListItemGetText) t=dd.OnListItemGetText(dd,this,it,t);
       if((typeof t!=='undefined')&&(typeof dd.SetText === 'function')) dd.SetText(t);
     }
     if(dd.HideDropDown) dd.HideDropDown();
@@ -1346,7 +1347,7 @@ function ngl_GetClickInfo(e,elm,part)
   e.listObj=elm;
   e.listRowObj=pelm;
   e.listPart=part;
-  e.listCol=-1;  
+  e.listCol=-1;
   e.Owner=ii.list;
   e.list=ii.list;
   e.listItem=ii.item;
@@ -1365,13 +1366,13 @@ function ngl_DoPtrStart(pi)
   var eid=pi.EventID;
   var eidp=eid.substr(0,4);
   if(eidp==='item')
-  {  
+  {
     var cid=parseInt(eid.substring(4,eid.length));
     ngl_GetClickInfo(pi.StartEvent,pi.StartElement,cid);
     pi.SrcElement=pi.StartEvent.listRowObj;
 
     if(pi.Touch)
-    {    
+    {
       ngl_EnterRow(pi.Event,pi.StartEvent.listRowObj,(this.OnEnterRow!=null)||(this.OnLeaveRow!=null));
     }
   }
@@ -1384,9 +1385,9 @@ function ngl_DoPtrDrag(pi)
   if(eidp==='item')
   {
     if(pi.Touch)
-    { 
-      if(!pi.IsInSrcElement()) 
-      {      
+    {
+      if(!pi.IsInSrcElement())
+      {
         if(ngl_CurrentRowId==pi.StartEvent.listRowObj.id)
           ngl_LeaveRow(pi.Event,pi.StartEvent.listRowObj,(this.OnEnterRow!=null)||(this.OnLeaveRow!=null));
       }
@@ -1411,10 +1412,10 @@ function ngl_DoPtrEnd(pi)
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
-    if(pi.Touch) 
+    if(pi.Touch)
     {
-      if(pi.IsInSrcElement()) 
-      {      
+      if(pi.IsInSrcElement())
+      {
         if(ngl_CurrentRowId==pi.StartEvent.listRowObj.id)
           ngl_LeaveRow(pi.Event,pi.StartEvent.listRowObj,(this.OnEnterRow!=null)||(this.OnLeaveRow!=null));
       }
@@ -1424,7 +1425,7 @@ function ngl_DoPtrEnd(pi)
 
 function ngl_DoPtrClick(pi)
 {
-  if((!this.MouseEvents)||(this.ReadOnly)) return;  
+  if((!this.MouseEvents)||(this.ReadOnly)) return;
 
   if((typeof pi.ScrollTop!=='undefined')&&(Math.abs(pi.Y-pi.StartY)>10)) return;
 
@@ -1432,19 +1433,19 @@ function ngl_DoPtrClick(pi)
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
-    if((pi.EndTime-pi.StartTime>200)&&(!pi.IsInSrcElement())) return; 
+    if((pi.EndTime-pi.StartTime>200)&&(!pi.IsInSrcElement())) return;
     var e=pi.StartEvent;
     var cid=parseInt(eid.substring(4,eid.length));
     ngl_GetClickInfo(e,pi.StartElement,cid);
     this.ClickItem(e.listItem, e);
-    if((eid!=='item0')&&(ng_inDOM(pi.StartElement))) 
+    if((eid!=='item0')&&(ng_inDOM(pi.StartElement)))
     {
       // simulate old event bubbling
       ngl_GetClickInfo(e,pi.StartElement,0);
       this.ClickItem(e.listItem,e);
 
 //      pi.EventID='item0';
-//      this.DoPtrClick(pi); 
+//      this.DoPtrClick(pi);
 //      pi.EventID=eid;
     }
   }
@@ -1458,13 +1459,13 @@ function ngl_DoPtrClick(pi)
 
 function ngl_DoPtrDblClick(pi)
 {
-  if((!this.MouseEvents)||(this.ReadOnly)) return;  
+  if((!this.MouseEvents)||(this.ReadOnly)) return;
   var eid=pi.EventID;
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
     if((pi.EndTime-pi.StartTime>=200)&&(!pi.IsInSrcElement())) return;
-    var e=pi.StartEvent;  
+    var e=pi.StartEvent;
     var cid=parseInt(eid.substring(4,eid.length));
     ngl_GetClickInfo(e,pi.StartElement,cid);
     if((!e.listItem)||(!ngVal(e.listItem.Enabled,true))) return;
@@ -1472,12 +1473,12 @@ function ngl_DoPtrDblClick(pi)
     if((e.listItem.OnDblClick)&&(!ngVal(e.listItem.OnDblClick(e),false))) return;
     if((this.OnDblClick)&&(!ngVal(this.OnDblClick(e),false))) return;
     if((e.listPart==1)||(e.listPart==4)) this.ToggleCollapsed(e.listItem);
-    if((this.OnDblClickItem)&&(e.listPart)) this.OnDblClickItem(e);    
-    if(eid!=='item0') 
+    if((this.OnDblClickItem)&&(e.listPart)) this.OnDblClickItem(e);
+    if(eid!=='item0')
     {
       // simulate old event bubbling
       pi.EventID='item0';
-      this.DoPtrDblClick(pi); 
+      this.DoPtrDblClick(pi);
       pi.EventID=eid;
     }
   }
@@ -1491,7 +1492,7 @@ function ngl_DoPtrDblClick(pi)
 
 function ngl_ClickItem(it, e)
 {
-  if(typeof e === 'undefined') e=new Object;  
+  if(typeof e === 'undefined') e=new Object;
   if(e.list != this)
   {
     e.Owner = this;
@@ -1509,7 +1510,7 @@ function ngl_ClickItem(it, e)
 
   if((!e.list.Enabled)||(ngVal(e.list.ReadOnly,false))) return;
   if((!it)||(!ngVal(it.Enabled,true))) return;
-  
+
   if(!e.listPart)
   {
     var delay=(new Date().getTime()) - this.ignore_select;
@@ -1588,6 +1589,12 @@ function ngl_ClickItem(it, e)
               break;
             }
           }
+        }
+        else if(this.SelectType==4){
+          var select = !ngVal(this.selected[this.ItemId(it)],false);
+          this.selected=new Array();
+          this.SelectItem(it,select);
+          this.SelectChanged();
         }
         else this.SelectItem(it,!ngVal(this.selected[this.ItemId(it)],false));
       }
@@ -1917,7 +1924,7 @@ function ngl_KeyDown(e)
 
     e.Owner=l;
     if((l.OnKeyDown)&&(!ngVal(l.OnKeyDown(e),false))) return false;
-    
+
     var ieKey=e.keyCode;
     switch(ieKey)
     {
@@ -2157,7 +2164,7 @@ function ngl_DrawItemText(html, it, id, level)
   var hasdblclickitem=(hasdblclick) || (this.OnDblClickItem);
   var hastoggle=((it.Items)&&((it.Items.length>0)||(typeof it.Collapsed !== 'undefined')));
   var cclass=this.BaseClassName;
-  
+
   var rowevents=' '+ngc_PtrEventsHTML(this,'item0','tap drag'+(hasdblclick ? ' doubletap' : ''))+' onmouseover="ngl_EnterRow(event,this,'+(enterleave ? '1' : '0')+');" onmouseout="ngl_LeaveRow(event,this,'+(enterleave ? '1' : '0')+');"';
   var textevents=' '+ngc_PtrEventsHTML(this,'item1','tap drag'+(hasdblclickitem || hastoggle ? ' doubletap' : ''));
   var indent=this.ListIndent;
@@ -2484,11 +2491,11 @@ function ngl_DoUpdate(o)
     var cb=document.getElementById(this.ID+'_CB');
     if(cb) scroll=cb.scrollTop;
     ng_SetScrollBars(o, ssNone);
-    
+
     var w,h;
     if((typeof this.Bounds.W==='undefined')&&((typeof this.Bounds.L==='undefined')||(typeof this.Bounds.R==='undefined')))
     {
-      if(o.style.width=='0px') w='0px';      
+      if(o.style.width=='0px') w='0px';
       else {
         w=ng_StyleWidth(o);
         if(!w) w='auto';
@@ -2503,7 +2510,7 @@ function ngl_DoUpdate(o)
     }
     if((typeof this.Bounds.H==='undefined')&&((typeof this.Bounds.T==='undefined')||(typeof this.Bounds.B==='undefined')))
     {
-      if(o.style.height=='0px') h='0px';      
+      if(o.style.height=='0px') h='0px';
       else {
         h=ng_StyleHeight(o);
         if(!h) h='auto';
@@ -2524,12 +2531,12 @@ function ngl_DoUpdate(o)
       case ssNone:       html.append('overflow:hidden;overflowX:hidden;overflowY:hidden;'); break;
       case ssAuto:       html.append('overflow:auto;  overflowX:auto;  overflowY:auto;');   break;
       case ssBoth:       html.append('overflow:scroll;overflowX:scroll;overflowY:scroll;'); break;
-      case ssHorizontal: html.append('overflow:scroll;overflowX:scroll;overflowY:hidden;'); break;  
+      case ssHorizontal: html.append('overflow:scroll;overflowX:scroll;overflowY:hidden;'); break;
       case ssVertical:   html.append('overflow:scroll;overflowX:hidden;overflowY:scroll;'); break;
       case ssDefault:    html.append('overflow:visible;overflowX:visible;overflowY:visible;'); break;
     }
     html.append('">');
-  } 
+  }
   else scroll=o.scrollTop;
 
   if(hascolumns)
@@ -2541,7 +2548,7 @@ function ngl_DoUpdate(o)
       if(showheader) thead.append(s);
       html.append(s);
     }
-    
+
     var thead=(showheader ? new ngStringBuilder : html);
     var col,text;
     th_append('<thead>');
@@ -2597,19 +2604,19 @@ function ngl_DoUpdate(o)
     html.append(thead);
     html.append('</table>');
     html.append('</div>');
-  }    
+  }
   ng_SetInnerHTML(o,html.toString());
   var cb;
   if(embed)
   {
     cb=this.ContentElm=document.getElementById(this.ID+'_CB');
   }
-  else 
+  else
   {
     cb=null
     this.ContentElm=o;
   }
-  
+
   if(showheader)
   {
     this.UpdateColumns();
@@ -2635,10 +2642,10 @@ function ngl_DoUpdate(o)
       {
         var w=ng_ClientWidth(o);
         var h=ng_ClientHeight(o);
-     
+
         var frame=new ngStringBuilder;
         ngc_ImgBox(frame, this.ID, 'ngList', (this.ControlHasFocus ? 1 : 0), this.Enabled, 0,0,w,h,false, this.Frame);
-        ng_SetInnerHTML(f,frame.toString());    
+        ng_SetInnerHTML(f,frame.toString());
       }
     }
     var self=this;
@@ -2649,7 +2656,7 @@ function ngl_DoUpdate(o)
       {
         self.OnScroll(self,e,cb);
       }
-    }    
+    }
   }
   try {
     this.ContentElm.scrollTop=scroll;
@@ -2666,7 +2673,7 @@ function ngl_UpdateColumns()
   var cb=this.ContentElm;
   var fhdr=document.getElementById(this.ID+'_FH');
   if(!fhdr) return;
-  
+
   var tb=document.getElementById(this.ID+'_TB');
   if(!tb) return;
   var hdr=document.getElementById(this.ID+'_TH');
@@ -2679,7 +2686,7 @@ function ngl_UpdateColumns()
   while((origf)&&(newf))
   {
     if(origf.getAttribute("width")!='100%')
-    { 
+    {
       ng_SetClientWidth(newf.firstChild,ng_ClientWidth(origf));
     }
     origf=origf.nextSibling;
@@ -2694,7 +2701,7 @@ function ngl_UpdateFrame()
 
   var o = this.Elm();
   if(!o){return true;}
-  
+
   var w = ng_ClientWidth(o);
   var h = ng_ClientHeight(o);
 
@@ -4028,7 +4035,7 @@ function npgl_DoUpdate(o)
 function npgl_DoUpdateBefore(o)
 {
   if((this.update_cnt>0)||(this.ID=='')) return;
-  
+
   var pl=this.Owner.Owner;
   if(!pl) return false;
 
@@ -4038,7 +4045,7 @@ function npgl_DoUpdateBefore(o)
     this.ListPagingChanged();
   }
 
-  if(pl.DisplayMode==plDisplayFixed) 
+  if(pl.DisplayMode==plDisplayFixed)
   {
     if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssAuto);
   }
@@ -4079,12 +4086,12 @@ function npgl_DoUpdateBefore(o)
       if(to.parentNode == pl.Elm()) to=null;
       this.draw_paging_height=0;
     }
-    if(to) 
+    if(to)
     {
       this.draw_paging_elm=to.parentNode.removeChild(to);
     }
   }
-  else 
+  else
   {
     this.draw_paging_height=0;
     pl.Controls.List.SetBounds({B: 0});
@@ -4124,7 +4131,7 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
     if(o)
     {
       var maxh = ng_ClientHeight(o)-1;
-      
+
       var hheight = 0, io;
       maxh-=(ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom'));
 
@@ -4250,7 +4257,7 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
 
 function npgl_ShowLoading(v)
 {
-  if((v)&&(this.OnShowLoading)) { 
+  if((v)&&(this.OnShowLoading)) {
     this.OnShowLoading(this);
     return;
   }
@@ -4282,7 +4289,7 @@ function npgl_DoUpdateAfter(o)
 
   if(this.draw_paging_elm)
   {
-    if(pl.PagingInside) 
+    if(pl.PagingInside)
     {
       if(this.ContentElm) this.ContentElm.appendChild(this.draw_paging_elm);
     }
@@ -5704,7 +5711,7 @@ function Create_ngPageList(def, ref, parent)
       else
       {
         if(c.List) c.List.SetFocus(false);
-        c._DefaultSetFocus(false);      
+        c._DefaultSetFocus(false);
       }
     }
     // Group pages in paging and save visibility
