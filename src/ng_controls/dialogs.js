@@ -717,9 +717,7 @@ ngUserControls['dialogs'] = {
       
       // Languages
       var langs='';
-      var alangs=new Array;
-      for(var i in ngc_Lang)
-        alangs[alangs.length]=i;
+      var alangs=ngGetSupportedLangs();
 
       if(alangs.length>0)
       {
