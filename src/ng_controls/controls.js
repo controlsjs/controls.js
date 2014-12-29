@@ -46,6 +46,12 @@ if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
 ngc_Lang['en']['ngAppOldControlsVersion']='Application requires newer version of Controls.js!\nRequired %s.%s, used %s.%s.\n\nApplication terminated!';
 
 /**
+ *  Variable: ngc_SupportedLangs
+ *  Application supported languages. Associative array, keys are languages.
+ */
+if(typeof ngc_SupportedLangs === 'undefined') ngc_SupportedLangs={};
+
+/**
  *  Variable: ngIE6AlignFix
  *  If TRUE, the controls API fixes right align property in IE6. Turn off
  *  if you don't care about pixels precision and prefer slightly faster rendering.
@@ -69,7 +75,7 @@ function ngLang(id,data,lng)
   if(typeof lng === 'undefined') lng=ng_cur_lng;
   lng=''+lng;
   if(lng=='') return;
-  if(lng=='cs') lng='cz';
+  lng=ngNormalizeLang(lng);
   if(typeof ngc_Lang      === 'undefined') ngc_Lang=new Array();
   if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]=new Array();
   ngc_Lang[lng][id]=data;
@@ -106,6 +112,150 @@ function ngEndLang()
 {
   if(ng_cur_lng_stack.length>0) ng_cur_lng=ng_cur_lng_stack.pop();
   return ng_cur_lng;
+}
+
+/**
+ *  Function: ngNormalizeLang
+ *  Normalize language.
+ *
+ *  Syntax: string *ngNormalizeLang* (string lngid)
+ *
+ *  Returns:
+ *    Normalized language.
+ */
+function ngNormalizeLang(lng)
+{
+  var pos=lng.indexOf('-');
+  if(pos>=0)
+    lng = lng.substr(0, pos);
+  lng = (''+lng).replace(/^\s+|\s+$/g,"").toLowerCase(); // trim + lowercase
+  if(lng=='cs') lng='cz';
+  return lng;
+}
+
+/**
+ *  Function: ngGetSupportedLangs
+ *  Gets application supported languages
+ *
+ *  Syntax: array *ngGetSupportedLangs* ()
+ *
+ *  Returns:
+ *    Array of supported languages.
+ */
+function ngGetSupportedLangs()
+{
+  var res = new Array;
+  if(typeof ngc_SupportedLangs!=='object' || !ngc_SupportedLangs)
+    ngc_SupportedLangs = {};
+  for(var k in ngc_SupportedLangs)
+    res.push(k);
+
+  if(res.length==0 && typeof ngc_Lang==='object' && ngc_Lang)
+    for(var k in ngc_Lang)
+      res.push(k);
+
+  return res;
+}
+
+/**
+ *  Function: ngGetSupportedLang
+ *  Gets application supported language.
+ *
+ *  Syntax: string *ngGetSupportedLang* (string lang)
+ *
+ *  Returns:
+ *    same value as given by parameter lang if lang is supported,
+ *    otherwise returns first of supported languages
+ */
+function ngGetSupportedLang(lng)
+{
+  var pos,deflang='en';
+  var lng=''+ngNullVal(lng,deflang);
+  var arr=false;
+
+  if(typeof ngc_SupportedLangs!=='object' || !ngc_SupportedLangs)
+    ngc_SupportedLangs = {};
+  else
+    for(var k in ngc_SupportedLangs) { arr=true; break; };
+
+  lng = ngNormalizeLang(lng);
+  if((lng=='')||(arr && !ngc_SupportedLangs[lng])||(!arr && typeof ngc_Lang[lng]==='undefined'))
+  {
+    if((lng=='cz')&&((arr && ngc_SupportedLangs['sk'])||(!arr && typeof ngc_Lang['sk']!=='undefined'))) lng='sk';
+    else
+      if((lng=='sk')&&((arr && ngc_SupportedLangs['cz'])||(!arr && typeof ngc_Lang['cz']!=='undefined'))) lng='cz';
+      else
+        if((arr && ngc_SupportedLangs[deflang])||!arr) lng=deflang;
+        else for(var k in ngc_SupportedLangs) { lng = k; break; }
+  }
+  return lng;
+}
+
+/**
+ *  Function: ngIsSupportedLang
+ *  Checks if given language is supported by application.
+ *
+ *  Syntax: boolean *ngIsSupportedLang* (string lang)
+ *
+ *  Returns:
+ *    True if language is supported, or false if not.
+ */
+function ngIsSupportedLang(lng)
+{
+  return (ngGetSupportedLang(lng)===ngNormalizeLang(lng));
+}
+
+/**
+ *  Function: ngSetSupportedLang
+ *  Sets application supported language(s).
+ *
+ *  Syntax: void *ngSetSupportedLang* (mixed lang[, mixed lang1[, mixed lang2[, mixed ...]]])
+ *
+ *  Returns:
+ *    -
+ */
+function ngSetSupportedLang()
+{
+  ngc_SupportedLangs={};
+  ngAddSupportedLang.apply(this,arguments);
+}
+
+/**
+ *  Function: ngAddSupportedLang
+ *  Adds application supported language(s).
+ *
+ *  Syntax: void *ngAddSupportedLang* (mixed lang[, mixed lang1[, mixed lang2[, mixed ...]]])
+ *
+ *  Returns:
+ *    -
+ */
+function ngAddSupportedLang()
+{
+  var lng, empty, lang;
+  for(var k in arguments)
+  {
+    lng = arguments[k];
+    if(typeof lng==='string')
+      lng = lng.split(';');
+    if(typeof lng==='object' && lng)
+    {
+      if(typeof ngc_SupportedLangs!=='object' || !ngc_SupportedLangs)
+        ngc_SupportedLangs={};
+      for(var l in lng)
+      {
+        if(typeof lng[l]==='string')
+        {
+          lang = ngNormalizeLang(lng[l]);
+          if(lang!=='') ngc_SupportedLangs[lang]=true;
+        }
+        else
+        {
+          lang = ngNormalizeLang(l);
+          if(lang!=='') ngc_SupportedLangs[lang]=true;
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -4322,6 +4472,23 @@ function nga_GetLang()
   return l;
 }
 
+function nga_DetectLang(defaultlang)
+{
+  var lng=ngVal(this.StartParams.Lang,'');
+  if(lng=='') lng=ngVal(ng_GET('lang'),'');
+  if(lng=='') lng=this.Lang;
+  if(lng=='')
+  {
+    if (navigator.userLanguage) // Explorer
+      lng = navigator.userLanguage;
+    else if (navigator.language) // FF
+      lng = navigator.language;
+  }
+  if(lng=='') lng=ngVal(defaultlang,'');
+  lng = ngNormalizeLang(lng);
+  return lng;
+}
+
 function nga_Text(t, defval)
 {
   return ngTxt(t, defval);
@@ -4357,28 +4524,8 @@ function nga_DoRun()
   if(nga_RunTimer) clearTimeout(nga_RunTimer); nga_RunTimer=null;
 
   // Language detection
-  var lng=ngVal(ngApp.StartParams.Lang,'');
-  if(lng=='') lng=ngVal(ng_GET('lang'),'');
-
-  if(lng=='cs') lng='cz';
-  if((lng=='')||(typeof ngc_Lang[lng]==='undefined'))
-  {
-    if (navigator.userLanguage) // Explorer
-      lng = navigator.userLanguage;
-    else if (navigator.language) // FF
-      lng = navigator.language;
-    if(lng=='cs') lng='cz';
-    if((lng=='')||(typeof ngc_Lang[lng]==='undefined'))
-    {
-      if((lng=='cz')&&(typeof ngc_Lang['sk']!=='undefined')) lng='sk';
-      else
-      {
-        if((lng=='sk')&&(typeof ngc_Lang['cz']!=='undefined')) lng='cz';
-        else lng='en';
-      }
-    }
-  }
-  ngApp.Lang=lng;
+  ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
+  ngApp.Lang = ngGetSupportedLang(ngApp.DetectLang());
 
   // Controls version check
   var reqver,reqsubver;
@@ -5518,6 +5665,16 @@ function ngApplication(startparams, elm, autorun)
    *    -
    */
   this.GetLang=nga_GetLang;
+  /*  Function: DetectLang
+   *  Detects language.
+   *
+   *  Syntax:
+   *    string *DetectLang* ([string defaultlang])
+   *
+   *  Returns:
+   *    Detected language.
+   */
+  this.DetectLang=nga_DetectLang;
   /*  Function: Text
    *  Gets resource string by application language.
    *
