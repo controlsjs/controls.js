@@ -21,6 +21,7 @@ var mbIconError       = 'err';
  *  Reference to WinXP control definitions.
  */
 var WinXPControls = {
+  Lib: 'winxp',
 
   ControlImages: [
     'winxp_base.png?7',
