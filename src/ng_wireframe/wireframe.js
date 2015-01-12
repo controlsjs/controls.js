@@ -17,6 +17,8 @@ if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
  *  Reference to "Wireframe" skin control definitions.
  */
 var WireframeControls = {
+  Lib: 'wfs',
+
   ControlImages: [
     'wireframe_base.png?4',
     'wireframe_h.png?3',
