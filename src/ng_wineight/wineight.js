@@ -22,6 +22,7 @@ var WE_LIGHT = 1;
  *  Reference to WinEight control definitions.
  */
 var WinEightControls = {
+  Lib: 'wineight',
 
   Theme: WE_LIGHT,
   ColorScheme: 'Green',
