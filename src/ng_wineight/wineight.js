@@ -22,7 +22,7 @@ var WE_LIGHT = 1;
  *  Reference to WinEight control definitions.
  */
 var WinEightControls = {
-  Lib: 'wineight',
+  Lib: 'ng_wineight',
 
   Theme: WE_LIGHT,
   ColorScheme: 'Green',
@@ -498,9 +498,6 @@ var WinEightControls = {
         }
       }
     });
-
-    for (var i=0;i<ctrlimages.length;i++)
-      ctrlimages[i] = libpath+ctrlimages[i];
 
     for (var i in winimages.AppIcons[0])
     {
