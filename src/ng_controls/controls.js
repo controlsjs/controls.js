@@ -5285,11 +5285,11 @@ function nga_UpdateParams()
 function nga_WriteIFRAMEHistory(elm, hash)
 {
   if(ngWinStoreApp) return;
-
   var doc=(elm.contentDocument ? elm.contentDocument : elm.contentWindow.document);
   if(doc)
   {
     doc.open();
+    if(doc.domain!=document.domain) doc.domain=document.domain; //IE8 and older changes domain back after open, must set again
     doc.write('<html><body onload="if(parent) { if(parent.window.location.hash!=\''+hash+'\') { parent.window.location.hash=\''+hash+'\'; parent.nga_CheckParamChange(); } }"></body></html>');
     doc.close();
   }
@@ -5344,6 +5344,8 @@ function nga_InitParamsChanged()
     if(ngIExplorer) // IE history fix (todo: check IE8)
     {
       o = document.createElement("iframe");
+      o.src = "javascript:void((function(){document.open();document.domain=\'"+document.domain+"\';document.close();"+
+      "if(typeof parent.nga_WriteIFRAMEHistory==\"function\")parent.nga_WriteIFRAMEHistory(parent.document.getElementById('ngAppHistFix'),parent.ngApp.LocationHash);})())";
     }
     if(ngOpera) // Opera history fix
     {
@@ -5362,7 +5364,6 @@ function nga_InitParamsChanged()
       o.style.width="0px";
       o.style.height="0px";
       parent.appendChild(o);
-      if(ngIExplorer) nga_WriteIFRAMEHistory(o, ngApp.LocationHash);
     }
     nga_CheckParamChange();
   }
