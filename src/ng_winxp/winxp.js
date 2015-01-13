@@ -21,7 +21,7 @@ var mbIconError       = 'err';
  *  Reference to WinXP control definitions.
  */
 var WinXPControls = {
-  Lib: 'winxp',
+  Lib: 'ng_winxp',
 
   ControlImages: [
     'winxp_base.png?7',
@@ -440,9 +440,6 @@ var WinXPControls = {
 
   OnInit: function() {
     var libpath=ngLibPath('ng_winxp');
-    // Init images
-    for(var i=0;i<this.ControlImages.length;i++)
-      this.ControlImages[i]=libpath+this.ControlImages[i];
     var winimages=this.Images;
     var winxp=this;
 
