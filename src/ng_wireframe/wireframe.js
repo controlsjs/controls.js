@@ -17,13 +17,13 @@ if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
  *  Reference to "Wireframe" skin control definitions.
  */
 var WireframeControls = {
-  Lib: 'wfs',
+  Lib: 'ng_wireframe',
 
   ControlImages: [
-    'wireframe_base.png?4',
-    'wireframe_h.png?3',
-    'wireframe_v.png?3',
-    'wireframe_dot.gif?3'
+    'images/wireframe_base.png?4',
+    'images/wireframe_h.png?3',
+    'images/wireframe_v.png?3',
+    'images/wireframe_dot.gif?3'
   ],
   Images: {
     CheckBox: { L: 1, T: 30, oL: 21, SL: 41, oSL: 61, GL: 81, oGL: 101, DL: 121, DSL: 141, W: 16, H: 20, DGL: 161 },
@@ -453,10 +453,6 @@ var WireframeControls = {
   OnInit: function()
   {
     var libpath = ngLibPath('ng_wireframe');
-    // Initialize images
-    for(var i=0; i<this.ControlImages.length; i++){
-      this.ControlImages[i] = libpath + 'images/' + this.ControlImages[i];
-    }
     var WFRImages = this.Images;
     var WFR = this;
 
