@@ -3564,23 +3564,26 @@ var WinEightControls = {
         return Create_weDropDown(def,ref,parent,'ngDropDownListField',true);
       });
 
-      /*  Class: weEditDateField
-       *  Standard edit date field control (based on <ngEditDate>).
-       */
-      /*<>*/
-      ngRegisterControlType('weEditDateField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weEditDate(def,ref,parent,'ngEditDateField');
-      });
+      if(ngUserControls['calendar'])
+      {
+        /*  Class: weEditDateField
+         *  Standard edit date field control (based on <ngEditDate>).
+         */
+        /*<>*/
+        ngRegisterControlType('weEditDateField', function(def,ref,parent) {
+          Create_weEditFieldDef(def);
+          return Create_weEditDate(def,ref,parent,'ngEditDateField');
+        });
 
-      /*  Class: weEditTimeField
-       *  Standard edit date field control (based on <ngEditTime>).
-       */
-      /*<>*/
-      ngRegisterControlType('weEditTimeField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weEditTime(def,ref,parent,'ngEditTimeField');
-      });
+        /*  Class: weEditTimeField
+         *  Standard edit date field control (based on <ngEditTime>).
+         */
+        /*<>*/
+        ngRegisterControlType('weEditTimeField', function(def,ref,parent) {
+          Create_weEditFieldDef(def);
+          return Create_weEditTime(def,ref,parent,'ngEditTimeField');
+        });
+      }
 
       /*  Class: weMemoField
        *  Standard memo field control (based on <ngMemoField>).

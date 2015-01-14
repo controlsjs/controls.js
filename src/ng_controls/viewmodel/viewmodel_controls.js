@@ -1427,17 +1427,21 @@ ngUserControls['viewmodel_controls'] = {
 
       return c;
     });
-    /*  Class: ngEditDateField
-     *  Edit date field control (based on <ngEditDate>).
-     */
-    /*<>*/
-    ngRegisterControlType('ngEditDateField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngEditDate'); });
 
-    /*  Class: ngEditTimeField
-     *  Edit time field control (based on <ngEditTime>).
-     */
-    /*<>*/
-    ngRegisterControlType('ngEditTimeField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngEditTime'); });
+    if(ngUserControls['calendar'])
+    {
+      /*  Class: ngEditDateField
+       *  Edit date field control (based on <ngEditDate>).
+       */
+      /*<>*/
+      ngRegisterControlType('ngEditDateField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngEditDate'); });
+
+      /*  Class: ngEditTimeField
+       *  Edit time field control (based on <ngEditTime>).
+       */
+      /*<>*/
+      ngRegisterControlType('ngEditTimeField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngEditTime'); });
+    }
 
     /*  Class: ngDropDownField
      *  Dropdown field control (based on <ngDropDown>).

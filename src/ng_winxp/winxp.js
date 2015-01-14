@@ -2413,23 +2413,26 @@ var WinXPControls = {
         return Create_stdDropDown(def,ref,parent,'ngDropDownListField',true);
       });
 
-      /*  Class: stdEditDateField
-       *  Standard edit date field control (based on <ngEditDate>).
-       */
-      /*<>*/
-      ngRegisterControlType('stdEditDateField', function(def,ref,parent) {
-        Create_stdEditFieldDef(def);
-        return Create_stdEditDate(def,ref,parent,'ngEditDateField');
-      });
+      if(ngUserControls['calendar'])
+      {
+        /*  Class: stdEditDateField
+         *  Standard edit date field control (based on <ngEditDate>).
+         */
+        /*<>*/
+        ngRegisterControlType('stdEditDateField', function(def,ref,parent) {
+          Create_stdEditFieldDef(def);
+          return Create_stdEditDate(def,ref,parent,'ngEditDateField');
+        });
 
-      /*  Class: stdEditTimeField
-       *  Standard edit date field control (based on <ngEditTime>).
-       */
-      /*<>*/
-      ngRegisterControlType('stdEditTimeField', function(def,ref,parent) {
-        Create_stdEditFieldDef(def);
-        return Create_stdEditTime(def,ref,parent,'ngEditTimeField');
-      });
+        /*  Class: stdEditTimeField
+         *  Standard edit date field control (based on <ngEditTime>).
+         */
+        /*<>*/
+        ngRegisterControlType('stdEditTimeField', function(def,ref,parent) {
+          Create_stdEditFieldDef(def);
+          return Create_stdEditTime(def,ref,parent,'ngEditTimeField');
+        });
+      }
 
       /*  Class: stdMemoField
        *  Standard memo field control (based on <ngMemoField>).

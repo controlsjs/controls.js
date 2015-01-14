@@ -2343,21 +2343,24 @@ var WireframeControls = {
         return Create_wfrDropDown(def,ref,parent,'ngDropDownListField',true);
       });
 
-      /** Class: wfrEditDateField
-       *  "Wireframe" skin view model edit date field control (based on <ngEditDate>).
-       */
-      ngRegisterControlType('wfrEditDateField', function(def,ref,parent) {
-        Create_wfrEditFieldDef(def);
-        return Create_wfrEditDate(def,ref,parent,'ngEditDateField');
-      });
+      if(ngUserControls['calendar'])
+      {
+        /** Class: wfrEditDateField
+         *  "Wireframe" skin view model edit date field control (based on <ngEditDate>).
+         */
+        ngRegisterControlType('wfrEditDateField', function(def,ref,parent) {
+          Create_wfrEditFieldDef(def);
+          return Create_wfrEditDate(def,ref,parent,'ngEditDateField');
+        });
 
-      /** Class: wfrEditTimeField
-       *  "Wireframe" skin view model edit date field control (based on <ngEditTime>).
-       */
-      ngRegisterControlType('wfrEditTimeField', function(def,ref,parent) {
-        Create_wfrEditFieldDef(def);
-        return Create_wfrEditTime(def,ref,parent,'ngEditTimeField');
-      });
+        /** Class: wfrEditTimeField
+         *  "Wireframe" skin view model edit date field control (based on <ngEditTime>).
+         */
+        ngRegisterControlType('wfrEditTimeField', function(def,ref,parent) {
+          Create_wfrEditFieldDef(def);
+          return Create_wfrEditTime(def,ref,parent,'ngEditTimeField');
+        });
+      }
 
       /** Class: wfrMemoField
        *  "Wireframe" skin view model memo field control (based on <ngMemoField>).
