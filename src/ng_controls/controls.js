@@ -5013,6 +5013,8 @@ function nga_SetParam(p, v, type)
   this.BeginUpdateParams();
   if(this.OnSetParam) v=this.OnSetParam(this,p,v,type);
   var changed=false;
+
+  if(v === null){v = undefined;}
   if(ngURLParams[p] != v) changed=true;
   ngURLParams[p] = v;
   if(typeof v === 'undefined')
