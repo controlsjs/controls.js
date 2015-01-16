@@ -909,8 +909,13 @@ function ngUsrCtrlSetImagesArray(obj, images)
 function ng_IsAbsPath(path)
 {
   if((typeof path !== 'string')||(path=='')) return false;
-  if (path.indexOf("://")>=0) return true;
-  if (path.charAt(0)=='/') return true;
+  path = path.replace(/\\/g, '/');
+  if((path.charAt(0)=='/')||(path.charAt(0)=='~')) return true;
+  var pos=path.indexOf('?');
+  if(pos>=0) path=path.substr(0,pos);
+  pos=path.indexOf('#');
+  if(pos>=0) path=path.substr(0,pos);
+  if(path.indexOf(":/")>0) return true;
   return false;
 }
 
@@ -918,6 +923,7 @@ function ng_ToAbsPath(path,lib)
 {
   if((typeof path !== 'string')||(path=='')) return path;
   if(ng_IsAbsPath(path)) return path;
+  path = path.replace(/\\/g, '/');
   if((typeof lib !== 'undefined')&&(lib!=''))
     return ngLibPath(lib) + path;
   if((typeof ngApp === 'object')&&(ngApp))
