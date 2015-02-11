@@ -10,24 +10,24 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-/** 
+/**
  *  Group: Menu
- *  Menu components.    
+ *  Menu components.
  */
 
-/** 
- *  Group: Variables   
+/**
+ *  Group: Variables
  */
-/** 
+/**
  *  Variable: ngCurrentPopupMenu
  *  Reference to active popup <ngMenu>.
- */  
+ */
 var ngCurrentPopupMenu = null;
 
-/** 
+/**
  *  Variable: ngCurrentAppPopupMenu
  *  Reference to active application popup <ngMenu> (ngApp.PopupMenu).
- */  
+ */
 var ngCurrentAppPopupMenu = null;
 
 
@@ -64,12 +64,12 @@ function ngm_gm_getlist(list)
 {
   if(list)
   {
-    if(list.CtrlType=='ngButton') 
+    if(list.CtrlType=='ngButton')
     {
       list=list.Menu;
       if(!list) return null;
     }
-    if((list.CtrlType!='ngList')&&(list.CtrlType!='ngToolBar')) 
+    if((list.CtrlType!='ngList')&&(list.CtrlType!='ngToolBar'))
     {
       list=list.SubMenu;
       if(!list) return null;
@@ -83,7 +83,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
 {
   var undefined,list=ngm_gm_getlist(parent);
   var ret=null;
-    
+
   create=ngVal(create,true);
   oncreatefnc=ngVal(oncreatefnc, null);
   try
@@ -95,13 +95,13 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
       name=path.substr(s,i-s);
       if(name!='')
       {
-        if((!list)&&(name.charAt(0)!='%')) return null;        
-        if(list) 
+        if((!list)&&(name.charAt(0)!='%')) return null;
+        if(list)
         {
-          if(list.CtrlType=='ngToolBar') items = list.Menu; 
+          if(list.CtrlType=='ngToolBar') items = list.Menu;
           else items = list.Items;
         } else items = undefined;
-        
+
         pos=-1;
         id='';
         found=null;
@@ -121,19 +121,19 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
             var idx=name.indexOf(':');
             if(idx>=0)
             {
-              id=name.substr(0,idx);              
+              id=name.substr(0,idx);
               name=name.substr(idx+1,name.length-idx);
             }
             else { id=name; name=''; }
 
             var rlist=ngGetControlById(id);
-            if(rlist) 
-            { 
-              list=ngm_gm_getlist(rlist); if(!list) return null; 
-              item=null; s=i+1; 
-              if(list.CtrlType=='ngToolBar') items = list.Menu; 
+            if(rlist)
+            {
+              list=ngm_gm_getlist(rlist); if(!list) return null;
+              item=null; s=i+1;
+              if(list.CtrlType=='ngToolBar') items = list.Menu;
               else items = list.Items;
-              continue; 
+              continue;
             }
             else
             {
@@ -148,7 +148,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
             var idx=name.indexOf(':');
             if(idx>=0)
             {
-              at=name.substr(1,idx-1);              
+              at=name.substr(1,idx-1);
               name=name.substr(idx+1,name.length-idx);
               if(at.length>0)
               {
@@ -162,23 +162,23 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
                     found=null;
                     at=at.substr(1,at.length-1);
                     var rlist=ngGetControlById(at);
-                    if(rlist) 
-                    { 
-                      rlist=ngm_gm_getlist(rlist); if(!rlist) return null; 
+                    if(rlist)
+                    {
+                      rlist=ngm_gm_getlist(rlist); if(!rlist) return null;
                       list=rlist.Owner; item=null;
                       if(!list) return null;
-                      if(list.CtrlType=='ngToolBar') items = list.Menu; 
+                      if(list.CtrlType=='ngToolBar') items = list.Menu;
                       else items = list.Items;
                       if(typeof items !== 'undefined')
                         for(var j=0;j<items.length;j++)
-                          if((items[j].SubMenu == rlist)||(items[j].Menu == rlist)) { pos=j+after; break; }                        
+                          if((items[j].SubMenu == rlist)||(items[j].Menu == rlist)) { pos=j+after; break; }
                     }
                     else
                     {
                       if(typeof items !== 'undefined')
                         for(var j=0;j<items.length;j++)
-                          if(items[j].ID == at) 
-                          { 
+                          if(items[j].ID == at)
+                          {
                             pos=j+after;
                             break;
                           }
@@ -201,7 +201,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
                     }
                   }
                 }
-              }              
+              }
             }
           }
           default:
@@ -222,16 +222,16 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
             }
             break;
         }
-      
-        if(found) 
+
+        if(found)
         {
           item = found;
-          if((list)&&(list.CtrlType=='ngToolBar')) 
+          if((list)&&(list.CtrlType=='ngToolBar'))
           {
             if(found.Menu) { list=found.Menu; item = null; }
           }
           else
-          { 
+          {
             if(found.SubMenu) { list=found.SubMenu; item = null; }
           }
           ret=found;
@@ -240,14 +240,14 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
           if((create)&&(list))
           {
             if(list.CtrlType=='ngToolBar')
-            {              
+            {
               var ld;
               var btndef = (typeof list.ButtonDef === 'object' ? list.ButtonDef : null);
 
               if(btndef) ld=ng_CopyVar(btndef);
               else {
                 ld=new Object;
-                ld.Type = (typeof list.DefType !== 'undefined' ? list.DefType+'Button' : 'ngButton');    
+                ld.Type = (typeof list.DefType !== 'undefined' ? list.DefType+'Button' : 'ngButton');
               }
               if(typeof ld.className === 'undefined') ld.className=list.BaseClassName+'Button';
               if(typeof ld.Data === 'undefined') ld.Data = new Object;
@@ -257,22 +257,22 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
                 ld.Data.ngText=name;
                 ld.Data.Text=ngTxt(name);
               }
-              else ld.Data.Text=name;       
+              else ld.Data.Text=name;
               if(id!='') ld.Data.ID=id;
 
               ld.Menu=ng_CopyVar(list.SubMenuDef);
               if(typeof ld.Menu.Type === 'undefined') ld.Menu.Type='ngMenu';
               if((typeof ld.Menu.Data !== 'object')||(!ld.Menu.Data)) ld.Menu.Data = new Object;
               ld.Menu.Data.Items=new Array();
-                    
+
               var ldefs={ MenuBtn: ld };
               var lref=ngCreateControls(ldefs,undefined,list.ID);
-              if(lref.MenuBtn) 
+              if(lref.MenuBtn)
               {
                 lref.MenuBtn.Owner=list;
                 if(typeof list.Menu === 'undefined') list.Menu = new Array();
                 if((pos<0)||(pos>=list.Menu.length)) list.Menu[list.Menu.length]=lref.MenuBtn;
-                else 
+                else
                 {
                   var cc=list.ChildControls;
                   if((cc.length>0)&&(cc[cc.length-1]==lref.MenuBtn))
@@ -282,7 +282,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
                   }
                   list.Menu.splice(pos,0,lref.MenuBtn);
                 }
-                
+
                 list.Update();
                 list=lref.MenuBtn.Menu;
                 nit=null;
@@ -296,20 +296,20 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
                 nit.ngText=name;
                 nit.Text=ngTxt(name);
               }
-              else nit.Text=name;       
+              else nit.Text=name;
               if(id!='') nit.ID=id;
-  
+
               if((oncreatefnc)&&(!ngVal(oncreatefnc(list, nit, userdata),false))) { ret=null; break; }
-              
+
               if(item)
               {
                 var def=new Object;
                 def.Items=new Array(nit);
-                if(ngVal(item.ID,'')!='') def.ID=item.ID; 
+                if(ngVal(item.ID,'')!='') def.ID=item.ID;
                 list=list.CreateSubMenu(item, def);
               }
               else
-              { 
+              {
                 if((pos<0)||(typeof list.Items === 'undefined')||(pos>=list.Items.length)) list.Add(nit);
                 else list.Insert(pos,nit);
               }
@@ -319,7 +319,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
             ret=nit;
           }
           else { ret=null; break; }
-        }      
+        }
       }
       s=i+1;
     }
@@ -327,7 +327,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
   catch(e)
   {
   }
-  return ret;  
+  return ret;
 }
 
 // --- ngMenu ------------------------------------------------------------------
@@ -349,9 +349,9 @@ function ngmn_WindowHeight()
 function ngmn_GetScreenRect()
 {
   var rect={ Left: 0, Top: 0, Right: 0, Bottom: 0 };
-  
+
   var wo=(ngApp ? ngApp.Elm() : null);
-  if(wo) 
+  if(wo)
   {
     rect.Right=ng_ClientWidth(wo);
     rect.Bottom=ng_ClientHeight(wo);
@@ -383,9 +383,9 @@ function ngmn_DisableContextMenu(e)
      e=window.event;
      e.returnValue = false;
   }
-  else 
-  {  
-    if(e.preventDefault) e.preventDefault(); 
+  else
+  {
+    if(e.preventDefault) e.preventDefault();
   }
   return false;
 }
@@ -401,7 +401,7 @@ function ngmn_DoAttach(elm)
 }
 
 function ngmn_Update(recursive)
-{    
+{
   if(!this.Visible) return;
   if(!this.__menuvishandling)
   {
@@ -411,62 +411,62 @@ function ngmn_Update(recursive)
     {
       if(!c.Visible) self.HideSubMenu();
     }
-    
+
     function parentdispose()
     {
       var p=this.ParentControl;
       var remove=true;
       while(p)
-      {    
+      {
         if(typeof p.HideSubMenu === 'function') remove=false;
         if(remove) p.RemoveEvent('OnVisibleChanged',parentsetvisible);
-        if(typeof p.PopupChildMenus!=='undefined') 
+        if(typeof p.PopupChildMenus!=='undefined')
         {
           for(var i=p.PopupChildMenus.length-1;i>=0;i--)
             if(p.PopupChildMenus[i]===self) p.PopupChildMenus.splice(i,1);
-        }    
+        }
         p=p.ParentControl;
       }
-      return true;                
+      return true;
     }
 
     var p=this.ParentControl;
     if(p)
     {
       while((p)&&(typeof p.HideSubMenu !== 'function'))
-      {    
+      {
         p.AddEvent('OnVisibleChanged',parentsetvisible);
         p=p.ParentControl;
       }
       this.AddEvent('DoDispose',parentdispose);
-    }                
+    }
   }
 }
 
 function ngmn_ParentIsInsidePopup(c,t,intype,e)
 {
-  if(typeof c.PopupChildMenus!=='undefined') 
+  if(typeof c.PopupChildMenus!=='undefined')
   {
     for(var i=0;i<c.PopupChildMenus.length;i++)
       if(c.PopupChildMenus[i].IsInsidePopup(t,intype,e)) return true;
-  }   
-  return false; 
+  }
+  return false;
 }
 
 function ngmn_ParentChildMenusVisibleChanged(c)
 {
-  if(!c.Visible) c.PopupChildMenus=new Array(); 
+  if(!c.Visible) c.PopupChildMenus=new Array();
 }
 
 function ngmn_SetCurrentPopupMenu(menu)
 {
   var p=menu;
   while(p)
-  {                                
+  {
     if(p===ngCurrentPopupMenu) return;
     if((p!==menu)&&(ngc_IsActivePopup(p)))
     {
-      if(typeof p.PopupChildMenus==='undefined') 
+      if(typeof p.PopupChildMenus==='undefined')
       {
         p.PopupChildMenus=new Array();
         p.AddEvent('OnIsInsidePopup',ngmn_ParentIsInsidePopup);
@@ -475,7 +475,7 @@ function ngmn_SetCurrentPopupMenu(menu)
       var i;
       for(i=0;i<p.PopupChildMenus.length;i++)
         if(p.PopupChildMenus[i]===menu) break;
-      if(i>=p.PopupChildMenus.length) 
+      if(i>=p.PopupChildMenus.length)
         p.PopupChildMenus.push(menu);
       break;
     }
@@ -498,35 +498,35 @@ function ngmn_DoPopup()
   this.AutoPopup = ngVal(this.AutoPopup, !this.Visible);
   this.HideSubMenu();
 
-  if(!this.Visible)    
+  if(!this.Visible)
   {
     mo.style.left='-10000px';
     mo.style.top='-10000px';
   }
-  
+
   // Compute xIndex by submenu level
   var maxzidx=0,po=null;
   var zidx;
-  if((typeof ngModalCnt!=='undefined')&&(typeof ngModalZIndexDelta!=='undefined')) 
+  if((typeof ngModalCnt!=='undefined')&&(typeof ngModalZIndexDelta!=='undefined'))
   {
     // move menu over modal windows
     zidx=(ngModalZIndexDelta-1000);
-    zidx+=(ngModalCnt*ngModalZIndexDelta);     
+    zidx+=(ngModalCnt*ngModalZIndexDelta);
   }
   else zidx=10000;
-  
+
   var p=this;
   while((p)&&(typeof p.HideSubMenu === 'function'))
   {
     zidx++;
     p=p.Owner;
-  }  
+  }
   mo.style.zIndex=zidx;
   if((typeof this.Bounds.H === 'undefined')&&((typeof this.Bounds.B === 'undefined')||(typeof this.Bounds.T === 'undefined')))
     mo.style.height='auto';
   if((typeof this.Bounds.W === 'undefined')&&((typeof this.Bounds.R === 'undefined')||(typeof this.Bounds.L === 'undefined')))
     mo.style.width='auto';
-  
+
   this.SetVisible(true);
 
   var minw=ngVal(this.MinWidth,100);
@@ -538,7 +538,7 @@ function ngmn_DoPopup()
   if(mw<minw) { resize=true; ng_SetOuterWidth(mo,minw); }
   else if(ngOpera) ng_SetOuterWidth(mo,mw);// Opera scrollbar fix
   var maxh=this.MaxHeight;
-  if(typeof maxh === 'undefined') 
+  if(typeof maxh === 'undefined')
   {
     var srect=this.GetScreenRect();
     maxh=srect.Bottom-srect.Top-10;
@@ -546,7 +546,7 @@ function ngmn_DoPopup()
   if(ng_OuterHeight(mo)>maxh) { resize=true; ng_SetOuterHeight(mo,maxh); }
   ng_EndMeasureElement(mo);
   if((resize)&&(hasframe)) this.Update();
-  
+
   ngCurrentAppPopupMenu=null; // prevent opening ngApplication menu
 
   return mo;
@@ -561,17 +561,18 @@ function ngmn_Popup(x,y,halign,valign)
   valign=ngVal(valign,this.MenuVAlign);
   halign=ngVal(halign,'left');
   valign=ngVal(valign,'top');
+  var msi=ngVal(this.MinScreenIndent,5);
 
   ng_BeginMeasureElement(mo);
-  var sw=ng_OuterWidth(mo); 
-  var sh=ng_OuterHeight(mo); 
+  var sw=ng_OuterWidth(mo);
+  var sh=ng_OuterHeight(mo);
   ng_EndMeasureElement(mo);
 
-  var mx,my;            
-  
+  var mx,my;
+
   var srect=this.GetScreenRect();
   if(halign==='right')
-  { 
+  {
     mx=x-sw;
     if(mx<srect.Left) mx=x;
   }
@@ -585,12 +586,12 @@ function ngmn_Popup(x,y,halign,valign)
     {
       mx=x;
     }
-    if(mx+sw>srect.Right-5) mx=x-sw; // right
-  }    
-  if((mx<srect.Left)||(mx+sw>srect.Right-5)) mx=srect.Left+5;
+    if(mx+sw>srect.Right-msi) mx=x-sw; // right
+  }
+  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
 
   if(valign==='bottom')
-  { 
+  {
     my=y-sh;
     if(my<srect.Top) my=y;
   }
@@ -604,16 +605,16 @@ function ngmn_Popup(x,y,halign,valign)
     {
       my=y;
     }
-    if(my+sh>srect.Bottom-5) my=y-sh; // bottom
-  }    
-  if((my<srect.Top)||(my+sh>srect.Bottom-5)) my=srect.Top+5;
-  
+    if(my+sh>srect.Bottom-msi) my=y-sh; // bottom
+  }
+  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+
   mo.style.left=mx+'px';
   mo.style.top=my+'px';
-  
+
   this.PopupX = x;
   this.PopupY = y;
-  delete this.PopupElm; 
+  delete this.PopupElm;
 
   this.SetFocus();
 }
@@ -622,7 +623,7 @@ function ngmn_PopupCtrl(c,halign,valign)
 {
   var o=null;
   // detect if it is control or just element
-  if(typeof c === 'string') 
+  if(typeof c === 'string')
   {
     var nc=ngGetControlById(c);
     if(!nc) c=document.getElementById(c);
@@ -630,45 +631,48 @@ function ngmn_PopupCtrl(c,halign,valign)
   }
   if(typeof c.Elm === 'function') o=c.Elm();
   else { o=c; c=null; }
-   
+
   if(!o) return;
-  
+
   var mo=this.DoPopup();
   if(!mo) return;
 
-  var ox=0,oy=0;
+  var ox=0,oy=0,msi;
   if(c)
   {
     halign=ngVal(halign,c.MenuHAlign);
     valign=ngVal(valign,c.MenuVAlign);
     ox=ngVal(c.MenuOverlapX,0);
     oy=ngVal(c.MenuOverlapY,0);
+    msi=c.MinScreenIndent;
   }
   halign=ngVal(halign,this.MenuHAlign);
   valign=ngVal(valign,this.MenuVAlign);
   halign=ngVal(halign,'left');
   valign=ngVal(valign,'top');
+  msi=ngVal(msi,this.MinScreenIndent);
+  msi=ngVal(msi,5);
 
   var pos=ng_ParentPosition(o,ngApp ? ngApp.Elm() : undefined);
   ng_BeginMeasureElement(o);
   pos.w=ng_OuterWidth(o);
   pos.h=ng_OuterHeight(o);
   ng_EndMeasureElement(o);
-    
+
   ng_BeginMeasureElement(mo);
-  var sw=ng_OuterWidth(mo); 
-  var sh=ng_OuterHeight(mo); 
+  var sw=ng_OuterWidth(mo);
+  var sh=ng_OuterHeight(mo);
   ng_EndMeasureElement(mo);
-    
+
   var mx,my;
 
   var srect=this.GetScreenRect();
   if(halign==='right')
-  { 
+  {
     if(valign==='center')
     {
       mx=pos.x+pos.w+ox;
-      if(mx+sw>srect.Right-5) mx=pos.x-sw-ox; // right
+      if(mx+sw>srect.Right-msi) mx=pos.x-sw-ox; // right
     }
     else
     {
@@ -694,11 +698,11 @@ function ngmn_PopupCtrl(c,halign,valign)
         mx=pos.x+ox;
       }
     }
-    if(mx+sw>srect.Right-5) mx=pos.x+pos.w-sw-ox; // right
-  }    
-  if((mx<srect.Left)||(mx+sw>srect.Right-5)) mx=srect.Left+5;
-  
-  
+    if(mx+sw>srect.Right-msi) mx=pos.x+pos.w-sw-ox; // right
+  }
+  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
+
+
   if(valign==='bottom')
   {
     my=pos.y-sh-oy;
@@ -714,17 +718,17 @@ function ngmn_PopupCtrl(c,halign,valign)
     {
       my=pos.y+pos.h+oy;
     }
-    if(my+sh>srect.Bottom-5) my=pos.y-sh-oy; // bottom
+    if(my+sh>srect.Bottom-msi) my=pos.y-sh-oy; // bottom
   }
-  if((my<srect.Top)||(my+sh>srect.Bottom-5)) my=srect.Top+5;
-      
+  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+
   mo.style.left=mx+'px';
   mo.style.top=my+'px';
-  
+
   delete this.PopupX;
   delete this.PopupY;
-  this.PopupElm = o; 
-  
+  this.PopupElm = o;
+
   this.SetFocus();
 }
 
@@ -738,36 +742,37 @@ function ngmn_PopupSubMenu(o,halign,valign)
   valign=ngVal(valign,this.MenuVAlign);
   halign=ngVal(halign,'left');
   valign=ngVal(valign,'top');
+  var msi=ngVal(this.MinScreenIndent,5);
 
   var pos=ng_ParentPosition(o,ngApp ? ngApp.Elm() : undefined);
   ng_BeginMeasureElement(o);
   pos.w=ng_OuterWidth(o);
   pos.h=ng_OuterHeight(o);
   ng_EndMeasureElement(o);
-    
+
   ng_BeginMeasureElement(mo);
-  var sw=ng_OuterWidth(mo); 
-  var sh=ng_OuterHeight(mo); 
+  var sw=ng_OuterWidth(mo);
+  var sh=ng_OuterHeight(mo);
   ng_EndMeasureElement(mo);
-  
+
   var ox=ngVal(this.SubMenuOverlapX,5);
   var oy=ngVal(this.SubMenuOverlapY,0);
 
   var mx,my;
-  
-  var srect=this.GetScreenRect();  
+
+  var srect=this.GetScreenRect();
   if(halign=='right')
-  { 
+  {
     mx=pos.x-sw+ox;
     if(mx<srect.Left) mx=pos.x+pos.w-ox;
   }
   else
   {
     mx=pos.x+pos.w-ox;
-    if(mx+sw>srect.Right-5) mx=pos.x-sw+ox; // right
-  }    
-  if((mx<srect.Left)||(mx+sw>srect.Right-5)) mx=srect.Left+5;
-  
+    if(mx+sw>srect.Right-msi) mx=pos.x-sw+ox; // right
+  }
+  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
+
   var mt=ng_GetCurrentStylePx(mo,'padding-top') +
          ng_GetCurrentStylePx(mo,'margin-top') +
          ng_GetCurrentStylePx(mo,'border-top-width');
@@ -782,16 +787,16 @@ function ngmn_PopupSubMenu(o,halign,valign)
   else
   {
     my=pos.y+oy-mt;
-    if(my+sh>srect.Bottom-5) my=pos.y+pos.h-sh-oy+mb; // bottom
+    if(my+sh>srect.Bottom-msi) my=pos.y+pos.h-sh-oy+mb; // bottom
   }
-  if((my<srect.Top)||(my+sh>srect.Bottom-5)) my=srect.Top+5;
-        
+  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+
   mo.style.left=mx+'px';
   mo.style.top=my+'px';
 
   delete this.PopupX;
   delete this.PopupY;
-  this.PopupElm = o;  
+  this.PopupElm = o;
 }
 
 function ngmn_ShowSubMenu(it)
@@ -801,17 +806,17 @@ function ngmn_ShowSubMenu(it)
   {
     if(this.ActiveSubMenu==m) return;
     this.HideSubMenu();
-  } 
+  }
   if(m)
   {
     if((m.Visible)||(!this.Enabled)||(!ngVal(it.Enabled,true))) return;
-    
+
     this.SelectItem(it);
     this.ActiveSubMenu=m;
     var o=document.getElementById(this.ID+'_'+this.ItemId(it));
     if(o) m.PopupSubMenu(o);
   }
-  else 
+  else
   {
     this.ClearSelected();
     this.ActiveSubMenu=null;
@@ -823,7 +828,7 @@ function ngmn_SetVisible(v)
   v=ngVal(v,true);
   if(this.Visible==v) return;
   var p=this.Owner;
-  if(!v) 
+  if(!v)
   {
     this.HideSubMenu();
     if((p)&&(ngVal(p.ActiveSubMenu, null)==this))
@@ -835,15 +840,15 @@ function ngmn_SetVisible(v)
 
     delete this.PopupX;
     delete this.PopupY;
-    delete this.PopupElm; 
+    delete this.PopupElm;
 
-    if(ngCurrentPopupMenu === this) 
+    if(ngCurrentPopupMenu === this)
     {
       ngCurrentPopupMenu = null;
       ngc_DeactivatePopup(this);
     }
   }
-  else 
+  else
   {
     if(ngVal(this.AutoPopup,false)) ngmn_SetCurrentPopupMenu(this);
   }
@@ -858,7 +863,7 @@ function ngmn_HideSubMenu()
     this.ClearSelected();
     m.SetVisible(false);
     this.ActiveSubMenu=null;
-  } 
+  }
 }
 
 function ngmn_SubMenuTimer(iid,t)
@@ -868,12 +873,12 @@ function ngmn_SubMenuTimer(iid,t)
   {
     if(ii.list.SubMenuTimer) clearTimeout(ii.list.SubMenuTimer);
     ii.list.SubMenuTimer=null;
-    if(t) 
+    if(t)
     {
       var p=ii.list.Owner;
       if((p)&&(ngVal(p.Visible,true))) ii.list.ShowSubMenu(ii.item);
     }
-    else 
+    else
     {
       var l=ii.list;
       while(l)
@@ -897,7 +902,7 @@ function ngmn_OnEnterRow(l,it,id)
     clearTimeout(l.Owner.SubMenuTimer);
     l.Owner.SubMenuTimer=null;
   }
-  if((l.ActiveSubMenu)||((it.SubMenu)&&((typeof l.PointerInfo === 'undefined')||(!l.PointerInfo.Touch)))) 
+  if((l.ActiveSubMenu)||((it.SubMenu)&&((typeof l.PointerInfo === 'undefined')||(!l.PointerInfo.Touch))))
   {
     if(l.SubMenuTimer) clearTimeout(l.SubMenuTimer);
     l.SubMenuTimer = setTimeout("ngmn_SubMenuTimer('"+id+"',1);",200);
@@ -910,7 +915,7 @@ function ngmn_OnLeaveRow(l,it,id)
 {
   if(l.SubMenuTimer) clearTimeout(l.SubMenuTimer);
   l.SubMenuTimer=null;
-  
+
   if((l.ActiveSubMenu)&&(l.ActiveSubMenu!==it.SubMenu))
   {
     l.SubMenuTimer = setTimeout("ngmn_SubMenuTimer('"+id+"',0)",200);
@@ -930,7 +935,7 @@ function ngmn_OnEnter(l)
       {
         p.SelectItem(p.Items[i]);
         break;
-      }  
+      }
   }
   // l.SetFocus(); // disabled because of Opera - focusing scrolls document :(
   return true;
@@ -946,7 +951,7 @@ function ngmn_OnKeyDown(e)
     case 37:
     case 27:
       var ii=ngl_ItemById(ngl_CurrentRowId);
-      if(ii.list!=l) 
+      if(ii.list!=l)
       {
         ii.list=l;
         ii.item=null;
@@ -958,9 +963,9 @@ function ngmn_OnKeyDown(e)
           break;
         case 39:
           var m=(ii.item ? ii.item.SubMenu : null);
-          if(m) 
+          if(m)
           {
-            ii.list.ShowSubMenu(ii.item);            
+            ii.list.ShowSubMenu(ii.item);
             m.SetFocus();
             m.SetItemFocus(m.FirstVisibleItem());
           }
@@ -982,7 +987,7 @@ function ngmn_OnKeyDown(e)
                   if(p.Menu[i]==btn)
                   {
                     i++;
-                    if(i>=p.Menu.length) i=0;                     
+                    if(i>=p.Menu.length) i=0;
                     if((i>=0)&&(i<p.Menu.length))
                     {
                       btn=p.Menu[i];
@@ -995,11 +1000,11 @@ function ngmn_OnKeyDown(e)
                     }
                     break;
                   }
-                
+
               }
             }
           }
-          break;        
+          break;
         case 37:
           var p=(ii.list && ii.list.Owner ? ii.list.Owner : null);
           if(p)
@@ -1012,7 +1017,7 @@ function ngmn_OnKeyDown(e)
                 {
                   p.SetItemFocus(p.Items[i]);
                   break;
-                }            
+                }
               p.HideSubMenu();
               if(p.SubMenuTimer) clearTimeout(p.SubMenuTimer); p.SubMenuTimer=null;
             }
@@ -1031,7 +1036,7 @@ function ngmn_OnKeyDown(e)
                   if(p.Menu[i]==btn)
                   {
                     i--;
-                    if(i<0) i=p.Menu.length-1;                     
+                    if(i<0) i=p.Menu.length-1;
                     if((i>=0)&&(i<p.Menu.length))
                     {
                       btn=p.Menu[i];
@@ -1045,8 +1050,8 @@ function ngmn_OnKeyDown(e)
                     break;
                   }
               }
-            } 
-          }            
+            }
+          }
           break;
       }
   }
@@ -1059,7 +1064,7 @@ function ngmn_MenuText(list, it, col)
   var txt,t=new ngStringBuilder;
 
   if(typeof it.OnGetText === 'function') txt=ngVal(it.OnGetText(list, it, col),'');
-  else 
+  else
   {
     if(list.Columns.length>0)
     {
@@ -1089,15 +1094,15 @@ function ngmn_DrawItemText(html, it, id, level)
   var cclass=this.BaseClassName;
   if(this.Columns.length>0) txt=ngVal(it.Text[this.Columns[0].ID],'');
   else txt=it.Text;
-  if(txt=='-') 
+  if(txt=='-')
   {
     it.Visible=false;
     var h=((this.Items[0]==it)||(this.Items[this.Items.length-1]==it));
     if(this.OnDrawSeparator) this.OnDrawSeparator(html,it,id,level);
-    else 
+    else
     {
       if(this.Columns.length>0) html.append('<tr class="'+cclass+'Row" '+(h ? 'style="display:none" ' : '')+'id="'+this.ID+'_'+id+'"><td colspan="'+this.Columns.length+'"><div class="'+cclass+'Separator">&nbsp;</div></td></tr>');
-      else html.append('<div id="'+this.ID+'_'+id+'" '+(h ? 'style="display:none" ' : '')+'class="'+cclass+'Separator"></div>');    
+      else html.append('<div id="'+this.ID+'_'+id+'" '+(h ? 'style="display:none" ' : '')+'class="'+cclass+'Separator"></div>');
     }
   }
   else this.DefaultDrawItemText(html,it,id,level);
@@ -1136,7 +1141,7 @@ function ngmn_MenuClick(it, e)
   if(!it) return false;
   if(typeof e === 'undefined') e=new Object;
   if(e.list != this)
-  { 
+  {
     e.Owner = this;
     e.list = this;
     e.listItem = it;
@@ -1151,8 +1156,8 @@ function ngmn_MenuClick(it, e)
   {
     this.ShowSubMenu(it);
     return false;
-  }  
-  
+  }
+
   if((this.OnMenuClick)&&(!ngVal(this.OnMenuClick(e,this,it),false))) return false;
   var onclick=it.OnMenuClick;
   if(onclick)
@@ -1160,17 +1165,17 @@ function ngmn_MenuClick(it, e)
     if(!ngVal(onclick(e,this,it),true)) return false;
     this.HideMenu();
   }
-  else 
+  else
   {
     var ac=this.GetItemAction(it);
     if(!ac) ac=it;
     else
-      if(ac.OnClick) 
+      if(ac.OnClick)
       {
         ac=null; // OnClick defined
         this.HideMenu();
       }
-    
+
     if(ac)
     {
       if((typeof ac.Checked!=='undefined')||(typeof ac.RadioGroup!=='undefined'))
@@ -1184,7 +1189,7 @@ function ngmn_MenuClick(it, e)
         {
           this.ShowSubMenu(it);
           return false;
-        }  
+        }
         else this.HideMenu();
       }
     }
@@ -1199,17 +1204,17 @@ function ngmn_OnClick(e)
   return false;
 }
 
-function ngmn_GetResText(list,it,col) 
-{ 
-  return ngTxt(it.ngTextD); 
+function ngmn_GetResText(list,it,col)
+{
+  return ngTxt(it.ngTextD);
 }
 
 function ngmn_CreateSubMenu(it,m)
 {
   if(!it) return null;
-  
+
   if(typeof m === 'undefined') m=new Object;
-  
+
   var smd=null;
   var smox=m.SubMenuOverlapX,smoy=m.SubMenuOverlapY;
   var smha=m.MenuHAlign,smva=m.MenuVAlign;
@@ -1245,18 +1250,18 @@ function ngmn_CreateSubMenu(it,m)
     ng_MergeVar(ld.Data,d);
   }
   if(typeof m.ID === 'string') ld.id=m.ID;
-  if(typeof smox !== 'undefined') m.SubMenuOverlapX = smox; 
+  if(typeof smox !== 'undefined') m.SubMenuOverlapX = smox;
   if(typeof smoy !== 'undefined') m.SubMenuOverlapY = smoy;
-  if(typeof smha !== 'undefined') m.MenuHAlign = smha; 
+  if(typeof smha !== 'undefined') m.MenuHAlign = smha;
   if(typeof smva !== 'undefined') m.MenuVAlign = smva;
   if(typeof smc  !== 'undefined') m.OnSubMenuCreated = smc;
-  m.Owner=this;       
+  m.Owner=this;
   m.ParentMenu=it;
-           
+
   var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : undefined));
   it.SubMenu=lref.SubMenu;
   if((lref.SubMenu)&&(p.OnSubMenuCreated)) p.OnSubMenuCreated(p,ld,lref.SubMenu);
-  
+
   return it.SubMenu;
 }
 
@@ -1269,7 +1274,7 @@ function ngmn_OnAdd(list, it, parent)
   if((typeof it.ngText !== 'undefined')&&(ngVal(it.Text,'')==''))
     it.Text=ngTxt(it.ngText);
   if((typeof it.ngTextD !== 'undefined')&&(!it.OnGetText))
-    it.OnGetText = ngmn_GetResText;      
+    it.OnGetText = ngmn_GetResText;
 
   // Handle submenu
   var m=it.SubMenu;
@@ -1288,7 +1293,7 @@ function ngmn_OnAdd(list, it, parent)
     }
     else m.Owner=list;
   }
-  
+
   return true;
 }
 
@@ -1307,7 +1312,7 @@ function ngmn_BeginUpdate(recursive)
   if(recursive)
   {
     this.Scan(
-      function(list, item, parent, userdata) 
+      function(list, item, parent, userdata)
       {
         var m=item.SubMenu;
         if(m) m.BeginUpdate(true);
@@ -1326,8 +1331,8 @@ function ngmn_EndUpdate()
     if(recursive)
     {
       this.Scan(
-        function(list, item, parent, userdata) 
-        { 
+        function(list, item, parent, userdata)
+        {
           var m=item.SubMenu;
           if(m) m.EndUpdate(true);
           return true;
@@ -1348,7 +1353,7 @@ function ngmn_GetMenu(path, create, parent, oncreatefnc, userdata)
 function ngmn_GetMenuItemByID(id, recursive)
 {
   var found={ Menu: null, Item: null };
- 
+
   this.ScanMenu(function(list, it, parent, data) {
     if((it.ID)&&(it.ID==id)) {
       found.Menu=list;
@@ -1376,9 +1381,9 @@ function ngmn_ScanMenu(fnc, recursive, parent, userdata)
     {
       it.SubMenu.Scan(scanfnc, null);
       if(cancel) return false;
-    }     
-    return true;    
-  }  
+    }
+    return true;
+  }
   return this.Scan(scanfnc, parent);
 }
 
@@ -1405,13 +1410,13 @@ function ngmb_DoCreate(def, ref, elm, parent)
         if(btndef) ld=ng_CopyVar(btndef);
         else {
           ld=new Object;
-          ld.Type = (typeof def.Type !== 'undefined' ? def.Type+'Button' : 'ngButton');    
+          ld.Type = (typeof def.Type !== 'undefined' ? def.Type+'Button' : 'ngButton');
         }
         if(typeof ld.className === 'undefined') ld.className=this.BaseClassName+'Button';
         if(typeof ld.Data === 'undefined') ld.Data = new Object;
-        
+
         var bd=def.Menu.Data;
-        var bp=def.Menu.parent;        
+        var bp=def.Menu.parent;
         delete def.Menu.Data;
         delete def.Menu.parent;
         this.SubMenuDef=ng_CopyVar(def.Menu);
@@ -1427,22 +1432,22 @@ function ngmb_DoCreate(def, ref, elm, parent)
         this.SubMenuDef._noMerge=true;
         def.Menu.Data=bd;
         def.Menu.parent=bp;
-        
+
         for(var j in it)
           ld.Data[j]=it[j];
-          
+
         if(ld.Data.SubMenu)
         {
           ld.Menu=ng_CopyVar(dm);
           if(typeof ld.Menu.Data === 'undefined') ld.Menu.Data=new Object;
           ld.Menu.Data.Items=ld.Data.SubMenu;
-          
+
           delete ld.Data.SubMenu;
           delete ld.Data.Menu;
         }
         var ldefs={ MenuBtn: ld };
         var lref=ngCreateControls(ldefs,undefined,this.ID);
-        if(lref.MenuBtn) 
+        if(lref.MenuBtn)
         {
           lref.MenuBtn.Owner=this;
           this.Menu[i]=lref.MenuBtn;
@@ -1462,7 +1467,7 @@ function ngmb_BeginUpdate(recursive)
     m=this.Menu[i].Menu;
     if(m) m.BeginUpdate(recursive);
   }
-    
+
 }
 
 function ngmb_EndUpdate()
@@ -1486,17 +1491,17 @@ function ngmbb_ButtonEnterMenu()
   if((typeof p==='object')&&(p)&&(this.Enabled)&&(!this.ReadOnly))
   {
     if(p.Visible) return;
-    
+
     while(p)
     {
-      if(p.CtrlType == 'ngToolBar') 
+      if(p.CtrlType == 'ngToolBar')
       {
         var mv=false;
         var m,cc=p.ChildControls;
         if(typeof cc !== 'undefined')
         {
           for(var i=0;i<cc.length;i++)
-          {   
+          {
             m=(typeof p.ChildControls[i].Menu === 'object' ? p.ChildControls[i].Menu : null);
             if(m)
             {
@@ -1505,11 +1510,11 @@ function ngmbb_ButtonEnterMenu()
             }
           }
         }
-        break; 
+        break;
       }
       p=p.Owner;
     }
-    
+
     if((!this.Menu.Visible)&&((mv)||(ngVal(this.AutoPopup,false)))) {
       this.Menu.PopupCtrl(this);
     }
@@ -1523,7 +1528,7 @@ function ngmnb_SetControlVisible(v)
   var m=this.Menu;
   if((typeof m==='object')&&(m))
   {
-    if(!v) 
+    if(!v)
     {
       m.AutoPopup=true;
       m.HideMenu();
@@ -1546,7 +1551,7 @@ function ngsbtn_Click(e)
   var m=this.Menu;
   if((typeof m==='object')&&(m))
   {
-    if(m.Visible) 
+    if(m.Visible)
     {
       m.AutoPopup=true;
       m.HideMenu();
@@ -1561,12 +1566,12 @@ function ngsbtn_DoMenuClick(b)
   if((typeof m==='object')&&(m)&&(this.Enabled))
   {
     if((this.OnMenuClick)&&(!ngVal(this.OnMenuClick(this,m),false))) return;
-    if(m.Visible) 
+    if(m.Visible)
     {
       m.AutoPopup=true;
       m.HideMenu();
     }
-    else 
+    else
     {
       var mw=ngVal(m.MinWidth,100);
       var cw=ng_OuterWidth(this.Elm());
@@ -1578,7 +1583,7 @@ function ngsbtn_DoMenuClick(b)
 
 function ngsbtn_DoPtrClick(pi)
 {
-  if(pi.EventID==='menu') this.DoMenuClick(this); 
+  if(pi.EventID==='menu') this.DoMenuClick(this);
 }
 
 function ngsbtn_DoUpdate(o)
@@ -1610,8 +1615,8 @@ function ngsbtn_DoUpdate(o)
           {
             if(typeof this.Cursor !== 'undefined')
             {
-              cursor=this.Cursor;      
-            } 
+              cursor=this.Cursor;
+            }
             else cursor='pointer';
           }
           else cursor='default';
@@ -1637,7 +1642,7 @@ function ngmn_DefaultClick(e)
   var m=this.Menu;
   if((typeof m==='object')&&(m))
   {
-    if(m.Visible) 
+    if(m.Visible)
     {
       m.AutoPopup=true;
       m.HideMenu();
@@ -1649,7 +1654,7 @@ function ngmn_DefaultClick(e)
 function ngmn_DoMenuDispose()
 {
   var m=this.Menu;
-  if((typeof m==='object')&&(m)&&(typeof m.Dispose === 'function')) 
+  if((typeof m==='object')&&(m)&&(typeof m.Dispose === 'function'))
     m.Dispose();
   return true;
 }
@@ -1678,7 +1683,7 @@ function ngmn_DoPopupAttach(elm)
 {
   if(!elm) return;
   elm.oncontextmenu = ngmn_DisableContextMenu;
-  
+
   if(elm.ngAddEvent) return;
   elm.ngAddEvent = ngObjAddEvent;
 
@@ -1714,7 +1719,7 @@ function ngmn_DoGesture(pi)
 function ngmn_DoPopupDispose()
 {
   var m=this.PopupMenu;
-  if((typeof m==='object')&&(m)&&(typeof m.Dispose === 'function')) 
+  if((typeof m==='object')&&(m)&&(typeof m.Dispose === 'function'))
     m.Dispose();
   return true;
 }
@@ -1724,7 +1729,7 @@ function ngmn_SetPopupControlVisible(v)
   var m=this.PopupMenu;
   if((typeof m==='object')&&(m))
   {
-    if(!v) 
+    if(!v)
     {
       m.AutoPopup=true;
       m.HideMenu();
@@ -1734,35 +1739,35 @@ function ngmn_SetPopupControlVisible(v)
 
 /**
  *  Function: ng_SetControlMenu
- *  Assigns <ngMenu> to control.  
- * 
+ *  Assigns <ngMenu> to control.
+ *
  *  Syntax:
  *    void *ng_SetControlMenu* (object ctrl, object menu)
- *     
+ *
  *  Parameters:
  *    ctrl - control to which is menu assigned
  *    menu - <ngMenu> control or null
- *      
+ *
  *  Returns:
  *    -
- *    
+ *
  *  Notes:
- *    Control must support OnClick event. 
- *    If menu is assigned, the reference is stored in Menu property in control.   
- */  
+ *    Control must support OnClick event.
+ *    If menu is assigned, the reference is stored in Menu property in control.
+ */
 function ng_SetControlMenu(c,m)
 {
   if(!c) return;
   m=ngVal(m,null);
   var om=ngVal(c.Menu,null);
-  if(om == m) return;  
+  if(om == m) return;
   var mb=ngVal(c.SplitButton,false);
   if(om) // unregister old
-  {  
+  {
     if(!m)
     {
-      c.RemoveEvent('SetVisible',ngmnb_SetControlVisible);                
-      c.RemoveEvent('SetEnable',ngmnb_SetControlVisible);                
+      c.RemoveEvent('SetVisible',ngmnb_SetControlVisible);
+      c.RemoveEvent('SetEnable',ngmnb_SetControlVisible);
       c.RemoveEvent('DoDispose',ngmn_DoMenuDispose);
       if(c.OnClick == ngmn_DefaultClick) c.OnClick=null;
     }
@@ -1780,19 +1785,19 @@ function ng_SetControlMenu(c,m)
   {
     var oc=m.Owner;
     if((oc)&&(oc!=c)) ng_SetControlMenu(oc,null);
-    
+
     m.Owner=c;
     if(!om)
     {
-      c.AddEvent('SetVisible',ngmnb_SetControlVisible);                
-      c.AddEvent('SetEnable',ngmnb_SetControlVisible);                
+      c.AddEvent('SetVisible',ngmnb_SetControlVisible);
+      c.AddEvent('SetEnable',ngmnb_SetControlVisible);
       c.AddEvent('DoDispose',ngmn_DoMenuDispose);
 
       if((typeof c.OnClick !== 'undefined')&&(!c.OnClick)&&(!mb))
         c.OnClick=ngmn_DefaultClick;
     }
     if(mb) m.AddEvent('OnSetVisible',ngsbtn_SetMenuVisible);
-    else   m.AddEvent('OnSetVisible',ngmnb_SetMenuVisible);                
+    else   m.AddEvent('OnSetVisible',ngmnb_SetMenuVisible);
   }
 }
 
@@ -1804,15 +1809,15 @@ function nga_DoPopupMenuStart(e)
   if (!e) e = window.event;
   ngCurrentAppPopupMenu=null;
   var appmenu=((e.button == 2)&&(typeof ngApp === 'object')&&(typeof ngApp.PopupMenu === 'object')&&(ngApp.PopupMenu) ? ngApp.PopupMenu : null);
-  if((appmenu)&&((!ngCurrentPopupMenu)||(ngCurrentPopupMenu==appmenu))) 
+  if((appmenu)&&((!ngCurrentPopupMenu)||(ngCurrentPopupMenu==appmenu)))
   {
     ngCurrentAppPopupMenu=appmenu;
   }
   return true;
-}  
+}
 
 function nga_DoPopupMenu(e)
-{  
+{
   if (!e) e = window.event;
   if(ngCurrentAppPopupMenu)
   {
@@ -1827,25 +1832,25 @@ function nga_DoPopupMenu(e)
       var menu=ngCurrentAppPopupMenu;
       ngCurrentAppPopupMenu=null;
       if((menu)&&(typeof menu.Popup === 'function'))
-      {  
+      {
         ngCurrentAppPopupMenu=null;
         if(e.preventDefault) e.preventDefault();
         menu.Popup(pos.x,pos.y);
       }
     },10);
-  }                    
-  return true;  
+  }
+  return true;
 }
 
 function nga_DoPopupMenuTouch(e)
 {
   if(((e.type!=='hold')&&(e.type!=='touch'))||(e.gesture.pointerType===Hammer.POINTER_MOUSE)||(e.ngGestureHandled)||(typeof ngApp !== 'object')||(typeof ngApp.PopupMenu !== 'object')||(!ngApp.PopupMenu)) return;
-  if(e.type==='touch') 
+  if(e.type==='touch')
   {
     ngCurrentAppPopupMenu=((!ngCurrentPopupMenu)||(ngCurrentPopupMenu==ngApp.PopupMenu) ? ngApp.PopupMenu : null);
   }
   else
-  {  
+  {
     if(ngCurrentAppPopupMenu)
     {
       var timer=setTimeout(function() {
@@ -1855,7 +1860,7 @@ function nga_DoPopupMenuTouch(e)
         if((pm)&&(typeof pm.Popup === 'function'))
         {
           var mx=e.gesture.center.pageX;
-          var my=e.gesture.center.pageY;    
+          var my=e.gesture.center.pageY;
           if((typeof pm.MenuVAlign==='undefined')&&(typeof pm.MenuHAlign==='undefined')) {
             valign='bottom';
             halign='center';
@@ -1864,20 +1869,20 @@ function nga_DoPopupMenuTouch(e)
         }
       },10);
     }
-  }  
+  }
 }
 
 function nga_SetPopupMenu(m)
 {
   var om=ngVal(this.PopupMenu,null);
   if(om==m) return;
-  if(om) 
+  if(om)
   {
     if(typeof om.HideMenu === 'function') om.HideMenu();
     om.Owner = null;
   }
   this.PopupMenu = m;
-  if(m) 
+  if(m)
   {
     m.Owner = this;
 
@@ -1909,38 +1914,38 @@ function nga_SetPopupMenu(m)
 
 /**
  *  Function: ng_SetControlPopup
- *  Assigns popup <ngMenu> to control.  
- * 
+ *  Assigns popup <ngMenu> to control.
+ *
  *  Syntax:
  *    void *ng_SetControlPopup* (object ctrl, object menu)
- *     
+ *
  *  Parameters:
  *    ctrl - control to which is popup menu assigned
  *    menu - <ngMenu> control or null
- *      
+ *
  *  Returns:
  *    -
- *    
+ *
  *  Notes:
- *    If menu is assigned, the reference is stored in PopupMenu property in control.   
- */  
+ *    If menu is assigned, the reference is stored in PopupMenu property in control.
+ */
 function ng_SetControlPopup(c,m)
 {
   if(!c) return;
   m=ngVal(m,null);
   var om=ngVal(c.PopupMenu,null);
-  if(om == m) return;  
+  if(om == m) return;
   if(om) // unregister old
   {
     if(!m)
     {
-      c.RemoveEvent('SetVisible',ngmn_SetPopupControlVisible);                
-      c.RemoveEvent('SetEnable',ngmn_SetPopupControlVisible);                
+      c.RemoveEvent('SetVisible',ngmn_SetPopupControlVisible);
+      c.RemoveEvent('SetEnable',ngmn_SetPopupControlVisible);
       c.RemoveEvent('DoAttach',ngmn_DoPopupAttach);
       c.RemoveEvent('DoAcceptGestures',ngmn_DoAcceptGestures);
       c.RemoveEvent('DoGesture',ngmn_DoGesture);
       c.RemoveEvent('DoDispose',ngmn_DoPopupDispose);
-    }        
+    }
     var oc=ngVal(om.Owner,null);
     if(oc==c) om.Owner=null;
   }
@@ -1949,27 +1954,27 @@ function ng_SetControlPopup(c,m)
   {
     var oc=m.Owner;
     if((oc)&&(oc!=c)) ng_SetControlPopup(oc,null);
-    
+
     m.Owner=c;
     if(!om)
     {
-      c.AddEvent('SetVisible',ngmn_SetPopupControlVisible);                
-      c.AddEvent('SetEnable',ngmn_SetPopupControlVisible);                
+      c.AddEvent('SetVisible',ngmn_SetPopupControlVisible);
+      c.AddEvent('SetEnable',ngmn_SetPopupControlVisible);
       c.AddEvent('DoAttach',ngmn_DoPopupAttach);
       c.AddEvent('DoAcceptGestures',ngmn_DoAcceptGestures);
       c.AddEvent('DoGesture',ngmn_DoGesture);
       c.AddEvent('DoDispose',ngmn_DoPopupDispose);
-    }        
+    }
   }
 }
 
 // --- Controls Registration ---------------------------------------------------
 /*
  *  Class: ngListItem (in context of ngMenu)
- *  This class implements <ngList> item. 
+ *  This class implements <ngList> item.
  *
  *  See also:
- *    <ngMenu>, <ngList>     
+ *    <ngMenu>, <ngList>
  */
 /*
  *  Group: Properties
@@ -1977,7 +1982,7 @@ function ng_SetControlPopup(c,m)
 /*  Variable: SubMenu
  *  References to sub menu <ngMenu> control.
  *  Type: object
- *  Default value: *undefined*         
+ *  Default value: *undefined*
  */
 //c.SubMenu = undefined;
 /*
@@ -1986,7 +1991,7 @@ function ng_SetControlPopup(c,m)
 /*
  *  Event: OnMenuClick
  */
-// c.OnMenuClick = null;       
+// c.OnMenuClick = null;
 /*
  *  Event: OnGetText
  */
@@ -1999,7 +2004,7 @@ function ng_SetControlPopup(c,m)
 function Create_ngMenu(def, ref, parent)
 {
   var c=ngCreateControlAsType(def, 'ngList', ref, parent);
-  
+
   /*
    *  Group: Properties
    */
@@ -2007,33 +2012,39 @@ function Create_ngMenu(def, ref, parent)
   /*  Variable: MenuHAlign
    *  Horizonal align of menu to popup position.
    *  Type: string
-   *  Default value: *'left'*         
+   *  Default value: *'left'*
    */
   //c.MenuHAlign = 'left';
   /*  Variable: MenuVAlign
    *  Vertical align of menu to popup position.
    *  Type: string
-   *  Default value: *'top'*         
+   *  Default value: *'top'*
    */
-  //c.MenuVAlign = 'top';        
+  //c.MenuVAlign = 'top';
   /*  Variable: MaxHeight
    *  Meximal height of the menu.
    *  Type: integer
-   *  Default value: *ScreenHeight-10*         
+   *  Default value: *ScreenHeight-10*
    */
   //c.MaxHeight = ScreenHeight-10;
   /*  Variable: MinWidth
    *  Minimal width of the menu.
    *  Type: integer
-   *  Default value: *100*         
+   *  Default value: *100*
    */
-  //c.MinWidth = 100;      
+  //c.MinWidth = 100;
+  /*  Variable: MinScreenIndent;
+   *  Minimal menu distance from screen edge.
+   *  Type: integer
+   *  Default value: *5*
+   */
+  //c.MinScreenIndent = 5;
 
   /*  Variable: SubMenuDef
-   *  Specifies definition which is used in case of submenu creation. 
+   *  Specifies definition which is used in case of submenu creation.
    *  Type: object
-   *  Default value: *same as menu*         
-   */         
+   *  Default value: *same as menu*
+   */
   var bd=def.Data;
   var bp=def.parent;
   delete def.Data;
@@ -2055,48 +2066,48 @@ function Create_ngMenu(def, ref, parent)
   /*  Variable: SubMenuOverlapX
    *  Specifies how much submenu overlaps menu in horizontal in pixels.
    *  Type: integer
-   *  Default value: *5*         
+   *  Default value: *5*
    */
-  //c.SubMenuOverlapX = 5; 
+  //c.SubMenuOverlapX = 5;
   /*  Variable: SubMenuOverlapY
    *  Specifies how much submenu overlaps menu in vertical in pixels.
    *  Type: integer
-   *  Default value: *0*         
+   *  Default value: *0*
    */
   //c.SubMenuOverlapY = 0;
-  
+
   /*  Variable: ActiveSubMenu
    *  Reference to active submenu.
    *  Type: object
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   //c.ActiveSubMenu = undefined;
-  
+
   /*  Variable: AutoPopup
    *  If true the menu handles its visibility by itself.
    *  Type: bool
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   //c.AutoPopup = undefined;
   /*  Variable: PopupX
    *  Horizontal popup position in pixels.
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   //c.PopupX = undefined;
   /*  Variable: PopupY
    *  Vertical popup position in pixels.
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   //c.PopupY = undefined;
   /*  Variable: PopupElm
-   *  Element to which menu was aligned during popup. 
+   *  Element to which menu was aligned during popup.
    *  Type: integer
-   *  Default value: *undefined*         
+   *  Default value: *undefined*
    */
   //c.PopupElm = undefined;
-          
+
   c.ShowCheckboxes = true;
   c.ShowHeader = false;
   c.PopupGroup='menu';
@@ -2107,53 +2118,53 @@ function Create_ngMenu(def, ref, parent)
    */
   /*  Function: Popup
    *  Popups menu at specified position.
-   *   
+   *
    *  Syntax:
    *    void *Popup* (integer x, integer y [, string halign, string valign])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.Popup = ngmn_Popup;
   /*  Function: PopupCtrl
    *  Popups menu along specified control.
-   *   
+   *
    *  Syntax:
    *    void *PopupCtrl* (object ctrl [, string halign, string valign])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.PopupCtrl = ngmn_PopupCtrl;
   /*  Function: PopupSubMenu
    *  Popups menu as submenu along specified element.
-   *   
+   *
    *  Syntax:
    *    void *PopupSubMenu* (object elm [, string halign, string valign])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.PopupSubMenu = ngmn_PopupSubMenu;
-  
+
   /*  Function: ShowSubMenu
    *  Shows item submenu.
-   *   
+   *
    *  Syntax:
    *    void *ShowSubMenu* (object item)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.ShowSubMenu = ngmn_ShowSubMenu;
   /*  Function: GetMenuItemByID
    *  Gets menu item by given ID.
-   *   
+   *
    *  Syntax:
    *    void *GetMenuItemByID* (string id [,bool recursive=true])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.GetMenuItemByID = ngmn_GetMenuItemByID;
   /*  Function: ScanMenu
@@ -2168,89 +2179,89 @@ function Create_ngMenu(def, ref, parent)
   c.ScanMenu = ngmn_ScanMenu;
   /*  Function: GetMenu
    *  Gets (or creates) menu item.
-   *   
+   *
    *  Syntax:
    *    void *GetMenu* (string path[, bool create=false, object parent=null, function oncreatefnc, mixed userdata])
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.GetMenu = ngmn_GetMenu;
   /*  Function: MenuClick
-   *  Clicks the menu item.   
-   *   
+   *  Clicks the menu item.
+   *
    *  Syntax:
    *    void *MenuClick* (it [, event ev])
-   *     
+   *
    *  Parameters:
-   *   
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.MenuClick = ngmn_MenuClick;
-  
+
   /*  Function: CreateSubMenu
    *  Creates item submenu.
-   *   
+   *
    *  Syntax:
    *    object *CreateSubMenu* (object item, object submenudata)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.CreateSubMenu = ngmn_CreateSubMenu;
   /*  Function: HideSubMenu
    *  Hides item submenu.
-   *   
+   *
    *  Syntax:
    *    void *HideSubMenu* (object item)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.HideSubMenu = ngmn_HideSubMenu;
 
   /*  Function: HideMenu
    *  Hides menu (and all superior or child menus with AutoPopup=true).
-   *   
+   *
    *  Syntax:
    *    void *HideMenu* (void)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.HideMenu = ngmn_HideMenu;
   /*  Function: BeginUpdate
-   *  Prevents the updating of the menu until the <EndUpdate> method is called.     
-   *   
+   *  Prevents the updating of the menu until the <EndUpdate> method is called.
+   *
    *  Syntax:
    *    void *BeginUpdate* (bool recursive=true)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.ListBeginUpdate = c.BeginUpdate;
   c.BeginUpdate = ngmn_BeginUpdate;
   /*  Function: EndUpdate
-   *  Performs the repaints deferred by a call to <BeginUpdate>.     
-   *   
+   *  Performs the repaints deferred by a call to <BeginUpdate>.
+   *
    *  Syntax:
    *    void *EndUpdate* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.ListEndUpdate = c.EndUpdate;
   c.EndUpdate = ngmn_EndUpdate;
   c.update_info = new Array();
   /*  Function: GetScreenRect
-   *  Gets menu allowed screen rectangle (used for proper menu alignment).     
-   *   
+   *  Gets menu allowed screen rectangle (used for proper menu alignment).
+   *
    *  Syntax:
    *    object *GetScreenRect* ()
-   *     
+   *
    *  Returns:
-   *    The screen rectangle { Left:, Top:, Right:, Bottom: }     
+   *    The screen rectangle { Left:, Top:, Right:, Bottom: }
    */
   c.GetScreenRect = ngmn_GetScreenRect;
 
@@ -2266,12 +2277,12 @@ function Create_ngMenu(def, ref, parent)
   c.AddEvent('DoAttach',ngmn_DoAttach);
   c.AddEvent(ngmn_Update,'Update');
 
-  
+
   c.OnGetText = ngmn_MenuText;
-    
+
   c.DefaultDrawItemText=c.DrawItemText;
   c.DrawItemText = ngmn_DrawItemText;
-  
+
   /*
    *  Group: Events
    */
@@ -2290,7 +2301,7 @@ function Create_ngMenu(def, ref, parent)
   /*
    *  Event: OnMenuClick
    */
-  c.OnMenuClick = null;  
+  c.OnMenuClick = null;
   /*
    *  Event: OnClickOutside
    */
@@ -2303,9 +2314,9 @@ function Create_ngMenu(def, ref, parent)
    *  Event: OnGetScreenRect
    */
   c.OnGetScreenRect = null;
-  
+
   c.Visible=false;
-          
+
   return c;
 }
 
@@ -2320,47 +2331,47 @@ function Create_ngMenuBar(def, ref, parent)
    *  Group: Methods
    */
   /*  Function: BeginUpdate
-   *  Prevents the updating of the menu until the <EndUpdate> method is called.     
-   *   
+   *  Prevents the updating of the menu until the <EndUpdate> method is called.
+   *
    *  Syntax:
    *    void *BeginUpdate* (bool recursive=true)
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.BeginUpdate = ngmb_BeginUpdate;
   /*  Function: EndUpdate
-   *  Performs the repaints deferred by a call to <BeginUpdate>.     
-   *   
+   *  Performs the repaints deferred by a call to <BeginUpdate>.
+   *
    *  Syntax:
    *    void *EndUpdate* ()
-   *     
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   c.EndUpdate = ngmb_EndUpdate;
   c.update_info = new Array();
-  
+
   c.AddEvent(ngmb_DoCreate, 'DoCreate');
   /*
    *  Group: Definition
    */
   /*  Variable: ButtonDef
-   *  Definition of menubar buttons. 
+   *  Definition of menubar buttons.
    *  Type: object
    */
-   
+
   /*
    *  Group: Properties
    */
   /*  Variable: Menu
-   *  References to assigned <ngMenu> controls. 
+   *  References to assigned <ngMenu> controls.
    *  Type: array
    */
   if(typeof c.Menu === 'undefined') c.Menu = new Array();
   return c;
 }
- 
+
 /*  Class: ngMenuBarButton
  *  Button for menu representation in menu bar control (based on <ngButton>).
  */
@@ -2377,12 +2388,12 @@ function Create_ngMenuBarButton(def, ref, parent)
   /*  Variable: AutoPopup
    *  If TRUE the menu is automaticaly poped up when mouse enters the button.
    *  Type: bool
-   *  Default value: *false*         
+   *  Default value: *false*
    */
   c.AutoPopup=false;
   return c;
 }
- 
+
 /*  Class: ngSplitButton
  *  Button with menu dropdown (based on <ngButton>).
  */
@@ -2395,7 +2406,7 @@ function Create_ngSplitButton(def, ref, parent)
   /*  Variable: SplitButton
    *  Determines that button is a split button (for detection).
    *  Type: bool
-   *  Default value: *true*         
+   *  Default value: *true*
    */
   if(typeof def.Data === 'undefined') def.Data=new Object;
   def.Data.SplitButton=true;
@@ -2412,7 +2423,7 @@ function Create_ngSplitButton(def, ref, parent)
    */
   if(typeof c.OnMenuClick === 'undefined') c.OnMenuClick = null;
   return c;
-} 
+}
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['menu'] = {
@@ -2420,13 +2431,13 @@ ngUserControls['menu'] = {
   OnControlCreated: function(def,c) {
     /*
      *  Class: ngControl
-     *  Extensions of ngControl definition. 
+     *  Extensions of ngControl definition.
      */
     /*
      *  Group: Definition
      */
     /*  Variable: Menu
-     *  Defines ngMenu control which will be opened on control OnClick event. 
+     *  Defines ngMenu control which will be opened on control OnClick event.
      *  Type: object
      */
     // c.Menu = { }
@@ -2437,10 +2448,10 @@ ngUserControls['menu'] = {
       ng_SetControlMenu(c,lref.Control);
     }
     /*  Variable: PopupMenu
-     *  Defines ngMenu control which opens on right mouse click on control. 
+     *  Defines ngMenu control which opens on right mouse click on control.
      *  Type: object
      */
-    // c.PopupMenu = { }    
+    // c.PopupMenu = { }
     if((typeof def.PopupMenu === 'object')&&(typeof c.PopupMenu === 'undefined'))
     {
       var ld=def.PopupMenu;
@@ -2450,13 +2461,13 @@ ngUserControls['menu'] = {
       ng_SetControlPopup(c, lref.Control);
     }
   },
-  
+
   OnInit: function() {
     ngRegisterControlType('ngMenu', Create_ngMenu);
-    ngRegisterControlType('ngMenuBar', Create_ngMenuBar); 
-    ngRegisterControlType('ngMenuBarButton', Create_ngMenuBarButton); 
-    ngRegisterControlType('ngSplitButton', Create_ngSplitButton); 
-    
+    ngRegisterControlType('ngMenuBar', Create_ngMenuBar);
+    ngRegisterControlType('ngMenuBarButton', Create_ngMenuBarButton);
+    ngRegisterControlType('ngSplitButton', Create_ngSplitButton);
+
     if((typeof ngApp === 'object')&&(ngApp))
     {
       ngApp.Menu = null;
