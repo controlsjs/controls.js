@@ -877,3 +877,39 @@ function ngFieldDef_Phone(id, attrs)
   this.DoEditString = ngfd_PhoneEditString;
   this.DoParseString = ngfd_PhoneParseString;
 }
+
+function ngfd_RegExpDoTypedValue(v)
+{
+  var s = ng_toString(v);
+  if ((s!='') && (this.Attrs['RegExp']!=''))
+  {
+    var re     = new RegExp(this.Attrs['RegExp'], ngVal(this.Attrs['RegExpMods'], ''));
+    var result = re.exec(s);
+    if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR, ngVal(this.Attrs['RegExpError'], 'viewmodel_err_format'));
+
+    if (result.length>1)
+    {
+      v = '';
+      for (var i=1;i<result.length;i++)
+        v += result[i];
+    }
+  }
+
+  return v;
+}
+
+/*  Class: ngFieldDef_RegExp
+ *  <ngViewModel> RegExp string field (based on <ngFieldDef> NVARCHAR).
+ *
+ *  Syntax:
+ *    new *ngFieldDef_RegExp* ([string id ='', object attrs={}])
+ *
+ *  Parameters:
+ *    id - field id
+ *    attrs - field attributes
+ */
+function ngFieldDef_RegExp(id, attrs)
+{
+  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+  this.DoTypedValue = ngfd_RegExpDoTypedValue;
+}

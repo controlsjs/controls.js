@@ -45,6 +45,7 @@ ngc_Lang['en']['viewmodel_err_max_array']      = 'Number of items must lower or 
 ngc_Lang['en']['viewmodel_err_enum']           = 'This value is not allowed.';
 ngc_Lang['en']['viewmodel_err_len']            = 'Value is too long (max %d).';
 ngc_Lang['en']['viewmodel_err_len_unknown']    = 'Value is too long.';
+ngc_Lang['en']['viewmodel_err_format']         = 'Value is not in required format.';
 
 // --- Czech Resources -------------------------------------------------------
 if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=new Array();
@@ -68,6 +69,7 @@ ngc_Lang['cz']['viewmodel_err_max_array']      = 'Počet položek musí být men
 ngc_Lang['cz']['viewmodel_err_enum']           = 'Tato hodnota není povolena.';
 ngc_Lang['cz']['viewmodel_err_len']            = 'Hodnota je moc dlouhá (max %d).';
 ngc_Lang['cz']['viewmodel_err_len_unknown']    = 'Hodnota je moc dlouhá.';
+ngc_Lang['cz']['viewmodel_err_format']         = 'Hodnota není v požadovaném tvaru.';
 
 // --- Slovak Resources -------------------------------------------------------
 if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=new Array();
@@ -91,6 +93,7 @@ ngc_Lang['sk']['viewmodel_err_max_array']      = 'Počet položiek musí byť me
 ngc_Lang['sk']['viewmodel_err_enum']           = 'Táto hodnota nie je povolená.';
 ngc_Lang['sk']['viewmodel_err_len']            = 'Hodnota je príliš dlhá (max %d).';
 ngc_Lang['sk']['viewmodel_err_len_unknown']    = 'Hodnota je príliš dlhá.';
+ngc_Lang['sk']['viewmodel_err_format']         = 'Hodnota nie je v požadovanom tvare.';
 
 var ngViewModels = new Array();
 
