@@ -504,22 +504,26 @@ function ngmn_DoPopup()
     mo.style.top='-10000px';
   }
 
-  // Compute xIndex by submenu level
-  var maxzidx=0,po=null;
   var zidx;
-  if((typeof ngModalCnt!=='undefined')&&(typeof ngModalZIndexDelta!=='undefined'))
-  {
-    // move menu over modal windows
-    zidx=(ngModalZIndexDelta-1000);
-    zidx+=(ngModalCnt*ngModalZIndexDelta);
+  if(typeof this.zIndex!=='undefined'){
+    zidx=this.zIndex;
   }
-  else zidx=10000;
+  else{
+    // Compute zIndex by submenu level
+    if((typeof ngModalCnt!=='undefined')&&(typeof ngModalZIndexDelta!=='undefined'))
+    {
+      // move menu over modal windows
+      zidx=(ngModalZIndexDelta-1000);
+      zidx+=(ngModalCnt*ngModalZIndexDelta);
+    }
+    else zidx=10000;
 
-  var p=this;
-  while((p)&&(typeof p.HideSubMenu === 'function'))
-  {
-    zidx++;
-    p=p.Owner;
+    var p=this;
+    while((p)&&(typeof p.HideSubMenu === 'function'))
+    {
+      zidx++;
+      p=p.Owner;
+    }
   }
   mo.style.zIndex=zidx;
   if((typeof this.Bounds.H === 'undefined')&&((typeof this.Bounds.B === 'undefined')||(typeof this.Bounds.T === 'undefined')))
@@ -2316,6 +2320,8 @@ function Create_ngMenu(def, ref, parent)
   c.OnGetScreenRect = null;
 
   c.Visible=false;
+
+  if(def.style) c.zIndex=def.style.zIndex;
 
   return c;
 }
