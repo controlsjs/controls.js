@@ -492,8 +492,7 @@ function ngFieldDef_Email(id, attrs)
 function ngfd_IP4DoTypedValue(v)
 {
   var s=ng_toString(v);
-  if(s=='@') s='';
-  if((s!='')&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip4'); 
+  if((s!='')&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip4');
   return v;
 }
 
@@ -516,8 +515,7 @@ function ngFieldDef_IP4(id, attrs)
 function ngfd_IP6DoTypedValue(v)
 {
   var s=ng_toString(v);
-  if(s=='@') s='';
-  if((s!='')&&(!ng_isIP6(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip6'); 
+  if((s!='')&&(!ng_isIP6(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip6');
   return v;
 }
 
