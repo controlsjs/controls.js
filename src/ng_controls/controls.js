@@ -6292,7 +6292,7 @@ function ngt_DoUpdate(o)
 
   var text=this.GetText();
   var alt=this.GetAlt();
-  if(this.HTMLEncode) text=ng_htmlEncode(text);
+  if(this.HTMLEncode) text=ng_htmlEncode(text,true);
 
   if((this.AutoSize)&&(ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
 
