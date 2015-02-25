@@ -18,6 +18,7 @@ if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
  */
 var WireframeControls = {
   Lib: 'ng_wireframe',
+  ControlsGroup: 'Wireframe Skin',
 
   ControlImages: [
     'images/wireframe_base.png?4',
