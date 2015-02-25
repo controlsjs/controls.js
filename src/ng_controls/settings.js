@@ -392,6 +392,8 @@ function ngSettings(id, storageurl)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['settings'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
     if((typeof ngApp === 'object')&&(ngApp)&&(typeof ngApp.Settings === 'undefined'))

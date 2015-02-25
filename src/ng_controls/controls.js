@@ -753,6 +753,9 @@ var ngControlsIDs = new Array();
 var ngControlImages = '';
 var ngRegisteredControlTypes = new Array();
 var ngMouseInControls = new Array();
+var ngCurrentLib = 'ng_controls';
+var ngCurrentUserControls = '';
+var ngCurrentControlsGroup = 'Core';
 
 /**
  *  Function: ngGetControlById
@@ -815,6 +818,9 @@ function ngRegisterControlType(type, def)
       if(typeof ngRegisteredControlTypes[type] === 'function') {
         ngDEBUGWARN('Duplicated registration of component type "%s".',ngVal(type,''),def);
       }
+      if((ngCurrentLib!='')&&(typeof def.Lib === 'undefined')) def.Lib = ngCurrentLib;
+      if((ngCurrentControlsGroup!='')&&(typeof def.ControlsGroup === 'undefined')) def.ControlsGroup = ngCurrentControlsGroup;
+      if((ngCurrentUserControls!='')&&(typeof def.UserControls === 'undefined')) def.UserControls = ngCurrentUserControls;
       ngRegisteredControlTypes[type]=def;
       break;
     case 'object':
@@ -848,7 +854,7 @@ ngRegisterControlType('ngPages', function() { return new ngPages; });
 ngRegisterControlType('ngToolBar', function() { return new ngToolBar; });
 ngRegisterControlType('ngProgressBar', function() { return new ngProgressBar; });
 ngRegisterControlType('ngWebBrowser', function() { return new ngWebBrowser; });
-ngRegisterControlType('ngSysAction', function() { return new ngSysAction; });
+ngRegisterControlType('ngSysAction',(function() { var def=function() { return new ngSysAction; }; def.ControlsGroup='System'; return def; })());
 
 // Derived controls
 ngRegisterControlType('ngFrame', ngFrame_Create);
@@ -935,27 +941,42 @@ function ngInitUserControls()
 {
   if(typeof ngUserControls === 'undefined') return;
   var uc;
+  var oldcl=ngCurrentLib;
+  var olduc=ngCurrentUserControls;
+  var oldcg=ngCurrentControlsGroup;
   for(var i in ngUserControls)
   {
     uc=ngUserControls[i];
     if((typeof uc === 'undefined')||(uc.initialized)) continue;
-    if(typeof uc.OnInit === 'function') uc.OnInit();
-    if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages))
+    try
     {
-      uc.ControlImages=ng_URL(ng_ToAbsPath(uc.ControlImages, uc.Lib));
-      ng_PreloadImage(uc.ControlImages);
-      ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
-    }
-    else if((typeof uc.ControlImages === 'object')&&(typeof uc.ControlImages.length === 'number'))
-    {
-      for(var j=0;j<uc.ControlImages.length;j++)
+      ngCurrentLib=ngVal(uc.Lib,'');
+      ngCurrentUserControls=i;
+      ngCurrentControlsGroup=ngVal(uc.ControlsGroup,ngCurrentLib);
+      if(typeof uc.OnInit === 'function') uc.OnInit();
+      if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages))
       {
-        uc.ControlImages[j]=ng_URL(ng_ToAbsPath(uc.ControlImages[j], uc.Lib));
-        if(ngControlImages!=uc.ControlImages[j]) ng_PreloadImage(uc.ControlImages[j]);
+        uc.ControlImages=ng_URL(ng_ToAbsPath(uc.ControlImages, uc.Lib));
+        ng_PreloadImage(uc.ControlImages);
+        ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
       }
-      if(uc.ControlImages.length>0) ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
+      else if((typeof uc.ControlImages === 'object')&&(typeof uc.ControlImages.length === 'number'))
+      {
+        for(var j=0;j<uc.ControlImages.length;j++)
+        {
+          uc.ControlImages[j]=ng_URL(ng_ToAbsPath(uc.ControlImages[j], uc.Lib));
+          if(ngControlImages!=uc.ControlImages[j]) ng_PreloadImage(uc.ControlImages[j]);
+        }
+        if(uc.ControlImages.length>0) ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
+      }
+      uc.initialized=true;
     }
-    uc.initialized=true;
+    finally
+    {
+      ngCurrentLib=oldcl;
+      ngCurrentUserControls=olduc;
+      ngCurrentControlsGroup=oldcg;
+    }
   }
 }
 
@@ -3566,7 +3587,7 @@ function ngc_ptrend(e)
     if(c.DoPtrEnd) c.DoPtrEnd(pi);
     if(c.OnPtrEnd) c.OnPtrEnd(c, pi);
 
-    var doclick=((pi.Click)&&(c.DoPtrClick));
+    var doclick=((pi)&&(pi.Click)&&(c.DoPtrClick));
     if(dci)
     {
       ngCurrentPtrDblClick=c;
@@ -12930,3 +12951,6 @@ function ngWebBrowser(id)
 
   ngControlCreated(this);
 }
+
+ngCurrentControlsGroup = '';
+ngCurrentLib = '';

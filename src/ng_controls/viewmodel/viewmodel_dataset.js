@@ -415,6 +415,9 @@ function Create_ngDataSet(def, ref, parent,basetype)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['viewmodel_dataset'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
+
   OnInit: function() {
     ngRegisterControlType('ngDataSet', function(def, ref, parent) { return Create_ngDataSet(def, ref, parent); });
   }

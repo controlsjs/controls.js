@@ -42,6 +42,9 @@ function ngClipboard()
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['clipboard'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
+
   OnInit: function() {
     if((typeof ngApp === 'object')&&(ngApp)) ngApp.Clipboard = new ngClipboard;
   }

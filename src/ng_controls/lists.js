@@ -5813,6 +5813,8 @@ function Create_ngPageList(def, ref, parent)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['list'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
     ngRegisterControlType('ngList', function() { return new ngList; });

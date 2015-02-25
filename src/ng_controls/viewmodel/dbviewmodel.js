@@ -1321,11 +1321,13 @@ function Create_ngDBToolBar(def, ref, parent, basetype)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['dbviewmodel'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
 
-    ngRegisterControlType('ngSysDBViewModel', Create_ngSysDBViewModel);         
-    ngRegisterControlType('ngDBViewModelForm', Create_ngDBViewModelForm); 
+    ngRegisterControlType('ngSysDBViewModel',(function() { var def=Create_ngSysDBViewModel; def.ControlsGroup='System'; return def; })());
+    ngRegisterControlType('ngDBViewModelForm', Create_ngDBViewModelForm);
     ngRegisterControlType('ngDBDataSet', function(def, ref, parent) { return Create_ngDBDataSet(def, ref, parent); });    
     ngRegisterControlType('ngDBToolBar', function(def, ref, parent) { return Create_ngDBToolBar(def, ref, parent); });    
   }

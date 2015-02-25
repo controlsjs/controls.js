@@ -2433,6 +2433,8 @@ function Create_ngSplitButton(def, ref, parent)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['menu'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnControlCreated: function(def,c) {
     /*

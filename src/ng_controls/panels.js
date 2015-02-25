@@ -565,7 +565,7 @@ function ngs_DoPtrDrag(pi)
 
 var ngs_CurrentHandleId='';
 
-function ngs_HandleEnter(e, elm)
+function ngs_HandleEnter(e, elm, c)
 {
   if(!e) e=window.event;
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
@@ -588,9 +588,11 @@ function ngs_HandleEnter(e, elm)
   ngc_EnterImgS(elm.id+'M');
   ngc_EnterImg(elm.id+'E');
   ngc_EnterImg(elm.id+'I');
+
+  if ((c)&&(c.OnHandleEnter)) c.OnHandleEnter(c);
 }
 
-function ngs_HandleLeave(e, elm)
+function ngs_HandleLeave(e, elm, c)
 {
   if(!e) e=window.event;
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
@@ -608,6 +610,8 @@ function ngs_HandleLeave(e, elm)
   ngc_LeaveImgS(elm.id+'M');
   ngc_LeaveImg(elm.id+'E');
   ngc_LeaveImg(elm.id+'I');
+
+  if ((c)&&(c.OnHandleEnter)) c.OnHandleEnter(c);
 }
 
 function ngs_DoHandleClick()
@@ -965,8 +969,9 @@ function ngs_DoAttach(o)
   var h=document.getElementById(this.ID+'_H');
   if(h) 
   {
-    h.onmouseover = function(e) { ngs_HandleEnter(e,this); }
-    h.onmouseout  = function(e) { ngs_HandleLeave(e,this); }
+    var c=this;
+    h.onmouseover = function(e) { ngs_HandleEnter(e,this,c); }
+    h.onmouseout  = function(e) { ngs_HandleLeave(e,this,c); }
     ngc_PtrListener(this, h, 'handle','drag');
   }
 }
@@ -1735,6 +1740,8 @@ function ngDropPanel(id)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['panels'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
 

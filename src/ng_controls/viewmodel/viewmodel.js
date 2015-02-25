@@ -2484,6 +2484,9 @@ function ngLookupFieldDef(id, attrs)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['viewmodel'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
+
   OnInit: function() {
 
     if(typeof ngViewModelsServerURL === 'function')

@@ -71,6 +71,9 @@ ngc_Lang['sk']['colorpicker_Cancel']='Storno';
 if(typeof ngUserControls == 'undefined'){ngUserControls = new Array();}
 
 ngUserControls['ngColorControls'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
+
   OnInit: function(){
     ngRegisterControlType(
       'ngColorPicker',

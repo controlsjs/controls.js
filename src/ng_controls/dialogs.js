@@ -335,6 +335,8 @@ function ngAboutBrowser()
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['dialogs'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
 

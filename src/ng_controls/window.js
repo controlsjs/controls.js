@@ -3001,6 +3001,8 @@ function Create_ngTextHint(def, ref, parent)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['window'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
     ngRegisterControlType('ngWindow', function() { return new ngWindow; });

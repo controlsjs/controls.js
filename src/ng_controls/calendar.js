@@ -1520,6 +1520,8 @@ function Create_ngEditTime(def, ref, parent)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['calendar'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
     ngRegisterControlType('ngCalendar', function() { return new ngCalendar; });

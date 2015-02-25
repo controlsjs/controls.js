@@ -1322,6 +1322,9 @@ function ng_FindViewModel(def, c)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['viewmodel_controls'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
+
   OnControlCreated: function(def,c,ref) {
     if((typeof def.ViewModel !== 'undefined')&&(typeof c.ViewModel === 'undefined')) c.ViewModel=def.ViewModel;
 
@@ -1346,39 +1349,43 @@ ngUserControls['viewmodel_controls'] = {
 
   OnInit: function() {
 
-    ngRegisterControlType('ngSysViewModel', function(def, ref, parent)
+    ngRegisterControlType('ngSysViewModel',(function()
     {
-      var vm=new ngSysViewModel;
-      if(!vm) return vm;
-      vm.SetNamespace(ngVal(def.Namespace,vm.Namespace));
-      if((ng_typeArray(def.FieldDefs))&&(def.FieldDefs.length>0))
-      {      
-        function setfielddefs()
+      var fc=function(def, ref, parent) {
+        var vm=new ngSysViewModel;
+        if(!vm) return vm;
+        vm.SetNamespace(ngVal(def.Namespace,vm.Namespace));
+        if((ng_typeArray(def.FieldDefs))&&(def.FieldDefs.length>0))
         {
-          for(var i=0;i<def.FieldDefs.length;i++)
+          function setfielddefs()
           {
-            if(ngIsFieldDef(def.FieldDefs[i])) ko.ng_fielddef(this,def.FieldDefs[i]);
+            for(var i=0;i<def.FieldDefs.length;i++)
+            {
+              if(ngIsFieldDef(def.FieldDefs[i])) ko.ng_fielddef(this,def.FieldDefs[i]);
+            }
           }
+          vm.SetViewModel(setfielddefs);
         }
-        vm.SetViewModel(setfielddefs);
-      }
-      if((typeof def.ViewModel === 'object')||(typeof def.ViewModel === 'function')) vm.SetViewModel(def.ViewModel);
-      if((typeof def.Data === 'object')&&(typeof def.Data.ViewModel === 'object'))
-      {
-        vm.SetValues(def.Data.ViewModel);
-        delete def.Data.ViewModel;
-      }
+        if((typeof def.ViewModel === 'object')||(typeof def.ViewModel === 'function')) vm.SetViewModel(def.ViewModel);
+        if((typeof def.Data === 'object')&&(typeof def.Data.ViewModel === 'object'))
+        {
+          vm.SetValues(def.Data.ViewModel);
+          delete def.Data.ViewModel;
+        }
 
-      if(typeof def.RefViewModel !== 'undefined')
-      {
-        def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-          var refvm=def.RefViewModel;
-          if(ng_typeString(refvm)) refvm=getViewModelById(refvm);
-          if(refvm) vm.Assign(refvm);
-        });
-      }
-      return vm;
-    });
+        if(typeof def.RefViewModel !== 'undefined')
+        {
+          def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+            var refvm=def.RefViewModel;
+            if(ng_typeString(refvm)) refvm=getViewModelById(refvm);
+            if(refvm) vm.Assign(refvm);
+          });
+        }
+        return vm;
+      };
+      fc.ControlsGroup='System';
+      return fc;
+    })());
 
     ngRegisterControlType('ngViewModelForm', function(def, ref, parent) { return Create_ngViewModelForm(def, ref, parent); });
 

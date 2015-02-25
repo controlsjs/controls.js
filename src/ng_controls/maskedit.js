@@ -1,4 +1,6 @@
 var MaskEditControl = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
   OnInit: function() {
 
