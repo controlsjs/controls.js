@@ -533,37 +533,37 @@ function ngfd_TypedValue(v)
       case 'STRING':
       case 'NVARCHAR':
         typefnc=ng_toString;
-        if((this.Required)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'TIMESTAMP':
       case 'DATETIME':
         typefnc=ng_toDate;
-        if((this.Required)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'DATE':
         typefnc=ng_toDateOnly;
-        if((this.Required)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'TIME':          
         typefnc=ng_toDate;
-        if((this.Required)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
         typefnc=ng_toDate;
-        if((this.Required)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'UTCDATE':
         typefnc=ng_toDateOnly;
-        if((this.Required)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'UTCTIME':       
         typefnc=ng_toDate;
-        if((this.Required)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required 
+        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'ARRAY':
         typefnc=null;
-        if((this.Required)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+        if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
   
         checkminmax=false;
         if((!ng_isEmpty(this.MinValue))&&(c.length<parseInt(this.MinValue,10))) err|=FIELDDEF_ERR_MIN;
@@ -798,6 +798,7 @@ function ngfd_SetAttribute(attr,val)
 
     case 'Required':     this.Required=val; break;
     case 'NullIfEmpty':  this.NullIfEmpty=val; break;
+    case 'AllowEmpty':   this.AllowEmpty=val; break;
     case 'AutoTrim':     this.AutoTrim=val; break;
     case 'ReadOnly':     this.ReadOnly=val; break;
     case 'MinValue':     this.MinValue=val; break;
@@ -819,6 +820,7 @@ function ngfd_GetAttribute(attr)
 
     case 'Required':     return this.Required;
     case 'NullIfEmpty':  return this.NullIfEmpty;
+    case 'AllowEmpty':   return this.AllowEmpty;
     case 'AutoTrim':     return this.AutoTrim;
     case 'ReadOnly':     return this.ReadOnly;
     case 'MinValue':     return this.MinValue;
@@ -963,6 +965,13 @@ function ngFieldDef(id, type, attrs)
    *  Default value: *true*
    */
   this.NullIfEmpty=true;
+
+  /*  Variable: AllowEmpty
+   *  If TRUE, the empty values are accepted even if Required is TRUE
+   *  Type: boolean
+   *  Default value: *false*
+   */
+  this.AllowEmpty=false;
 
   /*  Variable: AutoTrim
    *  Type of automatic string trim.   
