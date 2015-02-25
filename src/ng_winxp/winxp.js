@@ -22,6 +22,7 @@ var mbIconError       = 'err';
  */
 var WinXPControls = {
   Lib: 'ng_winxp',
+  ControlsGroup: 'WinXP Skin',
 
   ControlImages: [
     'winxp_base.png?7',
