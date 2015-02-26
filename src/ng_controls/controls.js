@@ -953,10 +953,19 @@ function ngInitUserControls()
       ngCurrentLib=ngVal(uc.Lib,'');
       ngCurrentUserControls=i;
       ngCurrentControlsGroup=ngVal(uc.ControlsGroup,ngCurrentLib);
+
+      if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages)) {
+        uc.ControlImages=ng_ToAbsPath(uc.ControlImages, uc.Lib);
+      }
+      else if((typeof uc.ControlImages === 'object')&&(typeof uc.ControlImages.length === 'number'))
+      {
+        for(var j=0;j<uc.ControlImages.length;j++)
+          uc.ControlImages[j]=ng_ToAbsPath(uc.ControlImages[j], uc.Lib);
+      }
       if(typeof uc.OnInit === 'function') uc.OnInit();
       if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages))
       {
-        uc.ControlImages=ng_URL(ng_ToAbsPath(uc.ControlImages, uc.Lib));
+        uc.ControlImages=ng_URL(uc.ControlImages);
         ng_PreloadImage(uc.ControlImages);
         ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
       }
@@ -964,7 +973,7 @@ function ngInitUserControls()
       {
         for(var j=0;j<uc.ControlImages.length;j++)
         {
-          uc.ControlImages[j]=ng_URL(ng_ToAbsPath(uc.ControlImages[j], uc.Lib));
+          uc.ControlImages[j]=ng_URL(uc.ControlImages[j]);
           if(ngControlImages!=uc.ControlImages[j]) ng_PreloadImage(uc.ControlImages[j]);
         }
         if(uc.ControlImages.length>0) ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
