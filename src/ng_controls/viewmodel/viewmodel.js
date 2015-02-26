@@ -2563,7 +2563,26 @@ ngUserControls['viewmodel'] = {
       if(typeof v==='function') v['__serialize']=true;
       return v;
     }
-    
+
+    /*  Function: ko.ng_writeallowed
+     *  Tests if viewmodel property is writeable.
+     *
+     *  Syntax:
+     *    bool *ko.ng_writeallowed* (object vmprop)
+     *
+     *  Parameters:
+     *    vmprop - viewmodel property
+     *
+     *  Returns:
+     *    TRUE if property is writeable.
+     */
+    ko.ng_writeallowed = function (v)
+    {
+      if(!ko.isWriteableObservable(v)) return false;
+      var fd=v.FieldDef;
+      return (!ngIsFieldDef(fd))||((!ngVal(fd.ReadOnly,false))||(ngVal(fd.__Loading,false)));
+    }
+
     function viewmodel(vm)
     {
       if(!ng_typeString(vm)) return vm;

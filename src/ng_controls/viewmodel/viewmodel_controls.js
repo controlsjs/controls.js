@@ -1887,22 +1887,31 @@ ngUserControls['viewmodel_controls'] = {
       var listtimer=null;
       function listupdated()
       {
-        clearTimeout(listtimer);
-        if(c['binding_updatingValue']) return true;
-
-        c['binding_updatingValue']=true;
+        if(listtimer) clearTimeout(listtimer);
         listtimer=null;
-        var v=valueAccessor();
-        v.valueWillMutate();
-        if(!ng_IsArrayVar(v()))
+        if((c['binding_updatingValue'])||(c._vmdispose)) return;
+        try
         {
-          var arr=[];
-          synclist(arr, c);
-          v(arr);
+          c['binding_updatingValue']=true;
+          var v=valueAccessor();
+          if(ko.ng_writeallowed(v)) {
+            if(!ng_IsArrayVar(v()))
+            {
+              var arr=[];
+              synclist(arr, c);
+              v(arr);
+            }
+            else
+            {
+              v.valueWillMutate();
+              synclist(v(), c);
+              v.valueHasMutated();
+            }
+          }
         }
-        else synclist(v(), c);
-        v.valueHasMutated();
-        c['binding_updatingValue']=false;
+        finally {
+          c['binding_updatingValue']=false;
+        }
       }
 
       switch(c.CtrlType)
@@ -2041,17 +2050,23 @@ ngUserControls['viewmodel_controls'] = {
           break;
         case 'ngList':
           c.AddEvent(function(l,it,parent) {
-            if(l['binding_updatingValue']) return true;
+            if((l['binding_updatingValue'])||(c._vmdispose)) return true;
             if(listtimer) clearTimeout(listtimer);
             listtimer=setTimeout(listupdated,10);
             return true;
           },'OnAdd');
           c.AddEvent(function(l,it,parent) {
-            if(l['binding_updatingValue']) return true;
+            if((l['binding_updatingValue'])||(c._vmdispose)) return true;
             if(listtimer) clearTimeout(listtimer);
             listtimer=setTimeout(listupdated,10);
             return true;
           },'OnRemove');
+          c.AddEvent(function() {
+            if(listtimer) clearTimeout(listtimer);
+            listtimer=null;
+            c._vmdispose=true;
+            return true;
+          },'DoDispose');
           break;
       }
     };
