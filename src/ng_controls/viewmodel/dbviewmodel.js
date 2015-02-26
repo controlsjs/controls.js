@@ -433,19 +433,16 @@ function Create_ngSysDBViewModel(def,ref,parent)
       case 'new':
         vm.ResetRecord();
         vm.ViewModel._RecordState(recStateNewRecord);
-        if(vm.OnNewRecord) vm.OnNewRecord(vm);
+        if(vm.OnNewRecord) vm.OnNewRecord(vm,options);
         return true;
       case 'cancel':
-        if(vm.OnCancelEdits) vm.OnCancelEdits(vm);
-  
-        vm.ResetRecord();        
+        if(vm.OnCancelEdits) vm.OnCancelEdits(vm,options);
   
         if(!ng_isEmptyOrNull(vm.CancelEditsValues)) 
-        {
-          vm.SetValues(vm.CancelEditsValues);
-          c.LoadRecord(vm.GetPrimaryKeyValues(false));
-        }
-        return true;      
+          c.LoadRecord(vm.CancelEditsValues, { IgnoreFormChanges: true });
+        else
+          vm.ResetRecord();
+        return true;
       case 'load':   vm.ViewModel._RecordState(recStateLoading); break;
       case 'insert': vm.ViewModel._RecordState(recStateInserting); break;
       case 'update': vm.ViewModel._RecordState(recStateUpdating); break;
