@@ -171,23 +171,20 @@ function ngdbvm_CancelEdits()
 
 function ngdbvm_LoadRecord(primarykeyvalues,options) 
 {
-  if(this.ResetRecordOnLoad) this.ResetRecord();
   if(ng_typeObject(primarykeyvalues))
   {
-    primarykeyvalues._OriginalRecord=ng_CopyVar(primarykeyvalues); // prevent IsChanged detection
-    this.SetValues(primarykeyvalues);
+    if(typeof options==='undefined') options={};
+    options.PrimaryKeyValues=primarykeyvalues;
   }
-  else 
-    if(!ng_isEmpty(primarykeyvalues)) 
-      return false;
-  return this.Command('load',options);   
+
+  return this.Command('load',options);
 }
 
 function ngdbvm_InsertRecord(values,options) 
 { 
   if(ng_typeObject(values))
   {
-    this.Reset();
+    if(ngVal(options.ResetRecord,true)) this.Reset();
     this.SetValues(values);
   } 
   else 
@@ -210,13 +207,11 @@ function ngdbvm_DeleteRecord(primarykeyvalues,options)
 { 
   if(ng_typeObject(primarykeyvalues))
   {
-    primarykeyvalues._OriginalRecord=ng_CopyVar(primarykeyvalues); // prevent IsChanged detection
-    this.SetValues(primarykeyvalues);
+    if(typeof options==='undefined') options={};
+    options.PrimaryKeyValues=primarykeyvalues;
   }
-  else 
-    if(!ng_isEmpty(primarykeyvalues)) 
-      return false;
-  return this.Command('delete',options); 
+
+  return this.Command('delete',options);
 }
 
 function ngdbvm_PrimaryKeyNames()
@@ -339,7 +334,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
    *  Group: Properties
    */
    
-  c.ResetRecordOnLoad = true;
+  c.ResetRecordOnLoad = false;
   
   c.DBDataSets=new Array();
   c.CancelEditsValues = null;
@@ -469,6 +464,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
         options.ValueNames=[];
         break;
       case 'load':
+        if(ngVal(options.ResetRecordOnLoad,vm.ResetRecordOnLoad)) vm.ResetRecord();
       case 'delete':
         var pk=vm.PrimaryKeyNames();
         if(pk.length>0)
@@ -476,11 +472,19 @@ function Create_ngSysDBViewModel(def,ref,parent)
           var names=options.ValueNames;
           if(ng_isEmpty(names)) names=ngVal(vm.GetCommandValueNames(cmd,options,true),[]);
 
-          // always add pk
-          if(names.length==0) names=pk;
-          else 
-            for(var i=0;i<pk.length;i++)
-              if(!ng_inArray(pk[i],names)) names.push(pk[i]);
+          if(ng_typeObject(options.PrimaryKeyValues)) // PK values specified, remove pk
+          {
+            for(var i=names.length-1;i>=0;i--)
+              if(ng_inArray(names[i],pk)) names.splice(i,1);
+          }
+          else
+          {
+            // always add pk
+            if(names.length==0) names=pk;
+            else
+              for(var i=0;i<pk.length;i++)
+                if(!ng_inArray(pk[i],names)) names.push(pk[i]);
+          }
 
           options.ValueNames=names;
         }
@@ -501,11 +505,56 @@ function Create_ngSysDBViewModel(def,ref,parent)
     }
     switch(cmd)
     {
+      case 'load':
+      case 'delete':
+        var pkvals = options.PrimaryKeyValues;
+        if(ng_typeObject(pkvals)) // PK values specified, handle values manualy
+        {
+          var v,fd,err={};
+          var typedpkvals={};
+          for(var i=0;i<pk.length;i++)
+          {
+            v=vmGetFieldValueByID(pkvals,pk[i]);
+            fd=this.GetFieldByID(pk[i]);
+            try {
+              if(fd) v=fd.Serialize(v);
+              vmSetFieldValueByID(typedpkvals,pk[i],v);
+            }
+            catch(e)
+            {
+              err[pk[i]]=e;
+            }
+          }
+          pkvals=typedpkvals;
+          options.PrimaryKeyValues = typedpkvals;
+
+          var delpk=(cmd==='delete' ? ng_CopyVar(pkvals) : false);
+          pkvals._OriginalRecord=ng_CopyVar(pkvals); // prevent IsChanged detection
+          options.Values=pkvals;
+          ng_MergeVar(options.Values,vm.GetValues(false,options.ValueNames,err,true,true));
+          if(!ng_EmptyVar(err))
+          {
+            if((this.OnErrors)&&(!ngVal(this.OnErrors(this,err),false))) return false;
+            if(!ng_EmptyVar(err))
+            {
+              this.ShowErrors(err);
+              return false;
+            }
+          }
+          if(delpk) vm._deleteprimarykey=delpk;
+        }
+        else {
+          options.PrimaryKeyValues = vm.GetPrimaryKeyValues();
+          if(cmd==='delete') vm._deleteprimarykey = options.PrimaryKeyValues;
+        }
+        break;
+    }
+    switch(cmd)
+    {
       case 'load':   if(vm.OnLoadRecord)   vm.OnLoadRecord(vm,options); break;
       case 'insert': if(vm.OnInsertRecord) vm.OnInsertRecord(vm,options); break;
       case 'update': if(vm.OnUpdateRecord) vm.OnUpdateRecord(vm,options); break;
       case 'delete':
-        vm._deleteprimarykey = vm.GetPrimaryKeyValues(); 
         if(vm.OnDeleteRecord) vm.OnDeleteRecord(vm,options); 
         break;
     }
