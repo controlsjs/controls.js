@@ -1574,7 +1574,8 @@ function ngvm_recievedata(results)
     if(errors.length>0)
     {
       if((vm.OnErrors)&&(!ngVal(vm.OnErrors(vm,errors),false))) return false;
-      vm.ShowErrors(errors); 
+      if(!ng_EmptyVar(errors))
+        vm.ShowErrors(errors);
       return false;
     }
   }
