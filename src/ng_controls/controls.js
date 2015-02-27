@@ -752,6 +752,7 @@ function ng_GetScrollBars(o)
 var ngControlsIDs = new Array();
 var ngControlImages = '';
 var ngRegisteredControlTypes = new Array();
+var ngOnRegisterControlType = null;
 var ngMouseInControls = new Array();
 var ngCurrentLib = 'ng_controls';
 var ngCurrentUserControls = '';
@@ -811,6 +812,7 @@ function ngGetControlByElement(elm, type)
 function ngRegisterControlType(type, def)
 {
   if(typeof type!=='string') return;
+  if ((ngOnRegisterControlType)&&(!ngVal(ngOnRegisterControlType(type,def),false))) return;
 
   switch(typeof def)
   {
