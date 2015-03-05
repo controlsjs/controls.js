@@ -3612,7 +3612,7 @@ function ngc_ptrend(e)
       }
     }
 
-    if((pi.DblClick)&&(c.DoPtrDblClick))
+    if((pi)&&(pi.DblClick)&&(c.DoPtrDblClick))
     {
       c.DoPtrDblClick(pi);
     }
