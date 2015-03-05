@@ -1089,7 +1089,7 @@ function ng_toString(v,def)
     }
     return ngVal(def,''); 
   }
-  if(ng_isFloat(v))
+  if(ng_isNumber(v))
   {
     return ((''+v).replace('.',ng_DecimalSeparator())); 
   }
