@@ -5308,7 +5308,7 @@ function nga_UpdateParams()
     }
     this.LocationHash = window.location.hash;
     var o=document.getElementById('ngAppHistFix');
-    if((o)&&(ngIExplorer)) nga_WriteIFRAMEHistory(o,params);
+    if((o)&&(ngIExplorer&&ngIExplorerVersion<9)) nga_WriteIFRAMEHistory(o,params);
     nga_CheckParamChange();
   }
 }
@@ -5373,7 +5373,7 @@ function nga_InitParamsChanged()
   var o=document.getElementById('ngAppHistFix');
   if(!o)
   {
-    if(ngIExplorer) // IE history fix (todo: check IE8)
+    if(ngIExplorer&&ngIExplorerVersion<9) // IE history fix
     {
       o = document.createElement("iframe");
       o.src = "javascript:void((function(){document.open();if(document.domain!=\'"+document.domain+"\') document.domain=\'"+document.domain+"\';document.close();"+
