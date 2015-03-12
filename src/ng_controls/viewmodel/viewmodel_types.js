@@ -327,11 +327,12 @@ function ngfd_ArrayDoTypedValue(v)
       {
         try
         {
-          v[k]=this.ValueFieldDef.TypedValue(v[k]);
+          var val=v[k];
+          if(ko.isObservable(val)) val(this.ValueFieldDef.TypedValue(val()));
+          else v[k]=this.ValueFieldDef.TypedValue(val);
         }
         catch(e)
         {
-          e.FieldDef=''+k;
           if(errs===null) errs={};
           errs[k]=e;
         }
@@ -372,6 +373,7 @@ function ngfd_ArrayFormatError(err)
 function ngFieldDef_Array(id, attrs, valfielddef) {
   ngFieldDefCreateAs(this,id,'ARRAY',attrs);
   this.ValueFieldDef=ngVal(valfielddef,null);
+  if(ng_typeObject(this.ValueFieldDef)) this.ValueFieldDef.Parent=this;
   this.DoTypedValue = ngfd_ArrayDoTypedValue;
   this.DoFormatError = ngfd_ArrayFormatError;  
   this.DoFormatItemError = ngfd_ArrayFormatItemError;
@@ -388,11 +390,12 @@ function ngfd_ObjectDoTypedValue(v)
       {
         try
         {
-          v[k]=this.PropsFieldDefs[k].TypedValue(v[k]);
+          var val=v[k];
+          if(ko.isObservable(val)) val(this.PropsFieldDefs[k].TypedValue(val()));
+          else v[k]=this.PropsFieldDefs[k].TypedValue(val);
         }
         catch(e)
         {
-          e.FieldDef=''+k;
           if(errs===null) errs={};
           errs[k]=e;
         }
@@ -433,6 +436,11 @@ function ngfd_ObjectFormatError(err)
 function ngFieldDef_Object(id, attrs, propsfielddefs) {
   ngFieldDefCreateAs(this,id,'OBJECT',attrs);
   this.PropsFieldDefs=ngVal(propsfielddefs,null);
+  if(ng_typeObject(this.PropsFieldDefs))
+  {
+    for(var k in this.PropsFieldDefs)
+      this.PropsFieldDefs[k].Parent=this;
+  }
   this.DoTypedValue = ngfd_ObjectDoTypedValue;
   this.DoFormatError = ngfd_ObjectFormatError;  
   this.DoFormatPropertyError = ngfd_ObjectDoFormatPropertyError;
