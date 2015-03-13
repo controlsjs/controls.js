@@ -146,7 +146,7 @@ function ngLoadApplication(elm, callback, files)
   
   function platform_url(url)
   {
-    return (cordova && winphone && (url_domain(url)==window.location.hostname) ? url_stripparams(url) : url); 
+    return (cordova && winphone && ((url.indexOf('://')<0) || (url.indexOf('file://')>=0)) ? url_stripparams(url) : url);
   }
   
   function exec_script(code)
@@ -245,12 +245,13 @@ function ngLoadApplication(elm, callback, files)
   
   window.ngAppURL = function(url)
   {
-    url=platform_url(url);
     var idx=url.indexOf("://");
-    if((idx>=0)||(url=='')) return url;
-    
-    if(url.charAt(0)=='/') return appdomain+url;
-    return apppath+url;
+    if((idx<0)&&(url!=''))
+    {
+      if(url.charAt(0)=='/') url=appdomain+url;
+      else url=apppath+url;
+    }
+    return platform_url(url);
   }
 
   window.ngLoadAppCSS = function(url, data)
