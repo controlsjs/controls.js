@@ -690,7 +690,7 @@ function ng_StripURLParams(url)
 
 function ng_URLCWP(url)
 {
-  return (ngrpc_domain(url)==window.location.hostname ? ng_StripURLParams(url) : url); // WindowsPhone local file system URL's don't support URL parameters
+  return ((url.indexOf('://')<0) || (url.indexOf('file://')>=0) ? ng_StripURLParams(url) : url); // WindowsPhone local file system URL's don't support URL parameters
 }
 
 function ng_URLStd(url) { return url; }
