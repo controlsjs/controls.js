@@ -11,26 +11,27 @@
  */
 
 var ngOnAppLoading=(typeof ngOnAppLoading === 'undefined' ? null : ngOnAppLoading);
+var ngOnAppDoLoading=(typeof ngOnAppDoLoading === 'undefined' ? null : ngOnAppDoLoading);
 var ngOnAppLoaded=(typeof ngOnAppLoaded === 'undefined' ? null : ngOnAppLoaded);
 var ngOnAppCreated=(typeof ngOnAppCreated === 'undefined' ? null : ngOnAppCreated);
 var ngOnAppLoadProgress=(typeof ngOnAppLoadProgress === 'undefined' ? null : ngOnAppLoadProgress);
 var ngOnAppFileLoad=(typeof ngOnAppFileLoad === 'undefined' ? null : ngOnAppFileLoad);
 var ngOnAppFileLoaded=(typeof ngOnAppFileLoaded === 'undefined' ? null : ngOnAppFileLoaded);
 
-function ngCreateHTMLFragment(htmlStr) {     
+function ngCreateHTMLFragment(htmlStr) {
   var frag = document.createDocumentFragment();
-  if(frag) {     
+  if(frag) {
     var temp = document.createElement('div');
-    temp.innerHTML = htmlStr;     
+    temp.innerHTML = htmlStr;
     while (temp.firstChild) frag.appendChild(temp.firstChild);
   }
-  return frag; 
+  return frag;
 }
 
 function ngLoadApplication(elm, callback, files)
 {
   if((typeof ngOnAppLoading === 'function')&&(!ngOnAppLoading())) return false;
-  
+
   var head=document.getElementsByTagName("head").item(0);
   if(!head) return false;
 
@@ -54,7 +55,7 @@ function ngLoadApplication(elm, callback, files)
     {
       s=oScripts[i].src;
       idx=s.indexOf("apploader=");
-      if(idx>=0) 
+      if(idx>=0)
       {
         idx=s.indexOf("?");
         if(idx>=0)
@@ -65,7 +66,7 @@ function ngLoadApplication(elm, callback, files)
           else apppath=apppath.substring(0,idx+1);
           break;
         }
-      }      
+      }
     }
   }
   if(apppath!='')
@@ -77,16 +78,16 @@ function ngLoadApplication(elm, callback, files)
         {
           appdomain=apppath.substring(0,idx);
           break;
-        }    
+        }
     }
     if(apppath.charAt(apppath.length-1)!='/') apppath+='/';
   }
-  
+
   function loadappfiles(f)
   {
     var url,p,e,ext;
-    
-    // load CSS and images first  
+
+    // load CSS and images first
     for(var i in f)
     {
       if(typeof f[i] === 'string') f[i]={ File: f[i] };
@@ -103,10 +104,10 @@ function ngLoadApplication(elm, callback, files)
           {
             case 'js':  f[i].Type=1; break;
             case 'css': f[i].Type=0; break;
-            case 'png': 
-            case 'jpg': 
-            case 'gif': 
-            case 'jpeg': 
+            case 'png':
+            case 'jpg':
+            case 'gif':
+            case 'jpeg':
             case 'bmp':
                         f[i].Type=2; break;
           }
@@ -120,7 +121,7 @@ function ngLoadApplication(elm, callback, files)
     }
     // Load scripts
     for(var i in f)
-      if(f[i].Type===1) ngLoadAppScript(f[i].File, f[i], null, f[i].Async); 
+      if(f[i].Type===1) ngLoadAppScript(f[i].File, f[i], null, f[i].Async);
   }
 
   function url_domain(url)
@@ -134,7 +135,7 @@ function ngLoadApplication(elm, callback, files)
     if(idx>=0) url=url.substring(0,idx);
     return url;
   }
-  
+
   function url_stripparams(url)
   {
     var i=url.indexOf('?');
@@ -143,25 +144,25 @@ function ngLoadApplication(elm, callback, files)
     if(i>=0) url=url.substr(0,i);
     return url;
   }
-  
+
   function platform_url(url)
   {
     return (cordova && winphone && ((url.indexOf('://')<0) || (url.indexOf('file://')>=0)) ? url_stripparams(url) : url);
   }
-  
+
   function exec_script(code)
   {
     if(typeof Windows !== 'undefined') /* WinStoreApp */ {
       MSApp.execUnsafeLocalFunction(function () {
         window["eval"].call(window, code);
       });
-    } else 
+    } else
     {
-      if(window.execScript) window.execScript(code); 
+      if(window.execScript) window.execScript(code);
       else window["eval"].call(window, code);
     }
   }
-  
+
   window.ngInitializeAppUnits = function() {
     if(typeof ngAppUnits === 'object')
     {
@@ -169,7 +170,7 @@ function ngLoadApplication(elm, callback, files)
         if(typeof ngAppUnits[i].LoadOrder==='undefined')
           ngAppUnits[i].LoadOrder=loadorder++;
 
-      ngAppUnits.sort(function(u1,u2){ 
+      ngAppUnits.sort(function(u1,u2){
         if(typeof u1.Priority === 'undefined') u1.Priority=0.5;
         if(typeof u2.Priority === 'undefined') u2.Priority=0.5;
         if(u1.Priority<0) u1.Priority=0;
@@ -189,11 +190,11 @@ function ngLoadApplication(elm, callback, files)
         }
     }
   }
-  
+
   function apppartloaded(type, url, data, notready)
   {
-    loadedparts++;    
-    if((apploading)&&(typeof ngOnAppLoadProgress === 'function')) 
+    loadedparts++;
+    if((apploading)&&(typeof ngOnAppLoadProgress === 'function'))
     {
       var p=appparts>0 ? Math.round(loadedparts*100/appparts) : 0;
       if(p>lastprogress)
@@ -204,7 +205,7 @@ function ngLoadApplication(elm, callback, files)
     }
     if(!notready) apppartready(type, url, data)
   }
-  
+
   function apppartready(type, url, data)
   {
     readyparts++;
@@ -215,11 +216,11 @@ function ngLoadApplication(elm, callback, files)
       // Initialize application units
       ngInitializeAppUnits();
 
-      if((apploading)&&(readyparts===appparts)) 
+      if((apploading)&&(readyparts===appparts))
       {
         var startup = setTimeout(function() {
           clearTimeout(startup);
-      
+
           if(typeof ngOnAppLoaded === 'function') ngOnAppLoaded();
           if(readyparts<appparts)
           {
@@ -228,21 +229,21 @@ function ngLoadApplication(elm, callback, files)
             return;
           }
           apploading=0;
-          
-          if(typeof ngApplication === 'function') 
+
+          if(typeof ngApplication === 'function')
           {
             new ngApplication((typeof ngStartParams === 'function' ? new ngStartParams() : {}), (elm && (typeof elm==='object' || elm!='') ? elm : 'ngApp'),false);
             if((ngApp)&&(apppath!='')) ngApp.AppPath=apppath;
             if(typeof ngOnAppCreated === 'function') ngOnAppCreated(ngApp);
           }
-          
+
           if((callback)&&(!callback(ngApp))) return;
           if(ngApp) ngApp.Run();
         },100);
       }
     }
   }
-  
+
   window.ngAppURL = function(url)
   {
     var idx=url.indexOf("://");
@@ -257,76 +258,81 @@ function ngLoadApplication(elm, callback, files)
   window.ngLoadAppCSS = function(url, data)
   {
     if((typeof ngOnAppFileLoad === 'function')&&(!ngOnAppFileLoad(0,url,data))) return;
-    var o = document.createElement("link");  
-    o.setAttribute("rel","stylesheet"); 
-    o.setAttribute("type","text/css"); 
-    o.setAttribute("href",ngAppURL(url)); 
+    var o = document.createElement("link");
+    o.setAttribute("rel","stylesheet");
+    o.setAttribute("type","text/css");
+    o.setAttribute("href",ngAppURL(url));
     head.appendChild(o);
-  }  
-  
-  window.ngLoadAppScript = function(url, data, loadcallback, async)
+  }
+
+  window.ngLoadAppScript = function(url, data, loadcallback, async, loadfailcallback)
   {
     var asyncloader=(window.XMLHttpRequest)&&
                     ((typeof ngDEBUG === 'undefined')||(!ngDEBUG))&&
                     ((!opera)||((operaver>=11.1)&&(window.location.protocol!='file:')))&&
-                    ((typeof Windows !== 'undefined') /* WinStoreApp */                     
+                    ((typeof Windows !== 'undefined') /* WinStoreApp */
                   || ((url_domain(url)==window.location.hostname)&&(window.location.hostname!='')));
-    
+
     if((typeof ngOnAppFileLoad === 'function')&&(!ngOnAppFileLoad(1,url,data))) return;
     appparts++;
-    
+
     if(!async) {
-      var scriptdata={URL: url, Data: data, Async: asyncloader, LoadCallback: loadcallback };
+      var scriptdata={ URL: url, Data: data, Async: asyncloader, LoadCallback: loadcallback };
       scriptsqueue.push(scriptdata);
-      if((!asyncloader)&&(scriptsqueue.length>1)) return;    
-    }    
-    
-    function loadscript(url, data, loadcallback, asyncloader)
+      if((!asyncloader)&&(scriptsqueue.length>1)) return;
+    }
+
+    function loadscript(url, data, loadcallback, asyncloader, loadfailcallback)
     {
       function scripterror(isasync)
       {
         var c=(typeof console!=='undefined' ? console : null);
         if(c) c.error('Script "'+url+'" was not loaded!');
+
+        if(typeof loadfailcallback==='function')  {
+          loadfailcallback(1,url,data);
+          loadcallback=null;
+        }
         scriptloaded(isasync);
       }
-      
+
       var loaded = false;
       function scriptloaded(isasync,code)
-      {                                       
+      {
         if(loaded) return;
         loaded = true;
-  
+
         if(async)
         {
           if((typeof code!=='undefined')&&(code!=='')) {
-            exec_script(code);             
+            exec_script(code);
           }
           if(typeof loadcallback === 'function') loadcallback(1,url,data);
           apppartloaded(1,url,data);
           return;
         }
         if(isasync===true) apppartloaded(1,url,data,true);
-        var li=scriptsqueue[0];                      
+        var li=scriptsqueue[0];
         if(!li.Async)
-        {                 
-          if(isasync===true) return; 
+        {
+          if(isasync===true) return;
           scriptsqueue.splice(0,1);
           if(typeof li.LoadCallback === 'function') li.LoadCallback(1,li.URL,li.Data);
-          apppartloaded(1,li.URL,li.Data);   
+          apppartloaded(1,li.URL,li.Data);
         }
-                            
+
         var code;
         while(scriptsqueue.length)
         {
-          li=scriptsqueue[0];                      
-          if(!li.Async) 
-          { 
+          li=scriptsqueue[0];
+          if(!li.Async)
+          {
             loadscript(li.URL, li.Data, li.LoadCallback,false);
             break;
-          }              
+          }
           code=li.code;
           if(typeof code==='undefined') break;
-          if(code!=='') exec_script(code);  
+          if(code!=='') exec_script(code);
           scriptsqueue.splice(0,1);
           if(typeof li.LoadCallback === 'function') li.LoadCallback(1,li.URL,li.Data);
           apppartready(1,li.URL,li.Data);
@@ -334,20 +340,20 @@ function ngLoadApplication(elm, callback, files)
       }
 
       var scripturl=ngAppURL(url);
-      if(asyncloader) 
+      if(asyncloader)
       {
-        var xmlhttp=new XMLHttpRequest();       
+        var xmlhttp=new XMLHttpRequest();
         xmlhttp.onreadystatechange=function()
         {
           if(xmlhttp.readyState==4)
           {
             if((xmlhttp.status==200)||(xmlhttp.status==304)||(xmlhttp.status==0))
-            { 
+            {
               if(!async) scriptdata.code=xmlhttp.responseText;
               scriptloaded(true,xmlhttp.responseText);
             }
             else
-            { 
+            {
               if(!async) scriptdata.code='';
               scripterror(true);
             }
@@ -357,10 +363,10 @@ function ngLoadApplication(elm, callback, files)
         xmlhttp.send();
         return;
       }
-    
+
       var o = document.createElement("script");
       o.onload = scriptloaded;
-      o.onerror = scripterror; 
+      o.onerror = scripterror;
       o.onreadystatechange= function () {
         if(this.readyState != "loaded" && this.readyState != "complete") return;
         scriptloaded();
@@ -368,9 +374,9 @@ function ngLoadApplication(elm, callback, files)
       o.setAttribute("src",scripturl);
       head.appendChild(o);
     }
-    
-    loadscript(url, data, loadcallback, asyncloader);
-  }  
+
+    loadscript(url, data, loadcallback, asyncloader, loadfailcallback);
+  }
 
   window.ngLoadAppImg = function(url, data, loadcallback)
   {
@@ -378,7 +384,7 @@ function ngLoadApplication(elm, callback, files)
     var i=appimages[url];
     if(typeof i === 'undefined')
     {
-      i=new Image; 
+      i=new Image;
       appparts++;
       var loaded = false;
       function imgloaded()
@@ -386,7 +392,7 @@ function ngLoadApplication(elm, callback, files)
         if(loaded) return;
         loaded = true;
         if(typeof loadcallback === 'function') loadcallback(2,url,data);
-        apppartloaded(2,url,data);   
+        apppartloaded(2,url,data);
       }
       i.onload=imgloaded;
       i.onfailure=imgloaded;
@@ -397,20 +403,17 @@ function ngLoadApplication(elm, callback, files)
     return i;
   }
 
-  // Fix for Internet Explorer on Windows Phone 8 which sometimes returns false screen dimensions right after page load.
-  // Solution is to wait for a while.   
-  var loadtimer=setTimeout(function() { 
-    clearTimeout(loadtimer);
-
-    if(!files) 
+  function doloading() {
+    if((!files)&&(!window.ngLoaderAppFilesUsed))
     {
+      window.ngLoaderAppFilesUsed=true;
       files=[];
-      if(ngAppFiles) 
+      if(ngAppFiles)
       {
         for(var i in ngAppFiles)
           files.push(ngAppFiles[i]);
       }
-  
+
       if(typeof ngDetectDevice === 'function') // Devices present
       {
         if(typeof ngDevice === 'undefined') ngDevice=ngDetectDevice();
@@ -425,10 +428,36 @@ function ngLoadApplication(elm, callback, files)
         }
       }
     }
-    
+
+    if(typeof ngOnAppDoLoading === 'function') {
+      var options = {
+          apppath: apppath,
+          appdomain: appdomain,
+          elm: elm,
+          files: files,
+          callback: callback
+      };
+      if(!ngOnAppDoLoading(options)) return;
+      apppath = options.apppath;
+      appdomain = options.appdomain;
+      files = options.files;
+      elm = options.elm;
+      callback = options.callback;
+    }
+
     if(files) loadappfiles(files);
     apppartloaded(-1);
-    
-  },100);   
+  }
+
+  if(!window.ngLoaderStarted) {
+    // Fix for Internet Explorer on Windows Phone 8 which sometimes returns false screen dimensions right after page load.
+    // Solution is to wait for a while.
+    var loadtimer=setTimeout(function() {
+      clearTimeout(loadtimer);
+      window.ngLoaderStarted=true;
+      doloading();
+    },100);
+  }
+  else doloading();
   return true;
 }
