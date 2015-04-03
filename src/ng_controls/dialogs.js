@@ -123,20 +123,11 @@ function ngMessageDlg(type, text, caption, onclose, def)
     DlgHtmlEncode: true,
     DlgShowDialog: true,
     Type: type,
-    Data: {
-      Text: caption
-    },
     Events: {
       OnClose: onclose
-    },
-    Controls: {
-      Message: {
-        Data: {
-          Text: text
-        }
-      }
-    }     
+    }
   });
+
   if(def.DlgLangTxt)
   {
     if(typeof caption!=='undefined') caption=ngTxt(caption, caption);
@@ -149,6 +140,19 @@ function ngMessageDlg(type, text, caption, onclose, def)
     text = text.replace(/\n/g, "<br/>");
   }
     
+  ng_MergeDef(def, {
+    Data: {
+      Text: caption
+    },
+    Controls: {
+      Message: {
+        Data: {
+          Text: text
+        }
+      }
+    }
+  });
+
   var win=ngCreateWindow(def);
   if((win)&&(def.DlgShowDialog)) win.Show();
   return win;
