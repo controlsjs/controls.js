@@ -169,7 +169,7 @@ var MaskEditControl = {
        */
       c.LockHintCaretPos = false;
 
-      //===== STANDARS METHODS =====
+      //===== STANDARD METHODS =====
 
       /*
        *  Group: Methods
