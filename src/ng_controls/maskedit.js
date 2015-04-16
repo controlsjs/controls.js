@@ -100,7 +100,7 @@ var MaskEditControl = {
        *  Type: string
        *  Default value: (empty string)
        */
-       c.Mask = '';
+      c.Mask = '';
       /*  Variable: TextAlign
        *  ...
        *  Type: string
