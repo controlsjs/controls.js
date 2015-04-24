@@ -8388,8 +8388,9 @@ function nge_HintStyle(c)
 
 function nge_SuggestionResults(id,txt,data)
 {
-  var c=ngGetControlById(id);
-  if((!c)||(!ngVal(c.Suggestion,false))) return;
+  var ii=ng_Expand2Id(id);
+  var c=ngGetControlById(ii.id1);
+  if((!c)||(!ngVal(c.Suggestion,false))||(ii.id2!=c.SuggestionCmdID)) return;
 
   if(txt!=c.GetText()) return;
 
@@ -8480,7 +8481,10 @@ function nge_Suggestion(id)
       {
         if(url!='')
         {
-          url=ng_AddURLParam(url,"S="+ng_URLEncode(c.ID));
+          c.SuggestionCmdID=ngVal(c.SuggestionCmdID,-1)+1;
+          if(c.SuggestionCmdID>99) c.SuggestionCmdID=0;
+
+          url=ng_AddURLParam(url,"S="+ng_URLEncode(c.ID+'_'+c.SuggestionCmdID));
           if((typeof c.SuggestionType !== 'undefined')&&(c.SuggestionType!='')) url=ng_AddURLParam(url,"T="+ng_URLEncode(c.SuggestionType));
           url=ng_AddURLParam(url,"Q="+ng_URLEncode(txt)+"&IC="+(ignorecase ? '1' : '0')+"&P="+partial);
         }
@@ -8570,6 +8574,13 @@ function nge_SuggestionRefresh(forcerequery, delay)
   }
   if(typeof delay==='undefined') delay=ngVal(this.SuggestionDelay,200);
   this.SuggestionTimer=setTimeout("nge_Suggestion('"+this.ID+"')",delay);
+}
+
+function nge_SuggestionCancelRefresh()
+{
+  if(this.SuggestionTimer) clearTimeout (this.SuggestionTimer);
+  this.SuggestionTimer=null;
+  this.SuggestionCmdID=ngVal(this.SuggestionCmdID,-1)+1;
 }
 
 function nge_GetCaretPos()
@@ -10086,6 +10097,16 @@ function ngEdit(id, text)
    *    -
    */
   this.SuggestionRefresh = nge_SuggestionRefresh;
+  /*  Function: SuggestionCancelRefresh
+   *  Cancels pending suggestion refresh.
+   *
+   *  Syntax:
+   *    void *SuggestionCancelRefresh* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.SuggestionCancelRefresh = nge_SuggestionCancelRefresh;
 
   this.DoUpdateImages = nge_DoUpdateImages;
   this.DoUpdate = nge_DoUpdate;
