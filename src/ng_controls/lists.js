@@ -3093,9 +3093,9 @@ function ngList(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*
+   *  Default value: <ngDefaultHTMLEncoding>
    */
-  this.HTMLEncode = false;
+  this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
 
   this.radio_groups = new Array();
 

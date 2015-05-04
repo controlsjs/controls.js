@@ -58,7 +58,16 @@ if(typeof ngc_SupportedLangs === 'undefined') ngc_SupportedLangs={};
  *
  *  Default value: *true*
  */
-var ngIE6AlignFix = true;
+if(typeof ngIE6AlignFix === 'undefined') ngIE6AlignFix = true;
+
+/**
+ *  Variable: ngDefaultHTMLEncoding
+ *  Default setting for HTML encoding.
+ *  If TRUE, the components encode HTML special characters by default.
+ *
+ *  Default value: *false*
+ */
+if(typeof ngDefaultHTMLEncoding === 'undefined') ngDefaultHTMLEncoding = false;
 
 /**
  *  Function: ngLang
@@ -6466,9 +6475,9 @@ function ngText(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*
+   *  Default value: <ngDefaultHTMLEncoding>
    */
-  this.HTMLEncode = false;
+  this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
   /*  Variable: CanSelect
    *  ...
    *  Type: bool
@@ -7771,9 +7780,9 @@ function ngButton(id, text)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*
+   *  Default value: <ngDefaultHTMLEncoding>
    */
-  this.HTMLEncode = false;
+  this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
 
   /*  Variable: AutoSize
    *  ...
@@ -8237,9 +8246,9 @@ function ngGroup(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*
+   *  Default value: <ngDefaultHTMLEncoding>
    */
-  this.HTMLEncode = false;
+  this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
   /*  Variable: Frame
    *  ...
    *  Type: object
@@ -11852,9 +11861,9 @@ function ngPages(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*
+   *  Default value: <ngDefaultHTMLEncoding>
    */
-  this.HTMLEncode = false;
+  this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
 
   /*  Variable: Pages
    *  ...

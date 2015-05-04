@@ -1286,9 +1286,9 @@ function ngWindow(id)
   /*  Variable: HTMLEncode
    *  ...
    *  Type: bool
-   *  Default value: *false*   
+   *  Default value: <ngDefaultHTMLEncoding>
    */
-  this.HTMLEncode = false;
+  this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
 
   /*  Variable: BackgroundColor
    *  ...

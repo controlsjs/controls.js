@@ -120,7 +120,7 @@ function ngMessageDlg(type, text, caption, onclose, def)
   if(typeof def==='undefined') def=new Object;  
   ng_MergeDef(def, {
     DlgLangTxt: true, 
-    DlgHtmlEncode: false,
+    DlgHtmlEncode: ngVal(ngDefaultHTMLEncoding,false),
     DlgShowDialog: true,
     Type: type,
     Events: {
