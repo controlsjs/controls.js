@@ -112,7 +112,7 @@ var mbMinimalHeight = 0;
  *    
  *  Definition specials:
  *    DlgLangTxt - if true (default) uses proper locale for caption and text (ngTxt). 
- *    DlgHtmlEncode - if true (default) encodes HTML special characters in caption and text
+ *    DlgHtmlEncode - if true encodes HTML special characters in caption and text
  *    DlgShowDialog - if true (default) shows dialog after creation   
  */
 function ngMessageDlg(type, text, caption, onclose, def)
@@ -120,7 +120,7 @@ function ngMessageDlg(type, text, caption, onclose, def)
   if(typeof def==='undefined') def=new Object;  
   ng_MergeDef(def, {
     DlgLangTxt: true, 
-    DlgHtmlEncode: true,
+    DlgHtmlEncode: false,
     DlgShowDialog: true,
     Type: type,
     Events: {
