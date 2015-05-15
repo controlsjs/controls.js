@@ -3457,6 +3457,66 @@ var WinEightControls = {
       ngRegisterControlType('weSplitButton', function(def,ref,parent) { return Create_weSplitButton(def,ref,parent); });
     }
 
+    if (ngUserControls['fileuploader'])
+    {
+      function Create_weFileUploader(def, ref, parent)
+      {
+        ng_MergeDef(def, {
+          Base: 'wePanel',
+          Controls: {
+            UploadWindow: {
+              Type: 'weDialog',
+              W: 280, H: 100
+            },
+            WaitPanel: {
+              Events: {
+                OnShowWaiting: function (o) {
+                  if (typeof(o)==='undefined') return;
+
+                  o.curDialog = ngMessageDlg('weDlgProgressBox', 'ngfup_Uploading');
+                  if (o.curDialog) o.curDialog.Controls.Progress.BeginProcess();
+                },
+                OnHideWaiting: function (o) {
+                  if ((o) && (o.curDialog)) o.curDialog.Close();
+                }
+              }
+            },
+            EdtFile: {
+              Type: 'weEditBoxBtn',
+              Events: {
+                OnEllipsis: function (o) {
+                  if (o) o.Owner.Parent.Owner.Owner.ShowForm();
+                }
+              }
+            },
+            BtnAddFile: {
+              Type: 'weButton'
+            },
+            ListFiles: {
+              Type: 'weList'
+            },
+            BtnRemoveCheckedFiles: {
+              Type: 'weButton'
+            }
+          },
+          Events: {
+            OnFileAdding: function (o, file) {
+              if ((typeof(o)==='undefined') || (typeof(file)==='undefined')) return false;
+              if (file=='') { o.ShowForm(); return false; };
+
+              return true;
+            },
+            OnServerError: function (o, error, data) {
+              ngMessageDlg('weDlgMessageBox', error);
+            }
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
+      }
+      ngRegisterControlType('weFileUploader', function(def,ref,parent) { return Create_weFileUploader(def,ref,parent); });
+    }
+
     /**
      * ViewModel Controls
      */
