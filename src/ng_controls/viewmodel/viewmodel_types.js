@@ -473,12 +473,37 @@ function ngFieldDef_WWW(id, attrs)
   this.DoTypedValue = ngfd_WWWDoTypedValue;
 }
 
+function ngfd_EmailParseAtSign(v, add)
+{
+  var s   = ng_toString(v);
+      add = ng_toBool(add);
+
+  if ((add)  && (s==''))  return '@';  //Add
+  if ((!add) && (s=='@')) return '';   //Remove
+
+  return s;
+}
+
+function ngfd_EmailParseString(v)
+{
+  return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, false) : v);
+}
+
+function ngfd_EmailFormatString(v)
+{
+  return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, false) : v);
+}
+
+function ngfd_EmailEditString(v)
+{
+  return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, true) : v);
+}
+
 function ngfd_EmailDoTypedValue(v)
 {
   var s=ng_toString(v);
-  if(s=='@') s='';
-  if((s!='')&&(!ng_isEmail(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_email'); 
-  return v;
+  if((s!='')&&(!ng_isEmail(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_email');
+  return s;
 }
 
 /*  Class: ngFieldDef_Email
@@ -495,6 +520,11 @@ function ngFieldDef_Email(id, attrs)
 {
   ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
   this.DoTypedValue = ngfd_EmailDoTypedValue;
+  this.ParseAtSign  = ngfd_EmailParseAtSign;
+
+  this.DoParseString  = ngfd_EmailParseString;
+  this.DoFormatString = ngfd_EmailFormatString;
+  this.DoEditString   = ngfd_EmailEditString;
 }
 
 function ngfd_IP4DoTypedValue(v)
