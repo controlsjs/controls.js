@@ -28,6 +28,17 @@ function ngCreateHTMLFragment(htmlStr) {
   return frag;
 }
 
+function ngURLExtractDomain(url){
+  var idx=url.indexOf('://');
+  if(idx>=0) {
+    idx=url.indexOf('/',idx+3);
+    if(idx>=0) {
+      return url.substring(0,idx);
+    }
+  }
+  return '';
+}
+
 function ngLoadApplication(elm, callback, files)
 {
   if((typeof ngOnAppLoading === 'function')&&(!ngOnAppLoading())) return false;
@@ -73,7 +84,7 @@ function ngLoadApplication(elm, callback, files)
   }
   if(apppath!='')
   {
-    appdomain = url_extractdomain(apppath);
+    appdomain = ngURLExtractDomain(apppath);
     if(apppath.charAt(apppath.length-1)!='/') apppath+='/';
   }
 
@@ -119,18 +130,6 @@ function ngLoadApplication(elm, callback, files)
       if(f[i].Type === 1){
         ngLoadAppFile(f[i].File, f[i], null, f[i].Async);
       }
-  }
-
-  function url_extractdomain(url)
-  {
-    var idx=url.indexOf('://');
-    if(idx>=0) {
-      idx=url.indexOf('/',idx+3);
-      if(idx>=0) {
-        return url.substring(0,idx);
-      }
-    }
-    return '';
   }
 
   function url_domain(url)
@@ -216,7 +215,7 @@ function ngLoadApplication(elm, callback, files)
           if(typeof ngAppUnits[i].OnInit === 'function') ngAppUnits[i].OnInit();
         }
     }
-  }
+  };
 
   function apppartloaded(type, url, data, notready)
   {
@@ -230,7 +229,7 @@ function ngLoadApplication(elm, callback, files)
         lastprogress=p;
       }
     }
-    if(!notready) apppartready(type, url, data)
+    if(!notready) apppartready(type, url, data);
   }
 
   function apppartready(type, url, data)
@@ -287,7 +286,7 @@ function ngLoadApplication(elm, callback, files)
       url=url_addparam(url,v);
     }
     return platform_url(url);
-  }
+  };
 
   window.ngLoadAppScript = function(url, data, loadcallback, async, loadfailcallback)
   {
@@ -296,7 +295,7 @@ function ngLoadApplication(elm, callback, files)
     data.File = url;
     if(typeof async !== 'undefined'){data.Async = async;}
     ngLoadAppFile(url, data, loadcallback, async, loadfailcallback);
-  }
+  };
 
   window.ngLoadAppCSS = function(url, data, loadcallback, async, loadfailcallback)
   {
@@ -305,7 +304,7 @@ function ngLoadApplication(elm, callback, files)
     data.File = url;
     if(typeof async !== 'undefined'){data.Async = async;}
     ngLoadAppFile(url, data, loadcallback, async, loadfailcallback);
-  }
+  };
 
   window.ngLoadAppFile = function(url, data, loadcallback, async, loadfailcallback)
   {
@@ -430,10 +429,10 @@ function ngLoadApplication(elm, callback, files)
           case 1:
             o.onload = fileloaded;
             o.onerror = fileerror;
-            o.onreadystatechange= function () {
+            o.onreadystatechange = function () {
               if(this.readyState != "loaded" && this.readyState != "complete") return;
               fileloaded();
-            }
+            };
             o.setAttribute("src",url);
             break;
         }
@@ -442,7 +441,7 @@ function ngLoadApplication(elm, callback, files)
     }
 
     loadfile(url, data, loadcallback, asyncloader, loadfailcallback);
-  }
+  };
 
   window.ngLoadAppImg = function(url, data, loadcallback)
   {
@@ -467,7 +466,7 @@ function ngLoadApplication(elm, callback, files)
       i.src=ngAppURL(url);
     }
     return i;
-  }
+  };
 
   function doloading() {
     if((!files)&&(!window.ngLoaderAppFilesUsed))
