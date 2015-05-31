@@ -530,7 +530,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     else image=this.TreeImg;
     if(image) ngc_ChangeImage(ngl_TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, this.Enabled, image));
 
-    if(list!=this) id+='_'
+    if(list!=this) id+='_';
 
     for(var i=0;i<list.Items.length;i++)
     {
@@ -554,7 +554,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
     if(image) ngc_ChangeImage(ngl_TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), this.Enabled, image));
-    if(list!=this) id+='_'
+    if(list!=this) id+='_';
     if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
       for(var i=0;i<list.Items.length;i++)
       {
@@ -1124,7 +1124,7 @@ function ngl_Sort(it, recursion, level, itemid)
       }
     }
 
-    list.Items.sort(ngl_SortFnc)
+    list.Items.sort(ngl_SortFnc);
     if((this.SelCount>0)&&(saveselected.length>0))
     {
       for(var i=0;i<list.Items.length;i++)
@@ -1159,7 +1159,7 @@ function ngl_FindCompare(fi, key, text)
       return (text.substring(0,key.length)==key);
     case 2:
       key=''+key;
-      return (text.indexOf(key)>=0)
+      return (text.indexOf(key)>=0);
     default:
       return (text==key);
   }
@@ -2294,7 +2294,7 @@ function ngl_DrawItemText(html, it, id, level)
     emptytext=(text=='');
     if(emptytext) text='<div style="width:0px;position:relative;overflow:hidden;">&nbsp;</div>'; // text padding
 
-    if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, itl),'');
+    if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, it),'');
     else alt=ngVal(it.Alt,'');
 
     html.append('<div class="'+this.GetRowClassName(it, selected, id)+'" ');
@@ -2613,7 +2613,7 @@ function ngl_DoUpdate(o)
   }
   else
   {
-    cb=null
+    cb=null;
     this.ContentElm=o;
   }
 
@@ -2656,7 +2656,7 @@ function ngl_DoUpdate(o)
       {
         self.OnScroll(self,e,cb);
       }
-    }
+    };
   }
   try {
     this.ContentElm.scrollTop=scroll;
@@ -2851,14 +2851,14 @@ function ngl_DoAttach(o)
     var self=this;
     o.onkeydown   = ngl_KeyDown;
     o.onkeyup     = ngl_KeyUp;
-    o.onfocus     = function(e) { ngc_Focus(e, this, t); }
-    o.onblur      = function(e) { ngc_Blur(e, this, t); }
+    o.onfocus     = function(e) { ngc_Focus(e, this, t); };
+    o.onblur      = function(e) { ngc_Blur(e, this, t); };
     o.onscroll    = function(e) {
       if((self.OnScroll)&&(!self.HasEmbededContent))
       {
         self.OnScroll(self,e,o);
       }
-    }
+    };
   }
 }
 
@@ -4250,7 +4250,7 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
 
     if(id<pl.TopIndex) list.next_draw_itemidx=pl.TopIndex;
     if(id>=pl.TopIndex+pl.DisplayedItems) list.next_draw_itemidx=list.Items.length;
-    return ((id>=pl.TopIndex)&&(id<pl.TopIndex+pl.DisplayedItems))
+    return ((id>=pl.TopIndex)&&(id<pl.TopIndex+pl.DisplayedItems));
   }
   return true;
 }
@@ -4527,7 +4527,7 @@ function npgl_UpdatePaging()
     PagingVisible: this.IsPagingVisible(),
     PagingTo: this.Page+ngVal(this.PagingLookout,Math.floor((this.PagingSize-1)/2)),
     Update: false
-  }
+  };
   pginfo.FirstPage=pginfo.PrevPage;
   pginfo.LastPage=pginfo.NextPage;
   if(this.PagingInside) pginfo.Update=true;
@@ -5371,7 +5371,7 @@ function Create_ngPageList(def, ref, parent)
    *  Type: string
    *  Default value: *''*
    */
-  c.AsyncDataURL = ''
+  c.AsyncDataURL = '';
 
   /*
    *  Group: Methods
@@ -5420,7 +5420,7 @@ function Create_ngPageList(def, ref, parent)
    *  Returns:
    *    -
    */
-  c.FirstPage= npgl_FirstPage;
+  c.FirstPage = npgl_FirstPage;
   /*  Function: LastPage
    *  Switches to last page.
    *
@@ -5713,7 +5713,7 @@ function Create_ngPageList(def, ref, parent)
         if(c.List) c.List.SetFocus(false);
         c._DefaultSetFocus(false);
       }
-    }
+    };
     // Group pages in paging and save visibility
     if(c.Controls.Paging)
     {
@@ -5721,10 +5721,10 @@ function Create_ngPageList(def, ref, parent)
 
       if(typeof cc !== 'undefined')
       {
-        var reverse=(c.Controls.Paging.HAlign=='right') // reverse paging
+        var reverse=(c.Controls.Paging.HAlign=='right'); // reverse paging
         if(reverse)
         {
-          var ncc=new Array()
+          var ncc=new Array();
           var j=0;
           for(var i=cc.length-1;i>=0;i--)
             ncc[j++]=cc[i];
