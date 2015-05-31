@@ -453,7 +453,8 @@ var WinEightControls = {
       PageUp: 26,
       PageDown: 27,
       First: 28,
-      Last: 29
+      Last: 29,
+      Filter: 30
     },{
       // automaticaly created from AppIcons
     }
@@ -645,7 +646,7 @@ var WinEightControls = {
       var c=Create_weCheckBox(def,ref,parent,img,img);
       if(c)
       {
-        c.OnGetText=function(c) { return ''; }
+        c.OnGetText=function(c) { return ''; };
         c.AddEvent('DoAcceptGestures',function(o,gestures) {
           gestures.swipeleft=true;
           gestures.swiperight=true;
@@ -757,7 +758,7 @@ var WinEightControls = {
               break;
           }
           return image;
-        }
+        };
         c.MiddleImg=img;
       }
       return c;
@@ -850,8 +851,8 @@ var WinEightControls = {
           if(c.RightImg) c.RightImg=(rightbtn ? img.RightImgBtnReq : img.RightImgReq);
         }
         if(update) c.DoUpdateImages();
-      }
-    }
+      };
+    };
 
     this.Prepare_DropDown=function(def)
     {
@@ -869,7 +870,7 @@ var WinEightControls = {
           };
         }
       }
-    }
+    };
 
     function Create_weEdit(def,ref,parent) {
       var th=theme(def);
@@ -905,7 +906,7 @@ var WinEightControls = {
       {
         var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
         if((e)&&(e.OnEllipsis)) e.OnEllipsis(ci, e.GetText());
-      }
+      };
       c.Buttons=new Array(b);
       /*
        *  Group: Methods
@@ -923,7 +924,7 @@ var WinEightControls = {
        */
       c.Ellipsis=function() {
         b.Click();
-      }
+      };
       /*
        *  Group: Events
        */
@@ -956,7 +957,7 @@ var WinEightControls = {
       {
         var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
         if((e)&&(e.OnSearch)) e.OnSearch(ci, e.GetText());
-      }
+      };
       c.Buttons=[b];
       /*
        *  Group: Methods
@@ -976,7 +977,7 @@ var WinEightControls = {
       c.Search=function(t) {
         if(typeof t !== 'undefined') c.SetText(t);
         b.Click();
-      }
+      };
       /*
        *  Group: Events
        */
@@ -1101,10 +1102,10 @@ var WinEightControls = {
       b.OnGetText = function(e) {
         var c=this.Enabled ? this.Parent.GetColor() : 'D6D6D6';
         return '<div style="margin:2px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width:28px; height:28px; background-color: #'+c+'"></div>';
-      }
+      };
       c.OnTextChanged = function(e) {
         e.DropDownButton.Update();
-      }
+      };
       return c;
     }
     ngRegisterControlType('weColorEdit', function(def,ref,parent) { return Create_weColorEdit(def,ref,parent); });
@@ -1190,7 +1191,7 @@ var WinEightControls = {
           }
 
           return true;
-        }
+        };
 
         return c;
       }
@@ -1320,7 +1321,7 @@ var WinEightControls = {
         else
           c.Frame=(r ? winimages.MemoReqDark : winimages.MemoDark);
         if(update) c.DoUpdateImages();
-      }
+      };
       return c;
     }
     ngRegisterControlType('weMemo', function(def,ref,parent) { return Create_weMemo(def,ref,parent); });
@@ -1598,7 +1599,7 @@ var WinEightControls = {
             }
           }
         };
-      }
+      };
 
       function Create_wePageList(def,ref,parent,controltype,listtype)
       {
@@ -1807,7 +1808,7 @@ var WinEightControls = {
           {
             var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
             if((e)&&(e.Close)) e.Close(e);
-          }
+          };
           if(!c.Buttons) c.Buttons=new Array();
           c.Buttons[c.Buttons.length]=b;
         }
@@ -1827,7 +1828,7 @@ var WinEightControls = {
             {
               if(e.win.MaxButton) e.win.MaxButton.Click();
             }
-          }
+          };
           c.AddEvent(function(o) {
             // update button state before update
             var s=(c.IsMaximized() ? 1 : 0);
@@ -1850,7 +1851,7 @@ var WinEightControls = {
                 if(e.Restore) e.Restore(e);
               }
             }
-          }
+          };
           if(!c.Buttons) c.Buttons=new Array();
           c.Buttons[c.Buttons.length]=b;
         }
@@ -1886,7 +1887,7 @@ var WinEightControls = {
                 if(e.Restore) e.Restore(e);
               }
             }
-          }
+          };
           if(!c.Buttons) c.Buttons=new Array();
           c.Buttons[c.Buttons.length]=b;
         }
@@ -2006,7 +2007,7 @@ var WinEightControls = {
           h+=ng_OuterHeight(o);
         }
         // center buttons and put them under content/message
-        o=(btns ? btns.Elm() : null)
+        o=(btns ? btns.Elm() : null);
         if(o)
         {
           var cc=btns.ChildControls;
@@ -2068,7 +2069,7 @@ var WinEightControls = {
             Frame: { },
             CaptionImg: { LeftImg: null, MiddleImg: null, RightImg: null },
             CalcAutoSize: wedlgbx_CalcAutoSize,
-            CheckBounds: function() { return false }
+            CheckBounds: function() { return false; }
           },
           Events: {
             OnGetText: function(c) {
@@ -3149,7 +3150,7 @@ var WinEightControls = {
         var c = ngCreateControlAsType(def, 'ngColorPickerBox', ref, parent);
         if(!c){return c;}
 
-        c.DoAutoHeight = function(height){return height+10;}
+        c.DoAutoHeight = function(height){return height+10;};
 
         return c;
       });
@@ -3391,7 +3392,7 @@ var WinEightControls = {
             if((typeof item.Checked==='undefined')||(!list.ShowCheckboxes)) return null;
             //if(typeof item.RadioGroup!=='undefined') return WinXPControls.Images.Radio;
             return (th ? winimages.MenuCheckBoxLight : winimages.MenuCheckBoxDark);
-          }
+          };
           /*
            *  Group: Properties
            */
@@ -3409,7 +3410,7 @@ var WinEightControls = {
             if(typeof image === 'undefined') image=list.ItemImg;
             if(typeof image === 'string') image=images[image];
             return image;
-          }
+          };
         }
         return c;
       }
