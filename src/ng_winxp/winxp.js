@@ -842,9 +842,10 @@ var WinXPControls = {
       var b=c.DropDownButton;
       b.Bounds.W=29;
       b.AutoSize=false;
+      b.HTMLEncode=false;
       b.OnGetText = function(e) {
         var c=this.Enabled ? this.Parent.GetColor() : 'CCCCCC';
-        return '<div style="margin:3px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width: 23px; height:13px; border: 1px solid '+(this.Enabled ? 'black' : '#A0A0A0')+'; background-color: #'+c+'"></div>';
+        return '<div style="margin:3px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width: 23px; height:13px; border: 1px solid '+(this.Enabled ? 'black' : '#A0A0A0')+'; background-color: #'+ng_htmlEncode(c)+'"></div>';
       }
       c.OnTextChanged = function(e) {
         e.DropDownButton.Update();
@@ -1069,7 +1070,8 @@ var WinXPControls = {
       ng_MergeDef(def, {
         className: 'wxpLabel',
         Data: {
-          TextAlign: 'center'
+          TextAlign: 'center',
+          HTMLEncode: false
         }
       });
       ng_PreloadImage(libpath+'loading.gif');

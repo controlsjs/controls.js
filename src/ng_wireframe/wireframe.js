@@ -722,10 +722,11 @@ var WireframeControls = {
         return col;
       };
 
+      c.DropDownButton.HTMLEncode = false;
       c.DropDownButton.OnGetText = function(e){
         var col = this.Enabled ? this.Parent.GetColor() : 'cccccc';
         col = (col === '') ? 'ffffff' : col;
-        this.Elm().style.backgroundColor = '#' + col;
+        this.Elm().style.backgroundColor = '#' + ng_htmlEncode(col);
 
         return '';
       }
@@ -2211,7 +2212,8 @@ var WireframeControls = {
       ng_MergeDef(def, {
         className: 'wfrLabel',
         Data: {
-          TextAlign: 'center'
+          TextAlign: 'center',
+          HTMLEncode: false
         }
       });
       var c = ngCreateControlAsType(def, 'ngButton', ref, parent);

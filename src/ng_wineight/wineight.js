@@ -1099,9 +1099,10 @@ var WinEightControls = {
       var b=c.DropDownButton;
       b.Bounds.W=33;
       b.AutoSize=false;
+      b.HTMLEncode=false;
       b.OnGetText = function(e) {
         var c=this.Enabled ? this.Parent.GetColor() : 'D6D6D6';
-        return '<div style="margin:2px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width:28px; height:28px; background-color: #'+c+'"></div>';
+        return '<div style="margin:2px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width:28px; height:28px; background-color: #'+ng_htmlEncode(c)+'"></div>';
       };
       c.OnTextChanged = function(e) {
         e.DropDownButton.Update();
@@ -1401,7 +1402,8 @@ var WinEightControls = {
       ng_MergeDef(def, {
         className: (th ? 'weLabelLight' : 'weLabelDark'),
         Data: {
-          TextAlign: 'center'
+          TextAlign: 'center',
+          HTMLEncode: false
         }
       });
       var img=ctrlimages[img];
