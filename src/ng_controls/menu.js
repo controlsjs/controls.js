@@ -2291,9 +2291,9 @@ function Create_ngMenu(def, ref, parent)
    *  Group: Events
    */
   /*
-   *  Event: OnPopUp
+   *  Event: OnPopup
    */
-  c.OnPopUp = null;
+  c.OnPopup = null;
   /*
    *  Event: OnDrawSeparator
    */
