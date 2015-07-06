@@ -37,7 +37,7 @@ var WinEightControls = {
     'img/we_base.png?2',
     'img/we_hbox.png?2',
     'img/we_vbox.png?1',
-    'img/we_icons.png?2',
+    'img/we_icons.png?3',
 
     // pre-load
     'img/progressline_black.gif?1',
@@ -454,7 +454,38 @@ var WinEightControls = {
       PageDown: 27,
       First: 28,
       Last: 29,
-      Filter: 30
+      Filter: 30,
+      Edit: 31,
+      Stop: 32,
+      Play: 33,
+      Pause: 34,
+      New: 35,
+      Open: 36,
+      Save: 37,
+      SaveAll: 38,
+      Folder: 39,
+      Settings: 40,
+      Attachment: 41,
+      Shopping: 42,
+      Copy: 43,
+      Clipboard: 44,
+      Paste: 45,
+      Cut: 46,
+      Print: 47,
+      Help: 48,
+      Alert: 49,
+      Time: 50,
+      Lock: 51,
+      Unlock: 52,
+      Login: 53,
+      Link: 54,
+      Mail: 55,
+      User: 56,
+      Users: 57,
+      Phone: 58,
+      Camera: 59,
+      Favorites: 60,
+      Chat: 61
     },{
       // automaticaly created from AppIcons
     }
