@@ -1143,6 +1143,7 @@ function ngdbdsc_GetRecordPrimaryKey(it)
       {
         pk[i]={};
         getrecordpk(fd,d[i],pk[i])
+        if(ng_EmptyVar(pk[i])) delete pk[i];
       }         
     }
   }
@@ -1184,8 +1185,8 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
             NewRecord: {
               Type: 'ngButton',
               Data: {
-                ngText: 'dbviewmodel_dataset_new',
-                ngAlt: 'dbviewmodel_dataset_new'
+                ngTextD: 'dbviewmodel_dataset_new',
+                ngAltD: 'dbviewmodel_dataset_new'
               },
               Events: {
                 OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.NewRecord(); }
@@ -1194,8 +1195,8 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
             LoadRecord: {
               Type: 'ngButton',
               Data: {
-                ngText: 'dbviewmodel_dataset_edit',
-                ngAlt: 'dbviewmodel_dataset_edit',
+                ngTextD: 'dbviewmodel_dataset_edit',
+                ngAltD: 'dbviewmodel_dataset_edit',
                 Enabled: false
               },
               Events: {
@@ -1205,8 +1206,8 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
             DeleteRecord: {
               Type: 'ngButton',
               Data: {
-                ngText: 'dbviewmodel_dataset_delete',
-                ngAlt: 'dbviewmodel_dataset_delete',
+                ngTextD: 'dbviewmodel_dataset_delete',
+                ngAltD: 'dbviewmodel_dataset_delete',
                 Enabled: false
               },
               Events: {
@@ -1237,8 +1238,8 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
             Refresh: {
               Type: 'ngButton',
               Data: {
-                ngText: 'dbviewmodel_dataset_refresh',
-                ngAlt: 'dbviewmodel_dataset_refresh'
+                ngTextD: 'dbviewmodel_dataset_refresh',
+                ngAltD: 'dbviewmodel_dataset_refresh'
               },
               Events: {
                 OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.ApplyFilters(); }
@@ -1329,35 +1330,40 @@ function Create_ngDBToolBar(def, ref, parent, basetype)
         Type: 'ngButton',
         DataBind: 'Command: "new", Enabled: _RecordState() != recStateNewRecord',
         Data: {
-          ngText: 'dbviewmodel_toolbar_new'
+          ngTextD: 'dbviewmodel_toolbar_new',
+          ngAltD: 'dbviewmodel_toolbar_new'
         }
       },
       Delete: {
         Type: 'ngButton',
         DataBind: 'Command: "delete", Enabled: _RecordState() == recStateLoaded',
         Data: {
-          ngText: 'dbviewmodel_toolbar_delete'
+          ngTextD: 'dbviewmodel_toolbar_delete',
+          ngAltD: 'dbviewmodel_toolbar_delete'
         }
       },         
       Insert: {
         Type: 'ngButton',
         DataBind: 'Command: "insert", Visible: _RecordState() == recStateNewRecord',
         Data: {
-          ngText: 'dbviewmodel_toolbar_insert'
+          ngTextD: 'dbviewmodel_toolbar_insert',
+          ngAltD: 'dbviewmodel_toolbar_insert'
         }
       },
       Update: {
         Type: 'ngButton',
         DataBind: 'Command: "update", Enabled: _RecordChanged(), Visible: _RecordState() != recStateNewRecord',
         Data: {
-          ngText: 'dbviewmodel_toolbar_update'
+          ngTextD: 'dbviewmodel_toolbar_update',
+          ngAltD: 'dbviewmodel_toolbar_update'
         }
       },
       Cancel: {
         Type: 'ngButton',
         DataBind: 'Command: "cancel", Enabled: _RecordChanged() || _RecordState() == recStateNewRecord',
         Data: {
-          ngText: 'dbviewmodel_toolbar_cancel'
+          ngTextD: 'dbviewmodel_toolbar_cancel',
+          ngAltD: 'dbviewmodel_toolbar_cancel'
         }
       }
     }         
