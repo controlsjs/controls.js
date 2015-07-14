@@ -42,6 +42,21 @@ var OnStartModal = null;
  *    FALSE if curtain shouldn't be removed.
  */
 var OnStopModal = null;
+/**
+ *  Event: OnModalChanged
+ *  Occurs when modal window curtain has changed.
+ *  
+ *  Syntax:
+ *    void *OnModalChanged* (object o, boolean up)
+ *
+ * Parameters:
+ *    o - Curtain node
+ *    up - If curtain has gone up or down
+ *
+ *  Returns:
+ *    -
+ */
+var OnModalChanged = null;
 
 var ngModalZIndexDelta = 10000;
 var ngModalCnt=0;
@@ -90,11 +105,13 @@ function ngStartModalControl()
     }
   }  
   ngModalCnt++;
+  var o = document.getElementById('NGMODALWINDOW_CURTAIN');
   if(ngModalCnt>1)
   {
-    var o = document.getElementById('NGMODALWINDOW_CURTAIN');
     if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
   }
+  
+  if(OnModalChanged) OnModalChanged(o,true);
 }
 
 /**
@@ -110,12 +127,13 @@ function ngStartModalControl()
 function ngStopModalControl()
 {
   ngModalCnt--;
+  var o = document.getElementById('NGMODALWINDOW_CURTAIN');
   if(ngModalCnt<=0)
   {
     ngModalCnt=0;
     if((!OnStopModal)||(ngVal(OnStopModal(),false))) 
     {
-      var o = document.getElementById('NGMODALWINDOW_CURTAIN');
+      o = document.getElementById('NGMODALWINDOW_CURTAIN');
       if(o) 
       {
         o.style.display='none';
@@ -127,9 +145,9 @@ function ngStopModalControl()
   }
   else
   {
-    var o = document.getElementById('NGMODALWINDOW_CURTAIN');
     if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
   }
+  if(OnModalChanged) OnModalChanged(o,false);
 }
 
 // --- Window create helper fnc ------------------------------------------------
