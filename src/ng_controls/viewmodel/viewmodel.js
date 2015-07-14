@@ -1684,7 +1684,7 @@ function ngvm_Command(cmd,options)
     {
       if(this.OnDoCommand)
       {
-        var ret=(ngVal(this.OnDoCommand(this,cmd,options,vals,err),false));
+        var ret=(ngVal(this.OnDoCommand(this,cmd,options,vals,err),true));
         if((ret)&&(ng_EmptyVar(err))) return true;
       }
     }
