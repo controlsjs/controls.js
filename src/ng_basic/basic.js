@@ -445,8 +445,7 @@ function ngLibPath(lib,file)
   if(typeof ngLib === 'undefined') return '';
   lib=lib.toLowerCase();
   var l=ngLib[lib];
-  if((!l)||(typeof l!=='object')) return '';
-  return ng_URL(ngLibsURL+ngVal(l.path,'')+ngVal(file,''));                                 
+  return ng_URL(ngLibsURL+(((l)&&(typeof l==='object')) ? ngVal(l.path,lib+'/') : lib+'/')+ngVal(file,''));
 }
 
 /**
