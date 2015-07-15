@@ -1664,12 +1664,6 @@ function ngvm_Command(cmd,options)
 
   this.CancelCommand();
 
-  url=ngVal(options.URL,this.ServerURL);
-  if(url=='') return false;
-
-  var rpc=this.GetRPC();
-  if(!rpc) return false;
-
   var err={};
   var vals=options.Values;
   if(ng_isEmpty(vals))
@@ -1704,6 +1698,12 @@ function ngvm_Command(cmd,options)
     }
   }                
   
+  var url=ngVal(options.URL,this.ServerURL);
+  if(url=='') return false;
+
+  var rpc=this.GetRPC();
+  if(!rpc) return false;
+
   this.rpc_reqid++;
   rpc.clearParams();
   if(ngVal(this.Namespace,'')!='') rpc.Params.ns=this.Namespace;
