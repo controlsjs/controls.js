@@ -332,7 +332,98 @@ function ngdbvm_SetValues(values,deserialize)
     this.EndRecordUpdate();
   }
 }
-  
+
+function ngdbvm_DBFieldNames(notprimarykey)
+{
+  var ret={};
+  this.ScanValues(function(vm,val,instance,path,userdata)
+  {
+    if(path.substring(0,15)=='_OriginalRecord') return true;
+    if((ngIsFieldDef(instance))&&(ngVal(instance.Attrs['DBField'],false))&&((!notprimarykey)||(!ngVal(instance.Attrs['PrimaryKey'],false))))
+      ret[path]=instance;
+    return true;
+  });
+  return ret;
+};
+
+function ngdbvm_AllDBFields(fillvalues)
+{
+  fillvalues=ngVal(fillvalues,true);
+  var ret={};
+  this.ScanValues(function(vm,val,instance,path,userdata)
+  {
+    if(path.substring(0,15)=='_OriginalRecord') return true;
+    if((ngIsFieldDef(instance))&&(ngVal(instance.Attrs['DBField'],false)))
+    {
+      var fid=instance.Attrs['DBField'];
+      if(fid) {
+        if(fid===true) fid=instance.ID;
+        var dbf={ DBFieldId: fid, FieldDef: instance };
+        if(fillvalues) {
+          var val=instance.Value();
+          try {
+            val=instance.TypedValue(val);
+          }
+          catch(e) {
+          }
+          dbf.Value=val;
+        }
+        ret[fid]=dbf;
+      }
+    }
+    return true;
+  });
+  return ret;
+}
+
+function ngdbvm_GetDBValues(dbfields,notreadonly,notprimarykey)
+{
+  notreadonly=ngVal(notreadonly,false);
+  notprimarykey=ngVal(notprimarykey,false)
+  dbfields=ngVal(dbfields,null);
+  var fields={};
+  var fd,val,dbf;
+  if(dbfields===null) dbfields=this.AllDBFields(false);
+  for(var i in dbfields)
+  {
+    dbf=dbfields[i];
+    fd=dbf.FieldDef;
+    if((notreadonly)&&(ngVal(fd.Attrs['ReadOnly'],false))) continue;
+    if((notprimarykey)&&(ngVal(fd.Attrs['PrimaryKey'],false))) continue;
+    val=fd.Value();
+    try {
+      val=fd.TypedValue(val);
+    }
+    catch(e) {
+    }
+    dbf.Value=val;
+    fields[i]=dbf;
+  }
+  return fields;
+}
+
+function ngdbvm_GetOriginalDBValues(dbfields)
+{
+  if(!ng_typeObject(this.ViewModel._OriginalRecord)) return false;
+  dbfields=ngVal(dbfields,null);
+
+  if(dbfields===null) dbfields=this.AllDBFields(false);
+  var fd,val,dbf;
+  for(var i in dbfields)
+  {
+    dbf=dbfields[i];
+    fd=dbf.FieldDef;
+    val=this.GetFieldValueByID('_OriginalRecord.'+fd.ID);
+    try {
+      val=fd.TypedValue(val);
+    }
+    catch(e) {
+    }
+    dbf.OriginalValue=val;
+  }
+  return dbfields;
+}
+
 /*  Class: ngSysDBViewModel
  *  This class implements non-visual <ngSysDBViewModel> control (based on <ngSysViewModel>).
  */
@@ -390,6 +481,11 @@ function Create_ngSysDBViewModel(def,ref,parent)
   c.__origDBVMSetValues=c.SetValues;
   c.Reset = ngdbvm_Reset;
   c.SetValues = ngdbvm_SetValues;
+
+  c.DBFieldNames = ngdbvm_DBFieldNames;
+  c.AllDBFields = ngdbvm_AllDBFields;
+  c.GetDBValues = ngdbvm_GetDBValues;
+  c.GetOriginalDBValues = ngdbvm_GetOriginalDBValues;
 
   /*
    *  Group: Events
