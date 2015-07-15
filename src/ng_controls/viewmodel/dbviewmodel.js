@@ -159,6 +159,16 @@ function ngdbvm_ResetRecord()
   this.ViewModel._RecordState(recStateNone);
 }
 
+function ngdbvm_EnterEditMode()
+{
+  this.ViewModel._EditMode(true);
+}
+
+function ngdbvm_ExitEditMode()
+{
+  this.ViewModel._EditMode(false);
+}
+
 function ngdbvm_NewRecord() 
 { 
   return this.Command('new');    
@@ -328,6 +338,17 @@ function ngdbvm_SetValues(values,deserialize)
  */
 function Create_ngSysDBViewModel(def,ref,parent) 
 { 
+  ng_MergeVar(def, {
+    Data: {
+      RecordStateEditMode: {
+        recStateNewRecord: true,
+        recStateLoaded: true,
+        recStateNone: false,
+        recStateDeleted: false
+      }
+    }
+  });
+
   var c=ngCreateControlAsType(def, 'ngSysViewModel', ref, parent);
   if(!c) return c; 
   /*
@@ -339,6 +360,8 @@ function Create_ngSysDBViewModel(def,ref,parent)
   c.DBDataSets=new Array();
   c.CancelEditsValues = null;
   c.recordchangesupdate=0;
+
+  c.RecordStateEditMode = { };
     
   /*
    *  Group: Methods
@@ -350,6 +373,9 @@ function Create_ngSysDBViewModel(def,ref,parent)
   c.DeleteRecord = ngdbvm_DeleteRecord;
   c.CancelEdits  = ngdbvm_CancelEdits;
   c.ResetRecord  = ngdbvm_ResetRecord;
+
+  c.EnterEditMode = ngdbvm_EnterEditMode;
+  c.ExitEditMode  = ngdbvm_ExitEditMode;
 
   c.PrimaryKeyNames = ngdbvm_PrimaryKeyNames;
   c.GetPrimaryKeyValues = ngdbvm_GetPrimaryKeyValues;
@@ -417,14 +443,32 @@ function Create_ngSysDBViewModel(def,ref,parent)
 
   c.SetViewModel({
     _RecordChanged: ko.observable(false),
-    _RecordState: ko.observable(recStateNone),
-    NewRecord:    function() { return c.NewRecord(); },
-    LoadRecord:   function() { return c.LoadRecord(); },
-    InsertRecord: function() { return c.InsertRecord(); },
-    UpdateRecord: function() { return c.UpdateRecord(); },
-    DeleteRecord: function() { return c.DeleteRecord(); },
-    CancelEdits:  function() { return c.CancelEdits(); },
-    ResetRecord:  function() { return c.ResetRecord(); }
+    _RecordState:   ko.observable(recStateNone),
+    _EditMode:      ko.observable(false),
+    NewRecord:      function() { return c.NewRecord(); },
+    LoadRecord:     function() { return c.LoadRecord(); },
+    InsertRecord:   function() { return c.InsertRecord(); },
+    UpdateRecord:   function() { return c.UpdateRecord(); },
+    DeleteRecord:   function() { return c.DeleteRecord(); },
+    CancelEdits:    function() { return c.CancelEdits(); },
+    ResetRecord:    function() { return c.ResetRecord(); },
+    EnterEditMode:  function() { return c.EnterEditMode(); },
+    ExitEditMode:   function() { return c.ExitEditMode(); }
+  });
+
+  c.ViewModel._RecordState.subscribe(function(rs) {
+    switch(rs) {
+      case 0:   rs='recStateNone'; break;
+      case 1:   rs='recStateLoaded'; break;
+      case 2:   rs='recStateNewRecord'; break;
+      case 3:   rs='recStateDeleted'; break;
+      case 101: rs='recStateLoading'; break;
+      case 102: rs='recStateInserting'; break;
+      case 103: rs='recStateDeleting'; break;
+      case 104: rs='recStateUpdating'; break;
+    };
+    var em=c.RecordStateEditMode[rs];
+    if((typeof em !== 'undefined')&&(em !== null)) c.ViewModel._EditMode(em ? true : false);
   });
       
   c.AddEvent('OnDoCommand', function(vm,cmd,options) {
