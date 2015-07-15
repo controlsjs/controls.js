@@ -1511,18 +1511,12 @@ function ngl_ClickItem(it, e)
   if((!e.list.Enabled)||(ngVal(e.list.ReadOnly,false))) return;
   if((!it)||(!ngVal(it.Enabled,true))) return;
 
-  if(!e.listPart)
+  var action = this.GetItemAction(it);
+  if((!e.listPart)&&((!action)||(!action.in_action_click)))
   {
     var delay=(new Date().getTime()) - this.ignore_select;
     if(delay<150) e.listIgnoreSelect=true;
     this.ignore_select=0;
-
-    var action = this.GetItemAction(it);
-    if((action)&&(!action.in_action_click))
-    {
-      action.Click(e);
-      return;
-    }
   }
   if((it.OnClick)&&(!ngVal(it.OnClick(e),false)))
   {
@@ -1601,9 +1595,10 @@ function ngl_ClickItem(it, e)
       break;
     }
     case 2:
+      if(action) break;
       if((this.ShowCheckboxes)||(typeof it.Checked !== 'undefined'))
       {
-        if(typeof it.RadioGroup !== 'undefined') this.CheckItem(it,1);
+        if((!this.RadioAllowUncheck)&&(!ngVal(it.RadioAllowUncheck, false))&&(typeof it.RadioGroup!=='undefined')) this.CheckItem(it,1);
         else
         {
           var s=ngVal(it.Checked,0);
@@ -1632,21 +1627,30 @@ function ngl_ClickItem(it, e)
       e.listIgnoreSelect=true;
       break;
   }
+
+  var clickitem=false;
   if(e.listPart)
   {
     if(e.listIgnoreSelect)
     {
       this.ignore_select=new Date().getTime();
-      if(it.OnClickItem) it.OnClickItem(e);
-      if(this.OnClickItem) this.OnClickItem(e);
+      clickitem=true;
     }
   }
   else
     if(!e.listIgnoreSelect)
+      clickitem=true;
+
+  if(clickitem)
+  {
+    if((action)&&(!action.in_action_click))
     {
-      if(it.OnClickItem) it.OnClickItem(e);
-      if(this.OnClickItem) this.OnClickItem(e);
+      if(e.listPart!=3) action.Click(e);
+      return;
     }
+    if(it.OnClickItem) it.OnClickItem(e);
+    if(this.OnClickItem) this.OnClickItem(e);
+  }
 }
 
 function ngl_DoMouseEnter(e, mi, elm)
@@ -3123,6 +3127,13 @@ function ngList(id)
    *  Default value: *false*
    */
   this.ShowCheckboxes = false;
+  /*  Variable: RadioAllowUncheck
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.RadioAllowUncheck = false;
+
   /*  Variable: ShowHeader
    *  ...
    *  Type: bool

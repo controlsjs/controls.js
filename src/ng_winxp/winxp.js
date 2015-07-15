@@ -1113,7 +1113,7 @@ var WinXPControls = {
         });
         c.OnGetCheckImg = function(list,item) {
           if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
-          if(typeof item.RadioGroup!=='undefined') return winimages.RadioLeft;
+          if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return winimages.RadioLeft;
           return winimages.CheckBoxLeft;
         }
         /*
@@ -2272,7 +2272,7 @@ var WinXPControls = {
         {
           c.OnGetCheckImg = function(list,item) {
             if((typeof item.Checked==='undefined')||(!list.ShowCheckboxes)) return null;
-            //if(typeof item.RadioGroup!=='undefined') return WinXPControls.Images.Radio;
+            //if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return WinXPControls.Images.Radio;
             return WinXPControls.Images.MenuCheckBox;
           }
         }

@@ -1517,7 +1517,7 @@ var WinEightControls = {
         c.OnGetCheckImg=function(list,item,id) {
           if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
           if(typeof list.CheckImg !== 'undefined') return list.CheckImg;
-          if(typeof item.RadioGroup!=='undefined') return ((th) || (list.Enabled && list.selected[id]) ? winimages.ListRadioLight : winimages.ListRadioDark);
+          if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return ((th) || (list.Enabled && list.selected[id]) ? winimages.ListRadioLight : winimages.ListRadioDark);
           return((th)||(list.Enabled && list.selected[id]) ? winimages.ListCheckBoxLight : winimages.ListCheckBoxDark);
         };
 
@@ -1536,7 +1536,7 @@ var WinEightControls = {
           if((!th)&&((typeof item.Checked!=='undefined')||(list.ShowCheckboxes)))
           {
             var img;
-            if(typeof item.RadioGroup!=='undefined') img=(list.selected[id] ? winimages.ListRadioLight : winimages.ListRadioDark);
+            if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) img=(list.selected[id] ? winimages.ListRadioLight : winimages.ListRadioDark);
             else img=(list.selected[id] ? winimages.ListCheckBoxLight : winimages.ListCheckBoxDark);
             if(img) ngc_ChangeImage(ngl_CheckImgDrawProps(list.ID+'_'+id+'C', item.Checked, list.Enabled, img));
           }
@@ -3423,7 +3423,7 @@ var WinEightControls = {
         {
           c.OnGetCheckImg = function(list,item) {
             if((typeof item.Checked==='undefined')||(!list.ShowCheckboxes)) return null;
-            //if(typeof item.RadioGroup!=='undefined') return WinXPControls.Images.Radio;
+            //if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return WinXPControls.Images.Radio;
             return (th ? winimages.MenuCheckBoxLight : winimages.MenuCheckBoxDark);
           };
           /*

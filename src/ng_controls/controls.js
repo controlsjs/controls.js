@@ -8025,6 +8025,11 @@ function ngButton(id, text)
  *  Type: bool
  *  Default value: *false*
  */
+/*  Variable: RadioAllowUncheck
+ *  ...
+ *  Type: bool
+ *  Default value: *false*
+ */
 /*<>*/
 
 function ngRadioCheckBox_Create(d, ref, parent)
@@ -8035,7 +8040,7 @@ function ngRadioCheckBox_Create(d, ref, parent)
   {
     var b=e.Owner;
     if((!b)||(b.Action)) return;
-    if(typeof b.RadioGroup !== 'undefined') b.Check(1);
+    if((!this.RadioAllowUncheck)&&(typeof b.RadioGroup!=='undefined')) b.Check(1);
     else
     {
       var s=ngVal(b.Checked,0);
@@ -8059,6 +8064,7 @@ function ngRadioCheckBox_Create(d, ref, parent)
   }
   if(typeof c.ReadOnly === 'undefined')    c.ReadOnly=false;
   if(typeof c.AllowGrayed === 'undefined') c.AllowGrayed=false;
+  if(typeof c.RadioAllowUncheck === 'undefined') c.RadioAllowUncheck=false;
   if((d.Type == 'ngRadioButton')&&(typeof c.RadioGroup === 'undefined')) c.RadioGroup='default';
   return c;
 }
