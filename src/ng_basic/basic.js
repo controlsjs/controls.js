@@ -2243,14 +2243,14 @@ var merge_undefined;
 
 /**
  *  Function: ng_MergeVar
- *  Merges two variables.
+ *  Merges two objects.
  *   
  *  Syntax:
- *    void *ng_MergeVar* (mixed dst, mixed var [, bool allowundefined=false, function callback])
+ *    void *ng_MergeVar* (object dst, object var [, bool allowundefined=false, function callback])
  *    
  *  Parameters:
- *    dst - destination variable 
- *    var - variable to be merged
+ *    dst - destination object
+ *    var - object to be merged
  *    allowundefined - if FALSE (default), undefined values in parameter var are ignored
  *    callback - optional callback function 
  *    
@@ -2296,6 +2296,54 @@ function ng_MergeVar(d,o,allowundefined,callback)
       }
     }
   }
+}
+
+/**
+ *  Function: ng_MergeVarReplace
+ *  Merges two objects, the properties of destination object are replaced.
+ *
+ *  Syntax:
+ *    void *ng_MergeVarReplace* (object dst, object var [, bool allowundefined=false, function callback])
+ *
+ *  Parameters:
+ *    dst - destination object
+ *    var - object to be merged
+ *    allowundefined - if FALSE (default), undefined values in parameter var are removed from dst
+ *    callback - optional callback function
+ *
+ *  Returns:
+ *    -
+ */
+function ng_MergeVarReplace(d,o,allowundefined,callback)
+{
+  if((!d)||(typeof d !== 'object')||(ng_type_date(d))||(typeof o!=='object')||(ng_type_date(o))) return;
+
+  if((typeof callback !== 'function')||(ngVal(callback(d,o),true))) {
+    if((typeof d.__mergereplace !== 'function')||(ngVal(d.__mergereplace(o),true))) {
+      var dref=d['_byRef'];
+      var oref=o ? o['_byRef'] : null;
+      for(var i in o)
+      {
+        if(((!oref)||(!oref[i]))&&(o[i])&&(typeof o[i] === 'object')&&(!ng_type_date(o[i]))&&(!ng_IsArrayVar(o[i])))
+        {
+          if((!d[i])||(typeof d[i]!=='object')||((dref)&&(dref[i]))) {
+            if(dref) delete dref[i];
+            d[i]={};
+          }
+          ng_MergeVarReplace(d[i],o[i],true,callback);
+        }
+        else
+        {
+          if((oref)&&(oref[i])) ng_SetByRef(d,i,o[i]);
+          else {
+            if(dref) delete dref[i];
+            d[i]=ng_CopyVar(o[i]);
+          }
+        }
+      }
+    }
+  }
+  if(!ngVal(allowundefined,false)) ng_CleanUndefined(d);
 }
 
 /**
