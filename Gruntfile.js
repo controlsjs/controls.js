@@ -5,6 +5,10 @@ module.exports = function(grunt) {
   grunt.file.write('VERSION',packageJSON.version); // Update VERSION file
   
   var files = {
+    libs: [
+        'src/loader/libs.js'
+    ],
+
     loader: [
         'src/loader/libs.js',
         'src/loader/loader.js',
@@ -12,18 +16,25 @@ module.exports = function(grunt) {
     ],
     
     controlsjs: [
+        'src/ng_basic/lang/*/*.js',
+        'src/ng_controls/lang/*/*.js',
+
         'src/ng_basic/*.js',
         'src/ng_controls/*.js',
         'libs/lib_json2/*.js'
     ],
 
     controlsjsvm: [
+        'src/ng_basic/lang/*/*.js',
+        'src/ng_controls/lang/*/*.js',
+        'src/ng_controls/viewmodel/lang/*/*.js',
+
         'src/ng_basic/*.js',
         'src/ng_controls/*.js',
         'src/ng_controls/viewmodel/*.js',
         'libs/lib_json2/*.js'
     ],
-    
+
     ng_winxp: [
         'src/ng_winxp/*.js'
     ],
@@ -31,11 +42,10 @@ module.exports = function(grunt) {
     ng_wineight: [
         'src/ng_wineight/*.js'
     ],
-
     ng_wireframe: [
         'src/ng_wireframe/*.js'
     ],
-    
+
     lib_knockout: [
         'libs/lib_knockout/src/namespace.js',
         'libs/lib_knockout/src/google-closure-compiler-utils.js',
@@ -58,6 +68,7 @@ module.exports = function(grunt) {
     lib_hammerjs: [
         'libs/lib_hammerjs/hammer.js'
     ]
+
   };
   
   function getFiles(t)
@@ -71,16 +82,12 @@ module.exports = function(grunt) {
 
   function releaseBuild(path)
   {
-    var ver='';
-    if((typeof packageJSON === 'object')&&(typeof packageJSON.version !== 'undefined')) ver=packageJSON.version+'/';
-    return 'build/release/'+ver+(typeof path === 'undefined' ? '' : path);
+    return 'build/release/'+(typeof path === 'undefined' ? '' : path);
   }
 
   function debugBuild(path)
   {
-    var ver='';
-    if((typeof packageJSON === 'object')&&(typeof packageJSON.version !== 'undefined')) ver=packageJSON.version+'/';
-    return 'build/debug/'+ver+(typeof path === 'undefined' ? '' : path);
+    return 'build/debug/'+(typeof path === 'undefined' ? '' : path);
   }
   
   // Project configuration.
@@ -106,29 +113,17 @@ module.exports = function(grunt) {
                      ' */\n\n',
     
     copy: {
-      ng_winxp: {
-        expand: true, 
-        cwd:  'src/ng_winxp/', 
-        src: ['*.css','*.png','*.gif'],
-        dest: releaseBuild('libs/ng_winxp/')
-      },
-      ng_wineight: {
-        expand: true, 
-        cwd:  'src/ng_wineight/', 
-        src: ['*.css','img/**'],
-        dest: releaseBuild('libs/ng_wineight/')
-      },
-      ng_wireframe: {
-        expand: true, 
-        cwd:  'src/ng_wireframe/', 
-        src: ['*.css','images/**'],
-        dest: releaseBuild('libs/ng_wireframe/')
-      },
       ng_basic: {
         expand: true, 
         cwd:  'src/ng_basic/', 
         src:  'empty.gif',
         dest: releaseBuild('libs/ng_basic/')
+      },
+      ng_basic_debug: {
+        expand: true,
+        cwd:  'src/ng_basic/',
+        src:  'empty.gif',
+        dest: debugBuild('libs/ng_basic/')
       },
       ng_controls: {
         expand: true, 
@@ -136,90 +131,94 @@ module.exports = function(grunt) {
         src:  'images/**',
         dest: releaseBuild('libs/ng_controls/')
       },
+      ng_controls_debug: {
+        expand: true,
+        cwd:  'src/ng_controls/',
+        src:  'images/**',
+        dest: debugBuild('libs/ng_controls/')
+      },
+      ng_winxp: {
+        expand: true,
+        cwd:  'src/ng_winxp/',
+        src: ['*.png','*.gif'],
+        dest: releaseBuild('libs/ng_winxp/')
+      },
       ng_winxp_debug: {
-        expand: true, 
-        cwd:  'src/ng_winxp/', 
+        expand: true,
+        cwd:  'src/ng_winxp/',
         src: ['*.css','*.png','*.gif'],
         dest: debugBuild('libs/ng_winxp/')
       },
+      ng_wineight: {
+        expand: true,
+        cwd:  'src/ng_wineight/',
+        src: ['img/**'],
+        dest: releaseBuild('libs/ng_wineight/')
+      },
       ng_wineight_debug: {
-        expand: true, 
-        cwd:  'src/ng_wineight/', 
+        expand: true,
+        cwd:  'src/ng_wineight/',
         src: ['*.css','img/**'],
         dest: debugBuild('libs/ng_wineight/')
       },
+      ng_wireframe: {
+        expand: true,
+        cwd:  'src/ng_wireframe/',
+        src: ['images/**'],
+        dest: releaseBuild('libs/ng_wireframe/')
+      },
       ng_wireframe_debug: {
-        expand: true, 
-        cwd:  'src/ng_wireframe/', 
+        expand: true,
+        cwd:  'src/ng_wireframe/',
         src: ['*.css','images/**'],
         dest: debugBuild('libs/ng_wireframe/')
-      },
-      ng_basic_debug: {
-        expand: true, 
-        cwd:  'src/ng_basic/', 
-        src:  'empty.gif',
-        dest: debugBuild('libs/ng_basic/')
-      },
-      ng_controls_debug: {
-        expand: true, 
-        cwd:  'src/ng_controls/', 
-        src:  'images/**',
-        dest: debugBuild('libs/ng_controls/')
       }
     },
 
     concat: {
-    
+
       // Loader
-      loader: {
+      loader_debug: {
         src:   getFiles('loader'),
         dest:  debugBuild('loader.js')
       },
-      loaderbar: {
+      loaderbar_debug: {
         src:   getFiles('loader','src/loader/progress-bar.js'),
         dest:  debugBuild('loader-bar.js')
       },
-      loaderpercent: {
+      loaderpercent_debug: {
         src:   getFiles('loader','src/loader/progress-percent.js'),
         dest:  debugBuild('loader-percent.js')
       },
-      loaderimage: {
+      loaderimage_debug: {
         src:   getFiles('loader','src/loader/progress-image.js'),
         dest:  debugBuild('loader-image.js')
       },
 
-      // Libraries      
-      lib_knockout: {
-        src:   getFiles('lib_knockout'),        
+      // Controls.js
+      libs_debug: {
+        src:   getFiles('libs'),
+        dest:  debugBuild('libs.js')
+      },
+
+      lib_knockout_debug: {
+        src:   getFiles('lib_knockout'),
         dest:  debugBuild('libs/lib_knockout/knockout.js')
-      },          
-      lib_hammerjs: {
-        src:   getFiles('lib_hammerjs'),        
+      },
+      lib_hammerjs_debug: {
+        src:   getFiles('lib_hammerjs'),
         dest:  debugBuild('libs/lib_hammerjs/hammer.js')
       },
-      ng_winxp: {
-        src:   getFiles('ng_winxp'),        
-        dest:  debugBuild('libs/ng_winxp/winxp.js')
-      },      
-      ng_wineight: {
-        src:   getFiles('ng_wineight'),        
-        dest:  debugBuild('libs/ng_wineight/wineight.js')
-      },      
-      ng_wireframe: {
-        src:   getFiles('ng_wireframe'),        
-        dest:  debugBuild('libs/ng_wireframe/wireframe.js')
-      },      
-            
-      // Controls.js
-      controlsjs: {
+
+      controlsjs_debug: {
         src:   getFiles('controlsjs'),
         dest:  debugBuild('controls-notouch.js')
       },
-      controlsjsvm: {
+      controlsjsvm_debug: {
         src:   getFiles('controlsjsvm'),
         dest:  debugBuild('controls-vm-notouch.js')
       },
-      
+
       controlsjs_touch_debug: {
         src:   [ debugBuild('controls-notouch.js'), debugBuild('libs/lib_hammerjs/hammer.js') ],
         dest:  debugBuild('controls.js')
@@ -228,14 +227,29 @@ module.exports = function(grunt) {
         src:   [ debugBuild('controls-vm-notouch.js'), debugBuild('libs/lib_hammerjs/hammer.js'), debugBuild('libs/lib_knockout/knockout.js') ],
         dest:  debugBuild('controls-vm.js')
       },
-      controlsjs_touch_release: {
+      controlsjs_touch: {
         src:   [ releaseBuild('controls-notouch.js'), releaseBuild('libs/lib_hammerjs/hammer.js') ],
         dest:  releaseBuild('controls.js')
       },
-      controlsjsvm_touch_release: {
+      controlsjsvm_touch: {
         src:   [ releaseBuild('controls-vm-notouch.js'), releaseBuild('libs/lib_hammerjs/hammer.js'), releaseBuild('libs/lib_knockout/knockout.js') ],
         dest:  releaseBuild('controls-vm.js')
+      },
+
+      // Libraries
+      ng_winxp_debug: {
+        src:   getFiles('ng_winxp'),
+        dest:  debugBuild('libs/ng_winxp/winxp.js')
+      },
+      ng_wineight_debug: {
+        src:   getFiles('ng_wineight'),
+        dest:  debugBuild('libs/ng_wineight/wineight.js')
+      },
+      ng_wireframe_debug: {
+        src:   getFiles('ng_wireframe'),
+        dest:  debugBuild('libs/ng_wireframe/wireframe.js')
       }
+
     },
         
     'closure-compiler': {
@@ -277,54 +291,35 @@ module.exports = function(grunt) {
         }
       },
       
-      // Libraries
+      // Controls.js
+      libs: {
+        js:           getFiles('libs'),
+        jsOutputFile: releaseBuild('libs.js'),
+        noreport: true,
+        options: {
+            compilation_level: 'SIMPLE_OPTIMIZATIONS',
+            warning_level:"DEFAULT"
+        }
+      },
       lib_knockout: {
-        js:           getFiles('lib_knockout'),        
+        js:           getFiles('lib_knockout'),
         jsOutputFile: releaseBuild('libs/lib_knockout/knockout.js'),
         noreport: true,
         options: {
             compilation_level: 'SIMPLE_OPTIMIZATIONS',
             warning_level:"DEFAULT"
         }
-      },          
+      },
       lib_hammerjs: {
-        js:           getFiles('lib_hammerjs'),        
+        js:           getFiles('lib_hammerjs'),
         jsOutputFile: releaseBuild('libs/lib_hammerjs/hammer.js'),
         noreport: true,
         options: {
             compilation_level: 'SIMPLE_OPTIMIZATIONS',
             warning_level:"DEFAULT"
         }
-      },      
-      ng_winxp: {
-        js:           getFiles('ng_winxp'),        
-        jsOutputFile: releaseBuild('libs/ng_winxp/winxp.js'),
-        noreport: true,
-        options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
-        }
-      },      
-      ng_wineight: {
-        js:           getFiles('ng_wineight'),        
-        jsOutputFile: releaseBuild('libs/ng_wineight/wineight.js'),
-        noreport: true,
-        options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
-        }
-      },      
-      ng_wireframe: {
-        js:           getFiles('ng_wireframe'),
-        jsOutputFile: releaseBuild('libs/ng_wireframe/wireframe.js'),
-        noreport: true,
-        options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
-        }
-      },      
-      
-      // Controls.js
+      },
+
       controlsjs: {
         js:           getFiles('controlsjs'),
         jsOutputFile: releaseBuild('controls-notouch.js'),
@@ -342,32 +337,93 @@ module.exports = function(grunt) {
             compilation_level: 'SIMPLE_OPTIMIZATIONS',
             warning_level:"DEFAULT"
         }
+      },
+
+      // Libraries
+      ng_winxp: {
+        js:           getFiles('ng_winxp'),
+        jsOutputFile: releaseBuild('libs/ng_winxp/winxp.js'),
+        noreport: true,
+        options: {
+            compilation_level: 'SIMPLE_OPTIMIZATIONS',
+            warning_level:"DEFAULT"
+        }
+      },
+      ng_wineight: {
+        js:           getFiles('ng_wineight'),
+        jsOutputFile: releaseBuild('libs/ng_wineight/wineight.js'),
+        noreport: true,
+        options: {
+            compilation_level: 'SIMPLE_OPTIMIZATIONS',
+            warning_level:"DEFAULT"
+        }
+      },
+      ng_wireframe: {
+        js:           getFiles('ng_wireframe'),
+        jsOutputFile: releaseBuild('libs/ng_wireframe/wireframe.js'),
+        noreport: true,
+        options: {
+            compilation_level: 'SIMPLE_OPTIMIZATIONS',
+            warning_level:"DEFAULT"
+        }
+      }
+
+    },
+
+    cssmin: {
+      ng_winxp: {
+        options: {
+          keepSpecialComments: 0
+        },
+        files: [{
+          expand: true,
+          cwd:  'src/ng_winxp/',
+          src: ['winxp.css'],
+          dest: releaseBuild('libs/ng_winxp/'),
+        }]
+      },
+      ng_wineight: {
+        options: {
+          keepSpecialComments: 0
+        },
+        files: [{
+          expand: true,
+          cwd:  'src/ng_wineight/',
+          src: ['wineight.css'],
+          dest: releaseBuild('libs/ng_wineight/'),
+        }]
+      },
+      ng_wireframe: {
+        options: {
+          keepSpecialComments: 0
+        },
+        files: [{
+          expand: true,
+          cwd:  'src/ng_wireframe/',
+          src: ['wireframe.css'],
+          dest: releaseBuild('libs/ng_wireframe/'),
+        }]
       }
     },
     
     usebanner: {
     
-      debug: {
+      lib_knockout_debug: {
         options: {
           position: 'top',
-          banner: '// Debug ENABLED\nvar ngDEBUG=1;\n\n'
+          banner: '<%= banner_knockout %>'
         },
         files: {
-          src: [ debugBuild('loader*.js'),
-                 debugBuild('controls*.js')
-               ]   
+          src: [ debugBuild('libs/lib_knockout/*.js') ]
         }
       },
-      
       lib_knockout: {
         options: {
           position: 'top',
           banner: '<%= banner_knockout %>'
         },
         files: {
-          src: [ releaseBuild('libs/lib_knockout/*.js'),
-                 debugBuild('libs/lib_knockout/*.js')
-               ]   
+          src: [ releaseBuild('libs/lib_knockout/*.js') ]
         }
       },
       lib_hammerjs: {
@@ -376,21 +432,49 @@ module.exports = function(grunt) {
           banner: '<%= banner_hammerjs %>'
         },
         files: {
-          src: [ releaseBuild('libs/lib_hammerjs/*.js')/*,
-                 debugBuild('libs/lib_hammerjs/*.js') // Sources already contains banner */
-               ]   
+          src: [ releaseBuild('libs/lib_hammerjs/*.js') ]
         }
       },
 
-      controlsjsvm: {
+      controlsjs_enabledebug: {
         options: {
           position: 'top',
-          banner: '<%= banner_knockout %>'
+          banner: '// Debug ENABLED\nvar ngDEBUG=1;\n\n'
         },
         files: {
-          src: [ releaseBuild('controls-vm*.js'),
-                 debugBuild('controls-vm*.js')
-               ]   
+          src: [ debugBuild('loader*.js'),
+                 debugBuild('controls*.js')
+               ]
+        }
+      },
+      controlsjs_debug: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ debugBuild('*.js') ]
+        }
+      },
+      controlsjstouch_debug: {
+        options: {
+          position: 'top',
+          banner: '<%= banner_hammerjs %>'
+        },
+        files: {
+          src: [ debugBuild('controls.js'),
+                 debugBuild('controls-vm.js')
+               ]
+        }
+      },
+
+      controlsjs: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ releaseBuild('*.js') ]
         }
       },
       controlsjstouch: {
@@ -400,33 +484,74 @@ module.exports = function(grunt) {
         },
         files: {
           src: [ releaseBuild('controls.js'),
-                 releaseBuild('controls-vm.js'),
-                 debugBuild('controls.js'),  
-                 debugBuild('controls-vm.js')
-               ]   
+                 releaseBuild('controls-vm.js')
+               ]
         }
       },
-      controlsjs: {
+      // Libraries
+      ng_winxp: {
         options: {
           position: 'top',
           banner: '<%= banner %>'
         },
         files: {
-          src: [ releaseBuild('*.js'),
-                 releaseBuild('libs/ng_winxp/*.{js,css}'),
-                 releaseBuild('libs/ng_wineight/*.{js,css}'),
-                 releaseBuild('libs/ng_wireframe/*.{js,css}'),
-                 debugBuild('*.js'),
-                 debugBuild('libs/ng_winxp/*.{js,css}'),
-                 debugBuild('libs/ng_wineight/*.{js,css}'),
-                 debugBuild('libs/ng_wireframe/*.{js,css}'),
-               ]   
+          src: [ releaseBuild('libs/ng_winxp/*.{js,css}') ]
+        }
+      },
+      ng_winxp_debug: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ debugBuild('libs/ng_winxp/*.{js,css}') ]
+        }
+      },
+      ng_wineight: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ releaseBuild('libs/ng_wineight/*.{js,css}') ]
+        }
+      },
+      ng_wineight_debug: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ debugBuild('libs/ng_wineight/*.{js,css}') ]
+        }
+      },
+      ng_wireframe: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ releaseBuild('libs/ng_wireframe/*.{js,css}') ]
+        }
+      },
+      ng_wireframe_debug: {
+        options: {
+          position: 'top',
+          banner: '<%= banner %>'
+        },
+        files: {
+          src: [ debugBuild('libs/ng_wireframe/*.{js,css}') ]
         }
       }
+
     },
     
-    clean: [ releaseBuild('libs/lib_knockout/'), releaseBuild('libs/lib_hammerjs/'),
-             debugBuild('libs/lib_knockout/'), debugBuild('libs/lib_hammerjs/') ]
+    clean: {
+      lib_knockout_debug: [ debugBuild('libs/lib_knockout/') ],
+      lib_knockout:       [ releaseBuild('libs/lib_knockout/') ],
+      lib_hammerjs_debug: [ debugBuild('libs/lib_hammerjs/') ],
+      lib_hammerjs:       [ releaseBuild('libs/lib_hammerjs/') ]
+    }
   });
 
   // Load the plugins
@@ -436,8 +561,117 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   // Default task(s).
-  grunt.registerTask('default', ['closure-compiler','copy','concat','usebanner','clean']);
+
+  // controlsjs
+  grunt.registerTask('controlsjs-debug', [
+    'copy:ng_basic_debug',
+    'copy:ng_controls_debug',
+
+    'concat:loader_debug',
+    'concat:loaderbar_debug',
+    'concat:loaderpercent_debug',
+    'concat:loaderimage_debug',
+    'concat:libs_debug',
+    'concat:lib_hammerjs_debug',
+    'concat:lib_knockout_debug',
+    'concat:controlsjs_debug',
+    'concat:controlsjsvm_debug',
+    'concat:controlsjs_touch_debug',
+    'concat:controlsjsvm_touch_debug',
+
+    'usebanner:lib_knockout_debug',
+    'usebanner:controlsjs_enabledebug',
+    'usebanner:controlsjs_debug',
+    'usebanner:controlsjstouch_debug',
+
+    'clean:lib_knockout_debug',
+    'clean:lib_hammerjs_debug'
+  ]);
+
+  grunt.registerTask('controlsjs-release', [
+    'closure-compiler:loader',
+    'closure-compiler:loaderbar',
+    'closure-compiler:loaderpercent',
+    'closure-compiler:loaderimage',
+    'closure-compiler:libs',
+    'closure-compiler:lib_hammerjs',
+    'closure-compiler:lib_knockout',
+    'closure-compiler:controlsjs',
+    'closure-compiler:controlsjsvm',
+    'concat:controlsjs_touch',
+    'concat:controlsjsvm_touch',
+
+    'copy:ng_basic',
+    'copy:ng_controls',
+
+    'usebanner:lib_knockout',
+    'usebanner:lib_hammerjs',
+    'usebanner:controlsjs',
+    'usebanner:controlsjstouch',
+
+    'clean:lib_knockout',
+    'clean:lib_hammerjs'
+  ]);
+
+  // ng_winxp
+  grunt.registerTask('ng_winxp-debug', [
+    'concat:ng_winxp_debug',
+    'copy:ng_winxp_debug',
+    'usebanner:ng_winxp_debug'
+  ]);
+
+  grunt.registerTask('ng_winxp-release', [
+    'closure-compiler:ng_winxp',
+    'copy:ng_winxp',
+    'cssmin:ng_winxp',
+    'usebanner:ng_winxp'
+  ]);
+
+  // ng_wineight
+  grunt.registerTask('ng_wineight-debug', [
+    'concat:ng_wineight_debug',
+    'copy:ng_wineight_debug',
+    'usebanner:ng_wineight_debug'
+  ]);
+
+  grunt.registerTask('ng_wineight-release', [
+    'closure-compiler:ng_wineight',
+    'copy:ng_wineight',
+    'cssmin:ng_wineight',
+    'usebanner:ng_wineight'
+  ]);
+
+  // ng_wireframe
+  grunt.registerTask('ng_wireframe-debug', [
+    'concat:ng_wireframe_debug',
+    'copy:ng_wireframe_debug',
+    'cssmin:ng_wireframe',
+    'usebanner:ng_wireframe_debug'
+  ]);
+
+  grunt.registerTask('ng_wireframe-release', [
+    'closure-compiler:ng_wireframe',
+    'copy:ng_wireframe',
+    'usebanner:ng_wireframe'
+  ]);
+
+
+  grunt.registerTask('debug', [
+    'controlsjs-debug',
+    'ng_winxp-debug',
+    'ng_wineight-debug',
+    'ng_wireframe-debug'
+  ]);
+  grunt.registerTask('release', [
+    'controlsjs-release',
+    'ng_winxp-release',
+    'ng_wineight-release',
+    'ng_wireframe-release'
+  ]);
+
+  grunt.registerTask('default', ['debug','release']);
 
 };
