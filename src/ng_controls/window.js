@@ -1237,7 +1237,7 @@ var ngw_initialized = false;
  *    new *ngWindow* ([string id])
  *    
  *  Parameters:
- *    id - parent element
+ *    id - control ID
  *    
  *  See also:
  *    Abstract class <ngControl>.    
@@ -2288,7 +2288,7 @@ function ngh_HintAutoHideTimer(id)
  *    new *ngHint* ([string id])
  *    
  *  Parameters:
- *    id - parent element
+ *    id - control ID
  *    
  *  See also:
  *    Abstract class <ngControl>.    

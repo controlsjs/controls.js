@@ -1128,7 +1128,7 @@ var ngspResizeAutoMaximize = 16;
  *    new *ngSplitPanel* ([string id])
  *    
  *  Parameters:
- *    id - parent element
+ *    id - control ID
  *    
  *  See also:
  *    Abstract class <ngControl>.    
@@ -1643,7 +1643,7 @@ function ngdp_ToggleDropDown()
  *    new *ngDropPanel* ([string id])
  *    
  *  Parameters:
- *    id - parent element
+ *    id - control ID
  *    
  *  See also:
  *    Abstract class <ngControl>.    
