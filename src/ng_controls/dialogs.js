@@ -14,63 +14,6 @@
  *  Group: Dialogs 
  */
 
-// --- English resources -------------------------------------------------------
-if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
-if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
-ngc_Lang['en']['mbOK']='OK';
-ngc_Lang['en']['mbCancel']='Cancel';
-ngc_Lang['en']['mbYes']='Yes';
-ngc_Lang['en']['mbNo']='No';
-
-ngc_Lang['en']['ngAbout']='About';
-ngc_Lang['en']['ngAboutVersion']='Version %s';
-ngc_Lang['en']['ngAboutBrowser']='Browser: %s';
-ngc_Lang['en']['ngAboutWindow']='Window: %s';
-ngc_Lang['en']['ngAboutLanguage']='Language: %s';
-ngc_Lang['en']['ngAboutUserControls']='User Controls: %s';
-ngc_Lang['en']['ngAboutSystemInfo']='System Info';
-ngc_Lang['en']['ngAboutComponents']='Used Components';
-ngc_Lang['en']['ngAboutLibraries']='Libraries';
-ngc_Lang['en']['ngAboutTrademarks']='Legal Trademarks';
-ngc_Lang['en']['ngAboutReleaseNotes']='Release Notes';
-
-// --- Czech resources ---------------------------------------------------------
-if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=new Array();
-ngc_Lang['cz']['mbOK']='OK';
-ngc_Lang['cz']['mbCancel']='Storno';
-ngc_Lang['cz']['mbYes']='Ano';
-ngc_Lang['cz']['mbNo']='Ne';
-
-ngc_Lang['cz']['ngAbout']='O aplikaci';
-ngc_Lang['cz']['ngAboutVersion']='Verze %s';
-ngc_Lang['cz']['ngAboutBrowser']='Prohlížeč: %s';
-ngc_Lang['cz']['ngAboutWindow']='Okno: %s';
-ngc_Lang['cz']['ngAboutLanguage']='Jazyk: %s';
-ngc_Lang['cz']['ngAboutSystemInfo']='Systémové informace';
-ngc_Lang['cz']['ngAboutComponents']='Použité komponenty';
-ngc_Lang['cz']['ngAboutLibraries']='Knihovny';
-ngc_Lang['cz']['ngAboutTrademarks']='Ochranné známky';
-ngc_Lang['cz']['ngAboutReleaseNotes']='Poznámky k verzi';
-
-// --- Slovak resources ---------------------------------------------------------
-if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=new Array();
-ngc_Lang['sk']['mbOK']='OK';
-ngc_Lang['sk']['mbCancel']='Storno';
-ngc_Lang['sk']['mbYes']='Áno';
-ngc_Lang['sk']['mbNo']='Nie';
-
-ngc_Lang['sk']['ngAbout']='O aplikácii';
-ngc_Lang['sk']['ngAboutVersion']='Verzia %s';
-ngc_Lang['sk']['ngAboutBrowser']='Prehliadač: %s';
-ngc_Lang['sk']['ngAboutWindow']='Okno: %s';
-ngc_Lang['sk']['ngAboutLanguage']='Jazyk: %s';
-ngc_Lang['sk']['ngAboutSystemInfo']='Systémové informácie';
-ngc_Lang['sk']['ngAboutComponents']='Použité komponenty';
-ngc_Lang['sk']['ngAboutLibraries']='Knižnice';
-ngc_Lang['sk']['ngAboutTrademarks']='Ochranné známky';
-ngc_Lang['sk']['ngAboutReleaseNotes']='Poznámky k verzii';
-
-
 var mbNone   =  0;
 var mbCancel =  1;
 var mbOK     =  2;

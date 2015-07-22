@@ -14,49 +14,6 @@
  *  Group: Calendar 
  */
 
-// --- English Resources -------------------------------------------------------
-if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
-if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
-
-ngc_Lang['en']['calendar']              = 'Calendar';
-ngc_Lang['en']['calendar_today']        = 'Today';
-ngc_Lang['en']['calendar_tomorrow']     = '+1';
-ngc_Lang['en']['calendar_tomorrow_alt'] = 'Tomorrow';
-ngc_Lang['en']['calendar_nextweek']     = '+7';
-ngc_Lang['en']['calendar_nextweek_alt'] = 'In A Week';
-ngc_Lang['en']['calendar_nextmonth']    = 'Next Month';
-ngc_Lang['en']['calendar_prevmonth']    = 'Previous Month';
-ngc_Lang['en']['calendar_nextyear']     = 'Next Year';
-ngc_Lang['en']['calendar_prevyear']     = 'Previous Year';
-
-// --- Czech Resources -------------------------------------------------------
-if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=new Array();
-
-ngc_Lang['cz']['calendar']              = 'Kalendář';
-ngc_Lang['cz']['calendar_today']        = 'Dnes';
-ngc_Lang['cz']['calendar_tomorrow']     = '+1';
-ngc_Lang['cz']['calendar_tomorrow_alt'] = 'Zítra';
-ngc_Lang['cz']['calendar_nextweek']     = '+7';
-ngc_Lang['cz']['calendar_nextweek_alt'] = 'Za týden';
-ngc_Lang['cz']['calendar_nextmonth']    = 'Následující měsíc';
-ngc_Lang['cz']['calendar_prevmonth']    = 'Předcházející měsíc';
-ngc_Lang['cz']['calendar_nextyear']     = 'Následující rok';
-ngc_Lang['cz']['calendar_prevyear']     = 'Předcházející rok';
-
-// --- Slovak Resources -------------------------------------------------------
-if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=new Array();
-
-ngc_Lang['sk']['calendar']              = 'Kalendár';
-ngc_Lang['sk']['calendar_today']        = 'Dnes';
-ngc_Lang['sk']['calendar_tomorrow']     = '+1';
-ngc_Lang['sk']['calendar_tomorrow_alt'] = 'Zajtra';
-ngc_Lang['sk']['calendar_nextweek']     = '+7';
-ngc_Lang['sk']['calendar_nextweek_alt'] = 'Za týždeň';
-ngc_Lang['sk']['calendar_nextmonth']    = 'Nasledujúci mesiac';
-ngc_Lang['sk']['calendar_prevmonth']    = 'Predchádzajúci mesiac';
-ngc_Lang['sk']['calendar_nextyear']     = 'Nasledujúci rok';
-ngc_Lang['sk']['calendar_prevyear']     = 'Predchádzajúci rok';
-
 // --- ngCalendar --------------------------------------------------------------
 
 var ngcalSelectNone = 0;
@@ -840,7 +797,7 @@ function ngcal_ParseDate(d)
  *    new *ngCalendar* ([string id])
  *    
  *  Parameters:
- *    id - parent element
+ *    id - control ID
  *    
  *  See also:
  *    Abstract class <ngControl>.    

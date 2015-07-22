@@ -10,43 +10,6 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-// --- English Resources -------------------------------------------------------
-if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
-if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
-
-ngc_Lang['en']['viewmodel_err_www']   = 'Value is not a WWW address.';
-ngc_Lang['en']['viewmodel_err_email'] = 'Value is not an e-mail address.';
-ngc_Lang['en']['viewmodel_err_ip4']   = 'Value is not an IPv4 address.';
-ngc_Lang['en']['viewmodel_err_ip6']   = 'Value is not an IPv6 address.';
-
-ngc_Lang['en']['viewmodel_err_notphone']                   = 'Value is not a valid phone number.';
-ngc_Lang['en']['viewmodel_err_invalidphoneprefix']         = 'Invalid phone prefix (allowed: %s).';
-ngc_Lang['en']['viewmodel_err_invalidphoneprefix_novalue'] = 'Invalid phone prefix.';
-
-// --- Czech Resources -------------------------------------------------------
-if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=new Array();
-
-ngc_Lang['cz']['viewmodel_err_www']   = 'Hodnota není WWW adresa.';
-ngc_Lang['cz']['viewmodel_err_email'] = 'Hodnota není e-mailová adresa.';
-ngc_Lang['cz']['viewmodel_err_ip4']   = 'Hodnota není IPv4 adresa.';
-ngc_Lang['cz']['viewmodel_err_ip6']   = 'Hodnota není IPv6 adresa.';
-
-ngc_Lang['cz']['viewmodel_err_notphone']                   = 'Hodnota není telefonní číslo.';
-ngc_Lang['cz']['viewmodel_err_invalidphoneprefix']         = 'Neplatná telefonní předvolba (platné: %s).';
-ngc_Lang['cz']['viewmodel_err_invalidphoneprefix_novalue'] = 'Neplatná telefonní předvolba .';
-
-// --- Slovak Resources -------------------------------------------------------
-if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=new Array();
-
-ngc_Lang['sk']['viewmodel_err_www']   = 'Hodnota nie je WWW adresa.';
-ngc_Lang['sk']['viewmodel_err_email'] = 'Hodnota nie je e-mailová adresa.';
-ngc_Lang['sk']['viewmodel_err_ip4']   = 'Hodnota nie je IPv4 adresa.';
-ngc_Lang['sk']['viewmodel_err_ip6']   = 'Hodnota nie je IPv6 adresa.';
-
-ngc_Lang['sk']['viewmodel_err_notphone']                   = 'Hodnota nie je telefónne číslo.';
-ngc_Lang['sk']['viewmodel_err_invalidphoneprefix']         = 'Neplatná telefónna predvoľba (platné: %s).';
-ngc_Lang['sk']['viewmodel_err_invalidphoneprefix_novalue'] = 'Neplatná telefónna predvoľba .'; 
-
 /*  Class: ngFieldDef_Bool
  *  <ngViewModel> Boolean field (based on <ngFieldDef> BOOL).
  *  
