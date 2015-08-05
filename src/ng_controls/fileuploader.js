@@ -203,7 +203,7 @@ var FileUploaderControl = {
           return false;
         }
 
-        c.Controls.ListFiles.Add({ Text: { File: data.Name } });
+        c.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
         c.Controls.ListFiles.Update();
 
         if (c.OnFileAdded) c.OnFileAdded(c, data.Name, data);
@@ -400,7 +400,7 @@ var FileUploaderControl = {
       /*
        *  Event: OnFileDeleted
        */
-      c.OnFileDeleted  = null;
+      c.OnFileDeleted = null;
 
       return c;
     }
