@@ -50,6 +50,11 @@ ngc_Lang['en']['ngAppOldControlsVersion']='Application requires newer version of
  *  Application supported languages. Associative array, keys are languages.
  */
 if(typeof ngc_SupportedLangs === 'undefined') ngc_SupportedLangs={};
+/**
+ *  Variable: ngc_SupportedLangsLocked
+ *  If application supported languages can not be changed.
+ */
+if(typeof ngc_SupportedLangsLocked === 'undefined') ngc_SupportedLangsLocked=false;
 
 /**
  *  Variable: ngIE6AlignFix
@@ -218,28 +223,33 @@ function ngIsSupportedLang(lng)
  *  Function: ngSetSupportedLang
  *  Sets application supported language(s).
  *
- *  Syntax: void *ngSetSupportedLang* (mixed lang[, mixed lang1[, mixed lang2[, mixed ...]]])
+ *  Syntax: boolean *ngSetSupportedLang* (mixed lang[, mixed lang1[, mixed lang2[, mixed ...]]])
  *
  *  Returns:
- *    -
+ *    True if supported languages were set.
  */
 function ngSetSupportedLang()
 {
+  if(ngc_SupportedLangsLocked) return false;
+  
   ngc_SupportedLangs={};
   ngAddSupportedLang.apply(this,arguments);
+  return true;
 }
 
 /**
  *  Function: ngAddSupportedLang
  *  Adds application supported language(s).
  *
- *  Syntax: void *ngAddSupportedLang* (mixed lang[, mixed lang1[, mixed lang2[, mixed ...]]])
+ *  Syntax: boolean *ngAddSupportedLang* (mixed lang[, mixed lang1[, mixed lang2[, mixed ...]]])
  *
  *  Returns:
- *    -
+ *    True if supported languages were added.
  */
 function ngAddSupportedLang()
 {
+  if(ngc_SupportedLangsLocked) return false;
+ 
   var lng, empty, lang;
   for(var k in arguments)
   {
@@ -265,6 +275,7 @@ function ngAddSupportedLang()
       }
     }
   }
+  return true;
 }
 
 /**
@@ -4582,6 +4593,7 @@ function nga_DoRun()
 
   // Language detection
   ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
+  ngc_SupportedLangsLocked = (ngApp.StartParams.SupportedLangsLocked === true);
   ngApp.Lang = ngGetSupportedLang(ngApp.DetectLang());
 
   // Controls version check
