@@ -1511,22 +1511,20 @@ function ngl_ClickItem(it, e)
   if((!e.list.Enabled)||(ngVal(e.list.ReadOnly,false))) return;
   if((!it)||(!ngVal(it.Enabled,true))) return;
 
-  var action = this.GetItemAction(it);
+  var action = !e.listIgnoreAction ? this.GetItemAction(it) : null;
   if((!e.listPart)&&((!action)||(!action.in_action_click)))
   {
     var delay=(new Date().getTime()) - this.ignore_select;
     if(delay<150) e.listIgnoreSelect=true;
     this.ignore_select=0;
   }
-  if((it.OnClick)&&(!ngVal(it.OnClick(e),false)))
-  {
-    if((e.listIgnoreSelect)&&(e.listPart)) this.ignore_select=new Date().getTime();
-    return;
-  }
-  if((this.OnClick)&&(!ngVal(this.OnClick(e),false)))
-  {
-    if((e.listIgnoreSelect)&&(e.listPart)) this.ignore_select=new Date().getTime();
-    return;
+  if((e.listPart)||(!action)||(action.in_action_click)) {
+    if(((it.OnClick)&&(!ngVal(it.OnClick(e),false)))
+     ||((this.OnClick)&&(!ngVal(this.OnClick(e),false))))
+    {
+      if((e.listIgnoreSelect)&&(e.listPart)) this.ignore_select=new Date().getTime();
+      return;
+    }
   }
   switch(e.listPart)
   {
@@ -1624,10 +1622,11 @@ function ngl_ClickItem(it, e)
       break;
     case 3:
       this.ToggleCollapsed(it);
+      e.listIgnoreAction=true;
       e.listIgnoreSelect=true;
       break;
   }
-
+  if(e.listIgnoreAction) action=null;
   var clickitem=false;
   if(e.listPart)
   {
