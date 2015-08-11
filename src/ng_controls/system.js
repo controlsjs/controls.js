@@ -39,12 +39,16 @@ function ngact_Check(state)
       {
         var c;
         this.in_action_check = true;
-        for(var i=0;i<cc.length;i++)
-        {
-          c=cc[i];
-          if(c.Control.ActionCheck) c.Control.ActionCheck(state, c.Data);
+        try {
+          for(var i=0;i<cc.length;i++)
+          {
+            c=cc[i];
+            if(c.Control.ActionCheck) c.Control.ActionCheck(state, c.Data);
+          }
         }
-        this.in_action_check = false;
+        finally {
+          this.in_action_check = false;
+        }
       }
     }
   }
@@ -63,12 +67,16 @@ function ngact_Click(e)
   {
     var c;
     this.in_action_click = true;
-    for(var i=0;i<cc.length;i++)
-    {
-      c=cc[i];
-      if(c.Control.ActionClick) c.Control.ActionClick(e,c.Data);
+    try {
+      for(var i=0;i<cc.length;i++)
+      {
+        c=cc[i];
+        if(c.Control.ActionClick) c.Control.ActionClick(e,c.Data);
+      }
     }
-    this.in_action_click = false;
+    finally {
+      this.in_action_click = false;
+    }
   }
 }
 
@@ -124,12 +132,16 @@ function ngact_SetVisible(v)
       {
         var c;
         this.in_action_visible = true;
-        for(var i=0;i<cc.length;i++)
-        {
-          c=cc[i];
-          if(c.Control.ActionSetVisible) c.Control.ActionSetVisible(v, c.Data);
+        try {
+          for(var i=0;i<cc.length;i++)
+          {
+            c=cc[i];
+            if(c.Control.ActionSetVisible) c.Control.ActionSetVisible(v, c.Data);
+          }
         }
-        this.in_action_visible = false;
+        finally {
+          this.in_action_visible = false;
+        }
       }
     }
   }
