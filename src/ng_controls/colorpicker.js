@@ -2122,7 +2122,7 @@ function ngcopch_OnAlphaSelect(panel,event,end)
 /**
  * UPDATE HUE
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateHue(picker,updateEdits,forceValid)
@@ -2154,7 +2154,7 @@ function ngcopch_UpdateHue(picker,updateEdits,forceValid)
 /**
  * UPDATE SATURATION
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateSaturation(picker,updateEdits,forceValid)
@@ -2185,7 +2185,7 @@ function ngcopch_UpdateSaturation(picker,updateEdits,forceValid)
 /**
  * UPDATE VALUE
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateValue(picker,updateEdits,forceValid)
@@ -2216,7 +2216,7 @@ function ngcopch_UpdateValue(picker,updateEdits,forceValid)
 /**
  * UPDATE SATURATION AND VALUE
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateSatVal(picker,updateEdits,forceValid)
@@ -2248,7 +2248,7 @@ function ngcopch_UpdateSatVal(picker,updateEdits,forceValid)
 /**
  * UPDATE RED
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateRed(picker,updateEdits,forceValid)
@@ -2280,7 +2280,7 @@ function ngcopch_UpdateRed(picker,updateEdits,forceValid)
 /**
  * UPDATE GREEN
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateGreen(picker,updateEdits,forceValid)
@@ -2312,7 +2312,7 @@ function ngcopch_UpdateGreen(picker,updateEdits,forceValid)
 /**
  * UPDATE BLUE
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateBlue(picker,updateEdits,forceValid)
@@ -2344,7 +2344,7 @@ function ngcopch_UpdateBlue(picker,updateEdits,forceValid)
 /**
  * UPDATE ALPHA
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateAlpha(picker,updateEdits,forceValid)
@@ -2366,7 +2366,7 @@ function ngcopch_UpdateAlpha(picker,updateEdits,forceValid)
 /**
  * UPDATE HEX
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateHex(picker,updateEdits,forceValid)
@@ -2398,7 +2398,7 @@ function ngcopch_UpdateHex(picker,updateEdits,forceValid)
 /**
  * UPDATE ALL PICKER CONTENT
  * @param picker (ngColorPicker)
- * @param updateEdit (boolean)
+ * @param updateEdits (boolean)
  * @param forceValid (boolean)
  */
 function ngcopch_UpdateAll(picker,updateEdits,forceValid)
@@ -2451,7 +2451,6 @@ function ngcopch_SetAllEditsValid(picker)
 /**
  * UPDATE EDITS
  * @param picker (ngColorPicker)
- * @param event (object)
  * @param edits (object)
  * @param forceValid (boolean)
  */
@@ -2473,7 +2472,6 @@ function ngcopch_UpdateEdits(picker,edits,forceValid)
 /**
  * UPDATE EDITS
  * @param picker (ngColorPicker)
- * @param event (object)
  * @param edits (object)
  * @param forceValid (boolean)
  */
@@ -2973,7 +2971,7 @@ function ngcop_DrawTransparentBackground(node,image)
 
 /**
  * RECALCULATE HSV COLOR
- * @param object (object)
+ * @param color (object)
  * @returns (object)
  */
 function ngcop_RecalculateHSV(color)
@@ -4240,7 +4238,7 @@ function ngcopdd_ValidateHex(edit)
       color = ngcop_RecalculateHSV(rgb);
       color = ngcop_RecalculateHEX(color);
 
-      text = text.toUpperCase()
+      text = text.toUpperCase();
 
       if(
         (edit.AllowAlpha && (text === color.AHEX.toUpperCase()))
