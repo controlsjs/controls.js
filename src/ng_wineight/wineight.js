@@ -485,7 +485,9 @@ var WinEightControls = {
       Phone: 58,
       Camera: 59,
       Favorites: 60,
-      Chat: 61
+      Chat: 61,
+      Chart: 62,
+      Balance: 63
     },{
       // automaticaly created from AppIcons
     }
