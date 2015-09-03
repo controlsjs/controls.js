@@ -1320,7 +1320,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
           try
           {
             val=val();
-            if(this.OnGetValue) val=this.OnGetValue(this,val,instance, valpath, errors);
+            if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
             if((serialize)&&(typeof instance.Serialize === 'function')) 
               d[i]=instance.Serialize(val);              
             else 
@@ -1351,7 +1351,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
         {
           if((!valuenames)||(ng_inArray(valpath,valuenames)))
           {
-            if(this.OnGetValue) val=this.OnGetValue(this,val,instance, valpath, errors);
+            if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
             if((convtimestamps)&&(ng_typeDate(val))) val=ng_toUnixTimestamp(val);
             d[i]=val;
           }

@@ -81,14 +81,14 @@ function ngdbvm_ExitEditMode()
   this.ViewModel._EditMode(false);
 }
 
-function ngdbvm_NewRecord() 
+function ngdbvm_NewRecord(options) 
 { 
-  return this.Command('new');    
+  return this.Command('new',options);
 }
 
-function ngdbvm_CancelEdits() 
+function ngdbvm_CancelEdits(options)
 { 
-  return this.Command('cancel');    
+  return this.Command('cancel',options);
 }
 
 function ngdbvm_LoadRecord(primarykeyvalues,options) 
@@ -244,7 +244,7 @@ function ngdbvm_SetValues(values,deserialize)
     this.EndRecordUpdate();
   }
 }
-
+  
 function ngdbvm_DBFieldNames(notprimarykey)
 {
   var ret={};
@@ -363,7 +363,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
   c.DBDataSets=new Array();
   c.CancelEditsValues = null;
   c.recordchangesupdate=0;
-
+    
   c.RecordStateEditMode = { };
     
   /*
@@ -451,19 +451,19 @@ function Create_ngSysDBViewModel(def,ref,parent)
 
   c.SetViewModel({
     _RecordChanged: ko.observable(false),
-    _RecordState:   ko.observable(recStateNone),
+    _RecordState: ko.observable(recStateNone),
     _EditMode:      ko.observable(false),
-    NewRecord:      function() { return c.NewRecord(); },
-    LoadRecord:     function() { return c.LoadRecord(); },
-    InsertRecord:   function() { return c.InsertRecord(); },
-    UpdateRecord:   function() { return c.UpdateRecord(); },
-    DeleteRecord:   function() { return c.DeleteRecord(); },
-    CancelEdits:    function() { return c.CancelEdits(); },
+    NewRecord:    function() { return c.NewRecord(); },
+    LoadRecord:   function() { return c.LoadRecord(); },
+    InsertRecord: function() { return c.InsertRecord(); },
+    UpdateRecord: function() { return c.UpdateRecord(); },
+    DeleteRecord: function() { return c.DeleteRecord(); },
+    CancelEdits:  function() { return c.CancelEdits(); },
     ResetRecord:    function() { return c.ResetRecord(); },
     EnterEditMode:  function() { return c.EnterEditMode(); },
     ExitEditMode:   function() { return c.ExitEditMode(); }
   });
-
+      
   c.ViewModel._RecordState.subscribe(function(rs) {
     switch(rs) {
       case 0:   rs='recStateNone'; break;
