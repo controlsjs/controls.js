@@ -1093,7 +1093,7 @@ function ngve_GetFieldDefs()
       if(ng_typeObject(bind))
       {
         var v=bind.ValueAccessor();
-        if(ng_typeObject(v.FieldDef)) fdefs.push(v.FieldDef);
+        if((v)&&(ng_typeObject(v.FieldDef))) fdefs.push(v.FieldDef);
       }
     }
   }
@@ -1894,7 +1894,7 @@ ngUserControls['viewmodel_controls'] = {
         {
           c['binding_updatingValue']=true;
           var v=valueAccessor();
-          if(ko.ng_writeallowed(v)) {
+          if((v)&&(ko.ng_writeallowed(v))) {
             if(!ng_IsArrayVar(v()))
             {
               var arr=[];
