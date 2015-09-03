@@ -487,7 +487,8 @@ var WinEightControls = {
       Favorites: 60,
       Chat: 61,
       Chart: 62,
-      Balance: 63
+      Balance: 63,
+      Swing:64
     },{
       // automaticaly created from AppIcons
     }
