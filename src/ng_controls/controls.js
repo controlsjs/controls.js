@@ -37,10 +37,30 @@ var ngControlsCopyright = 'Copyright &copy 2008-2014 Position s.r.o.';
  */
 var ngApp = null;
 /**
+ *  Variable: ngDESIGNINFO
+ *  TRUE if controls design info present.
+ */
+var ngDESIGNINFO = (typeof ngDESIGNINFO === 'undefined' ? 0 : ngDESIGNINFO);
+/**
  *  Variable: ngc_Lang
  *  Application languages resource strings/objects.
  */
 /*<>*/
+
+/**
+ *  Function: ngHASDESIGNINFO
+ *  Tests if controls design info is enabled.
+ *
+ *  Syntax:
+ *    mixed *ngHASDESIGNINFO* ()
+ *
+ *  Returns:
+ *    DesignInfo state (0=disabled).
+ */
+function ngHASDESIGNINFO() {
+  return (ngHASDEBUG())&&(ngDESIGNINFO);
+}
+
 if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
 ngc_Lang['en']['ngAppOldControlsVersion']='Application requires newer version of Controls.js!\nRequired %s.%s, used %s.%s.\n\nApplication terminated!';
@@ -1186,7 +1206,7 @@ function ngCreateControl(d,ref,parent)
       if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
     }
 
-  if(ngHASDEBUG())
+  if(ngHASDESIGNINFO())
   {
     if(typeof d.DesignInfo==='object')
     {
@@ -2717,6 +2737,8 @@ function ngControl(obj, id, type)
    *  Event: OnMouseLeave
    */
   obj.OnMouseLeave     = null;
+
+  if ((ngHASDESIGNINFO())&&(typeof ngControlDesignInfo === 'function')) ngControlDesignInfo(obj);
 }
 
 function ngcs_Create(props, ref)
@@ -2920,6 +2942,8 @@ function ngSysControl(obj, id, type)
    *  Event: OnEnabledChanged
    */
   obj.OnEnabledChanged = null;
+
+  if ((ngHASDESIGNINFO())&&(typeof ngSysControlDesignInfo === 'function')) ngSysControlDesignInfo(obj);
 }
 
 // --- ngControl - children ----------------------------------------------------
@@ -9382,7 +9406,7 @@ function nge_SetReadOnly(ro)
     }
   }
 
-  if (this.OnReadOnlyChanged) this.OnReadOnlyChanged(ro);
+  if (this.OnReadOnlyChanged) this.OnReadOnlyChanged(this,ro);
   
   return true;
 }
