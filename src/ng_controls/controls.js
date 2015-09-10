@@ -9362,7 +9362,8 @@ function nge_SetInvalid(state, update)
 function nge_SetReadOnly(ro)
 {
   ro=ngVal(ro,true);
-  if(ro==this.ReadOnly) return;
+  if(ro==this.ReadOnly) return true;
+  if ((this.OnSetReadOnly) && (!ngVal(this.OnSetReadOnly(this,ro), false))) return false;
 
   this.ReadOnly=ro;
   var o=document.getElementById(this.ID+'_T');
@@ -9380,6 +9381,10 @@ function nge_SetReadOnly(ro)
       o.style.cursor='';
     }
   }
+
+  if (this.OnReadOnlyChanged) this.OnReadOnlyChanged(ro);
+  
+  return true;
 }
 
 function nge_DoMouseEnter(e, mi, elm)
@@ -9927,6 +9932,16 @@ function ngEdit(id, text)
    *  Event: OnSetInvalid
    */
   this.OnSetInvalid = null;
+  
+  /*
+   *  Event: OnSetReadOnly
+   */
+  this.OnSetReadOnly = null;
+  
+  /*
+   *  Event: OnReadOnlyChanged
+   */
+  this.OnReadOnlyChanged = null;
 
   /*
    *  Event: OnGetImg
@@ -10849,7 +10864,17 @@ function ngMemo(id, text)
    *  Event: OnSetInvalid
    */
   this.OnSetInvalid = null;
-
+  
+  /*
+   *  Event: OnSetReadOnly
+   */
+  this.OnSetReadOnly = null;
+  
+  /*
+   *  Event: OnReadOnlyChanged
+   */
+  this.OnReadOnlyChanged = null;
+  
   ngControlCreated(this);
 }
 
