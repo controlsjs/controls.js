@@ -162,11 +162,6 @@ if(ngHASDESIGNINFO()) {
       def.DesignInfo.Properties = ngVal(def.DesignInfo.Properties, {});
       if (def && def.DesignInfo && def.DesignInfo.Properties)
       {
-        if ((ngUserControls)&&(typeof ngUserControls['dbviewmodel'] !== 'undefined'))
-        {
-          def.DesignInfo.Properties.DBViewModel = { type: 'string' };
-        }
-
         if ((ngUserControls)&&(typeof ngUserControls['viewmodel_controls'] !== 'undefined'))
         {
           var props = {
@@ -257,6 +252,7 @@ if(ngHASDESIGNINFO()) {
         case 'ngPanel':
           di = {
             BasicComponent: c.DefType,
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {
@@ -446,6 +442,7 @@ if(ngHASDESIGNINFO()) {
                 'Data.Text': {}
               }
             },
+            IsContainer: true,
             ControlCategory: 'Containers',
             Properties: {
               CW: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '150', lvl: 2 },
@@ -619,6 +616,7 @@ if(ngHASDESIGNINFO()) {
         case 'ngPages':
           di = {
             BasicComponent: c.DefType,
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {
@@ -827,6 +825,7 @@ if(ngHASDESIGNINFO()) {
         case 'ngToolBar':
           di = {
             BasicComponent: c.DefType,
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {
@@ -926,6 +925,7 @@ if(ngHASDESIGNINFO()) {
         case 'ngFrame':
           di = {
             BasicComponent: c.DefType,
+            IsContainer: true,
             ControlCategory: 'Containers',
             Properties: {
               ParentReferences: { dVal: 'false' },

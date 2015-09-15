@@ -26,10 +26,10 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngSysViewModel':
           di = {
+            BasicComponent: c.DefType,
             Properties: {
               Namespace: { type: 'string' },
               ViewModel: { type: 'function', dVal: 'function(owner){}' },
-              DBViewModel: null,
               FieldDefs: { type: 'array', dVal: '[]' },
               DefaultValues: { type: 'object', dVal: '{}' },
               ServerURL: { type: 'string' },
@@ -64,7 +64,7 @@ if(ngHASDESIGNINFO()) {
           di = {
             BasicComponent: c.DefType,
             ControlCategory: 'Containers',
-            IsHolder: true,
+            IsContainer: true,
             ChildControlsDesignInfo: {
               Properties: {
                 DataBind: {

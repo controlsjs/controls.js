@@ -26,6 +26,7 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngWindow':
           di = {
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {
@@ -81,6 +82,7 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngHint':
           di = {
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {

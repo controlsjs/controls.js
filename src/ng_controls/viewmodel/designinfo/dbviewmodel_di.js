@@ -26,9 +26,9 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngSysDBViewModel':
           di = {
+            BasicComponent: c.DefType,
             Properties: {
               ViewModel: { type: 'function' },
-              DBViewModel: null,
               Events: {
                 properties: {
                   OnNewRecord: { type: 'function', dVal: 'function(vm) {}' },

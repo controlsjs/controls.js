@@ -88,8 +88,7 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngMenuBarButton':
           di = {
-            ToolboxIgnore: true,
-            ControlCategory: 'Buttons',
+            ControlCategory: false,
             Properties: {
               Data: {
                 properties: {

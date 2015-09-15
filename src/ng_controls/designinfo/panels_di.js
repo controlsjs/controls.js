@@ -53,6 +53,7 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngSplitPanel':
           di = {
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {
@@ -124,6 +125,7 @@ if(ngHASDESIGNINFO()) {
 
         case 'ngDropPanel':
           di = {
+            IsContainer: true,
             ControlCategory: 'Containers',
             AddData: {
               InitProperties: {

@@ -25,6 +25,7 @@ if(ngHASDESIGNINFO()) {
       {
         case 'ngSysAction':
           di = {
+            BasicComponent: c.DefType,
             Properties: {
               Data: {
                 properties: {
@@ -61,6 +62,7 @@ if(ngHASDESIGNINFO()) {
 
 //         case 'ngSysTimer':
 //           di = {
+//             BasicComponent: c.DefType,
 //             Properties: {
 //               Data: {
 //                 properties: {
