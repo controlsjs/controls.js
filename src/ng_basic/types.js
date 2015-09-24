@@ -16,6 +16,7 @@ var ngTypesLang = 'en';
 function ngTypesTxt(t,defval)
 {
   if((typeof ngApp === 'object')&&(ngApp)&&(typeof ngApp.Text === 'function')) return ngApp.Text(t, defval); // Use Controls resources
+  if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
   var l=ngc_Lang[ngTypesLang];
   if(typeof l === 'undefined') l=ngc_Lang['en'];
   if(typeof l === 'undefined') return ngVal(defval, t); 
@@ -423,6 +424,36 @@ function ng_isEmptyOrNull(n)
 { 
   return (ng_isEmpty(n) || ng_isNull(n));
 } 
+
+/**
+ *  Function: ng_isEmptyObject
+ *  Tests if given variable is undefined or Null or object without
+ *  properties or object with properties which values are undefined or null.
+ *
+ *  Syntax:
+ *    bool *ng_isEmptyObject* (mixed var)
+ *
+ *  Parameters:
+ *    var - variable to test
+ *
+ *  Returns:
+ *    TRUE if type of variable is empty object
+ */
+function ng_isEmptyObject(o)
+{
+  if(ng_isEmptyOrNull(o)) return true;
+  if(typeof o !== 'object') return false;
+  var v;
+  for(var k in o) {
+    v=o[k];
+    if(!ng_isEmptyOrNull(v))
+    {
+      if((typeof v==='object')&&(ng_isEmptyObject(v))) continue;
+      return false;
+    }
+  }
+  return true;
+}
 
 /**
  *  Function: ng_isInvalid
