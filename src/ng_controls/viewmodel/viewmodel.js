@@ -232,14 +232,14 @@ var FIELDDEF_ERR_MAX   = 16;
 var FIELDDEF_ERR_ENUM  = 32;
 var FIELDDEF_ERR_LEN   = 64;
 
-function ngFieldDefException(fd, err, msg, extinfo)
+function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 {
   /*
    *  Group: Properties
    */
 
   /*  Variable: FieldDef
-   *  Related nfFieldDef object.
+   *  Related ngFieldDef object.
    *  Type: object
    */
   this.FieldDef = fd;
@@ -270,6 +270,18 @@ function ngFieldDefException(fd, err, msg, extinfo)
    *  Type: mixed
    */
   this.ExtendedInfo = ngVal(extinfo, null);
+
+  /*  Variable: ChildErrors
+   *  Exception raised by children.
+   *  Type: object
+   */
+  this.ChildErrors = ngVal(childerrors,null);
+
+  // Set parent to child errors
+  if(ng_typeObject(this.ChildErrors)) {
+    for(var i in this.ChildErrors)
+      this.ChildErrors[i].Parent=this;
+  }
 }
 
 
@@ -323,7 +335,7 @@ function ngfd_GetTypedDefaultValue()
   }
   catch(e)
   {
-    return this.DefaultValue;
+    return ng_CopyVar(this.DefaultValue);
   }
 }
 
@@ -360,6 +372,7 @@ function ngfd_TypedValue(v)
       }
     }
     
+    var origv=v;
     if(this.DoTypedValue) v=this.DoTypedValue(v); 
   
     if((this.NullIfEmpty)&&
@@ -415,15 +428,15 @@ function ngfd_TypedValue(v)
       case 'UTCDATE':       r=ng_toDateOnly(v,null); break;
       case 'UTCTIME':       r=ng_toDate(v,null); break;
       // array
-      case 'ARRAY':         if(ng_typeArray(v)) r=v;
+      case 'ARRAY':         if(ng_typeArray(v)) r=(origv===v ? ng_CopyVar(v) : v);
                             else
                             {
                               r=new Array();
                               r.push(v);
                             }
                             break;
-      case 'OBJECT':        r=(typeof v==='object' ? v : null);
-      default:              r=v; break;
+      case 'OBJECT':        r=(typeof v==='object' ? (origv===v ? ng_CopyVar(v) : v) : null); break;
+      default:              r=(origv===v ? ng_CopyVar(v) : v); break;
     }
     if(r===null)
       throw new ngFieldDefException(this, err|FIELDDEF_ERR_TYPE); // type error
@@ -801,6 +814,11 @@ function ngFieldDef(id, type, attrs)
    *  Type: object
    */
   this.Owner    = null;
+  /*  Variable: Parent
+   *  Reference to parent ngFieldDef (if exists).
+   *  Type: mixed
+   */
+  //this.Parent    = undefined;
   
   /*  Variable: ID
    *  Field identifier.   
@@ -1487,6 +1505,16 @@ function ngvm_recievedata(results)
   if(vm.OnCommandFinished) vm.OnCommandFinished(vm,cmd,sresults);
 
   // Handle Errors
+  function create_exceptions(err)
+  {
+    if(ng_typeObject(err.childerrs))
+      for(var k in err.childerrs)
+        err.childerrs[k] = create_exceptions(err.childerrs[k]);
+
+    var fd=vm.GetFieldByID(err.field);
+    return new ngFieldDefException(ngIsFieldDef(fd) ? fd : ngTxt('VM.'+vm.Namespace+'.'+err.field,err.field), err.err, err.errmsg, err.errext, err.childerrs);
+  }
+
   if(sresults.Errors)
   {
     var err,fd;
@@ -1494,8 +1522,7 @@ function ngvm_recievedata(results)
     for(var e in sresults.Errors)
     {
       err=sresults.Errors[e];
-      fd=vm.GetFieldByID(err.field);
-      errors.push(new ngFieldDefException(ngIsFieldDef(fd) ? fd : ngTxt('VM.'+vm.Namespace+'.'+err.field,err.field), err.err, err.errmsg, err.errext));
+      errors.push(create_exceptions(err));
     }
     if(errors.length>0)
     {
@@ -1736,7 +1763,7 @@ function ngvm_Reset(callback)
       else
       {
         if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i]))) defaultval=undefined;
-        else defaultval=vmGetFieldByID(self.DefaultValues,valpath);
+        else defaultval=ng_CopyVar(vmGetFieldByID(self.DefaultValues,valpath));
       }
       if((typeof callback==='function')&&(!callback(this,val,instance,valpath,defaultval))) continue;
 
@@ -1769,18 +1796,22 @@ function vmGetFieldByID(vm,propid)
 {
   propid=''+propid;
   if((!vm)||(propid=='')) return; // undefined
-  if(typeof vm[propid]!=='undefined') return vm[propid];
   var p,pids=propid.split('.');
-  if(pids.length<2) return; // undefined
-  for(var i=0;i<pids.length-1;i++)
+  if(!pids.length) return; // undefined
+  for(var i=0;i<pids.length;i++)
   {
+    if(ngIsFieldDef(vm)) {
+      if(typeof vm.GetChildFieldByID === 'function') {
+        pids.splice(0,i);
+        return vm.GetChildFieldByID(pids.join('.'));
+      }
+    }
     p=vm[pids[i]];
+    if(i===pids.length-1) return p;
     if((!p)||(typeof p!=='object')) return; // undefined
     vm=p;        
   }
-  p=vm[pids[pids.length-1]];
-  if(typeof p!=='undefined') return p;      
-  return; // undefined      
+  return; //undefined
 }
 
 function ngvm_GetFieldByID(propid)
@@ -2543,6 +2574,73 @@ ngUserControls['viewmodel'] = {
         owner: this})); 
     };     
 
+    /*  Function: ko.ng_linkvalue
+     *  Sets one-way synchronization of value from one viewmodel property to other.
+     *
+     *  Syntax:
+     *    void *ko.ng_linkvalue* (observable prop, mixed viewmodel, string propname [, bool callonsync=null])
+     *
+     *  Parameters:
+     *    prop - viewmodel property where synchronized value is stored
+     *    viewmodel - string ID or instance of viewmodel
+     *    propname - viewmodel property name which value to be synchronized in reference viewmodel
+     *    callonsync - optional function which is called when value was synchronized
+     *
+     *  Callbacks:
+     *    void *callonsync* (mixed value, observable prop, observable srcprop, object srcviewmodel)
+     */
+    ko.ng_linkvalue = function (prop,viewModel,propName,callonsync) {
+      var vm=viewmodel(viewModel);
+      var f=vmGetFieldByID(vm,propName);
+      if((ko.isObservable(f))&&(ko.isObservable(prop))) {
+        prop(f());
+        f.subscribe(function(v) {
+          prop(v);
+          if(typeof callonsync === 'function') callonsync(v,prop,f,vm);
+        });
+      }
+    };
+
+    /*  Function: ko.ng_linkvalues
+     *  Sets two-way synchronization of values between two viewmodel properties.
+     *
+     *  Syntax:
+     *    void *ko.ng_linkvalues* (mixed viewmodel1, string propname1, mixed viewmodel2, string propname2, [, bool callonsync=null])
+     *
+     *  Parameters:
+     *    viewmodel1 - string ID or instance of viewmodel
+     *    propname1 - viewmodel property name in reference viewmodel
+     *    viewmodel2 - string ID or instance of viewmodel
+     *    propname2 - viewmodel property name in reference viewmodel
+     *    callonsync - optional function which is called when value was synchronized
+     *
+     *  Callbacks:
+     *    void *callonsync* (mixed value, string changedpropname, observable changedprop, object viewmodel1, observable prop1, object viewmodel2, observable prop2)
+     */
+    ko.ng_linkvalues = function (viewModel1,propName1,viewModel2,propName2,callonsync) {
+      var vm1=viewmodel(viewModel1);
+      var prop=vmGetFieldByID(vm1,propName1);
+      var vm2=viewmodel(viewModel2);
+      var f=vmGetFieldByID(vm2,propName2);
+      if((ko.isObservable(f))&&(ko.isObservable(prop))) {
+        f(prop());
+        f.subscribe(function(v) {
+          var v2=prop();
+          if(!ng_VarEquals(v,v2)) {
+            prop(v);
+            if(typeof callonsync === 'function') callonsync(v,propName2,prop,vm1,prop,vm2,f);
+          }
+        });
+        prop.subscribe(function(v) {
+          var v2=f();
+          if(!ng_VarEquals(v,v2)) {
+            f(v);
+            if(typeof callonsync === 'function') callonsync(v,propName1,f,vm1,prop,vm2,f);
+          }
+        });
+      }
+    }
+
     /*  Function: ko.ng_bool2val
      *  Creates computed viewmodel property which translates boolean to other viewmodel
      *  property value (or values).       
@@ -3069,8 +3167,47 @@ ngUserControls['viewmodel'] = {
           vmSetFieldValueByID(vm,propname,undefined);        
         },
         owner: this})); 
-    }
-    
+    };
+
+    /*  Function: ng_array_item
+     *  Creates computed indexed array item accessor.
+     *  Allows binding of non-observable array items.
+     *
+     *  Syntax:
+     *    function *ko.ng_array_item* (observable arr, mixed idx)
+     *
+     *  Parameters:
+     *    arr - an array
+     *    idx - item index (can be observable)
+     *
+     *  Returns:
+     *    Computed viewmodel property.
+     */
+    ko.ng_array_item=function(arr,idx) {
+      return ko.ng_noserialize(ko.computed({
+        read: function() {
+          var a=arr();
+          var i=idx;
+          if(ko.isObservable(i)) i=i();
+          if(ng_typeArray(a)) {
+            return a[i];
+          }
+          // return undefined;
+        },
+        write: function(v) {
+          var a=arr();
+          if(!ng_typeArray(a)) {
+            a=[];
+            arr(a);
+          }
+          var i=idx;
+          if(ko.isObservable(i)) i=i();
+          a[i]=v;
+          arr.valueHasMutated();
+        },
+        owner: this}));
+    };
+
     /*  Function: ko.ng_fielddef
      *  Encapsulates <ngFieldDef> into viewmodel.
      *   
@@ -3102,23 +3239,164 @@ ngUserControls['viewmodel'] = {
       var fid=pids[pids.length-1];
 
       parent[fid]=fd;
-      fd.Owner = vm;     
+      ng_SetByRef(fd,'Owner',vm);
 
       var val;
-      var isarray = (fd.DataType=='ARRAY');
+      var isarray  = (fd.DataType==='ARRAY');
+      var isobject = (fd.DataType==='OBJECT');
+
+      if(typeof value === 'undefined') {
+        value=fd.Attrs['Value'];
+        delete fd.Attrs['Value'];
+      }
+
       if(ko.isObservable(value))
       {
-        defaultval=value();
+        defaultval=ng_CopyVar(value());
         isarray = isarray || ng_IsArrayVar(defaultval);
         val=value;
       }
       else 
       {
-        defaultval=ngVal(value,fd.GetTypedDefaultValue());
+        if(typeof value==='undefined') defaultval=fd.GetTypedDefaultValue();
+        else defaultval=ng_CopyVar(value);
         isarray = isarray || ng_IsArrayVar(defaultval);
         val=(isarray ? ko.observableArray(defaultval) : ko.observable(defaultval));
       }
-      
+
+      // Create OBJECT binding access
+      if((isobject)&&(ng_typeObject(fd.PropsFieldDefs))) {
+
+        var pfd,v=val();
+        var writing_properties=false;
+
+        val.subscribe(function(v) {
+          if(writing_properties) return;
+          fd.Value(v);
+        });
+        var objprops={};
+        for(var k in fd.PropsFieldDefs) {
+          pfd=fd.PropsFieldDefs[k];
+          if(ngIsFieldDef(pfd)) {
+            ko.ng_fielddef(objprops,pfd,vmGetFieldByID(v,k));
+            pfd=pfd.Value;
+          }
+          else objprops[k]=pfd;
+          if(ko.isObservable(pfd)) {
+            pfd.subscribe(function(v) {
+              if(writing_properties) return;
+              writing_properties=true;
+              var isempty=fd.NullIfEmpty ? true : false;
+              try {
+                var pfd,r={};
+                for(var k in fd.PropsFieldDefs)
+                {
+                  pfd=fd.PropsFieldDefs[k];
+                  if(ngIsFieldDef(pfd))
+                  {
+                    if(pfd.PrivateField) continue;
+                    if(typeof pfd.TypedValue === 'function')
+                    {
+                      try {
+                        pfd=pfd.GetTypedValue();
+                        if((isempty)&&(!ng_isEmptyObject(pfd))) isempty=false;
+                        vmSetFieldValueByID(r,k,pfd);
+                        continue;
+                      }
+                      catch(e) {
+                      }
+                    }
+                    pfd=pfd.Value;
+                  }
+                  if(ko.isObservable(pfd)) pfd=pfd();
+                  if((isempty)&&(!ng_isEmptyObject(pfd))) isempty=false;
+                  vmSetFieldValueByID(r,k,pfd);
+                }
+              } finally {
+                if(isempty) r=null;
+                val(r);
+                writing_properties=false;
+              }
+            });
+          }
+        }
+      }
+      // Create ARRAY binding access
+      if(isarray) {
+        var items_fd={};
+
+        fd.ClearFieldDefs=function() {
+          for(var i in items_fd) delete items_fd[i];
+          items_fd={};
+        };
+        fd.Item=function(idx,create) {
+
+          function arritem(idx, create) {
+            if((typeof idx==='undefined')||(idx<0)) return;
+
+            var sidx=''+idx;
+            if(typeof items_fd[sidx] === 'undefined')
+            {
+              if(!ngVal(create,true)) return;
+              var valAccessor=ko.computed({
+                read: function() {
+                  var a=val();
+                  if(ng_typeArray(a)) return a[idx];
+                  // return undefined;
+                },
+                write: function(v) {
+                  if(writeallowed()) {
+                    var a=val();
+                    var pack=(ngVal(fd.Attrs['RemoveEmptyItems'],false));
+                    if(!ng_typeArray(a)) {
+                      if((pack)&&(ng_isEmptyOrNull(v))) return;
+                      a=[];
+                      val(a);
+                    }
+                    if(idx>=a.length) {
+                      if(ng_isEmptyOrNull(v)) {
+                        if(pack) return;
+                        if((ngIsFieldDef(fd.ValueFieldDef))&&(ng_typeObject(fd.ValueFieldDef.PropsFieldDefs)))
+                        {
+                          // array of objects and writing undefined after end -> array was shrinked
+                          return;
+                        }
+                      }
+                    }
+                    else
+                      if(ng_VarEquals(a[idx],v)) return;
+
+                    val.valueWillMutate();
+                    a[idx]=v;
+                    val.valueHasMutated();
+                  }
+                },
+                owner: vm
+              });
+
+              if(ngIsFieldDef(fd.ValueFieldDef))
+              {
+                var ifd=ng_CopyVar(fd.ValueFieldDef);
+                ng_SetByRef(ifd,'Parent',fd);
+                ifd.ID=sidx;
+                ko.ng_fielddef(items_fd,ifd,valAccessor);
+              }
+              else items_fd[sidx]=valAccessor;
+            }
+            return items_fd[sidx];
+          }
+          if(ko.isObservable(idx)) {
+            return ko.computed({
+              read: function() {
+                return arritem(idx(),create);
+              },
+              owner: vm
+            });
+          }
+          else return arritem(idx,create);
+        };
+      }
+
       function writeallowed()
       {
         return (ko.isWriteableObservable(val))&&((!ngVal(fd.ReadOnly,false))||(ngVal(fd.__Loading,false)));
@@ -3139,15 +3417,76 @@ ngUserControls['viewmodel'] = {
         return false;
       }
       
-      fd.Value=ko.computed({
-        read: function() {
-          return val();
-        }, 
-        write: function(v) {
-          if(writeallowed()) val(v);
-        },
-        owner: vm});
-      
+      if(isobject) {
+        fd.Value=ko.computed({
+          read: function() {
+            return val();
+          },
+          write: function(v) {
+            if(writeallowed()) {
+              var isempty=fd.NullIfEmpty ? true : false;
+              if(ng_typeObject(fd.PropsFieldDefs)) {
+                if(writing_properties) return;
+                if(ng_typeString(v)) {
+                  try { v=JSON.parse(v); } catch(e) {}
+                }
+                var pfd,pv;
+                writing_properties=true;
+
+                try {
+                  if(ng_typeObject(v)) {
+                    for(var k in fd.PropsFieldDefs) {
+                      pfd=fd.PropsFieldDefs[k];
+                      pv=vmGetFieldByID(v,k);
+                      if(ngIsFieldDef(pfd)) {
+                        if(typeof pfd.TypedValue === 'function')
+                        {
+                          try {
+                            pv=pfd.TypedValue(pv);
+                          }
+                          catch(e)
+                          {
+                          }
+                        }
+                        pfd=pfd.Value;
+                      }
+                      if((isempty)&&(!ng_isEmptyObject(pv))) isempty=false;
+                      if(ko.isObservable(pfd)) pfd(pv);
+                      else vmSetFieldValueByID(objprops,k,pv);
+                    }
+                  }
+                  else {
+                    for(var k in fd.PropsFieldDefs) {
+                      pfd=fd.PropsFieldDefs[k];
+                      if(ngIsFieldDef(pfd)) pfd=pfd.Value;
+                      if(ko.isObservable(pfd)) pfd(undefined);
+                      else vmSetFieldValueByID(objprops,k,undefined);
+                    }
+                  }
+                } finally {
+                  if(isempty) v=null;
+                  val(v);
+                  writing_properties=false;
+                }
+                return;
+              }
+              val(v);
+            }
+          },
+          owner: vm});
+        fd.Properties=objprops;
+      }
+      else {
+        fd.Value=ko.computed({
+          read: function() {
+            return val();
+          },
+          write: function(v) {
+            if(writeallowed()) val(v);
+          },
+          owner: vm});
+      }
+
       if(ngVal(fd.Attrs['Serialize'],true)) ko.ng_serialize(fd.Value);
       if(isarray)
       {      
@@ -3214,22 +3553,30 @@ ngUserControls['viewmodel'] = {
       // Make description observable
       if(!ko.isObservable(fd.DisplayName))
       {
+        var nameid=fd.ID;
+        var pfd=fd;
+        while(1) {
+          if(!pfd.Parent) break;
+          pfd=pfd.Parent;
+          nameid=pfd.ID+'.'+nameid;
+        }
+        var pvm=pfd.Owner;
         if(ng_isEmptyOrNull(fd.DisplayName))
         {
-          if((vm.Owner)&&(ngVal(vm.Owner.Namespace,'')!='')) 
+          if((pvm.Owner)&&(ngVal(pvm.Owner.Namespace,'')!=''))
           {
-            var dn=ngTxt('VM.'+vm.Owner.Namespace+'.'+fd.ID,'');
+            var dn=ngTxt('VM.'+pvm.Owner.Namespace+'.'+nameid,'');
             if(dn!='') fd.DisplayName=dn;
           }
-          else fd.DisplayName=fd.ID;
+          else fd.DisplayName=nameid;
         } 
         var displayname=ko.observable(fd.DisplayName);
         fd.DisplayName=ko.ng_serialize(
          ko.computed({
            read: function() {
              var dn=displayname();
-             if((ng_isEmptyOrNull(dn))&&(vm.Owner)&&(ngVal(vm.Owner.Namespace,'')!='')) {
-               dn=ngTxt('VM.'+vm.Owner.Namespace+'.'+fd.ID,fd.ID);
+             if((ng_isEmptyOrNull(dn))&&(pvm.Owner)&&(ngVal(pvm.Owner.Namespace,'')!='')) {
+               dn=ngTxt('VM.'+pvm.Owner.Namespace+'.'+nameid,nameid);
              }
              return dn;
            }, 
