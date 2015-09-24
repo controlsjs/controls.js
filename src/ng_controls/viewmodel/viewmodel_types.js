@@ -278,35 +278,65 @@ function ngFieldDef_UTCTime(id, attrs) {
 
 function ngfd_ArrayDoTypedValue(v)
 {
-  if(v!==null)
-  {
-    if(typeof v!=='object')
-      throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
+  if(v===null) return null;
+  var r;
+  if(typeof v!=='object')
+    throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
 
-    if(ng_typeObject(this.ValueFieldDef))
-    {        
-      var errs=null;
-      for(var k in v)
+  var pack=ngVal(this.Attrs['RemoveEmptyItems'],false);
+  if(ngIsFieldDef(this.ValueFieldDef))
+  {
+    var errs=null;
+    var fd=this.ValueFieldDef;
+    r=[];
+    for(var k in v)
+    {
+      try
       {
-        try
-        {
-          var val=v[k];
-          if(ko.isObservable(val)) val(this.ValueFieldDef.TypedValue(val()));
-          else v[k]=this.ValueFieldDef.TypedValue(val);
+        if(typeof this.Item === 'function') {
+          fd=this.Item(k,false);
+          if(!ngIsFieldDef(fd)) fd=this.ValueFieldDef;
         }
-        catch(e)
-        {
-          if(errs===null) errs={};
-          errs[k]=e;
+        var val=v[k];
+        if(ngIsFieldDef(val)) val=val.Value;
+        if(ko.isObservable(val)) val=val();
+        val=fd.TypedValue(val);
+        if(pack) {
+          if(ng_isEmptyOrNull(val)) continue;
+          r.push(val);
         }
+        else r[k]=val;
       }
-      if(errs!==null)
+      catch(e)
       {
-        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',errs); // type error
-      }                      
+        if(typeof this.Item === 'function') e.FieldDef=this.Item(k); // Get ngFieldDef for item (if available)
+        else {
+          e.FieldDef=ng_CopyVar(this.ValueFieldDef);
+          e.FieldDef.ID=k;
+        }
+        if(errs===null) errs={};
+        errs[k]=e;
+      }
+    }
+    if(errs!==null)
+    {
+      throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs); // type error
     }
   }
-  return v;
+  else {
+    if(!pack) r=v;
+    else {
+      var val;
+      r=[];
+      for(var k in v)
+      {
+        val=v[k];
+        if(ng_isEmptyOrNull(val)) continue;
+        r.push(val);
+      }
+    }
+  }
+  return r;
 }
 
 function ngfd_ArrayFormatItemError(err)
@@ -320,6 +350,22 @@ function ngfd_ArrayFormatError(err)
     return this.DoFormatItemError(err);
   }
   return ng_ViewModelFormatError(err);  
+}
+
+function ngfd_ArrayGetChildFieldByID(propid)
+{
+  if(typeof this.Item === 'function') {
+    var pid,i=propid.indexOf('.');
+    if(i>=0) {
+      pid=propid.substr(i+1,propid.length-i);
+      propid=propid.substr(0,i);
+    }
+    else pid='';
+    var item=this.Item(ng_toInteger(propid));  // Get ngFieldDef for item (if available)
+    if(pid!='') item=vmGetFieldByID(item,pid);
+    return item;
+  }
+  return; // undefined
 }
 
 /*  Class: ngFieldDef_Array
@@ -336,40 +382,65 @@ function ngfd_ArrayFormatError(err)
 function ngFieldDef_Array(id, attrs, valfielddef) {
   ngFieldDefCreateAs(this,id,'ARRAY',attrs);
   this.ValueFieldDef=ngVal(valfielddef,null);
-  if(ng_typeObject(this.ValueFieldDef)) this.ValueFieldDef.Parent=this;
+  if(ng_typeObject(this.ValueFieldDef)) ng_SetByRef(this.ValueFieldDef,'Parent',this);
   this.DoTypedValue = ngfd_ArrayDoTypedValue;
   this.DoFormatError = ngfd_ArrayFormatError;  
   this.DoFormatItemError = ngfd_ArrayFormatItemError;
+  this.GetChildFieldByID = ngfd_ArrayGetChildFieldByID;
 }
 
 function ngfd_ObjectDoTypedValue(v)
 {
-  if(v!==null)
+  if(v===null) return null;
+  var r;
+  if(ng_typeObject(this.PropsFieldDefs))
   {
-    if(ng_typeObject(this.PropsFieldDefs))
-    {        
-      var errs=null;
-      for(var k in this.PropsFieldDefs)
+    r={};
+    var isempty=this.NullIfEmpty ? true : false;
+    var fd,errs=null;
+    for(var k in this.PropsFieldDefs)
+    {
+      try
       {
-        try
+        var val=vmGetFieldByID(v,k);
+        fd=this.PropsFieldDefs[k];
+        if(ngIsFieldDef(val))
         {
-          var val=v[k];
-          if(ko.isObservable(val)) val(this.PropsFieldDefs[k].TypedValue(val()));
-          else v[k]=this.PropsFieldDefs[k].TypedValue(val);
+          if(val.PrivateField) continue;
+          val=val.Value;
         }
-        catch(e)
-        {
-          if(errs===null) errs={};
-          errs[k]=e;
-        }
+        if(ko.isObservable(val)) val=val();
+        if(ngIsFieldDef(fd)) val=fd.TypedValue(val);
+        if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
+        vmSetFieldValueByID(r,k,val);
       }
-      if(errs!==null)
+      catch(e)
       {
-        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',errs); // type error
-      }                      
+        if(errs===null) errs={};
+        errs[k]=e;
+      }
     }
+    if(errs!==null)
+    {
+      throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs); // type error
+    }
+    if(isempty) r=null;
   }
-  return v;
+  else {
+    if(!ng_typeObject(v)) throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty'); // type error
+    else
+    {
+      if(this.NullIfEmpty) {
+        var isempty=true;
+        for(var k in v) {
+          if(!ng_isEmptyObject(v[k])) { isempty=false; break; }
+        }
+        if(isempty) v=null;
+      }
+    }
+    r=v;
+  }
+  return r;
 }
 
 function ngfd_ObjectDoFormatPropertyError(err)
@@ -385,6 +456,27 @@ function ngfd_ObjectFormatError(err)
   return ng_ViewModelFormatError(err);  
 }
 
+function ngfd_ObjectGetChildFieldByID(propid)
+{
+  if(ng_typeObject(this.PropsFieldDefs)) {
+    var p,i,pid='';
+
+    while(propid!='') {
+      p=this.PropsFieldDefs[propid];
+      if(typeof p!=='undefined') {
+        if(pid!='') p=vmGetFieldByID(p,pid);
+        return p;
+      }
+      i=propid.lastIndexOf('.');
+      if(i<0) break;
+      if(pid!='') pid='.'+pid;
+      pid=propid.substr(i+1,propid.length-i)+pid;
+      propid=propid.substr(0,i);
+    }
+  }
+  return; // undefined
+}
+
 /*  Class: ngFieldDef_Object
  *  <ngViewModel> Object field (based on <ngFieldDef> OBJECT).
  *  
@@ -398,15 +490,42 @@ function ngfd_ObjectFormatError(err)
  */    
 function ngFieldDef_Object(id, attrs, propsfielddefs) {
   ngFieldDefCreateAs(this,id,'OBJECT',attrs);
-  this.PropsFieldDefs=ngVal(propsfielddefs,null);
-  if(ng_typeObject(this.PropsFieldDefs))
+  var fd;
+  if(ng_IsArrayVar(propsfielddefs))
   {
-    for(var k in this.PropsFieldDefs)
-      this.PropsFieldDefs[k].Parent=this;
+    var k={};
+    for(var i=0;i<propsfielddefs.length;i++) {
+      fd=propsfielddefs[i];
+      if((ngIsFieldDef(fd))&&(fd.ID!='')) {
+        k[fd.ID]=fd;
+        ng_SetByRef(fd,'Parent',this);
+      }
+    }
+    propsfielddefs=k;
   }
+  else {
+    if(ng_typeObject(propsfielddefs))
+    {
+      var k={};
+      for(var i in propsfielddefs) {
+        fd=propsfielddefs[i];
+        if(ngIsFieldDef(fd)) {
+          ng_SetByRef(fd,'Parent',this);
+          fd.ID=''+i;
+          k[fd.ID]=fd;
+        }
+        else k[i]=fd;
+      }
+      propsfielddefs=k;
+    }
+    else propsfielddefs=null;
+  }
+  this.PropsFieldDefs=propsfielddefs;
+
   this.DoTypedValue = ngfd_ObjectDoTypedValue;
   this.DoFormatError = ngfd_ObjectFormatError;  
   this.DoFormatPropertyError = ngfd_ObjectDoFormatPropertyError;
+  this.GetChildFieldByID = ngfd_ObjectGetChildFieldByID;
 }
 
 function ngfd_WWWDoTypedValue(v)
