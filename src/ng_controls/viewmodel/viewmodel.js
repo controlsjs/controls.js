@@ -1769,7 +1769,13 @@ function ngvm_Reset(callback)
 
       if(ko.isObservable(val)) 
       {
-        if(ko.isWriteableObservable(val)) val(defaultval);
+         instance.__Loading=true;
+        try {
+          if(ko.isWriteableObservable(val)) val(defaultval);
+        }
+        finally {
+           delete instance.__Loading;
+        }
       } 
       else 
       {    
