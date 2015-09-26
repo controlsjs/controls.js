@@ -1288,26 +1288,23 @@ function ngl_SelectDropDownItem(it)
   var dd=this.DropDownOwner;
   if(dd)
   {
-    if(!ngVal(dd.ReadOnly,false))
+    it=ngVal(it,null);
+    if(dd.DropDownType == ngeDropDownList) dd.ListItem = it;
+    if((dd.OnListItemChanged)&&((ddoli===null)||(ddoli!=it))&&(!ngVal(dd.OnListItemChanged(dd,this,it,ddoli),false))) return false;
+    var t='';
+    if(it)
     {
-      it=ngVal(it,null);
-      if(dd.DropDownType == ngeDropDownList) dd.ListItem = it;
-      if((dd.OnListItemChanged)&&((ddoli===null)||(ddoli!=it))&&(!ngVal(dd.OnListItemChanged(dd,this,it,ddoli),false))) return false;
-      var t='';
-      if(it)
+      if(typeof it.Text === 'string') t=it.Text;
+      else if((this.Columns.length>0)&&(typeof it.Text==='object')) t=it.Text[this.Columns[0]];
+      if((ngVal(dd.Suggestion,false))&&(dd.OnSuggestionSetText))
       {
-        if(typeof it.Text === 'string') t=it.Text;
-        else if((this.Columns.length>0)&&(typeof it.Text==='object')) t=it.Text[this.Columns[0]];
-        if((ngVal(dd.Suggestion,false))&&(dd.OnSuggestionSetText))
-        {
-          var undefined;
-          t=dd.OnSuggestionSetText(t,it);
-          if(t=='') t=undefined;
-        }
+        var undefined;
+        t=dd.OnSuggestionSetText(t,it);
+        if(t=='') t=undefined;
       }
-      if(dd.OnListItemGetText) t=dd.OnListItemGetText(dd,this,it,t);
-      if((typeof t!=='undefined')&&(typeof dd.SetText === 'function')) dd.SetText(t);
     }
+    if(dd.OnListItemGetText) t=dd.OnListItemGetText(dd,this,it,t);
+    if((typeof t!=='undefined')&&(typeof dd.SetText === 'function')) dd.SetText(t);
     if(dd.HideDropDown) dd.HideDropDown();
   }
   return true;
@@ -1453,6 +1450,15 @@ function ngl_DoPtrClick(pi)
   {
     var e=pi.StartEvent;
     var cid=parseInt(eid.substring(4,eid.length));
+    if(e.gesture)
+    {
+      var srce=e.gesture.srcEvent;
+      if(srce) {
+        e.altKey=srce.altKey;
+        e.ctrlKey=srce.ctrlKey;
+        e.shiftKey=srce.shiftKey;
+      }
+    }
     if(this.OnCaptionClick) this.OnCaptionClick(e,this,cid,this.StartElement);
   }
 }
@@ -3057,7 +3063,7 @@ function ngListCol(id, caption, align, width)
  *    new *ngList* ([string id])
  *
  *  Parameters:
- *    id - parent element
+ *    id - control ID
  *
  *  See also:
  *    Abstract class <ngControl>.
