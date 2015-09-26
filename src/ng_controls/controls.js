@@ -7131,12 +7131,12 @@ function ngb_Click(e)
     action.Click(e);
     return;
   }
+  if((!this.Enabled)||(ngVal(this.ReadOnly,false))) return;
 
   if(typeof e === 'undefined') e=new Object;
   e.Owner = this;
   e.btn = this;
 
-  if((!this.Enabled)||(ngVal(this.ReadOnly,false))) return;
   if((this.OnClick)&&(!ngVal(this.OnClick(e),false))) return;
 }
 
@@ -8405,7 +8405,7 @@ function nge_KeyDown(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
-  if((edit)&&(edit.Enabled))
+  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
   {
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
     if((et)&&(et!==edit)) return;
@@ -8536,7 +8536,7 @@ function nge_KeyPress(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
-  if((edit)&&(edit.Enabled))
+  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
   {
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
     if((et)&&(et!==edit)) return;
@@ -8576,7 +8576,7 @@ function nge_KeyUp(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
-  if((edit)&&(edit.Enabled))
+  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
   {
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
     if((et)&&(et!==edit)) return;
@@ -8779,7 +8779,7 @@ function nge_DoPtrStart(pi)
 
 function nge_DoPtrClick(pi)
 {
-  if(pi.EventID==='control')
+  if((pi.EventID==='control')&&(this.Enabled)&&(!this.ReadOnly))
   {
     if((this.DropDownType==ngeDropDownList)&&(this.DropDownControl))
     {
@@ -9011,7 +9011,6 @@ function nge_IsInsidePopup(t,intype,e)
 
 function nge_DropDown()
 {
-  if((!this.Enabled)||(this.ReadOnly)) return;
   var l=this.DropDownControl;
   if(!l) return;
 
@@ -10018,7 +10017,7 @@ function ngDropDown_Add(c)
   b.OnClick = function(ci)
   {
     var e=(ci.Owner ? ci.Owner.Parent : null);
-    if(e)
+    if((e)&&(e.Enabled)&&(!e.ReadOnly))
     {
       var l=e.DropDownControl;
       if((l)&&(l.Visible)) e.HideDropDown();
@@ -10333,7 +10332,7 @@ function ngem_KeyPress(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
-  if((edit)&&(edit.Enabled))
+  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
   {
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
     if((et)&&(et!==edit)) return;
@@ -10347,7 +10346,7 @@ function ngem_KeyDown(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
-  if((edit)&&(edit.Enabled))
+  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
   {
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
     if((et)&&(et!==edit)) return;
@@ -10393,7 +10392,7 @@ function ngem_KeyUp(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
-  if((edit)&&(edit.Enabled))
+  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
   {
     var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
     if((et)&&(et!==edit)) return;
