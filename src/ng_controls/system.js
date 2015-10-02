@@ -325,6 +325,257 @@ function ngSysAction(id, text)
   ngControlCreated(this);
 }
 
+// --- ngTimer -----------------------------------------------------------------
+
+function ngtm_DoTimer() {
+  if(this.OnTimer) return this.OnTimer(this,this.timer_tickcnt);
+  else return false;
+}
+
+function ngtm_IsStarted() {
+  return(this.timer_id!==null);
+}
+
+function ngtm_Start() {
+  if(this.IsStarted()) return;
+
+  this.timer_interval=ngVal(this.Interval,0);
+  this.timer_repeat=ngVal(this.Repeat,true);
+
+  if(((this.OnStart)&&(!ngVal(this.OnStart(this),false)))
+    ||(this.timer_interval<=0)
+    ||((typeof this.timer_repeat==='number')&&(this.timer_repeat<=0)))
+  {
+    this.Stop();
+    return;
+  }
+
+  var self=this;
+  this.timer_tickcnt=0;
+  if(this.timer_repeat) {
+    this.timer_id=setInterval(
+      function() {
+        self.timer_tickcnt++;
+        if((!ngVal(self.DoTimer(),false))
+         ||((typeof self.timer_repeat==='number')&&(self.timer_tickcnt>=self.timer_repeat)))
+          self.Stop();
+      }, this.timer_interval);
+  }
+  else this.timer_id=setTimeout(function() { self.timer_tickcnt++; self.DoTimer(); self.Stop(); }, this.timer_interval);
+}
+
+function ngtm_Stop() {
+  if(!this.IsStarted()) return;
+
+  if(this.OnStop) this.OnStop(this,this.timer_tickcnt);
+
+  if(this.timer_id) {
+    if(this.timer_repeat)
+      clearInterval(this.timer_id);
+    else
+      clearTimeout(this.timer_id);
+  }
+  var undefined;
+  this.timer_id=null;
+  this.timer_repeat=undefined;
+  this.timer_interval=undefined;
+}
+
+function ngtm_Restart() {
+  this.Stop();
+  this.Start();
+}
+
+/**
+ *  Class: ngTimer
+ *  This class implements timer object.
+ *
+ *  Syntax:
+ *    new *ngTimer* ([function callback=null, int interval=1000, mixed repeat=true])
+ *
+ *  Parameters:
+ *    callback - the function that will be executed
+ *    interval - the number of milliseconds to wait before executing the code
+ *    repeat - if FALSE the execution occurs only once; can be also a number when limited number of execution is required
+ */
+function ngTimer(callback,interval,repeat) {
+  var undefined;
+  this.timer_id=null;
+  this.timer_interval=undefined;
+  this.timer_repeat=undefined;
+  this.timer_tickcnt=0;
+
+  this.DoTimer = ngtm_DoTimer;
+
+  this.AddEvent = ngObjAddEvent;
+  this.RemoveEvent = ngObjRemoveEvent;
+
+  /*
+   *  Group: Properties
+   */
+  /*  Variable: Interval
+   *  ...
+   *  Type: integer
+   *  Default value: 1000
+   */
+  this.Interval=ngVal(interval,1000);
+  /*  Variable: Repeat
+   *  ...
+   *  Type: bool
+   *  Default value: true
+   */
+  this.Repeat=ngVal(repeat,true);
+
+  /*
+   *  Group: Methods
+   */
+  /*  Function: Start
+   *  Starts timer.
+   *
+   *  Syntax:
+   *    void *Start* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.Start = ngtm_Start;
+  /*  Function: Stop
+   *  Stops timer.
+   *
+   *  Syntax:
+   *    void *Stop* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.Stop = ngtm_Stop;
+  /*  Function: Restart
+   *  Restarts timer.
+   *
+   *  Syntax:
+   *    void *Restart* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.Restart = ngtm_Restart;
+  /*  Function: IsStarted
+   *  Tests if timer is running.
+   *
+   *  Syntax:
+   *    bool *IsStarted* ()
+   *
+   *  Returns:
+   *    TRUE if timer is running.
+   */
+  this.IsStarted = ngtm_IsStarted;
+  /*
+   *  Group: Events
+   */
+  /*
+   *  Event: OnTimer
+   */
+  this.OnTimer=ngVal(callback,null);
+  /*
+   *  Event: OnStart
+   */
+  this.OnStart=null;
+  /*
+   *  Event: OnStop
+   */
+  this.OnStop=null;
+}
+
+function ngstm_DoSetEnabled(e) {
+  this.Enabled=e;
+  if(e) this.Start.original.apply(this);
+  else this.Stop.original.apply(this);
+}
+
+function ngstm_DoCreate(def,ref) {
+  var e;
+  if((typeof def.Data === 'object')&&(def.Data)) e=ngVal(def.Data.Enabled,this.Enabled);
+  else e=this.Enabled;
+  if(ngVal(e,true)) this.Start.original.apply(this);
+}
+
+function ngstm_DoDispose() {
+  this.Stop();
+  return true;
+}
+
+function ngstm_Start() {
+  this.SetEnabled(true);
+}
+
+function ngstm_Stop() {
+  this.SetEnabled(false);
+}
+
+/**
+ *  Class: ngSysTimer
+ *  This class implements timer non-visual control.
+ *
+ *  Syntax:
+ *    new *ngSysTimer* ([string id])
+ *
+ *  Parameters:
+ *    id - control ID
+ *
+ *  See also:
+ *    Abstract class <ngControl> and <ngTimer> class.
+ */
+function ngSysTimer(id)
+{
+  ngSysControl(this, id, 'ngSysTimer');
+  ngTimer.apply(this);
+  this.DoSetEnabled = ngstm_DoSetEnabled;
+  this.DoCreate = ngstm_DoCreate;
+  this.DoDispose = ngstm_DoDispose;
+  var orig=this.Start;
+  this.Start = ngstm_Start;
+  this.Start.original=orig;
+
+  var orig=this.Stop;
+  this.Stop = ngstm_Stop;
+  this.Stop.original=orig;
+
+  ngControlCreated(this);
+}
+
+function ngsrpc_DoDispose() {
+  if(ngVal(this.id,'')!='') delete ngRPCByID[this.id];
+  return true;
+}
+
+function ngsrpc_sendRequest(url, nocache) {
+  if(!this.Enabled) return false;
+  return this.sendRequest.original.apply(this,[url,nocache]);
+}
+/**
+ *  Class: ngSysRPC
+ *  This class implements ngRPC non-visual control.
+ *
+ *  Syntax:
+ *    new *ngSysRPC* ([string id])
+ *
+ *  Parameters:
+ *    id - control ID
+ *
+ *  See also:
+ *    Abstract class <ngControl> and <ngRPC> class.
+ */
+function ngSysRPC(id)
+{
+  ngSysControl(this, id, 'ngSysRPC');
+  ngRPC.apply(this, [id]);
+  var orig=this.sendRequest;
+  this.DoDispose = ngsrpc_DoDispose;
+  this.sendRequest = ngsrpc_sendRequest;
+  this.sendRequest.original=orig;
+  ngControlCreated(this);
+}
+
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['system'] = {
   Lib: 'ng_controls',
@@ -332,5 +583,7 @@ ngUserControls['system'] = {
 
   OnInit: function() {
     ngRegisterControlType('ngSysAction', function() { return new ngSysAction; });
+    ngRegisterControlType('ngSysTimer', function() { return new ngSysTimer; });
+    ngRegisterControlType('ngSysRPC', function() { return new ngSysRPC; });
   }
 };

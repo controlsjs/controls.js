@@ -60,25 +60,77 @@ if(ngHASDESIGNINFO()) {
           };
           break;
 
-//         case 'ngSysTimer':
-//           di = {
-//             BasicComponent: c.DefType,
-//             Properties: {
-//               Data: {
-//                 properties: {
-//                   Enabled: { type: 'boolean', dVal: 'false' },
-//                   Function: { type: 'function', dVal: 'function() {}' },
-//                   Milliseconds: { type: 'integer', dVal: '5000' },
-//                   Repeat: { type: 'boolean' }
-//                 }
-//               },
-//               Events: {
-//                 properties: {
-//                 }
-//               }
-//             }
-//           }
-//           break;
+         case 'ngSysTimer':
+           di = {
+             BasicComponent: c.DefType,
+             Properties: {
+               Data: {
+                 properties: {
+                   Interval: { type: 'integer', dVal: 1000 },
+                   Repeat: { type: ['boolean','integer'], dVal: true }
+                 }
+               },
+               Events: {
+                 properties: {
+                   OnTimer: { type: 'function', dVal: 'function(c, tickcnt) { return true; }' },
+                   OnStart: { type: 'function', dVal: 'function(c) { return true; }', lvl: 2 },
+                   OnStop: { type: 'function', dVal: 'function(c, tickcnt) { }', lvl: 2 }
+                 }
+               }
+             }
+           }
+           break;
+         case 'ngSysRPC':
+           di = {
+             BasicComponent: c.DefType,
+             AddData: {
+               InitProperties: {
+                   Data: {},
+                  'Data.Type': {value:'rpcJSONGET'},
+                  'Data.nocache': {value:true}
+               }
+             },
+             Properties: {
+               Data: {
+                 properties: {
+                   Type: { type: 'integer', dVal: 'rpcAuto', readOnly: true,
+                     items: ['rpcAuto',
+                             'rpcScript',
+                             'rpcIFrame',
+                             'rpcHttpRequest',
+                             'rpcHttpRequestPOST',
+                             'rpcHttpRequestGET',
+                             'rpcJSON',
+                             'rpcJSONPOST',
+                             'rpcJSONGET',
+                             'rpcData',
+                             'rpcDataPOST',
+                             'rpcDataGET',
+                             'rpcUser']
+                   },
+                   nocache: { type: 'boolean', dVal: false },
+                   HTTPMethod: { type: 'string', lvl: 2 },
+                   URL: { type: 'string' },
+                   Params: { type: 'object', lvl: 2 }
+                 }
+               },
+               Events: {
+                 properties: {
+                   OnEncodeParam: { type: 'function', dVal: 'function(c, name, value) { return value; }', lvl: 2 },
+                   OnRequest: { type: 'function', dVal: 'function(c, reqinfo) { return true; }' },
+                   OnSendRequest: { type: 'function', dVal: 'function(c, url, doc) { return true; }' },
+                   OnRequestSent: { type: 'function', dVal: 'function(c, url, reqinfo) { }' },
+                   OnIFrameRequest: { type: 'function', dVal: 'function(c, url, doc) { return true; }', lvl: 2 },
+                   OnHTTPRequest: { type: 'function', dVal: 'function(c, reqinfo) { return true; }', lvl: 2 },
+                   OnHTTPReadyStateChanged: { type: 'function', dVal: 'function(c, xmlhttp) { return true; }', lvl: 2 },
+                   OnHTTPRequestFailed: { type: 'function', dVal: 'function(c, xmlhttp) { }', lvl: 2 },
+                   OnReceivedJSON: { type: 'function', dVal: 'function(c, json, xmlhttp) { }' },
+                   OnReceivedData: { type: 'function', dVal: 'function(c, response, xmlhttp) { return true; }' }
+                 }
+               }
+             }
+           }
+           break;
       }
 
       if(typeof di!=='undefined') {
