@@ -876,14 +876,15 @@ function ng_sprintf()
         case 's': subst = '' + param; break;
         case 'x': subst = ('' + parseInt(param).toString(16)).toLowerCase(); break;
         case 'X': subst = ('' + parseInt(param).toString(16)).toUpperCase(); break;
-        case 'f': 
+        case 'f':
           param=parseFloat(param);
           if(isNaN(param)) param=0;
           if (precision > -1)
           {
-            var tmp = Math.round(param * Math.pow(10, precision)).toString();
-            while(tmp.length<precision) tmp='0'+tmp;
-            subst = tmp.substr(0, tmp.length - precision) + (precision > 0 ? '.' + tmp.substr(tmp.length - precision, precision) : '');
+            var sig = (param<0) ? '-' : '';
+            var tmp = Math.round(Math.abs(param) * Math.pow(10, precision)).toString();
+            while(tmp.length<=precision) tmp='0'+tmp;
+            subst = sig + tmp.substr(0, tmp.length - precision) + (precision > 0 ? '.' + tmp.substr(tmp.length - precision, precision) : '');
           }
           else
             subst = param;
