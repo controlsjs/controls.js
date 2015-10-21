@@ -2455,6 +2455,29 @@ function ngLookupFieldDef(id, attrs)
   this.DoDeserialize = ngfd_DataSetFieldDeserialize;
 }
 
+function ngvm_InitServerNamespaces() {
+  if(typeof ngViewModelsServerURL !== 'function') return;
+
+  var surls=ngViewModelsServerURL();
+  if(surls)
+  {
+    var ns, surl;
+    for(var i in ngViewModelNamespaces)
+    {
+      ns=ngViewModelNamespaces[i];
+      if((typeof ns.ServerURLIndex!=='undefined')&&(ngVal(ns.ServerURL,'')==''))
+      {
+        if((ns.ServerURLIndex>0)&&(ns.ServerURLIndex<=surls.length))
+        {
+          surl = surls[ns.ServerURLIndex-1];
+          if((surl.charAt(0)=='/')||(surl.indexOf('://')>=0)) ns.ServerURL=surl;
+          else ns.ServerURL=ngApp.AppPath+surl;
+        }
+      }
+    }
+  }
+}
+
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['viewmodel'] = {
   Lib: 'ng_controls',
@@ -2462,27 +2485,7 @@ ngUserControls['viewmodel'] = {
 
   OnInit: function() {
 
-    if(typeof ngViewModelsServerURL === 'function')
-    {
-      var surls=ngViewModelsServerURL();
-      if(surls)
-      {
-        var ns, surl;
-        for(var i in ngViewModelNamespaces)
-        {
-          ns=ngViewModelNamespaces[i];
-          if(typeof ns.ServerURLIndex!=='undefined')
-          {
-            if((ns.ServerURLIndex>0)&&(ns.ServerURLIndex<=surls.length))
-            {
-              surl = surls[ns.ServerURLIndex-1];
-              if((surl.charAt(0)=='/')||(surl.indexOf('://')>=0)) ns.ServerURL=surl;
-              else ns.ServerURL=ngApp.AppPath+surl;
-            }
-          }
-        }
-      }
-    }
+    ngvm_InitServerNamespaces();
 
     /**
      *  Class: Knockout extensions 
