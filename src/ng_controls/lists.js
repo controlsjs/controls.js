@@ -48,7 +48,14 @@ function ngl_BeginUpdate()
 function ngl_EndUpdate()
 {
   this.update_cnt--;
-  if(this.update_cnt<=0) { this.update_cnt=0; if(this.need_update) this.Update(); }
+  if(this.update_cnt<=0) {
+    this.update_cnt=0;
+    if(this._items_changed){
+      this._items_changed = false;
+      this.DoItemsChanged();
+    }
+    if(this.need_update) this.Update();
+  }
 }
 
 function ngl_do_add(list,it,parent)
@@ -80,6 +87,8 @@ function ngl_Add(it, parent)
 
   var idx=list.Items.length;
   list.Items[idx]=it;
+  
+  this.DoItemsChanged();
 
   if(typeof it.Items!=='undefined')
   {
@@ -145,6 +154,9 @@ function ngl_Replace(idx, it, parent)
   }
 
   list.Items[idx]=it;
+  
+  this.DoItemsChanged();
+  
   if(typeof it.Items!=='undefined')
   {
     var items=it.Items;
@@ -232,6 +244,8 @@ function ngl_Remove(it, parent)
   {
     this.do_remove(it, parent);
     list.Items.splice(idx,1);
+    
+    this.DoItemsChanged();
   }
   return idx;
 }
@@ -246,6 +260,8 @@ function ngl_Delete(idx, parent)
   this.do_remove(it, parent);
 
   list.Items.splice(idx,1);
+  
+  this.DoItemsChanged();
   return it;
 }
 
@@ -384,11 +400,12 @@ function ngl_ScanVisible(fnc, parent, userdata)
 function ngl_Clear(parent)
 {
   var list=parent;
-  if(!list)
+  if((!list)||(list===this))
   {
     list=this;
     this.ClearSelected();
     this.ItemsControls = undefined;
+    if((typeof list.Items === 'object')&&(!list.Items.length)) return;
   }
   if(typeof list.Items !== 'undefined')
   {
@@ -402,6 +419,8 @@ function ngl_Clear(parent)
     delete list.Items;
   }
   if(list==this) this.Items=new Array();
+  
+  this.DoItemsChanged();
 }
 
 function ngl_ItemId(it)
@@ -2877,6 +2896,12 @@ function ngl_DoDispose()
   return true;
 }
 
+function ngl_DoItemsChanged()
+{
+  if(this.update_cnt > 0) this._items_changed = true;
+  else if(this.OnItemsChanged) this.OnItemsChanged(this,this.Items);
+}
+
 /**
  *  Class: ngListItem
  *  This class implements <ngList> item.
@@ -3084,6 +3109,7 @@ function ngList(id)
   this.DoFocus = ngl_DoFocus;
   this.DoBlur = ngl_DoBlur;
   this.DoDispose = ngl_DoDispose;
+  this.DoItemsChanged = ngl_DoItemsChanged;
   this.ignore_select = 0;
 
   /*
@@ -3812,6 +3838,10 @@ function ngList(id)
    *  Event: OnRemove
    */
   this.OnRemove = null;
+  /*
+   *  Event: OnItemsChanged
+   */
+  this.OnItemsChanged = null;
   /*
    *  Event: OnGetText
    */
