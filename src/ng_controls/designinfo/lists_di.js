@@ -75,6 +75,7 @@ if(ngHASDESIGNINFO()) {
                 properties: {
                   OnAdd: { type: 'function', dVal: 'function(c, it, parent) { return true; }', lvl: 2 },
                   OnRemove: { type: 'function', dVal: 'function(c, it, parent) { }', lvl: 2 },
+                  OnItemsChanged: { type: 'function', dVal: 'function(list, items) { }', lvl: 2 },
                   OnGetText: { type: 'function', dVal: 'function(c, it, col) { return it.Text; }', lvl: 2 },
                   OnGetAlt: { type: 'function', dVal: 'function(c, it, col) { return it.Alt; }', lvl: 2 },
                   OnExpanding: { type: 'function', dVal: 'function(c, it) { return true; }', lvl: 2 },
