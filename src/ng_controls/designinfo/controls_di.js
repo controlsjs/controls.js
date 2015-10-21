@@ -461,6 +461,7 @@ if(ngHASDESIGNINFO()) {
               Controls: { lvl: 1 },
               Events: {
                 properties: {
+                  OnSetText: { type: 'function', dVal: 'function(text, c) { return text; }' },
                   OnGetText: { type: 'function', dVal: 'function(c) { return c.Text; }', lvl: 1 }
                 }
               }

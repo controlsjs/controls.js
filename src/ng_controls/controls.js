@@ -8002,6 +8002,18 @@ function ngGroup(id)
   /*
    *  Group: Methods
    */
+  /*  Function: SetText
+   *  Sets new text content.
+   *
+   *  Syntax:
+   *    void *SetText* (string text)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetText = ngc_SetText;
   /*  Function: GetText
    *  Gets text content.
    *
@@ -8047,6 +8059,10 @@ function ngGroup(id)
    *  Event: OnGetText
    */
   this.OnGetText = null;
+  /*
+   *  Event: OnSetText
+   */
+  this.OnSetText = null;
 
   ngControlCreated(this);
 }
