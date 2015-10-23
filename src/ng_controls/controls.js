@@ -98,20 +98,23 @@ if(typeof ngDefaultHTMLEncoding === 'undefined') ngDefaultHTMLEncoding = false;
  *  Function: ngLang
  *  Defines resource string/object.
  *
- *  Syntax: *ngLang* (string id, mixed data [,string lng])
+ *  Syntax: *ngLang* (string id, mixed data [,string lng] [,boolean allowOverride])
  *
  *  Returns:
  *  -
  */
-function ngLang(id,data,lng)
+function ngLang(id,data,lng,allowOverride)
 {
   if(typeof id==='undefined') return;
   if(typeof lng === 'undefined') lng=ng_cur_lng;
+  if(typeof allowOverride === 'undefined') allowOverride=true;
   lng=''+lng;
   if(lng=='') return;
   lng=ngNormalizeLang(lng);
   if(typeof ngc_Lang      === 'undefined') ngc_Lang=new Array();
   if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]=new Array();
+  
+  if(!allowOverride && (typeof ngc_Lang[lng][id] !== 'undefined')) return;
   ngc_Lang[lng][id]=data;
 }
 
