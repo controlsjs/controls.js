@@ -4836,8 +4836,19 @@ function nga_OnResize(e)
   var ae=ngApp.Elm();
   if(ae)
   {
-    if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
-    delete ngApp.MobileKeyboardTimer;
+    if(ngApp.MobileKeyboardTimer) {
+      clearTimeout(ngApp.MobileKeyboardTimer);
+      delete ngApp.MobileKeyboardTimer;
+      switch(ngMobileKeyboardActive)
+      {
+        case 1:
+          ngMobileKeyboardActive=3;
+          var ai=document.activeElement;
+          if((ai)&&(ai.scrollIntoView)) ai.scrollIntoView();
+          break;
+        case 2: nge_FinishMobileKeyboard(); break;
+      }
+    }
 
     var aw=ng_ClientWidth(ae);
     var ah=ng_ClientHeight(ae);
@@ -4905,7 +4916,7 @@ function nga_DoResizeControl(c,doupdate)
   if(update) c.Update();
 }
 
-function nga_DoResize(e)
+function nga_DoResize()
 {
   if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
   if((ngApp.OnDeviceChanged)&&(typeof ngDetectDevice === 'function'))
@@ -8831,15 +8842,23 @@ function nge_DoUpdateImages()
 
 var ngMobileKeyboardActive=0;
 
+// ngMobileKeyboardActive:
+// 0 - not active
+// 1 - focus, waiting for resize
+// 2 - blur, waiting for resize
+// 3 - focus, resize occurred
+
 function nge_BeginMobileKeyboard()
 {
   // Mobile keyboards sometimes forces application resize or hides part of the application.
   // To prevent this add temporary margin to application's container.
   var ae=((typeof ngApp !== 'undefined')&&(ngApp) ? ngApp.Elm() : null);
   if((ae)&&(ngVal(ngApp.MobileKeyboardFix,true))) {
-    if(ngMobileKeyboardActive===2)
+
+    if(ngMobileKeyboardActive==2)
     {
-      ngMobileKeyboardActive=1;
+      if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
+      delete ngApp.MobileKeyboardTimer;
       return;
     }
     ngMobileKeyboardActive=1;
@@ -8847,17 +8866,17 @@ function nge_BeginMobileKeyboard()
     ngApp.SavedAppBottom=ae.style.bottom;
     ngApp.SavedAppMarginBottom=ae.style.marginBottom;
 
-    // Disable MobileKeyboard mode if there will be no resize during following 3secs
-    if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
-    ngApp.MobileKeyboardTimer=setTimeout(function() {
-      delete ngApp.MobileKeyboardTimer;
-      clearTimeout(ngApp.MobileKeyboardTimer);
-      nge_EndMobileKeyboard();
-    },3000);
-
     ng_SetClientHeight(ae,ng_ClientHeight(ae));
     ae.style.bottom='';
     ae.style.marginBottom=ng_WindowHeight();
+
+    // Disable MobileKeyboard mode if there will be no resize during following 3secs
+    if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
+    ngApp.MobileKeyboardTimer=setTimeout(function() {
+      clearTimeout(ngApp.MobileKeyboardTimer);
+      delete ngApp.MobileKeyboardTimer;
+      nge_FinishMobileKeyboard();
+    },3000);
   }
 }
 
@@ -8867,22 +8886,31 @@ function nge_EndMobileKeyboard()
   if((ae)&&(typeof ngApp.SavedAppHeight!=='undefined'))
   {
     if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
-    delete ngApp.MobileKeyboardTimer;
-
-    if(ngMobileKeyboardActive===2) return;
+    ngApp.MobileKeyboardTimer=setTimeout(function() {
+      clearTimeout(ngApp.MobileKeyboardTimer);
+      delete ngApp.MobileKeyboardTimer;
+      nge_FinishMobileKeyboard();
+    }, (ngMobileKeyboardActive==1 ? 10 : 3000));
     ngMobileKeyboardActive=2;
-    ngApp.InvokeLater(function() {
-      if(ngMobileKeyboardActive!==2) return;
-      ngMobileKeyboardActive=0;
-      ae.style.bottom=ngApp.SavedAppBottom;
-      ae.style.height=ngApp.SavedAppHeight;
-      ae.style.marginBottom=ngApp.SavedAppMarginBottom;
-      delete ngApp.SavedAppBottom;
-      delete ngApp.SavedAppHeight;
-      delete ngApp.SavedAppMarginBottom;
-    });
   }
+}
 
+function nge_FinishMobileKeyboard() {
+  ngMobileKeyboardActive=0;
+  var ae=((typeof ngApp !== 'undefined')&&(ngApp) ? ngApp.Elm() : null);
+  if((ae)&&(typeof ngApp.SavedAppHeight!=='undefined'))
+  {
+    ae.style.bottom=ngApp.SavedAppBottom;
+    ae.style.height=ngApp.SavedAppHeight;
+    ae.style.marginBottom=ngApp.SavedAppMarginBottom;
+    delete ngApp.SavedAppBottom;
+    delete ngApp.SavedAppHeight;
+    delete ngApp.SavedAppMarginBottom;
+
+    var aw=ng_ClientWidth(ae);
+    var ah=ng_ClientHeight(ae);
+    if((aw!==ngApp.LastResizeW)||(ah!==ngApp.LastResizeH)) nga_DoResize();
+  }
 }
 
 function nge_DoFocus(e, elm)
