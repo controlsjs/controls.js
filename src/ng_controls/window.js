@@ -2759,6 +2759,8 @@ function nghtxt_DoHintUpdate(o)
           c.AutoSizeMode='auto';
           c.Update();
   
+          var minarea=-1,minwidth;
+          var minfound='';
           var nwsz=this.DoMeasureText(o,to);
           if(nwsz.W<this.MinWidth) nwsz.W=this.MinWidth;
           if((this.MaxWidth<=0)||(nwsz.W<this.MaxWidth))
@@ -2768,18 +2770,46 @@ function nghtxt_DoHintUpdate(o)
               // Test preffered non-wraped         
               var ai=this.FindAnchor(nwsz.W,nwsz.H,p_anchors);
               if((!ai.AffectedArea)&&(ai.AnchorObj)) found=ai.Anchor; // no collision, use found
+              else {
+                if(ai.AffectedArea>0) {
+                  minarea=ai.AffectedArea;
+                  minfound=ai.Anchor;
+                  minwidth=-1;
+                }
+              }
             }
             else
             {
               // Test non-wraped         
               var ai=this.FindAnchor(nwsz.W,nwsz.H,anchors);
               if((!ai.AffectedArea)&&(ai.AnchorObj)) found=ai.Anchor; // no collision, use found
+              else {
+                if(ai.AffectedArea>0) {
+                  minarea=ai.AffectedArea;
+                  minfound=ai.Anchor;
+                  minwidth=-1;
+                }
+              }
             }
           }
           if(found==='')
           {
-            var minarea=-1,minwidth;
-            var minfound='';
+            // measure min size (max word size)
+            var minwordw=0;
+            var oldgettext=c.OnGetText;
+            try {
+              c.OnGetText=function(c,t) {
+                var txt=(oldgettext ? oldgettext.apply(c,[c]) : c.Text);
+                txt=txt.replace(/\s/g, c.HTMLEncode ? "\n" : "<br>");
+                return txt;
+              }
+              c.Update();
+              minwordw=this.DoMeasureText(o,to).W;
+            }
+            finally {
+              c.OnGetText=oldgettext;
+            }
+
             var popupx=this.PopupX;
             if(typeof popupx==='undefined') popupx=ngVal(this.Bounds.L,0);
             
@@ -2819,7 +2849,8 @@ function nghtxt_DoHintUpdate(o)
                   if(a.Img) tw+=a.Img.W;
                   if(typeof a.HX !== 'undefined') tw-=a.HX;
                 }
-  
+
+                if(tw<minwordw) tw=minwordw;
                 if(tw<self.MinWidth) tw=self.MinWidth;
                 if((self.MaxWidth>0)&&(tw>self.MaxWidth)) tw=self.MaxWidth;
                 tw-=fw;
@@ -2876,7 +2907,8 @@ function nghtxt_DoHintUpdate(o)
             }
             if((found==='')&&(minfound!='')) 
             {
-              ng_SetClientWidth(to,minwidth);
+              if(minwidth>0) ng_SetClientWidth(to,minwidth);
+              else           c.AutoSizeMode='auto';
               c.Update();
               found=minfound;
             }
