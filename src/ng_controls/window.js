@@ -304,11 +304,11 @@ function ngw_CalcAutoSize()
     if((po)&&(po==document.body)) po=null;
     var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
     var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight());
-    
+
     // set to max size (eliminate scrollbars)
     ng_SetClientWidth(o,pw);
     ng_SetClientHeight(o,ph);
-  
+
     var minl=-1,mint=-1,minr=-1,minb=-1,maxw=0,maxh=0;
     var maxl=0,maxt=0,maxr=0,maxb=0;
     var c,co,w,h;
@@ -358,12 +358,12 @@ function ngw_CalcAutoSize()
     if((minr>=0)&&(maxr-minr)>w) w=maxr-minr;
     if((mint>=0)&&(maxt-mint)>h) h=maxt-mint;
     if((minb>=0)&&(maxb-minb)>h) h=maxb-minb;
-      
+
     if(minl>=0) w+=minl;
     else if(minr>=0) w+=minr;
     if(minr>=0) w+=minr;
     else if(minl>=0) w+=minl;
-    
+
     if(mint>=0) h+=mint;
     else if(minb>=0) h+=minb;
     if(minb>=0) h+=minb;
@@ -373,7 +373,7 @@ function ngw_CalcAutoSize()
     var changed=this.SetClientRect({W: w, H: h });
     this.SetBounds();
     if(changed) this.Update();
-  }  
+  }
 }
 
 function ngw_Minimize()
@@ -442,7 +442,7 @@ function ngw_SetBounds(props)
   {
     var o = this.Elm();
     if(!o) return;
-    ng_SetBounds(o, this.StateBounds);  
+    ng_SetBounds(o, this.StateBounds);
   }
   else this.SetBoundsEx(props);
 }
@@ -568,11 +568,11 @@ function ngw_DoPtrStart(pi)
       pi.FrameHorzBorder = ng_GetCurrentStylePx(f,'border-left-width') + ng_GetCurrentStylePx(f,'border-right-width') + ng_GetCurrentStylePx(f,'margin-left') + ng_GetCurrentStylePx(f,'margin-right');
       pi.FrameVertBorder = ng_GetCurrentStylePx(f,'border-top-width') + ng_GetCurrentStylePx(f,'border-bottom-width') + ng_GetCurrentStylePx(f,'margin-top') + ng_GetCurrentStylePx(f,'margin-bottom');
 
-      var w=(o ? ng_ClientWidth(o)-pi.FrameHorzBorder : 0)
+      var w=(o ? ng_ClientWidth(o)-pi.FrameHorzBorder : 0);
       var h=(o ? ng_ClientHeight(o)-pi.FrameVertBorder : 0);
       if(w<0) w=0;
       if(h<0) h=0;
-      ng_setBounds(f,0,0,w,h); 
+      ng_setBounds(f,0,0,w,h);
       f.style.display="block";
     }
   }
@@ -602,7 +602,7 @@ function ngw_DoPtrDrag(pi)
         this.StateBounds.T=this.Bounds.T;
       }
       this.CheckBounds();
-      this.SetBounds();      
+      this.SetBounds();
       pi.WinMove=true;
     }
   }
@@ -718,7 +718,7 @@ function ngw_DoPtrEnd(pi)
           this.StateBounds.T=this.Bounds.T;
         }
         this.CheckBounds();
-        this.SetBounds();      
+        this.SetBounds();
         pi.WinMove=true;
       }
       if((pi.WinMove)&&(this.OnMouseMove)) this.OnMouseMove(this);
@@ -916,7 +916,7 @@ function ngw_DoUpdate(o)
     if(gestures!='') gestures+=' ';
     gestures+='drag';
   }
-  var cattrs=(gestures!='' ? ngc_PtrEventsHTML(this,'window',gestures) : '') 
+  var cattrs=(gestures!='' ? ngc_PtrEventsHTML(this,'window',gestures) : '');
   var th=0, lw=0, rw=0, bl=0, br=0, bw=0;
 
   var caphtml=new ngStringBuilder;
@@ -1152,7 +1152,7 @@ function ngw_DoCreate(def, ref, elm, parent)
   {
     this.Controls = new Object;
     this.Controls.Owner = this; 
-    this.Controls.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent,ldefs.ControlsPanel.id)); }
+    this.Controls.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent,ldefs.ControlsPanel.id)); };
     ref=this.Controls;
   }
   this.ControlsPanel=lref.ControlsPanel;
@@ -1739,8 +1739,8 @@ function ngh_DoAttach(o)
   if(handle)
   {
     var t=this.CtrlType;
-    handle.onmouseover = function(e) { ngc_Enter(e, this, t); }
-    handle.onmouseout  = function(e) { ngc_Leave(e, this, t); }
+    handle.onmouseover = function(e) { ngc_Enter(e, this, t); };
+    handle.onmouseout  = function(e) { ngc_Leave(e, this, t); };
   }
 }
 
@@ -1755,7 +1755,7 @@ function ngh_BorderCollision(p, l, t, r, b)
   if(miny<t)  area+=(t-miny)*(maxx-minx);
   if(maxy>=b) area+=(maxy-b)*(maxx-minx);
   
-  if((p.AffectedArea<0)||(area>p.AffectedArea)) p.AffectedArea=area;        
+  if((p.AffectedArea<0)||(area>p.AffectedArea)) p.AffectedArea=area;
   return area;  
 }
 
@@ -1785,7 +1785,7 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
   if(typeof popupy==='undefined') popupy=this.PopupY;
   if(typeof popupx==='undefined') popupx=ngVal(this.Bounds.L,0);
   if(typeof popupy==='undefined') popupy=ngVal(this.Bounds.T,0);
-  
+
   var dp,x,y;
   var o=this.Elm();
   if((!o)||(typeof popupx==='undefined')||(typeof popupy==='undefined'))
@@ -1899,7 +1899,7 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
 
       if(this.OnCheckPlacement) this.OnCheckPlacement(this,p);
       else this.BorderCollision(p,0,0,pw,ph); 
-      
+
       if(!ngVal(p.AffectedArea,-1)) { minarea=0; break; }
       
       if((p.AffectedArea>0)&&((p.AffectedArea<minarea)||(minarea<0))) { minanchor=anchor; minanchorid=i; minarea=p.AffectedArea; }      
@@ -1978,14 +1978,14 @@ function ngh_DoUpdate(o)
       
       this.PopupAnchor=anchorid;
       var image=new ngStringBuilder;
-      dp=(ngVal(anchor.Img,null) ? ngc_ImgDrawProps(this.ID+'_AI', 'ngHint', this.ID, 0, this.Enabled, anchor.Img) : noimg)
+      dp=(ngVal(anchor.Img,null) ? ngc_ImgDrawProps(this.ID+'_AI', 'ngHint', this.ID, 0, this.Enabled, anchor.Img) : noimg);
       if((!dp.W)&&(!dp.H)) handle.style.visibility='hidden';
       else
       {
         ngc_Img(image,dp,"position:absolute;",ngVal(anchor.Img.Attrs,''));
     
-        ng_SetClientWidth(handle,dp.W)
-        ng_SetClientHeight(handle,dp.H)
+        ng_SetClientWidth(handle,dp.W);
+        ng_SetClientHeight(handle,dp.H);
         ng_SetInnerHTML(handle,image.toString());
         handle.style.visibility='visible';
       }
@@ -2024,8 +2024,7 @@ function ngh_DoUpdate(o)
 
   var html=new ngStringBuilder;
   var w=ng_ClientWidth(o);
-  var h=ng_ClientHeight(o);  
-  var l=0,t=0;
+  var h=ng_ClientHeight(o);
 
   var dp=new Object;
   ngc_ImgBox(html, this.ID, 'ngHint', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', undefined, dp);
@@ -2061,7 +2060,7 @@ function ngh_SetClientRect(v)
   if(typeof v.W !== 'undefined') 
   {
     dp.Left =((!this.ControlsInside) || typeof this.Frame.Left === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_L', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Left));
-    dp.Right =((!this.ControlsInside) || typeof this.Frame.Right === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_R', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Right))
+    dp.Right =((!this.ControlsInside) || typeof this.Frame.Right === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_R', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Right));
     var nw=v.W+dp.Left.W+dp.Right.W;
     if(ngVal(this.Bounds.W,-1)!=nw)
     {
@@ -2148,7 +2147,7 @@ function ngh_DoCreate(def, ref, elm, parent)
   {
     this.Controls = new Object;
     this.Controls.Owner = this; 
-    this.Controls.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent,ldefs.ControlsPanel.id)); }
+    this.Controls.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent,ldefs.ControlsPanel.id)); };
     ref=this.Controls;
   }                                    
   this.ControlsPanel=lref.ControlsPanel;
@@ -2624,7 +2623,7 @@ function nghtxt_SetText(text)
 function nghtxt_OnGetText(text)
 {
   var h=this.Owner.Owner;
-  return (h ? h.GetText() : '')
+  return (h ? h.GetText() : '');
 }
 
 function nghtxt_DoPtrClick(pi)
@@ -2674,7 +2673,7 @@ function nghtxt_DoMeasureText(o,to)
     var dp=new Object;
 
     dp.Left =((!this.ControlsInside) || typeof this.Frame.Left === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_L', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Left));
-    dp.Right =((!this.ControlsInside) || typeof this.Frame.Right === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_R', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Right))
+    dp.Right =((!this.ControlsInside) || typeof this.Frame.Right === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_R', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Right));
     dp.Top =((!this.ControlsInside) || typeof this.Frame.Top === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_B', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Top));
     dp.Bottom =((!this.ControlsInside) || typeof this.Frame.Bottom === 'undefined' ? noimg : ngc_ImgDrawProps(this.ID+'_B', 'ngHint', this.ID, 0, this.Enabled, this.Frame.Bottom));
 
@@ -2712,12 +2711,11 @@ function nghtxt_DoHintUpdate(o)
         this.Anchor=ngVal(this.PopupAnchor,anchor); // Keep "hardly selected" anchor for autosize
       }    
       else
-      { 
+      {
         var found='';
         var po=o.offsetParent;
         if((po)&&(po==document.body)) po=null;
-        var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-        var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight());     
+        var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth());
           
         var to=c.Elm();
         ng_setLeftTop(o,-10000,-10000); // hide
@@ -2813,9 +2811,6 @@ function nghtxt_DoHintUpdate(o)
             var popupx=this.PopupX;
             if(typeof popupx==='undefined') popupx=ngVal(this.Bounds.L,0);
             
-            var noimg = {L:0,T:0,aL:0,aT:0,oT:0,oL:0,W:0,H:0};
-            var dp=new Object;
-  
             // calculate frame width
             var fw=((!this.ControlsInside) || typeof this.Frame.Left === 'undefined' ? 0 : this.Frame.Left.W);
             fw+=((!this.ControlsInside) || typeof this.Frame.Right === 'undefined' ? 0 : this.Frame.Right.W);
@@ -2825,7 +2820,7 @@ function nghtxt_DoHintUpdate(o)
               if(typeof c.Bounds.R === 'undefined') fw+=2*c.Bounds.L;
               else fw+=2*c.Bounds.R;
             }
-  
+
             var self=this;
             function check_anchors(anchors)
             {
