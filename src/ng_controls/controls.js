@@ -4844,7 +4844,14 @@ function nga_OnResize(e)
         case 1:
           ngMobileKeyboardActive=3;
           var ai=document.activeElement;
-          if((ai)&&(ai.scrollIntoView)) ai.scrollIntoView();
+          if(ai) {
+            var ac=ngGetControlByElement(ai);
+            if(ac) ai=ac.Elm();
+          }
+          if((ai)&&(ai.scrollIntoView)) {
+            var pp=ng_ParentPosition(ai);
+            if((pp.y<0)||((pp.y+ng_OuterHeight(ai))>ng_WindowHeight())) ai.scrollIntoView();
+          }
           break;
         case 2: nge_FinishMobileKeyboard(); break;
       }
@@ -8870,13 +8877,13 @@ function nge_BeginMobileKeyboard()
     ae.style.bottom='';
     ae.style.marginBottom=ng_WindowHeight();
 
-    // Disable MobileKeyboard mode if there will be no resize during following 3secs
+    // Disable MobileKeyboard mode if there will be no resize during following 1sec
     if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
     ngApp.MobileKeyboardTimer=setTimeout(function() {
       clearTimeout(ngApp.MobileKeyboardTimer);
       delete ngApp.MobileKeyboardTimer;
       nge_FinishMobileKeyboard();
-    },3000);
+    },1000);
   }
 }
 
@@ -8890,7 +8897,7 @@ function nge_EndMobileKeyboard()
       clearTimeout(ngApp.MobileKeyboardTimer);
       delete ngApp.MobileKeyboardTimer;
       nge_FinishMobileKeyboard();
-    }, (ngMobileKeyboardActive==1 ? 10 : 3000));
+    }, (ngMobileKeyboardActive==1 ? 10 : 1000));
     ngMobileKeyboardActive=2;
   }
 }
