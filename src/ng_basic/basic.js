@@ -1472,6 +1472,12 @@ function ng_GetStylePx(v)
   return (isNaN(v) ? 0 : v);
 }
 
+function ng_IE7RedrawFix(e)
+{
+  //IE redraw fix
+  return e.offsetLeft;
+}
+
 /**
  *  Function: ng_GetCurrentStyle
  *  Gets current (computed) style of element.
@@ -1541,7 +1547,7 @@ function ng_BeginMeasureElement(o)
       p = p.parentNode;
     }
     //compute height and width again
-    var fix7=o.offsetLeft; //IE fix
+    ng_IE7RedrawFix(o);
 
     if(arr.length)
     {
@@ -1697,7 +1703,7 @@ function ng_SetStyleHeight(o,v)
  */
 function ng_OuterWidth(o)
 {
-  var fix7=o.offsetLeft; // IE7 measure fix
+  ng_IE7RedrawFix(o);
   var w=ng_GetStylePx(o.offsetWidth);
   if(!w)
   {
@@ -1723,7 +1729,7 @@ function ng_OuterWidth(o)
  */
 function ng_OuterHeight(o)
 {
-  var fix7=o.offsetLeft; // IE7 measure fix
+  ng_IE7RedrawFix(o);
   var h=ng_GetStylePx(o.offsetHeight);
   if(!h)
   {
@@ -1794,7 +1800,7 @@ function ng_SetOuterHeight(o,v)
 function ng_ClientWidth(o)
 {
   if(!o) return 0;
-  var fix7=o.offsetLeft; // IE7 measure fix
+  ng_IE7RedrawFix(o);
   var w=ng_GetStylePx(o.clientWidth);
   if(!w) 
   {
@@ -1826,7 +1832,7 @@ function ng_ClientWidth(o)
 function ng_ClientHeight(o)
 {
   if(!o) return 0;  
-  var fix7=o.offsetLeft; // IE7 measure fix
+  ng_IE7RedrawFix(o);
   var h=ng_GetStylePx(o.clientHeight);
   if(!h) 
   {
@@ -2735,7 +2741,7 @@ function ngrpc_sendIFrameRequest(url, params)
     ifrm.id = fid;
     ifrm.style.visibility = "hidden";
     document.body.appendChild(ifrm);
-    var fix7=document.body.offsetLeft; // IE7 fix
+    ng_IE7RedrawFix(document.body);
   }
   var doc = (ifrm.contentDocument ? ifrm.contentDocument : ifrm.contentWindow.document);
   if (!doc) return false;
