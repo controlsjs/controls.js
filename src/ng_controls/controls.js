@@ -8877,6 +8877,9 @@ function nge_BeginMobileKeyboard()
     ae.style.bottom='';
     ae.style.marginBottom=ng_WindowHeight();
 
+    // IE7 redraw fix
+    var fix7=document.body.offsetLeft;
+
     // Disable MobileKeyboard mode if there will be no resize during following 1sec
     if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
     ngApp.MobileKeyboardTimer=setTimeout(function() {
@@ -8910,6 +8913,9 @@ function nge_FinishMobileKeyboard() {
     ae.style.bottom=ngApp.SavedAppBottom;
     ae.style.height=ngApp.SavedAppHeight;
     ae.style.marginBottom=ngApp.SavedAppMarginBottom;
+    // IE7 redraw fix
+    var fix7=document.body.offsetLeft;
+
     delete ngApp.SavedAppBottom;
     delete ngApp.SavedAppHeight;
     delete ngApp.SavedAppMarginBottom;
