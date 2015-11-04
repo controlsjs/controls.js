@@ -99,8 +99,7 @@ function ngStartModalControl()
         o.style.zIndex=ngModalZIndexDelta;
         o.style.display='block';
         o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
-        // IE7 redraw fix
-        var fix7=o.offsetLeft;
+        ng_IE7RedrawFix(o);
       } 
     }
   }  
@@ -138,8 +137,7 @@ function ngStopModalControl()
       {
         o.style.display='none';
         o.style.visibility='hidden'; // IE7 sometimes don't hide elements if display is none
-        // IE7 redraw fix
-        var fix7=o.offsetLeft;
+        ng_IE7RedrawFix(o);
       }
     }
   }

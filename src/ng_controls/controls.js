@@ -1907,8 +1907,8 @@ function ngc_SetVisible(v)
           o.style.display=(v ? 'block' : 'none');
           o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none
         }
-        // IE7 redraw fix
-        var fix7=document.body.offsetLeft;
+
+        ng_IE7RedrawFix(document.body);
       }
     }
     if(this.Visible!=v)
@@ -1918,7 +1918,7 @@ function ngc_SetVisible(v)
 
       // IE7 redraw fix
       var o=this.Elm();
-      if(o) { var fix7=o.offsetLeft; }
+      if(o) { ng_IE7RedrawFix(o); }
 
       if(this.OnVisibleChanged) this.OnVisibleChanged(this);
 
@@ -2023,8 +2023,7 @@ function ngc_Update(recursive)
       }
       ng_EndMeasureElement(o);
     }
-    // IE7 redraw fix
-    var fix7=o.offsetLeft;
+    ng_IE7RedrawFix(o);
   }
   this.Attach();
   if(this.OnUpdated) this.OnUpdated(this,o);
@@ -4610,8 +4609,7 @@ function nga_DoRunFinal()
   var o=document.getElementById('ngAppLoading');
   if(o) o.className='ngAppLoaded';
 
-  // IE7 Fix redraw
-  var fix7=document.body.offsetLeft;
+  ng_IE7RedrawFix(document.body);
 }
 
 function nga_DoRun()
@@ -8877,8 +8875,7 @@ function nge_BeginMobileKeyboard()
     ae.style.bottom='';
     ae.style.marginBottom=ng_WindowHeight();
 
-    // IE7 redraw fix
-    var fix7=document.body.offsetLeft;
+    ng_IE7RedrawFix(document.body);
 
     // Disable MobileKeyboard mode if there will be no resize during following 1sec
     if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
@@ -8913,8 +8910,8 @@ function nge_FinishMobileKeyboard() {
     ae.style.bottom=ngApp.SavedAppBottom;
     ae.style.height=ngApp.SavedAppHeight;
     ae.style.marginBottom=ngApp.SavedAppMarginBottom;
-    // IE7 redraw fix
-    var fix7=document.body.offsetLeft;
+
+    ng_IE7RedrawFix(document.body);
 
     delete ngApp.SavedAppBottom;
     delete ngApp.SavedAppHeight;
@@ -11882,8 +11879,7 @@ function ngtbc_OnSetVisible(c,v)
         o.style.display=(v ? 'block' : 'none');
         o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none
       }
-      // IE7 redraw fix
-      var fix7=document.body.offsetLeft;
+      ng_IE7RedrawFix(document.body);
     }
   }
   if(c.Visible!=v)

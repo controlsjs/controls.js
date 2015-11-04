@@ -42,8 +42,7 @@ function ngapc_OnSetVisible(c,v)
         o.style.display=(v ? 'block' : 'none'); 
         o.style.visibility=(v ? 'visible' : 'hidden'); // IE7 sometimes don't hide elements if display is none 
       }
-      // IE7 redraw fix
-      var fix7=document.body.offsetLeft;
+      ng_IE7RedrawFix(document.body);
     }
   }
   if(c.Visible!=v)
