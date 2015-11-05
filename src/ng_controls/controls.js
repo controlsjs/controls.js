@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2014 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2015 Position s.r.o.';
 
 /**
  *  Variable: ngApp
@@ -64,6 +64,7 @@ function ngHASDESIGNINFO() {
 if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
 ngc_Lang['en']['ngAppOldControlsVersion']='Application requires newer version of Controls.js!\nRequired %s.%s, used %s.%s.\n\nApplication terminated!';
+ngc_Lang['en']['ngEmptyString']=''; // Don't define that in other languages
 
 /**
  *  Variable: ngc_SupportedLangs
