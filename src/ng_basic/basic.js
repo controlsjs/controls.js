@@ -2821,11 +2821,11 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
     var rpc=this;
     xmlhttp.onreadystatechange=function()
     {
-      if((rpc.OnHTTPReadyStateChanged)&&(!ngVal(rpc.OnHTTPReadyStateChanged(rpc,xmlhttp),false))) return;
+      if((rpc.OnHTTPReadyStateChanged)&&(!ngVal(rpc.OnHTTPReadyStateChanged(rpc,xmlhttp,reqinfo),false))) return;
       if(xmlhttp.readyState==4) 
       {
-        if((xmlhttp.status==200)||(xmlhttp.status==304)||(xmlhttp.status==0)) callback(rpc, xmlhttp.responseText, xmlhttp);
-        else if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp);                   
+        if((xmlhttp.status==200)||(xmlhttp.status==304)||(xmlhttp.status==0)) callback(rpc, xmlhttp.responseText, xmlhttp, reqinfo);
+        else if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);                   
       }      
     }
   }
@@ -3002,8 +3002,8 @@ function ngrpc_sendRequest(url, nocache)
         if(params!='') url=ng_AddURLParam(url, params);
       }
       else ri.PostParams=params;
-      return this.sendHttpRequest(url, function(rpc, response, xmlhttp) {
-        if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp),false))) 
+      return this.sendHttpRequest(url, function(rpc, response, xmlhttp, reqinfo) {
+        if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false))) 
           return;
 
         switch(type)
