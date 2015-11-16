@@ -35,6 +35,15 @@ module.exports = function(grunt) {
         'libs/lib_json2/*.js'
     ],
 
+    controlsjs_di: [
+        'src/ng_controls/designinfo/*.js'
+    ],
+
+    controlsjsvm_di: [
+        'src/ng_controls/designinfo/*.js',
+        'src/ng_controls/viewmodel/designinfo/*.js'
+    ],
+
     ng_winxp: [
         'src/ng_winxp/*.js'
     ],
@@ -89,6 +98,14 @@ module.exports = function(grunt) {
   {
     return 'build/debug/'+(typeof path === 'undefined' ? '' : path);
   }
+
+  function compilerfiles(dest,files) {
+    var files=getFiles(files);
+    for(var i=2;i<arguments.length;i++) files.push(arguments[i]);
+    var f={};
+    f[releaseBuild(dest)]=files;
+    return f;
+  }
   
   // Project configuration.
   grunt.initConfig({
@@ -111,7 +128,7 @@ module.exports = function(grunt) {
                      ' * (c) Steven Sanderson - <%= pkg.lib_knockout.homepage %>\n' +
                      ' * License: <%= pkg.lib_knockout.licenses[0].type %> (<%= pkg.lib_knockout.licenses[0].url %>)\n' +
                      ' */\n\n',
-    
+
     copy: {
       ng_basic: {
         expand: true, 
@@ -236,6 +253,16 @@ module.exports = function(grunt) {
         dest:  releaseBuild('controls-vm.js')
       },
 
+      ng_controls_di: {
+        src:  getFiles('controlsjs_di'),
+        dest: debugBuild('designinfo/controls_di.js')
+      },
+      ng_controlsvm_di: {
+        src:  getFiles('controlsjsvm_di'),
+        dest: debugBuild('designinfo/controls-vm_di.js')
+      },
+
+
       // Libraries
       ng_winxp_debug: {
         src:   getFiles('ng_winxp'),
@@ -252,119 +279,83 @@ module.exports = function(grunt) {
 
     },
         
-    'closure-compiler': {
+    'closurecompiler': {
       // Loader
       loader: {
-        js:           getFiles('loader'),
-        jsOutputFile: releaseBuild('loader.js'),
-        noreport: true,
+        files: compilerfiles('loader.js','loader'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       loaderbar: {
-        js:           getFiles('loader','src/loader/progress-bar.js'),
-        jsOutputFile: releaseBuild('loader-bar.js'),
-        noreport: true,
+        files: compilerfiles('loader-bar.js','loader','src/loader/progress-bar.js'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       loaderpercent: {
-        js:           getFiles('loader','src/loader/progress-percent.js'),
-        jsOutputFile: releaseBuild('loader-percent.js'),
-        noreport: true,
+        files: compilerfiles('loader-percent.js','loader','src/loader/progress-percent.js'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       loaderimage: {
-        js:           getFiles('loader','src/loader/progress-image.js'),
-        jsOutputFile: releaseBuild('loader-image.js'),
-        noreport: true,
+        files: compilerfiles('loader-image.js','loader','src/loader/progress-image.js'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       
       // Controls.js
       libs: {
-        js:           getFiles('libs'),
-        jsOutputFile: releaseBuild('libs.js'),
-        noreport: true,
+        files: compilerfiles('libs.js','libs'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       lib_knockout: {
-        js:           getFiles('lib_knockout'),
-        jsOutputFile: releaseBuild('libs/lib_knockout/knockout.js'),
-        noreport: true,
+        files: compilerfiles('libs/lib_knockout/knockout.js','lib_knockout'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       lib_hammerjs: {
-        js:           getFiles('lib_hammerjs'),
-        jsOutputFile: releaseBuild('libs/lib_hammerjs/hammer.js'),
-        noreport: true,
+        files: compilerfiles('libs/lib_hammerjs/hammer.js','lib_hammerjs'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
 
       controlsjs: {
-        js:           getFiles('controlsjs'),
-        jsOutputFile: releaseBuild('controls-notouch.js'),
-        noreport: true,
+        files: compilerfiles('controls-notouch.js','controlsjs'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       controlsjsvm: {
-        js:           getFiles('controlsjsvm'),
-        jsOutputFile: releaseBuild('controls-vm-notouch.js'),
-        noreport: true,
+        files: compilerfiles('controls-vm-notouch.js','controlsjsvm'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
 
       // Libraries
       ng_winxp: {
-        js:           getFiles('ng_winxp'),
-        jsOutputFile: releaseBuild('libs/ng_winxp/winxp.js'),
-        noreport: true,
+        files: compilerfiles('libs/ng_winxp/winxp.js','ng_winxp'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       ng_wineight: {
-        js:           getFiles('ng_wineight'),
-        jsOutputFile: releaseBuild('libs/ng_wineight/wineight.js'),
-        noreport: true,
+        files: compilerfiles('libs/ng_wineight/wineight.js','ng_wineight'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
       ng_wireframe: {
-        js:           getFiles('ng_wireframe'),
-        jsOutputFile: releaseBuild('libs/ng_wireframe/wireframe.js'),
-        noreport: true,
+        files: compilerfiles('libs/ng_wireframe/wireframe.js','ng_wireframe'),
         options: {
-            compilation_level: 'SIMPLE_OPTIMIZATIONS',
-            warning_level:"DEFAULT"
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       }
 
@@ -547,6 +538,9 @@ module.exports = function(grunt) {
     },
     
     clean: {
+      debug: [ debugBuild() ],
+      release: [ releaseBuild() ],
+
       lib_knockout_debug: [ debugBuild('libs/lib_knockout/') ],
       lib_knockout:       [ releaseBuild('libs/lib_knockout/') ],
       lib_hammerjs_debug: [ debugBuild('libs/lib_hammerjs/') ],
@@ -556,7 +550,7 @@ module.exports = function(grunt) {
 
   // Load the plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-closure-compiler');
+  grunt.loadNpmTasks('grunt-closurecompiler');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-banner');
@@ -566,6 +560,11 @@ module.exports = function(grunt) {
   // Default task(s).
 
   // controlsjs
+  grunt.registerTask('controlsjs-di', [
+    'concat:ng_controls_di',
+    'concat:ng_controlsvm_di'
+  ]);
+
   grunt.registerTask('controlsjs-debug', [
     'copy:ng_basic_debug',
     'copy:ng_controls_debug',
@@ -588,19 +587,21 @@ module.exports = function(grunt) {
     'usebanner:controlsjstouch_debug',
 
     'clean:lib_knockout_debug',
-    'clean:lib_hammerjs_debug'
+    'clean:lib_hammerjs_debug',
+
+    'controlsjs-di'
   ]);
 
   grunt.registerTask('controlsjs-release', [
-    'closure-compiler:loader',
-    'closure-compiler:loaderbar',
-    'closure-compiler:loaderpercent',
-    'closure-compiler:loaderimage',
-    'closure-compiler:libs',
-    'closure-compiler:lib_hammerjs',
-    'closure-compiler:lib_knockout',
-    'closure-compiler:controlsjs',
-    'closure-compiler:controlsjsvm',
+    'closurecompiler:loader',
+    'closurecompiler:loaderbar',
+    'closurecompiler:loaderpercent',
+    'closurecompiler:loaderimage',
+    'closurecompiler:libs',
+    'closurecompiler:lib_hammerjs',
+    'closurecompiler:lib_knockout',
+    'closurecompiler:controlsjs',
+    'closurecompiler:controlsjsvm',
     'concat:controlsjs_touch',
     'concat:controlsjsvm_touch',
 
@@ -624,7 +625,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('ng_winxp-release', [
-    'closure-compiler:ng_winxp',
+    'closurecompiler:ng_winxp',
     'copy:ng_winxp',
     'cssmin:ng_winxp',
     'usebanner:ng_winxp'
@@ -638,7 +639,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('ng_wineight-release', [
-    'closure-compiler:ng_wineight',
+    'closurecompiler:ng_wineight',
     'copy:ng_wineight',
     'cssmin:ng_wineight',
     'usebanner:ng_wineight'
@@ -648,24 +649,33 @@ module.exports = function(grunt) {
   grunt.registerTask('ng_wireframe-debug', [
     'concat:ng_wireframe_debug',
     'copy:ng_wireframe_debug',
-    'cssmin:ng_wireframe',
     'usebanner:ng_wireframe_debug'
   ]);
 
   grunt.registerTask('ng_wireframe-release', [
-    'closure-compiler:ng_wireframe',
+    'closurecompiler:ng_wireframe',
     'copy:ng_wireframe',
+    'cssmin:ng_wireframe',
     'usebanner:ng_wireframe'
   ]);
 
+  grunt.registerTask('clean-debug', [
+    'clean:debug'
+  ]);
+
+  grunt.registerTask('clean-release', [
+    'clean:release'
+  ]);
 
   grunt.registerTask('debug', [
+    'clean-debug',
     'controlsjs-debug',
     'ng_winxp-debug',
     'ng_wineight-debug',
     'ng_wireframe-debug'
   ]);
   grunt.registerTask('release', [
+    'clean-release',
     'controlsjs-release',
     'ng_winxp-release',
     'ng_wineight-release',
