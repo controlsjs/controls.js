@@ -521,6 +521,7 @@ var WinEightControls = {
     var libpath=ngLibPath('ng_wineight');
     var ctrlimages=this.ControlImages;
     var winimages = this.Images;
+    var skinfnc={};
 
     ngApp.AddEvent('OnRunInternalFinished', function() {
       var color=wineight.BackgroundColor;
@@ -636,7 +637,7 @@ var WinEightControls = {
       return ngCreateControlAsType(def, 'ngImage', ref, parent);
     });
 
-    function Create_weCheckBox(def,ref,parent,imgleft,imgright,controltype) {
+    skinfnc.Create_weCheckBox=function(def,ref,parent,imgleft,imgright,controltype) {
       if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weCheckBoxLight' : 'weCheckBoxDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
 
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
@@ -658,7 +659,7 @@ var WinEightControls = {
      */
     ngRegisterControlType('weCheckBox', function(def,ref,parent) {
       var th=theme(def);
-      return Create_weCheckBox(def,ref,parent,(th ? winimages.CheckBoxLeftLight : winimages.CheckBoxLeftDark),(th ? winimages.CheckBoxRightLight : winimages.CheckBoxRightDark));
+      return skinfnc.Create_weCheckBox(def,ref,parent,(th ? winimages.CheckBoxLeftLight : winimages.CheckBoxLeftDark),(th ? winimages.CheckBoxRightLight : winimages.CheckBoxRightDark));
     });
 
     /*  Class: weRadioButton
@@ -667,7 +668,7 @@ var WinEightControls = {
     ngRegisterControlType('weRadioButton', function(def,ref,parent) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weRadioLight' : 'weRadioDark');
-      return Create_weCheckBox(def,ref,parent,(th ? winimages.RadioLeftLight : winimages.RadioLeftDark),(th ? winimages.RadioRightLight : winimages.RadioRightDark), 'ngRadioButton');
+      return skinfnc.Create_weCheckBox(def,ref,parent,(th ? winimages.RadioLeftLight : winimages.RadioLeftDark),(th ? winimages.RadioRightLight : winimages.RadioRightDark), 'ngRadioButton');
     });
 
     /*  Class: weToggleSwitch
@@ -677,7 +678,7 @@ var WinEightControls = {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weToggleSwitchLight' : 'weToggleSwitchDark')+(!th && typeof def.ColorScheme === 'undefined' ? '' : ' we'+colorscheme(def));
       var img=(th ? winimages.ToggleSwitchLight : winimages.ToggleSwitchDark);
-      var c=Create_weCheckBox(def,ref,parent,img,img);
+      var c=skinfnc.Create_weCheckBox(def,ref,parent,img,img);
       if(c)
       {
         c.OnGetText=function(c) { return ''; };
@@ -698,7 +699,7 @@ var WinEightControls = {
      *  Standard button control (based on <ngButton>).
      */
     /*<>*/
-    function Create_weButton(def,ref,parent)
+    skinfnc.Create_weButton=function(def,ref,parent)
     {
       var th=theme(def);
       if(typeof def.className === 'undefined')
@@ -738,7 +739,7 @@ var WinEightControls = {
 
 
     ngRegisterControlType('weButton', function(def,ref,parent) {
-      return Create_weButton(def,ref,parent);
+      return skinfnc.Create_weButton(def,ref,parent);
     });
 
     /*  Class: weAppButton
@@ -754,7 +755,7 @@ var WinEightControls = {
      *  Type: Array
      *  Default value: *undefined*
      */
-    function Create_weAppButton(def,ref,parent)
+    skinfnc.Create_weAppButton=function(def,ref,parent)
     {
       var th=theme(def);
       var img=(th ? winimages.AppButtonLight : winimages.AppButtonDark);
@@ -798,7 +799,7 @@ var WinEightControls = {
       return c;
     }
 
-    ngRegisterControlType('weAppButton', function(def,ref,parent) { return Create_weAppButton(def,ref,parent); });
+    ngRegisterControlType('weAppButton', function(def,ref,parent) { return skinfnc.Create_weAppButton(def,ref,parent); });
 
     /*  Class: weLabel
      *  Standard label control (based on <ngButton>).
@@ -821,7 +822,7 @@ var WinEightControls = {
      *  Standard group control (based on <ngGroup>).
      */
     /*<>*/
-    function Create_weGroup(def,ref,parent) {
+    skinfnc.Create_weGroup=function(def,ref,parent) {
       if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weGroupBoxLight' : 'weGroupBoxDark')+' we'+colorscheme(def)+'Text';
       var c=ngCreateControlAsType(def, 'ngGroup', ref, parent);
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
@@ -829,8 +830,8 @@ var WinEightControls = {
       });
       return c;
     }
-    ngRegisterControlType('weGroup', Create_weGroup);
-    ngRegisterControlType('weGroupBox', Create_weGroup);
+    ngRegisterControlType('weGroup', skinfnc.Create_weGroup);
+    ngRegisterControlType('weGroupBox', skinfnc.Create_weGroup);
 
     this.weEdit_AddProperties=function(def,c,th)
     {
@@ -906,7 +907,7 @@ var WinEightControls = {
       }
     };
 
-    function Create_weEdit(def,ref,parent) {
+    skinfnc.Create_weEdit=function(def,ref,parent) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       wineight.Prepare_DropDown(def);
@@ -921,14 +922,14 @@ var WinEightControls = {
      *  Standard edit control (based on <ngEdit>).
      */
     /*<>*/
-    ngRegisterControlType('weEdit', function(def,ref,parent) { return Create_weEdit(def,ref,parent); });
-    ngRegisterControlType('weEditBox', function(def,ref,parent) { return Create_weEdit(def,ref,parent); });
+    ngRegisterControlType('weEdit', function(def,ref,parent) { return skinfnc.Create_weEdit(def,ref,parent); });
+    ngRegisterControlType('weEditBox', function(def,ref,parent) { return skinfnc.Create_weEdit(def,ref,parent); });
 
     /*  Class: weEditBoxBtn
      *  Standard edit control with ellipsis button (based on <weEdit>).
      */
     /*<>*/
-    function Create_weEditBoxBtn(def,ref,parent,basetype) {
+    skinfnc.Create_weEditBoxBtn=function(def,ref,parent,basetype) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       wineight.Prepare_DropDown(def);
@@ -969,13 +970,13 @@ var WinEightControls = {
       return c;
     }
 
-    ngRegisterControlType('weEditBoxBtn', function(def,ref,parent) { return Create_weEditBoxBtn(def,ref,parent); });
+    ngRegisterControlType('weEditBoxBtn', function(def,ref,parent) { return skinfnc.Create_weEditBoxBtn(def,ref,parent); });
 
     /*  Class: weSearchBox
      *  Standard search box control (based on <weEdit>).
      */
     /*<>*/
-    function Create_weSearchBox(def,ref,parent,basetype)
+    skinfnc.Create_weSearchBox=function(def,ref,parent,basetype)
     {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
@@ -1021,7 +1022,7 @@ var WinEightControls = {
       // c.OnSearch=null;
       return c;
     }
-    ngRegisterControlType('weSearchBox', function(def,ref,parent) { return Create_weSearchBox(def,ref,parent); });
+    ngRegisterControlType('weSearchBox', function(def,ref,parent) { return skinfnc.Create_weSearchBox(def,ref,parent); });
 
     /*  Class: weEditNum
      *  Standard edit number control with spin buttons (based on <ngEditNum>).
@@ -1049,7 +1050,7 @@ var WinEightControls = {
      *  Returns:
      *    -
      */
-    function Create_weEditNum(def,ref,parent,basetype)
+    skinfnc.Create_weEditNum=function(def,ref,parent,basetype)
     {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
@@ -1065,8 +1066,8 @@ var WinEightControls = {
       }
       return c;
     }
-    ngRegisterControlType('weEditNum', function(def,ref,parent) { return Create_weEditNum(def,ref,parent); });
-    ngRegisterControlType('weEditBoxNum', function(def,ref,parent) { return Create_weEditNum(def,ref,parent); });
+    ngRegisterControlType('weEditNum', function(def,ref,parent) { return skinfnc.Create_weEditNum(def,ref,parent); });
+    ngRegisterControlType('weEditBoxNum', function(def,ref,parent) { return skinfnc.Create_weEditNum(def,ref,parent); });
 
     /*  Class: weColorEdit
      *  Standard color edit control (based on <ngDropDown>).
@@ -1094,7 +1095,7 @@ var WinEightControls = {
      *  Returns:
      *    -
      */
-    function Create_weColorEdit(def,ref,parent,basetype)
+    skinfnc.Create_weColorEdit=function(def,ref,parent,basetype)
     {
       var th=theme(def);
       ng_MergeDef(def, {
@@ -1143,15 +1144,15 @@ var WinEightControls = {
       };
       return c;
     }
-    ngRegisterControlType('weColorEdit', function(def,ref,parent) { return Create_weColorEdit(def,ref,parent); });
-    ngRegisterControlType('weColorEditBox', function(def,ref,parent) { return Create_weColorEdit(def,ref,parent); });
+    ngRegisterControlType('weColorEdit', function(def,ref,parent) { return skinfnc.Create_weColorEdit(def,ref,parent); });
+    ngRegisterControlType('weColorEditBox', function(def,ref,parent) { return skinfnc.Create_weColorEdit(def,ref,parent); });
 
     if (ngUserControls['maskedit'])
     {
       /*  Class: weMaskEdit
        *  Standard mask edit control (based on <ngMaskEdit>).
        */
-      function Create_weMaskEdit(def, ref, parent)
+      skinfnc.Create_weMaskEdit=function(def, ref, parent)
       {
         if (typeof(def.Data)==='undefined') def.Data = new Object();
         var invalid = ngVal(def.Data.Invalid, false);
@@ -1230,8 +1231,8 @@ var WinEightControls = {
 
         return c;
       }
-      ngRegisterControlType('weMaskEdit', function(def,ref,parent) { return Create_weMaskEdit(def,ref,parent); });
-      ngRegisterControlType('weMaskEditBox', function(def,ref,parent) { return Create_weMaskEdit(def,ref,parent); });
+      ngRegisterControlType('weMaskEdit', function(def,ref,parent) { return skinfnc.Create_weMaskEdit(def,ref,parent); });
+      ngRegisterControlType('weMaskEditBox', function(def,ref,parent) { return skinfnc.Create_weMaskEdit(def,ref,parent); });
     }
 
     /*  Class: weDropDown
@@ -1260,7 +1261,7 @@ var WinEightControls = {
      *  Returns:
      *    -
      */
-    function Create_weDropDown(def,ref,parent,basetype,dropdownlist) {
+    skinfnc.Create_weDropDown=function(def,ref,parent,basetype,dropdownlist) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngEdit'),dropdownlist);
@@ -1270,7 +1271,7 @@ var WinEightControls = {
       wineight.Prepare_DropDown(def);
       return c;
     }
-    ngRegisterControlType('weDropDown', function(def,ref,parent) { return Create_weDropDown(def,ref,parent,'ngEdit'); });
+    ngRegisterControlType('weDropDown', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngEdit'); });
 
     /*  Class: weDropDownList
      *  Standard drop down list control (based on <ngDropDownList>).
@@ -1298,13 +1299,13 @@ var WinEightControls = {
      *  Returns:
      *    -
      */
-    ngRegisterControlType('weDropDownList', function(def,ref,parent) { return Create_weDropDown(def,ref,parent,'ngEdit',true); });
+    ngRegisterControlType('weDropDownList', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngEdit',true); });
 
     /*  Class: weMemo
      *  Standard memo control (based on <ngMemo>).
      */
     /*<>*/
-    function Create_weMemo(def,ref,parent,basetype) {
+    skinfnc.Create_weMemo=function(def,ref,parent,basetype) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weMemoLight' : 'weMemoDark');
       var c=ngCreateControlAsType(def, ngVal(basetype, 'ngMemo'), ref, parent);
@@ -1359,9 +1360,9 @@ var WinEightControls = {
       };
       return c;
     }
-    ngRegisterControlType('weMemo', function(def,ref,parent) { return Create_weMemo(def,ref,parent); });
+    ngRegisterControlType('weMemo', function(def,ref,parent) { return skinfnc.Create_weMemo(def,ref,parent); });
 
-    function Create_wePages(def,ref,parent) {
+    skinfnc.Create_wePages=function(def,ref,parent) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'wePagesLight' : 'wePagesDark')+' we'+colorscheme(def)+'Text';
       var c=ngCreateControlAsType(def, 'ngPages', ref, parent);
@@ -1395,7 +1396,7 @@ var WinEightControls = {
      *  Standard pages control (based on <ngPages>).
      */
     /*<>*/
-    ngRegisterControlType('wePages', function(def,ref,parent) { return Create_wePages(def,ref,parent); });
+    ngRegisterControlType('wePages', function(def,ref,parent) { return skinfnc.Create_wePages(def,ref,parent); });
 
     /*  Class: weSections
      *  Standard pages control (based on <ngPages>).
@@ -1431,7 +1432,7 @@ var WinEightControls = {
       return c;
     });
 
-    function Create_weProgressImg(def,ref,parent,img,h,th) {
+    skinfnc.Create_weProgressImg=function(def,ref,parent,img,h,th) {
 
       ng_MergeDef(def, {
         className: (th ? 'weLabelLight' : 'weLabelDark'),
@@ -1460,7 +1461,7 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlType('weProgressRing', function(def,ref,parent) {
       var th=theme(def);
-      return Create_weProgressImg(def,ref,parent,(th ? 6 : 7),40,th);
+      return skinfnc.Create_weProgressImg(def,ref,parent,(th ? 6 : 7),40,th);
     });
     /*  Class: weProgressDot
      *  Standard progress dot control (based on <ngText>).
@@ -1468,7 +1469,7 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlType('weProgressDot', function(def,ref,parent) {
       var th=theme(def);
-      return Create_weProgressImg(def,ref,parent,(th ? 8 : 9),22,th);
+      return skinfnc.Create_weProgressImg(def,ref,parent,(th ? 8 : 9),22,th);
     });
     /*  Class: weProgressLine
      *  Standard progress dot control (based on <ngText>).
@@ -1476,7 +1477,7 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlType('weProgressLine', function(def,ref,parent) {
       var th=theme(def);
-      return Create_weProgressImg(def,ref,parent,(th ? 4 : 5),40,th);
+      return skinfnc.Create_weProgressImg(def,ref,parent,(th ? 4 : 5),40,th);
     });
 
     /**
@@ -1488,7 +1489,7 @@ var WinEightControls = {
        *  Standard list control (based on <ngList>).
        */
       /*<>*/
-      function Create_weList(def,ref,parent) {
+      skinfnc.Create_weList=function(def,ref,parent) {
         var th=theme(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weListBoxLight we'+colorscheme(def)+'ListBox': 'weListBoxDark');
         var c=ngCreateControlAsType(def, 'ngList', ref, parent);
@@ -1563,9 +1564,9 @@ var WinEightControls = {
 
         return c;
       }
-      ngRegisterControlType('weList', function(def,ref,parent) { return Create_weList(def,ref,parent); });
-      ngRegisterControlType('weListBox', function(def,ref,parent) { return Create_weList(def,ref,parent); });
-      ngRegisterControlType('weTreeList', function(def,ref,parent) { return Create_weList(def,ref,parent); });
+      ngRegisterControlType('weList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
+      ngRegisterControlType('weListBox', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
+      ngRegisterControlType('weTreeList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
 
 
       /*  Class: wePageList
@@ -1637,7 +1638,7 @@ var WinEightControls = {
         };
       };
 
-      function Create_wePageList(def,ref,parent,controltype,listtype)
+      skinfnc.Create_wePageList=function(def,ref,parent,controltype,listtype)
       {
         var th=theme(def);
         ng_MergeDef(def, {
@@ -1698,8 +1699,8 @@ var WinEightControls = {
 
         return ngCreateControlAsType(def, ngVal(controltype,'ngPageList'), ref, parent);
       }
-      ngRegisterControlType('wePageList', function (def,ref,parent) { return Create_wePageList(def,ref,parent,'ngPageList'); });
-      ngRegisterControlType('wePageTreeList', function (def,ref,parent) { return Create_wePageList(def,ref,parent,'ngPageList','weTreeList'); });
+      ngRegisterControlType('wePageList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList'); });
+      ngRegisterControlType('wePageTreeList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList','weTreeList'); });
     }
 
     /**
@@ -1743,7 +1744,7 @@ var WinEightControls = {
          *    'none' - ...
          */
         /*<>*/
-      function Create_weSplitPanel(def,ref,parent)
+      skinfnc.Create_weSplitPanel=function(def,ref,parent)
       {
         var th=theme(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weSplitPanelLight' : 'weSplitPanelDark')+' we'+colorscheme(def)+'Split';
@@ -1756,13 +1757,13 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weSplitPanel', function(def,ref,parent) { return Create_weSplitPanel(def,ref,parent); });
+      ngRegisterControlType('weSplitPanel', function(def,ref,parent) { return skinfnc.Create_weSplitPanel(def,ref,parent); });
 
       /*  Class: weDropPanel
        *  Drop-down panel control (based on <ngDropPanel>).
        */
       /*<>*/
-      function Create_weDropPanel(def,ref,parent)
+      skinfnc.Create_weDropPanel=function(def,ref,parent)
       {
         if(typeof def.Theme === 'undefined') def.Theme=wineight.InvTheme();
         var th=theme(def);
@@ -1787,7 +1788,7 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weDropPanel', function(def,ref,parent) { return Create_weDropPanel(def,ref,parent); });
+      ngRegisterControlType('weDropPanel', function(def,ref,parent) { return skinfnc.Create_weDropPanel(def,ref,parent); });
     }
 
     /**
@@ -1803,7 +1804,7 @@ var WinEightControls = {
        *  Standard dialog control (based on <ngWindow>).
        */
       /*<>*/
-      function Create_weWindow(def,ref,parent) {
+      skinfnc.Create_weWindow=function(def,ref,parent) {
         var dialog=(def.Type === 'weDialog');
         var th=theme(def);
         if(typeof def.className === 'undefined') def.className=(dialog ? 'weDialog' : 'weWindow')+(th ? 'Light' : 'Dark') +' we'+colorscheme(def) +' we'+colorscheme(def)+'Text';
@@ -1929,8 +1930,8 @@ var WinEightControls = {
         }
         return c;
       }
-      ngRegisterControlType('weWindow', function(def,ref,parent) { return Create_weWindow(def,ref,parent); });
-      ngRegisterControlType('weDialog', function(def,ref,parent) { return Create_weWindow(def,ref,parent); });
+      ngRegisterControlType('weWindow', function(def,ref,parent) { return skinfnc.Create_weWindow(def,ref,parent); });
+      ngRegisterControlType('weDialog', function(def,ref,parent) { return skinfnc.Create_weWindow(def,ref,parent); });
 
       /*  Class: weHint
        *  Standard hint control (based on <ngHint>).
@@ -2077,7 +2078,7 @@ var WinEightControls = {
         this.Update();
       }
 
-      function Create_weMessageDlg(def,ref,parent) {
+      skinfnc.Create_weMessageDlg=function(def,ref,parent) {
         var th=theme(def);
         var po=parent;
         if((po)&&(po==document.body)) po=null;
@@ -2215,18 +2216,18 @@ var WinEightControls = {
         return ngCreateControlAsType(def, 'ngMessageDlg', ref, parent);
       }
 
-      ngRegisterControlType('weMessageDlg', function(def,ref,parent) { return Create_weMessageDlg(def,ref,parent);});
+      ngRegisterControlType('weMessageDlg', function(def,ref,parent) { return skinfnc.Create_weMessageDlg(def,ref,parent);});
 
       /*  Class: dlgMessageBox
        *  Message box dialog (based on <weMessageDlg>).
        */
       /*<>*/
-      function Create_dlgMessageBox(def,ref,parent) {
+      skinfnc.Create_dlgMessageBox=function(def,ref,parent) {
         delete def.DialogType;
         def.DlgButtons=ngVal(def.DlgButtons,mbOK);
         return ngCreateControlAsType(def, 'weMessageDlg', ref, parent);
       }
-      ngRegisterControlType('weDlgMessageBox', function(def,ref,parent) { return Create_dlgMessageBox(def,ref,parent);});
+      ngRegisterControlType('weDlgMessageBox', function(def,ref,parent) { return skinfnc.Create_dlgMessageBox(def,ref,parent);});
 
       /*  Class: dlgInputBox
        *  Input box dialog (based on <weMessageDlg>).
@@ -2249,7 +2250,7 @@ var WinEightControls = {
        *  Default value: *''*
        */
       /*<>*/
-      function Create_dlgEditBox(def,ref,parent) {
+      skinfnc.Create_dlgEditBox=function(def,ref,parent) {
 
         var th=theme(def);
         delete def.DialogType;
@@ -2330,7 +2331,7 @@ var WinEightControls = {
         return c;
       };
 
-      ngRegisterControlType('weDlgInputBox', function(def,ref,parent) { return Create_dlgEditBox(def,ref,parent);});
+      ngRegisterControlType('weDlgInputBox', function(def,ref,parent) { return skinfnc.Create_dlgEditBox(def,ref,parent);});
 
       /*  Class: dlgDropDownBox
        *  Dropdown dialog (based on <weMessageDlg>).
@@ -2366,7 +2367,7 @@ var WinEightControls = {
       /*  Object: Edit
        *  <weDropDown>
        */
-      ngRegisterControlType('weDlgDropDownBox', function(def,ref,parent) { return Create_dlgEditBox(def,ref,parent);});
+      ngRegisterControlType('weDlgDropDownBox', function(def,ref,parent) { return skinfnc.Create_dlgEditBox(def,ref,parent);});
       /*  Class: dlgDropDownListBox
        *  Dropdown list dialog (based on <weMessageDlg>).
        */
@@ -2401,7 +2402,7 @@ var WinEightControls = {
       /*  Object: Edit
        *  <weDropDownList>
        */
-      ngRegisterControlType('weDlgDropDownListBox', function(def,ref,parent) { return Create_dlgEditBox(def,ref,parent);});
+      ngRegisterControlType('weDlgDropDownListBox', function(def,ref,parent) { return skinfnc.Create_dlgEditBox(def,ref,parent);});
 
       /*  Class: dlgMemoBox
        *  Input memo dialog (based on <weMessageDlg>).
@@ -2430,7 +2431,7 @@ var WinEightControls = {
       /*  Object: Edit
        *  <weMemo>
        */
-      ngRegisterControlType('weDlgMemoBox', function(def,ref,parent) { return Create_dlgEditBox(def,ref,parent);});
+      ngRegisterControlType('weDlgMemoBox', function(def,ref,parent) { return skinfnc.Create_dlgEditBox(def,ref,parent);});
 
       /*  Class: dlgListBox
        *  List box dialog (based on <weMessageDlg>).
@@ -2453,7 +2454,7 @@ var WinEightControls = {
        *  Default value: *''*
        */
       /*<>*/
-      function Create_dlgListBox(def,ref,parent) {
+      skinfnc.Create_dlgListBox=function(def,ref,parent) {
         var th=theme(def);
         delete def.DialogType;
         def.DlgAllowEmpty=ngVal(def.DlgAllowEmpty,false);
@@ -2517,13 +2518,13 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weDlgListBox', function(def,ref,parent) { return Create_dlgListBox(def,ref,parent);});
+      ngRegisterControlType('weDlgListBox', function(def,ref,parent) { return skinfnc.Create_dlgListBox(def,ref,parent);});
 
       /*  Class: dlgProgressBox
        *  Progress box dialog (based on <weMessageDlg>).
        */
       /*<>*/
-      function Create_dlgProgressBox(def,ref,parent) {
+      skinfnc.Create_dlgProgressBox=function(def,ref,parent) {
         var th=theme(def);
         delete def.DialogType;
         ng_MergeDef(def, {
@@ -2558,13 +2559,13 @@ var WinEightControls = {
         return ngCreateControlAsType(def, 'weMessageDlg', ref, parent);
       }
 
-      ngRegisterControlType('weDlgProgressBox', function(def,ref,parent) { return Create_dlgProgressBox(def,ref,parent);});
+      ngRegisterControlType('weDlgProgressBox', function(def,ref,parent) { return skinfnc.Create_dlgProgressBox(def,ref,parent);});
 
       /*  Class: dlgWaitBox
        *  Wait box dialog (based on <weMessageDlg>).
        */
       /*<>*/
-      function Create_dlgWaitBox(def,ref,parent) {
+      skinfnc.Create_dlgWaitBox=function(def,ref,parent) {
         var th=theme(def);
         delete def.DialogType;
         ng_MergeDef(def, {
@@ -2593,13 +2594,13 @@ var WinEightControls = {
         return ngCreateControlAsType(def, 'weMessageDlg', ref, parent);
       }
 
-      ngRegisterControlType('weDlgWaitBox', function(def,ref,parent) { return Create_dlgWaitBox(def,ref,parent);});
+      ngRegisterControlType('weDlgWaitBox', function(def,ref,parent) { return skinfnc.Create_dlgWaitBox(def,ref,parent);});
 
       /*  Class: dlgAbout
        *  Application about dialog (based on <ngAboutDlg>).
        */
       /*<>*/
-      function Create_dlgAbout(def,ref,parent) {
+      skinfnc.Create_dlgAbout=function(def,ref,parent) {
         var th=theme(def);
         var po=parent;
         if((po)&&(po==document.body)) po=null;
@@ -2656,7 +2657,7 @@ var WinEightControls = {
         return ngCreateControlAsType(def, 'ngAboutDlg', ref, parent);
       }
 
-      ngRegisterControlType('weDlgAbout', function(def,ref,parent) { return Create_dlgAbout(def,ref,parent);});
+      ngRegisterControlType('weDlgAbout', function(def,ref,parent) { return skinfnc.Create_dlgAbout(def,ref,parent);});
     }
     /**
      * Calendar Controls
@@ -2667,7 +2668,7 @@ var WinEightControls = {
        *  Standard calendar control (based on <ngCalendar>).
        */
       /*<>*/
-      function Create_weCalendar(def,ref,parent) {
+      skinfnc.Create_weCalendar=function(def,ref,parent) {
         var th=theme(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weCalendarLight we'+colorscheme(def)+'Calendar' : 'weCalendarDark');
         var c=ngCreateControlAsType(def, 'ngCalendar', ref, parent);
@@ -2696,13 +2697,13 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weCalendar', function(def,ref,parent) { return Create_weCalendar(def,ref,parent); });
+      ngRegisterControlType('weCalendar', function(def,ref,parent) { return skinfnc.Create_weCalendar(def,ref,parent); });
 
       /*  Class: weEditDate
        *  Standard edit date control (based on <ngEditDate>).
        */
       /*<>*/
-      function Create_weEditDate(def,ref,parent,basetype) {
+      skinfnc.Create_weEditDate=function(def,ref,parent,basetype) {
         var th=theme(def);
         ng_MergeDef(def, {
           className: (th ? 'weEditLight' : 'weEditDark'),
@@ -2715,7 +2716,7 @@ var WinEightControls = {
         var dth=theme(def.DropDown);
         def.DropDown.className=(dth ? 'weCalendarLight we'+colorscheme(def)+'Calendar ' : 'weCalendarDark ')+def.DropDown.className;
 
-        var c=Create_weDropDown(def,ref,parent,ngVal(basetype,'ngEditDate'),false);
+        var c=skinfnc.Create_weDropDown(def,ref,parent,ngVal(basetype,'ngEditDate'),false);
         if(!c) return c;
         wineight.weEdit_AddProperties(def,c,th);
         c.DropDownButton.LeftImg=winimages.AppIcons[1]['Calendar'];
@@ -2724,13 +2725,13 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weEditDate', function(def,ref,parent) { return Create_weEditDate(def,ref,parent); });
+      ngRegisterControlType('weEditDate', function(def,ref,parent) { return skinfnc.Create_weEditDate(def,ref,parent); });
 
       /*  Class: weEditTime
        *  Standard edit date control (based on <ngEditTime>).
        */
       /*<>*/
-      function Create_weEditTime(def,ref,parent,basetype) {
+      skinfnc.Create_weEditTime=function(def,ref,parent,basetype) {
         var th=theme(def);
         var div=1;
         ng_MergeDef(def, {
@@ -2784,7 +2785,7 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weEditTime', function(def,ref,parent) { return Create_weEditTime(def,ref,parent); });
+      ngRegisterControlType('weEditTime', function(def,ref,parent) { return skinfnc.Create_weEditTime(def,ref,parent); });
     }
 
     /**
@@ -3411,7 +3412,7 @@ var WinEightControls = {
        *  Standard menu control (based on <ngMenu>).
        */
       /*<>*/
-      function Create_weMenu(def,ref,parent) {
+      skinfnc.Create_weMenu=function(def,ref,parent) {
         if(typeof def.Theme==='undefined') def.Theme=WE_LIGHT;
         var th=theme(def);
         ng_MergeDef(def, {
@@ -3451,7 +3452,7 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weMenu', function(def,ref,parent) { return Create_weMenu(def,ref,parent); });
+      ngRegisterControlType('weMenu', function(def,ref,parent) { return skinfnc.Create_weMenu(def,ref,parent); });
 
       /*  Class: weMenuBar
        *  Standard menu bar control (based on <ngMenuBar>).
@@ -3473,7 +3474,7 @@ var WinEightControls = {
        *  Button with menu control (based on <ngSplitButton>).
        */
       /*<>*/
-      function Create_weSplitButton(def,ref,parent) {
+      skinfnc.Create_weSplitButton=function(def,ref,parent) {
         var th=theme(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weSplitButtonLight' : 'weSplitButtonDark');
         var c=ngCreateControlAsType(def, 'ngSplitButton', ref, parent);
@@ -3491,12 +3492,12 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weSplitButton', function(def,ref,parent) { return Create_weSplitButton(def,ref,parent); });
+      ngRegisterControlType('weSplitButton', function(def,ref,parent) { return skinfnc.Create_weSplitButton(def,ref,parent); });
     }
 
     if (ngUserControls['fileuploader'])
     {
-      function Create_weFileUploader(def, ref, parent)
+      skinfnc.Create_weFileUploader=function(def, ref, parent)
       {
         ng_MergeDef(def, {
           Base: 'wePanel',
@@ -3551,7 +3552,7 @@ var WinEightControls = {
 
         return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
       }
-      ngRegisterControlType('weFileUploader', function(def,ref,parent) { return Create_weFileUploader(def,ref,parent); });
+      ngRegisterControlType('weFileUploader', function(def,ref,parent) { return skinfnc.Create_weFileUploader(def,ref,parent); });
     }
 
     /**
@@ -3563,7 +3564,7 @@ var WinEightControls = {
        *  View model form control (based on <ngViewModelForm>).
        */
       /*<>*/
-      function Create_weViewModelForm(def,ref,parent, base_type)
+      skinfnc.Create_weViewModelForm=function(def,ref,parent, base_type)
       {
         if(typeof def.className === 'undefined') def.className=(typeof def.ColorScheme === 'undefined' ? 'wePanel' : 'we'+def.ColorScheme);
         ng_MergeDef(def, {
@@ -3585,14 +3586,14 @@ var WinEightControls = {
         return c;
       }
 
-      ngRegisterControlType('weViewModelForm', function(def,ref,parent) { return Create_weViewModelForm(def,ref,parent); } );
+      ngRegisterControlType('weViewModelForm', function(def,ref,parent) { return skinfnc.Create_weViewModelForm(def,ref,parent); } );
 
       /*  Class: weEditField
        *  Standard drop down control (based on <ngEditField>).
        */
       /*<>*/
 
-      function Create_weEditFieldDef(def)
+      skinfnc.Create_weEditFieldDef=function(def)
       {
         ng_MergeDef(def,{
           Data: {
@@ -3604,9 +3605,9 @@ var WinEightControls = {
         });
       }
 
-      function Create_weEditField(def,ref,parent) {
+      skinfnc.Create_weEditField=function(def,ref,parent) {
         var th=theme(def);
-        Create_weEditFieldDef(def);
+        skinfnc.Create_weEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
         wineight.Prepare_DropDown(def);
         var c=ngCreateControlAsType(def, 'ngEditField', ref, parent);
@@ -3615,51 +3616,51 @@ var WinEightControls = {
         }
         return c;
       }
-      ngRegisterControlType('weEditField', function(def,ref,parent) { return Create_weEditField(def,ref,parent); });
+      ngRegisterControlType('weEditField', function(def,ref,parent) { return skinfnc.Create_weEditField(def,ref,parent); });
 
       /*  Class: weSearchBoxField
        *  Standard search box field control (based on <weSearchBox>).
        */
       /*<>*/
-      ngRegisterControlType('weSearchBoxField', function(def,ref,parent) { return Create_weSearchBox(def,ref,parent,'weEditField'); });
+      ngRegisterControlType('weSearchBoxField', function(def,ref,parent) { return skinfnc.Create_weSearchBox(def,ref,parent,'weEditField'); });
 
       /*  Class: weEditBoxBtnField
        *  Standard edit field control with elipsis button (based on <weEditBoxBtn>).
        */
       /*<>*/
-      ngRegisterControlType('weEditBoxBtnField', function(def,ref,parent) { return Create_weEditBoxBtn(def,ref,parent,'weEditField'); });
+      ngRegisterControlType('weEditBoxBtnField', function(def,ref,parent) { return skinfnc.Create_weEditBoxBtn(def,ref,parent,'weEditField'); });
 
       /*  Class: weEditNumField
        *  Standard drop down field control (based on <ngEditNumField>).
        */
       /*<>*/
       ngRegisterControlType('weEditNumField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weEditNum(def,ref,parent,'ngEditNumField');
+        skinfnc.Create_weEditFieldDef(def);
+        return skinfnc.Create_weEditNum(def,ref,parent,'ngEditNumField');
       });
 
       /*  Class: weColorEditField
        *  Standard color edit field control (based on <weColorEdit>).
        */
       ngRegisterControlType('weColorEditField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weColorEdit(def,ref,parent,'ngDropDownField');
+        skinfnc.Create_weEditFieldDef(def);
+        return skinfnc.Create_weColorEdit(def,ref,parent,'ngDropDownField');
       });
 
       /*  Class: weDropDownField
        *  Standard drop down field control (based on <ngDropDownField>).
        */
       ngRegisterControlType('weDropDownField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weDropDown(def,ref,parent,'ngDropDownField',false);
+        skinfnc.Create_weEditFieldDef(def);
+        return skinfnc.Create_weDropDown(def,ref,parent,'ngDropDownField',false);
       });
 
       /*  Class: weDropDownListField
        *  Standard drop down list field control (based on <ngDropDownListField>).
        */
       ngRegisterControlType('weDropDownListField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weDropDown(def,ref,parent,'ngDropDownListField',true);
+        skinfnc.Create_weEditFieldDef(def);
+        return skinfnc.Create_weDropDown(def,ref,parent,'ngDropDownListField',true);
       });
 
       if(ngUserControls['calendar'])
@@ -3669,8 +3670,8 @@ var WinEightControls = {
          */
         /*<>*/
         ngRegisterControlType('weEditDateField', function(def,ref,parent) {
-          Create_weEditFieldDef(def);
-          return Create_weEditDate(def,ref,parent,'ngEditDateField');
+          skinfnc.Create_weEditFieldDef(def);
+          return skinfnc.Create_weEditDate(def,ref,parent,'ngEditDateField');
         });
 
         /*  Class: weEditTimeField
@@ -3678,8 +3679,8 @@ var WinEightControls = {
          */
         /*<>*/
         ngRegisterControlType('weEditTimeField', function(def,ref,parent) {
-          Create_weEditFieldDef(def);
-          return Create_weEditTime(def,ref,parent,'ngEditTimeField');
+          skinfnc.Create_weEditFieldDef(def);
+          return skinfnc.Create_weEditTime(def,ref,parent,'ngEditTimeField');
         });
       }
 
@@ -3688,8 +3689,8 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weMemoField', function(def,ref,parent) {
-        Create_weEditFieldDef(def);
-        return Create_weMemo(def,ref,parent,'ngMemoField');
+        skinfnc.Create_weEditFieldDef(def);
+        return skinfnc.Create_weMemo(def,ref,parent,'ngMemoField');
       });
     }
     /**
@@ -3702,7 +3703,7 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weDBViewModelForm',  function(def,ref,parent) {
-        var c=Create_weViewModelForm(def,ref,parent,'ngDBViewModelForm');
+        var c=skinfnc.Create_weViewModelForm(def,ref,parent,'ngDBViewModelForm');
         if(c)
         {
           c.AddEvent('OnDeleteQuery',function(form,querytxt,successfnc,failfnc) {
@@ -3770,7 +3771,7 @@ var WinEightControls = {
       /*  Class: weDBToolBar
        *  Standard ViewModel database toolbar control (based on <ngDBToolBar>).
        */
-      function Create_weDBToolBar(def,ref,parent) {
+      skinfnc.Create_weDBToolBar=function(def,ref,parent) {
         var th=theme(def);
         if(typeof def.className === 'undefined') def.className='weToolBar' + (typeof def.ColorScheme === 'undefined' ? '' : ' we'+def.ColorScheme);
         ng_MergeDef(def, {
@@ -3807,19 +3808,19 @@ var WinEightControls = {
         return ngCreateControlAsType(def, 'ngDBToolBar', ref, parent);
       }
 
-      ngRegisterControlType('weDBToolBar', function(def,ref,parent) { return Create_weDBToolBar(def,ref,parent); });
+      ngRegisterControlType('weDBToolBar', function(def,ref,parent) { return skinfnc.Create_weDBToolBar(def,ref,parent); });
 
       /*  Class: weDataSet
        *  Standard dataset control (based on <ngDataSet>).
        */
       /*<>*/
-      ngRegisterControlType('weDataSet', function (def,ref,parent) { return Create_wePageList(def,ref,parent,'ngDataSet'); });
+      ngRegisterControlType('weDataSet', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngDataSet'); });
 
       /*  Class: weDBDataSet
        *  Standard dataset control (based on <ngDBDataSet>).
        */
       /*<>*/
-      function Create_weDBDataSet(def,ref,parent) {
+      skinfnc.Create_weDBDataSet=function(def,ref,parent) {
         var th=theme(def);
         ng_MergeDef(def, {
           Controls: {
@@ -3857,10 +3858,10 @@ var WinEightControls = {
             }
           }
         });
-        return Create_wePageList(def,ref,parent,'ngDBDataSet');
+        return skinfnc.Create_wePageList(def,ref,parent,'ngDBDataSet');
       }
 
-      ngRegisterControlType('weDBDataSet', function (def,ref,parent) { return Create_weDBDataSet(def,ref,parent); });
+      ngRegisterControlType('weDBDataSet', function (def,ref,parent) { return skinfnc.Create_weDBDataSet(def,ref,parent); });
     }
   }
 };
