@@ -456,6 +456,7 @@ var WireframeControls = {
     var libpath = ngLibPath('ng_wireframe');
     var WFRImages = this.Images;
     var WFR = this;
+    var skinfnc={};
 
     /**
      *  Group: Control Types
@@ -606,7 +607,7 @@ var WireframeControls = {
       }
     }
 
-    function Create_wfrEdit(def,ref,parent)
+    skinfnc.Create_wfrEdit=function(def,ref,parent)
     {
       if(typeof def.className === 'undefined') def.className = (def.Data && def.Data.Invalid)
         ? 'wfrEdit wfrEdit_Invalid' : 'wfrEdit';
@@ -619,13 +620,13 @@ var WireframeControls = {
       }
       return c;
     }
-    ngRegisterControlType('wfrEdit', Create_wfrEdit);
-    ngRegisterControlType('wfrEditBox', Create_wfrEdit);
+    ngRegisterControlType('wfrEdit', skinfnc.Create_wfrEdit);
+    ngRegisterControlType('wfrEditBox', skinfnc.Create_wfrEdit);
 
     /** Class: wfrEditBoxBtn
      *  "Wireframe" skin edit control with elipsis button (based on <stdEdit>).
      */
-    function Create_wfrEditBoxBtn(def,ref,parent,basetype)
+    skinfnc.Create_wfrEditBoxBtn=function(def,ref,parent,basetype)
     {
       if(typeof def.className === 'undefined') def.className='wfrEdit';
       if((typeof def.DropDown !== 'undefined') && (typeof def.DropDown.className === 'undefined')){
@@ -651,13 +652,13 @@ var WireframeControls = {
     }
 
     ngRegisterControlType('wfrEditBoxBtn', function(def,ref,parent){
-      return Create_wfrEditBoxBtn(def,ref,parent);
+      return skinfnc.Create_wfrEditBoxBtn(def,ref,parent);
     });
 
     /**  Class: wfrEditNum
      *  "Wireframe" skin edit number control with spin buttons (based on <ngEditNum>).
      */
-    function Create_wfrEditNum(def,ref,parent, basetype)
+    skinfnc.Create_wfrEditNum=function(def,ref,parent, basetype)
     {
       if(typeof def.className === 'undefined'){def.className = 'wfrEdit';}
       if((typeof def.DropDown !== 'undefined') && (typeof def.DropDown.className === 'undefined')){
@@ -676,16 +677,16 @@ var WireframeControls = {
       return c;
     }
     ngRegisterControlType('wfrEditNum', function(def,ref,parent){
-      return Create_wfrEditNum(def,ref,parent);
+      return skinfnc.Create_wfrEditNum(def,ref,parent);
     });
     ngRegisterControlType('wfrEditBoxNum', function(def,ref,parent){
-      return Create_wfrEditNum(def,ref,parent);
+      return skinfnc.Create_wfrEditNum(def,ref,parent);
     });
 
     /**  Class: wfrColorEdit
      *  "Wireframe" skin color edit control (based on <ngDropDown>).
      */
-    function Create_wfrColorEdit(def,ref,parent,basetype)
+    skinfnc.Create_wfrColorEdit=function(def,ref,parent,basetype)
     {
       ng_MergeDef(def, {
         className: 'wfrEdit',
@@ -737,10 +738,10 @@ var WireframeControls = {
       return c;
     }
     ngRegisterControlType('wfrColorEdit', function(def,ref,parent){
-      return Create_wfrColorEdit(def,ref,parent);
+      return skinfnc.Create_wfrColorEdit(def,ref,parent);
     });
     ngRegisterControlType('wfrColorEditBox', function(def,ref,parent){
-      return Create_wfrColorEdit(def,ref,parent);
+      return skinfnc.Create_wfrColorEdit(def,ref,parent);
     });
 
     if (ngUserControls['maskedit'])
@@ -748,7 +749,7 @@ var WireframeControls = {
       /*  Class: wfrMaskEdit
        *  "Wireframe" skin mask edit control (based on <ngMaskEdit>).
        */
-      function Create_wfrMaskEdit(def, ref, parent)
+      skinfnc.Create_wfrMaskEdit=function(def, ref, parent)
       {
         if (typeof(def.Data)==='undefined') def.Data = new Object();
         var invalid = ngVal(def.Data.Invalid, false);
@@ -830,8 +831,8 @@ var WireframeControls = {
 
         return c;
       }
-      ngRegisterControlType('wfrMaskEdit', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
-      ngRegisterControlType('wfrMaskEditBox', function(def,ref,parent) { return Create_wfrMaskEdit(def,ref,parent); });
+      ngRegisterControlType('wfrMaskEdit', function(def,ref,parent) { return skinfnc.Create_wfrMaskEdit(def,ref,parent); });
+      ngRegisterControlType('wfrMaskEditBox', function(def,ref,parent) { return skinfnc.Create_wfrMaskEdit(def,ref,parent); });
     }
 
     /** Class: wfrDropDown
@@ -863,7 +864,7 @@ var WireframeControls = {
      *  Returns:
      *    -
      */
-    function Create_wfrDropDown(def,ref,parent,basetype,dropdownlist)
+    skinfnc.Create_wfrDropDown=function(def,ref,parent,basetype,dropdownlist)
     {
       if(typeof def.className === 'undefined'){def.className = 'wfrEdit';}
 
@@ -889,12 +890,12 @@ var WireframeControls = {
 
     ngRegisterControlType('wfrDropDown',
         function(def,ref,parent){
-          return Create_wfrDropDown(def,ref,parent,'ngEdit',false);
+          return skinfnc.Create_wfrDropDown(def,ref,parent,'ngEdit',false);
         }
     );
     ngRegisterControlType('wfrDropDownList',
         function(def,ref,parent){
-          return Create_wfrDropDown(def,ref,parent,'ngEdit',true);
+          return skinfnc.Create_wfrDropDown(def,ref,parent,'ngEdit',true);
         }
     );
 
@@ -902,7 +903,7 @@ var WireframeControls = {
      *  "Wireframe" skin search box control (based on <stdEdit>).
      */
 
-    function Create_wfrSearchBox(def,ref,parent,basetype)
+    skinfnc.Create_wfrSearchBox=function(def,ref,parent,basetype)
     {
       if(typeof def.className === 'undefined') def.className = 'wfrEdit';
       if((typeof def.DropDown !== 'undefined') && (typeof def.DropDown.className === 'undefined')){
@@ -947,7 +948,7 @@ var WireframeControls = {
     }
 
     ngRegisterControlType('wfrSearchBox', function(def,ref,parent){
-      return Create_wfrSearchBox(def,ref,parent);
+      return skinfnc.Create_wfrSearchBox(def,ref,parent);
     });
 
     /**
@@ -957,7 +958,7 @@ var WireframeControls = {
       /** Class: wfrList
        *  "Wireframe" skin list control (based on <ngList>).
        */
-      function Create_wfrList(def,ref,parent)
+      skinfnc.Create_wfrList=function(def,ref,parent)
       {
 
         if(typeof def.className === 'undefined') def.className = 'wfrListBox';
@@ -1016,9 +1017,9 @@ var WireframeControls = {
         return c;
       }
 
-      ngRegisterControlType('wfrList', Create_wfrList);
-      ngRegisterControlType('wfrListBox', Create_wfrList);
-      ngRegisterControlType('wfrTreeList', Create_wfrList);
+      ngRegisterControlType('wfrList', skinfnc.Create_wfrList);
+      ngRegisterControlType('wfrListBox', skinfnc.Create_wfrList);
+      ngRegisterControlType('wfrTreeList', skinfnc.Create_wfrList);
 
       /** Class: wfrPageList
        *  Standard list control (based on <ngPageList>).
@@ -1086,7 +1087,7 @@ var WireframeControls = {
         };
       }
 
-      function Create_wfrPageList(def,ref,parent,controltype)
+      skinfnc.Create_wfrPageList=function(def,ref,parent,controltype)
       {
         ng_MergeDef(def, {
           className: 'wfrListBox',
@@ -1126,23 +1127,23 @@ var WireframeControls = {
       }
 
       ngRegisterControlType('wfrPageList', function (def,ref,parent){
-        return Create_wfrPageList(def,ref,parent,'ngPageList');
+        return skinfnc.Create_wfrPageList(def,ref,parent,'ngPageList');
       });
       ngRegisterControlType('wfrPageTreeList', function (def,ref,parent){
-        return Create_wfrPageList(def,ref,parent,'ngPageList');
+        return skinfnc.Create_wfrPageList(def,ref,parent,'ngPageList');
       });
     }
 
     /** Class: wfrGroup
      *  "Wireframe" skin group control (based on <ngGroup>).
      */
-    function Create_wfrGroup(def,ref,parent)
+    skinfnc.Create_wfrGroup=function(def,ref,parent)
     {
       if(typeof def.className === 'undefined') def.className = 'wfrGroupBox';
       return ngCreateControlAsType(def, 'ngGroup', ref, parent);
     }
-    ngRegisterControlType('wfrGroup', Create_wfrGroup);
-    ngRegisterControlType('wfrGroupBox', Create_wfrGroup);
+    ngRegisterControlType('wfrGroup', skinfnc.Create_wfrGroup);
+    ngRegisterControlType('wfrGroupBox', skinfnc.Create_wfrGroup);
 
     /** Class: wfrPages
      *  "Wireframe" skin pages control (based on <ngPages>).
@@ -1170,7 +1171,7 @@ var WireframeControls = {
       /** Class: wfrDialog
        *  "Wireframe" skin dialog control (based on <ngWindow>).
        */
-      function Create_wfrWindow(def,ref,parent) {
+      skinfnc.Create_wfrWindow=function(def,ref,parent) {
         var dialog = (def.Type == 'wfrDialog');
         if(typeof def.className === 'undefined') def.className = (dialog ? 'wfrDialog' : 'wfrWindow');
         var c = ngCreateControlAsType(def, 'ngWindow', ref, parent);
@@ -1289,8 +1290,8 @@ var WireframeControls = {
         return c;
       }
 
-      ngRegisterControlType('wfrWindow', Create_wfrWindow);
-      ngRegisterControlType('wfrDialog', Create_wfrWindow);
+      ngRegisterControlType('wfrWindow', skinfnc.Create_wfrWindow);
+      ngRegisterControlType('wfrDialog', skinfnc.Create_wfrWindow);
 
       /** Class: wfrHint
        *  "Wireframe" skin hint control (based on <ngHint>).
@@ -1411,7 +1412,7 @@ var WireframeControls = {
       /** Class: wfrEditDate
        *  "Wireframe" skin edit date control (based on <ngEditDate>).
        */
-      function Create_wfrEditDate(def,ref,parent,basetype) {
+      skinfnc.Create_wfrEditDate=function(def,ref,parent,basetype) {
         ng_MergeDef(def, {
           className: 'wfrEdit',
           DropDown: {
@@ -1419,7 +1420,7 @@ var WireframeControls = {
             Type: 'wfrCalendar'
           }
         });
-        var c = Create_wfrDropDown(def,ref,parent, ngVal(basetype,'ngEditDate'),false);
+        var c = skinfnc.Create_wfrDropDown(def,ref,parent, ngVal(basetype,'ngEditDate'),false);
         if(!c){return c;}
         c.DropDownButton.LeftImg = WFRImages.Calendar.EditButton;
         c.DropDownButton.Default = false;
@@ -1428,13 +1429,13 @@ var WireframeControls = {
       }
 
       ngRegisterControlType('wfrEditDate', function(def,ref,parent){
-        return Create_wfrEditDate(def,ref,parent);
+        return skinfnc.Create_wfrEditDate(def,ref,parent);
       });
 
       /** Class: wfrEditTime
        *  "Wireframe" skin edit time control (based on <ngEditDate>).
        */
-      function Create_wfrEditTime(def,ref,parent,basetype) {
+      skinfnc.Create_wfrEditTime=function(def,ref,parent,basetype) {
         var div=1;
         ng_MergeDef(def, {
           className: 'wfrEdit',
@@ -1485,14 +1486,14 @@ var WireframeControls = {
       }
 
       ngRegisterControlType('wfrEditTime', function(def,ref,parent){
-        return Create_wfrEditTime(def,ref,parent);
+        return skinfnc.Create_wfrEditTime(def,ref,parent);
       });
     }
 
     /** Class: wfrMemo
      *  "Wireframe" skin memo control (based on <ngMemo>).
      */
-    function Create_wfrMemo(def,ref,parent,basetype) {
+    skinfnc.Create_wfrMemo=function(def,ref,parent,basetype) {
       if(typeof def.className === 'undefined'){
         def.className = (def.Data && def.Data.Invalid) ? 'wfrMemo wfrMemoInvalid' : 'wfrMemo';
       }
@@ -1558,7 +1559,7 @@ var WireframeControls = {
       return c;
     }
     ngRegisterControlType('wfrMemo', function(def,ref,parent){
-      return Create_wfrMemo(def,ref,parent);
+      return skinfnc.Create_wfrMemo(def,ref,parent);
     });
 
     /**
@@ -1924,7 +1925,7 @@ var WireframeControls = {
       /** Class: wfrDlgMemoBox
        *  "Wireframe" skin memo box dialog (based on <wfrMessageDlg>).
        */
-      function Create_wfrDlgEditBox(def,ref,parent)
+      skinfnc.Create_wfrDlgEditBox=function(def,ref,parent)
       {
         delete def.DialogType;
         def.DlgAllowEmpty = ngVal(def.DlgAllowEmpty,false);
@@ -2016,11 +2017,11 @@ var WireframeControls = {
         return c;
       };
 
-      ngRegisterControlType('wfrDlgInputBox', Create_wfrDlgEditBox);
-      ngRegisterControlType('wfrDlgDropDownBox', Create_wfrDlgEditBox);
-      ngRegisterControlType('wfrDlgDropDownListBox', Create_wfrDlgEditBox);
-      ngRegisterControlType('wfrDlgDropDownTreeListBox', Create_wfrDlgEditBox);
-      ngRegisterControlType('wfrDlgMemoBox', Create_wfrDlgEditBox);
+      ngRegisterControlType('wfrDlgInputBox', skinfnc.Create_wfrDlgEditBox);
+      ngRegisterControlType('wfrDlgDropDownBox', skinfnc.Create_wfrDlgEditBox);
+      ngRegisterControlType('wfrDlgDropDownListBox', skinfnc.Create_wfrDlgEditBox);
+      ngRegisterControlType('wfrDlgDropDownTreeListBox', skinfnc.Create_wfrDlgEditBox);
+      ngRegisterControlType('wfrDlgMemoBox', skinfnc.Create_wfrDlgEditBox);
 
       /** Class: wfrDlgListBox
        *  "Wireframe" skin list box dialog (based on <wfrMessageDlg>).
@@ -2240,7 +2241,7 @@ var WireframeControls = {
       /** Class: wfrViewModelForm
        *  "Wireframe" skin view model form control (based on <ngViewModelForm>).
        */
-      function Create_wfrViewModelForm(def,ref,parent, base_type)
+      skinfnc.Create_wfrViewModelForm=function(def,ref,parent, base_type)
       {
         ng_MergeDef(def, {
           ErrorHint: {
@@ -2262,14 +2263,14 @@ var WireframeControls = {
       }
 
       ngRegisterControlType('wfrViewModelForm', function(def,ref,parent){
-        return Create_wfrViewModelForm(def,ref,parent);
+        return skinfnc.Create_wfrViewModelForm(def,ref,parent);
       });
 
       /** Class: wfrEditField
        *  "Wireframe" skin view model drop down control (based on <ngEditField>).
        */
 
-      function Create_wfrEditFieldDef(def)
+      skinfnc.Create_wfrEditFieldDef=function(def)
       {
         ng_MergeDef(def,{
           Data: {
@@ -2286,8 +2287,8 @@ var WireframeControls = {
         });
       }
 
-      function Create_wfrEditField(def,ref,parent) {
-        Create_wfrEditFieldDef(def);
+      skinfnc.Create_wfrEditField=function(def,ref,parent) {
+        skinfnc.Create_wfrEditFieldDef(def);
         if(typeof def.className === 'undefined'){ def.className = 'wfrEdit'; }
         if((typeof def.DropDown !== 'undefined') && (typeof def.DropDown.className === 'undefined')){
           def.DropDown.className = 'wfrDropDown';
@@ -2298,52 +2299,52 @@ var WireframeControls = {
         }
         return c;
       }
-      ngRegisterControlType('wfrEditField', Create_wfrEditField);
+      ngRegisterControlType('wfrEditField', skinfnc.Create_wfrEditField);
 
       /** Class: wfrSearchBoxField
        *  "Wireframe" skin view model search box field control (based on <stdSearchBox>).
        */
       ngRegisterControlType('wfrSearchBoxField', function(def,ref,parent){
-        return Create_wfrSearchBox(def,ref,parent,'wfrEditField');
+        return skinfnc.Create_wfrSearchBox(def,ref,parent,'wfrEditField');
       });
 
       /** Class: wfrEditBoxBtnField
        *  "Wireframe" skin view model edit field control with elipsis button (based on <stdEditBoxBtn>).
        */
       ngRegisterControlType('wfrEditBoxBtnField', function(def,ref,parent){
-        return Create_wfrEditBoxBtn(def,ref,parent,'wfrEditField');
+        return skinfnc.Create_wfrEditBoxBtn(def,ref,parent,'wfrEditField');
       });
 
       /** Class: wfrEditNumField
        *  "Wireframe" skin view model drop down field control (based on <ngEditNumField>).
        */
       ngRegisterControlType('wfrEditNumField', function(def,ref,parent){
-        Create_wfrEditFieldDef(def);
-        return Create_wfrEditNum(def,ref,parent,'ngEditNumField');
+        skinfnc.Create_wfrEditFieldDef(def);
+        return skinfnc.Create_wfrEditNum(def,ref,parent,'ngEditNumField');
       });
 
       /** Class: wfrColorEditField
        *  "Wireframe" skin view model color edit field control (based on <stdColorEdit>).
        */
       ngRegisterControlType('wfrColorEditField', function(def,ref,parent){
-        Create_wfrEditFieldDef(def);
-        return Create_wfrColorEdit(def,ref,parent,'ngDropDownField');
+        skinfnc.Create_wfrEditFieldDef(def);
+        return skinfnc.Create_wfrColorEdit(def,ref,parent,'ngDropDownField');
       });
 
       /** Class: wfrDropDownField
        *  "Wireframe" skin view model drop down field control (based on <ngDropDownField>).
        */
       ngRegisterControlType('wfrDropDownField', function(def,ref,parent){
-        Create_wfrEditFieldDef(def);
-        return Create_wfrDropDown(def,ref,parent,'ngDropDownField',false);
+        skinfnc.Create_wfrEditFieldDef(def);
+        return skinfnc.Create_wfrDropDown(def,ref,parent,'ngDropDownField',false);
       });
 
       /** Class: wfrDropDownListField
        *  "Wireframe" skin view model drop down list field control (based on <ngDropDownListField>).
        */
       ngRegisterControlType('wfrDropDownListField', function(def,ref,parent){
-        Create_wfrEditFieldDef(def);
-        return Create_wfrDropDown(def,ref,parent,'ngDropDownListField',true);
+        skinfnc.Create_wfrEditFieldDef(def);
+        return skinfnc.Create_wfrDropDown(def,ref,parent,'ngDropDownListField',true);
       });
 
       if(ngUserControls['calendar'])
@@ -2352,16 +2353,16 @@ var WireframeControls = {
          *  "Wireframe" skin view model edit date field control (based on <ngEditDate>).
          */
         ngRegisterControlType('wfrEditDateField', function(def,ref,parent) {
-          Create_wfrEditFieldDef(def);
-          return Create_wfrEditDate(def,ref,parent,'ngEditDateField');
+          skinfnc.Create_wfrEditFieldDef(def);
+          return skinfnc.Create_wfrEditDate(def,ref,parent,'ngEditDateField');
         });
 
         /** Class: wfrEditTimeField
          *  "Wireframe" skin view model edit date field control (based on <ngEditTime>).
          */
         ngRegisterControlType('wfrEditTimeField', function(def,ref,parent) {
-          Create_wfrEditFieldDef(def);
-          return Create_wfrEditTime(def,ref,parent,'ngEditTimeField');
+          skinfnc.Create_wfrEditFieldDef(def);
+          return skinfnc.Create_wfrEditTime(def,ref,parent,'ngEditTimeField');
         });
       }
 
@@ -2369,8 +2370,8 @@ var WireframeControls = {
        *  "Wireframe" skin view model memo field control (based on <ngMemoField>).
        */
       ngRegisterControlType('wfrMemoField', function(def,ref,parent) {
-        Create_wfrEditFieldDef(def);
-        return Create_wfrMemo(def,ref,parent,'ngMemoField');
+        skinfnc.Create_wfrEditFieldDef(def);
+        return skinfnc.Create_wfrMemo(def,ref,parent,'ngMemoField');
       });
     }
   }
