@@ -1210,7 +1210,7 @@ function ngCreateControl(d,ref,parent)
       if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
     }
 
-  if(ngHASDEBUG())
+  if(ngHASDESIGNINFO())
   {
     if(typeof d.DesignInfo==='object')
     {
