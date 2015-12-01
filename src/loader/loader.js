@@ -479,16 +479,27 @@ function ngLoadApplication(elm, callback, files)
           files.push(ngAppFiles[i]);
       }
 
-      if(typeof ngDetectDevice === 'function') // Devices present
+      if(typeof ngSetDevice === 'function') // Devices present
       {
-        if(typeof ngDevice === 'undefined') ngDevice=ngDetectDevice();
+        ngSetDevice(ngDevice);
         if((typeof ngDevice !== 'undefined')&&(typeof ngAppDeviceFiles !== 'undefined'))
         {
-          var devfiles=ngAppDeviceFiles[ngDevice];
-          if(typeof devfiles !== 'undefined')
-          {
-            for(var i in devfiles)
-              files.push(devfiles[i]);
+          function loaddevicefiles(dev) {
+            var devfiles=ngAppDeviceFiles[dev];
+            if(typeof devfiles !== 'undefined')
+            {
+              for(var i in devfiles)
+                files.push(devfiles[i]);
+            }
+          }
+          loaddevicefiles(ngDevice);
+          if(typeof ngDeviceProfile==='object') {
+            for(var p in ngDeviceProfile) {
+              if(ngDeviceProfile[p]) {
+                loaddevicefiles('*.'+p);
+                loaddevicefiles(ngDevice+'.'+p);
+              }
+            }
           }
         }
       }
