@@ -10,6 +10,11 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
+var ngOnDeviceChanged=(typeof ngOnDeviceChanged === 'undefined' ? null : ngOnDeviceChanged);
+var ngOnGetDeviceInfo=(typeof ngOnGetDeviceInfo === 'undefined' ? null : ngOnGetDeviceInfo);
+var ngDevice=(typeof ngDevice === 'undefined' ? undefined : ngDevice);
+var ngDeviceProfile=(typeof ngDeviceProfile === 'undefined' ? undefined : ngDeviceProfile);
+
 function ngDeviceReset(device)
 {
   if((typeof ngDevices === 'object')&&(ngDevices))
@@ -70,7 +75,8 @@ function ngDeviceReset(device)
 
 function ngGetDeviceInfo()
 {
-  var width=0, height=0;
+  var width=0, height=0,undefined;
+  var ua=navigator.userAgent.toLowerCase();
   if(typeof(window.innerWidth)=='number') {width=window.innerWidth; height=window.innerHeight;}
   else if(document.documentElement&&document.documentElement.clientWidth) {width=document.documentElement.clientWidth; height=document.documentElement.clientHeight;}
   else if(document.body&&document.body.clientWidth) {width=document.body.clientWidth; height=document.body.clientHeight;}
@@ -154,7 +160,7 @@ function ngGetDeviceInfo()
   var orientation=(width>height ? 90 : 0)  
   var landscape = (orientation==90);
   var scrlandscape = (Math.abs(scrorientation % 180)==90);
-  return {
+  var di={
     ScreenWidth: scrwidth,
     ScreenHeight: scrheight,
 //    ScreenWidthInInches: inscrwidth,
@@ -187,24 +193,54 @@ function ngGetDeviceInfo()
 //    Resolution: (dpi_x > dpi_y ? dpi_x : dpi_y), 
 
     ColorDepth: colordepth,
-    SupportsTouch: ('ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch) || navigator.msMaxTouchPoints ? true : false)
-  };   
+    SupportsTouch: ('ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch) || navigator.msMaxTouchPoints ? true : false),
+
+    IExplorer: eval("/*@cc_on!@*/false"),
+    FireFox: (ua.indexOf("firefox") != -1),
+    Chrome:  (ua.indexOf("chrome") != -1),
+    Safari:  (ua.indexOf("safari") != -1),
+    Opera:   (ua.indexOf("opera") != -1),
+    Android: (ua.indexOf("android") != -1),
+    iOS:     ( ua.match(/(ipad|iphone|ipod)/g) ? true : false ),
+    WindowsPhone: (ua.indexOf("windows phone") != -1),
+    Cordova: (typeof window.cordova !== 'undefined'),
+    WinStoreApp: (typeof Windows !== 'undefined')
+  };
+  di.FireFoxVersion = (di.FireFox ? parseInt( ua.match( /firefox\/(.*)$/ )[1] ) : undefined);
+  di.FireFoxOS = di.FireFox && (ua.indexOf("mobile") != -1);
+  di.OperaVersion = (di.Opera ? parseFloat(window.opera.version()) : undefined);
+  di.IExplorerVersion = (di.IExplorer ? parseInt( ua.match( /msie (\d+)/ )[1] ) : undefined);
+  if((!di.IExplorer)&&(ua.match(/trident/))) // IE>=11 detection
+  {
+    var v=ua.match( /rv\:(\d+)/ );
+    if(!v) v=ua.match( /msie (\d+)/ );
+    if(v)
+    {
+      di.IExplorer = true;
+      di.IExplorerVersion = parseInt(v[1]);
+    }
+  }
+  di.UsingTouch = (di.SupportsTouch)&&(di.Android || di.iOS || di.WindowsPhone || (ua.indexOf("mobile") != -1) || (ua.indexOf("tablet") != -1));
+  if((typeof ngAppDeviceInfo === 'object')&&(ngAppDeviceInfo)) {
+    for(var i in ngAppDeviceInfo)
+      di[i]=ngAppDeviceInfo[i];
+  }
+  if(typeof ngOnGetDeviceInfo === 'function') ngOnGetDeviceInfo(di);
+  return di;
 }
 
-function ngDetectDevice()
+function ngDetectDevice(extinfo)
 {
   var device;
   if((typeof ngDevices === 'object')&&(ngDevices)) 
   {
     var di=ngGetDeviceInfo();
-    var maxpts=0, minprops=10000;
-    var defaultdevice;
     var ua=navigator.userAgent.toLowerCase();
     
-    function evalprops(dev, props)
+    function evalprops(dev, props, profile)
     {
-      var req,neg,v,prefix,match;
-      var pts=0,numprops=0;
+      var req,neg,v,val,prefix,match;
+      var pts=0,numprops=0,priority=0.5;
       for(var p in props)
       {
         v=props[p];
@@ -229,37 +265,21 @@ function ngDetectDevice()
         {
           case 'Min':
             p=p.substring(3,p.length);
+            if(typeof di[p] === 'undefined') break;
             if(((!neg)&&(di[p]>=v))||((neg)&&(di[p]<v))) match=true;
             break;
           case 'Max':
             p=p.substring(3,p.length);
+            if(typeof di[p] === 'undefined') break;
             if(((!neg)&&(di[p]<v))||((neg)&&(di[p]>=v))) match=true;
             break;
           default:
             switch(p)
             {
+              case 'Priority':
+                priority=v;
               case 'IsMobile':
                 req=false;numprops--;
-                break;
-              case 'IExplorer':
-                v=(eval("/*@cc_on!@*/false"))==v; 
-                if(!neg==v) match=true;
-                break;
-              case 'FireFox':
-                v=((ua.indexOf("firefox") != -1)==v);
-                if(!neg==v) match=true;
-                break;
-              case 'Chrome':
-                v=((ua.indexOf("chrome") != -1)==v);
-                if(!neg==v) match=true;
-                break;
-              case 'Safari':
-                v=((ua.indexOf("safari") != -1)==v);
-                if(!neg==v) match=true;
-                break;              
-              case 'Opera': 
-                v=((ua.indexOf("opera") != -1)==v);
-                if(!neg==v) match=true;
                 break;
               case 'UserAgent':
                 v=(navigator.userAgent.indexOf(v) != -1);
@@ -270,46 +290,101 @@ function ngDetectDevice()
                 if(!neg==v) match=true;
                 break;
               default:
-                if(((!neg)&&(di[p]==v))||((neg)&&(di[p]!=v))) match=true;
+                val=di[p];
+                if(val === 'undefined') break;
+                if(val === 'function') val=val(p,dev,props);
+                else if(((!neg)&&(val==v))||((neg)&&(val!=v))) match=true;
                 break;
             }
             break;
         }
         if(match) pts++;
-        else if(req) { pts=-10000; break; } 
-      } 
-      if(!numprops) {
-        if(typeof defaultdevice === 'undefined') defaultdevice=dev;
+        else if(req) { pts=-10000; break; }
       }
-      else
-      {
-        if((pts>=0)&&((pts>maxpts)||((pts==maxpts)&&(numprops<minprops))))
-        {
-          maxpts=pts;
-          minprops=numprops;
-          device=dev;
-        }
-      }
+      if(profile.charAt(0)==='_') priority=-1;
+      if(priority>1) priority=1;
+      return { numprops: numprops, pts: pts, matched: (numprops>0)&&(pts!=-10000), priority: priority };
     }
     
-    var devprops,hasobjects;
+    var devprops,e,numobjects,firstdev;
+    var eprops={};
     for(var dev in ngDevices)
     {
+      if(typeof firstdev==='undefined') firstdev=dev;
       devprops=ngDevices[dev];
-      hasobjects=false;
+      numobjects=0;
+      eprops[dev]={};
       for(var p in devprops)
         if(typeof devprops[p]==='object') 
         {
-          hasobjects=true;
-          evalprops(dev, devprops[p]);
-        }        
-      if(!hasobjects) evalprops(dev, devprops);        
+          numobjects++
+          e=evalprops(dev, devprops[p], p);
+          eprops[dev][p]=e;
+        }
+      if(!numobjects) {
+        e=evalprops(dev, devprops, '');
+        eprops[dev]=e;
+      }
+      else eprops[dev]._numobjects=numobjects;
     }
+    var maxpts=0, minprops=10000, maxpriority=-1;
+    var defaultdevice,p;
+
+    function cmpe(dev,e) {
+      if(!e.numprops) {
+        if(typeof defaultdevice === 'undefined') defaultdevice=dev;
+      }
+      if((!e.matched)||(e.priority<0)) return;
+      if((e.priority>maxpriority)||((maxpriority==e.priority)&&(e.pts>maxpts))||((maxpriority==e.priority)&&(e.pts==maxpts)&&(e.numprops<minprops)))
+      {
+        maxpriority=e.priority;
+        maxpts=e.pts;
+        minprops=e.numprops;
+        device=dev;
+      }
+    }
+
+    var p;
+    for(var d in eprops) {
+      p=eprops[d];
+      if(p._numobjects>0) {
+        delete p._numobjects;
+        for(var pp in p) {
+          cmpe(d,p[pp]);
+          p[pp]=p[pp].matched;
+        }
+      }
+      else { cmpe(d,p); eprops[d]=p._matched; }
+    }
+
     if(typeof device==='undefined') device=defaultdevice;
+    if(typeof device==='undefined') device=firstdev;
+
+    if((typeof extinfo==='object')&&(extinfo)) {
+      extinfo.DeviceInfo=di;
+      extinfo.Device=device;
+      extinfo.DevicesStatus=eprops;
+      if(typeof eprops[device]==='object') extinfo.DeviceProfile=eprops[device];
+      else delete extinfo.DeviceProfile;
+    }
   }
   return device;
 }
   
+function ngSetDevice(device,dinfo) {
+  if(typeof dinfo === 'undefined') {
+    var dinfo={};
+    ngDetectDevice(dinfo);
+    if((typeof device==='undefined')||(device=='')) device=dinfo.Device;
+  }
+  ngDevice=device;
+  if(typeof dinfo.DevicesStatus[device]==='object') ngDeviceProfile=dinfo.DevicesStatus[device];
+  else { var undefined; ngDeviceProfile=undefined; }
+  dinfo.Device=device;
+  dinfo.DeviceProfile=ngDeviceProfile;
+  if(typeof ngOnDeviceChanged==='function') ngOnDeviceChanged(dinfo);
+}
+
 function ngLoadAppDeviceCSS(device, url, data)
 {
   if((typeof ngDevice === 'undefined')||(ngDevice!=device)) return;
