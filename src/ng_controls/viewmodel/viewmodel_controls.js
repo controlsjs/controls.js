@@ -1392,6 +1392,106 @@ ngUserControls['viewmodel_controls'] = {
 
   OnInit: function() {
 
+    var vmdevice;
+    var vmdeviceprofile;
+
+    function vm_setdevice(device,dinfo) {
+      var avm=ngApp.ViewModel;
+      if(!avm) return;
+      if(vmdevice()!=ngDevice) vmdevice(ngDevice);
+      if(!ng_VarEquals(vmdeviceprofile(),ngDeviceProfile)) vmdeviceprofile(ngDeviceProfile);
+    }
+
+    var vmappwidth,vmappheight,vmwinwidth,vmwinheight;
+    var vmresizetimer=null;
+    function vm_onresize() {
+      if(vmresizetimer) clearTimeout(vmresizetimer);
+      vmresizetimer=setTimeout(function() {
+        clearTimeout(vmresizetimer); vmresizetimer=null;
+        var avm=ngApp.ViewModel;
+        if(!avm) return;
+        if(vmappwidth()!=ngApp.LastResizeW) vmappwidth(ngApp.LastResizeW);
+        if(vmappheight()!=ngApp.LastResizeH) vmappheight(ngApp.LastResizeH);
+        var ww=ng_WindowWidth();
+        var wh=ng_WindowHeight();
+        if(vmwinwidth()!=ww) vmwinwidth(ww);
+        if(vmwinheight()!=wh) vmwinheight(wh);
+      },80); // invoke before nga_DoResize ...<100
+    }
+
+    function vmtrackdevicechanged() {
+      return true;
+    }
+
+    if(ngApp) {
+      if((ngApp.ViewModel==='undefined')||(!ngApp.ViewModel))
+        ngApp.ViewModel={};
+
+      var avm=ngApp.ViewModel;
+
+      vmappwidth=ko.observable(ngApp.LastResizeW);
+      vmappheight=ko.observable(ngApp.LastResizeH);
+      vmwinwidth=ko.observable(ng_WindowWidth());
+      vmwinheight=ko.observable(ng_WindowHeight());
+
+      avm.AppWidth=ko.computed(function() { return vmappwidth(); }, avm);
+      avm.AppHeight=ko.computed(function() { return vmappheight(); }, avm);
+
+      avm.WindowWidth=ko.computed(function() { return vmwinwidth(); }, avm);
+      avm.WindowHeight=ko.computed(function() { return vmwinheight(); }, avm);
+
+      if(typeof ngSetDevice==='function') {
+        vmdevice=ko.observable(ngDevice);
+        vmdeviceprofile=ko.observable(ngDeviceProfile);
+
+        function ngdevice_computed() {
+          return ko.computed({
+          read: function() {
+            return vmdevice();
+          },
+          write: function(value) {
+            ngSetDevice(value);
+          },
+          owner:avm});
+        }
+
+        function ngdeviceprofile_computed() {
+          return ko.computed(function() { return vmdeviceprofile(); }, avm);
+        }
+        avm.ngDevice=ngdevice_computed();
+        avm.ngDeviceProfile=ngdeviceprofile_computed();
+
+        var actdev=ngdevice_computed();
+        var actdevprof=ngdeviceprofile_computed();
+
+        var vmdynamicdeviceinit=false;
+
+        var oldddsubscribe=actdev.subscribe;
+        actdev.subscribe=function() {
+          if(vmdynamicdeviceinit==false) {
+            vmdynamicdeviceinit=true;
+            ngApp.AddEvent('OnDeviceChanged',vmtrackdevicechanged);
+          }
+          return oldddsubscribe.apply(this, arguments);
+        }
+
+        var oldddprofsubscribe=actdevprof.subscribe;
+        actdevprof.subscribe=function() {
+          if(vmdynamicdeviceinit==false) {
+            vmdynamicdeviceinit=true;
+            ngApp.AddEvent('OnDeviceChanged',vmtrackdevicechanged);
+          }
+          return oldddprofsubscribe.apply(this, arguments);
+        }
+        avm.ngDeviceD=actdev;
+        avm.ngDeviceProfileD=actdevprof;
+
+        ngOnDeviceChanged=ngAddEvent(ngOnDeviceChanged,vm_setdevice);
+      }
+
+      window.onresize = ngAddEvent(window.onresize, vm_onresize);
+    }
+
     ngRegisterControlType('ngSysViewModel',(function()
     {
       var fc=function(def, ref, parent) {
@@ -1511,6 +1611,27 @@ ngUserControls['viewmodel_controls'] = {
     /*<>*/
     ngRegisterControlType('ngMemoField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngMemo'); });
 
+    function value_write_ex(val,valueAccessor, allBindingsAccessor) {
+      var modelValue = valueAccessor();
+      if(ko.isObservable(modelValue))
+      {
+        if (ko.isWriteableObservable(modelValue))
+        {
+          modelValue(val);
+          return true;
+        }
+      }
+      else {
+        var allBindings = allBindingsAccessor();
+        if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers']['value'])
+        {
+          allBindings['_ko_property_writers']['value'](val);
+          return true;
+        }
+      }
+      return false;
+    }
+
     function value_write(type,val,c, valueAccessor, allBindingsAccessor)
     {
       type='binding_updating'+ngVal(type,'');
@@ -1519,23 +1640,7 @@ ngUserControls['viewmodel_controls'] = {
       var ret=false;
       c[type]=true;
       try {
-        var modelValue = valueAccessor();
-        if(ko.isObservable(modelValue))
-        {
-          if (ko.isWriteableObservable(modelValue))
-          {
-            modelValue(val);
-            ret=true;
-          }
-        }
-        else {
-          var allBindings = allBindingsAccessor();
-          if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers']['value'])
-          {
-              allBindings['_ko_property_writers']['value'](val);
-              ret=true;
-          }
-        }
+        value_write_ex(val,valueAccessor, allBindingsAccessor);
       }
       finally { delete c[type]; }
       return ret;
@@ -1609,6 +1714,122 @@ ngUserControls['viewmodel_controls'] = {
         },'OnVisibleChanged');
       }
     );
+
+    ngRegisterBindingHandler('Bounds',
+      function (c, valueAccessor, allBindingsAccessor) {
+        value_read('Bounds',c,valueAccessor,function(val) {
+          var binding=allBindingsAccessor();
+          var instantupdate = ngVal(binding["BoundsUpdate"],true);
+          for(var i in val) {
+            val[i]=ko.ng_unwrapobservable(val[i]);
+          }
+          if((c.SetBounds(val))&&(instantupdate)) c.Update();
+        });
+      },
+      function (c, valueAccessor, allBindingsAccessor,viewModel) {
+        c.AddEvent('SetBounds',function(props) {
+          if(typeof props!=='undefined')
+          {
+            value_read('Bounds',c,valueAccessor,function(val) {
+              if(typeof val!=='object') val={};
+              for(var i in props) {
+                var ov=val[i]
+                if(ngIsFieldDef(ov)) ov=ov.Value;
+                if(ko.isObservable(ov)) ov(props[i]);
+                else val[i]=props[i];
+              }
+              value_write_ex(val,valueAccessor, allBindingsAccessor);
+            });
+          }
+        });
+      }
+    );
+
+    ngRegisterBindingHandler('style',
+      function (c, valueAccessor, allBindingsAccessor) {
+        var elm=c.Elm();
+        if(elm) {
+          value_read('style',c,valueAccessor,function(val) {
+            if((typeof val==='object')&&(val))
+              for(var i in val) {
+                elm.style[i] = ko.ng_unwrapobservable(val[i]) || ""; // Empty string removes the value, whereas null/undefined have no effect
+              }
+          });
+        }
+      },
+      null);
+
+    ngRegisterBindingHandler('className',
+      function (c, valueAccessor, allBindingsAccessor) {
+        var elm=c.Elm();
+        if(elm) {
+          value_read('className',c,valueAccessor,function(val) {
+            var bcls=val;
+            var bi=bcls.indexOf(' ');
+            if(bi>=0) bcls=bcls.substr(0,bi);
+            elm.className=val;
+            if(ngVal(c.BaseClassName,'')!=bcls) {
+              c.BaseClassName=bcls;
+              c.Update();
+            }
+          });
+        }
+      },
+      null);
+
+    ngRegisterBindingHandler('SubClassName',
+      function (c, valueAccessor, allBindingsAccessor) {
+        var elm=c.Elm();
+        if(elm) {
+          value_read('className',c,valueAccessor,function(val) {
+            console.log('sub',val);
+            if(ngVal(c.BaseClassName,'')!='') val=c.BaseClassName+' '+val;
+            console.log('sub',val);
+            elm.className=val;
+          });
+        }
+      },
+      null);
+
+    ngRegisterBindingHandler('BaseClassName',
+      function (c, valueAccessor, allBindingsAccessor) {
+        var elm=c.Elm();
+        if(elm) {
+          value_read('className',c,valueAccessor,function(val) {
+            if(ngVal(c.BaseClassName,'')!=val) {
+              var bcls;
+              var scls=elm.className;
+              var bi=scls.indexOf(' ');
+              if(bi>=0) bcls=scls.substr(0,bi);
+              else      bcls=scls;
+              if(ngVal(c.BaseClassName,'')==bcls) {
+                if(bi>=0) scls=scls.substr(bi+1);
+                else      scls='';
+              }
+              if((val!='')&&(scls!='')) scls=' '+scls;
+              elm.className=val+scls;
+              c.BaseClassName=val;
+              c.Update();
+            }
+          });
+        }
+      },
+      null);
+
+    ngRegisterBindingHandler('Opacity',
+      function (c, valueAccessor, allBindingsAccessor) {
+        var elm=c.Elm();
+        if(elm) {
+          value_read('Opacity',c,valueAccessor,function(val) {
+            c.SetOpacity(ng_toFloat(val));
+          });
+        }
+      },
+      function (c, valueAccessor, allBindingsAccessor,viewModel) {
+        c.AddEvent(function(o) {
+          value_write('Opacity',o,c, valueAccessor, allBindingsAccessor);
+        },'SetOpacity');
+      });
 
     function update_enabled(c,valueAccessor,inverse)
     {
