@@ -3217,6 +3217,11 @@ ngUserControls['viewmodel'] = {
         owner: this}));
     };
 
+    ko.ng_unwrapobservable=function(v) {
+      if(ngIsFieldDef(v)) v=v.Value;
+      return ko.isObservable(v) ? v() : v;
+    }
+
     /*  Function: ko.ng_fielddef
      *  Encapsulates <ngFieldDef> into viewmodel.
      *   
