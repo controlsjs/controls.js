@@ -4643,6 +4643,23 @@ function nga_DoRun()
     return;
   }
 
+  var ae=ngApp.Elm();
+  if(ae) {
+    var aw=ng_ClientWidth(ae);
+    var ah=ng_ClientHeight(ae);
+
+    ngApp.LastResizeW=aw;
+    ngApp.LastResizeH=ah;
+
+    if(typeof ngSetDevice === 'function')
+    {
+      if((typeof ngAppDeviceInfo !=='object')||(!ngAppDeviceInfo)) ngAppDeviceInfo={};
+      ngAppDeviceInfo.AppWidth=aw;
+      ngAppDeviceInfo.AppHeight=ah;
+      ngSetDevice(ngDevice);
+    }
+  }
+
   ng_PreloadImagesBegin();
   ngControlImages=ng_URL(ngControlImages);
   ngInitUserControls();
@@ -4860,6 +4877,12 @@ function nga_OnResize(e)
     var ah=ng_ClientHeight(ae);
     if((aw===ngApp.LastResizeW)&&(ah===ngApp.LastResizeH)) return;
 
+    if(typeof ngDetectDevice === 'function')
+    {
+      if((typeof ngAppDeviceInfo !=='object')||(!ngAppDeviceInfo)) ngAppDeviceInfo={};
+      ngAppDeviceInfo.AppWidth=aw;
+      ngAppDeviceInfo.AppHeight=ah;
+    }
     ngApp.LastResizeW=aw;
     ngApp.LastResizeH=ah;
   }
@@ -4927,11 +4950,13 @@ function nga_DoResize()
   if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
   if((ngApp.OnDeviceChanged)&&(typeof ngDetectDevice === 'function'))
   {
-    var device = ngDetectDevice();
-    if(ngDevice!=device)
+    var dinfo={};
+    var device = ngDetectDevice(dinfo);
+    if((ngDevice!=device)||(!ng_VarEquals(dinfo.DeviceProfile,ngDeviceProfile)))
     {
-      if(ngVal(ngApp.OnDeviceChanged(device),false))
-        ngDevice=device;
+      if(ngVal(ngApp.OnDeviceChanged(device,dinfo),false)) {
+        ngSetDevice(dinfo.Device,dinfo);
+      }
     }
   }
   if((!ngAutoResize)||(ngAutoResizeCnt<=0)) return;
@@ -6215,11 +6240,6 @@ function ngApplication(startparams, elm, autorun)
    */
   this.OnDeviceChanged = null
 
-  var ae=this.Elm();
-  if(ae) {
-    ngApp.LastResizeW=ng_ClientWidth(ae);
-    ngApp.LastResizeH=ng_ClientHeight(ae);
-  }
   window.onresize = ngAddEvent(window.onresize, nga_OnResize);
 
   if(ngVal(autorun,true)) this.Run();
