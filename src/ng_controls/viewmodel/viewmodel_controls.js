@@ -1782,9 +1782,7 @@ ngUserControls['viewmodel_controls'] = {
         var elm=c.Elm();
         if(elm) {
           value_read('className',c,valueAccessor,function(val) {
-            console.log('sub',val);
             if(ngVal(c.BaseClassName,'')!='') val=c.BaseClassName+' '+val;
-            console.log('sub',val);
             elm.className=val;
           });
         }
