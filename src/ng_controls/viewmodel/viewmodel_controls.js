@@ -406,6 +406,12 @@ function ngSysViewModel(id, namespace)
   ngControlCreated(this);
 }
 
+function ngvmf_DoDispose()
+{
+  this.SetViewModel(null);
+  return true;
+}
+
 function ngvmf_OnCommand(vm,cmd,options)
 {
   var form=vm.ViewModelForm;
@@ -974,7 +980,7 @@ function ngvmf_SetViewModel(vm)
   {
     if(typeof ovm.RemoveEvent === 'function') { // check if not pure ViewModel
       ovm.RemoveEvent('OnShowErrors',ngvmf_OnShowErrors);
-      ovm.RemoveEvent(ngvmf_OnCommand,'OnCommand');
+      ovm.RemoveEvent('OnCommand',ngvmf_OnCommand);
       ovm.RemoveEvent('OnCommandRequest',ngvmf_OnCommandRequest);
       ovm.RemoveEvent('OnCommandResults',ngvmf_OnCommandResults);
       ovm.RemoveEvent('OnCommandFinished',ngvmf_OnCommandFinished);
@@ -1071,6 +1077,7 @@ function Create_ngViewModelForm(def, ref, parent)
   /*
    *  Group: Methods
    */
+  c.DoDispose = ngvmf_DoDispose;
   c.SetChildControlsEnabled = ngvmf_SetChildControlsEnabled;
 
   c.GetErrorHint = ngvmf_GetErrorHint;
