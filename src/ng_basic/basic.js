@@ -2580,6 +2580,12 @@ function ngObjAddEvent(ev, fce, once) {
 
 function ngObjRemoveEvent(ev, fce) 
 {
+  if(typeof fce === 'string')
+  {
+    var c=fce;
+    fce=ev;
+    ev=c;
+  }
   if(ng_IsArrayVar(fce))
   {
     for(var i=0;i<fce.length;i++)
