@@ -11982,7 +11982,7 @@ function ngtb_UnreegisterControl(c)
       c.DoUpdate=c.ngc_DoUpdate;
       delete c.ngc_DoUpdate;
     }
-    c.RemoveEvent(ngtbc_OnSetVisible,'OnSetVisible');
+    c.RemoveEvent('OnSetVisible',ngtbc_OnSetVisible);
   }
   if(typeof c.tb_fncregistered!=='undefined')
     c.tb_fncregistered=false;

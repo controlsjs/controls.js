@@ -115,7 +115,7 @@ function ngap_UnreegisterControl(c)
       c.DoUpdate=c.ngc_DoUpdate;
       delete c.ngc_DoUpdate;
     } 
-    c.RemoveEvent(ngapc_OnSetVisible,'OnSetVisible');
+    c.RemoveEvent('OnSetVisible',ngapc_OnSetVisible);
   }
   if(typeof c.align_fncregistered!=='undefined')
     c.align_fncregistered=false;
