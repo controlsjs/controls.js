@@ -3873,6 +3873,8 @@ function ngColorPickerDropDown(def,ref,parent)
    *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#ff000000'}
    */
 
+  def.Data = ngNullVal(def.Data, {});
+
   ng_MergeDef(def, {
     Data: {
       /**
