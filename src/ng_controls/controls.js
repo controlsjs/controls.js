@@ -1838,6 +1838,7 @@ function ngc_Dispose()
     {
     }
   }
+  ngc_DeactivatePopup(this);
   if(id!='') delete ngControlsIDs[id];
 }
 
