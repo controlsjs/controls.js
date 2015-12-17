@@ -400,6 +400,32 @@ function ngmn_DoAttach(elm)
   if(elm) elm.oncontextmenu = ngmn_DisableContextMenu;
 }
 
+function ngmn_DoDispose()
+{
+  var p=this.Owner;
+
+  if(p) {
+    if(ngVal(p.ActiveSubMenu, null)==this)
+    {
+      p.ClearSelected();
+      p.ActiveSubMenu=null;
+    }
+  }
+
+  if(this.SubMenuTimer) clearTimeout(this.SubMenuTimer); this.SubMenuTimer=null;
+
+  if(ngCurrentPopupMenu === this)
+  {
+    ngCurrentPopupMenu = null;
+    ngc_DeactivatePopup(this);
+  }
+
+  if((this.ParentMenu)&&(this.ParentMenu.SubMenu===this)) {
+    delete this.ParentMenu.SubMenu;
+  }
+  return true;
+}
+
 function ngmn_Update(recursive)
 {
   if(!this.Visible) return;
@@ -1663,6 +1689,13 @@ function ngmn_DoMenuDispose()
   return true;
 }
 
+function ngmn_DoControlDispose()
+{
+  var oc=this.Owner;
+  if((oc)&&(oc!=this)) ng_SetControlMenu(oc,null);
+  return true;
+}
+
 function ngmn_PopupMouseMenu(e)
 {
   if (!e) e = window.event;
@@ -1728,6 +1761,13 @@ function ngmn_DoPopupDispose()
   return true;
 }
 
+function ngmn_DoPopupControlDispose()
+{
+  var oc=this.Owner;
+  if((oc)&&(oc!=this)) ng_SetControlPopup(oc,null);
+  return true;
+}
+
 function ngmn_SetPopupControlVisible(v)
 {
   var m=this.PopupMenu;
@@ -1768,6 +1808,7 @@ function ng_SetControlMenu(c,m)
   var mb=ngVal(c.SplitButton,false);
   if(om) // unregister old
   {
+    om.HideMenu();
     if(!m)
     {
       c.RemoveEvent('SetVisible',ngmnb_SetControlVisible);
@@ -1783,6 +1824,7 @@ function ng_SetControlMenu(c,m)
       if(mb) om.RemoveEvent('OnSetVisible',ngsbtn_SetMenuVisible);
       else   om.RemoveEvent('OnSetVisible',ngmnb_SetMenuVisible);
     }
+    om.RemoveEvent('DoDispose',ngmn_DoControlDispose);
   }
   c.Menu = m;
   if(m) // register new
@@ -1802,6 +1844,7 @@ function ng_SetControlMenu(c,m)
     }
     if(mb) m.AddEvent('OnSetVisible',ngsbtn_SetMenuVisible);
     else   m.AddEvent('OnSetVisible',ngmnb_SetMenuVisible);
+    m.AddEvent(ngmn_DoControlDispose,'DoDispose');
   }
 }
 
@@ -1941,6 +1984,7 @@ function ng_SetControlPopup(c,m)
   if(om == m) return;
   if(om) // unregister old
   {
+    om.HideMenu();
     if(!m)
     {
       c.RemoveEvent('SetVisible',ngmn_SetPopupControlVisible);
@@ -1950,6 +1994,7 @@ function ng_SetControlPopup(c,m)
       c.RemoveEvent('DoGesture',ngmn_DoGesture);
       c.RemoveEvent('DoDispose',ngmn_DoPopupDispose);
     }
+    om.RemoveEvent('DoDispose',ngmn_DoPopupControlDispose);
     var oc=ngVal(om.Owner,null);
     if(oc==c) om.Owner=null;
   }
@@ -1969,6 +2014,7 @@ function ng_SetControlPopup(c,m)
       c.AddEvent('DoGesture',ngmn_DoGesture);
       c.AddEvent('DoDispose',ngmn_DoPopupDispose);
     }
+    m.AddEvent(ngmn_DoPopupControlDispose,'DoDispose');
   }
 }
 
@@ -2280,7 +2326,7 @@ function Create_ngMenu(def, ref, parent)
   c.AddEvent('OnScroll',ngmn_OnScroll);
   c.AddEvent('DoAttach',ngmn_DoAttach);
   c.AddEvent(ngmn_Update,'Update');
-
+  c.AddEvent('DoDispose',ngmn_DoDispose);
 
   c.OnGetText = ngmn_MenuText;
 
