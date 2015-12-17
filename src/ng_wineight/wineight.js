@@ -2019,6 +2019,7 @@ var WinEightControls = {
           {
             if(cc[i]==btns) continue;
             o=cc[i].Elm();
+            if(!o) continue;
             l=ng_GetCurrentStylePx(o,'left');
             if(l<minx) minx=l;
             if(cc[i]!=content)

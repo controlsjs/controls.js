@@ -168,6 +168,7 @@ function dlgbx_CalcAutoSize()
     {
       if(cc[i]==btns) continue;
       o=cc[i].Elm();
+      if(!o) continue;
       l=ng_GetCurrentStylePx(o,'left');
       if(l<minx) minx=l;
       if(cc[i]!=content)
@@ -202,7 +203,7 @@ function dlgbx_CalcAutoSize()
     h+=ng_OuterHeight(o);
   }
   // center buttons and put them under content/message
-  o=(btns ? btns.Elm() : null)
+  o=(btns ? btns.Elm() : null);
   if(o)
   {
     var cc=btns.ChildControls;
