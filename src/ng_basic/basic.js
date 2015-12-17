@@ -2164,22 +2164,11 @@ function ng_copyvar_int(o, ri)
     if(ng_type_date(o)) return new Date(o);
 
     var r;
-    if(typeof o.length === 'number') // array 
-    { 
-      var ix;
-      r=new Array; 
-      for(var i in o) 
-      {
-        if(!o.hasOwnProperty(i)) continue;
-        ix=(typeof i!=='number' ? parseInt(i) : i);
-        if((isNaN(ix))||(ix<0)||(ix>=o.length)) // probably not array at all
-        {
-          r=null;
-          break;
-        }  
+    if(ng_IsArrayVar(o)) {
+      r=[];
+      for(var i=0;i<o.length;i++)
         r[i]=ng_copyvar_int(o[i],ri);
-      }
-      if(r) return r;
+      return r;
     }
     r=new Object;
     ri.src[ri.src.length]=o;
@@ -2429,6 +2418,13 @@ function ng_VarEquals(a,b,noobj)
   return true;
 }
 
+// Array polyfill
+if (!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+
 /**
  *  Function: ng_IsArrayVar
  *  Detects if variable is indexed array.
@@ -2441,29 +2437,8 @@ function ng_VarEquals(a,b,noobj)
  *    
  *  Returns:
  *    TRUE if variable is indexed array. 
- */       
-function ng_IsArrayVar(o)
-{
-  if((typeof o !== 'object')||(!o)) return false;
-
-  if(typeof o.length === 'number') // array 
-  { 
-    var ix;
-    var arr=true; 
-    for(var i in o) 
-    {
-      if(!o.hasOwnProperty(i)) continue;
-      ix=(typeof i!=='number' ? parseInt(i) : i);
-      if((isNaN(ix))||(ix<0)||(ix>=o.length)) // probably not array at all
-      {
-        arr=false;
-        break;
-      }  
-    }
-    if(arr) return true;
-  }
-  return false;
-}
+ */
+window.ng_IsArrayVar=Array.isArray;
 
 /**
  *  Function: ng_EmptyVar
