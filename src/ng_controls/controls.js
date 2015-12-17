@@ -1819,6 +1819,7 @@ function ngc_Dispose()
   }
 
   var id=this.ID;
+  ngc_DeactivatePopup(this);
   if((!this.DoDispose)||(ngVal(this.DoDispose(),false)))
   {
     ngRemoveChildControl(this.ParentControl,this);
@@ -1838,7 +1839,6 @@ function ngc_Dispose()
     {
     }
   }
-  ngc_DeactivatePopup(this);
   if(id!='') delete ngControlsIDs[id];
 }
 
