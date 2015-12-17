@@ -378,7 +378,7 @@ function ngSetDevice(device,dinfo) {
     if((typeof device==='undefined')||(device=='')) device=dinfo.Device;
   }
   ngDevice=device;
-  if(typeof dinfo.DevicesStatus[device]==='object') ngDeviceProfile=dinfo.DevicesStatus[device];
+  if((typeof device!=='undefined')&&(typeof dinfo.DevicesStatus[device]==='object')) ngDeviceProfile=dinfo.DevicesStatus[device];
   else { var undefined; ngDeviceProfile=undefined; }
   dinfo.Device=device;
   dinfo.DeviceProfile=ngDeviceProfile;
