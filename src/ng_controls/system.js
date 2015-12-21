@@ -576,6 +576,312 @@ function ngSysRPC(id)
   ngControlCreated(this);
 }
 
+// --- ngSysURLParams ----------------------------------------------------------
+function ngsurl_DoDispose() {
+  if(this._inittimer) clearTimeout(this._inittimer);
+  this._inittimer=null;
+
+  if((typeof ngApp==='object')&&(ngApp)) {
+    ngApp.RemoveEvent('OnParamsChanged',this._paramschanged);
+  }
+  return true;
+}
+
+function ngsurl_URLParamsChanged() {
+  var changed=false;
+  for(var i in this.Params) {
+    var val=this.GetParam(i);
+    if(val!==this.Params[i]) {
+      if((!this.OnUpdate)||(ngVal(this.OnUpdate(this,i,val),false))) {
+        changed=true;
+        this.Params[i]=val;
+      }
+    }
+  }
+  if(changed) {
+    this.DoParamsChanged();
+  }
+}
+
+function ngsurl_DoCreate(def,ref) {
+  if((typeof ngApp!=='object')||(!ngApp)) return;
+
+  ngApp.AddEvent('OnParamsChanged',this._paramschanged);
+
+  var self=this;
+  this._inittimer=setTimeout(function() {
+    self.Initialize();
+  },1);
+}
+
+function ngsurl_Initialize() {
+  if((typeof ngApp!=='object')||(!ngApp)) return;
+
+  if(this._initialized) return;
+  try {
+    if(this._inittimer) clearTimeout(this._inittimer);
+    this._inittimer=null;
+
+    var undefined;
+    for(var i in this.Params) {
+      var val=this.GetParam(i);
+      if((!this.OnInit)||(ngVal(this.OnInit(this,i,val),false))) {
+        ngApp.PersistParam(i, true);
+      }
+      this.Params[i]=val;
+    }
+    if(this.OnInitialized) this.OnInitialized(this);
+  }
+  finally {
+    this._initialized=true;
+  }
+}
+
+function ngsurl_DoParamsChanged()
+{
+  if(this._update_cnt>0) this._params_changed = true;
+  else if(this.OnParamsChanged) this.OnParamsChanged(this);
+}
+
+function ngsurl_BeginUpdate() {
+  this._update_cnt++;
+  if((typeof ngApp==='object')&&(ngApp)) 
+    ngApp.BeginUpdateParams();
+}
+
+function ngsurl_EndUpdate() {
+  if((typeof ngApp==='object')&&(ngApp))
+    ngApp.EndUpdateParams();
+
+  this._update_cnt--;
+  if(this._update_cnt<=0) {
+    this._update_cnt=0;
+    if(this._params_changed) {
+      this._params_changed=false;
+      this.DoParamsChanged();
+    }
+  }
+}
+
+function ngsurl_SetParam(p,v) {
+  if((typeof ngApp!=='object')||(!ngApp)) return;
+
+  var nv,undefined,changed=false;
+
+  if((typeof this.Params[p] === 'undefined')&&(typeof ngApp.ParamType(p) === 'undefined')) {
+    ngApp.PersistParam(p, true);
+  }
+  if((typeof this.DefaultValues[p]!=='undefined')&&((typeof v === 'undefined')||(v=='')||(v===null)||(v==this.DefaultValues[p]))) {
+    v=undefined;
+    nv=this.DefaultValues[p];
+  }
+  else nv=v;
+  if(nv!==this.Params[p]) {
+    this.Params[p]=nv;
+    changed=true;
+  }
+
+  if(this.OnSetParam) v=this.OnSetParam(this,p,v);
+  if(this._initialized) ngApp.SetClientParam(p, v);
+
+  if(changed) this.DoParamsChanged();
+}
+
+function ngsurl_GetParam(p) {
+  if((typeof ngApp!=='object')||(!ngApp)) return;
+
+  var v=ngApp.Param(p);
+  if(this.OnGetParam) v=this.OnGetParam(this,p,v);
+
+  if(((typeof v === 'undefined')||(v=='')||(v===null))&&(typeof this.DefaultValues[p]!=='undefined')) v=this.DefaultValues[p];
+  return v;
+}
+
+function ngsurl_GetValues() {
+  var vals={};
+  for(var i in this.Params) {
+    vals[i]=this.GetParam(i);
+  }
+  return vals;
+}
+
+function ngsurl_SetValues(vals) {
+  if(!ng_EmptyVar(vals)) {
+    if((typeof ngApp!=='object')||(!ngApp)) return;
+    this.BeginUpdate();
+    try {
+      for(var i in vals) {
+        this.SetParam(i,vals[i]);
+      }
+    } finally {
+      this.EndUpdate();
+    }
+  }
+}
+
+function ngSysURLParams(id)
+{
+  ngSysControl(this, id, 'ngSysURLParams');
+
+  this._initialized=false;
+  this._inittimer=null;
+  this._update_cnt=0;
+  this._params_changed=false;
+
+  /*
+   *  Group: Properties
+   */
+  /*  Variable: DefaultValues
+   *  ...
+   *  Type: object
+   *  Default value: {}
+   */
+  this.DefaultValues = {};
+
+  /*  Variable: Params
+   *  ...
+   *  Type: object
+   *  Default value: {}
+   */
+  this.Params = {};
+
+  var self=this;
+
+  this._paramschanged = function() {
+    self.URLParamsChanged(self);
+  };
+
+  this.URLParamsChanged=ngsurl_URLParamsChanged;
+  this.DoParamsChanged = ngsurl_DoParamsChanged;
+  this.DoCreate = ngsurl_DoCreate;
+  this.DoDispose = ngsurl_DoDispose;
+
+  /*
+   *  Group: Methods
+   */
+  /*  Function: GetParam
+   *  Gets current value of parameter.
+   *
+   *  Syntax:
+   *    mixed *GetParam* (string name)
+   *
+   *  Parameters:
+   *    name - name of parameter
+   *
+   *  Returns:
+   *    Current value of parameter.
+   */
+  this.GetParam = ngsurl_GetParam;
+  /*  Function: SetParam
+   *  Sets value of parameter.
+   *
+   *  Syntax:
+   *    void *SetParam* (string name, mixed value)
+   *
+   *  Parameters:
+   *    name - name of parameter
+   *    value - new value of parameter
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetParam = ngsurl_SetParam;
+
+  /*  Function: GetValues
+   *  Gets current value of all parameters.
+   *
+   *  Syntax:
+   *    object *GetValues* ()
+   *
+   *  Returns:
+   *    Object with parameters value.
+   */
+  this.GetValues = ngsurl_GetValues;
+  /*  Function: SetValues
+   *  Sets value of multiple parameters.
+   *
+   *  Syntax:
+   *    void *SetValues* (object values)
+   *
+   *  Parameters:
+   *    values - object with values to be set
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetValues = ngsurl_SetValues;
+
+  /*  Function: Initialize
+   *  Forces initialization of URL parameters.
+   *  If not called manually the initialization occurs right after
+   *  the execution is returned back to browser.
+   *
+   *  Syntax:
+   *    void *Initialize* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.Initialize=ngsurl_Initialize;
+
+  /*  Function: BeginUpdate
+   *  Prevents the updating of parameters until the <EndUpdate> method is called.
+   *
+   *  Syntax:
+   *    void *BeginUpdate* ()
+   *
+   *  Returns:
+   *    -
+   *
+   *  See also:
+   *    <EndUpdate>
+   */
+  this.BeginUpdate=ngsurl_BeginUpdate;
+  /*  Function: EndUpdate
+   *  Performs application parameters update deferred by a call to <BeginUpdate>.
+   *
+   *  Syntax:
+   *    void *EndUpdate* ()
+   *
+   *  Returns:
+   *    -
+   *
+   *  See also:
+   *    <BeginUpdate>
+   */
+  this.EndUpdate=ngsurl_EndUpdate;
+
+  /*
+   *  Group: Events
+   */
+  /*
+   *  Event: OnInit
+   */
+  this.OnInit = null;
+  /*
+   *  Event: OnUpdate
+   */
+  this.OnUpdate = null;
+  /*
+   *  Event: OnGetParam
+   */
+  this.OnGetParam = null;
+  /*
+   *  Event: OnSetParam
+   */
+  this.OnSetParam = null;
+  /*
+   *  Event: OnInitialized
+   */
+  this.OnInitialized = null;
+  /*
+   *  Event: OnParamsChanged
+   */
+  this.OnParamsChanged = null;
+
+  ngControlCreated(this);
+}
+
 if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
 ngUserControls['system'] = {
   Lib: 'ng_controls',
@@ -585,5 +891,6 @@ ngUserControls['system'] = {
     ngRegisterControlType('ngSysAction', function() { return new ngSysAction; });
     ngRegisterControlType('ngSysTimer', function() { return new ngSysTimer; });
     ngRegisterControlType('ngSysRPC', function() { return new ngSysRPC; });
+    ngRegisterControlType('ngSysURLParams', function() { return new ngSysURLParams; });
   }
 };
