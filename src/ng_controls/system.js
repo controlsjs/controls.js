@@ -587,7 +587,33 @@ function ngsurl_DoDispose() {
   return true;
 }
 
+function ngsurl_DoSetEnabled(s) {
+  this.Enabled=s;
+  if(s) {
+    if(!this._initialized) {
+      var self=this;
+      this._inittimer=setTimeout(function() {
+        self.Initialize();
+      },1);
+    }
+    else {
+      this.URLParamsChanged();
+
+      if((this._params_changed)&&(this._update_cnt<=0)) {
+        this._params_changed=false;
+        this.DoParamsChanged();
+      }
+    }
+  }
+  else {
+    if(this._inittimer) clearTimeout(this._inittimer);
+    this._inittimer=null;
+  }
+}
+
 function ngsurl_URLParamsChanged() {
+  if((!this.Enabled)||(!this._initialized)) return;
+
   var changed=false;
   for(var i in this.Params) {
     var val=this.GetParam(i);
@@ -608,21 +634,26 @@ function ngsurl_DoCreate(def,ref) {
 
   ngApp.AddEvent('OnParamsChanged',this._paramschanged);
 
-  var self=this;
-  this._inittimer=setTimeout(function() {
-    self.Initialize();
-  },1);
+  if(this.Enabled) {
+    var self=this;
+    this._inittimer=setTimeout(function() {
+      self.Initialize();
+    },1);
+  }
 }
 
 function ngsurl_Initialize() {
   if((typeof ngApp!=='object')||(!ngApp)) return;
 
   if(this._initialized) return;
+
   try {
+    var undefined;
+
+    this.SetEnabled(true);
     if(this._inittimer) clearTimeout(this._inittimer);
     this._inittimer=null;
 
-    var undefined;
     for(var i in this.Params) {
       var val=this.GetParam(i);
       if((!this.OnInit)||(ngVal(this.OnInit(this,i,val),false))) {
@@ -639,13 +670,13 @@ function ngsurl_Initialize() {
 
 function ngsurl_DoParamsChanged()
 {
-  if(this._update_cnt>0) this._params_changed = true;
+  if((this._update_cnt>0)||(!this.Enabled)||(!this._initialized)) this._params_changed = true;
   else if(this.OnParamsChanged) this.OnParamsChanged(this);
 }
 
 function ngsurl_BeginUpdate() {
   this._update_cnt++;
-  if((typeof ngApp==='object')&&(ngApp)) 
+  if((typeof ngApp==='object')&&(ngApp))
     ngApp.BeginUpdateParams();
 }
 
@@ -656,7 +687,7 @@ function ngsurl_EndUpdate() {
   this._update_cnt--;
   if(this._update_cnt<=0) {
     this._update_cnt=0;
-    if(this._params_changed) {
+    if((this._params_changed)&&(this.Enabled)&&(this._initialized)) {
       this._params_changed=false;
       this.DoParamsChanged();
     }
@@ -671,6 +702,8 @@ function ngsurl_SetParam(p,v) {
   if((typeof this.Params[p] === 'undefined')&&(typeof ngApp.ParamType(p) === 'undefined')) {
     ngApp.PersistParam(p, true);
   }
+  else if((!this.Enabled)||(!this._initialized)) return;
+
   if((typeof this.DefaultValues[p]!=='undefined')&&((typeof v === 'undefined')||(v=='')||(v===null)||(v==this.DefaultValues[p]))) {
     v=undefined;
     nv=this.DefaultValues[p];
@@ -680,11 +713,11 @@ function ngsurl_SetParam(p,v) {
     this.Params[p]=nv;
     changed=true;
   }
-
-  if(this.OnSetParam) v=this.OnSetParam(this,p,v);
-  if(this._initialized) ngApp.SetClientParam(p, v);
-
-  if(changed) this.DoParamsChanged();
+  if((this.Enabled)&&(this._initialized)) {
+    if(this.OnSetParam) v=this.OnSetParam(this,p,v);
+    ngApp.SetClientParam(p, v);
+    if(changed) this.DoParamsChanged();
+  }
 }
 
 function ngsurl_GetParam(p) {
@@ -755,6 +788,7 @@ function ngSysURLParams(id)
   this.DoParamsChanged = ngsurl_DoParamsChanged;
   this.DoCreate = ngsurl_DoCreate;
   this.DoDispose = ngsurl_DoDispose;
+  this.DoSetEnabled = ngsurl_DoSetEnabled;
 
   /*
    *  Group: Methods
