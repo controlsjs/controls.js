@@ -2166,7 +2166,7 @@ function ng_copyvar_int(o, ri)
     var r;
     if(ng_IsArrayVar(o)) {
       r=[];
-      for(var i=0;i<o.length;i++)
+      for(var i in o)
         r[i]=ng_copyvar_int(o[i],ri);
       return r;
     }
