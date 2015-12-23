@@ -359,13 +359,13 @@ function ngRes(rid)
 {
   var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en');
 
-  function getres(def,rid)
+  function getres(def,rid, warn)
   {
     var le=def['en'];
     var eres=(typeof le === 'undefined' ? le : le[rid]);
     if(lang=='en')
     {
-      if((ngHASDEBUG())&&(typeof eres==='undefined'))
+      if((ngHASDEBUG())&&(typeof eres==='undefined')&&(warn))
         ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
       return ng_CopyVar(eres);
     }
@@ -374,13 +374,13 @@ function ngRes(rid)
     var res=(typeof l === 'undefined' ? l : l[rid]);
     if(typeof res === 'undefined')
     {
-      if((ngHASDEBUG())&&(typeof eres==='undefined'))
+      if((ngHASDEBUG())&&(typeof eres==='undefined')&&(warn))
         ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
       return ng_CopyVar(eres);
     }
     if(typeof eres === 'undefined')
     {
-      if((ngHASDEBUG())&&(typeof res==='undefined'))
+      if((ngHASDEBUG())&&(typeof res==='undefined')&&(warn))
         ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
       return ng_CopyVar(res);
     }
@@ -392,10 +392,10 @@ function ngRes(rid)
 
   if((typeof ngDevice !== 'undefined')&&(typeof ngc_Lang['DEV_'+ngDevice] !== 'undefined'))
   {
-    var dres=getres(ngc_Lang['DEV_'+ngDevice],rid);
+    var dres=getres(ngc_Lang['DEV_'+ngDevice],rid,false);
     if(typeof dres !== 'undefined') return dres;
   }
-  return getres(ngc_Lang,rid);
+  return getres(ngc_Lang,rid,true);
 }
 
 // --- Functions ---------------------------------------------------------------
