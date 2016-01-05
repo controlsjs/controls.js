@@ -201,7 +201,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
             );
                               
             ctrl.AddEvent('DoDispose',function() {
-              bindingsUpdater.dispose();
+              if(bindingsUpdater) bindingsUpdater.dispose();
               return true;
             });
   
