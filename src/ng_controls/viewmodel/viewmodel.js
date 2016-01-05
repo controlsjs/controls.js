@@ -341,10 +341,7 @@ function ngfd_GetTypedDefaultValue()
 
 function ngfd_GetTypedValue()
 {
-  var v;
-  if(ko.isObservable(this.Value)) v=this.Value();
-  else v=this.Value;
-  return this.TypedValue(v);
+  return this.TypedValue(ko.ng_getvalue(this.Value));
 }
 
 function ngfd_TypedValue(v)
@@ -1253,7 +1250,10 @@ function ngvm_SetValues(values,deserialize)
           {
             setval=d[i];
             if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
-            if((deserialize)&&(typeof instance.Deserialize === 'function')) val(instance.Deserialize(setval));
+            if((deserialize)&&(typeof instance.Deserialize === 'function')) {
+              setval=instance.Deserialize(setval);
+              ko.ng_setvalue(val,setval);
+            }
             else 
             {
               if(typeof instance.TypedValue === 'function')
@@ -1266,7 +1266,7 @@ function ngvm_SetValues(values,deserialize)
                 {
                 }
               }
-              val(setval);
+              ko.ng_setvalue(val,setval);
             }
           }
           finally
@@ -1337,7 +1337,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
           instance.__Saving=true;
           try
           {
-            val=val();
+            val=ko.ng_getvalue(val);
             if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
             if((serialize)&&(typeof instance.Serialize === 'function')) 
               d[i]=instance.Serialize(val);              
@@ -1771,7 +1771,7 @@ function ngvm_Reset(callback)
       {
          instance.__Loading=true;
         try {
-          if(ko.isWriteableObservable(val)) val(defaultval);
+          if(ko.isWriteableObservable(val)) ko.ng_setvalue(val,defaultval);
         }
         finally {
            delete instance.__Loading;
@@ -1802,20 +1802,21 @@ function vmGetFieldByID(vm,propid)
 {
   propid=''+propid;
   if((!vm)||(propid=='')) return; // undefined
-  var p,pids=propid.split('.');
-  if(!pids.length) return; // undefined
-  for(var i=0;i<pids.length;i++)
-  {
-    if(ngIsFieldDef(vm)) {
-      if(typeof vm.GetChildFieldByID === 'function') {
-        pids.splice(0,i);
-        return vm.GetChildFieldByID(pids.join('.'));
+  var pids=propid.split('.');
+  if(pids.length) {
+    for(var i=0;i<pids.length;i++)
+    {
+      if(ko.isObservable(vm)) vm=vm();
+      if(ngIsFieldDef(vm)) {
+        if(typeof vm.GetChildFieldByID === 'function') {
+          pids.splice(0,i);
+          return vm.GetChildFieldByID(pids.join('.'));
+        }
       }
+      if((!vm)||(typeof vm!=='object')) return; // undefined
+      vm=vm[pids[i]];
     }
-    p=vm[pids[i]];
-    if(i===pids.length-1) return p;
-    if((!p)||(typeof p!=='object')) return; // undefined
-    vm=p;        
+    return vm;
   }
   return; //undefined
 }
@@ -1828,7 +1829,7 @@ function ngvm_GetFieldByID(propid)
 function vmGetFieldValueByID(vm,propid)
 {
   var p=vmGetFieldByID(vm,propid);
-  return (typeof p === 'function' ? p() : p);
+  return ko.ng_getvalue(p);
 }
 
 function ngvm_GetFieldValueByID(propid)
@@ -1839,28 +1840,47 @@ function ngvm_GetFieldValueByID(propid)
 function vmSetFieldValueByID(vm,propid,val)
 {
   propid=''+propid;
-  if((!vm)||(propid=='')) return;
-  var p,pids=propid.split('.');
+  if((!vm)||(propid=='')) return false;
+  var p,pv,pids=propid.split('.');
   if(pids.length<1) return; // empty
-  for(var i=0;i<pids.length-1;i++)
+  if(ko.isObservable(vm)) {
+    pv=vm();
+    if((!pv)||(typeof pv!=='object')) {
+      if(!ko.isWriteableObservable(vm)) return false;
+      pv={};
+      vm(pv);
+    }
+    vm=pv;
+  }
+  if((!vm)||(typeof vm!=='object')) return false; // not object
+  var pidslen=pids.length-1;
+  for(var i=0;i<pidslen;i++)
   {
     p=vm[pids[i]];
-    if((!p)||(typeof p!=='object')) 
+    if(ko.isObservable(p)) pv=p();
+    else pv=p;
+    if((!pv)||(typeof pv!=='object'))
     {
-      if(typeof p==='undefined')
+      if(typeof pv==='undefined')
       {
-        p={};
-        vm[pids[i]]=p;
+        if(p!==pv) {
+          if(!ko.isWriteableObservable(p)) return false; // read-only property
+          pv={};
+          p(pv);
+        }
+        else {
+          pv={};
+          vm[pids[i]]=pv;
+        }
       }
-      else return; // not diveable 
+      else return false; // not diveable
     }
-    vm=p;        
+    vm=pv;
   }
-  var prop=pids[pids.length-1];
-  p=vm[prop];
-  if(typeof p === 'function') p(val);
-  else vm[prop]=val;
-}    
+  var prop=pids[pidslen];
+  vm[prop]=ko.ng_setvalue(vm[prop],val);
+  return true;
+}
 
 function ngvm_SetFieldValueByID(propid,val)
 {
@@ -2602,9 +2622,9 @@ ngUserControls['viewmodel'] = {
       var vm=viewmodel(viewModel);
       var f=vmGetFieldByID(vm,propName);
       if((ko.isObservable(f))&&(ko.isObservable(prop))) {
-        prop(f());
+        ko.ng_setvalue(prop,ko.ng_getvalue(f))
         f.subscribe(function(v) {
-          prop(v);
+          ko.ng_setvalue(prop,ko.ng_getvalue(v));
           if(typeof callonsync === 'function') callonsync(v,prop,f,vm);
         });
       }
@@ -2632,18 +2652,20 @@ ngUserControls['viewmodel'] = {
       var vm2=viewmodel(viewModel2);
       var f=vmGetFieldByID(vm2,propName2);
       if((ko.isObservable(f))&&(ko.isObservable(prop))) {
-        f(prop());
+        ko.ng_setvalue(f,ko.ng_getvalue(prop))
         f.subscribe(function(v) {
-          var v2=prop();
-          if(!ng_VarEquals(v,v2)) {
-            prop(v);
+          var v1=ko.ng_getvalue(v);
+          var v2=ko.ng_getvalue(prop);
+          if(!ng_VarEquals(v1,v2)) {
+            ko.ng_setvalue(prop,v1);
             if(typeof callonsync === 'function') callonsync(v,propName2,prop,vm1,prop,vm2,f);
           }
         });
         prop.subscribe(function(v) {
-          var v2=f();
-          if(!ng_VarEquals(v,v2)) {
-            f(v);
+          var v1=ko.ng_getvalue(v);
+          var v2=ko.ng_getvalue(f);
+          if(!ng_VarEquals(v1,v2)) {
+            ko.ng_setvalue(f,v1);
             if(typeof callonsync === 'function') callonsync(v,propName1,f,vm1,prop,vm2,f);
           }
         });
@@ -3178,7 +3200,7 @@ ngUserControls['viewmodel'] = {
         owner: this})); 
     };
 
-    /*  Function: ng_array_item
+    /*  Function: ko.ng_array_item
      *  Creates computed indexed array item accessor.
      *  Allows binding of non-observable array items.
      *
@@ -3199,28 +3221,201 @@ ngUserControls['viewmodel'] = {
           var i=idx;
           if(ko.isObservable(i)) i=i();
           if(ng_typeArray(a)) {
-            return a[i];
+            return ko.ng_getvalue(a[i]);
           }
           // return undefined;
         },
         write: function(v) {
           var a=arr();
-          if(!ng_typeArray(a)) {
-            a=[];
-            arr(a);
-          }
           var i=idx;
           if(ko.isObservable(i)) i=i();
-          a[i]=v;
+          if(!ng_typeArray(a)) {
+            a=[];
+            a[i]=ko.ng_setvalue(a[i],v);
+            arr(a);
+            return;
+          }
+          arr.valueWillMutate();
+          a[i]=ko.ng_setvalue(a[i],v);
           arr.valueHasMutated();
         },
         owner: this}));
     };
 
+    /*  Function: ko.ng_unwrapobservable
+     *  Extracts/Unwraps value from ko.observable or ngFieldDef.
+     *
+     *  Syntax:
+     *    function *ko.ng_unwrapobservable* (mixed val)
+     *
+     *  Parameters:
+     *    val - input value
+     *
+     *  Returns:
+     *    Unwrapped value.
+     *    If input value is not ko.observable or ngFieldDef the returned
+     *    value is the same.
+     */
     ko.ng_unwrapobservable=function(v) {
       if(ngIsFieldDef(v)) v=v.Value;
       return ko.isObservable(v) ? v() : v;
-    }
+    };
+
+    /*  Function: ko.ng_getvalue
+     *  Extracts/Unwraps value from ko.observable or ngFieldDef.
+     *  In contrast to ko.ng_unwrapobservable this function also handles object properties.
+     *  If any of object properties is ko.observable or ngFieldDef the object is copied and
+     *  values of these properties are extracted/uwrapped.
+     *
+     *  Syntax:
+     *    function *ko.ng_getvalue* (mixed v [, bool needcopy=false, bool recursive=true])
+     *
+     *  Parameters:
+     *    v - input value
+     *    needcopy - if TRUE always return copy of value
+     *    recursive - if TRUE the ko.ng_getvalue is called recursively on object properties if they are objects
+     *
+     *  Returns:
+     *    Unwrapped value.
+     *    If value is object then the copy of object is returned if any of object properties
+     *    was also uwrapped or if needcopy parameter is TRUE.
+     *    If value is date then copy is returned only if needcopy parameter id TRUE.
+     */
+    ko.ng_getvalue=function(v,needcopy,recursive) {
+      if(typeof recursive==='undefined') recursive=true;
+
+      function copywithoutprop(c,p) {
+        var n=(ng_IsArrayVar(c) ? [] : {});
+        var ref=c['_byRef'];
+        for(var i in c) {
+          if(i===p) break;
+          n[i]=(ref && ref[i] ? c[i] : ng_CopyVar(c[i]));
+        }
+        return n;
+      }
+
+      function getvalueint(v)
+      {
+        var c=v;
+        v=ko.ng_unwrapobservable(v);
+        if(ng_typeObject(v)) {
+          if(ng_typeDate(v)) {
+            if((c!==v)||(needcopy)) v=ng_CopyVar(v);
+          }
+          else {
+            var val;
+            var ref=v['_byRef'];
+            if((c!==v)||(needcopy)) {
+              c=v;
+              v=(ng_IsArrayVar(c) ? [] : {});
+            }
+            else c=v;
+            for(var i in c) {
+              val=(!recursive || (ref && ref[i]) ? ko.ng_unwrapobservable(c[i]) : getvalueint(c[i]));
+              val=ko.ng_unwrapobservable(c[i]);
+              if(val!==c[i]) {
+                if(c===v) v=copywithoutprop(c,i);
+                v[i]=val;
+              } else {
+                if(c!==v) v[i]=(ref && ref[i] ? val : ng_CopyVar(val));
+              }
+            }
+          }
+        }
+        return v;
+      }
+      return getvalueint(v);
+    };
+
+
+    /*  Function: ko.ng_setvalue
+     *  Sets value to ko.observable or ngFieldDef target.
+     *  If any object properties, present in target, are ko.observable or ngFieldDef then
+     *  they are preserved regardless if they are present or not in input value and reference
+     *  to target value is not changed.
+     *
+     *  Syntax:
+     *    function *ko.ng_setvalue* (mixed t, mixed val, [, bool recursive=true])
+     *
+     *  Parameters:
+     *    t - target value
+     *    val - input value
+     *    recursive - if TRUE the ko.ng_setvalue is called recursively on object properties if they are objects
+     *
+     *  Returns:
+     *    Target value if is ko.observable or ngFieldDef.
+     *    Otherwise it returns the input value.
+     */
+    ko.ng_setvalue=function(t,val,recursive) {
+      var ov=t;
+      if(ngIsFieldDef(t)) t=t.Value;
+      if(ng_typeObject(val)) {
+        var d=ko.isObservable(t) ? t() : t;
+        if((ng_typeObject(d))&&(!ng_typeDate(d))) {
+          if((t!==d)&&(!ko.isWriteableObservable(t))) return val;
+
+          if(typeof recursive==='undefined') recursive=true;
+
+          var hasobservable=false;
+          var nv;
+          var vref=val['_byRef'];
+          var n={},ex={};
+
+          function sethasobservable() {
+            if(hasobservable) return;
+            hasobservable=true;
+            for(var i in n) d[i]=n[i];
+            delete n;
+          }
+
+          for(var i in val) {
+            ex[i]=true;
+            if((recursive)&&((!vref)||(!vref[i]))) {
+              nv=ko.ng_setvalue(d[i],val[i],true);
+            } else {
+              if(ko.isWriteableObservable(d[i])) {
+                nv=d[i];
+                if(ngIsFieldDef(nv)) nv.Value(val[i]);
+                else nv(val[i]);
+              }
+              else nv=val[i];
+            }
+            if((!hasobservable)&&((ng_typeObject(nv))||(ko.isObservable(nv)))&&(nv===d[i])) sethasobservable();
+            if(hasobservable) d[i]=nv;
+            else n[i]=nv;
+          }
+          var delkeys={}
+          for(var i in d) {
+            if(ex[i]) continue;
+            if(ko.isObservable(d[i])) {
+              sethasobservable();
+              continue;
+            }
+            if((ng_typeObject(d[i]))&&!(ng_typeDate(d[i]))) {
+              nv=ko.ng_getvalue(d[i]); // detect if object has observables
+              if(nv!==d[i]) {
+                sethasobservable();
+                continue;
+              }
+            }
+            delkeys[i]=true;
+          }
+          delete n;
+          for(var i in delkeys) delete d[i];
+          if(hasobservable) {
+            if(t!==d) {
+              return ov;
+            }
+            else val=d;
+          }
+        }
+      }
+      if((t)&&(ko.isWriteableObservable(t))) {
+        t(val);
+        return ov;
+      }
+      return val;
+    };
 
     /*  Function: ko.ng_fielddef
      *  Encapsulates <ngFieldDef> into viewmodel.
@@ -3322,13 +3517,13 @@ ngUserControls['viewmodel'] = {
                     }
                     pfd=pfd.Value;
                   }
-                  if(ko.isObservable(pfd)) pfd=pfd();
+                  pfd=ko.ng_getvalue(pfd);
                   if((isempty)&&(!ng_isEmptyObject(pfd))) isempty=false;
                   vmSetFieldValueByID(r,k,pfd);
                 }
               } finally {
                 if(isempty) r=null;
-                val(r);
+                ko.ng_setvalue(val,r);
                 writing_properties=false;
               }
             });
@@ -3355,7 +3550,7 @@ ngUserControls['viewmodel'] = {
               var valAccessor=ko.computed({
                 read: function() {
                   var a=val();
-                  if(ng_typeArray(a)) return a[idx];
+                  if(ng_typeArray(a)) return ko.ng_getvalue(a[idx]);
                   // return undefined;
                 },
                 write: function(v) {
@@ -3365,7 +3560,9 @@ ngUserControls['viewmodel'] = {
                     if(!ng_typeArray(a)) {
                       if((pack)&&(ng_isEmptyOrNull(v))) return;
                       a=[];
+                      a[idx]=ko.ng_setvalue(a[idx],v);
                       val(a);
+                      return;
                     }
                     if(idx>=a.length) {
                       if(ng_isEmptyOrNull(v)) {
@@ -3378,10 +3575,10 @@ ngUserControls['viewmodel'] = {
                       }
                     }
                     else
-                      if(ng_VarEquals(a[idx],v)) return;
+                      if(ng_VarEquals(ko.ng_getvalue(a[idx]),v)) return;
 
                     val.valueWillMutate();
-                    a[idx]=v;
+                    a[idx]=ko.ng_setvalue(a[idx],v);
                     val.valueHasMutated();
                   }
                 },
