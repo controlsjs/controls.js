@@ -150,7 +150,9 @@ function ngApplyBindings(ctrl, viewModel, databind)
                     ko.utils.arrayForEach(binding['After'], function(bindingDependencyKey) {
                         if (bindings[bindingDependencyKey]) {
                             if (ko.utils.arrayIndexOf(cyclicDependencyStack, bindingDependencyKey) !== -1) {
-                                throw Error("Cannot combine the following bindings, because they have a cyclic dependency: " + cyclicDependencyStack.join(", "));
+                                var errmsg="Cannot combine the following bindings, because they have a cyclic dependency: " + cyclicDependencyStack.join(", ");
+                                ngDEBUGERROR(errmsg);
+                                throw Error(errmsg);
                             } else {
                                 pushBinding(bindingDependencyKey);
                             }
@@ -183,7 +185,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
     } else {*/
         var provider = ko.bindingProvider['instance'],
             getBindings = /*provider['getBindingAccessors'] ||*/ getBindingsAndMakeAccessors;
-        if (/*sourceBindings || */bindingContext._subscribable) {
+        if (/*sourceBindings || */(bindingContext._subscribable) || (ko.version!=='3.0.0')) { // in ko 3.4.0 this condition doesn't exists
             // When an obsevable view model is used, the binding context will expose an observable _subscribable value.
             // Get the binding from the provider within a computed observable so that we can update the bindings whenever
             // the binding context is updated.
@@ -289,6 +291,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
                 }
             } catch (ex) {
                 ex.message = "Unable to process binding \"" + bindingKey + ": " + bindings[bindingKey] + "\"\nMessage: " + ex.message;
+                ngDEBUGERROR(ex.message)
                 throw ex;
             }
         });
@@ -1539,6 +1542,130 @@ ngUserControls['viewmodel_controls'] = {
 
     ngRegisterControlType('ngViewModelForm', function(def, ref, parent) { return Create_ngViewModelForm(def, ref, parent); });
 
+    if(ngUserControls['settings'])
+    {
+      function ngsvmset_DoCreate(def,ref) {
+      
+        if((!this._settings)&&(typeof ngApp === 'object')&&(ngApp)&&(ng_typeObject(ngApp.Settings))) {
+          this._settings=ngApp.Settings;
+        }
+        if(this._settings) {
+          var self=this;
+          this._settingsloaded=function(settings) {
+            if(this.Enabled) {
+              if(self.OnSettingsLoaded) self.OnSettingsLoaded(self,settings);
+            } else self._changed=true;
+          }
+          this._settings.AddEvent('OnSettingsLoaded',this._settingsloaded);
+        }
+        if((this.Enabled)&&(this._settings)&&(!this._initialized)) {
+          this._initialized=true;
+          if(this.OnInitialized) this.OnInitialized(this,this._settings);
+        }
+      }
+
+      function ngsvmset_DoSetEnabled(s) {
+        this.Enabled=s;
+        if((s)&&(this._settings)) {
+          if(!this._initialized) {
+            this._initialized=true;
+            this._changed=false;
+            if(this.OnInitialized) this.OnInitialized(this,this._settings);
+          }
+          if(this._changed) {
+            this._changed=false;
+            if(this._settingsloaded) this._settingsloaded(this._settings);
+          }
+        }
+      }
+
+      function ngsvmset_DoDispose() {
+        if((this._settings)&&(this._settingsloaded)) {
+          this._settings.RemoveEvent('OnSettingsLoaded',this._settingsloaded);
+        }
+        return true;
+      }
+
+      function ngsvmset_SetValues(values) {
+        if((ng_typeObject(values))&&(this._settings)&&(this.Enabled)) {
+          this._settings.BeginUpdate();
+          try {
+            for(var i in values) {
+              this._settings.Set(i,values[i]);
+            }
+          }
+          finally {
+            this._settings.EndUpdate();
+          }
+        }
+      }
+
+      /**
+       *  Class: ngSysViewModelSettings
+       *  This class implements ngSysViewModelSettings non-visual control.
+       *  Allows easy storage of ViewModel values into ngSettings.
+       *
+       *  Syntax:
+       *    new *ngSysViewModelSettings* ([ngSettings settings, string id])
+       *
+       *  Parameters:
+       *    settings - settings instance, ngApp.Settings is used if not provided
+       *    id - control ID
+       */
+      window.ngSysViewModelSettings = function(settings,id)
+      {
+        ngSysControl(this, id, 'ngSysViewModelSettings');
+
+        this._settings = ngVal(settings,null);
+        this._changed = false;
+        this._initialized = false;
+
+        /*
+         *  Group: Methods
+         */
+        /*  Function: SetValues
+         *  Sets settings values.
+         *
+         *  Syntax:
+         *    void *SetValues* (object values)
+         *
+         *  Parameters:
+         *    values - object with values to be set
+         *
+         *  Returns:
+         *    -
+         */
+        this.SetValues = ngsvmset_SetValues;
+
+        this.DoCreate = ngsvmset_DoCreate;
+        this.DoDispose = ngsvmset_DoDispose;
+        this.DoSetEnabled = ngsvmset_DoSetEnabled;
+
+        /*
+         *  Group: Events
+         */
+        /*
+         *  Event: OnSettingsLoaded
+         */
+        this.OnSettingsLoaded = null;
+        /*
+         *  Event: OnInitialized
+         */
+        this.OnInitialized = null;
+
+        ngControlCreated(this);
+      }
+
+      ngRegisterControlType('ngSysViewModelSettings', (function()
+      {
+        var fc=function(def, ref, parent) {
+          return new ngSysViewModelSettings(def.Settings);
+        };
+        fc.ControlsGroup='System';
+        return fc;
+      })());
+    }
+
     ngRegisterControlType('ngEditField', function(def, ref, parent) { return Create_EditField(def, ref, parent); });
 
     /*  Class: ngEditNumField
@@ -1618,28 +1745,30 @@ ngUserControls['viewmodel_controls'] = {
     /*<>*/
     ngRegisterControlType('ngMemoField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngMemo'); });
 
-    function value_write_ex(val,valueAccessor, allBindingsAccessor) {
-      var modelValue = valueAccessor();
-      if(ko.isObservable(modelValue))
-      {
-        if (ko.isWriteableObservable(modelValue))
-        {
-          modelValue(val);
-          return true;
-        }
+    function value_lock(type,c,fnc) {
+      type='binding_updating'+ngVal(type,'');
+      if(c[type]) return false;
+      c[type]=true;
+      try {
+        fnc();
       }
-      else {
-        var allBindings = allBindingsAccessor();
-        if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers']['value'])
-        {
-          allBindings['_ko_property_writers']['value'](val);
-          return true;
-        }
-      }
-      return false;
+      finally { delete c[type]; }
+      return true;
     }
 
-    function value_write(type,val,c, valueAccessor, allBindingsAccessor)
+    function value_write_ex(val,valueAccessor, allBindingsAccessor) {
+      var modelValue = valueAccessor();
+      val=ko.ng_setvalue(modelValue,val);
+      if(!ko.isObservable(modelValue)) {
+        var allBindings = allBindingsAccessor();
+        if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers']['value']) {
+          allBindings['_ko_property_writers']['value'](val);
+        }
+      }
+      return (modelValue===val);
+    }
+
+    function value_write(type,val,c, valueAccessor, allBindingsAccessor, obj)
     {
       type='binding_updating'+ngVal(type,'');
       if(c[type]) return false;
@@ -1647,7 +1776,7 @@ ngUserControls['viewmodel_controls'] = {
       var ret=false;
       c[type]=true;
       try {
-        value_write_ex(val,valueAccessor, allBindingsAccessor);
+        ret=value_write_ex(val,valueAccessor, allBindingsAccessor);
       }
       finally { delete c[type]; }
       return ret;
@@ -1656,14 +1785,10 @@ ngUserControls['viewmodel_controls'] = {
 
     function value_read(type,c, valueAccessor, setfnc)
     {
-      type='binding_updating'+ngVal(type,'');
-      var val=ko.utils.unwrapObservable(valueAccessor());
-      if(c[type]) return;
-      c[type]=true;
-      try {
-        setfnc(val);
-      }
-      finally { delete c[type]; }
+      var val=ko.ng_getvalue(valueAccessor());
+      return value_lock(type,c,function() {
+        setfnc(val)
+      });;
     }
     window.ngCtrlBindingRead = value_read;
 
@@ -1672,14 +1797,13 @@ ngUserControls['viewmodel_controls'] = {
       var obval=valueAccessor();
       if((obval)&&(typeof obval.FieldDef !== 'undefined'))
       {
-        if((arguments.length==1)&&(obval.FieldDef.Value)) val=obval.FieldDef.Value();
-        return obval.FieldDef.FormatString(val);
+        if((arguments.length==1)&&(obval.FieldDef.Value)) val=obval.FieldDef.Value;
+        return obval.FieldDef.FormatString(ko.ng_getvalue(val));
       }
       else
       {
         if(arguments.length==1) val=obval;
-        if(ko.isObservable(val)) val=val();
-        return ng_toString(val);
+        return ng_toString(ko.ng_getvalue(val));
       }
     }
     window.ngCtrlBindingFormatString = format_text_value;
@@ -1689,14 +1813,13 @@ ngUserControls['viewmodel_controls'] = {
       var obval=valueAccessor();
       if((obval)&&(typeof obval.FieldDef !== 'undefined'))
       {
-        if((arguments.length==1)&&(obval.FieldDef.Value)) val=obval.FieldDef.Value();
-        return obval.FieldDef.EditString(val);
+        if((arguments.length==1)&&(obval.FieldDef.Value)) val=obval.FieldDef.Value;
+        return obval.FieldDef.EditString(ko.ng_getvalue(val));
       }
       else
       {
         if(arguments.length==1) val=obval;
-        if(ko.isObservable(val)) val=val();
-        return ng_toString(val);
+        return ng_toString(ko.ng_getvalue(val));
       }
     }
     window.ngCtrlBindingEditString = format_edit_value;
@@ -1724,31 +1847,40 @@ ngUserControls['viewmodel_controls'] = {
 
     ngRegisterBindingHandler('Bounds',
       function (c, valueAccessor, allBindingsAccessor) {
+        var binding=allBindingsAccessor();
+        var boundsupdate = ngVal(binding["BoundsDelayedUpdate"],10);
+
         value_read('Bounds',c,valueAccessor,function(val) {
-          var binding=allBindingsAccessor();
-          var instantupdate = ngVal(binding["BoundsUpdate"],true);
-          for(var i in val) {
-            val[i]=ko.ng_unwrapobservable(val[i]);
+          if((!ng_typeObject(val))||(typeof c.SetBounds !== 'function')) return;
+          if((c.SetBounds(val))&&(boundsupdate>=0)) {
+            if(c._vmboundsupdtimer) clearTimeout(c._vmboundsupdtimer);
+            if(boundsupdate>0) {
+              c._vmboundsupdtimer=setTimeout(function() {
+                if(c._vmboundsupdtimer) clearTimeout(c._vmboundsupdtimer);
+                c._vmboundsupdtimer=null;
+                if(c.Update) c.Update();
+              },boundsupdate);
+            }
+            else if(c.Update) c.Update();
           }
-          if((c.SetBounds(val))&&(instantupdate)) c.Update();
         });
       },
       function (c, valueAccessor, allBindingsAccessor,viewModel) {
-        c.AddEvent('SetBounds',function(props) {
-          if(typeof props!=='undefined')
-          {
-            value_read('Bounds',c,valueAccessor,function(val) {
-              if(typeof val!=='object') val={};
-              for(var i in props) {
-                var ov=val[i]
-                if(ngIsFieldDef(ov)) ov=ov.Value;
-                if(ko.isObservable(ov)) ov(props[i]);
-                else val[i]=props[i];
-              }
-              value_write_ex(val,valueAccessor, allBindingsAccessor);
-            });
-          }
-        });
+        if(typeof c.SetBounds === 'function') {
+          var origsetbound=c.SetBounds;
+          c.SetBounds=function(props) {
+            var ret=origsetbound.apply(c,[props]);
+            if(typeof props!=='undefined') {
+              value_write('Bounds',props,c, valueAccessor, allBindingsAccessor);
+            }
+            return ret;
+          };
+          c.AddEvent(function() {
+            if(c._vmboundsupdtimer) clearTimeout(c._vmboundsupdtimer);
+            c._vmboundsupdtimer=null;
+            return true;
+          },'DoDispose');
+        }
       }
     );
 
@@ -1757,10 +1889,11 @@ ngUserControls['viewmodel_controls'] = {
         var elm=c.Elm();
         if(elm) {
           value_read('style',c,valueAccessor,function(val) {
-            if((typeof val==='object')&&(val))
+            if(ng_typeObject(val)) {
               for(var i in val) {
-                elm.style[i] = ko.ng_unwrapobservable(val[i]) || ""; // Empty string removes the value, whereas null/undefined have no effect
+                elm.style[i] = val[i] || ""; // Empty string removes the value, whereas null/undefined have no effect
               }
+            }
           });
         }
       },
@@ -2061,6 +2194,27 @@ ngUserControls['viewmodel_controls'] = {
       }
     );
 
+    ngRegisterBindingHandler('Calls', null,
+      function (c, valueAccessor, allBindingsAccessor, viewModel) {
+        var callsToHandle = valueAccessor() || {};
+        for(var eventNameOutsideClosure in callsToHandle) {
+            (function() {
+                var eventName = eventNameOutsideClosure; // Separate variable to be captured by event handler closure
+                if (typeof eventName === "string") {
+                    var fnc = function () {
+                        var handlerFunction = valueAccessor()[eventName];
+                        if(ng_typeString(handlerFunction)) handlerFunction=c[handlerFunction];
+                        if (!handlerFunction) return true;
+                        return handlerFunction.apply(c, arguments);
+                    };
+                    ngObjAddEvent.apply(viewModel,[eventName, fnc]);
+                }
+            })();
+        }
+
+      }
+    );
+
     ngRegisterBindingHandler('Data',
       function (c, valueAccessor, allBindingsAccessor) {
         value_read('Data',c,valueAccessor,function(val) {
@@ -2074,7 +2228,7 @@ ngUserControls['viewmodel_controls'] = {
         if(typeof c.SetViewModelData !== 'function')
           c.SetViewModelData = function (val)
           {
-            if(c.ViewModelData==val) return;
+            if(ng_VarEquals(c.ViewModelData,val)) return;
             var oldval=c.ViewModelData;
             c.ViewModelData=val;
             if(c.OnViewModelDataChanged) c.OnViewModelDataChanged(c,oldval)
@@ -2083,104 +2237,325 @@ ngUserControls['viewmodel_controls'] = {
       }
     );
 
-    function compareListItems(a,b)
-    {
-      if((ng_typeString(b))&&(typeof a==='object'))
-      {
-        if(b===a.Text) return true;
-        return false;
-      }
-      if(typeof a !== typeof b) return false;
-
-      if((typeof a === 'object')&&(!ng_typeDate(a))&&(!ng_typeDate(b)))
-      {
-        for(var i in b)
-        {
-          if(i=='Items') continue;
-          if(b[i]!==a[i]) return false;
+    function vmGetListItem(list,v,subitems) {
+      if((typeof v==='undefined')||(v===null)) return v;
+      var c=v;
+      v=ko.ng_unwrapobservable(c);
+      if((!ng_typeObject(v))||(ng_typeDate(v))) {
+        if(list.Columns.length>0) {
+          var it={ Text: {} };
+          it.Text[list.Columns[0]]=v;
+          return it;
         }
-        return true;
+        return {Text: v};
       }
 
-      return a===b;
+      var items;
+      if(typeof v.Items!=='undefined') {
+        items=v.Items;
+        v.Items=null;
+        c=ko.ng_getvalue(v);
+        v.Items=items;
+      }
+      else c=ko.ng_getvalue(v);
+
+      if(v===c) c=ng_CopyVar(v);
+      else {
+        if(ko.isObservable(v.Checked))   c._vmChecked=v.Checked;
+        if(ko.isObservable(v.Collapsed)) c._vmCollapsed=v.Collapsed;
+      }
+      //console.log(v);
+
+      if(subitems!==false) {
+        if(ko.isObservable(items)) items=items();
+        if(ng_IsArrayVar(items)) {
+          c.Items=[];
+          for(var i in items)
+            c.Items[i]=vmGetListItem(list,items[i]);
+        }
+        else delete c.Items;
+      }
+      return c;
     }
 
-    function compareListItems2(a,b)
+    function vmSetListItem(list,vmit,it,bindinfo,syncsubitems) {
+
+      var vmval=ko.ng_unwrapobservable(vmit);
+      if((vmval!==vmit)&&(!ko.isWriteableObservable(vmit))) return vmit;
+
+      if(!ng_typeObject(vmval)) {
+
+        if(bindinfo.SimpleArray) {
+          if((typeof it.Items==='undefined')||(!it.Items.length)) {
+            if(ng_typeString(it.Text)) it=it.Text;
+            else if((list.Columns.length>0)&&(typeof it.Text==='object')) it=it.Text[list.Columns[0]];
+          }
+        }
+
+        if(vmval!==vmit) {
+          vmit(it);
+          return vmit;
+        }
+        if(!ng_typeObject(it)) return it;
+        if(vmval!==vmit) vmval={};
+        else {
+          vmit=vmval={};
+        }
+      }
+
+      var ex={ Items: true }; // Don't touch original items
+      if(vmit!==vmval) vmit.valueWillMutate();
+      for(var i in it) {
+        switch(i) {
+          case 'Items':
+          case 'Parent':
+          case '_byRef':
+          case '_vmChecked':
+          case '_vmCollapsed':
+            break;
+          default:
+            ex[i]=true;
+            vmval[i]=ko.ng_setvalue(vmval[i],it[i]);
+            break;
+        }
+      }
+      var nv,delkeys={}
+      for(var i in vmval) {
+        if((ex[i])||(ko.isObservable(vmval[i]))) continue;
+        if((ng_typeObject(vmval[i]))&&(!ng_typeDate(vmval[i]))) {
+          nv=ko.ng_getvalue(vmval[i]); // detect if object has observables
+          if(nv!==vmval[i]) {
+            continue;
+          }
+        }
+        delkeys[i]=true;
+      }
+      for(var i in delkeys) delete vmval[i];
+
+      var items=it.Items;
+      var vitems=vmval.Items;
+
+      if(ng_IsArrayVar(items)) {
+        if(ko.isObservable(vitems)) {
+          if(ko.isWriteableObservable(vitems)) {
+            var aitems=vitems();
+            if(!ng_IsArrayVar(aitems)) aitems=[];
+            vitems.valueWillMutate();
+            syncsubitems(aitems,it);
+            vitems.valueHasMutated();
+          }
+        }
+        else {
+          if(!ng_IsArrayVar(vitems)) {
+            vitems=[];
+            vmval.Items=vitems;
+          }
+          syncsubitems(vitems,it);
+        }
+      }
+      else {
+        if(ko.isObservable(vitems)) {
+          if(ko.isWriteableObservable(vitems)) {
+            var undefined;
+            vitems(undefined);
+          }
+        }
+        else delete vmval.Items;
+      }
+
+      if(vmit!==vmval) vmit.valueMutated();
+      return vmit;
+    }
+
+    var ignoredListItemsProps = {
+      _byRef: true,
+      Items: true,
+      Parent: true,
+      Checked: true,
+      Collapsed: true,
+      _vmChecked: true,
+      _vmCollapsed: true
+    };
+
+    function compareListItems(a,b,bindinfo)
     {
-      return compareListItems(b,a);
+      if(typeof bindinfo.KeyField !== 'undefined') {
+        if((!a)||(!b)) return false;
+        return ng_VarEquals(vmGetFieldValueByID(a,bindinfo.KeyField),vmGetFieldValueByID(b,bindinfo.KeyField));
+      }
+
+      var keys={};
+      for(var i in a) if(!ignoredListItemsProps[i]) keys[i]=true;
+      for(var i in b) if(!ignoredListItemsProps[i]) keys[i]=true;
+
+      var aref=a['_byRef'];
+      var bref=b['_byRef'];
+      for(var i in keys)
+        if(!ng_VarEquals(a[i],b[i],((aref)&&(aref[i]))||((bref)&&(bref[i])))) return false;
+
+      return true;
     }
 
     function value_init(c, valueAccessor, allBindingsAccessor, viewModel) {
-      function synclist(arr, parent)
+      if(c.CtrlType==='ngList')
       {
-        var editScript=ng_GetArraysEditScript(arr,parent.Items,compareListItems2);
-        for (var i = 0, j = 0; i < editScript.length; i++) {
-          switch (editScript[i].status) {
-            case 0://"retained":
-              var items2=parent.Items[j].Items;
-              var items=arr[j].Items;
-              if((typeof items2==='object')&&(ng_IsArrayVar(items2)))
+        var bindinfo={},undefined;
+        var binding=allBindingsAccessor();
+        bindinfo.DelayedUpdate = ngVal(binding["DelayedUpdate"],10);
+        bindinfo.KeyField  = binding["KeyField"];
+
+        function compareListItems_init(a,b) {
+          return compareListItems(a,b,bindinfo);
+        }
+
+        function newlistitem(it) {
+          var ci = {
+            NewItem: (bindinfo.SimpleArray ? undefined : {}),
+            BindInfo: bindinfo,
+            List: c,
+            ListItem: it
+          };
+          // List event: OnCreateViewModelItem
+          if((c.OnCreateViewModelItem)&&(!ngVal(c.OnCreateViewModelItem(c,ci),false))) return ci.NewItem;
+          return vmSetListItem(c,ci.NewItem,ci.ListItem,bindinfo,newlistsubitems);
+        }
+
+        function newlistsubitems(vitems,it) {
+          for(var i=0;i<it.Items.length;i++)
+            vitems[i]=newlistitem(it.Items[i]);
+        }
+
+        function synclistinit(arr, parent)
+        {
+          var items=[];
+          for(var i=0;i<arr.length;i++)
+            items[i]=vmGetListItem(c,arr[i],false);
+
+          var editScript=ng_GetArraysEditScript(items,parent.Items,compareListItems_init);
+          for (var i = 0, j = 0; i < editScript.length; i++) {
+            switch (editScript[i].status) {
+              case 0://"retained":
+                arr[j]=vmSetListItem(c,arr[j],parent.Items[j],bindinfo,synclistinit);
+                //console.log('init retained',arr[j]);
+                j++;
+                break;
+              case 2://"deleted":
+                //console.log('init deleted',j);
+                arr.splice(j,1);
+                break;
+              case 1://"added":
+                arr.splice(j,0,newlistitem(parent.Items[j]));
+                //console.log('init added',arr[j]);
+                j++;
+                break;
+            }
+          }
+        }
+
+        function updatelist()
+        {
+          //console.log('listupdated',c);
+          if(c._vmdispose) return;
+
+          if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
+          c.binding_update_timer=null;
+
+          value_lock('Value',c,function() {
+            var v=valueAccessor();
+            if((v)&&(ko.isWriteableObservable(v))) {
+
+              var fd=v.FieldDef;
+              bindinfo.SimpleArray=((ng_typeObject(fd))&&(ng_typeObject(fd.ValueFieldDef))&&(fd.ValueFieldDef.DataType!=='OBJECT')); // simple array is ngFieldDef_Array of simple types
+
+              var varr=v();
+              if(!ng_IsArrayVar(varr))
               {
-                if((typeof items!=='object')||(!ng_IsArrayVar(items)))
-                  items=arr[j].Items=[];
-                synclist(items, parent.Items[j]);
+                var arr=[];
+                synclistinit(arr, c);
+                v(arr);
               }
               else
-                delete arr[j].Items;
-              j++;
-              break;
-            case 2://"deleted":
-              arr.splice(j,1);
-              break;
-            case 1://"added":
-              var v=ng_CopyVar(editScript[i].value);
-              delete v.Parent;
-              if(typeof v._byRef==='object')
               {
-                var found=false;
-                delete v._byRef.Parent;
-                for(var q in v._byRef)
-                {
-                  found=true;
-                  break;
-                }
-                if(!found) delete v._byRef;
+                v.valueWillMutate();
+                synclistinit(varr, c);
+                v.valueHasMutated();
               }
-              arr[j]=v;
-              j++;
-              break;
-          }
+            }
+          });
         }
-      }
 
-      var listtimer=null;
-      function listupdated()
-      {
-        if(listtimer) clearTimeout(listtimer);
-        listtimer=null;
-        if((c['binding_updatingValue'])||(c._vmdispose)) return;
-        try
+        function listupdated()
         {
-          c['binding_updatingValue']=true;
-          var v=valueAccessor();
-          if((v)&&(ko.ng_writeallowed(v))) {
-            if(!ng_IsArrayVar(v()))
-            {
-              var arr=[];
-              synclist(arr, c);
-              v(arr);
-            }
-            else
-            {
-              v.valueWillMutate();
-              synclist(v(), c);
-              v.valueHasMutated();
-            }
+          if(c._vmdispose) return;
+
+          c.need_vmupdate=false;
+          if(bindinfo.DelayedUpdate<=0) updatelist();
+          else {
+            if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
+            c.binding_update_timer=setTimeout(updatelist,bindinfo.DelayedUpdate);
           }
         }
-        finally {
-          c['binding_updatingValue']=false;
+
+        if(typeof c.UpdateVMValues !== 'function') {
+          c.UpdateVMValues = function() {
+            if((c['binding_updatingValue'])||(c._vmdispose)) return;
+            if(c.update_cnt>0) c.need_vmupdate=true;
+            else listupdated();
+          }
         }
+
+        c.AddEvent(function() {
+          if((c.need_vmupdate)&&(c.update_cnt<=1)) {
+            listupdated();
+          }
+        },'EndUpdate');
+
+        c.need_vmupdate = false;
+        c.binding_update_timer = null;
+
+        c.OnCreateViewModelItem = c.OnCreateViewModelItem || null;
+
+        c.AddEvent(function(l,it,parent) {
+          c.UpdateVMValues();
+        },'OnItemsChanged');
+        c.AddEvent(function() {
+          if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
+          c.binding_update_timer=null;
+          c._vmdispose=true;
+          return true;
+        },'DoDispose');
+        c.AddEvent(function(l,it) {
+          if(c._vmdispose) return;
+          if(ko.isObservable(it._vmCollapsed)) {
+            if(!ko.isWriteableObservable(it._vmCollapsed)) return;
+              value_lock('Value',c,function() {
+                it._vmCollapsed(true);
+              });
+          }
+          else c.UpdateVMValues();
+        },'OnCollapsed');
+        c.AddEvent(function(l,it) {
+          if(c._vmdispose) return;
+          if(ko.isObservable(it._vmCollapsed)) {
+            if(!ko.isWriteableObservable(it._vmCollapsed)) return;
+            value_lock('Value',c,function() {
+              it._vmCollapsed(false);
+            });
+          }
+          else c.UpdateVMValues();
+        },'OnExpanded');
+        c.AddEvent(function(l,it) {
+          if(c._vmdispose) return;
+          if(ko.isObservable(it._vmChecked)) {
+            if(!ko.isWriteableObservable(it._vmChecked)) return;
+            value_lock('Value',c,function() {
+              it._vmChecked(it.Checked);
+            });
+          }
+          else c.UpdateVMValues();
+        },'OnItemCheckChanged');
+
+        return;
       }
 
       switch(c.CtrlType)
@@ -2295,6 +2670,36 @@ ngUserControls['viewmodel_controls'] = {
             return true;
           },'OnCheckChanged');
           break;
+        case 'ngSysURLParams':
+          c.AddEvent('OnInitialized',function(c) {
+            value_write('Value',c.Params,c, valueAccessor, allBindingsAccessor);
+          });
+          c.AddEvent('OnParamsChanged',function(c) {
+            value_write('Value',c.Params,c, valueAccessor, allBindingsAccessor);
+          });
+          break;
+        case 'ngSysViewModelSettings':
+          function loadvmsettings(settings) {
+            value_lock('Value',c,function() {
+              var v=valueAccessor();
+              if((v)&&(ko.isObservable(v))) props=v();
+              else props=v;
+              if(ng_typeObject(props)) {
+                for(var i in props) {
+                  props[i]=ko.ng_setvalue(props[i],settings.Get(i,ko.ng_getvalue(props[i])));
+                }
+                if((v)&&(ko.isWriteableObservable(v))) v(props);
+              }
+            });
+          }
+          if((c._settings)&&(c.Enabled)) loadvmsettings(c._settings);
+          c.AddEvent('OnInitialized',function(c,settings) {
+            loadvmsettings(settings);
+          });
+          c.AddEvent('OnSettingsLoaded',function(c,settings) {
+            loadvmsettings(settings);
+          });
+          break;
         case 'ngProgressBar':
           c.AddEvent('SetPosition',function(p) {
             value_write('Value',p,c, valueAccessor, allBindingsAccessor);
@@ -2317,113 +2722,141 @@ ngUserControls['viewmodel_controls'] = {
             return true;
           },'OnSelectChanged');
           break;
-        case 'ngList':
-          c.AddEvent(function(l,it,parent) {
-            if((l['binding_updatingValue'])||(c._vmdispose)) return true;
-            if(listtimer) clearTimeout(listtimer);
-            listtimer=setTimeout(listupdated,10);
-            return true;
-          },'OnAdd');
-          c.AddEvent(function(l,it,parent) {
-            if((l['binding_updatingValue'])||(c._vmdispose)) return true;
-            if(listtimer) clearTimeout(listtimer);
-            listtimer=setTimeout(listupdated,10);
-            return true;
-          },'OnRemove');
-          c.AddEvent(function() {
-            if(listtimer) clearTimeout(listtimer);
-            listtimer=null;
-            c._vmdispose=true;
-            return true;
-          },'DoDispose');
-          break;
       }
     };
 
-    function getkeyfieldvalue(it,key)
-    {
-      var k=key.split('.');
-      if(k.length<1) return; // undefined
-      for(var i=0;i<k.length-1;i++)
-      {
-        if((typeof it!=='object')||(it===null)) return; // undefined
-        it=it[k[i]];
-      }
-      if((typeof it!=='object')||(it===null)) return; // undefined
-      return it[k[k.length-1]];
-    }
+    function value_update(c, valueAccessor, allBindingsAccessor) {
 
-    function setkeyfieldvalue(it,key, val)
-    {
-      var k=key.split('.');
-      if(k.length<1) return false;
-      var nit;
-      for(var i=0;i<k.length-1;i++)
+      if(c.CtrlType==='ngList')
       {
-        if((typeof it!=='object')||(it===null)) return false;
-        nit=it[k[i]];
-        if((typeof nit!=='object')||(nit===null)) nit=it[k[i]]={};
-        it=nit;
-      }
-      if((typeof it!=='object')||(it===null)) return false;
-      it[k[k.length-1]]=val;
-      return true;
-    }
+        if(c['binding_updatingValue']) {
+          //console.log('updating ignore');
+          var val=ko.ng_getvalue(valueAccessor()); // just read to subscribe observables
+          return;
+        }
 
-    function value_update(c, valueAccessor) {
+        function compareListItems_update(a,b) {
+          return compareListItems(a,b,bindinfo);
+        }
 
-      if(c.CtrlType=='ngList')
-      {
+        function synclistupdate(arr, parent) {
+          //console.log('vmupdated',c);
+
+          var items=[];
+          for(var i=0;i<arr.length;i++)
+            items[i]=vmGetListItem(c,arr[i]);
+
+          c.BeginUpdate();
+          try {
+            synclistupdateex(items, parent);
+          }
+          finally {
+            c.EndUpdate();
+          }
+        }
+
+        function synclistupdateex(arr, parent)
+        {
+          var editScript=ng_GetArraysEditScript(parent.Items,arr,compareListItems_update);
+          for (var i = 0, j = 0; i < editScript.length; i++) {
+            switch (editScript[i].status) {
+              case 0://"retained":
+                //console.log('update retained',arr[j]);
+
+                var it=parent.Items[j];
+                var vmit=arr[j];
+
+                c.need_update=true;
+
+                if(it.Checked!==vmit.Checked) c.CheckItem(it,vmit.Checked);
+                if(it.Collapsed!==vmit.Collapsed) {
+                  if(vmit.Collapsed) c.Collapse(it);
+                  else c.Expand(it);
+                }
+
+                var items=vmit.Items;
+                if(ng_IsArrayVar(items))
+                  synclistupdateex(items, it);
+                else
+                  c.Clear(it);
+                j++;
+                break;
+              case 2://"deleted":
+                //console.log('update deleted',j);
+                var it=editScript[i].value;
+                if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(it,keyfield),selval)))
+                {
+                  e.ListItem = { };
+                  vmSetFieldValueByID(e.ListItem,keyfield,selval);
+                  e.SetText('');
+                }
+                c.Delete(j,parent);
+                break;
+              case 1://"added":
+                var item=editScript[i].value;
+                if(!ng_typeObject(item)) item={};
+
+                //console.log('update added',item);
+                c.Insert(j,item,parent);
+
+                if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(item,keyfield),selval)))
+                  c.SelectDropDownItem(item);
+
+                j++;
+                break;
+            }
+          }
+        }
+
+        var bindinfo={};
         var e=c.DropDownOwner;
         if(e)
         {
           var selval;
           var keyfield=ngVal(e.LookupKeyField, 'Value');
-          if(e.ListItem) selval=getkeyfieldvalue(e.ListItem,keyfield);
+          if(e.ListItem) selval=vmGetFieldValueByID(e.ListItem,keyfield);
         }
-      }
+        var binding=allBindingsAccessor();
+        bindinfo.KeyField  = binding["KeyField"];
 
-      function synclist(arr, parent)
-      {
-        var editScript=ng_GetArraysEditScript(parent.Items,arr,compareListItems);
-        for (var i = 0, j = 0; i < editScript.length; i++) {
-          switch (editScript[i].status) {
-            case 0://"retained":
-              var items=arr[j].Items;
-              if(ng_IsArrayVar(items))
-                synclist(items, parent.Items[j]);
-              else
-                c.Clear(parent.Items[j]);
-              j++;
-              break;
-            case 2://"deleted":
-              if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(getkeyfieldvalue(editScript[i].value,keyfield),selval)))
-              {
-                e.ListItem = { };
-                setkeyfieldvalue(e.ListItem,keyfield,selval);
-                e.SetText('');
-              }
-              c.Delete(j,parent);
-              break;
-            case 1://"added":
-              var v=editScript[i].value;
-              if(!ng_typeObject(v)) v={};
-              var items=v.Items;
-              delete v.Items;
-              var item=ng_CopyVar(v);
-              if(items) v.Items=items;
+        value_lock('Value',c,function() {
 
-              c.Insert(j,item,parent);
-              if(ng_IsArrayVar(items))
-                synclist(items, parent.Items[j]);
+          c.need_vmupdate=false;
+          if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
+          c.binding_update_timer=null;
 
-              if((keyfield)&&(typeof selval!=='undefined')&&(typeof item==='object')&&(ng_VarEquals(getkeyfieldvalue(item,keyfield),selval)))
-                c.SelectDropDownItem(item);
-
-              j++;
-              break;
+          var checkedacc,selectedacc;
+          if(c.DataBindings.Checked) {
+            checkedacc=c.DataBindings.Checked.ValueAccessor();
+            if(checkedacc) checkedacc.valueWillMutate();
           }
-        }
+          if(c.DataBindings.Selected) {
+            selectedacc=c.DataBindings.Selected.ValueAccessor();
+            if(selectedacc) selectedacc.valueWillMutate();
+          }
+
+          var val=ko.ng_unwrapobservable(valueAccessor());
+          if(ng_IsArrayVar(val))
+          {
+            synclistupdate(val, c);
+          }
+          else
+          {
+            c.BeginUpdate();
+            c.Clear();
+            c.EndUpdate();
+            if((keyfield)&&(typeof selval!=='undefined'))
+            {
+              e.ListItem = { };
+              vmSetFieldValueByID(e.ListItem,keyfield,selval);
+              e.SetText('');
+            }
+          }
+
+          if(checkedacc) checkedacc.valueHasMutated();
+          if(selectedacc) selectedacc.valueHasMutated();
+        });
+        return;
       }
 
       value_read('Value',c,valueAccessor,function(val) {
@@ -2434,6 +2867,26 @@ ngUserControls['viewmodel_controls'] = {
             var v=ng_toNumber(val);
             if((isNaN(v))||((v!=0)&&(v!=1)&&(v!=2))) v=(ng_toBool(val) ? 1 : 0);
             c.Check(v);
+            break;
+          case 'ngSysTimer':
+            var v=ng_toInteger(val,null);
+            if((c.Interval!==v)&&(v!==null)) {
+              c.Interval=v;
+              if(c.IsStarted()) c.Restart();
+            }
+            break;
+          case 'ngSysRPC':
+            if(ng_typeObject(val)) {
+              for(var i in val) {
+                c.SetParam(i,val[i]);
+              }
+            }
+            break;
+          case 'ngSysURLParams':
+            if(ng_typeObject(val)) c.SetValues(val);
+            break;
+          case 'ngSysViewModelSettings':
+            c.SetValues(val);
             break;
           case 'ngPages':
             if((ng_IsArrayVar(val))&&(val.length==1)) val=val[0];
@@ -2449,36 +2902,6 @@ ngUserControls['viewmodel_controls'] = {
           case 'ngCalendar':
             c.SetSelected(ng_toDate(val));
             break;
-          case 'ngList':
-            if(ng_IsArrayVar(val))
-            {
-              c.BeginUpdate();
-              synclist(val, c);
-              c.EndUpdate();
-            }
-            else
-            {
-              c.BeginUpdate();
-              c.Clear();
-              c.EndUpdate();
-              if((keyfield)&&(typeof selval!=='undefined'))
-              {
-                e.ListItem = { };
-                setkeyfieldvalue(e.ListItem,keyfield,selval);
-                e.SetText('');
-              }
-            }
-            if(c.DataBindings.Checked)
-            {
-              var v=c.DataBindings.Checked.ValueAccessor();
-              if(v) v(v());
-            }
-            if(c.DataBindings.Selected)
-            {
-              var v=c.DataBindings.Selected.ValueAccessor();
-              if(v) v(v());
-            }
-            break;
           default:
             if(typeof c.SetText === 'function')
               c.SetText(format_text_value(valueAccessor,val));
@@ -2490,7 +2913,7 @@ ngUserControls['viewmodel_controls'] = {
 
     ngRegisterBindingHandler('Lookup',
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
-        if(c.CtrlType=='ngEdit')
+        if(c.CtrlType==='ngEdit')
         {
           value_read('Lookup',c,valueAccessor,function(val) {
             var list=c.DropDownControl;
@@ -2500,7 +2923,7 @@ ngUserControls['viewmodel_controls'] = {
             if(!ng_isEmpty(val))
             {
               list.Scan(function(list,it,parent,userdata) {
-                if(ng_VarEquals(getkeyfieldvalue(it,keyfield),val))
+                if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),val))
                 {
                   found=it;
                   return false;
@@ -2511,7 +2934,7 @@ ngUserControls['viewmodel_controls'] = {
             if(!found)
             {
               c.ListItem = { };
-              setkeyfieldvalue(c.ListItem,keyfield,ng_CopyVar(val));
+              vmSetFieldValueByID(c.ListItem,keyfield,ng_CopyVar(val));
               c.SetText('');
             }
             else
@@ -2522,13 +2945,13 @@ ngUserControls['viewmodel_controls'] = {
         }
       },
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
-        if(c.CtrlType=='ngEdit')
+        if(c.CtrlType==='ngEdit')
         {
           var undefined;
           c.LookupKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
           c.AddEvent(function(e,l,it,oit) {
             var keyfield=ngVal(e.LookupKeyField, 'Value');
-            var kfval=getkeyfieldvalue(it,keyfield);
+            var kfval=vmGetFieldValueByID(it,keyfield);
             if(!ng_isEmpty(kfval))
             {
               value_write('Lookup',ng_CopyVar(kfval),e, valueAccessor, allBindingsAccessor);
@@ -2541,11 +2964,11 @@ ngUserControls['viewmodel_controls'] = {
 
             var keyfield=ngVal(e.LookupKeyField, 'Value');
             var list=e.DropDownControl;
-            var selval=(e.ListItem ? getkeyfieldvalue(e.ListItem,keyfield) : undefined);
+            var selval=(e.ListItem ? vmGetFieldValueByID(e.ListItem,keyfield) : undefined);
             if(!ng_isEmpty(selval))
             {
               list.Scan(function(list,it,parent,userdata) {
-                if(ng_VarEquals(getkeyfieldvalue(it,keyfield),selval))
+                if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),selval))
                 {
                   list.SelectDropDownItem(it);
                   return false;
@@ -2561,7 +2984,7 @@ ngUserControls['viewmodel_controls'] = {
 
     ngRegisterBindingHandler('Selected',
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
-        if(c.CtrlType=='ngList')
+        if(c.CtrlType==='ngList')
         {
           value_read('Selected',c,valueAccessor,function(val) {
             var keyfield=ngVal(c.SelectKeyField, 'Value');
@@ -2577,7 +3000,7 @@ ngUserControls['viewmodel_controls'] = {
               c.Scan(function(c,it,parent,userdata) {
                 for(var j=0;j<val.length;j++)
                 {
-                  if(ng_VarEquals(getkeyfieldvalue(it,keyfield),val[j]))
+                  if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),val[j]))
                   {
                     var id=c.ItemId(it);
                     if(id!='')
@@ -2596,25 +3019,23 @@ ngUserControls['viewmodel_controls'] = {
         }
       },
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
-        if(c.CtrlType=='ngList')
+        if(c.CtrlType==='ngList')
         {
           c.SelectKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
           c.AddEvent(function(list) {
-            if(c['binding_updatingSelected']) return true;
-
-            c['binding_updatingSelected']=true;
-            var keyfield=ngVal(c.SelectKeyField, 'Value');
-            var selected=list.GetSelected();
-            var val=new Array();
-            var s,sval;
-            for(var i in selected)
-            {
-              s=selected[i];
-              sval=getkeyfieldvalue(s,keyfield);
-              if(sval != 'undefined') val.push(ng_CopyVar(sval));
-            }
-            c['binding_updatingSelected']=false;
-            value_write('Selected',val,c, valueAccessor, allBindingsAccessor);
+            value_lock('Selected',c,function() {
+              var keyfield=ngVal(c.SelectKeyField, 'Value');
+              var selected=list.GetSelected();
+              var val=new Array();
+              var s,sval;
+              for(var i in selected)
+              {
+                s=selected[i];
+                sval=vmGetFieldValueByID(s,keyfield);
+                if(sval != 'undefined') val.push(ng_CopyVar(sval));
+              }
+              value_write_ex(val, valueAccessor, allBindingsAccessor);
+            });
             return true;
           },'OnSelectChanged');
         }
@@ -2640,18 +3061,23 @@ ngUserControls['viewmodel_controls'] = {
                 a.push(val);
                 val=a;
               }
-              c.Scan(function(c,it,parent,userdata) {
-                var check=0;
-                if(!ng_isEmpty(val))
-                  for(var j=0;j<val.length;j++)
-                    if(ng_VarEquals(getkeyfieldvalue(it,keyfield),val[j]))
-                    {
-                      check=1;
-                      break;
-                    }
-                c.CheckItem(it,check);
-                return true;
-              });
+              c.BeginUpdate();
+              try {
+                c.Scan(function(c,it,parent,userdata) {
+                  var check=0;
+                  if(!ng_isEmpty(val))
+                    for(var j=0;j<val.length;j++)
+                      if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),val[j]))
+                      {
+                        check=1;
+                        break;
+                      }
+                  c.CheckItem(it,check);
+                  return true;
+                });
+              } finally {
+                c.EndUpdate();
+              }
               break;
           }
         });
@@ -2669,20 +3095,19 @@ ngUserControls['viewmodel_controls'] = {
           case 'ngList':
             c.CheckedKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
             c.AddEvent(function(list) {
-              if(c['binding_updatingChecked']) return true;
-              c['binding_updatingChecked']=true;
-              var keyfield=ngVal(c.CheckedKeyField, 'Value');
-              var val=new Array();
-              c.Scan(function(c,it,parent,userdata) {
-                if(ngVal(it.Checked,0))
-                {
-                  var sval=getkeyfieldvalue(it,keyfield);
-                  if(typeof sval!=='undefined') val.push(ng_CopyVar(sval));
-                }
-                return true;
+              value_lock('Checked',c,function() {
+                var keyfield=ngVal(c.CheckedKeyField, 'Value');
+                var val=new Array();
+                c.Scan(function(c,it,parent,userdata) {
+                  if(ngVal(it.Checked,0))
+                  {
+                    var sval=vmGetFieldValueByID(it,keyfield);
+                    if(typeof sval!=='undefined') val.push(ng_CopyVar(sval));
+                  }
+                  return true;
+                });
+                value_write_ex(val,valueAccessor, allBindingsAccessor);
               });
-              c['binding_updatingChecked']=false;
-              value_write('Checked',val,c, valueAccessor, allBindingsAccessor);
               return true;
             },'OnCheckChanged');
             break;
@@ -2706,6 +3131,13 @@ ngUserControls['viewmodel_controls'] = {
               return true;
             });
             c.Update();
+            break;
+          case 'ngSysTimer':
+            c.AddEvent('OnTimer', function(c) {
+              if((viewModel.Owner)&&(viewModel.Owner.Command))
+                viewModel.Owner.Command(cmd, (valuenames ? { ValueNames: valuenames } : undefined));
+              return true;
+            });
             break;
         }
       }
