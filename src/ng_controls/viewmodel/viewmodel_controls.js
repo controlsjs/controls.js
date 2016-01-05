@@ -200,13 +200,16 @@ function ngApplyBindings(ctrl, viewModel, databind)
                 null, { disposeWhenNodeIsRemoved: false/*node*/ }
             );
                               
-            ctrl.AddEvent('DoDispose',function() {
-              if(bindingsUpdater) bindingsUpdater.dispose();
-              return true;
-            });
-  
             if (!bindings || !bindingsUpdater.isActive())
                 bindingsUpdater = null;
+
+            if(bindingsUpdater) {
+              ctrl.AddEvent('DoDispose',function() {
+                if(bindingsUpdater) bindingsUpdater.dispose();
+                return true;
+              });
+            }
+
         } else {
             bindings = ko.dependencyDetection.ignore(getBindings, provider, [ctrl, bindingContext]);
         }
