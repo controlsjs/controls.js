@@ -409,7 +409,7 @@ function ngfd_ObjectDoTypedValue(v)
           if(val.PrivateField) continue;
           val=val.Value;
         }
-        if(ko.isObservable(val)) val=val();
+        val=ko.ng_getvalue(val);
         if(ngIsFieldDef(fd)) val=fd.TypedValue(val);
         if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
         vmSetFieldValueByID(r,k,val);
