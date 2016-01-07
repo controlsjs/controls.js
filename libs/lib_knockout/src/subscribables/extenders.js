@@ -13,11 +13,48 @@ ko.extenders = {
             'read': target,
             'write': function(value) {
                 clearTimeout(writeTimeoutInstance);
-                writeTimeoutInstance = setTimeout(function() {
+                writeTimeoutInstance = ko.utils.setTimeout(function() {
                     target(value);
                 }, timeout);
             }
         });
+    },
+
+    'rateLimit': function(target, options) {
+        var timeout, method, limitFunction;
+
+        if (typeof options == 'number') {
+            timeout = options;
+        } else {
+            timeout = options['timeout'];
+            method = options['method'];
+        }
+
+        // rateLimit supersedes deferred updates
+        target._deferUpdates = false;
+
+        limitFunction = method == 'notifyWhenChangesStop' ?  debounce : throttle;
+        target.limit(function(callback) {
+            return limitFunction(callback, timeout);
+        });
+    },
+
+    'deferred': function(target, options) {
+        if (options !== true) {
+            throw new Error('The \'deferred\' extender only accepts the value \'true\', because it is not supported to turn deferral off once enabled.')
+        }
+
+        if (!target._deferUpdates) {
+            target._deferUpdates = true;
+            target.limit(function (callback) {
+                var handle;
+                return function () {
+                    ko.tasks.cancel(handle);
+                    handle = ko.tasks.schedule(callback);
+                    target['notifySubscribers'](undefined, 'dirty');
+                };
+            });
+        }
     },
 
     'notify': function(target, notifyWhen) {
@@ -31,6 +68,26 @@ var primitiveTypes = { 'undefined':1, 'boolean':1, 'number':1, 'string':1 };
 function valuesArePrimitiveAndEqual(a, b) {
     var oldValueIsPrimitive = (a === null) || (typeof(a) in primitiveTypes);
     return oldValueIsPrimitive ? (a === b) : false;
+}
+
+function throttle(callback, timeout) {
+    var timeoutInstance;
+    return function () {
+        if (!timeoutInstance) {
+            timeoutInstance = ko.utils.setTimeout(function () {
+                timeoutInstance = undefined;
+                callback();
+            }, timeout);
+        }
+    };
+}
+
+function debounce(callback, timeout) {
+    var timeoutInstance;
+    return function () {
+        clearTimeout(timeoutInstance);
+        timeoutInstance = ko.utils.setTimeout(callback, timeout);
+    };
 }
 
 function applyExtenders(requestedExtenders) {

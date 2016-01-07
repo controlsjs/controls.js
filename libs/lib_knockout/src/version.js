@@ -1,3 +1,3 @@
-ko.version = "3.0.0";
+ko.version = "3.4.0";
 
 ko.exportSymbol('version', ko.version);

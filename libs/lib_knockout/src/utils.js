@@ -1,11 +1,30 @@
 ko.utils = (function () {
-    var objectForEach = function(obj, action) {
+    function objectForEach(obj, action) {
         for (var prop in obj) {
             if (obj.hasOwnProperty(prop)) {
                 action(prop, obj[prop]);
             }
         }
-    };
+    }
+
+    function extend(target, source) {
+        if (source) {
+            for(var prop in source) {
+                if(source.hasOwnProperty(prop)) {
+                    target[prop] = source[prop];
+                }
+            }
+        }
+        return target;
+    }
+
+    function setPrototypeOf(obj, proto) {
+        obj.__proto__ = proto;
+        return obj;
+    }
+
+    var canSetPrototype = ({ __proto__: [] } instanceof Array);
+    var canUseSymbols = /*!DEBUG &&*/ typeof Symbol === 'function';
 
     // Represent the known event types in a compact way, then at runtime transform it into a hash with event name as key (for fast lookup)
     var knownEvents = {}, knownEventTypesByEventName = {};
@@ -44,12 +63,43 @@ ko.utils = (function () {
         return (inputType == "checkbox") || (inputType == "radio");
     }
 
+    // For details on the pattern for changing node classes
+    // see: https://github.com/knockout/knockout/issues/1597
+    var cssClassNameRegex = /\S+/g;
+
+    function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
+        var addOrRemoveFn;
+        if (classNames) {
+            if (typeof node.classList === 'object') {
+                addOrRemoveFn = node.classList[shouldHaveClass ? 'add' : 'remove'];
+                ko.utils.arrayForEach(classNames.match(cssClassNameRegex), function(className) {
+                    addOrRemoveFn.call(node.classList, className);
+                });
+            } else if (typeof node.className['baseVal'] === 'string') {
+                // SVG tag .classNames is an SVGAnimatedString instance
+                toggleObjectClassPropertyString(node.className, 'baseVal', classNames, shouldHaveClass);
+            } else {
+                // node.className ought to be a string.
+                toggleObjectClassPropertyString(node, 'className', classNames, shouldHaveClass);
+            }
+        }
+    }
+
+    function toggleObjectClassPropertyString(obj, prop, classNames, shouldHaveClass) {
+        // obj/prop is either a node/'className' or a SVGAnimatedString/'baseVal'.
+        var currentClassNames = obj[prop].match(cssClassNameRegex) || [];
+        ko.utils.arrayForEach(classNames.match(cssClassNameRegex), function(className) {
+            ko.utils.addOrRemoveItem(currentClassNames, className, shouldHaveClass);
+        });
+        obj[prop] = currentClassNames.join(" ");
+    }
+
     return {
         fieldsIncludedWithJsonPost: ['authenticity_token', /^__RequestVerificationToken(_.*)?$/],
 
         arrayForEach: function (array, action) {
             for (var i = 0, j = array.length; i < j; i++)
-                action(array[i]);
+                action(array[i], i);
         },
 
         arrayIndexOf: function (array, item) {
@@ -63,15 +113,19 @@ ko.utils = (function () {
 
         arrayFirst: function (array, predicate, predicateOwner) {
             for (var i = 0, j = array.length; i < j; i++)
-                if (predicate.call(predicateOwner, array[i]))
+                if (predicate.call(predicateOwner, array[i], i))
                     return array[i];
             return null;
         },
 
         arrayRemoveItem: function (array, itemToRemove) {
             var index = ko.utils.arrayIndexOf(array, itemToRemove);
-            if (index >= 0)
+            if (index > 0) {
                 array.splice(index, 1);
+            }
+            else if (index === 0) {
+                array.shift();
+            }
         },
 
         arrayGetDistinctValues: function (array) {
@@ -88,7 +142,7 @@ ko.utils = (function () {
             array = array || [];
             var result = [];
             for (var i = 0, j = array.length; i < j; i++)
-                result.push(mapping(array[i]));
+                result.push(mapping(array[i], i));
             return result;
         },
 
@@ -96,7 +150,7 @@ ko.utils = (function () {
             array = array || [];
             var result = [];
             for (var i = 0, j = array.length; i < j; i++)
-                if (predicate(array[i]))
+                if (predicate(array[i], i))
                     result.push(array[i]);
             return result;
         },
@@ -121,16 +175,13 @@ ko.utils = (function () {
             }
         },
 
-        extend: function (target, source) {
-            if (source) {
-                for(var prop in source) {
-                    if(source.hasOwnProperty(prop)) {
-                        target[prop] = source[prop];
-                    }
-                }
-            }
-            return target;
-        },
+        canSetPrototype: canSetPrototype,
+
+        extend: extend,
+
+        setPrototypeOf: setPrototypeOf,
+
+        setPrototypeOfOrExtend: canSetPrototype ? setPrototypeOf : extend,
 
         objectForEach: objectForEach,
 
@@ -156,8 +207,9 @@ ko.utils = (function () {
             // Ensure it's a real array, as we're about to reparent the nodes and
             // we don't want the underlying collection to change while we're doing that.
             var nodesArray = ko.utils.makeArray(nodes);
+            var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
-            var container = document.createElement('div');
+            var container = templateDocument.createElement('div');
             for (var i = 0, j = nodesArray.length; i < j; i++) {
                 container.appendChild(ko.cleanNode(nodesArray[i]));
             }
@@ -203,8 +255,11 @@ ko.utils = (function () {
             // Rules:
             //   [A] Any leading nodes that have been removed should be ignored
             //       These most likely correspond to memoization nodes that were already removed during binding
-            //       See https://github.com/SteveSanderson/knockout/pull/440
-            //   [B] We want to output a continuous series of nodes. So, ignore any nodes that have already been removed,
+            //       See https://github.com/knockout/knockout/pull/440
+            //   [B] Any trailing nodes that have been remove should be ignored
+            //       This prevents the code here from adding unrelated nodes to the array while processing rule [C]
+            //       See https://github.com/knockout/knockout/pull/1903
+            //   [C] We want to output a continuous series of nodes. So, ignore any nodes that have already been removed,
             //       and include any nodes that have been inserted among the previous collection
 
             if (continuousNodeArray.length) {
@@ -216,6 +271,10 @@ ko.utils = (function () {
                     continuousNodeArray.splice(0, 1);
 
                 // Rule [B]
+                while (continuousNodeArray.length > 1 && continuousNodeArray[continuousNodeArray.length - 1].parentNode !== parentNode)
+                    continuousNodeArray.length--;
+
+                // Rule [C]
                 if (continuousNodeArray.length > 1) {
                     var current = continuousNodeArray[0], last = continuousNodeArray[continuousNodeArray.length - 1];
                     // Replace with the actual new continuous node set
@@ -223,8 +282,6 @@ ko.utils = (function () {
                     while (current !== last) {
                         continuousNodeArray.push(current);
                         current = current.nextSibling;
-                        if (!current) // Won't happen, except if the developer has manually removed some DOM elements (then we're in an undefined scenario)
-                            return;
                     }
                     continuousNodeArray.push(last);
                 }
@@ -245,17 +302,6 @@ ko.utils = (function () {
                 string.trim ?
                     string.trim() :
                     string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
-        },
-
-        stringTokenize: function (string, delimiter) {
-            var result = [];
-            var tokens = (string || "").split(delimiter);
-            for (var i = 0, j = tokens.length; i < j; i++) {
-                var trimmed = ko.utils.stringTrim(tokens[i]);
-                if (trimmed !== "")
-                    result.push(trimmed);
-            }
-            return result;
         },
 
         stringStartsWith: function (string, startsWith) {
@@ -295,28 +341,38 @@ ko.utils = (function () {
             return element && element.tagName && element.tagName.toLowerCase();
         },
 
-        registerEventHandler: function (element, eventType, handler) {
-            var mustUseAttachEvent = ieVersion && eventsThatMustBeRegisteredUsingAttachEvent[eventType];
-            if (!mustUseAttachEvent && typeof jQuery != "undefined") {
-                if (isClickOnCheckableElement(element, eventType)) {
-                    // For click events on checkboxes, jQuery interferes with the event handling in an awkward way:
-                    // it toggles the element checked state *after* the click event handlers run, whereas native
-                    // click events toggle the checked state *before* the event handler.
-                    // Fix this by intecepting the handler and applying the correct checkedness before it runs.
-                    var originalHandler = handler;
-                    handler = function(event, eventData) {
-                        var jQuerySuppliedCheckedState = this.checked;
-                        if (eventData)
-                            this.checked = eventData.checkedStateBeforeEvent !== true;
-                        originalHandler.call(this, event);
-                        this.checked = jQuerySuppliedCheckedState; // Restore the state jQuery applied
-                    };
+        catchFunctionErrors: function (delegate) {
+            return ko['onError'] ? function () {
+                try {
+                    return delegate.apply(this, arguments);
+                } catch (e) {
+                    ko['onError'] && ko['onError'](e);
+                    throw e;
                 }
-                jQuery(element)['bind'](eventType, handler);
+            } : delegate;
+        },
+
+        setTimeout: function (handler, timeout) {
+            return setTimeout(ko.utils.catchFunctionErrors(handler), timeout);
+        },
+
+        deferError: function (error) {
+            setTimeout(function () {
+                ko['onError'] && ko['onError'](error);
+                throw error;
+            }, 0);
+        },
+
+        registerEventHandler: function (element, eventType, handler) {
+            var wrappedHandler = ko.utils.catchFunctionErrors(handler);
+
+            var mustUseAttachEvent = ieVersion && eventsThatMustBeRegisteredUsingAttachEvent[eventType];
+            if (!ko.options['useOnlyNativeEvents'] && !mustUseAttachEvent && jQueryInstance) {
+                jQueryInstance(element)['bind'](eventType, wrappedHandler);
             } else if (!mustUseAttachEvent && typeof element.addEventListener == "function")
-                element.addEventListener(eventType, handler, false);
+                element.addEventListener(eventType, wrappedHandler, false);
             else if (typeof element.attachEvent != "undefined") {
-                var attachEventHandler = function (event) { handler.call(element, event); },
+                var attachEventHandler = function (event) { wrappedHandler.call(element, event); },
                     attachEventName = "on" + eventType;
                 element.attachEvent(attachEventName, attachEventHandler);
 
@@ -333,13 +389,14 @@ ko.utils = (function () {
             if (!(element && element.nodeType))
                 throw new Error("element must be a DOM node when calling triggerEvent");
 
-            if (typeof jQuery != "undefined") {
-                var eventData = [];
-                if (isClickOnCheckableElement(element, eventType)) {
-                    // Work around the jQuery "click events on checkboxes" issue described above by storing the original checked state before triggering the handler
-                    eventData.push({ checkedStateBeforeEvent: element.checked });
-                }
-                jQuery(element)['trigger'](eventType, eventData);
+            // For click events on checkboxes and radio buttons, jQuery toggles the element checked state *after* the
+            // event handler runs instead of *before*. (This was fixed in 1.9 for checkboxes but not for radio buttons.)
+            // IE doesn't change the checked state when you trigger the click event using "fireEvent".
+            // In both cases, we'll use the click method instead.
+            var useClickWorkaround = isClickOnCheckableElement(element, eventType);
+
+            if (!ko.options['useOnlyNativeEvents'] && jQueryInstance && !useClickWorkaround) {
+                jQueryInstance(element)['trigger'](eventType);
             } else if (typeof document.createEvent == "function") {
                 if (typeof element.dispatchEvent == "function") {
                     var eventCategory = knownEventTypesByEventName[eventType] || "HTMLEvents";
@@ -349,15 +406,13 @@ ko.utils = (function () {
                 }
                 else
                     throw new Error("The supplied element doesn't support dispatchEvent");
+            } else if (useClickWorkaround && element.click) {
+                element.click();
             } else if (typeof element.fireEvent != "undefined") {
-                // Unlike other browsers, IE doesn't change the checked state of checkboxes/radiobuttons when you trigger their "click" event
-                // so to make it consistent, we'll do it manually here
-                if (isClickOnCheckableElement(element, eventType))
-                    element.checked = element.checked !== true;
                 element.fireEvent("on" + eventType);
-            }
-            else
+            } else {
                 throw new Error("Browser doesn't support triggering events");
+            }
         },
 
         unwrapObservable: function (value) {
@@ -368,16 +423,7 @@ ko.utils = (function () {
             return ko.isObservable(value) ? value.peek() : value;
         },
 
-        toggleDomNodeCssClass: function (node, classNames, shouldHaveClass) {
-            if (classNames) {
-                var cssClassNameRegex = /\S+/g,
-                    currentClassNames = node.className.match(cssClassNameRegex) || [];
-                ko.utils.arrayForEach(classNames.match(cssClassNameRegex), function(className) {
-                    ko.utils.addOrRemoveItem(currentClassNames, className, shouldHaveClass);
-                });
-                node.className = currentClassNames.join(" ");
-            }
-        },
+        toggleDomNodeCssClass: toggleDomNodeCssClass,
 
         setTextContent: function(element, textContent) {
             var value = ko.utils.unwrapObservable(textContent);
@@ -389,7 +435,7 @@ ko.utils = (function () {
             // we'll clear everything and create a single text node.
             var innerTextNode = ko.virtualElements.firstChild(element);
             if (!innerTextNode || innerTextNode.nodeType != 3 || ko.virtualElements.nextSibling(innerTextNode)) {
-                ko.virtualElements.setDomNodeChildren(element, [document.createTextNode(value)]);
+                ko.virtualElements.setDomNodeChildren(element, [element.ownerDocument.createTextNode(value)]);
             } else {
                 innerTextNode.data = value;
             }
@@ -447,6 +493,10 @@ ko.utils = (function () {
                 result.push(arrayLikeObject[i]);
             };
             return result;
+        },
+
+        createSymbolOrString: function(identifier) {
+            return canUseSymbols ? Symbol(identifier) : identifier;
         },
 
         isIe6 : isIe6,
@@ -509,12 +559,14 @@ ko.utils = (function () {
             for (var key in data) {
                 // Since 'data' this is a model object, we include all properties including those inherited from its prototype
                 var input = document.createElement("input");
+                input.type = "hidden";
                 input.name = key;
                 input.value = ko.utils.stringifyJson(ko.utils.unwrapObservable(data[key]));
                 form.appendChild(input);
             }
             objectForEach(params, function(key, value) {
                 var input = document.createElement("input");
+                input.type = "hidden";
                 input.name = key;
                 input.value = value;
                 form.appendChild(input);
@@ -549,15 +601,25 @@ ko.exportSymbol('utils.triggerEvent', ko.utils.triggerEvent);
 ko.exportSymbol('utils.unwrapObservable', ko.utils.unwrapObservable);
 ko.exportSymbol('utils.objectForEach', ko.utils.objectForEach);
 ko.exportSymbol('utils.addOrRemoveItem', ko.utils.addOrRemoveItem);
+ko.exportSymbol('utils.setTextContent', ko.utils.setTextContent);
 ko.exportSymbol('unwrap', ko.utils.unwrapObservable); // Convenient shorthand, because this is used so commonly
 
 if (!Function.prototype['bind']) {
     // Function.prototype.bind is a standard part of ECMAScript 5th Edition (December 2009, http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf)
     // In case the browser doesn't implement it natively, provide a JavaScript implementation. This implementation is based on the one in prototype.js
     Function.prototype['bind'] = function (object) {
-        var originalFunction = this, args = Array.prototype.slice.call(arguments), object = args.shift();
-        return function () {
-            return originalFunction.apply(object, args.concat(Array.prototype.slice.call(arguments)));
-        };
+        var originalFunction = this;
+        if (arguments.length === 1) {
+            return function () {
+                return originalFunction.apply(object, arguments);
+            };
+        } else {
+            var partialArgs = Array.prototype.slice.call(arguments, 1);
+            return function () {
+                var args = partialArgs.slice(0);
+                args.push.apply(args, arguments);
+                return originalFunction.apply(object, args);
+            };
+        }
     };
 }

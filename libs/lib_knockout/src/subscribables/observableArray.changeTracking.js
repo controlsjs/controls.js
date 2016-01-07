@@ -1,20 +1,39 @@
 var arrayChangeEventName = 'arrayChange';
-ko.extenders['trackArrayChanges'] = function(target) {
+ko.extenders['trackArrayChanges'] = function(target, options) {
+    // Use the provided options--each call to trackArrayChanges overwrites the previously set options
+    target.compareArrayOptions = {};
+    if (options && typeof options == "object") {
+        ko.utils.extend(target.compareArrayOptions, options);
+    }
+    target.compareArrayOptions['sparse'] = true;
+
     // Only modify the target observable once
     if (target.cacheDiffForKnownOperation) {
         return;
     }
     var trackingChanges = false,
         cachedDiff = null,
+        arrayChangeSubscription,
         pendingNotifications = 0,
-        underlyingSubscribeFunction = target.subscribe;
+        underlyingBeforeSubscriptionAddFunction = target.beforeSubscriptionAdd,
+        underlyingAfterSubscriptionRemoveFunction = target.afterSubscriptionRemove;
 
-    // Intercept "subscribe" calls, and for array change events, ensure change tracking is enabled
-    target.subscribe = target['subscribe'] = function(callback, callbackTarget, event) {
+    // Watch "subscribe" calls, and for array change events, ensure change tracking is enabled
+    target.beforeSubscriptionAdd = function (event) {
+        if (underlyingBeforeSubscriptionAddFunction)
+            underlyingBeforeSubscriptionAddFunction.call(target, event);
         if (event === arrayChangeEventName) {
             trackChanges();
         }
-        return underlyingSubscribeFunction.apply(this, arguments);
+    };
+    // Watch "dispose" calls, and for array change events, ensure change tracking is disabled when all are disposed
+    target.afterSubscriptionRemove = function (event) {
+        if (underlyingAfterSubscriptionRemoveFunction)
+            underlyingAfterSubscriptionRemoveFunction.call(target, event);
+        if (event === arrayChangeEventName && !target.hasSubscriptionsForEvent(arrayChangeEventName)) {
+            arrayChangeSubscription.dispose();
+            trackingChanges = false;
+        }
     };
 
     function trackChanges() {
@@ -38,32 +57,33 @@ ko.extenders['trackArrayChanges'] = function(target) {
         // change it's possible to produce a diff
         var previousContents = [].concat(target.peek() || []);
         cachedDiff = null;
-        target.subscribe(function(currentContents) {
+        arrayChangeSubscription = target.subscribe(function(currentContents) {
             // Make a copy of the current contents and ensure it's an array
             currentContents = [].concat(currentContents || []);
 
             // Compute the diff and issue notifications, but only if someone is listening
             if (target.hasSubscriptionsForEvent(arrayChangeEventName)) {
                 var changes = getChanges(previousContents, currentContents);
-                if (changes.length) {
-                    target['notifySubscribers'](changes, arrayChangeEventName);
-                }
             }
 
             // Eliminate references to the old, removed items, so they can be GCed
             previousContents = currentContents;
             cachedDiff = null;
             pendingNotifications = 0;
+
+            if (changes && changes.length) {
+                target['notifySubscribers'](changes, arrayChangeEventName);
+            }
         });
     }
 
     function getChanges(previousContents, currentContents) {
         // We try to re-use cached diffs.
-        // The only scenario where pendingNotifications > 1 is when using the KO 'deferred updates' plugin,
-        // which without this check would not be compatible with arrayChange notifications. Without that
-        // plugin, notifications are always issued immediately so we wouldn't be queueing up more than one.
+        // The scenarios where pendingNotifications > 1 are when using rate-limiting or the Deferred Updates
+        // plugin, which without this check would not be compatible with arrayChange notifications. Normally,
+        // notifications are issued immediately so we wouldn't be queueing up more than one.
         if (!cachedDiff || pendingNotifications > 1) {
-            cachedDiff = ko.utils.compareArrays(previousContents, currentContents, { 'sparse': true });
+            cachedDiff = ko.utils.compareArrays(previousContents, currentContents, target.compareArrayOptions);
         }
 
         return cachedDiff;
@@ -81,7 +101,7 @@ ko.extenders['trackArrayChanges'] = function(target) {
             offset = 0;
 
         function pushDiff(status, value, index) {
-            diff.push({ 'status': status, 'value': value, 'index': index });
+            return diff[diff.length] = { 'status': status, 'value': value, 'index': index };
         }
         switch (operationName) {
             case 'push':
@@ -106,13 +126,15 @@ ko.extenders['trackArrayChanges'] = function(target) {
                 var startIndex = Math.min(Math.max(0, args[0] < 0 ? arrayLength + args[0] : args[0]), arrayLength),
                     endDeleteIndex = argsLength === 1 ? arrayLength : Math.min(startIndex + (args[1] || 0), arrayLength),
                     endAddIndex = startIndex + argsLength - 2,
-                    endIndex = Math.max(endDeleteIndex, endAddIndex);
+                    endIndex = Math.max(endDeleteIndex, endAddIndex),
+                    additions = [], deletions = [];
                 for (var index = startIndex, argsIndex = 2; index < endIndex; ++index, ++argsIndex) {
                     if (index < endDeleteIndex)
-                        pushDiff('deleted', rawArray[index], index);
+                        deletions.push(pushDiff('deleted', rawArray[index], index));
                     if (index < endAddIndex)
-                        pushDiff('added', args[argsIndex], index);
+                        additions.push(pushDiff('added', args[argsIndex], index));
                 }
+                ko.utils.findMovesInArrayComparison(deletions, additions);
                 break;
 
             default:

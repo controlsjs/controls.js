@@ -48,7 +48,7 @@ ko.expressionRewriting = (function () {
         if (str.charCodeAt(0) === 123) str = str.slice(1, -1);
 
         // Split into tokens
-        var result = [], toks = str.match(bindingToken), key, values, depth = 0;
+        var result = [], toks = str.match(bindingToken), key, values = [], depth = 0;
 
         if (toks) {
             // Append a comma so that we don't need a separate code block to deal with the last item
@@ -59,15 +59,17 @@ ko.expressionRewriting = (function () {
                 // A comma signals the end of a key/value pair if depth is zero
                 if (c === 44) { // ","
                     if (depth <= 0) {
-                        if (key)
-                            result.push(values ? {key: key, value: values.join('')} : {'unknown': key});
-                        key = values = depth = 0;
+                        result.push((key && values.length) ? {key: key, value: values.join('')} : {'unknown': key || values.join('')});
+                        key = depth = 0;
+                        values = [];
                         continue;
                     }
                 // Simply skip the colon that separates the name and value
                 } else if (c === 58) { // ":"
-                    if (!values)
+                    if (!depth && !key && values.length === 1) {
+                        key = values.pop();
                         continue;
+                    }
                 // A set of slashes is initially matched as a regular expression, but could be division
                 } else if (c === 47 && i && tok.length > 1) {  // "/"
                     // Look at the end of the previous token to determine if the slash is actually division
@@ -86,15 +88,11 @@ ko.expressionRewriting = (function () {
                     ++depth;
                 } else if (c === 41 || c === 125 || c === 93) { // ')', '}', ']'
                     --depth;
-                // The key must be a single token; if it's a string, trim the quotes
-                } else if (!key && !values) {
-                    key = (c === 34 || c === 39) /* '"', "'" */ ? tok.slice(1, -1) : tok;
-                    continue;
+                // The key will be the first token; if it's a string, trim the quotes
+                } else if (!key && !values.length && (c === 34 || c === 39)) { // '"', "'"
+                    tok = tok.slice(1, -1);
                 }
-                if (values)
-                    values.push(tok);
-                else
-                    values = [tok];
+                values.push(tok);
             }
         }
         return result;
@@ -111,15 +109,16 @@ ko.expressionRewriting = (function () {
             function callPreprocessHook(obj) {
                 return (obj && obj['preprocess']) ? (val = obj['preprocess'](val, key, processKeyValue)) : true;
             }
-            if (!callPreprocessHook(ko['getBindingHandler'](key)))
-                return;
+            if (!bindingParams) {
+                if (!callPreprocessHook(ko['getBindingHandler'](key)))
+                    return;
 
-            if (twoWayBindings[key] && (writableVal = getWriteableValue(val))) {
-                // For two-way bindings, provide a write method in case the value
-                // isn't a writable observable.
-                propertyAccessorResultStrings.push("'" + key + "':function(_z){" + writableVal + "=_z}");
+                if (twoWayBindings[key] && (writableVal = getWriteableValue(val))) {
+                    // For two-way bindings, provide a write method in case the value
+                    // isn't a writable observable.
+                    propertyAccessorResultStrings.push("'" + key + "':function(_z){" + writableVal + "=_z}");
+                }
             }
-
             // Values are wrapped in a function so that each value can be accessed independently
             if (makeValueAccessors) {
                 val = 'function(){return ' + val + ' }';
@@ -130,6 +129,7 @@ ko.expressionRewriting = (function () {
         var resultStrings = [],
             propertyAccessorResultStrings = [],
             makeValueAccessors = bindingOptions['valueAccessors'],
+            bindingParams = bindingOptions['bindingParams'],
             keyValueArray = typeof bindingsStringOrKeyValueArray === "string" ?
                 parseObjectLiteral(bindingsStringOrKeyValueArray) : bindingsStringOrKeyValueArray;
 
@@ -138,7 +138,7 @@ ko.expressionRewriting = (function () {
         });
 
         if (propertyAccessorResultStrings.length)
-            processKeyValue('_ko_property_writers', "{" + propertyAccessorResultStrings.join(",") + "}");
+            processKeyValue('_ko_property_writers', "{" + propertyAccessorResultStrings.join(",") + " }");
 
         return resultStrings.join(",");
     }
