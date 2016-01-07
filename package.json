@@ -19,7 +19,7 @@
     { "type": "Commercial Software", "url": "http://controlsjs.com/license.html" }
   ],
   "lib_knockout": {
-    "version": "3.0.0",    
+    "version": "3.4.0",
     "homepage": "http://knockoutjs.com/",
     "licenses": [
       { "type": "MIT", "url": "http://www.opensource.org/licenses/mit-license.php" }

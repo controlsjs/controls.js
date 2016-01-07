@@ -59,6 +59,8 @@ module.exports = function(grunt) {
         'libs/lib_knockout/src/namespace.js',
         'libs/lib_knockout/src/google-closure-compiler-utils.js',
         'libs/lib_knockout/src/version.js',
+        'libs/lib_knockout/src/options.js',
+        'libs/lib_knockout/src/tasks.js',
         'libs/lib_knockout/src/utils.js',
         'libs/lib_knockout/src/utils.domData.js',
         'libs/lib_knockout/src/subscribables/extenders.js',
