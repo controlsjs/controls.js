@@ -19,15 +19,7 @@
 var ngSettingsByID = new Array();
 var ngSettingsLastID = 0;
 
-/** 
- *  Group: Variables   
- */
-/** 
- *  Variable: ngsCookieMaxLen
- *  Maximal data length in one cookie.
- *  Default: 4050 
- */  
-var ngsCookieMaxLen = 4050;
+var ngOnSettingsCreated = (typeof ngOnSettingsCreated !== 'undefined' ? ngOnSettingsCreated : null);
 
 function getSettingsByID(Settingsid)
 {
@@ -38,9 +30,10 @@ function getSettingsByID(Settingsid)
 function ngset_Set(n,v)
 {
   if(!this.IsValidName(n)) return;
+  if(typeof v === 'function') v=v(); // functions are not allowed, get return value
   if((this.OnSetSetting)&&(!ngVal(this.OnSetSetting(this,n,v),false))) return;
   
-  if((typeof this.Settings[n] === 'undefined')||(!ng_VarEquals(this.Settings[n],v)))
+  if((typeof v === 'undefined')||(!ng_VarEquals(this.Settings[n],v)))
   {
     this.BeginUpdate();
     if(typeof v === 'undefined')
@@ -59,6 +52,17 @@ function ngset_Get(n,defval)
   if(this.OnGetSetting) v=this.OnGetSetting(this,n,v);
   if(typeof v==='undefined') v=defval;
   return v;
+}
+
+function ngset_IsValidName(n)
+{
+  if((typeof n === 'undefined')||(n=='')) return false;
+
+  var storage=this.GetStorage();
+  if((storage)&&(storage.IsValidName)) return storage.IsValidName(this,n);
+
+  var re=/[a-zA-Z_$][0-9a-zA-Z_$]*/;
+  return (n.replace(re,'')=='');
 }
 
 function ngset_BeginUpdate()
@@ -89,9 +93,62 @@ function ngset_EndUpdate()
 }
 
 
+function ngset_GetStorage() {
+  var storage=null;
+
+  if(this.OnGetStorage) {
+    storage=ngVal(this.OnGetStorage(this),null);
+  }
+
+  if(!storage) {
+    if((typeof this.Storages !== 'object')||(!this.Storages)) return null;
+    var stype=this.StorageType;
+    if((stype=='')||(stype==='auto')) {
+      var s,sp,p=0;
+      stype='';
+      for(var i in this.Storages) {
+        s=this.Storages[i];
+        if((!s)||(!s.IsActive)||(!s.IsActive())) continue; // active only
+        sp=ngVal(s.Priority,0.5);
+        if(sp>1) sp=1;
+        if(sp<0) sp=0;
+        if(sp>p) {
+          stype=i;
+          p=sp;
+        }
+      }
+      if(stype=='') {
+        ngDEBUGWARN("ngSettings: Storages doesn't exists or all inactive!");
+        return null;
+      }
+      if(this.StorageType=='') this.StorageType=stype;
+    }
+    storage=ngVal(this.Storages[stype],null);
+  }
+
+  if(!storage) {
+    ngDEBUGWARN('ngSettings: Storage not found!');
+  }
+  if((storage)&&((!storage.IsActive)||(!storage.IsActive()))) {
+    ngDEBUGWARN('ngSettings: Selected storage is not active!');
+    return null;
+  }
+
+  return storage;
+}
+
 function ngset_Clear()
 {
-  // clear only if not empty
+  var storage=this.GetStorage();
+  if((storage)&&(storage.Clear)) {
+    if(storage.Clear(this)) {
+      this.Settings = {};
+      this.changed=false;
+      return;
+    }
+  }
+
+  // clear only if not empty, save empty settings
   for(var i in this.Settings)
   {
     this.BeginUpdate();
@@ -100,57 +157,84 @@ function ngset_Clear()
     this.EndUpdate();
     break;
   }
-//  if(!this.rpc) this.rpc=new ngRPC();
-//  this.rpc.sendRequest(ng_AddURLParam(this.StorageURL,'clear=1'));  
 }
 
 function ngset_Load()
 {
   if((this.OnSettingsLoading)&&(!ngVal(this.OnSettingsLoading(this),false))) return;
-  if(this.StorageURL!='')
-  {
-    if(!this.rpc) this.rpc=new ngRPC();
-    this.rpc.sendRequest(ng_AddURLParam(this.StorageURL,'load=1&id='+this.SettingsID));
+
+  var storage=this.GetStorage();
+  if((storage)&&(storage.Load)) {
+
+    if(this.AllowStorageMigration) {
+      // Prepare for migration process if needed
+      this.migration_data={
+        storage: storage,
+        altstorage: null,
+        used_storages: []
+      }
+    }
+    else delete this.migration_data;
+
+    storage.Load(this);
   }
 }
 
-function ngset_IsValidName(n)
+function ngset_DataLoaded(storage,data)
 {
-  if((typeof n === 'undefined')||(n=='')) return false;
-  
-  var re=/[a-zA-Z_$][0-9a-zA-Z_$]*/; 
-  return (n.replace(re,'')=='');
-}
+  if((typeof data!=='object')||(!data)) {
+    // Storage has no data, check if we are prepared for migration and if alternative storages exists
+    if((typeof this.migration_data === 'object')&&(typeof this.Storages === 'object')&&(this.Storages)) {
+      this.migration_data.used_storages.push(storage);
 
-function ngset_EncodeSetting(n,v)
-{
-  if(!this.IsValidName(n)) return undefined;
-  if(typeof v === 'undefined') return v;
-  if(this.OnEncodeSetting) v=this.OnEncodeSetting(this,n,v);
-  else v=ng_URLEncode(v);
-  
-  v=v.replace("%40","%u0040"); // prevent @ auto-unescape 
-  return v;
-}
-
-function ngset_BuildSettingsStr(p)
-{
-  var v,params='';
-  for(var i in p)
-  {
-    v=p[i];
-    if(typeof v === 'object')
-    {
-      if(params!='') params+='@';
-      params+=i+'@{@'+this.BuildSettingsStr(v)+'@}';
-      continue;      
-    } 
-    v=this.EncodeSetting(i,v);
-    if(typeof v === 'undefined') continue;
-    if(params!='') params+='@';
-    params+=i+'-'+v;
+      // select other available storage sorted by priority
+      var altstorage=null;
+      var sp,s,p=0;
+      for(var i in this.Storages) {
+        s=this.Storages[i];
+        if((!s)||(!s.Load)||(!s.IsActive)||(!s.IsActive())) continue; // active only
+        for(var j in this.migration_data.used_storages) {
+          if(this.migration_data.used_storages[j]===s) { s=null; break; }
+        }
+        if(!s) continue;
+        sp=ngVal(s.Priority,0.5);
+        if(sp>1) sp=1;
+        if(sp<0) sp=0;
+        if(sp>p) {
+          altstorage=s;
+          p=sp;
+        }
+      }
+      if(altstorage) {
+        // try load data from alternative storage
+        this.migration_data.altstorage=altstorage;
+        altstorage.Load(this);
+        return;
+      }
+      delete this.migration_data;
+    }
+    data={};
   }
-  return params;
+
+  if((this.OnDataLoaded)&&(!ngVal(this.OnDataLoaded(this,data,storage),false))) return;
+
+  this.Settings = ng_CopyVar(data);
+  this.changed = false;
+  if(this.OnSettingsLoaded) this.OnSettingsLoaded(this,storage);
+
+  if(typeof this.migration_data === 'object') {
+    if(this.migration_data.altstorage) {
+      // Data was loaded from alternative storage, save data to original storage
+      if(this.migration_data.storage.Save) {
+        var savedata = ng_CopyVar(this.Settings);
+        if((!this.OnDataSave)||(ngVal(this.OnDataSave(this,savedata),false))) {
+          this.migration_data.storage.Save(this,savedata);
+          return;
+        }
+      }
+    }
+    delete this.migration_data;
+  }
 }
 
 function ngset_Save()
@@ -158,67 +242,52 @@ function ngset_Save()
   if((this.OnSettingsSaving)&&(!ngVal(this.OnSettingsSaving(this),false))) return;
 
   if(this.save_timer) { clearTimeout(this.save_timer); this.save_timer=null; }
-  
-  // save to cookies
-  var url=this.StorageURL;
-  if(url!='')
-  {
-    // build params
-    var i,params=this.BuildSettingsStr(this.Settings);
-    var c=1;
-    if(params!='')
-    {
-      while(params!='')
-      {
-        ngSetCookieByURL('_ngs'+c,params.substr(0,ngsCookieMaxLen),this.StorageExpires,url,false);
-        params=params.substring(ngsCookieMaxLen,params.length);
-        c++;
-        if(c>50) break;
-      }
-    }
-    // clear rest
-    var expires=ngCookieExpires(-3600);
-    for(i=c;i<=50;i++)
-      ngSetCookieByURL('_ngs'+i,'',expires,url,false);
 
+  var storage=this.GetStorage();
+  if((storage)&&(storage.Save)) {
+
+    var data = ng_CopyVar(this.Settings);
+    if((this.OnDataSave)&&(!ngVal(this.OnDataSave(this,data),false))) return;
+
+    storage.Save(this,data);
     this.changed=false;
-    if(this.OnSettingsSaved) this.OnSettingsSaved(this);
   }
 }
 
-function ngset_do_load(id,data)
+function ngset_DataSaved(storage)
 {
-  if(typeof data === 'undefined') return; 
-  var s=getSettingsByID(id);
-  if(s)
-  {
-    s.Settings=data;
-    s.changed = false; 
-    if(s.OnSettingsLoaded) s.OnSettingsLoaded(s);
+  if((typeof this.migration_data === 'object')&&(this.migration_data.storage===storage)) {
+    // data was saved by migration process, clear data in alternative storage (forces data to be on one place)
+    var altstorage=this.migration_data.altstorage;
+    delete this.migration_data;
+    if(altstorage) {
+      if(altstorage.Clear) altstorage.Clear(this);
+      else if(altstorage.Save) altstorage.Save(this,{});
+    }
   }
+  if(this.OnSettingsSaved) this.OnSettingsSaved(this,storage);
 }
 
 /**
  *  Class: ngSettings
  *  Application settings.
  *   
- *  This class is used for storing settings into cookies.
+ *  This class is used for storing applications settings.
  *  
  *  Syntax:
- *    new *ngSettings* (string id [, string storageurl])
+ *    new *ngSettings* (string id [, object options])
  *    
  *  Parameters:
  *    id - unique ID of settings class
- *    storageurl - URL where settings are saved         
+ *    options - optional initial settings
  */   
-function ngSettings(id, storageurl)
+function ngSettings(id, options)
 {
   if(typeof id === 'undefined')
   {
     ngSettingsLastID++;
     id = 'ngSettings'+ngSettingsLastID;
   }
-  this.rpc      = null;  
   this.changed = false; 
   this.update_cnt = false;
   this.save_timer = null;
@@ -229,18 +298,28 @@ function ngSettings(id, storageurl)
   /*
    *  Group: Properties
    */
-  /*  Variable: StorageURL
-   *  URL where settings are saved.
-   *  
-   *  Default value: *ngApp.AppPath + 'settings/'*  
-   */ 
-  this.StorageURL = ngVal(storageurl,ngApp.AppPath+'settings/');
-  /*  Variable: StorageExpires
-   *  Storage cookies expiration time (in seconds).
-   *  
-   *  Default value: *10 years*  
-   */ 
-  this.StorageExpires = ngCookieExpires(3600 * 24 * 365 * 10); // 10 years  
+  /*  Variable: StorageType
+   *  Used storage type in Storages.
+   *
+   *  Default value: *''*
+   */
+  this.StorageType = '';
+
+  /*  Variable: Storages
+   *  Available storages.
+   *
+   *  Default value: *ngApp.SettingsStorages*
+   */
+  this.Storages = ((typeof ngApp === 'object')&&(ngApp)&&(typeof ngApp.SettingsStorages === 'object')&&(ngApp.SettingsStorages)) ? ngApp.SettingsStorages : {};
+
+  /*  Variable: AllowStorageMigration
+   *  Controls if data can be migrated between storages.
+   *
+   *  Default value: *true*
+   */
+  this.AllowStorageMigration = true;
+
+
   /*  Variable: DelayedSave
    *  Timeout (in ms) after the changes are saved. 
    *  If 0 (zero) the changes are saved immediatelly.    
@@ -332,7 +411,7 @@ function ngSettings(id, storageurl)
   this.Clear = ngset_Clear;
   /**
    *  Function: Load
-   *  Sends settings load request to the server.    
+   *  Request load of settings (can be async operation).
    *   
    *  Syntax:
    *    void *Load* ()
@@ -343,7 +422,7 @@ function ngSettings(id, storageurl)
   this.Load  = ngset_Load;
   /**
    *  Function: Save
-   *  Saves settings into cookies.    
+   *  Saves settings.    
    *   
    *  Syntax:
    *    void *Save* ()
@@ -352,17 +431,16 @@ function ngSettings(id, storageurl)
    *    -  
    */               
   this.Save  = ngset_Save;
-  
-  this.EncodeSetting = ngset_EncodeSetting;
-  this.BuildSettingsStr = ngset_BuildSettingsStr;
-  
+
+  this.DataLoaded  = ngset_DataLoaded;
+  this.DataSaved  = ngset_DataSaved;
+  this.GetStorage = ngset_GetStorage;
+  this.AddEvent = ngObjAddEvent;
+  this.RemoveEvent = ngObjRemoveEvent;
+
   /*
    *  Group: Events
    */
-  /*
-   *  Event: OnEncodeSetting
-   */     
-  this.OnEncodeSetting = null;
   /*
    *  Event: OnSetSetting
    */     
@@ -387,6 +465,23 @@ function ngSettings(id, storageurl)
    *  Event: OnSettingsLoaded
    */     
   this.OnSettingsLoaded = null;
+  /*
+   *  Event: OnDataLoaded
+   */
+  this.OnDataLoaded = null;
+  /*
+   *  Event: OnDataSave
+   */
+  this.OnDataSave = null;
+  /*
+   *  Event: OnGetStorage
+   */
+  this.OnGetStorage = null;
+
+  if((typeof options === 'object')&&(options))
+    ng_MergeVarReplace(this,options);
+
+  if(ngOnSettingsCreated) ngOnSettingsCreated(this);
 }
 
 
@@ -398,34 +493,13 @@ ngUserControls['settings'] = {
   OnInit: function() {
     if((typeof ngApp === 'object')&&(ngApp)&&(typeof ngApp.Settings === 'undefined'))
     {
-      ngApp.Settings=new ngSettings('ngAppSettings');
-
-      var sp=ngVal(ngApp.StartParams,null);
-      if((sp)&&(typeof sp.AppSettingsStorageURL !== 'undefined'))
-      {
-        var storage=sp.AppSettingsStorageURL;
-        if(storage.substr(0,4)!='http')
-        {
-          if(storage.substr(0,1)=='/') 
-          {
-            var idx = ngApp.AppPath.indexOf('//')
-            if(idx>=0)
-            {
-              idx=ngApp.AppPath.indexOf('/',idx+2);
-              if(idx>=0) storage=ngApp.AppPath.substr(0,idx)+storage;
-              else storage=ngApp.AppPath+storage;
-            }
-          }
-          else storage=ngApp.AppPath+storage;
+      window.ngInit=ngAddEvent(function() {
+        if(typeof ngApp.Settings === 'undefined') {
+          var sp=ngVal(ngApp.StartParams,null);
+          ngApp.Settings=new ngSettings('ngAppSettings',(sp ? sp.AppSettingsOptions : null));
+          ngApp.Settings.Load();
         }
-        ngApp.Settings.StorageURL=storage;
-      }
-        
-      if(typeof ngLoadedSettings !== 'undefined') 
-      {
-        ngApp.Settings.Settings=ngLoadedSettings;
-        ngLoadedSettings=undefined;
-      }
+      },window.ngInit);
     }    
   }
 };
