@@ -95,7 +95,6 @@ ngUserControls['settings_cookies'] = {
 
     function ngsetcoo_Save(settings,data)
     {
-    console.log('CookiesSave',data);
       // save to cookies
       var url=this.StorageURL;
       if(url!='')
