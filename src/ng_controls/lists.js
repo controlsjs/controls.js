@@ -392,7 +392,7 @@ function ngl_ScanVisible(fnc, parent, userdata)
       if(!fnc(this, pi, list, userdata)) return false;
 
       if((ngVal(pi.Collapsed,false))||(typeof pi.Items === 'undefined')||(!pi.Items.length)) continue;
-      if(!this.Scan(fnc, pi, userdata)) return false;
+      if(!this.ScanVisible(fnc, pi, userdata)) return false;
     }
   return true;
 }
@@ -2896,6 +2896,18 @@ function ngl_DoDispose()
   return true;
 }
 
+function ngl_ItemsChanged()
+{
+  if(this.update_cnt>0) {
+    this._items_changed = true;
+    this.need_update = true;
+  }
+  else {
+    this.DoItemsChanged();
+    this.Update();
+  }
+}
+
 function ngl_DoItemsChanged()
 {
   if(this.update_cnt > 0) this._items_changed = true;
@@ -3109,6 +3121,7 @@ function ngList(id)
   this.DoFocus = ngl_DoFocus;
   this.DoBlur = ngl_DoBlur;
   this.DoDispose = ngl_DoDispose;
+  this.ItemsChanged = ngl_ItemsChanged;
   this.DoItemsChanged = ngl_DoItemsChanged;
   this.ignore_select = 0;
 
