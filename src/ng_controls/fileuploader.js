@@ -88,9 +88,6 @@ var FileUploaderControl = {
             L: 0, T: 0, R: 140,
             Data: {
               ReadOnly: true
-            },
-            Events: {
-              OnFocus: function () { c.ShowForm(); }
             }
           },
           BtnAddFile: {
@@ -339,7 +336,6 @@ var FileUploaderControl = {
           if (!Form) return false;
 
           Form.ngfup_File.click();
-          c.Controls.EdtFile.SetCaretPos(0);  //IE: Double Upload file fix
         } else c.ShowWindow();
 
         return true;
