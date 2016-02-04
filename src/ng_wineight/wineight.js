@@ -3539,12 +3539,6 @@ var WinEightControls = {
             }
           },
           Events: {
-            OnFileAdding: function (o, file) {
-              if ((typeof(o)==='undefined') || (typeof(file)==='undefined')) return false;
-              if (file=='') { o.ShowForm(); return false; };
-
-              return true;
-            },
             OnServerError: function (o, error, data) {
               ngMessageDlg('weDlgMessageBox', error);
             }

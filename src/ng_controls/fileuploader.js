@@ -148,7 +148,7 @@ var FileUploaderControl = {
         var File = c.Controls.EdtFile.GetText();
 
         if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, File), false))) return false;
-        if (File=='') return false;
+        if (File=='') { c.ShowForm(); return false; };
 
         c.Controls.EdtFile.SetText('');
         c.Controls.WaitPanel.SetVisible(true);
