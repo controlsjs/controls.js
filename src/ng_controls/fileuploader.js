@@ -57,8 +57,14 @@ var FileUploaderControl = {
             },
             Events: {
               OnVisibleChanged: function (o) {
-                if ((o) && (ngVal(o.Visible, true)) && (o.Controls.TxtAddFile.GetText()==''))
+                if (typeof(o)==='undefined') return;
+
+                var visible = ngVal(o.Visible, true);
+
+                if ((visible) && (o.Controls.TxtAddFile.GetText()==''))
                   o.Controls.TxtAddFile.SetText(ng_sprintf(ngTxt('ngfup_IFrame'), id, '2', o.IFrameSize.W, o.IFrameSize.H));
+
+                if (!visible) delete c._addedViaAddFile;
               }
             }
           },
@@ -148,7 +154,13 @@ var FileUploaderControl = {
         var File = c.Controls.EdtFile.GetText();
 
         if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, File), false))) return false;
-        if (File=='') { c.ShowForm(); return false; };
+        if (File=='')
+        {
+          c._addedViaAddFile = true;
+          c.ShowForm();
+
+          return false;
+        };
 
         c.Controls.EdtFile.SetText('');
         c.Controls.WaitPanel.SetVisible(true);
@@ -222,6 +234,8 @@ var FileUploaderControl = {
        */
 
       c.ChangeFile = function () {
+        var _addedViaAddFile = ngVal(c._addedViaAddFile, false);
+
         var Form = c.GetForm();
         if (!Form) return false;
 
@@ -234,6 +248,7 @@ var FileUploaderControl = {
         c.ShowWindow(false);
 
         if (c.OnFileChanged) c.OnFileChanged(c, Value);
+        if (_addedViaAddFile) AddFile();
 
         return true;
       }
