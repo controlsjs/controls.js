@@ -235,6 +235,7 @@ var FileUploaderControl = {
 
       c.ChangeFile = function () {
         var _addedViaAddFile = ngVal(c._addedViaAddFile, false);
+        delete c._addedViaAddFile;
 
         var Form = c.GetForm();
         if (!Form) return false;
