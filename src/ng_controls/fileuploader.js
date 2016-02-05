@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -162,6 +162,8 @@ var FileUploaderControl = {
         c.Controls.EdtFile.SetText('');
         c.Controls.WaitPanel.SetVisible(true);
 
+        if (c.OnFileChanged) c.OnFileChanged(c, '');
+
         var Form = c.GetForm();
         if (!Form) return false;
 
@@ -275,6 +277,34 @@ var FileUploaderControl = {
         c.Controls.ListFiles.EndUpdate();
 
         return true;
+      }
+
+      /*  Function: IsSelectedFile
+       *  ...
+       *
+       *  Syntax:
+       *    bool *IsSelectedFile* ()
+       *
+       *  Returns:
+       *    -
+       */
+
+      c.IsSelectedFile = function () {
+        return (c.Controls.EdtFile.GetText()=='' ? false : true);
+      }
+
+      /*  Function: GetSelectedFile
+       *  ...
+       *
+       *  Syntax:
+       *    string *GetSelectedFile* ()
+       *
+       *  Returns:
+       *    -
+       */
+
+      c.GetSelectedFile = function () {
+        return c.Controls.EdtFile.GetText();
       }
 
       /*  Function: GetForm
@@ -414,9 +444,47 @@ var FileUploaderControl = {
        */
       c.OnFileDeleted = null;
 
+      if (typeof(ngRegisterBindingHandler)==='function')
+      {
+        c.OnDataBindingInit = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) {
+
+          switch (bindingKey)
+          {
+            case 'Value':
+              c.AddEvent(function (c) {
+                ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
+              }, 'OnFileAdded');
+
+              c.AddEvent(function (c) {
+                ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
+              }, 'OnFileDeleted');
+            break;
+          }
+
+          return true;
+
+        }
+
+        //c.OnDataBindingUpdate = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) { return true; }
+      }
+
       return c;
     }
     ngRegisterControlType('ngFileUploader', function(def, ref, parent) { return Create_ngFileUploader(def, ref, parent); });
+
+    if (typeof(ngRegisterBindingHandler)==='function')
+    {
+      ngRegisterBindingHandler('FileUploader_IsSelectedFile',
+        function (c, valueAccessor) {
+          //ngCtrlBindingRead('FileUploader_IsSelectedFile', c, valueAccessor, function (val) { });
+        },
+        function (c, valueAccessor, allBindingsAccessor, viewModel) {
+          c.AddEvent(function (c) {
+            ngCtrlBindingWrite('FileUploader_IsSelectedFile', c.IsSelectedFile(), c, valueAccessor, allBindingsAccessor);
+          }, 'OnFileChanged');
+        }
+      );
+    }
 
   }
 };
