@@ -3437,6 +3437,12 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       OnGesture: null,
       OnPointerUp: null
   };
+  if((!c)&&(elm===document.body)&&(eid==='document')) {
+    pi.PreventDefault=false;
+    pi.PreventSelect=false,
+    pi.DocumentDeselect=false;
+  }
+
   if(pi.SrcTarget)
   {
     if(pi.SrcTarget.onclick) pi.PreventDefault=false;
