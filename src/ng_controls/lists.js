@@ -1198,7 +1198,8 @@ function ngl_FindItemCallback(list, it, parent, fi)
     for(var i=0;i<fi.cols.length;i++)
     {
       col=fi.cols[i];
-      if(list.OnGetText) text=ngVal(list.OnGetText(list, it, col),'');
+      if(fi.ongetsearchtext) text=ngVal(fi.ongetsearchtext(list, it, col),'');
+      else if(list.OnGetText) text=ngVal(list.OnGetText(list, it, col),'');
       else text=(typeof it.Text==='object' ? ngVal(it.Text[col.ID],'') : '');
       if(!ngl_FindCompare(fi, fi.key[i], text)) return true;
     }
@@ -1206,7 +1207,8 @@ function ngl_FindItemCallback(list, it, parent, fi)
   }
   else
   {
-    if(list.OnGetText) text=ngVal(list.OnGetText(list, it),'');
+    if(fi.ongetsearchtext) text=ngVal(fi.ongetsearchtext(list, it),'');
+    else if(list.OnGetText) text=ngVal(list.OnGetText(list, it),'');
     else text=ngVal(it.Text,'');
     if(!ngl_FindCompare(fi, fi.key, text)) return true;
   }
@@ -1214,10 +1216,11 @@ function ngl_FindItemCallback(list, it, parent, fi)
   return false;
 }
 
-function ngl_FindItem(key, partial, ignorecase, visibleonly, fromitem)
+function ngl_FindItem(key, partial, ignorecase, visibleonly, fromitem, ongetsrchtext)
 {
   var fi=new Object;
   fi.ignorecase=ngVal(ignorecase,true);
+  fi.ongetsearchtext=ngVal(ongetsrchtext,null);
   if(typeof key === 'object')
   {
     if(this.Columns.length<=0) return null;
