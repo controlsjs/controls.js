@@ -2310,6 +2310,65 @@ var WinXPControls = {
     }
 
     /**
+     * FileUploader
+     */
+    if (ngUserControls['fileuploader'])
+    {
+      skinfnc.Create_FileUploader=function(def, ref, parent)
+      {
+        ng_MergeDef(def, {
+          Base: 'ngPanel',
+          Controls: {
+            UploadWindow: {
+              Type: 'stdDialog',
+              W: 280, H: 100
+            },
+            WaitPanel: {
+              Events: {
+                OnShowWaiting: function (o) {
+                  if (typeof(o)==='undefined') return;
+
+                  o.curDialog = ngMessageDlg('dlgProgressBox', 'ngfup_Uploading');
+                  if (o.curDialog) o.curDialog.Controls.Progress.BeginProcess();
+                },
+                OnHideWaiting: function (o) {
+                  if ((o) && (o.curDialog)) o.curDialog.Close();
+                }
+              }
+            },
+            EdtFile: {
+              Type: 'stdEditBoxBtn',
+              R: 130,
+              Events: {
+                OnElipsis: function (o) {
+                  if (o) o.Owner.Parent.Owner.Owner.ShowForm();
+                }
+              }
+            },
+            BtnAddFile: {
+              Type: 'stdButton'
+            },
+            ListFiles: {
+              Type: 'stdList',
+              T: 31, B: 32
+            },
+            BtnRemoveCheckedFiles: {
+              Type: 'stdButton'
+            }
+          },
+          Events: {
+            OnServerError: function (o, error, data) {
+              ngMessageDlg('dlgMessageBox', error);
+            }
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
+      }
+      ngRegisterControlType('stdFileUploader', function(def,ref,parent) { return skinfnc.Create_FileUploader(def,ref,parent); });
+    }
+
+    /**
      * ViewModel Controls
      */
     if(ngUserControls['viewmodel_controls'])
