@@ -2307,7 +2307,7 @@ ngUserControls['viewmodel_controls'] = {
       }
 
       var ex={ Items: true }; // Don't touch original items
-      if(vmit!==vmval) vmit.valueWillMutate();
+      if((vmit!==vmval)&&(typeof vmit.valueWillMutate === 'function')) vmit.valueWillMutate();
       for(var i in it) {
         switch(i) {
           case 'Items':
@@ -2342,10 +2342,12 @@ ngUserControls['viewmodel_controls'] = {
         if(ko.isObservable(vitems)) {
           if(ko.isWriteableObservable(vitems)) {
             var aitems=vitems();
-            if(!ng_IsArrayVar(aitems)) aitems=[];
-            vitems.valueWillMutate();
+            var isarray=true;
+            if(!ng_IsArrayVar(aitems)) { aitems=[]; isarray=false; }
+            if(typeof vitems.valueWillMutate === 'function') vitems.valueWillMutate();
             syncsubitems(aitems,it);
-            vitems.valueHasMutated();
+            if((isarray)&&(typeof vitems.valueHasMutated === 'function')) vitems.valueHasMutated();
+            else vitems(aitems);
           }
         }
         else {
@@ -2366,7 +2368,10 @@ ngUserControls['viewmodel_controls'] = {
         else delete vmval.Items;
       }
 
-      if(vmit!==vmval) vmit.valueMutated();
+      if(vmit!==vmval) {
+        if(typeof vmit.valueHasMutated === 'function') vmit.valueHasMutated();
+        else vmit(vmval);
+      }
       return vmit;
     }
 
@@ -2479,9 +2484,10 @@ ngUserControls['viewmodel_controls'] = {
               }
               else
               {
-                v.valueWillMutate();
+                if(typeof v.valueWillMutate === 'function') v.valueWillMutate();
                 synclistinit(varr, c);
-                v.valueHasMutated();
+                if(typeof v.valueHasMutated === 'function') v.valueHasMutated();
+                else v(varr);
               }
             }
           });
@@ -2831,11 +2837,11 @@ ngUserControls['viewmodel_controls'] = {
           var checkedacc,selectedacc;
           if(c.DataBindings.Checked) {
             checkedacc=c.DataBindings.Checked.ValueAccessor();
-            if(checkedacc) checkedacc.valueWillMutate();
+            if((checkedacc)&&(typeof checkedacc.valueWillMutate === 'function')) checkedacc.valueWillMutate();
           }
           if(c.DataBindings.Selected) {
             selectedacc=c.DataBindings.Selected.ValueAccessor();
-            if(selectedacc) selectedacc.valueWillMutate();
+            if((selectedacc)&&(typeof selectedacc.valueWillMutate === 'function')) selectedacc.valueWillMutate();
           }
 
           var val=ko.ng_unwrapobservable(valueAccessor());
@@ -2856,8 +2862,14 @@ ngUserControls['viewmodel_controls'] = {
             }
           }
 
-          if(checkedacc) checkedacc.valueHasMutated();
-          if(selectedacc) selectedacc.valueHasMutated();
+          if(checkedacc) {
+            if(typeof checkedacc.valueHasMutated === 'function') checkedacc.valueHasMutated();
+            else checkedacc(checkedacc());
+          }
+          if(selectedacc) {
+            if(typeof selectedacc.valueHasMutated === 'function') selectedacc.valueHasMutated();
+            else selectedacc(selectedacc());
+          }
         });
         return;
       }

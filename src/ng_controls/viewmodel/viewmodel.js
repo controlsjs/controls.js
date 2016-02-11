@@ -3235,9 +3235,10 @@ ngUserControls['viewmodel'] = {
             arr(a);
             return;
           }
-          arr.valueWillMutate();
+          if(typeof arr.valueWillMutate === 'function') arr.valueWillMutate();
           a[i]=ko.ng_setvalue(a[i],v);
-          arr.valueHasMutated();
+          if(typeof arr.valueHasMutated === 'function') arr.valueHasMutated();
+          else arr(a);
         },
         owner: this}));
     };
@@ -3577,9 +3578,10 @@ ngUserControls['viewmodel'] = {
                     else
                       if(ng_VarEquals(ko.ng_getvalue(a[idx]),v)) return;
 
-                    val.valueWillMutate();
+                    if(typeof val.valueWillMutate === 'function') val.valueWillMutate();
                     a[idx]=ko.ng_setvalue(a[idx],v);
-                    val.valueHasMutated();
+                    if(typeof val.valueHasMutated === 'function') val.valueHasMutated();
+                    else val(a);
                   }
                 },
                 owner: vm
