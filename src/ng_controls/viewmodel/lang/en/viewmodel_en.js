@@ -12,6 +12,7 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=[];
 
+ngc_Lang['en']['viewmodel_err_unknown']        = 'Invalid value.';
 ngc_Lang['en']['viewmodel_err_type']           = 'Invalid type of value.';
 ngc_Lang['en']['viewmodel_err_type_bool']      = 'Value must be yes (1) or no (0).';
 ngc_Lang['en']['viewmodel_err_type_integer']   = 'Value must be an integer number.';

@@ -12,6 +12,7 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
 if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=[];
 
+ngc_Lang['cz']['viewmodel_err_unknown']        = 'Nesprávná hodnota.';
 ngc_Lang['cz']['viewmodel_err_type']           = 'Nesprávný typ hodnoty.';
 ngc_Lang['cz']['viewmodel_err_type_bool']      = 'Hodnota musí být ano (1) nebo ne (0).';
 ngc_Lang['cz']['viewmodel_err_type_integer']   = 'Hodnota musí být celé číslo.';

@@ -214,6 +214,9 @@ function ng_ViewModelFormatError(err)
       msg.push(ng_sprintf(ngTxt('viewmodel_err_len'),err.FieldDef.Size));
   }
 
+  if((msg.length==0) && (err.Error & FIELDDEF_ERR)) {
+    msg.push(ngTxt('viewmodel_err_unknown'));
+  }
   if(msg.length==0) return '';
   if(msg.length==1) return msg[0];
   return msg;
