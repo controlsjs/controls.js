@@ -8901,7 +8901,7 @@ function nge_BeginMobileKeyboard()
 
     ng_SetClientHeight(ae,ng_ClientHeight(ae));
     ae.style.bottom='';
-    ae.style.marginBottom=ng_WindowHeight();
+    ae.style.marginBottom=ng_WindowHeight()+'px';
 
     ng_IE7RedrawFix(document.body);
 
