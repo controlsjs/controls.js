@@ -24,3 +24,5 @@ ngc_Lang['en']['ngfup_Uploading']          = 'Uploading in progress... Please wa
 ngc_Lang['en']['ngfup_Error_General']   = 'An error has occurred. Please try again.';
 ngc_Lang['en']['ngfup_Error_Size']      = 'File size has been exceeded.';
 ngc_Lang['en']['ngfup_Error_Extension'] = 'This file type is not allowed.';
+ngc_Lang['en']['ngfup_Error_MaxFiles']  = 'The maximum number of files has been exceeded.';
+ngc_Lang['en']['ngfup_DragAndDropAllowed'] = 'Drag and drop files here.';

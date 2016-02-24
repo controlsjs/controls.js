@@ -21,3 +21,5 @@ ngc_Lang['cz']['ngfup_Uploading']          = 'Probíhá nahrávání souboru... 
 ngc_Lang['cz']['ngfup_Error_General']   = 'Došlo k chybě. Zkuste to prosím znovu.';
 ngc_Lang['cz']['ngfup_Error_Size']      = 'Byla překročena maximální velikost souboru.';
 ngc_Lang['cz']['ngfup_Error_Extension'] = 'Tento typ souboru není povolen.';
+ngc_Lang['cz']['ngfup_Error_MaxFiles']  = 'Byl překročen maximální počet souborů.';
+ngc_Lang['cz']['ngfup_DragAndDropAllowed'] = 'Sem přetáhněte soubory.';
