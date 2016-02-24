@@ -3500,6 +3500,7 @@ var WinEightControls = {
     {
       skinfnc.Create_weFileUploader=function(def, ref, parent)
       {
+        var th=theme(def);
         ng_MergeDef(def, {
           Base: 'wePanel',
           Controls: {
@@ -3509,19 +3510,37 @@ var WinEightControls = {
             },
             WaitPanel: {
               Events: {
+                OnProgress: function(c,p) {
+                  if(c.curDialog) {
+                    var progress=c.curDialog.Controls.Progress;
+                    if(progress) {
+                      if(typeof p==='undefined') {
+                        if(!progress.process_cnt) progress.BeginProcess();
+                      }
+                      else {
+                        while(progress.process_cnt) progress.EndProcess();
+                        progress.SetPosition(p);
+                      }
+                    }
+                  }
+                },
                 OnShowWaiting: function (o) {
                   if (typeof(o)==='undefined') return;
 
                   o.curDialog = ngMessageDlg('weDlgProgressBox', 'ngfup_Uploading');
-                  if (o.curDialog) o.curDialog.Controls.Progress.BeginProcess();
+                  if ((o.curDialog)&&(o.curDialog.Controls.Progress)) o.curDialog.Controls.Progress.BeginProcess();
                 },
                 OnHideWaiting: function (o) {
-                  if ((o) && (o.curDialog)) o.curDialog.Close();
+                  if (o) {
+                    if (o.curDialog) o.curDialog.Close();
+                    delete o.curDialog;
+                  }
                 }
               }
             },
             EdtFile: {
               Type: 'weEditBoxBtn',
+              Theme: th,
               Events: {
                 OnEllipsis: function (o) {
                   if (o) o.Owner.Parent.Owner.Owner.ShowForm();
@@ -3529,21 +3548,76 @@ var WinEightControls = {
               }
             },
             BtnAddFile: {
-              Type: 'weButton'
+              Type: 'weButton',
+              Theme: th
             },
             ListFiles: {
-              Type: 'weList'
+              Type: 'weList',
+              Theme: th
+            },
+            DragAndDropPanel: {
+              Theme: th,
+              Events: {
+                OnFilesDragOver: function(c,elm) {
+                  if(typeof c.Bounds.L !== 'undefined') {
+                    if(typeof c.savedMarginLeft === 'undefined') c.savedMarginLeft=elm.style.marginLeft;
+                    elm.style.marginLeft='-2px';
+                  }
+                  if(typeof c.Bounds.T !== 'undefined') {
+                    if(typeof c.savedMarginTop === 'undefined') c.savedMarginTop=elm.style.marginTop;
+                    elm.style.marginTop='-2px';
+                  }
+                  if(typeof c.Bounds.R !== 'undefined') {
+                    if(typeof c.savedMarginRight === 'undefined') c.savedMarginRight=elm.style.marginRight;
+                    elm.style.marginRight='-2px';
+                  }
+                  if(typeof c.Bounds.B !== 'undefined') {
+                    if(typeof c.savedMarginBottom === 'undefined') c.savedMarginBottom=elm.style.marginBottom;
+                    elm.style.marginBottom='-2px';
+                  }
+                  if(typeof c.savedBorder === 'undefined') c.savedBorder=elm.style.border;
+                  elm.style.border='2px dashed '+(!th ? '#FFFFFF' : '#000000');
+                },
+                OnFilesDragLeave: function(c,elm) {
+                  if(typeof c.savedMarginLeft !== 'undefined') elm.style.marginLeft=c.savedMarginLeft;
+                  if(typeof c.savedMarginTop !== 'undefined') elm.style.marginTop=c.savedMarginTop;
+                  if(typeof c.savedMarginRight !== 'undefined') elm.style.marginRight=c.savedMarginRight;
+                  if(typeof c.savedMarginBottom !== 'undefined') elm.style.marginBottom=c.savedMarginBottom;
+                  elm.style.border=ngVal(c.savedBorder,'');
+                  delete c.savedMarginLeft;
+                  delete c.savedMarginTop;
+                  delete c.savedMarginRight;
+                  delete c.savedMarginBottom;
+                  delete c.savedBorder;
+                }
+              },
+              Controls: {
+                DragAndDropInfo: {
+                  Type: 'weSmallText',
+                  Theme: th,
+                  style: {
+                    marginTop: '16px'
+                  }
+                }
+              }
             },
             BtnRemoveCheckedFiles: {
-              Type: 'weButton'
+              Type: 'weButton',
+              Theme: th
             }
           },
           Events: {
             OnServerError: function (o, error, data) {
+              error = ng_htmlEncode(error);
+              error = error.replace(/\n/g, "<br/>");
+
               ngMessageDlg('weDlgMessageBox', error);
             }
           }
         });
+        if(def.ListFiles === false) {
+          if((typeof def.H === 'undefined')&&((typeof def.T === 'undefined')||(typeof def.B === 'undefined'))) def.H=32;
+        }
 
         return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
       }
