@@ -12,7 +12,7 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
 if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=[];
 
-ngc_Lang['sk']['ngfup_ColFile'] = 'Súbor';
+ngc_Lang['sk']['ngfup_ColFile'] = 'Súbory';
 
 ngc_Lang['sk']['ngfup_AddFile']            = 'Pridať súbor';
 ngc_Lang['sk']['ngfup_RemoveCheckedFiles'] = 'Odobrať vybrané súbory';

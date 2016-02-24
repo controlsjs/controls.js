@@ -15,7 +15,7 @@ if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=[];
 ngc_Lang['en']['ngfup_IFrame'] = '<iframe id="IFRAME_FileUploader_%s_%s" scrolling="no" frameborder="0" '+
                               'style="overflow:hidden;border:0px;width:%spx;height:%spx;"></iframe>';
 
-ngc_Lang['en']['ngfup_ColFile'] = 'File';
+ngc_Lang['en']['ngfup_ColFile'] = 'Files';
 
 ngc_Lang['en']['ngfup_AddFile']            = 'Add file';
 ngc_Lang['en']['ngfup_RemoveCheckedFiles'] = 'Remove selected files';
