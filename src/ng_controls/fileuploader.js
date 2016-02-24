@@ -22,14 +22,19 @@ var FileUploaderControl = {
     function Create_ngFileUploader(def, ref, parent)
     {
       if (typeof(def.Data)==='undefined') def.Data = new Object();
+      if (typeof def.FileUploaderID !== 'undefined') def.Data.FileUploaderID=def.FileUploaderID;
 
+      var buttonsalign='top';
       var base = ngVal(def.Base, 'ngPanel');
-      var id   = ngVal(def.Data.FileUploaderID, 'Main');
+      var id = ngVal(def.Data.FileUploaderID, 'Main');
+      // some browsers don't support click() on input file, define where support is available
+      var uploadwin = !( ngIExplorer || ((ngFireFox)&&(ngFireFoxVersion>=4)) || ngChrome || ngiOS || ((ngOpera)&&(ngOperaVersion>=12)) );
 
       ng_MergeDef(def, {
         W: 400, H: 200,
         ParentReferences: false,
         ListFiles: true,
+        UseUploadWindow: uploadwin,
         DropTarget: (ngAndroid || ngiOS || ngWindowsPhone) ? false : true,
         Data: {
           FileUploaderID: id,
@@ -38,15 +43,21 @@ var FileUploaderControl = {
         Controls: {
           UploadIFrame: {
             Type: 'ngText',
-            L: 0, B: 0, W: 0, H: 0,
+            L: 0, T: 0, W: 0, H: 0,
             Data: {
               Text: ng_sprintf(ngTxt('ngfup_IFrame'), id, '1', '1', '1')
+            },
+            Events: {
+              OnUpdated: function(o) {
+                c.GetForm(); // force IFRAME creation
+              }
             }
           },
           UploadWindow: {
-            Type: 'ngWindow',
+            Type: 'ngDialog',
             W: 260, H: 80,
             Data: {
+              Centered: false,
               ngText: 'ngfup_AddFile',
               Visible: false,
               IFrameSize: { W: 250, H: 45 }
@@ -63,59 +74,54 @@ var FileUploaderControl = {
 
                 var visible = ngVal(o.Visible, true);
 
+                var winw,winh,cw,ch;
+
+                var ow=o.Elm();
+                var oc=o.Owner.Owner.Elm();
+                ng_BeginMeasureElement(ow);
+                try {
+                  winw=ng_OuterWidth(ow);
+                  winh=ng_OuterHeight(ow);
+                } finally {
+                  ng_EndMeasureElement(ow);
+                }
+                ng_BeginMeasureElement(oc);
+                try {
+                  cw=ng_OuterWidth(oc);
+                  ch=ng_OuterHeight(oc);
+                } finally {
+                  ng_EndMeasureElement(oc);
+                }
+
+                var pp=ng_ParentPosition(oc,ow.parentNode);
+                var l=pp.x+Math.round((cw-winw)/2);
+                var t=pp.y+Math.round((ch-winh)/2);
+                if(l<0) l=0;
+                if(t<0) t=0;
+                o.SetBounds({L: l, T: t });
+
                 if ((visible) && (o.Controls.TxtAddFile.GetText()==''))
                   o.Controls.TxtAddFile.SetText(ng_sprintf(ngTxt('ngfup_IFrame'), id, '2', o.IFrameSize.W, o.IFrameSize.H));
-
-                if (!visible) delete c._addedViaAddFile;
               }
-            }
-          },
-          WaitPanel: {
-            Type: 'ngPanel',
-            L: 0, T: 0, W: 0, H: 0,
-            Data: {
-              Visible: false,
-              SetProgress: function(p) {
-                if(this.OnProgress) this.OnProgress(this,p);
-              }
-            },
-            Events: {
-              OnVisibleChanged: function (o) {
-                if (typeof(o)==='undefined') return;
-
-                if (ngVal(o.Visible, true)) { if (o.OnShowWaiting) o.OnShowWaiting(o); }
-                else                        { if (o.OnHideWaiting) o.OnHideWaiting(o); }
-              }
-            }
-          },
-          EdtFile: {
-            Type: 'ngEdit',
-            L: 0, T: 0, R: 140,
-            Data: {
-              ReadOnly: true
-            }
-          },
-          BtnAddFile: {
-            Type: 'ngButton',
-            T: 0, R: 0, W: 120,
-            Data: {
-              ngText: 'ngfup_AddFile'
-            },
-            Events: {
-              OnClick: function () { AddFile(); }
             }
           },
           ListFiles: {
             Type: 'ngList',
-            L: 0, T: 40, B: 40, R: 0,
+            L: 0, T: 0, B: 0, R: 0,
             Data: {
               SelectType: nglSelectNone,
               ShowCheckboxes: true,
+              ShowHeader: false,
               Columns: new Array(
                 new ngListCol('File', ngTxt('ngfup_ColFile'))
               )
             },
             Events: {
+              OnUpdated: function(l,o) {
+                if(l.Owner.DragAndDropPanel) {
+                  if(l.Owner.DragAndDropPanel.SetBounds(l.Bounds)) l.Owner.DragAndDropPanel.Update();
+                }
+              },
               OnAdd: function(l,it,p) {
                 if(l.Owner.DragAndDropPanel) l.Owner.DragAndDropPanel.SetVisible(false);
                 return true;
@@ -139,7 +145,6 @@ var FileUploaderControl = {
           },
           DragAndDropPanel: {
             Type: 'ngPanel',
-            L: 0, R: 0, T: 40, B: 40,
             style: {
               zIndex: 1000
             },
@@ -154,30 +159,78 @@ var FileUploaderControl = {
               }
             }
           },
-          BtnRemoveCheckedFiles: {
-            Type: 'ngButton',
-            R: 0, B: 0,
-            Data: {
-              ngText: 'ngfup_RemoveCheckedFiles',
-              Enabled: false
-            },
+          Buttons: {
+            Type: 'ngToolBar',
+            L: 0, B: 0, R: 0,
             Events: {
-              OnClick: function () { c.RemoveCheckedFiles(); }
+              OnUpdated: function(c,o) {
+                if(c.Owner.ListFiles) {
+                  var h=ng_OuterHeight(o);
+                  if(c.Owner.ListFiles.SetBounds(buttonsalign == 'top' ? {T:h} : {B:h})) c.Owner.ListFiles.Update();
+                }
+              }
+            },
+            Controls: {
+              BtnAddFile: {
+                Type: 'ngButton',
+                Data: {
+                  ngText: 'ngfup_AddFile'
+                },
+                Events: {
+                  OnClick: function () { c.ShowForm(); }
+                }
+              },
+              BtnRemoveCheckedFiles: {
+                Type: 'ngButton',
+                Data: {
+                  ngText: 'ngfup_RemoveCheckedFiles',
+                  Enabled: false
+                },
+                Events: {
+                  OnClick: function () { c.RemoveCheckedFiles(); }
+                }
+              }
             }
           }
         }
       });
+      uploadwin=uploadwin || def.UseUploadWindow;
+
+      if(typeof def.Data.MaxFilesCount === 'undefined') {
+        var max=parseInt(ngVal(ngApp.StartParams['ngFileUploader.'+id+'.MaxFilesCount'], 0),10);
+        if(max>0) def.Data.MaxFilesCount=max;
+      }
+
+      if(typeof def.Data.MaxFileSize === 'undefined') {
+        var max=parseInt(ngVal(ngApp.StartParams['ngFileUploader.'+id+'.MaxFileSize'], 0),10);
+        if(max>0) def.Data.MaxFileSize=max;
+      }
+
+      if(typeof def.Data.AllowedExtensions === 'undefined') {
+        var allowedext=ngVal(ngApp.StartParams['ngFileUploader.'+id+'.AllowedExtensions'], '');
+        if(allowedext!='') def.Data.AllowedExtensions=allowedext;
+      }
 
       if(def.Controls) {
+        if(typeof def.Controls.UploadWindow.parent === 'undefined') def.Controls.UploadWindow.parent=(typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : document.body;
         if(!def.ListFiles) {
-          if(def.Controls.UploadWindow) def.Controls.UploadWindow.parent=ngApp.Elm();
+          if(def.Controls.Buttons) {
+            if(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles) ng_MergeVar(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles,{ Data: { Visible: false } });
+          }
           if(def.Controls.ListFiles) ng_MergeVar(def.Controls.ListFiles,{ Data: { Visible: false } });
           if(def.Controls.DragAndDropPanel) ng_MergeVar(def.Controls.DragAndDropPanel,{ Data: { Visible: false } });
-          if(def.Controls.BtnRemoveCheckedFiles) ng_MergeVar(def.Controls.BtnRemoveCheckedFiles,{ Data: { Visible: false } });
         }
 
         if((!def.DropTarget)||(!window.FormData)||(!('draggable' in document.createElement('span'))))
           delete def.Controls.DragAndDropPanel;
+      }
+
+      if(typeof def.ButtonsAlign!=='undefined') buttonsalign=def.ButtonsAlign;
+      if(typeof def.Data.ButtonsAlign!=='undefined') buttonsalign=def.Data.ButtonsAlign;
+
+      if(buttonsalign=='top') {
+        delete def.Controls.Buttons.B;
+        if(def.Controls.Buttons.T==='undefined') def.Controls.Buttons.T=0;
       }
 
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
@@ -194,6 +247,8 @@ var FileUploaderControl = {
 
       var c = ngCreateControlAsType(def, base, ref, parent);
       if (!c) return c;
+
+      c.ButtonsAlign=buttonsalign;
 
       // ===== PROPERTIES =====
 
@@ -214,6 +269,20 @@ var FileUploaderControl = {
        */
       //c.MaxFilesCount = undefined;
 
+      /*  Variable: MaxFileSize
+       *  ...
+       *  Type: integer
+       *  Default value: *undefined*
+       */
+      //c.MaxFileSize = undefined;
+
+      /*  Variable: AllowedExtensions
+       *  ...
+       *  Type: array
+       *  Default value: *undefined*
+       */
+      //c.AllowedExtensions = undefined;
+
       /*  Variable: Accept
        *  ...
        *  Type: string
@@ -221,27 +290,12 @@ var FileUploaderControl = {
        */
       c.Accept = '';
 
+      c.Waiting = false;
+
       // ===== METHODS =====
 
-      function AddFile()
+      function sendfiles()
       {
-        var File = c.Controls.EdtFile.GetText();
-
-        if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, File), false))) return false;
-        if (File=='')
-        {
-          c._addedViaAddFile = true;
-          c.ShowForm();
-
-          return false;
-        };
-
-        c.Controls.EdtFile.SetText('');
-        if(c.Controls.WaitPanel) c.Controls.WaitPanel.SetVisible(true);
-        c.SetUploadProgress(/*undefined*/);
-
-        if (c.OnFileChanged) c.OnFileChanged(c, '');
-
         var Form = c.GetForm();
         if (!Form) return false;
 
@@ -252,6 +306,7 @@ var FileUploaderControl = {
           if(rpc) {
             rpc.clearParams();
             rpc.SetParam('id',c.ID);
+            rpc.SetParam('fuid',c.FileUploaderID);
             rpc.SetParam('action','upload');
             rpc.FileFormData = formData;
 
@@ -259,6 +314,8 @@ var FileUploaderControl = {
             return true;
           }
         }
+        c.ShowWaiting(true);
+        c.SetUploadProgress(/*undefined*/);
         Form.submit();
         return true;
       }
@@ -295,7 +352,7 @@ var FileUploaderControl = {
       c.ServerData = function (data) {
         if (typeof(data)==='undefined') return false;
 
-        if(c.Controls.WaitPanel) c.Controls.WaitPanel.SetVisible(false);
+        c.ShowWaiting(false);
 
         var maxfiles=ngVal(c.MaxFilesCount,-1);
 
@@ -305,13 +362,15 @@ var FileUploaderControl = {
 
           if (data.Error) {
             if(errmsg!='') errmsg+="\n";
-            errmsg+=data.Name+': '+ngTxt(data.Error);
+            if(ngVal(data.Name,'')!='') errmsg+=data.Name+': ';
+            errmsg+=ngTxt(data.Error);
             return;
           }
 
           if((maxfiles>=0)&&(c.Controls.ListFiles.Items.length>=maxfiles)) {
             if(errmsg!='') errmsg+="\n";
-            errmsg+=data.Name+': '+ngTxt('ngfup_Error_MaxFiles');
+            if(ngVal(data.Name,'')!='') errmsg+=data.Name+': ';
+            errmsg+=ngTxt('ngfup_Error_MaxFiles');
             return;
           }
 
@@ -326,15 +385,13 @@ var FileUploaderControl = {
               fileuploaded(data[f]);
             }
             if(errmsg!='') {
-              if (c.OnServerError) c.OnServerError(c, errmsg, data);
-              else alert(errmsg);
+              c.ShowError(errmsg, data);
               return false;
             }
           }
           else {
             if (data.Error) {
-              if (c.OnServerError) c.OnServerError(c, ngTxt(data.Error), data);
-              else alert(ngTxt(data.Error));
+              c.ShowError(ngTxt(data.Error), data);
               return false;
             }
             fileuploaded(data);
@@ -342,6 +399,57 @@ var FileUploaderControl = {
         }
         finally {
           c.Controls.ListFiles.EndUpdate();
+        }
+        return true;
+      }
+
+      function checkfiles(files) {
+        var maxfiles=ngVal(c.MaxFilesCount,-1);
+        var curfiles=0;
+        if(c.Controls.ListFiles) curfiles=c.Controls.ListFiles.Items.length;
+        if((maxfiles>=0)&&(curfiles+files.length>maxfiles)) {
+          c.ShowError(ngTxt('ngfup_Error_MaxFiles'),null);
+          return false;
+        }
+
+        function ext(fn) {
+          var i=fn.lastIndexOf('.');
+          if(i<0) return '';
+          return fn.substr(i+1);
+        }
+
+        var maxsize=parseInt(ngVal(c.MaxFileSize,0));
+        var checkext=(!ng_EmptyVar(c.AllowedExtensions));
+        if((checkext)||(maxsize>0)) {
+          var errmsg='';
+          var e,found;
+          for(var i=0;i<files.length;i++) {
+            if(checkext) {
+              e=ext(files[i].name).toLowerCase();
+              found=false;
+              if(e!='') {
+                for(var j in c.AllowedExtensions)
+                  if(c.AllowedExtensions[j].toLowerCase()===e) { found=true; break; }
+              }
+              if(!found) {
+                if(errmsg!='') errmsg+="\n";
+                errmsg+=files[i].name+': '+ngTxt('ngfup_Error_Extension');
+                continue;
+              }
+            }
+            if((maxsize>0)&&(typeof files[i].size !== 'undefined')) {
+              e=parseInt(files[i].size,10);
+              if(e>maxsize) {
+                if(errmsg!='') errmsg+="\n";
+                errmsg+=files[i].name+': '+ngTxt('ngfup_Error_Size');
+                continue;
+              }
+            }
+          }
+          if(errmsg!='') {
+            c.ShowError(errmsg,null);
+            return false;
+          }
         }
         return true;
       }
@@ -357,9 +465,7 @@ var FileUploaderControl = {
        */
 
       c.ChangeFile = function () {
-        var _addedViaAddFile = ngVal(c._addedViaAddFile, false);
-        delete c._addedViaAddFile;
-
+        if((new Date().getTime()-showformtime)<1000) return; // probably invoked by showing dialog
         var Form = c.GetForm();
         if (!Form) return false;
 
@@ -367,7 +473,12 @@ var FileUploaderControl = {
         var input=Form['ngfup_File[]'];
         var Files = [];
         if('files' in input) {
+          if(!input.files.length) return false;
+          if(!checkfiles(input.files)) return false;
+
           for(var i=0;i<input.files.length;i++) {
+            if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, input.files[i].name), false))) return false;
+
             if(Value!='') Value+=', ';
             Value+=input.files[i].name;
             Files.push(input.files[i].name)
@@ -377,15 +488,15 @@ var FileUploaderControl = {
           Value = input.value;
           Value = Value.substring(Value.lastIndexOf('\\')+1, Value.length);  //Remove "fake" path (C:\fakepath\)
           if(Value!='') Files.push(Value);
+          if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, input.value), false))) return false;
         }
 
         if ((c.OnFileChanging) && (!ngVal(c.OnFileChanging(c, Value, Files), false))) return false;
 
-        c.Controls.EdtFile.SetText(Value);
         c.ShowWindow(false);
 
         if (c.OnFileChanged) c.OnFileChanged(c, Value, Files);
-        if (_addedViaAddFile) AddFile();
+        sendfiles();
 
         return true;
       }
@@ -405,43 +516,45 @@ var FileUploaderControl = {
         if (Checked.length==0) return false;
 
         c.Controls.ListFiles.BeginUpdate();
-        for (var i=0;i<Checked.length;i++)
-        {
-          if ((c.OnFileDeleting) && (!ngVal(c.OnFileDeleting(c, Checked[i], i), false))) continue;
-          c.Controls.ListFiles.Remove(Checked[i]);
-          if (c.OnFileDeleted) c.OnFileDeleted(c, Checked[i], i);
+        try {
+          for (var i=0;i<Checked.length;i++)
+          {
+            if ((c.OnFileDeleting) && (!ngVal(c.OnFileDeleting(c, Checked[i], i), false))) continue;
+            c.Controls.ListFiles.Remove(Checked[i]);
+            if (c.OnFileDeleted) c.OnFileDeleted(c, Checked[i], i);
+          }
         }
-        c.Controls.ListFiles.EndUpdate();
-
+        finally {
+          c.Controls.ListFiles.EndUpdate();
+        }
         return true;
       }
 
-      /*  Function: IsSelectedFile
+      /*  Function: ClearFiles
        *  ...
        *
        *  Syntax:
-       *    bool *IsSelectedFile* ()
+       *    void *ClearFiles* ()
        *
        *  Returns:
        *    -
        */
 
-      c.IsSelectedFile = function () {
-        return (c.Controls.EdtFile.GetText()=='' ? false : true);
-      }
+      c.ClearFiles = function () {
+        var list=c.Controls.ListFiles;
 
-      /*  Function: GetSelectedFile
-       *  ...
-       *
-       *  Syntax:
-       *    string *GetSelectedFile* ()
-       *
-       *  Returns:
-       *    -
-       */
-
-      c.GetSelectedFile = function () {
-        return c.Controls.EdtFile.GetText();
+        list.BeginUpdate();
+        try {
+          for (var i=list.Items.length-1;i>=0;i--)
+          {
+            if ((c.OnFileDeleting) && (!ngVal(c.OnFileDeleting(c, list.Items[i], i), false))) continue;
+            c.Controls.ListFiles.Remove(list.Items[i]);
+            if (c.OnFileDeleted) c.OnFileDeleted(c, list.Items[i], i);
+          }
+        }
+        finally {
+          list.EndUpdate();
+        }
       }
 
       /*  Function: GetForm
@@ -458,7 +571,7 @@ var FileUploaderControl = {
         var IFrame;
 
         //Get IFrame
-        if (ngIExplorer) IFrame = document.getElementById('IFRAME_FileUploader_'+c.FileUploaderID+'_1');
+        if (!uploadwin) IFrame = document.getElementById('IFRAME_FileUploader_'+c.FileUploaderID+'_1');
         else IFrame = document.getElementById('IFRAME_FileUploader_'+c.FileUploaderID+'_2');
         if (!IFrame) return false;
 
@@ -467,19 +580,19 @@ var FileUploaderControl = {
         if (!Doc) return false;
 
         //Get Form
-        var Form = Doc.getElementById('ngfup_Form_'+id);
+        var Form = Doc.getElementById('ngfup_Form_'+c.FileUploaderID);
         if (!Form)  //Create Form if necessary
         {
           var CurDate = new Date();
-          var url=ng_AddURLParam(c.UploadURL,'id='+c.ID+'&action=upload&ts='+CurDate.getTime()+'&lang='+ngApp.Lang);
+          var url=ng_AddURLParam(c.UploadURL,'id='+ng_URLEncode(c.ID)+'&fuid='+ng_URLEncode(c.FileUploaderID)+'&action=upload&ts='+CurDate.getTime()+'&lang='+ng_URLEncode(ngApp.Lang));
 
           Doc.open();
-          Doc.write('<html><body><form id="ngfup_Form_'+id+'" enctype="multipart/form-data" action="'+url+'" method="POST">');
-          Doc.write('<input name="ngfup_File[]" type="file" onchange="if (typeof(parent.ngfup_action)===\'function\') parent.ngfup_action(\''+c.ID+'\', \'ChangeFile\');" size="20" multiple="multiple" '+(c.Accept!='' ? 'accept="'+c.Accept+'" ' : '')+'/>');
+          Doc.write('<html><body><form id="ngfup_Form_'+c.FileUploaderID+'" enctype="multipart/form-data" action="'+url+'" method="POST">');
+          Doc.write('<input name="ngfup_File[]" type="file" onchange="if (typeof(parent.ngfup_action)===\'function\') parent.ngfup_action(\''+c.ID+'\', \'ChangeFile\');" size="20" '+(c.MaxFilesCount==1 ?  '' : 'multiple="multiple" ')+(c.Accept!='' ? 'accept="'+c.Accept+'" ' : '')+'/>');
           Doc.write('</form></body></html>');
           Doc.close();
 
-          Form = Doc.getElementById('ngfup_Form_'+id);
+          Form = Doc.getElementById('ngfup_Form_'+c.FileUploaderID);
         }
 
         if (!Form) return false;
@@ -497,15 +610,23 @@ var FileUploaderControl = {
        *    -
        */
 
+      var showformtime=0;
       c.ShowForm = function () {
-        if (ngIExplorer)
+        showformtime=new Date().getTime();
+        if (!uploadwin)
         {
           var Form = c.GetForm();
           if (!Form) return false;
 
-          Form['ngfup_File[]'].click();
-        } else c.ShowWindow();
+          var uploadinput=Form['ngfup_File[]'];
 
+          if(uploadinput) {
+            uploadinput.value=null;
+            uploadinput.click();
+            return true;
+          }
+        }
+        c.ShowWindow();
         return true;
       }
 
@@ -567,6 +688,8 @@ var FileUploaderControl = {
 
         var files = e.target.files || e.dataTransfer.files;
 
+        if(!checkfiles(files)) return false;
+
         var formData = new FormData();
         for (var i = 0; i < files.length; i++) {
           formData.append('ngfup_File[]', files[i]);
@@ -576,6 +699,7 @@ var FileUploaderControl = {
         if(rpc) {
           rpc.clearParams();
           rpc.SetParam('id',c.ID);
+          rpc.SetParam('fuid',c.FileUploaderID);
           rpc.SetParam('action','upload');
           rpc.FileFormData = formData;
 
@@ -719,16 +843,16 @@ var FileUploaderControl = {
        */
       c.SetUploadProgress = function(p) {
         if((c.OnUploadProgress)&&(!ngVal(c.OnUploadProgress(c,p),false))) return;
-        if((c.Controls.WaitPanel)&&(typeof c.Controls.WaitPanel.SetProgress === 'function')) c.Controls.WaitPanel.SetProgress(p);
       }
 
       c.GetRPC = function() {
         if(!c.file_rpc) {
           c.file_rpc=new ngRPC(c.ID+'RPC','',true);
           c.file_rpc.Type=rpcHttpRequestPOST;
-/*          c.file_rpc.OnReceivedData=function(rpc, response, xmlhttp,reqinfo) {
+          c.file_rpc.OnReceivedData=function(rpc, response, xmlhttp,reqinfo) {
+            c.ShowWaiting(false); // hide waiting when request is finished
             return true;
-          };*/
+          };
           c.file_rpc.OnHTTPRequestFailed = function(rpc,xmlhttp,reqinfo) {
             if(reqinfo.UploadFile) {
               c.ServerData({Error: 'ngfup_Error_General'});
@@ -737,7 +861,7 @@ var FileUploaderControl = {
           c.file_rpc.OnHTTPRequest=function (rpc,reqinfo) {
             if(c.file_rpc.Params['action']==='upload') {
 
-              if(c.Controls.WaitPanel) c.Controls.WaitPanel.SetVisible(true);
+              c.ShowWaiting(true);
 
               if("upload" in reqinfo.XMLHttp) {
                 c.SetUploadProgress(0);
@@ -788,20 +912,30 @@ var FileUploaderControl = {
        *  ...
        *
        *  Syntax:
-       *    void *UploadFile* (string filename, string content [, string contenttype='text/plain; charset=utf-8'])
+       *    bool *UploadFile* (string filename, string content [, string contenttype='text/plain; charset=utf-8'])
        *
        *  Returns:
-       *    -
+       *    TRUE if upload request was send.
        */
       c.UploadFile = function (filename, content, contenttype) {
         if((filename=='')||(/[<>|:/\?\"\\]/.test(filename))) {
           throw 'Invalid filename!';
         }
+        contenttype=ngVal(contenttype,'text/plain; charset=utf-8');
+        var ctype=contenttype;
+        var p=ctype.indexOf(';');
+        if(p>=0) ctype=ctype.substr(0,p);
+
+        var curtime=new Date();
+        if(!checkfiles([{name:filename, size: content.length, type: ctype, lastModified: curtime.getTime(), lastModifiedDate: curtime }])) return false;
+
+        if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, filename), false))) return false;
 
         var rpc=c.GetRPC();
         if(rpc) {
           rpc.clearParams();
           rpc.SetParam('id',c.ID);
+          rpc.SetParam('fuid',c.FileUploaderID);
           rpc.SetParam('action','upload');
           delete rpc.FileFormData;
           rpc.FileName = filename;
@@ -809,8 +943,65 @@ var FileUploaderControl = {
           rpc.FileContentType = contenttype;
 
           rpc.sendRequest(c.UploadURL);
+          return true;
+        }
+        return false;
+      }
+
+      c.ShowError = function (errmsg, data) {
+        if(errmsg!='') {
+          if (c.OnError) c.OnError(c, errmsg, data);
+          else alert(errmsg);
+          return false;
         }
       }
+
+      c.ShowWaiting = function(v) {
+        v=ngVal(v,true);
+        if(v!=c.Waiting) {
+          c.Waiting=v;
+          if (v) { if (c.OnShowWaiting) c.OnShowWaiting(c); }
+          else   { if (c.OnHideWaiting) c.OnHideWaiting(c); }
+        }
+      }
+
+      window['ngfup_AddDragBox'] = function(c,w,border) {
+        var elm=c.Elm();
+        if(typeof w === 'undefined') w=1;
+        if(typeof border === 'undefined') border='dotted black';
+        if(typeof c.Bounds.L !== 'undefined') {
+          if(typeof c._dragboxMarginLeft === 'undefined') c._dragboxMarginLeft=elm.style.marginLeft;
+          elm.style.marginLeft='-'+w+'px';
+        }
+        if(typeof c.Bounds.T !== 'undefined') {
+          if(typeof c._dragboxMarginTop === 'undefined') c._dragboxMarginTop=elm.style.marginTop;
+          elm.style.marginTop='-'+w+'px';
+        }
+        if(typeof c.Bounds.R !== 'undefined') {
+          if(typeof c._dragboxMarginRight === 'undefined') c._dragboxMarginRight=elm.style.marginRight;
+          elm.style.marginRight='-'+w+'px';
+        }
+        if(typeof c.Bounds.B !== 'undefined') {
+          if(typeof c._dragboxMarginBottom === 'undefined') c._dragboxMarginBottom=elm.style.marginBottom;
+          elm.style.marginBottom='-'+w+'px';
+        }
+        if(typeof c._dragboxBorder === 'undefined') c._dragboxBorder=elm.style.border;
+        elm.style.border=w+'px '+border;
+      };
+
+      window['ngfup_RemoveDragBox'] = function(c) {
+        var elm=c.Elm();
+        if(typeof c._dragboxMarginLeft !== 'undefined') elm.style.marginLeft=c._dragboxMarginLeft;
+        if(typeof c._dragboxMarginTop !== 'undefined') elm.style.marginTop=c._dragboxMarginTop;
+        if(typeof c._dragboxMarginRight !== 'undefined') elm.style.marginRight=c._dragboxMarginRight;
+        if(typeof c._dragboxMarginBottom !== 'undefined') elm.style.marginBottom=c._dragboxMarginBottom;
+        elm.style.border=ngVal(c._dragboxBorder,'');
+        delete c._dragboxMarginLeft;
+        delete c._dragboxMarginTop;
+        delete c._dragboxMarginRight;
+        delete c._dragboxMarginBottom;
+        delete c._dragboxBorder;
+      };
 
       // ===== EVENTS =====
 
@@ -818,9 +1009,9 @@ var FileUploaderControl = {
        *  Group: Events
        */
       /*
-       *  Event: OnServerError
+       *  Event: OnError
        */
-      c.OnServerError = null;
+      c.OnError = null;
 
       /*
        *  Event: OnFileAdding
@@ -854,6 +1045,15 @@ var FileUploaderControl = {
        */
       c.OnUploadProgress = null;
 
+      /*
+       *  Event: OnShowWaiting
+       */
+      c.OnShowWaiting = null;
+      /*
+       *  Event: OnHideWaiting
+       */
+      c.OnHideWaiting = null;
+
       if (typeof(ngRegisterBindingHandler)==='function')
       {
         c.OnDataBindingInit = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) {
@@ -881,21 +1081,6 @@ var FileUploaderControl = {
       return c;
     }
     ngRegisterControlType('ngFileUploader', function(def, ref, parent) { return Create_ngFileUploader(def, ref, parent); });
-
-    if (typeof(ngRegisterBindingHandler)==='function')
-    {
-      ngRegisterBindingHandler('FileUploader_IsSelectedFile',
-        function (c, valueAccessor) {
-          //ngCtrlBindingRead('FileUploader_IsSelectedFile', c, valueAccessor, function (val) { });
-        },
-        function (c, valueAccessor, allBindingsAccessor, viewModel) {
-          c.AddEvent(function (c) {
-            ngCtrlBindingWrite('FileUploader_IsSelectedFile', c.IsSelectedFile(), c, valueAccessor, allBindingsAccessor);
-          }, 'OnFileChanged');
-        }
-      );
-    }
-
   }
 };
 
