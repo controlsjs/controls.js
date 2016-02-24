@@ -1347,3 +1347,4 @@ TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
 .weSplitButtonDarkBtnDisabled, .weSplitButtonDarkBtnDisabled_Focus { color:#BABABA; }
 .weColorPickerSliderLight, .weColorPickerSatValLight { border:2px solid #bababa; }
 .weColorPickerSliderDark, .weColorPickerSatValDark { border:2px solid #ffffff; }
+.weFileUploaderLight .weListBoxLight, .weFileUploaderDark .weListBoxLight { background-color:#FFFFFF; }
