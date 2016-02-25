@@ -206,6 +206,11 @@ var FileUploaderControl = {
         if(max>0) def.Data.MaxFileSize=max;
       }
 
+      if(typeof def.Data.MaxBatchSize === 'undefined') {
+        var max=parseInt(ngVal(ngApp.StartParams['ngFileUploader.'+id+'.MaxBatchSize'], 0),10);
+        if(max>0) def.Data.MaxBatchSize=max;
+      }
+
       if(typeof def.Data.AllowedExtensions === 'undefined') {
         var allowedext=ngVal(ngApp.StartParams['ngFileUploader.'+id+'.AllowedExtensions'], '');
         if(allowedext!='') def.Data.AllowedExtensions=allowedext;
@@ -275,6 +280,13 @@ var FileUploaderControl = {
        *  Default value: *undefined*
        */
       //c.MaxFileSize = undefined;
+
+      /*  Variable: MaxBatchSize
+       *  ...
+       *  Type: integer
+       *  Default value: *undefined*
+       */
+      //c.MaxBatchSize = undefined;
 
       /*  Variable: AllowedExtensions
        *  ...
@@ -418,11 +430,13 @@ var FileUploaderControl = {
           return fn.substr(i+1);
         }
 
+        var maxbatchsize=parseInt(ngVal(c.MaxBatchSize,0));
         var maxsize=parseInt(ngVal(c.MaxFileSize,0));
+        var batchsize=0;
         var checkext=(!ng_EmptyVar(c.AllowedExtensions));
         if((checkext)||(maxsize>0)) {
           var errmsg='';
-          var e,found;
+          var s,e,found;
           for(var i=0;i<files.length;i++) {
             if(checkext) {
               e=ext(files[i].name).toLowerCase();
@@ -437,17 +451,23 @@ var FileUploaderControl = {
                 continue;
               }
             }
-            if((maxsize>0)&&(typeof files[i].size !== 'undefined')) {
-              e=parseInt(files[i].size,10);
-              if(e>maxsize) {
+            if(typeof files[i].size !== 'undefined') {
+              s=parseInt(files[i].size,10);
+              if(batchsize>=0) batchsize+=s;
+              if((maxsize>0)&&(s>maxsize)) {
                 if(errmsg!='') errmsg+="\n";
                 errmsg+=files[i].name+': '+ngTxt('ngfup_Error_Size');
                 continue;
               }
             }
+            else batchsize=-1;
           }
           if(errmsg!='') {
             c.ShowError(errmsg,null);
+            return false;
+          }
+          if((batchsize>0)&&(maxbatchsize>0)&&(batchsize>maxbatchsize)) {
+            c.ShowError(ngTxt('ngfup_Error_MaxBatch'),null);
             return false;
           }
         }
