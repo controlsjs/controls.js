@@ -30,6 +30,16 @@ var FileUploaderControl = {
       // some browsers don't support click() on input file, define where support is available
       var uploadwin = !( ngIExplorer || ((ngFireFox)&&(ngFireFoxVersion>=4)) || ngChrome || ngiOS || ((ngOpera)&&(ngOperaVersion>=12)) );
 
+
+      function isfileschecked(l) {
+        var ischecked=false;
+        l.Scan(function (list, item, parent, userData) {
+          if ((item.Checked)||(ischecked)) { ischecked=true; return false; }
+          return true;
+        });
+        return ischecked;
+      }
+
       ng_MergeDef(def, {
         W: 400, H: 200,
         ParentReferences: false,
@@ -131,12 +141,7 @@ var FileUploaderControl = {
                 return true;
               },
               OnCheckChanged: function(o) {
-                var ischecked=false;
-                this.Scan(function (list, item, parent, userData) {
-                  if ((item.Checked)||(ischecked)) { ischecked=true; return false; }
-                  return true;
-                });
-                if(o.Owner.BtnRemoveCheckedFiles) o.Owner.BtnRemoveCheckedFiles.SetEnabled(ischecked);
+                if(o.Owner.BtnRemoveCheckedFiles) o.Owner.BtnRemoveCheckedFiles.SetEnabled(isfileschecked(this));
               },
               OnClickItem: function (o) {
                 if ((o) && (o.listPart==0)) o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
@@ -239,6 +244,15 @@ var FileUploaderControl = {
       }
 
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+        if((c.Controls.BtnRemoveCheckedFiles)&&(c.Controls.ListFiles)) {
+          c.Controls.BtnRemoveCheckedFiles.AddEvent('OnSetEnabled',function(o,v) {
+            if((v)&&(c.Controls.ListFiles)&&(!isfileschecked(c.Controls.ListFiles))) {
+              return false;
+            }
+            return true;
+          });
+        }
+
         if(def.DropTarget) {
           c.RegisterDropTarget(c,function(c,o) {
             var dp=c.Controls.DragAndDropPanel;
@@ -308,6 +322,8 @@ var FileUploaderControl = {
 
       function sendfiles()
       {
+        if(!c.Enabled) return false;
+
         var Form = c.GetForm();
         if (!Form) return false;
 
@@ -698,6 +714,7 @@ var FileUploaderControl = {
 
       function filedrop(e) {
 	      stopevent(e);
+        if(!c.Enabled) return false;
         var t=findtarget(e);
         if(t) {
           if(t.ondrop) {
@@ -742,6 +759,7 @@ var FileUploaderControl = {
 
       function filedragover(e) {
 	      stopevent(e);
+        if(!c.Enabled) return false;
         var t=findtarget(e);
         if((t)&&(t.ondragover)) t.ondragover(c,t.elm);
         return false;
@@ -749,6 +767,7 @@ var FileUploaderControl = {
 
       function filedragleave(e) {
 	      stopevent(e);
+        if(!c.Enabled) return false;
         var t=findtarget(e);
         if((t)&&(t.ondragleave)) t.ondragleave(c,t.elm);
         return false;
