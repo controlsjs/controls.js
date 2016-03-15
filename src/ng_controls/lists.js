@@ -2652,14 +2652,21 @@ function ngl_DoUpdate(o)
   {
     this.UpdateColumns();
   }
-
   if(typeof this.ItemsControls !== 'undefined')
   {
+    function setbounds(c) {
+      if(!c) return;
+      if(typeof c.SetBounds==='function') c.SetBounds();
+      var cc=c.ChildControls;
+      if(typeof cc !== 'undefined')
+        for(var i=cc.length-1;i>=0;i--)
+          setbounds(cc[i]);
+    }
     var cc;
     for(var i=0;i<this.ItemsControls.length;i++)
     {
       cc=this.ItemsControls[i];
-      cc.SetBounds();
+      setbounds(cc);
       cc.Update();
     }
   }
@@ -2844,8 +2851,14 @@ function ngl_DoCreate(def, ref, elm, parent)
     if(typeof def.Data.Items !== 'undefined')
     {
       this.Items=new Array();
-      this.AddItems(def.Data.Items);
-      this.CreateItemControls();
+      this.BeginUpdate();
+      try {
+        this.AddItems(def.Data.Items);
+        this.CreateItemControls();
+      } finally {
+        this.need_update=false;
+        this.EndUpdate();
+      }
     }
   }
   this.SetScrollBars(ngVal(this.ScrollBars, ssAuto));
