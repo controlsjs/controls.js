@@ -7958,7 +7958,7 @@ function ngg_DoCreate(def, ref, elm, parent)
   ldefs.ControlsPanel.Controls=def.Controls;
   ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
 
-  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  var lref=ngCreateControls(ldefs,undefined,elm);
   if(!ngVal(def.ParentReferences,true))
   {
     this.Controls = new Object;
@@ -11596,7 +11596,7 @@ function ngpg_DoCreate(d, ref, elm, parent)
       ldefs.ControlsPanel.ModifyControls=p.ModifyControls;
       if(i==this.Page) ldefs.ControlsPanel.Data.Visible=true;
 
-      var lref=ngCreateControls(ldefs,undefined,this.ID);
+      var lref=ngCreateControls(ldefs,undefined,elm);
       if(!ngVal(d.ParentReferences,true))
       {
         (function (pg,pgid,pages) {

@@ -1031,7 +1031,7 @@ function ngs_DoCreate(def, ref, elm, parent)
   ld.Controls=def.Controls1;
   ld.ModifyControls=def.ModifyControls1;
 
-  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  var lref=ngCreateControls(ldefs,undefined,elm);
 
   this.ControlsPanel1=lref.ControlsPanel;
   this.ControlsPanel1.Owner=this;
@@ -1075,7 +1075,7 @@ function ngs_DoCreate(def, ref, elm, parent)
   }
   ld.Controls=def.Controls2;
   ld.ModifyControls=def.ModifyControls2;
-  lref=ngCreateControls(ldefs,undefined,this.ID);  
+  lref=ngCreateControls(ldefs,undefined,elm);
 
   this.ControlsPanel2=lref.ControlsPanel;
   this.ControlsPanel2.Owner=this;
@@ -1561,7 +1561,7 @@ function ngdp_DoCreate(def, ref, elm, parent)
   });   
   if(typeof def.B === 'undefined') { def.Button.B=0; def.Button.T=undefined; }
   else { def.Button.T=0; delete def.Button.B; }
-  var lref=ngCreateControls({ Control: def.Button },undefined,this.ID);
+  var lref=ngCreateControls({ Control: def.Button },undefined,elm);
   if(typeof lref.Control !== 'undefined') // dropdown successfuly created
   {
     lref.Control.Owner=this;
@@ -1599,7 +1599,7 @@ function ngdp_DoCreate(def, ref, elm, parent)
   ldefs.ControlsPanel.T=(btntop ? bh : 0);
   ldefs.ControlsPanel.B=(btntop ? 0 : bh);
   
-  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  var lref=ngCreateControls(ldefs,undefined,elm);
 
   this.ControlsPanel=lref.ControlsPanel;
   this.ControlsPanel.Owner=this;

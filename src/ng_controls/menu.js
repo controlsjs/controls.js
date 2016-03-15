@@ -1476,7 +1476,7 @@ function ngmb_DoCreate(def, ref, elm, parent)
           delete ld.Data.Menu;
         }
         var ldefs={ MenuBtn: ld };
-        var lref=ngCreateControls(ldefs,undefined,this.ID);
+        var lref=ngCreateControls(ldefs,undefined,elm);
         if(lref.MenuBtn)
         {
           lref.MenuBtn.Owner=this;

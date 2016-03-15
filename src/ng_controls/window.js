@@ -1144,7 +1144,7 @@ function ngw_DoCreate(def, ref, elm, parent)
   ldefs.ControlsPanel.Controls=def.Controls;
   ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
 
-  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  var lref=ngCreateControls(ldefs,undefined,elm);
   def.ParentReferences = ngVal(def.ParentReferences,false);
   if(!def.ParentReferences) 
   {
@@ -2140,7 +2140,7 @@ function ngh_DoCreate(def, ref, elm, parent)
   ldefs.ControlsPanel.Controls=def.Controls;
   ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
 
-  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  var lref=ngCreateControls(ldefs,undefined,elm);
   if(!ngVal(def.ParentReferences,true)) 
   {
     this.Controls = new Object;
