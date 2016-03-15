@@ -1359,7 +1359,7 @@ function ngCreateControls(defs,ref,parent,options)
                 ng_MergeDef(d.ModifyControls, options.ModifyControls, true);
                 options.ModifyControls=d.ModifyControls;
               }
-              ngCreateControls(d.Controls,(prefs ? ref : nref),c.ID,options);
+              ngCreateControls(d.Controls,(prefs ? ref : nref),celm,options);
             }
             finally
             {
