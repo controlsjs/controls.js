@@ -11920,47 +11920,72 @@ function ngtbc_OnSetVisible(c,v)
   return false;
 }
 
+function ngtbc_SetBounds(props) {
+  var ret=this.tb_SetBounds.apply(this,arguments);
+  if(ret) this.tb_boundschanged=true;
+  return ret;
+}
+
+function ngtbc_Measure(c,o) {
+  var cw,ch;
+  var parent=c.ParentControl;
+
+  if((typeof c.ToolBarWidth!=='undefined')||(typeof c.ToolBarHeight!=='undefined'))
+  {
+    if(typeof c.ToolBarWidth!=='undefined') cw=c.ToolBarWidth;
+    else cw=ng_OuterWidth(o);
+    if(typeof c.ToolBarHeight!=='undefined') ch=c.ToolBarHeight;
+    else ch=ng_OuterHeight(o);
+  }
+  else
+  {
+    ng_BeginMeasureElement(o);
+    cw=ng_OuterWidth(o);
+    ch=ng_OuterHeight(o);
+    ng_EndMeasureElement(o);
+  }
+  if(parent.Vertical) ch+=ngVal(c.ToolBarIndent,0);
+  else                cw+=ngVal(c.ToolBarIndent,0);
+  ch+=ngVal(c.ToolBarVPadding,parent.VPadding);
+  cw+=ngVal(c.ToolBarHPadding,parent.HPadding);
+  return {cw: cw, ch:ch};
+}
+
 function ngtbc_DoUpdate(o)
 {
   var parent=this.ParentControl;
   if((ngVal(this.ToolBarAutoUpdate,true))&&(parent)&&(!parent.tb_update)&&(!ngVal(this.ToolBarIgnore,false)))
   {
+    var ret=true;
     var changed=false;
     if(this.tb_indent!=this.ToolBarIndent) changed=true;
-    else
-    {
-      var cw,ch;
-      var vpadding=ngVal(this.ToolBarVPadding,parent.VPadding);
-      var hpadding=ngVal(this.ToolBarHPadding,parent.HPadding);
-
-      if((typeof this.ToolBarWidth!=='undefined')||(typeof this.ToolBarHeight!=='undefined'))
-      {
-        if(typeof this.ToolBarWidth!=='undefined') cw=this.ToolBarWidth;
-        else cw=ng_OuterWidth(o);
-        if(typeof this.ToolBarHeight!=='undefined') ch=this.ToolBarHeight;
-        else ch=ng_OuterHeight(o);
-      }
-      else
-      {
-        ng_BeginMeasureElement(o);
-        cw=ng_OuterWidth(o);
-        ch=ng_OuterHeight(o);
-        ng_EndMeasureElement(o);
-      }
-
-      if(parent.Vertical) ch+=ngVal(this.ToolBarIndent,0);
-      else                cw+=ngVal(this.ToolBarIndent,0);
-      if((this.tb_height!=ch+vpadding)||(this.tb_width!=cw+hpadding)) changed=true;
+    else {
+      var m=ngtbc_Measure(this,o);
+      if((this.tb_height!=m.ch)||(this.tb_width!=m.cw)) changed=true;
     }
-    if(changed)
-    {
-      this.ParentControl.Update();
-      return true;
+    if((!changed)&&(typeof this.ngc_DoUpdate==='function')) {
+      this.tb_boundschanged=false;
+      var tbw=this.ToolBarWidth;
+      var tbh=this.ToolBarHeight;
+      var ret=this.ngc_DoUpdate(o);
+      if((ret)&&(this.tb_boundschanged)) {
+        if((this.ToolBarWidth!==tbw)||(this.ToolBarHeight!==tbh)) changed=true;
+        else {
+          var m=ngtbc_Measure(this,o);
+          if((this.tb_height!=m.ch)||(this.tb_width!=m.cw)) changed=true;
+        }
+      }
+      if((ret)&&(changed)) {
+        this.ParentControl.Update();
+        return true;
+      }
     }
+    return ret;
   }
-
-  if(typeof this.ngc_DoUpdate==='function')
-    return this.ngc_DoUpdate(o);
+  else {
+    if(typeof this.ngc_DoUpdate==='function')
+      return this.ngc_DoUpdate(o);
+  }
 
   return true;
 }
@@ -11974,6 +11999,8 @@ function ngtb_RegisterControl(c)
     c.ngc_DoUpdate=c.DoUpdate;
     c.DoUpdate=ngtbc_DoUpdate;
     c.AddEvent(ngtbc_OnSetVisible,'OnSetVisible');
+    c.tb_SetBounds=c.SetBounds;
+    c.SetBounds=ngtbc_SetBounds;
   }
   c.tb_fncregistered=true;
 }
@@ -11990,6 +12017,11 @@ function ngtb_UnreegisterControl(c)
       delete c.ngc_DoUpdate;
     }
     c.RemoveEvent('OnSetVisible',ngtbc_OnSetVisible);
+    if(typeof c.tb_SetBounds === 'function')
+    {
+      c.SetBounds = c.tb_SetBounds;
+      delete c.tb_SetBounds;
+    }
   }
   if(typeof c.tb_fncregistered!=='undefined')
     c.tb_fncregistered=false;
