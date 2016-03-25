@@ -1759,21 +1759,8 @@ function ngh_BorderCollision(p, l, t, r, b)
 
 function ngh_BoundRectCollision(p, l, t, r, b)
 {
-  var minx=p.MinX,maxx=p.MaxX;
-  var miny=p.MinY,maxy=p.MaxY;
-  
-  if(minx<l) minx=l;
-  if(maxx<l) maxx=l;
-  if(miny<t) miny=t;
-  if(maxy<t) maxy=t;
-
-  if(minx>r) minx=r;
-  if(maxx>r) maxx=r;
-  if(miny>b) miny=b;
-  if(maxy>b) maxy=b;
-
-  var area=(maxx-minx)*(maxy-miny);  
-  if((p.AffectedArea<0)||(area>p.AffectedArea)) p.AffectedArea=area;        
+  var area = Math.max(0, Math.min(p.MaxX, r) - Math.max(p.MinX, l)) * Math.max(0, Math.min(p.MaxY, b) - Math.max(p.MinY, t));
+  if((p.AffectedArea<0)||(area>p.AffectedArea)) p.AffectedArea=area;
   return area;  
 }
 
@@ -1818,6 +1805,16 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
   }
 
   var anchor=null,anchorid='';
+  if(typeof anchors==='string') anchors=[anchors];
+  if(ng_IsArrayVar(anchors)) {
+    var a,ixan=anchors;
+    anchors={}
+    for(var i=0;i<ixan.length;i++) {
+      a=this.Anchors[ixan[i]];
+      if((a)&&(typeof a==='object')) anchors[ixan[i]]=a;
+    }
+    if(ng_EmptyVar(anchors)) anchors=null;
+  }
   if((typeof anchors !== 'object')||(!anchors))
   {
     if(this.PreferredAnchors)
