@@ -4173,7 +4173,7 @@ function npgl_DoUpdateBefore(o)
   }
 
   this.Loading=false;
-  var ncnt=pl.DisplayedItems+(this.draw_measure ? 2 : 1);
+  var ncnt=Math.max(this.max_displayed_items, pl.DisplayedItems)+((pl.DisplayMode==plDisplayFit) ? 2 : 1);
   if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt)) { this.Loading=true; return false; }
   if((!this.draw_measure)&&(!pl.NeedData(pl.TopIndex,ncnt)))
   {
@@ -4213,6 +4213,7 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
       var changed_height=false;
       if((list.draw_height!=maxh)&&(list.draw_height>0))
       {
+        list.max_displayed_items=0;
         changed_height=true;
         list.ListPagingChanged();
       }
@@ -4239,12 +4240,12 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
         if(!pl.IsDataLoaded(i+1))
         {
           var lcnt=(cnt && ih ? Math.floor(maxh/(ih/cnt)) : 0);
-          var dcnt=pl.DisplayedItems-(i-pl.TopIndex);
+          var dcnt=(Math.max(this.max_displayed_items, pl.DisplayedItems)+1)-(i-pl.TopIndex);
           if(dcnt>lcnt) lcnt=dcnt;
+          if(lcnt<1) lcnt=1;
 
           if(pl.IsAsyncLoadingBlock(i+1,lcnt)) list.Loading=true;
-          else
-            pl.DoLoadData(i+1,lcnt);
+          else pl.DoLoadData(i+1,lcnt);
         }
 
         it=list.Items[i];
@@ -4385,6 +4386,7 @@ function npgl_DoUpdateAfter(o)
   this.draw_page=pl.Page;
   this.draw_length=this.Items.length;
   this.displayed_items=pl.DisplayedItems;
+  if(pl.DisplayedItems>this.max_displayed_items) this.max_displayed_items=pl.DisplayedItems;
   this.display_mode=pl.DisplayMode;
   delete this.draw_paging_height;
 
@@ -4507,7 +4509,7 @@ function npgl_SetPage(p)
             {
               if(!this.AsyncWaiting()) this.async_datapage=(p==plLastPage ? op : p);
             }
-            this.NeedData(this.TopIndex,this.DisplayedItems+((this.DisplayMode==plDisplayFit) ? 2 : 1));
+            this.NeedData(this.TopIndex,Math.max(list.max_displayed_items, this.DisplayedItems)+((this.DisplayMode==plDisplayFit) ? 2 : 1));
             if(!this.AsyncWaiting()) delete this.async_datapage;
             if(p==plLastPage) {
               pti=999999999;
@@ -5168,6 +5170,7 @@ function npgl_Reset(doclear)
   this.InvalidateData();
   if(list)
   {
+    list.max_displayed_items=0;
     if(ngVal(doclear,false)) list.Clear();
     list.EndUpdate();
   }
@@ -5866,6 +5869,7 @@ function Create_ngPageList(def, ref, parent)
       l.init_page=c.Page;
       l.in_measure=false;
       l.displayed_items=c.DisplayedItems;
+      l.max_displayed_items=0;
       l.display_mode=c.DisplayMode;
       l.ListPagingChanged=npgl_ListPagingChanged;
       l.ListPagingChanged();
