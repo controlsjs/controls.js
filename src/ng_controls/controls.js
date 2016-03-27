@@ -441,6 +441,12 @@ var OnStopModal = null;
  */
 var OnModalChanged = null;
 
+/**
+ *  Variable: ngModalClassName
+ *  CSS class used for modal curtain.
+ */
+var ngModalClassName = 'ngModalCurtain';
+
 var ngModalZIndexDelta = 10000;
 var ngModalCnt=0;
 
@@ -465,7 +471,7 @@ function ngStartModalControl()
       {
          o=document.createElement('div');
          o.id="NGMODALWINDOW_CURTAIN";
-         o.className='ngModalCurtain';
+         o.className=ngModalClassName;
          o.style.position='absolute';
          o.style.left='0%';
          o.style.top='0%';
@@ -479,6 +485,7 @@ function ngStartModalControl()
       }
       else
       {
+        o.className=ngModalClassName;
         o.style.zIndex=ngModalZIndexDelta;
         o.style.display='block';
         o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
