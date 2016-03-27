@@ -398,6 +398,174 @@ function ngRes(rid)
   return getres(ngc_Lang,rid,true);
 }
 
+// --- ngModal -----------------------------------------------------------------
+
+/**
+ *  Group: Events
+ */
+/**
+ *  Event: OnStartModal
+ *  Occurs when modal window curtain is going to be displayed.
+ *
+ *  Syntax:
+ *    bool *OnStartModal* ()
+ *
+ *  Returns:
+ *    FALSE if curtain shouldn't be displayed.
+ */
+var OnStartModal = null;
+/**
+ *  Event: OnStopModal
+ *  Occurs when modal window curtain is going to be removed.
+ *
+ *  Syntax:
+ *    bool *OnStopModal* ()
+ *
+ *  Returns:
+ *    FALSE if curtain shouldn't be removed.
+ */
+var OnStopModal = null;
+/**
+ *  Event: OnModalChanged
+ *  Occurs when modal window curtain has changed.
+ *
+ *  Syntax:
+ *    void *OnModalChanged* (object o, boolean up)
+ *
+ * Parameters:
+ *    o - Curtain node
+ *    up - If curtain has gone up or down
+ *
+ *  Returns:
+ *    -
+ */
+var OnModalChanged = null;
+
+var ngModalZIndexDelta = 10000;
+var ngModalCnt=0;
+
+/**
+ *  Function: ngStartModalControl
+ *  Shows modal window curtain.
+ *
+ *  Syntax:
+ *    void *ngStartModalControl* ()
+ *
+ *  Returns:
+ *    -
+ */
+function ngStartModalControl()
+{
+  if(!ngModalCnt)
+  {
+    if((!OnStartModal)||(ngVal(OnStartModal(),false)))
+    {
+      var o = document.getElementById('NGMODALWINDOW_CURTAIN');
+      if(!o)
+      {
+         o=document.createElement('div');
+         o.id="NGMODALWINDOW_CURTAIN";
+         o.className='ngModalCurtain';
+         o.style.position='absolute';
+         o.style.left='0%';
+         o.style.top='0%';
+         o.style.width='100%';
+         o.style.height='100%';
+         o.style.display='block';
+         o.style.zIndex=ngModalZIndexDelta;
+
+         var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : document.body);
+         parent.appendChild(o);
+      }
+      else
+      {
+        o.style.zIndex=ngModalZIndexDelta;
+        o.style.display='block';
+        o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
+        ng_IE7RedrawFix(o);
+      }
+    }
+  }
+  ngModalCnt++;
+  var o = document.getElementById('NGMODALWINDOW_CURTAIN');
+  if(ngModalCnt>1)
+  {
+    if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
+  }
+
+  if(OnModalChanged) OnModalChanged(o,true);
+}
+
+/**
+ *  Function: ngStopModalControl
+ *  Hides modal window curtain.
+ *
+ *  Syntax:
+ *    void *ngStopModalControl* ()
+ *
+ *  Returns:
+ *    -
+ */
+function ngStopModalControl()
+{
+  ngModalCnt--;
+  var o = document.getElementById('NGMODALWINDOW_CURTAIN');
+  if(ngModalCnt<=0)
+  {
+    ngModalCnt=0;
+    if((!OnStopModal)||(ngVal(OnStopModal(),false)))
+    {
+      o = document.getElementById('NGMODALWINDOW_CURTAIN');
+      if(o)
+      {
+        o.style.display='none';
+        o.style.visibility='hidden'; // IE7 sometimes don't hide elements if display is none
+        ng_IE7RedrawFix(o);
+      }
+    }
+  }
+  else
+  {
+    if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
+  }
+  if(OnModalChanged) OnModalChanged(o,false);
+}
+
+/**
+ *  Function: ng_IsInactiveModalElm
+ *  Tests if given element if under modal curtain.
+ *
+ *  Syntax:
+ *    bool *ng_IsInactiveModalElm* (object elm)
+ *
+ *  Parameters:
+ *    elm - DOM element object
+ *
+ *  Returns:
+ *    TRUE if element is under modal curtain.
+ */
+function ng_IsInactiveModalElm(elm) {
+  if(!ngModalCnt) return false;
+  if((!elm) || (elm == document) || (elm==window) || (elm.tagName == 'BODY')) return false;
+
+  var lo=ngModalCnt*ngModalZIndexDelta;
+  if(lo<=0) return false;
+
+  var p=elm;
+  var z,zi=0;
+  while((p)&&(p!=document))
+  {
+    try
+    {
+      z=ng_GetCurrentStylePx(p,'z-index');
+      if(z>zi) zi=z;
+    }
+    catch(e) { }
+    p=p.parentNode;
+  }
+  return (zi<lo);
+}
+
 // --- Functions ---------------------------------------------------------------
 
 function ng_Expand2Id(eid)
@@ -1884,7 +2052,15 @@ function ngc_SetEnabled(v,p)
 function ngc_SetFocus(state)
 {
   var o=this.Elm();
-  if(o) { try { if(ngVal(state,true)) o.focus(); else o.blur(); } catch(e) { } }
+  if(o) {
+    try {
+      if(ngVal(state,true)) {
+        if(ng_IsInactiveModalElm(o)) return;
+        o.focus();
+      }
+      else o.blur();
+    } catch(e) { }
+  }
 }
 
 function ngc_SetVisible(v)
@@ -2096,6 +2272,8 @@ function ngc_Focus(e, elm, type)
   var o=ngGetControlByElement(elm, type);
   if((o)&&(!o.ControlHasFocus))
   {
+    if(ng_IsInactiveModalElm(o)) return;
+
     o.ControlHasFocus=true;
     if(o.DoFocus) o.DoFocus(e, elm);
     else if(o.OnFocus) o.OnFocus(o);
@@ -3099,14 +3277,20 @@ function ngc_ActivatePopup(ctrl)
 
     function onmousewheel(e)
     {
+      if (!e) e = window.event;
+      var target = e.target || e.srcElement || e.originalTarget;
+
       for(var popupgrp in ngc_ActivePopups)
       {
         var dd=ngc_ActivePopups[popupgrp];
         if(dd)
         {
-          if (!e) e = window.event;
-          var t = e.target || e.srcElement || e.originalTarget;
+          if(ngModalCnt) {
+            var ddo=dd.Elm();
+            if(ng_IsInactiveModalElm(ddo)) continue;
+          }
 
+          var t = target;
           if(t)
           {
             if((!dd.OnIsInsidePopup)||(!ngVal(dd.OnIsInsidePopup(dd,t,1,e),true)))
@@ -3134,12 +3318,18 @@ function ngc_ActivatePopup(ctrl)
     function onpointerdown(pi)
     {
       var ret=true;
+      var target = pi.GetTarget();
       for(var popupgrp in ngc_ActivePopups)
       {
         var dd=ngc_ActivePopups[popupgrp];
         if(dd)
         {
-          var t=pi.GetTarget();
+          if(ngModalCnt) {
+            var ddo=dd.Elm();
+            if(ng_IsInactiveModalElm(ddo)) continue;
+          }
+
+          var t = target;
           if(t)
           {
             if(t)
@@ -3169,11 +3359,14 @@ function ngc_ActivatePopup(ctrl)
               }
               else if((!dd.OnClickOutside)||(ngVal(dd.OnClickOutside(dd,pi),false)))
                 ngc_HidePopup(dd);
-              ret=false;
-              ng_DocumentDeselect();
-              pi.EventPreventDefault();
-              pi.StopPropagation=true;
-              ngc_disabledocselect(pi.StartElement);
+
+              if(ret) {
+                ng_DocumentDeselect();
+                pi.EventPreventDefault();
+                pi.StopPropagation=true;
+                ngc_disabledocselect(pi.StartElement);
+                ret=false;
+              }
             }
           }
         }
@@ -8418,6 +8611,7 @@ function nge_SetCaretPos(pos)
   var to=document.getElementById(this.ID+'_T');
   if(!to) return;
 
+  if(ng_IsInactiveModalElm(to)) return;
   if(to.setSelectionRange)
   {
     to.focus();
@@ -9445,6 +9639,7 @@ function nge_SetFocus(state)
     try {
       if(state)
       {
+        if(ng_IsInactiveModalElm(o)) return;
         o.focus();
         if((this.SelectOnFocus)&&(!this.HintVisible)) o.select();
       }

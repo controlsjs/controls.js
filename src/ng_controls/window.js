@@ -15,139 +15,6 @@
  *    
  */
 
-// --- ngModal -----------------------------------------------------------------
-
-/** 
- *  Group: Events   
- */
-/**
- *  Event: OnStartModal
- *  Occurs when modal window curtain is going to be displayed.
- *  
- *  Syntax:
- *    bool *OnStartModal* ()
- *    
- *  Returns:
- *    FALSE if curtain shouldn't be displayed.
- */
-var OnStartModal = null;
-/**
- *  Event: OnStopModal
- *  Occurs when modal window curtain is going to be removed.
- *  
- *  Syntax:
- *    bool *OnStopModal* ()
- *    
- *  Returns:
- *    FALSE if curtain shouldn't be removed.
- */
-var OnStopModal = null;
-/**
- *  Event: OnModalChanged
- *  Occurs when modal window curtain has changed.
- *  
- *  Syntax:
- *    void *OnModalChanged* (object o, boolean up)
- *
- * Parameters:
- *    o - Curtain node
- *    up - If curtain has gone up or down
- *
- *  Returns:
- *    -
- */
-var OnModalChanged = null;
-
-var ngModalZIndexDelta = 10000;
-var ngModalCnt=0;
-
-/**
- *  Function: ngStartModalControl
- *  Shows modal window curtain.
- *  
- *  Syntax:
- *    void *ngStartModalControl* ()
- *    
- *  Returns:
- *    -
- */
-function ngStartModalControl()
-{
-  if(!ngModalCnt)
-  {
-    if((!OnStartModal)||(ngVal(OnStartModal(),false)))
-    {
-      var o = document.getElementById('NGMODALWINDOW_CURTAIN');
-      if(!o)
-      {
-         o=document.createElement('div');
-         o.id="NGMODALWINDOW_CURTAIN";
-         o.className='ngModalCurtain';
-         o.style.position='absolute';
-         o.style.left='0%';
-         o.style.top='0%';
-         o.style.width='100%';
-         o.style.height='100%';
-         o.style.display='block';
-         o.style.zIndex=ngModalZIndexDelta;
-
-         var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : document.body);
-         parent.appendChild(o);
-      }
-      else 
-      {
-        o.style.zIndex=ngModalZIndexDelta;
-        o.style.display='block';
-        o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
-        ng_IE7RedrawFix(o);
-      } 
-    }
-  }  
-  ngModalCnt++;
-  var o = document.getElementById('NGMODALWINDOW_CURTAIN');
-  if(ngModalCnt>1)
-  {
-    if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
-  }
-  
-  if(OnModalChanged) OnModalChanged(o,true);
-}
-
-/**
- *  Function: ngStopModalControl
- *  Hides modal window curtain.
- *  
- *  Syntax:
- *    void *ngStopModalControl* ()
- *    
- *  Returns:
- *    -
- */
-function ngStopModalControl()
-{
-  ngModalCnt--;
-  var o = document.getElementById('NGMODALWINDOW_CURTAIN');
-  if(ngModalCnt<=0)
-  {
-    ngModalCnt=0;
-    if((!OnStopModal)||(ngVal(OnStopModal(),false))) 
-    {
-      o = document.getElementById('NGMODALWINDOW_CURTAIN');
-      if(o) 
-      {
-        o.style.display='none';
-        o.style.visibility='hidden'; // IE7 sometimes don't hide elements if display is none
-        ng_IE7RedrawFix(o);
-      }
-    }
-  }
-  else
-  {
-    if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
-  }
-  if(OnModalChanged) OnModalChanged(o,false);
-}
-
 // --- Window create helper fnc ------------------------------------------------
 
 /**
@@ -1190,29 +1057,11 @@ function ngw_DoCreate(def, ref, elm, parent)
 
 function ngw_OnDOMFocus(e)
 {
-  var lo=ngModalCnt*ngModalZIndexDelta;
-  if(!lo) return;
-  
   if (!e) e = window.event;
   var elm =  e.srcElement || e.target;
-  if((!elm) || (elm == document) || (elm==window) || (elm.tagName == 'BODY')) return;
-
-  var p=elm;
-  var z,zi=0;
-  while((p)&&(p!=window))
+  if(ng_IsInactiveModalElm(elm))
   {
-    try
-    {
-      z=ng_GetCurrentStylePx(p,'z-index');
-      if(z>zi) zi=z;
-    }
-    catch(e) { }
-    p=p.parentNode;
-  }
-  if((lo)&&(zi<lo)) 
-  { 
-    try
-    {
+    try {
       elm.blur();
     }
     catch(e) { } 
