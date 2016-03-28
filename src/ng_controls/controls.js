@@ -3777,8 +3777,9 @@ function ngc_ptrend(e)
   var pi=c.PointerInfo;
   if(pi)
   {
-    pi.Event=ngc_eventref(e);
-    pi.EndEvent=ngc_eventref(e);
+    var er=ngc_eventref(e);
+    pi.Event=er;
+    pi.EndEvent=er;
     pi.EndEventID=pi.EventID;
     c.GetPointerPos(e);
     pi.EndX=pi.X;
