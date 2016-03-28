@@ -3447,21 +3447,20 @@ function ngc_disabledocselect(elm)
   ngc_docselectinfo=dsi;
 }
 
+function ngc_eventref(e) {
+  if((ngIExplorer)&&(e)&&(ngIExplorerVersion<=8)) {
+    // in IE<=8 reference to window.event doesn't survive, need copy
+    var ne={ts:new Date().getTime()};
+    for(var i in e) ne[i]=e[i];
+    return ne;
+  }
+  return e;
+}
+
 function ngc_ptrevignore(e)
 {
   if((e)&&(e.gesture)) e=e.gesture.srcEvent;
-  if((e)&&(ngIExplorerVersion<=8)) {
-    e={ ts: new Date().getTime(),
-        type: e.type,
-        button: e.button,
-        clientX: e.clientX,
-        clientY: e.clientY,
-        altKey: e.altKey,
-        ctrlKey: e.ctrlKey,
-        srcElement: e.srcElement
-      }
-  }
-  ngPtrIgnoredEvent=e;
+  ngPtrIgnoredEvent=ngc_eventref(e);
 }
 
 function ngc_ptrevisignored(e)
@@ -3471,7 +3470,7 @@ function ngc_ptrevisignored(e)
   if(ie)
   {
     if(ie===e) return true;
-    if(ngIExplorerVersion<=8) {
+    if((ngIExplorer)&&(ngIExplorerVersion<=8)) {
       // in IE<=8 window.event returns always new instance :(
       if((ie.type===e.type)&&(ie.clientX===e.clientX)&&(ie.clientY===e.clientY)&&(ie.altKey===e.altKey)&&(ie.ctrlKey===e.ctrlKey)&&(ie.srcElement===e.srcElement)&&(ie.button===e.button))
       {
@@ -3613,7 +3612,7 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       StartY: pos.y,
       StartElement: elm,
       StartTime: new Date().getTime(),
-      StartEvent: e,
+      StartEvent: ngc_eventref(e),
       StartEventID: eid,
       Event: e,
       EventID: eid,
@@ -3778,8 +3777,8 @@ function ngc_ptrend(e)
   var pi=c.PointerInfo;
   if(pi)
   {
-    pi.Event=e;
-    pi.EndEvent=e;
+    pi.Event=ngc_eventref(e);
+    pi.EndEvent=ngc_eventref(e);
     pi.EndEventID=pi.EventID;
     c.GetPointerPos(e);
     pi.EndX=pi.X;
