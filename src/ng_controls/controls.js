@@ -12177,10 +12177,10 @@ function ngtbc_DoUpdate(o)
           if((this.tb_height!=m.ch)||(this.tb_width!=m.cw)) changed=true;
         }
       }
-      if((ret)&&(changed)) {
-        this.ParentControl.Update();
-        return true;
-      }
+    }
+    if((ret)&&(changed)) {
+      this.ParentControl.Update();
+      return true;
     }
     return ret;
   }
@@ -12276,7 +12276,7 @@ function ngtb_Update(recursive)
     var h=ng_ClientHeight(to);
 
     var o,c,cw,ch,x=0,y=0,mw=0,mh=0,sw=0,sh=0,wrap,ix,iy;
-    var vpadding,hpadding,lastnowrap=-1;
+    var vpadding,hpadding,lastnowrap=-1,ctrlvpadding,ctrlhpadding;
 
     this.tb_update=true;
     for(var i=0;i<cc.length;i++)
@@ -12288,8 +12288,10 @@ function ngtb_Update(recursive)
       if(!recursive) c.Update(false);
       o=c.Elm();
       if(!o) continue;
-      hpadding=ngVal(c.ToolBarHPadding,this.HPadding);
-      vpadding=ngVal(c.ToolBarVPadding,this.VPadding);
+
+      ctrlhpadding=hpadding=ngVal(c.ToolBarHPadding,this.HPadding);
+      ctrlvpadding=vpadding=ngVal(c.ToolBarVPadding,this.VPadding);
+      
       if((this.Vertical)&&(!y)) hpadding=0;
       if((!this.Vertical)&&(!x)) vpadding=0;
       if((typeof c.ToolBarWidth!=='undefined')||(typeof c.ToolBarHeight!=='undefined'))
@@ -12348,8 +12350,8 @@ function ngtb_Update(recursive)
       if(y+ch>sh) sh=y+ch;
 
       c.tb_indent=c.ToolBarIndent;
-      c.tb_width=cw+hpadding;
-      c.tb_height=ch+vpadding;
+      c.tb_width=cw+ctrlhpadding;
+      c.tb_height=ch+ctrlvpadding;
       if(this.Vertical) y+=ch+vpadding;
       else x+=cw+hpadding;
     }
