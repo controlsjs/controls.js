@@ -706,7 +706,7 @@
 }
 
 .wePagesLightPageText,
-.wePagesDarkPageText,
+.wePagesDarkPageText
 {
 }
 
@@ -786,7 +786,7 @@
 }
 
 .weSectionsLightPageText,
-.weSectionsDarkPageText,
+.weSectionsDarkPageText
 {
 }
 
@@ -1866,7 +1866,7 @@ TD .weMenuDarkSeparator
   padding-left: 5px;
 }
 
-.weMenuLight THEAD TD,
+.weMenuLight THEAD TD
 {
   background-color: #EBEADB;
   line-height:34px;
@@ -1882,7 +1882,7 @@ TD .weMenuDarkSeparator
   border-bottom: 1px solid #CBC7B8;
 }
 
-.weMenuLightSelected,
+.weMenuLightSelected
 {
   background-color: #CCCCCC;
   color: #1F1F1F;
@@ -1915,7 +1915,7 @@ TD .weMenuDarkSeparator
 .weMenuLightRowChecked_Focus,
 .weMenuLightRowChecked_Focus TD,
 .weMenuLightRowGrayed_Focus,
-.weMenuLightRowGrayed_Focus TD,
+.weMenuLightRowGrayed_Focus TD
 {
   color: #FFFFFF;
   background-color: #E8E8E8;
@@ -2075,6 +2075,21 @@ TD .weMenuDarkSeparator
 .weColorPickerSatValDark
 {
  border: 2px solid #ffffff;
+}
+
+.weColorPickerSatValLight canvas,
+.weColorPickerSatValDark canvas,
+.weColorPickerSliderLight canvas,
+.weColorPickerSliderDark canvas
+{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
 /* weFileUploader *************************************************************/
