@@ -5390,6 +5390,11 @@ function nga_SetServerParam(p,v)
 
 function nga_ParamType(p)
 {
+  if(!this.params_parsed)
+  {
+    this.params_parsed=true;
+    this.ParseParams();
+  }
   if(typeof this.ParamInfo === 'undefined') return undefined;
   var pi = this.ParamInfo[p];
   if((typeof pi === 'undefined')||(!pi)) return undefined;
@@ -5432,6 +5437,11 @@ function nga_SetParamType(p, type)
   }
   if(p=='') return;
 
+  if(!this.params_parsed)
+  {
+    this.params_parsed=true;
+    this.ParseParams();
+  }
   if(typeof this.ParamInfo === 'undefined') this.ParamInfo = new Array();
   var pi = this.ParamInfo[p];
   if((typeof pi === 'undefined')||(!pi)) { pi=new Object; this.ParamInfo[p] = pi; }
