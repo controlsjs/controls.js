@@ -2092,7 +2092,7 @@ var WinEightControls = {
         if((po)&&(po==document.body)) po=null;
         var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth());
         var margin=ngIExplorer6 ? Math.round(pw*.25) : '25%';
-        if(pw<600) margin='10';
+        if(pw<600) margin=10;
         /*
          *  Group: Definition
          */
@@ -2614,7 +2614,7 @@ var WinEightControls = {
         if((po)&&(po==document.body)) po=null;
         var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth());
         var margin=ngIExplorer6 ? Math.round(pw*.25) : '25%';
-        if(pw<600) margin='10';
+        if(pw<600) margin=10;
         var cdef={
           DialogType: 'weDlgMessageBox',
           DlgIcon: null,
