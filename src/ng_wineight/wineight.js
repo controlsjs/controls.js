@@ -521,6 +521,19 @@ var WinEightControls = {
     if(typeof ic==='undefined') ic=null;
     return ic;
   },
+  SetBackgroundColor: function (color)
+  {
+    color=ngVal(color,this.BackgroundColor);
+    if((typeof color==='undefined')||(color==='Auto')) color=(this.Theme ? '#FFFFFF' : '#000000');
+    if(color!=='None') {
+      this.BackgroundColor=color;
+      var aelm=ngApp.Elm();
+      if(aelm) {
+        if(color.charAt(0)=='#') aelm.style.backgroundColor = color;
+        else aelm.className=aelm.className+' we'+color;
+      }
+    }
+  },
 
   OnInit: function() {
 
@@ -531,16 +544,7 @@ var WinEightControls = {
     var skinfnc={};
 
     ngApp.AddEvent('OnRunInternalFinished', function() {
-      var color=wineight.BackgroundColor;
-      if((typeof color==='undefined')||(color==='Auto')) color=(wineight.Theme ? '#FFFFFF' : '#000000');
-      if(color!=='None') {
-        wineight.BackgroundColor=color;
-        var aelm=ngApp.Elm();
-        if(aelm) {
-          if(color.charAt(0)=='#') aelm.style.backgroundColor = color;
-          else aelm.className=aelm.className+' we'+color;
-        }
-      }
+      wineight.SetBackgroundColor();
     });
 
     for (var i in winimages.AppIcons[0])
