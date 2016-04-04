@@ -3638,7 +3638,7 @@ var WinEightControls = {
             if(typeof ngMessageDlg==='function') {
               ngMessageDlg('weDlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), null /*, { DlgIcon: mbIconError }*/);
             }
-            else alert(msg);
+            else alert(ng_htmlDecode(msg));
             return true;
           });
         }
@@ -3783,7 +3783,7 @@ var WinEightControls = {
             }
             else
             {
-              if(confirm(querytxt))
+              if(confirm(ng_htmlDecode(querytxt)))
               {
                 if(typeof successfnc === 'function') successfnc(form);
               }
@@ -3813,7 +3813,7 @@ var WinEightControls = {
             }
             else
             {
-              if(confirm(querytxt))
+              if(confirm(ng_htmlDecode(querytxt)))
               {
                 if(typeof successfnc === 'function') successfnc(form);
               }
