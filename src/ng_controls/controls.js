@@ -573,6 +573,24 @@ function ng_IsInactiveModalElm(elm) {
   return (zi<lo);
 }
 
+function ngw_OnDOMFocus(e)
+{
+  if (!e) e = window.event;
+  var elm =  e.srcElement || e.target;
+  if(ng_IsInactiveModalElm(elm))
+  {
+    try {
+      elm.blur();
+    }
+    catch(e) { }
+  }
+}
+
+if(window.addEventListener)
+  window.addEventListener("focus",ngw_OnDOMFocus,true);
+else if(window.attachEvent)
+  window.attachEvent('onfocus', ngw_OnDOMFocus);
+
 // --- Functions ---------------------------------------------------------------
 
 function ng_Expand2Id(eid)

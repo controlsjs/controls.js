@@ -1055,26 +1055,11 @@ function ngw_DoCreate(def, ref, elm, parent)
   //              +'<div id="'+this.ID+'_M" class="'+cclass+'Fence" style="display:none;position: absolute; z-index: 801; font-size:0px;line-height:0px;left:0px;top:0px;width:0px;height:0px;"></div>');
 }
 
-function ngw_OnDOMFocus(e)
-{
-  if (!e) e = window.event;
-  var elm =  e.srcElement || e.target;
-  if(ng_IsInactiveModalElm(elm))
-  {
-    try {
-      elm.blur();
-    }
-    catch(e) { } 
-  }
-}
-
 /*function ngw_Dispose()
 {
   if((typeof this.Controls === 'object')&&(typeof this.Controls.Dispose === 'function')) this.Controls.Dispose();
   this.DefaultDispose();
 }*/
-
-var ngw_initialized = false;
 
 /**
  *  Class: ngWindow
@@ -1497,19 +1482,6 @@ function ngWindow(id)
    */     
   this.OnMouseResize = null;
   
-  if(!ngw_initialized)
-  {
-    if (window.addEventListener) 
-    {
-      window.addEventListener("focus",ngw_OnDOMFocus,true);    
-    }
-    else if(window.attachEvent)
-    {
-      window.attachEvent('onfocus', ngw_OnDOMFocus);
-    }
-    ngw_initialized = true;
-  }
- 
   ngControlCreated(this);
 }
 
