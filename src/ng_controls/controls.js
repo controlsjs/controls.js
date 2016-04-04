@@ -4846,7 +4846,7 @@ function nga_DoRun()
     var o=document.getElementById('ngAppLoading');
     if(o) o.style.display='none';
 
-    alert(ng_sprintf(ngTxt('ngAppOldControlsVersion'),reqver,reqsubver,ngControlsVer,ngControlsSubVer));
+    alert(ng_htmlDecode(ng_sprintf(ngTxt('ngAppOldControlsVersion'),reqver,reqsubver,ngControlsVer,ngControlsSubVer)));
     return;
   }
 
@@ -4890,8 +4890,8 @@ function nga_SetTitle(t)
 
 function nga_MessageBox(text,yesno)
 {
-  if(!ngVal(yesno,false)) alert(this.Text(text));
-  else return confirm(this.Text(text));
+  if(!ngVal(yesno,false)) alert(ng_htmlDecode(this.Text(text)));
+  else return confirm(ng_htmlDecode(this.Text(text)));
 }
 
 function ng_SetBounds(o,props)

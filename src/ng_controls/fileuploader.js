@@ -990,7 +990,7 @@ var FileUploaderControl = {
       c.ShowError = function (errmsg, data) {
         if(errmsg!='') {
           if (c.OnError) c.OnError(c, errmsg, data);
-          else alert(errmsg);
+          else alert(ng_htmlDecode(errmsg));
           return false;
         }
       }
