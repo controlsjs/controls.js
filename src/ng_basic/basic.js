@@ -497,8 +497,21 @@ function ng_DetectLibsURL(type,scripts)
           case 0: idx=s.indexOf("ng_basic"); break;
           case 1: idx=s.indexOf("controls.js"); break;
           case 2: idx=s.indexOf("basic.js"); break;
-          case 3: idx=s.indexOf("controls"); if((idx>=0)&&(s.indexOf(".js")<0)) idx=-1; break;          
-        }        
+          case 3:
+            idx=s.indexOf("controls");
+            if(idx>=0) {
+              var jidx=s.indexOf(".js",idx);
+              if((jidx<0) || ((jidx>s.indexOf("?",idx))||(jidx>s.indexOf("/",idx))||(jidx>s.indexOf("#",idx)))) idx=-1;
+            }
+            break;
+          case 4:
+            idx=s.indexOf("apploader=");
+            if(idx>=0) {
+              idx=s.lastIndexOf("/",idx);
+              if(idx>0) { s=s.substring(0,idx+1)+'libs/'; idx+=6; }
+            }
+            break;
+        }
         if(idx>=0) 
         {
           ngLibsURL=s.substring(0,idx);
@@ -528,7 +541,7 @@ function ng_DetectLibsURL(type,scripts)
   }
   catch(e) { }
 
-  if(type!=4) ng_DetectLibsURL(++type,scripts); // ng_basic not found, detect cotrols 
+  if(type!=5) ng_DetectLibsURL(++type,scripts); // ng_basic not found, detect cotrols
   else ngLibsURL='libs/'; // not found :(, use default path
 }
 
