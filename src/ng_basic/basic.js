@@ -2925,7 +2925,7 @@ function ngrpc_sendRequest(url, nocache)
       params=this.GetURLParams();
       if((type===rpcAuto)||(type===rpcHttpRequest)||(type===rpcJSON)||(type===rpcData)) // determine req. type by params length 
       {        
-        if((type===rpcAuto)&&(!ngWinStoreApp)&&(ngrpc_domain(url)!=window.location.hostname))
+        if((type===rpcAuto)&&(!ngCordova)&&(ngrpc_domain(url)!=window.location.hostname))
         {
           type=rpcScript;
         }
