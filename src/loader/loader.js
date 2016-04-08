@@ -308,11 +308,12 @@ function ngLoadApplication(elm, callback, files)
 
   window.ngLoadAppFile = function(url, data, loadcallback, async, loadfailcallback)
   {
+    var loadurl=ngAppURL(url);
     var asyncloader=(window.XMLHttpRequest)&&
                     ((typeof ngDEBUG === 'undefined')||(!ngDEBUG))&&
                     ((!opera)||((operaver>=11.1)&&(window.location.protocol!='file:')))&&
-                    ((winstoreapp)
-                  || ((url_domain(url)==window.location.hostname)&&(window.location.hostname!='')));
+                    ((cordova)
+                 || ((window.location.hostname!='')&&(url_domain(loadurl)==window.location.hostname)));
 
     if((typeof ngOnAppFileLoad === 'function')&&(!ngOnAppFileLoad(data.Type,url,data))) return;
     appparts++;
@@ -325,7 +326,7 @@ function ngLoadApplication(elm, callback, files)
     }
 
     if(!async) {
-      var filedata={ URL: url, Data: data, Async: asyncloader, LoadCallback: loadcallback };
+      var filedata={ URL: url, LoadURL: loadurl, Data: data, Async: asyncloader, LoadCallback: loadcallback };
       queue.push(filedata);
       if((!asyncloader)&&(queue.length>1)) {return;}
     }
@@ -380,7 +381,7 @@ function ngLoadApplication(elm, callback, files)
         {
           li=queue[0];
           if(!li.Async){
-            loadfile(li.URL, li.Data, li.LoadCallback,false);
+            loadfile(li.LoadURL, li.Data, li.LoadCallback,false);
             break;
           }
           code=li.code;
@@ -391,7 +392,6 @@ function ngLoadApplication(elm, callback, files)
           apppartready(li.Data.Type,li.URL,li.Data);
         }
       }
-      var url=ngAppURL(url);
       if(asyncloader)
       {
         var xmlhttp = new XMLHttpRequest();
@@ -440,7 +440,7 @@ function ngLoadApplication(elm, callback, files)
       }
     }
 
-    loadfile(url, data, loadcallback, asyncloader, loadfailcallback);
+    loadfile(loadurl, data, loadcallback, asyncloader, loadfailcallback);
   };
 
   window.ngLoadAppImg = function(url, data, loadcallback)
