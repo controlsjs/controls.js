@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2015 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2016 Position s.r.o.';
 
 /**
  *  Variable: ngApp
@@ -1284,6 +1284,16 @@ function ng_MergeDef(dst,def,allowundefined,callback)
     if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return false;
     if(d._noMerge===true) return false;
 
+    if((typeof d.OnCreating === 'function')&&(typeof o.OnCreating === 'function')) {
+      d.OnCreating = ngAddEvent(d.OnCreating, o.OnCreating);
+      delete o.OnCreating;
+    }
+
+    if((typeof d.OnCreated === 'function')&&(typeof o.OnCreated === 'function')) {
+      d.OnCreated = ngAddEvent(d.OnCreated, o.OnCreated);
+      delete o.OnCreated;
+    }
+
     if((typeof d.Events === 'object')&&(typeof o.Events === 'object')&&(d.Events)&&(o.Events))
     {
       merge_events(d.Events,o.Events,false);
@@ -1298,6 +1308,11 @@ function ng_MergeDef(dst,def,allowundefined,callback)
     {
       merge_events(d.BeforeEvents,o.BeforeEvents,true);
       delete o.BeforeEvents;
+    }
+    if((typeof d.OverrideEvents === 'object')&&(typeof o.OverrideEvents === 'object')&&(d.OverrideEvents)&&(o.OverrideEvents))
+    {
+      merge_events(d.OverrideEvents,o.OverrideEvents,false);
+      delete o.OverrideEvents;
     }
     return true;
   });
@@ -1375,9 +1390,9 @@ function ngCreateControl(d,ref,parent)
       for(var i in d.Events)
         c.AddEvent(i,d.Events[i]);
 
-    if(typeof d.OverrideEvents !== 'undefined') // alias to d.Data
+    if(typeof d.OverrideEvents !== 'undefined')
       for(var i in d.OverrideEvents)
-        c[i]=d.OverrideEvents[i];
+        ng_OverrideMethod(c,i,d.OverrideEvents[i]);
 
     // Handle string resources
     if((typeof c.ngText !== 'undefined')&&(ngVal(c.Text,'')==''))
