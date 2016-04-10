@@ -2603,6 +2603,115 @@ function ngObjRemoveEvent(ev, fce)
   }
 }
 
+/**
+ *  Function: ng_OverrideMethod
+ *  Overrides method of class. Original implementation of the method is available
+ *  through added callParent().
+ *
+ *  Syntax:
+ *    void *ng_OverrideMethod* (object class, string metod, function fnc)
+ *
+ *  Parameters:
+ *    class - the class which method will be overriden
+ *    method - name of the method to be override
+ *    fnc - new implementation of the method
+ *
+ *  Returns:
+ *    -
+ */
+function ng_OverrideMethod(cls,method,fnc) {
+  if(ng_IsArrayVar(fnc))
+  {
+    for(var i=fnc.length-1;i>=0;i--)
+      ng_OverrideMethod(cls,method,fnc[i]);
+    return;
+  }
+  var parent=cls[method];
+  if((typeof parent==='function')&&(typeof fnc==='function')) {
+    var evlist=parent.overrides;
+    var dive=0;
+    if(typeof evlist === 'undefined') {
+      evlist=[fnc,parent];
+      var handler = function() {
+        return evlist[0].apply(cls,arguments);
+      };
+      handler.callParent = function() {
+        var ret;
+        try {
+          ret=evlist[++dive].apply(cls,arguments);
+        }
+        finally {
+          dive--;
+        }
+        return ret;
+      };
+      handler.removeOverride = function(rfnc) {
+        for(var i=evlist.length-2;i>=0;i--) {
+          if(evlist[i]===rfnc) {
+            if((dive>0)&&(dive>=i)) throw new Error('Cannot remove override of function in the middle of its invocation.');
+            evlist.splice(i,1);
+          }
+        }
+      };
+      handler.overrides = evlist;
+      cls[method] = handler;
+    }
+    else {
+      if(dive>0) throw new Error('Cannot override function in the middle of its invocation.');
+      evlist.splice(0,0,fnc);
+    }
+  }
+  else cls[method]=fnc;
+}
+
+/**
+ *  Function: ng_OverrideFunction
+ *  Overrides function. Original implementation of function is available
+ *  through added callParent().
+ *
+ *  Syntax:
+ *    function *ng_OverrideFunction* (function oldfnc, function fnc [, object thisarg])
+ *
+ *  Parameters:
+ *    olfnc - function to be overriden
+ *    fnc - new implementation of the function
+ *    thisarg - optional context in which functions are called
+ *
+ *  Returns:
+ *    Overriden function (not same as fnc).
+ */
+function ng_OverrideFunction(oldfnc,fnc,thisarg) {
+  if((typeof oldfnc!=='function')||(typeof fnc!=='function')) return (typeof fnc!=='function' || !thisarg ? fnc : fnc.bind(thisarg));
+  else {
+    if(!thisarg) thisarg=this;
+    var parentfnc=function() {
+      return oldfnc.apply(thisarg,arguments);
+    };
+    var newfnc = function() {
+      newfnc.callParent = parentfnc;
+      return fnc.apply(thisarg,arguments);
+    }
+    return newfnc;
+  }
+}
+
+/**
+ *  Function: ng_IsOverriden
+ *  Tests if class method or function is overriden.
+ *
+ *  Syntax:
+ *    bool *ng_IsOverriden* (function impl)
+ *
+ *  Parameters:
+ *    impl - class method or function to be tested
+ *
+ *  Returns:
+ *    TRUE if class method of function was overriden.
+ */
+function ng_IsOverriden(fnc) {
+  return ((typeof fnc==='function')&&(typeof fnc.callParent === 'function')&&((typeof fnc.overrides !== 'object')||(fnc.overrides.length>1)));
+}
+
 // --- ngCookies ---------------------------------------------------------------
 
 function ngSetCookie(name, value, expires, path, domain, secure, escapevalue)
