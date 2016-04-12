@@ -2564,6 +2564,9 @@ function ngObjAddEvent(ev, fce, once) {
     }
     else this[ev]=fce; // event handler not set, return added function
   }
+  else {
+    if((fce === null)&&(typeof this[ev] === 'undefined')) this[ev] = null;
+  }
 }
 
 function ngObjRemoveEvent(ev, fce) 
