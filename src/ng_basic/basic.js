@@ -2625,7 +2625,7 @@ function ngObjRemoveEvent(ev, fce)
 function ng_OverrideMethod(cls,method,fnc) {
   if(ng_IsArrayVar(fnc))
   {
-    for(var i=fnc.length-1;i>=0;i--)
+    for(var i=0;i<fnc.length;i++)
       ng_OverrideMethod(cls,method,fnc[i]);
     return;
   }
