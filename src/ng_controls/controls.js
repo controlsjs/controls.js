@@ -413,7 +413,7 @@ function ngRes(rid)
  *  Returns:
  *    FALSE if curtain shouldn't be displayed.
  */
-var OnStartModal = null;
+var OnStartModal = OnStartModal || null;
 /**
  *  Event: OnStopModal
  *  Occurs when modal window curtain is going to be removed.
@@ -424,7 +424,7 @@ var OnStartModal = null;
  *  Returns:
  *    FALSE if curtain shouldn't be removed.
  */
-var OnStopModal = null;
+var OnStopModal = OnStopModal || null;
 /**
  *  Event: OnModalChanged
  *  Occurs when modal window curtain has changed.
@@ -439,7 +439,7 @@ var OnStopModal = null;
  *  Returns:
  *    -
  */
-var OnModalChanged = null;
+var OnModalChanged = OnModalChanged || null;
 
 /**
  *  Variable: ngModalClassName
@@ -989,7 +989,7 @@ function ng_GetScrollBars(o)
 var ngControlsIDs = new Array();
 var ngControlImages = '';
 var ngRegisteredControlTypes = new Array();
-var ngOnRegisterControlType = null;
+var ngOnRegisterControlType = ngOnRegisterControlType || null;
 var ngMouseInControls = new Array();
 var ngCurrentLib = 'ng_controls';
 var ngCurrentUserControls = '';
@@ -1119,8 +1119,9 @@ function ngCreateControlId(baseid)
   return id;
 }
 
-var ngOnCreateControl = null;
-var ngOnCreateUnknownControl = null;
+var ngOnCreateControl = ngOnCreateControl || null;
+var ngOnCreateUnknownControl = ngOnCreateUnknownControl || null;
+var ngOnControlCreated = ngOnControlCreated || null;
 
 function ngControlCreated(obj)
 {
@@ -1606,6 +1607,7 @@ function ngCreateControls(defs,ref,parent,options)
           oc(c,cinfo.Ref,cinfo.Options);
         }
         if(options.OnCreated) options.OnCreated(c,cinfo.Ref,cinfo.Options);
+		if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,cinfo.Options);
       }
     }
   }
@@ -3170,7 +3172,7 @@ function ngSysControl(obj, id, type)
 
 // --- ngControl - children ----------------------------------------------------
 
-var ngOnAddChildControl = null;
+var ngOnAddChildControl = ngOnAddChildControl || null;
 
 function ngAddChildControl(parentobj, obj)
 {
@@ -3435,7 +3437,7 @@ function ngc_ActivatePopup(ctrl)
 
 // --- Pointer events ----------------------------------------------------------
 
-var ngOnPointerDown = null;
+var ngOnPointerDown = ngOnPointerDown || null;
 
 var ngDblClickMouseTimeout = 500;
 var ngDblClickMouseThreshold = 10;
