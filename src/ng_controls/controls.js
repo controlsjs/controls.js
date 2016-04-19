@@ -1295,6 +1295,11 @@ function ng_MergeDef(dst,def,allowundefined,callback)
       delete o.OnCreated;
     }
 
+    if((typeof d.Methods === 'object')&&(typeof o.Methods === 'object')&&(d.Methods)&&(o.Methods))
+    {
+      merge_events(d.Methods,o.Methods,false);
+      delete o.Methods;
+    }
     if((typeof d.Events === 'object')&&(typeof o.Events === 'object')&&(d.Events)&&(o.Events))
     {
       merge_events(d.Events,o.Events,false);
@@ -1379,6 +1384,10 @@ function ngCreateControl(d,ref,parent)
 
   if(!d.CtrlInheritanceDepth) // do it only on top component
   {
+    if(typeof d.Methods !== 'undefined')
+      for(var i in d.Methods)
+        ng_OverrideMethod(c,i,d.Methods[i]);
+
     if(typeof d.BeforeEvents !== 'undefined')
       for(var i in d.BeforeEvents)
         c.AddEvent(d.BeforeEvents[i],i);
