@@ -1606,8 +1606,8 @@ function ngCreateControls(defs,ref,parent,options)
           c.OnCreated=oc;
           oc(c,cinfo.Ref,cinfo.Options);
         }
+        if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,cinfo.Options);
         if(options.OnCreated) options.OnCreated(c,cinfo.Ref,cinfo.Options);
-		if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,cinfo.Options);
       }
     }
   }
