@@ -10899,7 +10899,7 @@ function ngem_DoUpdate(o)
     html.append('onkeydown="ngem_KeyDown(event,this)" onkeyup="ngem_KeyUp(event,this)" onkeypress="ngem_KeyPress(event,this)" onchange="ngem_TextChanged(event,this)"');
     html.append(' onfocus="ngc_Focus(event,this,\'ngMemo\')" onblur="ngc_Blur(event,this,\'ngMemo\')"');
     html.append('>');
-    html.append(ng_htmlEncode(this.Text == '' ? hint : this.Text));
+    html.append(ng_htmlEncode(this.Text == '' ? hint : this.Text).replace(/\n/g, "&#13;&#10;"));
     html.append('</textarea>');
 
     ng_SetInnerHTML(o,html.toString());
