@@ -117,19 +117,24 @@ function dlgbx_Center()
 {
   var o=this.Elm();
   if(!o) return;
-  var po=o.offsetParent;
-  if((po)&&(po==document.body)) po=null;
-  var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-  var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight()); 
-  
+  var pw,ph,sl,st,po=o.offsetParent;
+  ng_BeginMeasureElement(po);
+  sl=ng_ScrollX(po);
+  st=ng_ScrollY(po);
+  pw=ng_ClientWidthEx(po);
+  ph=ng_ClientHeightEx(po);
+  ng_EndMeasureElement(po);
+
   var b=this.Bounds;
+  ng_BeginMeasureElement(o);
   var w=ng_ClientWidth(o);
   var h=ng_ClientHeight(o);
+  ng_EndMeasureElement(o);
 
-  b.L=Math.round((pw-w)/2);
-  b.T=Math.round(0.40*ph-(h/2));
+  b.L=sl+Math.round((pw-w)/2);
+  b.T=st+Math.round(0.40*ph-(h/2));
   if(b.T<0) b.T=0;
-  
+
   this.SetBounds();
 }
 
@@ -140,9 +145,8 @@ function dlgbx_CalcAutoSize()
   var o=this.Elm();
   if(!o) return;
   var po=o.offsetParent;
-  if((po)&&(po==document.body)) po=null;
-  var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-  var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight()); 
+  var pw=ng_ClientWidthEx(po);
+  var ph=ng_ClientHeightEx(po);
 
   var cmw=ng_OuterWidth(o)-ng_ClientWidth(this.ControlsPanel.Elm());
 
