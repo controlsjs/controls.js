@@ -1025,7 +1025,7 @@ function ngvmf_GetErrorHint()
     var ldefs = {
       ErrorHint: this.ErrorHintDef
     };
-    var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.Elm() : undefined);
+    var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
     this.ErrorHint=ngVal(lref.ErrorHint,null);
     if(this.ErrorHint)
     {
@@ -1176,7 +1176,7 @@ function ngve_GetErrorHint()
     var ldefs = {
       ErrorHint: this.ErrorHintDef
     };
-    var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.Elm() : undefined);
+    var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
     this.ErrorHint=ngVal(lref.ErrorHint,null);
     if(this.ErrorHint) {
       var self=this;
