@@ -1708,6 +1708,7 @@ function ngmn_PopupMouseMenu(e)
   var mpos=ng_ParentPosition(ngApp ? ngApp.Elm() : document.body);
   pos.x-=mpos.x;
   pos.y-=mpos.y;
+  if((c.OnPopupMenu)&&(!ngVal(c.OnPopupMenu(c, c.PopupMenu, e, pos),false))) return true;
   c.PopupMenu.Popup(pos.x,pos.y);
 
   if(e.stopPropagation) e.stopPropagation();
@@ -1746,6 +1747,7 @@ function ngmn_DoGesture(pi)
         valign='bottom';
         halign='center';
       }
+      if((this.OnPopupMenu)&&(!ngVal(this.OnPopupMenu(this, pm, pi.Event, {x:pi.X,y:pi.Y}),false))) return true;
       pm.Popup(pi.X,pi.Y,halign,valign);
       return true;
     }
@@ -2340,6 +2342,10 @@ function Create_ngMenu(def, ref, parent)
    *  Event: OnPopup
    */
   c.OnPopup = null;
+  /*
+   *  Event: OnPopupMenu
+   */
+  c.OnPopupMenu = null;
   /*
    *  Event: OnDrawSeparator
    */

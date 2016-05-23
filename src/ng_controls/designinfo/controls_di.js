@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014-2015 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -10,1072 +10,954 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-if(ngHASDESIGNINFO()) {
-  // functions for creating basic component design info
-  window.ngControlDesignInfo = function(obj)
+(function()
+{
+  function getBaseProperties()
   {
-    if((!ngHASDESIGNINFO())||(!obj)||(typeof obj.DesignInfo !== 'undefined')) return;
-
-    obj.DesignInfo = {
-      // basic control create properties
-      AddData: {
-        InitProperties: {
-          L: {},
-          T: {}
+    var BaseDI = {
+      NewControl: {
+        Default: {
+          Properties: {
+            L: {},
+            T: {}
+          }
         }
       },
-
-      // list of basic control properties
       Properties: {
-        Type: { type: 'string', readOnly: true },
-        L: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0', help: "To set relative bounds write number + %" },
-        T: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        W: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '150' },
-        H: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '100' },
-        R: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        B: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        id: { type: 'string', lvl: 3 },
-        className: { type: 'string', lvl: 2 },
-        style: { type: 'object', dVal: '{}', lvl: 2 },
-        Opacity: { type: 'real', dVal: '1', lvl: 2 },
-        ScrollBars: { type: 'integer', dVal: 'ssNone', lvl: 2, readOnly: true,
-          items: ['ssNone','ssDefault','ssAuto','ssBoth','ssHorizontal','ssVertical']
-        },
-        ParentReferences: { type: 'boolean', dVal: 'true' },
-        innerHTML: { type: 'string', lvl: 3 },
-        OnCreateHTMLElement: { type: 'function', dVal: 'function(props, ref, c) {}', lvl: 3 },
-        Data: {
-          properties: {
-            Enabled: { type: 'boolean' },
-            Visible: { type: 'boolean' }
+        Type: {
+          DefaultType: 'string',
+          Types: {
+            'string': {
+              Editor: 'ngfeEditor_ControlType'
+            }
           }
         },
-        Controls: { type: 'group', lvl: 3 },
-        OnCreated: { type: 'function', dVal: 'function(c, refs, options) {}', lvl: 2 },
-        Events: { lvl: 2,
-          properties: {
-            OnSetEnabled: { type: 'function', dVal: 'function(c, v, p) { return true; }', lvl: 2 },
-            OnEnabledChanged: { type: 'function', dVal: 'function(c, p) { }', lvl: 2 },
-            OnSetVisible: { type: 'function', dVal: 'function(c, v) { return true; }', lvl: 2 },
-            OnVisibleChanged: { type: 'function', dVal: 'function(c) { }', lvl: 2 },
-            OnUpdate: { type: 'function', dVal: 'function(c) { return true; }', lvl: 2 },
-            OnUpdated: { type: 'function', dVal: 'function(c, o) { }', lvl: 2 },
-            OnMouseEnter: { type: 'function', dVal: 'function(c) { }', lvl: 2 },
-            OnMouseLeave: { type: 'function', dVal: 'function(c) { }', lvl: 2 }
+        L: { DefaultType: 'bounds' },
+        T: { DefaultType: 'bounds' },
+        R: { DefaultType: 'bounds' },
+        B: { DefaultType: 'bounds' },
+        ParentReferences: {
+          DefaultType: 'boolean',
+          Types: {
+            'boolean': {
+              DefaultValue: true
+            }
+          },
+          Level: 'optional'
+        },
+        OnCreating: {
+          DefaultType: 'events',
+          Types: {
+            'function': {
+              DefaultValue: 'function(def ,ref, parent, options) { return true; }'
+            }
+          },
+          Level: 'advanced'
+        },
+        OnCreated: {
+          DefaultType: 'events',
+          Types: {
+            'function': {
+              DefaultValue: 'function(c, refs, options) {}'
+            }
+          },
+          Level: 'advanced'
+        },
+
+        Data: {
+          DefaultType: 'object',
+          DestroyIfEmpty: true,
+          ObjectProperties:
+          {
+            Enabled: {
+              Types: {
+                'boolean': {
+                  DefaultValue: 'true'
+                }
+              }
+            }
+          }
+        },
+
+        ModifyControls: { DefaultType: 'object', DestroyIfEmpty: true, Level: 'optional' },
+
+        Events: {
+          DefaultType: 'object',
+          DestroyIfEmpty: true,
+          Level: 'advanced',
+          ObjectProperties:
+          {
+            OnSetEnabled: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, v, p) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnEnabledChanged: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, p) {}'
+                }
+              },
+              Level: 'basic'
+            }
+          }
+        },
+
+        Methods: {
+          DefaultType: 'object',
+          DestroyIfEmpty: true,
+          Level: 'advanced',
+          ObjectProperties:
+          {
+            SetChildControlsEnabled: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(v, p) { if (ng_IsOverriden(this.SetChildControlsEnabled)) this.SetChildControlsEnabled.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'experimental'
+            },
+            DoDispose: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function() { if (ng_IsOverriden(this.DoDispose)) return this.DoDispose.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            DoCreate: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(props, ref, nd, parent) { if (ng_IsOverriden(this.DoCreate)) this.DoCreate.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            DoSetEnabled: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(v) { if (ng_IsOverriden(this.DoSetEnabled)) this.DoSetEnabled.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            Enable: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function() { if (ng_IsOverriden(this.Enable)) this.Enable.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Disable: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function() { if (ng_IsOverriden(this.Disable)) this.Disable.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            SetEnabled: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(v, p) { if (ng_IsOverriden(this.SetEnabled)) this.SetEnabled.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Elm: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function() { if (ng_IsOverriden(this.Elm)) this.Elm.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            CtrlInheritsFrom: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(type) { if (ng_IsOverriden(this.CtrlInheritsFrom)) return this.CtrlInheritsFrom.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Create: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(props, ref) { if (ng_IsOverriden(this.Create)) return this.Create.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Dispose: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function() { if (ng_IsOverriden(this.Dispose)) this.Dispose.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            AddEvent: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(ev, fce, once) { if (ng_IsOverriden(this.AddEvent)) this.AddEvent.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            RemoveEvent: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(ev, fce) { if (ng_IsOverriden(this.RemoveEvent)) this.RemoveEvent.callParent.apply(this, arguments); }'
+                }
+              }
+            }
           }
         }
       }
     };
 
-    //menu.js ngControl extension
-    if ((ngUserControls)&&(typeof ngUserControls['menu'] !== 'undefined'))
-    {
-      obj.DesignInfo.Properties.Menu = { type: 'object', lvl: 2 };
-      obj.DesignInfo.Properties.PopupMenu = { type: 'object', lvl: 2 };
-    }
+    return BaseDI;
+  }
+
+  window.ngControlDesignInfo = function(obj)
+  {
+    if ((!ngHASDESIGNINFO()) || (!obj) || (typeof obj.DesignInfo !== 'undefined')) return;
+
+    obj.DesignInfo = {
+      Properties: {
+        W: { DefaultType: 'bounds' },
+        H: { DefaultType: 'bounds' },
+        ScrollBars: {
+          DefaultType: 'identifier',
+          Types: {
+            'identifier': {
+              DefaultValue: 'ssNone',
+              Editor: 'ngfeEditor_DropDownList',
+              EditorOptions: {
+                Items: ['ssNone','ssDefault','ssAuto','ssBoth','ssHorizontal','ssVertical']
+              }
+            }
+          },
+          Level: 'optional'
+        },
+        style: {
+          DefaultType: 'object',
+          DestroyIfEmpty: true,
+          Level: 'advanced',
+          ObjectProperties:
+          {
+            background: { DefaultType: 'string', Level: 'optional' },
+            backgroundColor: { DefaultType: 'css_colors', Level: 'optional' },
+            backgroundImage: { DefaultType: 'string', Level: 'optional' },
+            border: { DefaultType: 'string', Level: 'optional' },
+            borderColor: {
+              DefaultType: 'css_colors', Level: 'optional',
+              Types: {
+                'css_colors': {
+                  DefaultValue: '#000000ff'
+                }
+              }
+            },
+            borderBottom: { DefaultType: 'string', Level: 'optional' },
+            borderLeft: { DefaultType: 'string', Level: 'optional' },
+            borderRight: { DefaultType: 'string', Level: 'optional' },
+            borderTop: { DefaultType: 'string', Level: 'optional' },
+            borderStyle: {
+              DefaultType: 'string',
+              Level: 'optional',
+              Types: {
+                'string': {
+                  DefaultValue: 'none',
+                  DefaultCode: "'none'",
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['none','solid','dotted','dashed','double','groove','ridge','inset','outset']
+                  }
+                }
+              }
+            },
+            borderWidth: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
+            color: { DefaultType: 'css_colors', Level: 'optional' },
+            cursor: {
+              DefaultType: 'string', Level: 'optional',
+              Types: {
+                'string': {
+                  DefaultValue: 'auto',
+                  Editor: 'ngfeEditor_DropDown',
+                  EditorOptions: {
+                    Items: ['auto','crosshair','default','hand','pointer','move','e-resize','ne-resize','nw-resize','n-resize','se-resize','sw-resize','s-resize','w-resize','text','wait', 'help','url("")']
+                  }
+                }
+              }
+            },
+            font: { DefaultType: 'string', Level: 'optional' },
+            fontSize: { DefaultType: 'string', Level: 'optional' },
+            fontStyle: {
+              DefaultType: 'string', Level: 'optional',
+              Types: {
+                'string': {
+                  DefaultValue: 'normal',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['normal','italic','oblique','initial','inherit']
+                  }
+                }
+              }
+            },
+            fontWeight: {
+              DefaultType: 'string', Level: 'optional',
+              Types: {
+                'string': {
+                  DefaultValue: 'normal',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['normal','bold','bolder','lighter','100','200','300','400','500','600','700','800','900']
+                  }
+                }
+              }
+            },
+            lineHeight: { DefaultType: 'integer', Level: 'optional' },
+            margin: { DefaultType: 'string', Level: 'optional' },
+            marginBottom: { DefaultType: 'string_px', Level: 'optional' },
+            marginLeft: { DefaultType: 'string_px', Level: 'optional' },
+            marginRight: { DefaultType: 'string_px', Level: 'optional' },
+            marginTop: { DefaultType: 'string_px', Level: 'optional' },
+            padding: { DefaultType: 'string', Level: 'optional' },
+            paddingBottom: { DefaultType: 'string_px', Level: 'optional' },
+            paddingLeft: { DefaultType: 'string_px', Level: 'optional' },
+            paddingRight: { DefaultType: 'string_px', Level: 'optional' },
+            paddingTop: { DefaultType: 'string_px', Level: 'optional' },
+            textAlign: {
+              DefaultType: 'string', Level: 'optional',
+              Types: {
+                'string': {
+                  DefaultValue: 'left',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['left','center','right','justify']
+                  }
+                }
+              }
+            },
+            textDecoration: {
+              DefaultType: 'string', Level: 'optional',
+              Types: {
+                'string': {
+                  DefaultValue: 'none',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['none','underline','overline','line-through','initial','inherit']
+                  }
+                }
+              }
+            },
+            zIndex: { DefaultType: 'integer', Level: 'advanced' }
+          }
+        },
+        Opacity: {
+          DefaultType: 'float',
+          Types: {
+            'float': {
+              DefaultValue: 1.0
+            }
+          },
+          Level: 'basic'
+        },
+        className: { DefaultType: 'string', Level: 'advanced' },
+        innerHTML: { DefaultType: 'string', Level: 'hidden' },
+        id: { DefaultType: 'string', Level: 'optional' },
+        parent: {
+          DefaultType: 'string',
+          Types: {
+            'object': {}
+          },
+          Level: 'optional'
+        },
+        IE6AlignFix: {
+          DefaultType: 'boolean',
+          Types: {
+            'boolean': {
+              DefaultValue: ngIE6AlignFix
+            }
+          },
+          Level: 'optional'
+        },
+        OnCreateHTMLElement: {
+          DefaultType: 'events',
+          Types: {
+            'function': {
+              DefaultValue: 'function(props, ref, c) {}'
+            }
+          },
+          Level: 'optional'
+        },
+
+        Data: {
+          ObjectProperties:
+          {
+            Visible: {
+              Types: {
+                'boolean': {
+                  DefaultValue: 'true'
+                }
+              }
+            },
+            IsPopup: { DefaultType: 'boolean', Level: 'advanced' },
+            Gestures: {
+              DefaultType: 'object',
+              DestroyIfEmpty: true,
+              Level: 'advanced',
+              ObjectProperties:
+              {
+                drag: { DefaultType: 'boolean', Level: 'advanced' },
+                drapleft: { DefaultType: 'boolean', Level: 'optional' },
+                dragright: { DefaultType: 'boolean', Level: 'optional' },
+                dragup: { DefaultType: 'boolean', Level: 'optional' },
+                dragdown: { DefaultType: 'boolean', Level: 'optional' },
+                hold: { DefaultType: 'boolean', Level: 'advanced' },
+                release: { DefaultType: 'boolean', Level: 'advanced' },
+                swipe: { DefaultType: 'boolean', Level: 'advanced' },
+                swipeleft: { DefaultType: 'boolean', Level: 'optional' },
+                swiperight: { DefaultType: 'boolean', Level: 'optional' },
+                swipeup: { DefaultType: 'boolean', Level: 'optional' },
+                swipedown: { DefaultType: 'boolean', Level: 'optional' },
+                tap: { DefaultType: 'boolean', Level: 'advanced' },
+                doubletap: { DefaultType: 'boolean', Level: 'advanced' },
+                touch: { DefaultType: 'boolean', Level: 'advanced' },
+                transform: { DefaultType: 'boolean', Level: 'optional' },
+                pinch: { DefaultType: 'boolean', Level: 'optional' },
+                pinchin: { DefaultType: 'boolean', Level: 'optional' },
+                pinchout: { DefaultType: 'boolean', Level: 'optional' },
+                rotate: { DefaultType: 'boolean', Level: 'optional' }
+              }
+            }
+          }
+        },
+
+        Controls: {
+          DefaultType: 'object',
+          DestroyIfEmpty: true,
+          Level: 'advanced'
+        },
+
+        Events: {
+          ObjectProperties:
+          {
+            OnSetVisible: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, v) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnVisibleChanged: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              },
+              Level: 'basic'
+            },
+            OnUpdate: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnUpdated: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, elm) {}'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnMouseEnter: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              },
+              Level: 'basic'
+            },
+            OnMouseLeave: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              },
+              Level: 'basic'
+            },
+
+            OnIsInsidePopup: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, target, intype, e) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnClickOutside: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnPointerDown: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnPointerUp: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnPtrStart: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) {}'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnPtrEnd: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) {}'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnGesture: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            },
+            OnPtrDrag: {
+              DefaultType: 'events',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pi) { return true; }'
+                }
+              },
+              Level: 'advanced'
+            }
+          }
+        },
+
+        Methods: {
+          ObjectProperties:
+          {
+            DoMouseEnter: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e, mi, elm) { if (ng_IsOverriden(this.DoMouseEnter)) this.DoMouseEnter.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'optional'
+            },
+            DoMouseLeave: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e, mi, elm) { if (ng_IsOverriden(this.DoMouseLeave)) this.DoMouseLeave.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'optional'
+            },
+            DoClickOutside: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoClickOutside)) return this.DoClickOutside.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'optional'
+            },
+            IsInsidePopup: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(target, intype, e) { if (ng_IsOverriden(this.IsInsidePopup)) return this.IsInsidePopup.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'optional'
+            },
+            DoAcceptGestures: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm, gestures) { if (ng_IsOverriden(this.DoAcceptGestures)) this.DoAcceptGestures.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            DoAcceptPtrGestures: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm, eid, gestures, ev) { if (ng_IsOverriden(this.DoAcceptPtrGestures)) this.DoAcceptPtrGestures.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'optional'
+            },
+            DoGetPtrOptions: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(eid, opts) { if (ng_IsOverriden(this.DoGetPtrOptions)) this.DoGetPtrOptions.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'optional'
+            },
+
+            DoUpdate: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm) { if (ng_IsOverriden(this.DoUpdate)) return this.DoUpdate.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            DoAttach: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm, elmid) { if (ng_IsOverriden(this.DoAttach)) this.DoAttach.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoRelease: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm) { if (ng_IsOverriden(this.DoRelease)) this.DoRelease.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            DoSetVisible: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm, v) { if (ng_IsOverriden(this.DoSetVisible)) this.DoSetVisible.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            DoResize: {
+              DefaultType: 'function',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(elm) { if (ng_IsOverriden(this.DoResize)) return this.DoResize.callParent.apply(this, arguments); }'
+                }
+              },
+              Level: 'advanced'
+            },
+            SetVisible: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(v) { if (ng_IsOverriden(this.SetVisible)) this.SetVisible.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            SetFocus: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(state) { if (ng_IsOverriden(this.SetFocus)) this.SetFocus.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            SetBounds: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(props) { if (ng_IsOverriden(this.SetBounds)) return this.SetBounds.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            SetScrollBars: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(v) { if (ng_IsOverriden(this.SetScrollBars)) this.SetScrollBars.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            SetPopup: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(p) { if (ng_IsOverriden(this.SetPopup)) this.SetPopup.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            SetOpacity: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(v) { if (ng_IsOverriden(this.SetOpacity)) this.SetOpacity.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Align: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(o) { if (ng_IsOverriden(this.Align)) return this.Align.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Attach: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(o) { if (ng_IsOverriden(this.Attach)) this.Attach.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Release: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function() { if (ng_IsOverriden(this.Release)) this.Release.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            Update: { DefaultType: 'function', Level: 'optional',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(recursive) { if (ng_IsOverriden(this.Update)) this.Update.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPointerDown: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPointerDown)) return this.DoPointerDown.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPointerUp: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPointerUp)) return this.DoPointerUp.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPtrStart: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrStart)) return this.DoPtrStart.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPtrEnd: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrEnd)) return this.DoPtrEnd.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPtrDrag: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrDrag)) return this.DoPtrDrag.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPtrClick: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrClick)) this.DoPtrClick.callParent.apply(this, arguments); }'
+                }
+              }
+            },
+            DoPtrDblClick: { DefaultType: 'function', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrDblClick)) this.DoPtrDblClick.callParent.apply(this, arguments); }'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    ng_MergeVar(obj.DesignInfo ,getBaseProperties());
   };
 
   window.ngSysControlDesignInfo = function(obj)
   {
-    if((!ngHASDESIGNINFO())||(!obj)||(typeof obj.DesignInfo !== 'undefined')) return;
+    if ((!ngHASDESIGNINFO()) || (!obj) || (typeof obj.DesignInfo !== 'undefined')) return;
 
     obj.DesignInfo = {
       NonVisual: true,
       ControlCategory: 'System',
-      AddData: {
-        InitProperties: {
-          ID: { value: '' },
-          L: {},
-          T: {}
+      NewControl: {
+        Default: {
+          Properties: {
+            ID: {}
+          },
+          OnCreating: function(properties, DI)
+          {
+            var refname = (properties['ControlRefName'] && properties['ControlRefName'].Code) ? properties['ControlRefName'].Code: '';
+            properties['ID'] = { Code: (refname ? refname : properties['Type'] ) }
+
+            return true;
+          }
         }
       },
       Properties: {
-        Type: { type: 'string', readOnly: true },
-        L: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        T: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        R: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        B: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '0' },
-        ID: { type: 'string' },
-        OnCreated: { type: 'function', dVal: 'function(c, refs, options) {}', lvl: 2 },
-        Data: {
-          properties: {
-            Enabled: { type: 'boolean' }
-          }
-        },
-        Events: {
-          properties: {
-            OnSetEnabled: { type: 'function', dVal: 'function(c, v, p) { return true; }' },
-            OnEnabledChanged: { type: 'function', dVal: 'function(c, p) { }' }
-          }
-        }
+        R: { Level: 'advanced' },
+        B: { Level: 'advanced' },
+        ID: { DefaultType: 'string' }
       }
     };
+
+    ng_MergeVar(obj.DesignInfo ,getBaseProperties());
   };
 
 
-  if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
-  ngUserControls['controls_designinfo'] = {
-    OnControlCreated: function(def, c) {
-      if(!ngHASDESIGNINFO()) return;
+  // register options and params
+  window.FormEditor = ngNullVal(window.FormEditor, {});
+  var FE = window.FormEditor;
+  FE.Options = ngNullVal(FE.Options, {});
+  FE.Params = ngNullVal(FE.Params, {});
 
-      if (typeof FormEditor==='undefined') FormEditor = {};
-
-      FormEditor.PropertiesOrderPriority = ngNullVal(FormEditor.PropertiesOrderPriority, [
-        'Type',
-        'ID',
-        'L', 'T', 'W', 'H', 'R', 'B', 'CW', 'CH',
-        'id',
-        'Theme', 'ColorScheme', 'BackgroundColor',
-        'Namespace',
-        'ServerURL',
-        'ActiveCommand',
-        'DefaultValues',
-        'FieldDefs', 'ViewModel', 'DBViewModel',
-        'EditButtons',
-        'ErrorHint',
-        'className', 'style', 'Opacity',
-        'ScrollBars',
-        'ParentReferences',
-        'innerHTML',
-        'OnCreateHTMLElement',
-        'OnCreated',
-        'TreeImg',
-        'DropDown',
-        'ArrowsAlign',
-        'Arrows',
-        'DroppedDown',
-        'Mover',
-        'CloseBtn', 'HelpBtn', 'MaxBtn', 'MinBtn',
-        'Menu', 'PopupMenu',
-        'ButtonDef',
-        'Data',
-        'DataBind',
-        'Pages',
-        'ControlsPanel', 'ControlsPanel1', 'ControlsPanel2', 'Controls1', 'Controls2', 'Controls',
-        'Events'
-      ]);
+  // register basic property types groups
+  var PropertyTypesGroups = {
+    'images': ['image', 'object']
+  };
+  if (!ng_IsArrayVar(FE.Options.PropertyTypesGroups)) FE.Options.PropertyTypesGroups = [];
+  FE.Options.PropertyTypesGroups.push(PropertyTypesGroups);
 
 
-      // add package-dependend design info
-      def = ngVal(def, {});
-      def.DesignInfo = ngVal(def.DesignInfo, {});
-      def.DesignInfo.Properties = ngVal(def.DesignInfo.Properties, {});
-      if (def && def.DesignInfo && def.DesignInfo.Properties)
-      {
-        if ((ngUserControls)&&(typeof ngUserControls['viewmodel_controls'] !== 'undefined'))
-        {
-          var props = {
-            Visible: { type: 'string' },
-            Enabled: { type: 'string' },
-            Disabled: { type: 'string', lvl: 2 },
-            ReadOnly: { type: 'string' },
+  // Control ID Property Name
+  FE.Options.PEControlIDItemName = 'ControlRefName';
 
-            Focus: { type: 'string' },
-            MouseOver: { type: 'string', lvl: 2, databind_function: true },
-            Data: { type: 'string', lvl: 2 },
-            Link: { type: 'string', lvl: 2 },
-            OnClick: { type: 'string', databind_function: true }
-          };
-
-          if (c) {
-            if (typeof c.SetText === 'function') {
-              props.Text = { type: 'string' };
-              props.ngText = { type: 'string', lvl: 2 };
-              props.Alt = { type: 'string' };
-              props.ngAlt = { type: 'string', lvl: 2 };
-              props.Hint = { type: 'string' };
-              props.ngHint = { type: 'string', lvl: 2 };
-            }
-
-            if (typeof c.SetInvalid === 'function') {
-              props.Invalid = { type: 'string' };
-              props.Valid = { type: 'string', lvl: 2 };
-            }
-
-            var instantUpdateProperty = { type: 'boolean', dVal: 'false', ignoreDataModel: true },
-                delayedUpdateProperty = { type: 'integer', cType: 'feEdit', dVal: '500', ignoreDataModel: true };
-
-            switch (c.DefType) {
-              case 'ngEdit':
-                props.InstantUpdate = instantUpdateProperty;
-                props.DelayedUpdate = delayedUpdateProperty;
-                props.Lookup = { type: 'string' };
-                break;
-              case 'ngMemo':
-                props.InstantUpdate = instantUpdateProperty;
-                props.DelayedUpdate = delayedUpdateProperty;
-                break;
-              case 'ngList':
-                props.Value = { type: 'string' };
-                props.Selected = { type: 'string' };
-                props.Checked = { type: 'string' };
-                break;
-              case 'ngButton':
-              case 'ngSysAction':
-                props.Value = { type: 'string' };
-                props.Checked = { type: 'string' };
-                props.Command = { type: 'string' };
-                break;
-
-              case 'ngPages':
-              case 'ngWebBrowser':
-              case 'ngProgressBar':
-              case 'ngCalendar':
-                props.Value = { type: 'string' };
-                break;
-              default:
-                if (typeof c.SetText === 'function') {
-                  props.Value = { type: 'string' };
-                }
-                break;
-            }
-          }
-
-          if ((typeof CodeMirrorIntegration !== 'undefined')&&(typeof CodeMirrorIntegration.RunningInNetBeans === 'function')&&(CodeMirrorIntegration.RunningInNetBeans()))
-            for (var i in props) {
-              if (props[i].ignoreDataModel) continue;
-              props[i].cType = 'feDropDown';
-            }
-
-          def.DesignInfo.Properties.ViewModel = { type: 'string' };
-          def.DesignInfo.Properties.DataBind = {
-            dVal: 'ng_Bindings({})',
-            properties: props
-          };
-        }
-      }
+  // define Definition properties order
+  FE.Params.PropertiesOrderPriority = ngNullVal(FE.Params.PropertiesOrderPriority, [
+    FE.Options.PEControlIDItemName,
+    'Type',
+    'ID',
+    'L', 'T', 'W', 'H', 'R', 'B', 'CW', 'CH',
+    'id',
+    'Theme', 'ColorScheme', 'BackgroundColor',
+    'Layout',
+    'NavigatorAppearance',
+    'Namespace',
+    'ServerURL',
+    'ActiveCommand',
+    'DefaultValues',
+    'FieldDefs', 'ViewModel', 'DBViewModel',
+    'EditButtons',
+    'ErrorHint',
+    'className', 'style', 'Opacity',
+    'ScrollBars',
+    'parent',
+    'ParentReferences',
+    'innerHTML',
+    'IE6AlignFix',
+    'OnCreateHTMLElement',
+    'OnCreating',
+    'OnCreated',
+    'TreeImg',
+    'DropDown',
+    'ArrowsAlign',
+    'Arrows',
+    'DroppedDown',
+    'Mover',
+    'CloseBtn', 'HelpBtn', 'MaxBtn', 'MinBtn',
+    'Menu', 'PopupMenu',
+    'ButtonDef',
+    'Data',
+    'DataBind',
+    'Pages', 'ControlsPanel', 'ControlsPanel1', 'ControlsPanel2', 'Controls1', 'Controls2', 'Controls',
+    'ModifyControls',
+    'Methods', 'BeforeEvents', 'Events', 'AfterEvents', 'OverrideEvents'
+  ]);
+})()
 
 
-      var di;
-      switch(c.DefType)
-      {
-        case 'ngPanel':
-          di = {
-            BasicComponent: c.DefType,
-            IsContainer: true,
-            ControlCategory: 'Containers',
-            AddData: {
-              InitProperties: {
-                W: {}, H: {}, Controls: {}
-              }
-            },
-            Properties: {
-              Controls: { lvl: 1 }
-            }
-          };
-          break;
+if (typeof ngUserControls === 'undefined') ngUserControls = [];
+ngUserControls['controls_designinfo'] = {
+  OnFormEditorInit: function(FE)
+  {
+    FE.RegisterPropertyTypesGroup('events', ['function', 'identifier', 'null', 'undefined']);
+  },
 
-        case 'ngText':
-          di = {
-            ControlCategory: 'Labels',
-            AddData: {
-              InitProperties: {
-                'Data': {},
-                'Data.Text': { value: 'Text' }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  TextAlign: { type: 'string', dVal: 'left', readOnly: true,
-                    items: ['left', 'center', 'right']
-                  },
-                  AutoSize: { type: 'boolean', dVal: 'false', lvl: 2 },
-                  AutoSizeMode: { type: 'string', dVal: 'auto', lvl: 2, readOnly: true,
-                    items: [ 'auto', 'horizontal', 'vertical']
-                  },
-                  MinWidth: { type: 'integer', dVal: 'undefined', lvl: 2 },
-                  MinHeight: { type: 'integer', dVal: 'undefined', lvl: 2 },
-                  Text: { type: 'string' },
-                  ngText: { type: 'string' },
-                  ngTextD: { type: 'string', lvl: 2 },
-                  Alt: { type: 'string', lvl: 2 },
-                  ngAlt: { type: 'string', lvl: 2 },
-                  ngAltD: { type: 'string', lvl: 2 },
-                  HTMLEncode: { type: 'boolean', dVal: 'false', lvl: 3 },
-                  CanSelect: { type: 'boolean', lvl: 2 }
-                }
-              },
-              Events: {
-                properties: {
-                  OnSetText: { type: 'function', dVal: 'function(text, c) { return text; }' },
-                  OnGetText: { type: 'function', dVal: 'function(c) { return c.Text; }' },
-                  OnGetAlt: { type: 'function', dVal: 'function(c) { return c.Alt; }' }
-                }
-              }
-            }
-          };
-          break;
+  OnControlDesignInfo: function(def, c, ref)
+  {
+    var di;
 
-        case 'ngImage':
-          di = {
-            BasicComponent: c.DefType,
-            ControlCategory: 'Misc',
-            AddData: {
-              InitProperties: {
-                'Data': {},
-                'Data.Img': { value: "{L:0,T:0,W:50,H:50,Src:''}" }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  Alt: { type: 'string' },
-                  ngAlt: { type: 'string' },
-                  ngAltD: { type: 'string', lvl: 2 },
-                  AutoSize: { type: 'boolean' },
-                  Img: { type: 'object' }
-                }
-              },
-              Events: {
-                properties: {
-                  OnGetAlt: { type: 'function', dVal: 'function(c) { return c.Alt; }' },
-                  OnGetImg: { type: 'function', dVal: 'function(c) { return c.Img; }' }
-                }
-              }
-            }
-          };
-          break;
+    if (!c) return di;
 
-        case 'ngImageMap':
-          di = {
-            BasicComponent: c.DefType,
-            ControlCategory: 'Misc',
-            Properties: {
-              Data: {
-                properties: {
-                  Alt: { type: 'string' },
-                  ngAlt: { type: 'string' },
-                  ngAltD: { type: 'string', lvl: 2 },
-                  AutoSize: { type: 'boolean' },
-                  Img: { type: 'object' },
-                  Cursor: { type: 'string', dVal: '' },
-                  Shapes: { type: 'array' }
-                }
-              },
-              Events: {
-                properties: {
-                  OnGetAlt: { type: 'function', dVal: 'function(c) { return c.Alt; }' },
-                  OnGetImg: { type: 'function', dVal: 'function(c) { return c.Img; }' },
-                  OnGetShapeAlt: { type: 'function', dVal: 'function(c, i) { return c.Shapes[i]; }' },
-                  OnShapeClick: { type: 'function', dVal: 'function(c, i) { return c.Shapes[i]; }' },
-                  OnMouseEnter: { type: 'function', dVal: 'function(c) { }', lvl: 1 },
-                  OnMouseLeave: { type: 'function', dVal: 'function(c) { }', lvl: 1 },
-                  OnMouseShapeEnter: { type: 'function', dVal: 'function(p, bi) { }' },
-                  OnMouseShapeLeave: { type: 'function', dVal: 'function(p, bi) { }' }
-                }
-              }
-            }
-          };
-          break;
+    // define control specific DesignInfo
+    switch (c.DefType)
+    {
+      case 'ngPanel':
+      case 'ngText':
+      case 'ngImage':
+      case 'ngImageMap':
+      case 'ngButton':
+      case 'ngGroup':
+      case 'ngEdit':
+      case 'ngMemo':
+      case 'ngPages':
+      case 'ngToolBar':
+      case 'ngProgressBar':
+      case 'ngWebBrowser':
 
-        case 'ngButton':
-          di = {
-            ControlCategory: 'Buttons',
-            AddData: {
-              InitProperties: {
-                'Data': {},
-                'Data.Text': { value: 'Button' }
-              }
-            },
-            Properties: {
-              H: undefined,
-              Data: {
-                properties: {
-                  Action: { type: 'string' },
-                  Default: { type: 'boolean' },
-                  Cancel: { type: 'boolean' },
-                  Text: { type: 'string', dVal: 'Button' },
-                  ngText: { type: 'string', dVal: 'Button' },
-                  ngTextD: { type: 'string', dVal: 'Button', lvl: 2 },
-                  TextAlign: { type: 'string', dVal: 'center', readOnly: true, lvl: 2,
-                    items: ['left', 'center', 'right']
-                  },
-                  Alt: { type: 'string' },
-                  ngAlt: { type: 'string' },
-                  ngAltD: { type: 'string', lvl: 2 },
-                  HTMLEncode: { type: 'boolean', dVal: 'false', lvl: 3 },
-
-                  AutoSize: { type: 'boolean', lvl: 2 },
-                  MinWidth: { type: 'integer', dVal: 'undefined', lvl: 3 },
-                  Checked: { type: 'integer', dVal: '1', readOnly: true,
-                    items: ['0', '1', '2']
-                  },
-                  RadioGroup: { type: 'string', lvl: 2 },
-                  Cursor: { type: 'string', dVal: 'pointer', lvl: 2 },
-                  ReadOnly: { type: 'boolean', dVal: 'false', lvl: 2 },
-                  Img: { type: 'object' },
-                  ImgAlign: { type: 'string', dVal: 'left', lvl: 2,
-                    items: ['left', 'center', 'right']
-                  },
-                  ImgIndent: { type: 'integer', dVal: '0' },
-                  LeftImg: { type: 'object' },
-                  MiddleImg: { type: 'object' },
-                  RightImg: { type: 'object' }
-                }
-              },
-              Events: {
-                properties: {
-                  OnSetText: { type: 'function', dVal: 'function(text, c) { return text; }', lvl: 2 },
-                  OnGetText: { type: 'function', dVal: 'function(c) { return c.Text; }', lvl: 2 },
-                  OnGetAlt: { type: 'function', dVal: 'function(c) { return c.Alt; }', lvl: 2 },
-                  OnCheckChanged: { type: 'function', dVal: 'function(c) { }' },
-                  OnClick: { type: 'function', dVal: 'function(e) { return true; }' },
-                  OnDblClick: { type: 'function', dVal: 'function(e) { }' },
-
-                  OnGetImg: { type: 'function', dVal: 'function(c, idx) { return null; }', lvl: 3,
-                    help: 'idx values: <br><br>-1 for c.Img,<br>0 for c.LeftImg,<br>1 for c.MiddleImg,<br>2 for c.RightImg.<br>Return value is an image.'
-                  },
-                  OnGetClassName: { type: 'function', dVal: 'function(c, cls, text) { return c.BaseClassName+cls; }', lvl: 3 }
-                }
-              }
-            }
-          };
-          break;
-
-        case 'ngGroup':
-          di = {
-            AddData: {
-              InitProperties: {
-                W: {}, H: {}, Controls: {},
-                Data: {},
-                'Data.Text': {}
-              }
-            },
-            IsContainer: true,
-            ControlCategory: 'Containers',
-            Properties: {
-              CW: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '150', lvl: 2 },
-              CH: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '100', lvl: 2 },
-              ControlsPanel: { type: 'group', lvl: 2 },
-              Data: {
-                properties: {
-                  Text: { type: 'string' },
-                  ngText: { type: 'string' },
-                  ngTextD: { type: 'string', lvl: 2 },
-                  HTMLEncode: { type: 'boolean', dVal: 'false', lvl: 3 },
-                  Frame: { type: 'object', dVal: '{}' },
-                  ControlsInside: { type: 'boolean' }
-                }
-              },
-              Controls: { lvl: 1 },
-              Events: {
-                properties: {
-                  OnSetText: { type: 'function', dVal: 'function(text, c) { return text; }' },
-                  OnGetText: { type: 'function', dVal: 'function(c) { return c.Text; }', lvl: 1 }
-                }
-              }
-            }
-          };
-          break;
-
-        case 'ngEdit':
-          di = {
-            ControlCategory: 'Edits',
-            AddData: {
-              InitProperties: {
-                'W': { value: 80 },
-                'Data': {},
-                'Data.Text': { value: 'Edit' }
-              }
-            },
-            Properties: {
-              DropDown: { type: 'object', cType: 'ngControl', lvl: 3, dVal: "{Type:'ngList'}" },
-              Data: {
-                properties: {
-                  Text: { type: 'string' },
-                  ngText: { type: 'string' },
-                  ngTextD: { type: 'string', lvl: 2 },
-                  DefaultText: { type: 'string' },
-                  TextAlign: { type: 'string', dVal: 'left', readOnly: true,
-                    items: ['left', 'center', 'right']
-                  },
-                  Alt: { type: 'string' },
-                  ngAlt: { type: 'string' },
-                  ngAltD: { type: 'string', lvl: 2 },
-                  Hint: { type: 'string' },
-                  ngHint: { type: 'string' },
-                  ngHintD: { type: 'string', lvl: 2 },
-                  HintStyle: { type: 'integer', dVal: '0', lvl: 2 },
-                  ReadOnly: { type: 'boolean', dVal: 'false' },
-                  Password: { type: 'boolean', dVal: 'false' },
-                  MaxLength: { type: 'integer', dVal: '0', lvl: 2 },
-                  LeftImg: { type: 'object' },
-                  MiddleImg: { type: 'object' },
-                  RightImg: { type: 'object' },
-                  OffsetTop: { type: 'integer', dVal: '0', lvl: 2 },
-                  HasFocus: { type: 'boolean', dVal: 'false', lvl: 2 },
-                  SelectOnFocus: { type: 'boolean' },
-                  LockHintCaretPos: { type: 'boolean', lvl: 2 },
-                  Buttons: { type: 'array', dVal: 'null', lvl: 2 },
-                  DropDownType: { type: 'integer', dVal: 'ngeDropDownEdit', readOnly: true, lvl: 3,
-                    items: ['ngeDropDownEdit', 'ngeDropDownList']
-                  },
-                  DropDownControl: { type: 'object', lvl: 3 },
-                  DropDownWidth: { type: 'integer', dVal: 'undefined', lvl: 3 },
-                  DropDownAlign: { type: 'integer', dVal: 'left', readOnly: true, lvl: 3,
-                    items: ['left', 'right']
-                  },
-                  Suggestion: { type: 'boolean', dVal: 'false', lvl: 2 },
-                  SuggestionDelay: { type: 'integer', dVal: '200', lvl: 2 },
-                  SuggestionSearchColumn: { type: 'string', lvl: 2 },
-                  SuggestionIgnoreCase: { type: 'boolean', lvl: 2 },
-                  SuggestionPartial: { type: 'integer', dVal: '2', lvl: 2 },
-                  SuggestionURL: { type: 'string', lvl: 2 },
-                  SuggestionType: { type: 'string', lvl: 2 }
-                }
-              },
-              Events: {
-                properties: {
-                  OnSetText: { type: 'function', dVal: 'function(text, c) { return text; }' },
-                  OnGetText: { type: 'function', dVal: 'function(c) { return c.Text; }' },
-                  OnTextChanged: { type: 'function', dVal: 'function(c) { }' },
-                  OnGetAlt: { type: 'function', dVal: 'function(c) { return c.Alt; }', lvl: 2 },
-                  OnGetHint: { type: 'function', dVal: 'function(c) { return c.Hint; }', lvl: 2 },
-                  OnGetClassName: { type: 'function', dVal: 'function(c, cls, text, hint) { return cls; }', lvl: 2 },
-                  OnDropDown: { type: 'function', dVal: 'function(c, l) { return true; }', lvl: 3 },
-                  OnHideDropDown: { type: 'function', dVal: 'function(c, l) { return true; }', lvl: 3 },
-                  OnClickOutside: { type: 'function', dVal: 'function(dd, pi) { return true; }', lvl: 3 },
-                  OnKeyDown: { type: 'function', dVal: 'function(e, elm) { return true; }', lvl: 2 },
-                  OnKeyUp: { type: 'function', dVal: 'function(e, elm) { return true; }', lvl: 2 },
-                  OnKeyPress: { type: 'function', dVal: 'function(e, elm) { return true; }', lvl: 2 },
-                  OnFocus: { type: 'function', dVal: 'function(c) { }' },
-                  OnBlur: { type: 'function', dVal: 'function(c) { }' },
-                  OnGetImg: { type: 'function', dVal: 'function(c, idx) { return null; }', lvl: 3,
-                    help: 'idx values: <br><br>0 for c.LeftImg,<br>1 for c.MiddleImg,<br>2 for c.RightImg.<br>Return value is an image.'
-                  },
-                  OnSuggestionSetText: { type: 'function', dVal: 'null', lvl: 2 },
-                  OnSuggestionSearch: { type: 'function', dVal: 'function(c,txt,res) { return true; }', lvl: 2 },
-                  OnSuggestionCompareItem: { type: 'function', dVal: 'function(c,txt,t,list,it,parent) { return true; }', lvl: 2 },
-                  OnSuggestionURL: { type: 'function', dVal: 'function(c, url) { return url; }', lvl: 2 },
-                  OnSuggestionResults: { type: 'function', dVal: 'function(c,txt,data,res) { return true; }', lvl: 2 },
-                  OnSuggestionData: { type: 'function', dVal: 'function(c,txt,data) { return true; }', lvl: 2 },
-                  OnSetReadOnly: { type: 'function', dVal: 'function(c,ro) { return true; }', lvl: 2 },
-                  OnReadOnlyChanged: { type: 'function', dVal: 'function(c,ro) {}', lvl: 2 }
-                }
-              }
-            }
-          };
-          break;
-
-        case 'ngMemo':
-          di = {
-            ControlCategory: 'Edits',
-            AddData: {
-              InitProperties: {
-                'W': { value: 150 },
-                'H': { value: 150 },
-                'Data': {},
-                'Data.Text': { value: 'MemoBox' }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  Text: { type: 'string' },
-                  ngText: { type: 'string' },
-                  ngTextD: { type: 'string', lvl: 2 },
-                  DefaultText: { type: 'string' },
-                  TextAlign: { type: 'string', dVal: 'left', readOnly: true,
-                    items: ['left', 'center', 'right']
-                  },
-                  Alt: { type: 'string' },
-                  ngAlt: { type: 'string' },
-                  ngAltD: { type: 'string', lvl: 2 },
-                  Hint: { type: 'string' },
-                  ngHint: { type: 'string' },
-                  ngHintD: { type: 'string', lvl: 2 },
-                  HintStyle: { type: 'integer', dVal: '0', lvl: 2 },
-                  ReadOnly: { type: 'boolean', dVal: 'false' },
-                  Frame: { type: 'object', dVal: '{}', lvl: 2 },
-                  HasFocus: { type: 'boolean', dVal: 'false', lvl: 2 },
-                  SelectOnFocus: { type: 'boolean' },
-                  LockHintCaretPos: { type: 'boolean', lvl: 2 }
-                }
-              },
-              Events: {
-                properties: {
-                  OnSetText: { type: 'function', dVal: 'function(text, c) { return text; }' },
-                  OnGetText: { type: 'function', dVal: 'function(c) { return c.Text; }' },
-                  OnTextChanged: { type: 'function', dVal: 'function(c) { }' },
-                  OnGetAlt: { type: 'function', dVal: 'function(c) { return c.Alt; }', lvl: 2 },
-                  OnGetHint: { type: 'function', dVal: 'function(c) { return c.Hint; }', lvl: 2 },
-                  OnGetClassName: { type: 'function', dVal: 'function(c, cls, text, hint) { return cls; }', lvl: 2 },
-                  OnKeyDown: { type: 'function', dVal: 'function(e, elm) { return true; }', lvl: 2 },
-                  OnKeyUp: { type: 'function', dVal: 'function(e, elm) { return true; }', lvl: 2 },
-                  OnKeyPress: { type: 'function', dVal: 'function(e, elm) { return true; }', lvl: 2 },
-                  OnFocus: { type: 'function', dVal: 'function(c) { }' },
-                  OnBlur: { type: 'function', dVal: 'function(c) { }' },
-                  OnSetReadOnly: { type: 'function', dVal: 'function(c,ro) { return true; }', lvl: 2 },
-                  OnReadOnlyChanged: { type: 'function', dVal: 'function(c,ro) {}', lvl: 2 }
-                }
-              }
-            }
-          };
-          break;
-
-        case 'ngPages':
-          di = {
-            BasicComponent: c.DefType,
-            IsContainer: true,
-            ControlCategory: 'Containers',
-            AddData: {
-              InitProperties: {
-                W: {}, H: {}, Pages: {}
-              },
-              ControlsGroup: function(selected_idx, clicked_idx) {
-                var ref = FormEditor.GetControlRefByIdx(selected_idx);
-                if (!ref) return '';
-                return 'Pages.'+ref.Page+'.Controls';
-              },
-              ControlsGroupNames: function(selected_idx) {
-                var ref = FormEditor.GetControlRefByIdx(selected_idx);
-                if (!ref) return null;
-
-                var groups = [];
-                for (var i = 0; i < ref.Pages.length; i++) groups.push('Pages.'+i+'.Controls');
-
-                return groups;
-              }
-            },
-            Properties: {
-              Pages: { type: 'array', dVal: "[{Text:'Page 1', Controls:{}},{Text:'Page 2', Controls:{}}]" },
-              ControlsPanel: { type: 'group', lvl: 2 },
-              Data: {
-                properties: {
-                  Page: { type: 'integer', dVal: '0' },
-                  PagesVisible: { type: 'boolean' },
-                  PagesIndent: { type: 'integer', dVal: '0' },
-                  PagesSize: { type: 'integer', dVal: '0' },
-                  MaxRows: { type: 'integer', dVal: '0' },
-                  PagesAlign: { type: 'string', dVal: 'left', readOnly: true,
-                    items: ['left', 'right']
-                  },
-                  PagesVAlign: { type: 'string', dVal: 'top', readOnly: true,
-                    items: ['top', 'bottom']
-                  },
-                  TextAlign: { type: 'string', dVal: 'center', readOnly: true,
-                    items: ['left', 'center', 'right']
-                  },
-                  HTMLEncode: { type: 'boolean', dVal: 'false', lvl: 3 },
-                  RowOverlap: { type: 'integer', dVal: '0' },
-                  PageImages: { type: 'array' },
-                  Frame: { type: 'object', dVal: '{}' }
-                }
-              },
-              Events: {
-                properties: {
-                  OnPageChanging: { type: 'function', dVal: 'function(c, p) { return true; }' },
-                  OnPageChanged: { type: 'function', dVal: 'function(c, op) { }' },
-                  OnGetText: { type: 'function', dVal: 'function(c, i) { return c.Pages[i].Text; }' },
-                  OnGetAlt: { type: 'function', dVal: 'function(c, i) { return c.Pages[i].Alt; }' },
-                  OnClick: { type: 'function', dVal: 'function(e) { return true; }' },
-                  OnDblClick: { type: 'function', dVal: 'function(e) { return true; }' }
-                }
-              }
-            },
-            Events: {
-              OnGetDesignInfo: function(idx, di) {
-                var ref = FormEditor.GetControlRefByIdx(idx);
-                if ((!ref)|| ref.Pages.length==0) return di;
-
-                var page_props = {
-                  id: { type: 'string', lvl: 3 },
-                  Text: { type: 'string' },
-                  Alt: { type: 'string' },
-                  Visible: { type: 'boolean' },
-                  Enabled: { type: 'boolean' },
-                  ControlsPanel: { type: 'group', lvl: 2 },
-                  Controls: { type: 'group' },
-                  W: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '150' },
-                  H: { type: ['integer','string'], cType: 'feBoundsEditNum', dVal: '150' },
-                  MinWidth: { type: 'integer' }
-                }
-
-                for (var i = 0; i < ref.Pages.length; i++) {
-                  di.Properties['Pages.'+i] = {};
-                  di.Properties['Pages.'+i].properties = page_props;
-                }
-
-                return di;
-              }
-//               HandleClick: function(pi, idx) {
-//                 console.log(pi, 'HandleClick ngPages', idx);
-//                 var ref = FormEditor.GetControlRefByIdx(idx);
-//                 if ((ref)&& typeof ref.DoPtrClick==='function') {
-//                   console.log('HandleClick clicked');
-//                   //var elm = ref.Elm();
-//                   //debugger;
-//                   //ref.DoPtrClick(pi);
-//                   //ref.DoPtrStart(pi);
-//                 }
-//                 return true;
-//               }
-//               OnRefresh: function(c, data, idx) {
-//                 console.log('OnRefresh ngPages', c, data, idx);
-//               }
-            },
-            Menu: {
-              Text: 'Pages',
-              Items: function(c, menu, idx) {
-                var updateMenu = function(m, idx) {
-                  var ref = FormEditor.GetControlRefByIdx(idx); //reference c je neplatna
-                  if ((((ref) && typeof ref.DesignInfo==='object')&& typeof ref.DesignInfo.Menu==='object')&& typeof ref.DesignInfo.Menu.Items==='function') {
-                    var items = ref.DesignInfo.Menu.Items(ref, m, idx);
-                    m.SetItems(items);
-                  }
-                }
-
-                var items = [
-                  { Text: 'Add Page', OnMenuClick: function(e, m, it) {
-                    var ref = FormEditor.GetControlRefByIdx(idx);
-                    if (!ref) return false;
-
-                    var pageCode = "{Text:'Page "+(ref.Pages.length+1)+"',Controls:{}}";
-
-                    FormEditor.SetObjectProperties([
-                      { name: 'Pages.' + ref.Pages.length, type: 'array', value: pageCode, appControlIdx: idx },
-                      { name: 'Data.Page', value: ref.Pages.length, appControlIdx: idx }
-                    ], function(chData){ updateMenu(m, idx); FormEditor.UpdatePropertiesList(); });
-
-                    return false;
-                  }},
-                  { Text: 'Delete Page', Enabled: c.Pages.length, OnMenuClick: function(e, m, it) {
-                    var ref = FormEditor.GetControlRefByIdx(idx);
-                    if (!ref) return false;
-                    var newPageSelect = ref.Page - 1;
-                    if (newPageSelect < 0) newPageSelect = 0;
-
-                    var listRef = FormEditor.GetListRefByIdx(idx);
-                    if (listRef) {
-                      var pages = FormEditor.GetObjectProperty(listRef,'Pages');
-                      if (((pages)&& pages.listRef)&& pages.listRef.Value.vtype=='ObjectExpression') {
-                        if (ref.Page != ref.Pages.length - 1) {
-                          ngDEBUGWARN('Pages is defined as an object (not as an array). Only last page can be deleted.');
-                          return false;
-                        }
-                      }
-                    }
-
-                    FormEditor.SetObjectProperties([
-                      { name: 'Pages.' + ref.Page, value: null, appControlIdx: idx },
-                      { name: 'Data.Page', value: newPageSelect, appControlIdx: idx }
-                    ], function(chData){ updateMenu(m, idx); FormEditor.UpdatePropertiesList(); });
-
-                    return false;
-                  }},
-                  { Text: '-' }
-                ];
-
-                if (typeof c.Pages!=='object') return true;
-                var text, checked;
-                for (var j in c.Pages) {
-                  text = c.Pages[j].Text + ' (' + j + ')';
-                  checked = j == c.Page;
-                  if (checked) var checked_text = text;
-                  items.push({
-                    Text: text,
-                    RadioGroup: 'menu_pages',
-                    Checked: checked,
-                    Page: j,
-                    OnMenuClick: function(e, m, it) {
-                      m.CheckItem(it, true);
-                      FormEditor.SetObjectProperties([{ name: 'Data.Page', value: it.Page, appControlIdx: idx }], function(chData){ updateMenu(m, idx); });
-                      return false;
-                    }
-                  });
-                }
-/*
-                items.push({ Text: '-' });
-
-                items.push({ Text: 'Edit properties - ' + checked_text, OnMenuClick: function(e, m, it) {
-//                   if ((FormEditor.GUI)&& FormEditor.GUI.EditorListFrame) {
-//                     FormEditor.GUI.EditorListFrame.Dispose();
-//                     delete FormEditor.GUI.EditorListFrame;
-//                   }
-
-//                   var props = {
-//                     Text: { type: 'string', dVal: 'Page' }
-//                   };
-//                   var def = {
-//                     EditorListFrame: {
-//                       Type: 'feFrame',
-//                       L: 0, T: 0, R: 0, B: 0,
-//                       Data: {
-//                         ScrollBars: ssAuto
-//                       },
-//                       Controls: {
-//                         DesignInfoEditorList: FormEditor.GetPropertiesListDef(props)
-//                       }
-//                     }
-//                   }
-
-                  //FormEditor.GUI.AddControls(def, FormEditor.GUI.DesignInfoEditorHolder);
-//                   FormEditor.GUI.DesignInfoEditorHolder.Controls.AddControls(def);
-//                   FormEditor.GUI.DesignInfoEditorHolder.Show();
-
-                  return false;
-                }});
-*/
-                return items;
-              }
-            }
-          };
-          break;
-
-        case 'ngToolBar':
-          di = {
-            BasicComponent: c.DefType,
-            IsContainer: true,
-            ControlCategory: 'Containers',
-            AddData: {
-              InitProperties: {
-                W: {}, H: {}, Controls: {}
-              }
-            },
-            ChildControlsDesignInfo: {
-              Properties: {
-                Data: {
-                  properties: {
-                    ToolBarIgnore: { type: 'boolean', dVal: 'false' },
-                    ToolBarAutoUpdate: { type: 'boolean' },
-                    ToolBarIndent: { type: 'integer', dVal: '0' },
-                    ToolBarHPadding: { type: 'integer' },
-                    ToolBarVPadding: { type: 'integer' },
-                    ToolBarWidth: { type: 'integer' },
-                    ToolBarHeight: { type: 'integer' },
-                    ToolBarBreak: { type: 'boolean', dVal: 'false' },
-                    ToolBarNoWrap: { type: 'boolean', dVal: 'false' }
-                  }
-                }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  AutoSize: { type: 'boolean', dVal: 'false' },
-                  Vertical: { type: 'boolean', dVal: 'false' },
-                  VPadding: { type: 'integer', dVal: '0' },
-                  HPadding: { type: 'integer', dVal: '0' },
-                  VAlign: { type: 'string', dVal: 'top', readOnly: true,
-                    items: ['top', 'bottom']
-                  },
-                  HAlign: { type: 'string', dVal: 'left', readOnly: true,
-                    items: ['left', 'right']
-                  },
-                  Wrapable: { type: 'boolean' }
-                }
-              },
-              Controls: { lvl: 1 }
-            }
-          }
-          break;
-
-        case 'ngProgressBar':
-          di = {
-            ControlCategory: 'Misc',
-            AddData: {
-              InitProperties: {
-                W: {}
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  Position: { type: 'integer', dVal: '0' },
-                  Smooth: { type: 'boolean', dVal: 'false' },
-                  LeftImg: { type: 'object' },
-                  MiddleImg: { type: 'object' },
-                  RightImg: { type: 'object' },
-                  BarImg: { type: 'object' }
-                }
-              }
-            }
-          }
-          break;
-
-        case 'ngWebBrowser':
-          di = {
-            BasicComponent: c.DefType,
-            ControlCategory: 'Misc',
-            AddData: {
-              InitProperties: {
-                W: { value: '320' }, H: { value: '240' },
-                Data: {},
-                'Data.URL': { value: '' }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  URL: { type: 'string' }
-                }
-              },
-              Events: {
-                properties: {
-                  OnSetURL: { type: 'function', dVal: 'function(c, url) { return true; }' },
-                  OnGetURL: { type: 'function', dVal: 'function(c, url) { return url; }' },
-                  OnSetHTML: { type: 'function', dVal: 'function(c, html) { return html; }' }
-                }
-              }
-            }
-          }
-          break;
-
-        //Derived controls
-        case 'ngFrame':
-          di = {
-            BasicComponent: c.DefType,
-            IsContainer: true,
-            ControlCategory: 'Containers',
-            Properties: {
-              ParentReferences: { dVal: 'false' },
-              Controls: { lvl: 1 }
-            }
-          };
-          break;
-
-        case 'ngCheckBox':
-          di = {
-            ControlCategory: 'Buttons',
-            AddData: {
-              InitProperties: {
-                'Data': {},
-                'Data.Text': { value: 'CheckBox' }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  AllowGrayed: { type: 'boolean', dVal: 'false' },
-                  TextAlign: { type: 'string', dVal: 'right', readOnly: true, lvl: 1,
-                    items: ['left', 'right']
-                  },
-                  RadioGroup: { lvl: 1 }
-                }
-              }
-            }
-          };
-          break;
-
-        case 'ngRadioButton':
-          di = {
-            ControlCategory: 'Buttons',
-            AddData: {
-              InitProperties: {
-                'Data': {},
-                'Data.Text': { value: 'RadioButton' }
-              }
-            },
-            Properties: {
-              Data: {
-                properties: {
-                  AllowGrayed: { type: 'boolean', dVal: 'false' },
-                  RadioGroup: { type: 'string', dVal: 'default' },
-                  TextAlign: { type: 'string', dVal: 'right', readOnly: true, lvl: 1,
-                    items: ['left', 'right']
-                  },
-                  RadioGroup: { lvl: 1 }
-                }
-              }
-            }
-          };
-          break;
-
-        case 'ngDropDownList':
-          di = {
-            ControlCategory: 'Edits',
-            Properties: {
-              DropDown: { lvl: 1 },
-              Data: {
-                properties: {
-                  DropDownType: { type: 'integer', dVal: 'ngeDropDownList', readOnly: true, lvl: 2,
-                    items: ['ngeDropDownEdit', 'ngeDropDownList']
-                  },
-                  Suggestion: { lvl: 1 }
-                }
-              }
-            }
-          };
-        case 'ngDropDown':
-          di = {
-            ControlCategory: 'Edits',
-            Properties: {
-              DropDown: { lvl: 1 },
-              Data: {
-                properties: {
-                  DropDownType: { type: 'integer', dVal: 'ngeDropDownEdit', readOnly: true, lvl: 2,
-                    items: ['ngeDropDownEdit', 'ngeDropDownList']
-                  },
-                  Suggestion: { lvl: 1 }
-                }
-              }
-            }
-          }
-          break;
-
-        case 'ngEditNum':
-          di = {
-            ControlCategory: 'Edits',
-            Properties: {
-              ArrowsAlign: { type: 'string', dVal: 'right',
-                items: ['left', 'right', 'both']
-              },
-              Arrows: { type: 'string', dVal: 'leftright',
-                items: ['none', 'leftright', 'updown']
-              },
-              Data: {
-                properties: {
-                  Step: { type: 'integer', dVal: '1' },
-                  StepRound: { type: 'boolean', dVal: 'false' },
-                  MinNum: { type: 'integer' },
-                  MaxNum: { type: 'integer' },
-                  DefaultNum: { type: 'integer', dVal: '0' },
-
-                  Text: { lvl: 2 },
-                  ngText: { lvl: 2 },
-                  ngTextD: { lvl: 2 },
-                  TextAlign: { lvl: 2 },
-                  Hint: { lvl: 2 },
-                  ngHint: { lvl: 2 },
-                  Password: { lvl: 2 },
-                  Suggestion: { lvl: 3 },
-                  SuggestionDelay: { lvl: 3 },
-                  SuggestionSearchColumn: { lvl: 3 },
-                  SuggestionIgnoreCase: { lvl: 3 },
-                  SuggestionPartial: { lvl: 3 },
-                  SuggestionURL: { lvl: 3 },
-                  SuggestionType: { lvl: 3 }
-                }
-              },
-              Events: {
-                properties: {
-                  OnGetNum: { type: 'function', dVal: 'function(c) { }' },
-                  OnSetNum: { type: 'function', dVal: 'function(c, n) { }' },
-                  OnUp: { type: 'function', dVal: 'function(e, n) { return true; }' },
-                  OnDown: { type: 'function', dVal: 'function(e, n) { return true; }' },
-                  OnSetText: { lvl: 2 },
-                  OnGetText: { lvl: 2 },
-                  OnTextChanged: { lvl: 2 },
-                  OnGetAlt: { lvl: 2 }
-                }
-              }
-            }
-          };
-          break;
-
-      }
-
-      if(typeof di!=='undefined') {
-        ng_MergeVar(di, {
-          Properties: {
-            Type: { dVal: c.DefType }
-          }
-        });
-        ng_MergeVar(di, def.DesignInfo);
-        def.DesignInfo = di;
-      }
-
+      // Derived controls
+      case 'ngFrame':
+      case 'ngRadioButton':
+      case 'ngCheckBox':
+      case 'ngDropDownList':
+      case 'ngDropDown':
+      case 'ngEditNum':
+        break;
     }
+
+    di = ngNullVal(di, {});
+
+    // define common DesignInfo
+    var events = (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events) ? c.DesignInfo.Properties.Events : {},
+        eventstype = ['After', 'Before', 'Override'],
+        id;
+    di.Properties = ngNullVal(di.Properties, {});
+    for (var i = 0; i < eventstype.length; i++)
+    {
+      id = eventstype[i] + 'Events';
+      di.Properties[id] = ngNullVal(c.DesignInfo.Properties[id], {});
+      ng_MergeVar(di.Properties[id], events);
+    }
+
+    return di;
   }
-}
+};

@@ -483,7 +483,7 @@ function ngColorPicker(def,ref,parent)
     }
   });
 
-  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#ff000000'});
+  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#000000ff'});
 
   var c = ngCreateControlAsType(
     def,
@@ -3929,7 +3929,7 @@ function ngColorPickerDropDown(def,ref,parent)
     }
   });
 
-  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#ff000000'});
+  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#000000ff'});
 
   var c = ngCreateControlAsType(def,
     (typeof def.CreateFrom === 'string') ? def.CreateFrom : 'ngDropDown',

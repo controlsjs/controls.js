@@ -1421,14 +1421,26 @@ function ngCreateControl(d,ref,parent)
       c.OnGetHint = ngc_GetResHint;
   }
 
-  if(uc)
+  var hasdi=ngHASDESIGNINFO();
+  if(uc) {
     for(j in ngUserControls)
     {
       uc=ngUserControls[j];
       if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
+      if((hasdi)&&(typeof uc.OnControlDesignInfo === 'function'))
+      {
+        var di = uc.OnControlDesignInfo(d,c,ref);
+        if(typeof di !== 'undefined')
+        {
+          d.DesignInfo = ngVal(d.DesignInfo, {});
+          ng_MergeVar(di, d.DesignInfo);
+          d.DesignInfo = di;
+        }
+      }
     }
+  }
 
-  if(ngHASDESIGNINFO())
+  if(hasdi)
   {
     if(typeof d.DesignInfo==='object')
     {
@@ -1472,6 +1484,7 @@ function ngCreateControlAsType(def,type, ref,parent)
 
 var ngCreateControlsOptions = null;
 var ngCreateControlsLevel = 0;
+var ngOnCreateControlsError = null;
 
 function ngCreateControls(defs,ref,parent,options)
 {
@@ -1598,6 +1611,7 @@ function ngCreateControls(defs,ref,parent,options)
     catch(e)
     {
       ngDEBUGERROR(e);
+      if(typeof ngOnCreateControlsError === 'function') ngOnCreateControlsError(e,d,defs,ref,parent,options);
     }
     ngCreateControlsLevel--;
     if(!ngCreateControlsLevel)
