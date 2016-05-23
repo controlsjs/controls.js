@@ -222,7 +222,7 @@ var FileUploaderControl = {
       }
 
       if(def.Controls) {
-        if(typeof def.Controls.UploadWindow.parent === 'undefined') def.Controls.UploadWindow.parent=(typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : document.body;
+        if(typeof def.Controls.UploadWindow.parent === 'undefined') def.Controls.UploadWindow.parent=(typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body;
         if(!def.ListFiles) {
           if(def.Controls.Buttons) {
             if(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles) ng_MergeVar(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles,{ Data: { Visible: false } });
