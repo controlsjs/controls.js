@@ -31,6 +31,7 @@ function ngCreateWindow(def,parent)
 {
   if(!def) return null;
   var cnt=0,wname='';
+  if((typeof parent === 'undefined')&&(typeof ngApp === 'object')&&(ngApp)) parent=ngApp.TopElm();
   if(typeof def==='string')
   {
     var ndef=new Object;
@@ -143,15 +144,19 @@ function ngw_Center()
 {
   var o=this.Elm();
   if(!o) return;
-  var po=o.offsetParent;
-  if((po)&&(po==document.body)) po=null;
-  var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-  var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight()); 
+  var pw,ph,sl,st,po=o.offsetParent;
+
+  ng_BeginMeasureElement(po);
+  sl=ng_ScrollX(po);
+  st=ng_ScrollY(po);
+  pw=ng_ClientWidthEx(po);
+  ph=ng_ClientHeightEx(po);
+  ng_EndMeasureElement(po);
 
   var b=this.Bounds;
   
-  b.L=Math.round((pw-b.W)/2);
-  b.T=Math.round((ph-b.H)/2);
+  b.L=sl+Math.round((pw-b.W)/2);
+  b.T=st+Math.round((ph-b.H)/2);
   this.SetBounds();
 }
 
@@ -166,9 +171,8 @@ function ngw_CalcAutoSize()
     var o=this.Elm();
     if(!o) return;
     var po=o.offsetParent;
-    if((po)&&(po==document.body)) po=null;
-    var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-    var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight());
+    var pw=ng_ClientWidthEx(po);
+    var ph=ng_ClientHeightEx(po);
 
     // set to max size (eliminate scrollbars)
     ng_SetClientWidth(o,pw);
@@ -317,10 +321,8 @@ function ngw_CheckBounds()
   var o=this.Elm();
   if(!o) return false;
   var po=o.offsetParent;
-  if((po)&&(po==document.body)) po=null;
-  
-  var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-  var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight()); 
+  var pw=ng_ClientWidthEx(po);
+  var ph=ng_ClientHeightEx(po);
 
   var cb=this.Bounds;
   if((this.ControlsPanel)&&(!this.ControlsPanel.Visible)&&(this.StateBounds)) cb=this.StateBounds;
@@ -480,9 +482,8 @@ function ngw_DoPtrDrag(pi)
       H: ng_ClientHeight(o)-pi.FrameVertBorder
     };
     var po=o.offsetParent;
-    if((po)&&(po==document.body)) po=null;
-    var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-    var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight()); 
+    var pw=ng_ClientWidthEx(po);
+    var ph=ng_ClientHeightEx(po);
     
     if(this.MouseType & 1) // Left
     {
@@ -591,9 +592,8 @@ function ngw_DoPtrEnd(pi)
     else    
     {  
       var po=o.offsetParent;
-      if((po)&&(po==document.body)) po=null;
-      var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth()); 
-      var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight());
+      var pw=ng_ClientWidthEx(po);
+      var ph=ng_ClientHeightEx(po);
       
       var rect=ng_CopyVar(this.Bounds); 
       if(this.MouseType & 1) // Left
@@ -1607,22 +1607,16 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
   }
   
   // parent  
+  var po=o.parentNode;
+  popupx-=ng_ScrollX(po);
+  popupy-=ng_ScrollY(po);
+
   if((typeof pw==='undefined')||(typeof ph==='undefined'))
   {
-    var po=o.offsetParent;
-    if((po)&&(po==document.body)) po=null;
-    if(po)
-    {
-      ng_BeginMeasureElement(po);
-      if(typeof pw==='undefined') pw=ng_ClientWidth(po); 
-      if(typeof ph==='undefined') ph=ng_ClientHeight(po); 
-      ng_EndMeasureElement(po);
-    }
-    else 
-    {
-      if(typeof pw==='undefined') pw=ng_WindowWidth();
-      if(typeof ph==='undefined') ph=ng_WindowHeight();
-    }
+    ng_BeginMeasureElement(po);
+    if(typeof pw==='undefined') pw=ng_ClientWidthEx(po);
+    if(typeof ph==='undefined') ph=ng_ClientHeightEx(po);
+    ng_EndMeasureElement(po);
   }
 
   var anchor=null,anchorid='';
@@ -2031,13 +2025,16 @@ function ngh_PopupCtrl(c,anchor)
   
   var p=this.Elm();
   if(p) p=p.parentNode;
-  else p=ngApp.Elm();
+  else p=ngApp.TopElm();
 
-  var pos=ng_ParentPosition(o, p);
+  var pos=ng_ParentPosition(o, p, true);
   var x=(c ? c.HintX : undefined);
   if(typeof x==='undefined') x=Math.floor(ng_OuterWidth(o)/3);
   var y=(c ? c.HintY : undefined);
   if(typeof y==='undefined') y=Math.floor(ng_OuterHeight(o)/2);
+
+  x+=ng_ScrollX(p);
+  y+=ng_ScrollY(p);
 
   var info = {
     PopupX: pos.x+x,
@@ -2530,8 +2527,7 @@ function nghtxt_DoHintUpdate(o)
       {
         var found='';
         var po=o.offsetParent;
-        if((po)&&(po==document.body)) po=null;
-        var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth());
+        var pw=ng_ClientWidthEx(po);
           
         var to=c.Elm();
         ng_setLeftTop(o,-10000,-10000); // hide
