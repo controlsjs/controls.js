@@ -439,7 +439,7 @@
         Controls: {
           DefaultType: 'object',
           DestroyIfEmpty: true,
-          Level: 'advanced'
+          Level: 'optional'
         },
 
         Events: {
