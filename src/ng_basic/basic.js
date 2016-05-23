@@ -1274,6 +1274,44 @@ function ng_WindowHeight()
   return height;
 }
 
+/**
+ *  Function: ng_DocumentClientWidth
+ *  Returns document area width.
+ *
+ *  Syntax:
+ *    int *ng_DocumentClientWidth* ()
+ *
+ *  Returns:
+ *    Width of document area of the window that is available for writing to.
+ */
+function ng_DocumentClientWidth()
+{
+  var width=10000000000;
+  if(document.documentElement&&document.documentElement.clientWidth){width=document.documentElement.clientWidth;}
+  if(document.body&&document.body.clientWidth){width=Math.min(document.body.clientWidth,width);}
+  if((width===10000000000)||(isNaN(width))) return ng_WindowWidth();
+  return width;
+}
+
+/**
+ *  Function: ng_DocumentClientHeight
+ *  Returns document area height.
+ *
+ *  Syntax:
+ *    int *ng_DocumentClientHeight* ()
+ *
+ *  Returns:
+ *    Height of document area of the window that is available for writing to.
+ */
+function ng_DocumentClientHeight()
+{
+  var height=10000000000;
+  if(document.documentElement&&document.documentElement.clientHeight){height=document.documentElement.clientHeight;}
+  if(document.body&&document.body.clientHeight){height=Math.min(document.body.clientHeight,height);}
+  if((height===10000000000)||(isNaN(height))) return ng_WindowHeight();
+  return height;
+}
+
 function ng_SetInnerHTML_Std(o, t, append) 
 {
   if(append) 
@@ -1401,24 +1439,68 @@ function ng_DocumentScrollY()
 }
 
 /**
+ *  Function: ng_ScrollX
+ *  Gets actual element's horizontal scroll offset.
+ *  Handles properly document.body element.
+ *
+ *  Syntax:
+ *    int *ng_ScrollX* (elm)
+ *
+ *  Parameters:
+ *    elm - object element
+ *
+ *  Returns:
+ *    Horizontal scroll offset in pixels.
+ */
+function ng_ScrollX(elm)
+{
+  if((elm===document.body)||((elm)&&(elm.nodeName==='HTML'))) return ng_DocumentScrollX();
+  return elm ? elm.scrollLeft : 0;
+}
+
+/**
+ *  Function: ng_ScrollY
+ *  Gets actual element's vertical scroll offset.
+ *  Handles properly document.body element.
+ *
+ *  Syntax:
+ *    int *ng_ScrollY* (elm)
+ *
+ *  Parameters:
+ *    elm - object element
+ *
+ *  Returns:
+ *    Vertical scroll offset in pixels.
+ */
+function ng_ScrollY(elm)
+{
+  if((elm===document.body)||((elm)&&(elm.nodeName==='HTML'))) return ng_DocumentScrollY();
+  return elm ? elm.scrollTop : 0;
+}
+
+/**
  *  Function: ng_ParentPosition
  *  Determines absolute position to parent object or document.  
  *  
  *  Syntax:
- *    int *ng_ParentPosition* (object obj[, object parent])
+ *    int *ng_ParentPosition* (object obj[, object parent=document.body, bool docrelative=false])
  *    
  *  Parameters:
  *    obj - element object
  *    parent - element object 
+ *    docrelative - controls origin when  parent is document.body,
+ *                  if TRUE the position is relative to document,
+ *                  if FALSE (default) the position is relative to screen
  *    
  *  Returns:
  *    Object with properties x and y. 
  */         
-function ng_ParentPosition(o, parent)
+function ng_ParentPosition(o, parent, docrelative)
 {
   var n=o,pn;
   var x=0,y=0;
   if(typeof parent === 'undefined') parent=document.body;
+
   var docelm=document.documentElement;
   while((n)&&(n!=parent)&&(n!=docelm)) {
     pn=n.offsetParent;
@@ -1430,6 +1512,12 @@ function ng_ParentPosition(o, parent)
   		  x -= pn.scrollLeft;
   		  y -= pn.scrollTop;
 		  }
+      else {
+        if(docrelative) {
+          x -= ng_DocumentScrollX();
+          y -= ng_DocumentScrollY();
+        }
+      }
   		if(ngFireFox) {
 		    x+=ng_GetCurrentStylePx(pn,'border-left-width');
 		    y+=ng_GetCurrentStylePx(pn,'border-top-width');
@@ -1541,7 +1629,7 @@ function ng_GetCurrentStyle(o,s)
  */
 function ng_BeginMeasureElement(o)
 {
-  if((o)&&((!o.offsetHeight)||(!o.offsetWidth)))
+  if((o)&&(o!==document.body)&&((!o.offsetHeight)||(!o.offsetWidth)))
   {
     if(typeof o.measure_info !== 'undefined') return o.measure_info;
     
@@ -1830,6 +1918,27 @@ function ng_ClientWidth(o)
 }
 
 /**
+ *  Function: ng_ClientWidthEx
+ *  Gets element client width.
+ *  Extended version of <ng_ClientWidth>.
+ *  Handles properly document.body element.
+ *
+ *  Syntax:
+ *    int *ng_ClientWidthEx* (object elm)
+ *
+ *  Parameters:
+ *    elm - object element
+ *
+ *  Returns:
+ *    Width in pixels.
+ */
+function ng_ClientWidthEx(o)
+{
+  if((o===document.body)||((o)&&(o.nodeName==='HTML'))) return ng_DocumentClientWidth();
+  return ng_ClientWidth(o);
+}
+
+/**
  *  Function: ng_ClientHeight
  *  Gets element client height.
  *  
@@ -1859,6 +1968,27 @@ function ng_ClientHeight(o)
     }
   }
   return h;
+}
+
+/**
+ *  Function: ng_ClientHeightEx
+ *  Gets element client height.
+ *  Extended version of <ng_ClientHeight>.
+ *  Handles properly document.body element.
+ *
+ *  Syntax:
+ *    int *ng_ClientHeightEx* (object elm)
+ *
+ *  Parameters:
+ *    elm - object element
+ *
+ *  Returns:
+ *    Height in pixels.
+ */
+function ng_ClientHeightEx(o)
+{
+  if((o===document.body)||((o)&&(o.nodeName==='HTML'))) return ng_DocumentClientHeight();
+  return ng_ClientHeight(o);
 }
 
 /**
