@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2008-2016 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -469,23 +469,33 @@ function ngStartModalControl()
       var o = document.getElementById('NGMODALWINDOW_CURTAIN');
       if(!o)
       {
+         var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
          o=document.createElement('div');
          o.id="NGMODALWINDOW_CURTAIN";
          o.className=ngModalClassName;
          o.style.position='absolute';
-         o.style.left='0%';
-         o.style.top='0%';
+         o.style.left=ng_ScrollX(parent)+'px';
+         o.style.top=ng_ScrollY(parent)+'px';
          o.style.width='100%';
          o.style.height='100%';
          o.style.display='block';
          o.style.zIndex=ngModalZIndexDelta;
-
-         var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : document.body);
-         parent.appendChild(o);
+         if(parent) {
+           parent.appendChild(o);
+           parent.onscroll=ngAddEvent(parent.onscroll,function() {
+             if(ngModalCnt>0) {
+               o.style.left=ng_ScrollX(parent)+'px';
+               o.style.top=ng_ScrollY(parent)+'px';
+             }
+           });
+         }
       }
       else
       {
+        var parent=o.parentNode;
         o.className=ngModalClassName;
+        o.style.left=ng_ScrollX(parent)+'px';
+        o.style.top=ng_ScrollY(parent)+'px';
         o.style.zIndex=ngModalZIndexDelta;
         o.style.display='block';
         o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
@@ -670,8 +680,7 @@ function ng_Align(o)
     if(ret & 5)
     {
       var pw,w;
-      if((po)&&(po!=document.body)) pw=ng_ClientWidth(po);
-      else pw=ng_WindowWidth();
+      pw=ng_ClientWidthEx(po);
       if(ret & 4)
       {
         w=(pw-r-l);
@@ -688,8 +697,7 @@ function ng_Align(o)
     if(ret & 10)
     {
       var ph,h;
-      if((po)&&(po!=document.body)) ph=ng_ClientHeight(po);
-      else ph=ng_WindowHeight();
+      ph=ng_ClientHeightEx(po);
       if(ret & 8)
       {
         h=(ph-b-t);
@@ -3553,8 +3561,8 @@ function ngc_elementFromPoint(x,y)
   {
     ngc_elmfromptcheck=true;
     var doc=null;
-    if(sy>0) doc=document.elementFromPoint(0,sy+ng_WindowHeight()-1);
-    else     doc=document.elementFromPoint(sx+ng_WindowWidth()-1, 0);
+    if(sy>0) doc=document.elementFromPoint(0,sy+ng_DocumentClientHeight()-1);
+    else     doc=document.elementFromPoint(sx+ng_DocumentClientWidth()-1, 0);
     ngc_elmfromptrel = (doc===null)||(doc.tagName.toUpperCase()==='HTML');
   }
 
@@ -4825,6 +4833,17 @@ function nga_Elm()
   return o;
 }
 
+function nga_TopElm()
+{
+  var appid=ngVal(this.TopElmID,null);
+  if(appid===null) return this.Elm();
+
+  var o=null;
+  if(appid!='') o=document.getElementById(appid);
+  if(!o) o=document.body;
+  return o;
+}
+
 function nga_GetLang()
 {
   var l=ngc_Lang[this.Lang];
@@ -5750,7 +5769,7 @@ function nga_InitParamsChanged()
     }
     if(o)
     {
-      var parent=(typeof ngApp !== 'undefined' ? ngApp.Elm() : document.body);
+      var parent=(typeof ngApp === 'object' && ngApp ? ngApp.Elm() : document.body);
 
       o.id="ngAppHistFix";
       o.style.visibility="hidden";
@@ -6045,6 +6064,13 @@ function ngApplication(startparams, elm, autorun)
    */
   if(typeof elm==='object') elm=elm.id;
   this.ElmID = ngVal(elm,'ngApp');
+
+  /*  Variable: TopElmID
+   *  ...
+   *  Type: string
+   *  Default value: null
+   */
+  this.TopElmID = null;
 
   /*  Variable: StartParams
    *  ...
@@ -6377,8 +6403,26 @@ function ngApplication(startparams, elm, autorun)
    *
    *  Returns:
    *    Element object.
+   *
+   *  See also:
+   *    <ElmID>
    */
   this.Elm = nga_Elm;
+
+  /*  Function: TopElm
+   *  Gets access to application's top DIV element object.
+   *  Used for popups, menus, ...
+   *
+   *  Syntax:
+   *    object *TopElm* ()
+   *
+   *  Returns:
+   *    Element object.
+   *
+   *  See also:
+   *    <TopElmID>
+   */
+  this.TopElm = nga_TopElm;
 
   this.AddEvent = ngObjAddEvent;
   this.RemoveEvent = ngObjRemoveEvent;
@@ -6538,7 +6582,7 @@ function ngControls(defs,parent)
   if(typeof parent==='undefined')
   {
     var appid;
-    if(typeof ngApp !== 'undefined') appid=ngApp.ElmID;
+    if((typeof ngApp === 'object')&&(ngApp)) appid=ngApp.ElmID;
     else appid='ngApp';
     var o=document.getElementById(appid);
     if(o) parent=o;
@@ -9154,7 +9198,7 @@ function nge_BeginMobileKeyboard()
 {
   // Mobile keyboards sometimes forces application resize or hides part of the application.
   // To prevent this add temporary margin to application's container.
-  var ae=((typeof ngApp !== 'undefined')&&(ngApp) ? ngApp.Elm() : null);
+  var ae=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : null);
   if((ae)&&(ngVal(ngApp.MobileKeyboardFix,true))) {
 
     if(ngMobileKeyboardActive==2)
@@ -9186,7 +9230,7 @@ function nge_BeginMobileKeyboard()
 
 function nge_EndMobileKeyboard()
 {
-  var ae=((typeof ngApp !== 'undefined')&&(ngApp) ? ngApp.Elm() : null);
+  var ae=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : null);
   if((ae)&&(typeof ngApp.SavedAppHeight!=='undefined'))
   {
     if(ngApp.MobileKeyboardTimer) clearTimeout(ngApp.MobileKeyboardTimer);
@@ -9201,7 +9245,7 @@ function nge_EndMobileKeyboard()
 
 function nge_FinishMobileKeyboard() {
   ngMobileKeyboardActive=0;
-  var ae=((typeof ngApp !== 'undefined')&&(ngApp) ? ngApp.Elm() : null);
+  var ae=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : null);
   if((ae)&&(typeof ngApp.SavedAppHeight!=='undefined'))
   {
     ae.style.bottom=ngApp.SavedAppBottom;
@@ -9401,7 +9445,8 @@ function nge_DropDown()
     var lh=ng_OuterHeight(o);
     ng_EndMeasureElement(o);
 
-    var pos=ng_ParentPosition(po,ngApp ? ngApp.Elm() : undefined);
+    var op=o.parentNode;
+    var pos=ng_ParentPosition(po,op,true);
 
     if(typeof this.DropDownWidth !== 'undefined')
     {
@@ -9411,8 +9456,8 @@ function nge_DropDown()
     var maxh=ngVal(l.MaxHeight,150);
     if(lh>maxh) { ng_SetOuterHeight(o,maxh); lh=maxh; }
 
-    var wh=ng_WindowHeight();
-    var ww=ng_WindowWidth();
+    var wh=ng_ClientHeightEx(op);
+    var ww=ng_ClientWidthEx(op);
     var left,top;
     if(((pos.x+lw<=ww-20)&&(this.DropDownAlign=='left'))||((pos.x+ew-lw)<0))
     {
@@ -9436,6 +9481,8 @@ function nge_DropDown()
       }
       else top=pos.y+eh;
     }
+    left+=ng_ScrollX(op);
+    top+=ng_ScrollY(op);
     o.style.left=left+'px';
     o.style.top=top+'px';
     o.style.zIndex='100000';
@@ -9809,7 +9856,7 @@ function nge_DoCreate(d, ref, elm, parent)
         Visible: false
       }
     });
-    var lref=ngCreateControls({ Control: d.DropDown });
+    var lref=ngCreateControls({ Control: d.DropDown },undefined,(typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
     if(typeof lref.Control !== 'undefined') // dropdown successfuly created
     {
       lref.Control.Owner=this;
