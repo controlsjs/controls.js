@@ -56,7 +56,7 @@ function ngset_Get(n,defval)
 
 function ngset_IsValidName(n)
 {
-  if((typeof n === 'undefined')||(n=='')) return false;
+  if((typeof n !== 'string')||(n=='')) return false;
 
   var storage=this.GetStorage();
   if((storage)&&(storage.IsValidName)) return storage.IsValidName(this,n);
