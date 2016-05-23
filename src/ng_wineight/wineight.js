@@ -34,10 +34,10 @@ var WinEightControls = {
   },
 
   ControlImages: [
-    'img/we_base.png?2',
-    'img/we_hbox.png?2',
-    'img/we_vbox.png?1',
-    'img/we_icons.png?4',
+    'img/we_base.png?4',
+    'img/we_hbox.png?3',
+    'img/we_vbox.png?3',
+    'img/we_icons.png?11',
 
     // pre-load
     'img/progressline_black.gif?1',
