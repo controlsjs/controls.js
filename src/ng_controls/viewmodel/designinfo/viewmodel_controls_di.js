@@ -46,6 +46,7 @@ var ViewModel_Controls_DesignInfo = null;
         },
         Level: 'optional'
       },
+      ReadOnly: { DefaultType: 'databind_string', Level: (typeof c.SetReadOnly === 'function' && typeof c.Update === 'function') ? 'basic' : 'optional' },
       Error: { DefaultType: 'databind_string', Level: 'advanced' },
       ShowError: { DefaultType: 'databind_string', Level: 'advanced' }
     };
@@ -72,11 +73,6 @@ var ViewModel_Controls_DesignInfo = null;
       props.className = { DefaultType: 'databind_string', Level: 'advanced' };
       props.SubClassName = { DefaultType: 'databind_string', Level: 'advanced' };
       props.BaseClassName = { DefaultType: 'databind_string', Level: 'advanced' };
-    }
-
-    if (typeof c.SetReadOnly === 'function' || typeof c.Update === 'function')
-    {
-      props.ReadOnly = { DefaultType: 'databind_string' };
     }
 
     if (typeof c.SetFocus === 'function')

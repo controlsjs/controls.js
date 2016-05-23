@@ -819,24 +819,9 @@
     obj.DesignInfo = {
       NonVisual: true,
       ControlCategory: 'System',
-      NewControl: {
-        Default: {
-          Properties: {
-            ID: {}
-          },
-          OnCreating: function(properties, DI)
-          {
-            var refname = (properties['ControlRefName'] && properties['ControlRefName'].Code) ? properties['ControlRefName'].Code: '';
-            properties['ID'] = { Code: (refname ? refname : properties['Type'] ) }
-
-            return true;
-          }
-        }
-      },
       Properties: {
         R: { Level: 'advanced' },
-        B: { Level: 'advanced' },
-        ID: { DefaultType: 'string' }
+        B: { Level: 'advanced' }
       }
     };
 
