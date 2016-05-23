@@ -334,33 +334,23 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
 
 function ngmn_WindowWidth()
 {
-  var o=(ngApp ? ngApp.Elm() : null);
-  if(o) return ng_ClientWidth(o);
-  return ng_WindowWidth();
+  var o=(ngApp ? ngApp.TopElm() : null);
+  return ng_ClientWidthEx(o);
 }
 
 function ngmn_WindowHeight()
 {
-  var o=(ngApp ? ngApp.Elm() : null);
-  if(o) return ng_ClientHeight(o);
-  return ng_WindowHeight();
+  var o=(ngApp ? ngApp.TopElm() : null);
+  return ng_ClientHeightEx(o);
 }
 
 function ngmn_GetScreenRect()
 {
   var rect={ Left: 0, Top: 0, Right: 0, Bottom: 0 };
 
-  var wo=(ngApp ? ngApp.Elm() : null);
-  if(wo)
-  {
-    rect.Right=ng_ClientWidth(wo);
-    rect.Bottom=ng_ClientHeight(wo);
-  }
-  else
-  {
-    rect.Right=ng_WindowWidth();
-    rect.Bottom=ng_WindowHeight();
-  }
+  var wo=(ngApp ? ngApp.TopElm() : null);
+  rect.Right=ng_ClientWidthEx(wo);
+  rect.Bottom=ng_ClientHeightEx(wo);
   if(this.OnGetScreenRect) this.OnGetScreenRect(this,rect);
   return rect;
 }
@@ -683,7 +673,8 @@ function ngmn_PopupCtrl(c,halign,valign)
   msi=ngVal(msi,this.MinScreenIndent);
   msi=ngVal(msi,5);
 
-  var pos=ng_ParentPosition(o,ngApp ? ngApp.Elm() : undefined);
+  var mp=mo.parentNode;
+  var pos=ng_ParentPosition(o,mp,true);
   ng_BeginMeasureElement(o);
   pos.w=ng_OuterWidth(o);
   pos.h=ng_OuterHeight(o);
@@ -752,6 +743,9 @@ function ngmn_PopupCtrl(c,halign,valign)
   }
   if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
 
+  mx+=ng_ScrollX(mp);
+  my+=ng_ScrollY(mp);
+
   mo.style.left=mx+'px';
   mo.style.top=my+'px';
 
@@ -774,7 +768,8 @@ function ngmn_PopupSubMenu(o,halign,valign)
   valign=ngVal(valign,'top');
   var msi=ngVal(this.MinScreenIndent,5);
 
-  var pos=ng_ParentPosition(o,ngApp ? ngApp.Elm() : undefined);
+  var mp=mo.parentNode;
+  var pos=ng_ParentPosition(o,mp,true);
   ng_BeginMeasureElement(o);
   pos.w=ng_OuterWidth(o);
   pos.h=ng_OuterHeight(o);
@@ -820,6 +815,9 @@ function ngmn_PopupSubMenu(o,halign,valign)
     if(my+sh>srect.Bottom-msi) my=pos.y+pos.h-sh-oy+mb; // bottom
   }
   if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+
+  mx+=ng_ScrollX(mp);
+  my+=ng_ScrollY(mp);
 
   mo.style.left=mx+'px';
   mo.style.top=my+'px';
@@ -1142,7 +1140,7 @@ function ngmn_DoCreate(def, ref, elm, parent)
 {
   if((typeof def.Data !== 'undefined')&&(ngVal(def.Data.Visible,false))) return; // Visible menus are static
   // All menus are in document.body
-  var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : document.body);
+  var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
   var p=elm.parentNode;
   if((p)&&(p!=parent))
   {
@@ -1288,7 +1286,7 @@ function ngmn_CreateSubMenu(it,m)
   m.Owner=this;
   m.ParentMenu=it;
 
-  var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : undefined));
+  var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
   it.SubMenu=lref.SubMenu;
   if((lref.SubMenu)&&(p.OnSubMenuCreated)) p.OnSubMenuCreated(p,ld,lref.SubMenu);
 
@@ -1705,7 +1703,7 @@ function ngmn_PopupMouseMenu(e)
 
   var pos=ngc_DoGetPointerPos(null,e,null);
   if(typeof pos.x === 'undefined') return true;
-  var mpos=ng_ParentPosition(ngApp ? ngApp.Elm() : document.body);
+  var mpos=ng_ParentPosition(ngApp ? ngApp.TopElm() : document.body);
   pos.x-=mpos.x;
   pos.y-=mpos.y;
   if((c.OnPopupMenu)&&(!ngVal(c.OnPopupMenu(c, c.PopupMenu, e, pos),false))) return true;
@@ -1872,7 +1870,7 @@ function nga_DoPopupMenu(e)
   {
     var pos=ngc_DoGetPointerPos(null,e,null);
     if(typeof pos.x === 'undefined') return true;
-    var mpos=ng_ParentPosition(ngApp ? ngApp.Elm() : document.body);
+    var mpos=ng_ParentPosition(ngApp ? ngApp.TopElm() : document.body);
     pos.x-=mpos.x;
     pos.y-=mpos.y;
 
@@ -2504,7 +2502,7 @@ ngUserControls['menu'] = {
     if((typeof def.Menu === 'object')&&(c.CtrlType!='ngToolBar')&&(typeof c.Menu === 'undefined'))
     {
       var ldefs={Control: def.Menu };
-      var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : undefined));
+      var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
       ng_SetControlMenu(c,lref.Control);
     }
     /*  Variable: PopupMenu
@@ -2517,7 +2515,7 @@ ngUserControls['menu'] = {
       var ld=def.PopupMenu;
       if(typeof ld.Data === 'undefined') ld.Data = new Object;
       var ldefs={Control: ld };
-      var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : undefined));
+      var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
       ng_SetControlPopup(c, lref.Control);
     }
   },
