@@ -527,7 +527,7 @@ var WinEightControls = {
     if((typeof color==='undefined')||(color==='Auto')) color=(this.Theme ? '#FFFFFF' : '#000000');
     if(color!=='None') {
       this.BackgroundColor=color;
-      var aelm=ngApp.Elm();
+      var aelm=ngApp.TopElm();
       if(aelm) {
         if(color.charAt(0)=='#') aelm.style.backgroundColor = color;
         else aelm.className=aelm.className+' we'+color;
@@ -2005,8 +2005,7 @@ var WinEightControls = {
         var o=this.Elm();
         if(!o) return;
         var po=o.offsetParent;
-        if((po)&&(po==document.body)) po=null;
-        var ph=(po ? ng_ClientHeight(po) : ng_WindowHeight());
+        var ph=ng_ClientHeightEx(po);
 
         var cmw=ng_OuterWidth(o)-ng_ClientWidth(this.ControlsPanel.Elm());
 
@@ -2093,8 +2092,7 @@ var WinEightControls = {
       skinfnc.Create_weMessageDlg=function(def,ref,parent) {
         var th=theme(def);
         var po=parent;
-        if((po)&&(po==document.body)) po=null;
-        var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth());
+        var pw=ng_ClientWidthEx(po);
         var margin=ngIExplorer6 ? Math.round(pw*.25) : '25%';
         if(pw<600) margin=10;
         /*
@@ -2615,8 +2613,7 @@ var WinEightControls = {
       skinfnc.Create_dlgAbout=function(def,ref,parent) {
         var th=theme(def);
         var po=parent;
-        if((po)&&(po==document.body)) po=null;
-        var pw=(po ? ng_ClientWidth(po) : ng_WindowWidth());
+        var pw=ng_ClientWidthEx(po);
         var margin=ngIExplorer6 ? Math.round(pw*.25) : '25%';
         if(pw<600) margin=10;
         var cdef={
