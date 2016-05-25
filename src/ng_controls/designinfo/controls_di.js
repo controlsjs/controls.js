@@ -827,66 +827,6 @@
 
     ng_MergeVar(obj.DesignInfo ,getBaseProperties());
   };
-
-
-  // register options and params
-  window.FormEditor = ngNullVal(window.FormEditor, {});
-  var FE = window.FormEditor;
-  FE.Options = ngNullVal(FE.Options, {});
-  FE.Params = ngNullVal(FE.Params, {});
-
-  // register basic property types groups
-  var PropertyTypesGroups = {
-    'images': ['image', 'object']
-  };
-  if (!ng_IsArrayVar(FE.Options.PropertyTypesGroups)) FE.Options.PropertyTypesGroups = [];
-  FE.Options.PropertyTypesGroups.push(PropertyTypesGroups);
-
-
-  // Control ID Property Name
-  FE.Options.PEControlIDItemName = 'ControlRefName';
-
-  // define Definition properties order
-  FE.Params.PropertiesOrderPriority = ngNullVal(FE.Params.PropertiesOrderPriority, [
-    FE.Options.PEControlIDItemName,
-    'Type',
-    'ID',
-    'L', 'T', 'W', 'H', 'R', 'B', 'CW', 'CH',
-    'id',
-    'Theme', 'ColorScheme', 'BackgroundColor',
-    'Layout',
-    'NavigatorAppearance',
-    'Namespace',
-    'ServerURL',
-    'ActiveCommand',
-    'DefaultValues',
-    'FieldDefs', 'ViewModel', 'DBViewModel',
-    'EditButtons',
-    'ErrorHint',
-    'className', 'style', 'Opacity',
-    'ScrollBars',
-    'parent',
-    'ParentReferences',
-    'innerHTML',
-    'IE6AlignFix',
-    'OnCreateHTMLElement',
-    'OnCreating',
-    'OnCreated',
-    'TreeImg',
-    'DropDown',
-    'ArrowsAlign',
-    'Arrows',
-    'DroppedDown',
-    'Mover',
-    'CloseBtn', 'HelpBtn', 'MaxBtn', 'MinBtn',
-    'Menu', 'PopupMenu',
-    'ButtonDef',
-    'Data',
-    'DataBind',
-    'Pages', 'ControlsPanel', 'ControlsPanel1', 'ControlsPanel2', 'Controls1', 'Controls2', 'Controls',
-    'ModifyControls',
-    'Methods', 'BeforeEvents', 'Events', 'AfterEvents', 'OverrideEvents'
-  ]);
 })()
 
 
@@ -895,6 +835,49 @@ ngUserControls['controls_designinfo'] = {
   OnFormEditorInit: function(FE)
   {
     FE.RegisterPropertyTypesGroup('events', ['function', 'identifier', 'null', 'undefined']);
+    FE.RegisterPropertyTypesGroup('images', ['image', 'object']);
+
+    // define Definition properties order
+    FE.Params.PropertiesOrderPriority = ngNullVal(FE.Params.PropertiesOrderPriority, [
+      FE.Params.PEControlIDItemName,
+      'Type',
+      'ID',
+      'L', 'T', 'W', 'H', 'R', 'B', 'CW', 'CH',
+      'id',
+      'Theme', 'ColorScheme', 'BackgroundColor',
+      'Layout',
+      'NavigatorAppearance',
+      'Namespace',
+      'ServerURL',
+      'ActiveCommand',
+      'DefaultValues',
+      'FieldDefs', 'ViewModel', 'DBViewModel',
+      'EditButtons',
+      'ErrorHint',
+      'className', 'style', 'Opacity',
+      'ScrollBars',
+      'parent',
+      'ParentReferences',
+      'innerHTML',
+      'IE6AlignFix',
+      'OnCreateHTMLElement',
+      'OnCreating',
+      'OnCreated',
+      'TreeImg',
+      'DropDown',
+      'ArrowsAlign',
+      'Arrows',
+      'DroppedDown',
+      'Mover',
+      'CloseBtn', 'HelpBtn', 'MaxBtn', 'MinBtn',
+      'Menu', 'PopupMenu',
+      'ButtonDef',
+      'Data',
+      'DataBind',
+      'Pages', 'ControlsPanel', 'ControlsPanel1', 'ControlsPanel2', 'Controls1', 'Controls2', 'Controls',
+      'ModifyControls',
+      'Methods', 'BeforeEvents', 'Events', 'AfterEvents', 'OverrideEvents'
+    ]);
   },
 
   OnControlDesignInfo: function(def, c, ref)
