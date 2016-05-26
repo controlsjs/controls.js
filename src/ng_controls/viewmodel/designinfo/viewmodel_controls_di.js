@@ -217,57 +217,78 @@ var ViewModel_Controls_DesignInfo = null;
           DefaultType: 'databind',
           Types: {
             'databind_string': {},
-            'object': {}
-          },
-          DestroyIfEmpty: true,
-          ObjectProperties: props
+            'object': {
+              DestroyIfEmpty: true,
+              ObjectProperties: {
+                Default: {
+                  DefaultType: 'object'
+                }
+              }
+            },
+            'databind': {
+              DestroyIfEmpty: true,
+              ObjectProperties: props
+            }
+          }
         },
         Data: {
-          ObjectProperties: {
-            ViewModelData: { DefaultCode: 'undefined', Level: 'hidden' }
+          Types: {
+            'object': {
+              ObjectProperties: {
+                ViewModelData: { DefaultCode: 'undefined', Level: 'hidden' }
+              }
+            }
           }
         },
         Methods: {
-          ObjectProperties: {
-            SetViewModelData:{
-              DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(val) { if (ng_IsOverriden(this.SetViewModelData)) this.SetViewModelData.callParent.apply(this, arguments); }'
+          Types: {
+            'object': {
+              ObjectProperties: {
+                SetViewModelData:{
+                  DefaultType: 'function',
+                  Types: {
+                    'function': {
+                      DefaultValue: 'function(val) { if (ng_IsOverriden(this.SetViewModelData)) this.SetViewModelData.callParent.apply(this, arguments); }'
+                    }
+                  },
+                  Level: 'advanced'
                 }
-              },
-              Level: 'advanced'
+              }
             }
           }
         },
         Events: {
-          ObjectProperties: {
-            OnViewModelDataChanged: {
-              DefaultType: 'events',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, oldval) { }'
+          Types: {
+            'object': {
+              ObjectProperties: {
+                OnViewModelDataChanged: {
+                  DefaultType: 'events',
+                  Types: {
+                    'function': {
+                      DefaultValue: 'function(c, oldval) { }'
+                    }
+                  },
+                  Level: 'advanced'
+                },
+                OnDataBindingInit: {
+                  DefaultType: 'events',
+                  Types: {
+                    'function': {
+                      DefaultValue: 'function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }'
+                    }
+                  },
+                  Level: 'optional'
+                },
+                OnDataBindingUpdate: {
+                  DefaultType: 'events',
+                  Types: {
+                    'function': {
+                      DefaultValue: 'function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }'
+                    }
+                  },
+                  Level: 'optional'
                 }
-              },
-              Level: 'advanced'
-            },
-            OnDataBindingInit: {
-              DefaultType: 'events',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }'
-                }
-              },
-              Level: 'optional'
-            },
-            OnDataBindingUpdate: {
-              DefaultType: 'events',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }'
-                }
-              },
-              Level: 'optional'
+              }
             }
           }
         }
@@ -275,12 +296,12 @@ var ViewModel_Controls_DesignInfo = null;
     };
 
     // handle DataBind Events properties
-    if (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events)
+    if (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events && c.DesignInfo.Properties.Events.Types && c.DesignInfo.Properties.Events.Types['object'])
     {
       var netbeans = ((typeof CodeMirrorIntegration !== 'undefined')&&(typeof CodeMirrorIntegration.RunningInNetBeans === 'function')&&(CodeMirrorIntegration.RunningInNetBeans()));
 
       var o = {},
-          props = c.DesignInfo.Properties.Events.ObjectProperties;
+          props = c.DesignInfo.Properties.Events.Types['object'].ObjectProperties;
       for (var i in props)
       {
         o[i] = {
@@ -302,34 +323,42 @@ var ViewModel_Controls_DesignInfo = null;
       var eventprop1 = {
         DefaultType: 'object',
         Types: {
-          'databind_string': {}
-        },
-        DestroyIfEmpty: true,
-        ObjectProperties: o
+          'databind_string': {},
+          'object': {
+            DestroyIfEmpty: true,
+            ObjectProperties: o
+          }
+        }
       };
       var eventprop2 = {
         DefaultType: 'object',
         Types: {
-          'databind_string': {}
+          'databind_string': {},
+          'object': {
+            DestroyIfEmpty: true,
+            ObjectProperties: {}
+          }
         },
-        DestroyIfEmpty: true,
-        Level: 'advanced',
-        ObjectProperties: {}
+        Level: 'advanced'
       };
       for (var i in o)
       {
-        eventprop2.ObjectProperties[i] = ng_CopyVar(o[i]);
-        eventprop2.ObjectProperties[i].Level = 'advanced';
+        eventprop2.Types['object'].ObjectProperties[i] = ng_CopyVar(o[i]);
+        eventprop2.Types['object'].ObjectProperties[i].Level = 'advanced';
       }
 
       var vm_events_di = {
         Properties: {
           DataBind: {
-            ObjectProperties: {
-              Events: eventprop1,
-              AfterEvents: eventprop2,
-              BeforeEvents: eventprop2,
-              OverrideEvents: eventprop2
+            Types: {
+              'databind': {
+                ObjectProperties: {
+                  Events: eventprop1,
+                  AfterEvents: eventprop2,
+                  BeforeEvents: eventprop2,
+                  OverrideEvents: eventprop2
+                }
+              }
             }
           }
         }
