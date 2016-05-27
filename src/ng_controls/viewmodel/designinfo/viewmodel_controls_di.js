@@ -235,7 +235,7 @@ var ViewModel_Controls_DesignInfo = null;
           Types: {
             'object': {
               ObjectProperties: {
-                ViewModelData: { DefaultCode: 'undefined', Level: 'hidden' }
+                ViewModelData: { Level: 'hidden' }
               }
             }
           }
