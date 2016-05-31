@@ -884,7 +884,7 @@ ngUserControls['controls_designinfo'] = {
 
     // define Definition properties order
     FE.Params.PropertiesOrderPriority = ngNullVal(FE.Params.PropertiesOrderPriority, [
-      FE.Params.PEControlIDItemName,
+      FE.Params.ControlRefNameProperty,
       'Type',
       'ID',
       'L', 'T', 'W', 'H', 'R', 'B', 'CW', 'CH',
