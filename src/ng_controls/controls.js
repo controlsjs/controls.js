@@ -41,6 +41,7 @@ var ngApp = null;
  *  TRUE if controls design info present.
  */
 var ngDESIGNINFO = (typeof ngDESIGNINFO === 'undefined' ? 0 : ngDESIGNINFO);
+var ngDESIGNINFOCnt=0;
 /**
  *  Variable: ngc_Lang
  *  Application languages resource strings/objects.
@@ -58,7 +59,16 @@ var ngDESIGNINFO = (typeof ngDESIGNINFO === 'undefined' ? 0 : ngDESIGNINFO);
  *    DesignInfo state (0=disabled).
  */
 function ngHASDESIGNINFO() {
-  return (ngHASDEBUG())&&(ngDESIGNINFO);
+  return ((ngHASDEBUG())&&(ngDESIGNINFO)&&(ngDESIGNINFOCnt>0));
+}
+
+function ngDesignInfoBegin() {
+  ngDESIGNINFOCnt++;
+}
+
+function ngDesignInfoEnd() {
+  ngDESIGNINFOCnt--;
+  if (ngDESIGNINFOCnt<0) ngDESIGNINFOCnt=0;
 }
 
 if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
