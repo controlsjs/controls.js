@@ -39,7 +39,7 @@ function ngset_Set(n,v)
     if(typeof v === 'undefined')
       delete this.Settings[n];
     else
-      this.Settings[n]=v;
+      this.Settings[n]=ng_CopyVar(v);
     this.changed=true;
     this.EndUpdate();
   }
