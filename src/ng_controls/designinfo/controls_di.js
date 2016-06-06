@@ -927,50 +927,142 @@ ngUserControls['controls_designinfo'] = {
 
   OnControlDesignInfo: function(def, c, ref)
   {
-    var di;
-
-    if (!c) return di;
-
-    // define control specific DesignInfo
-    switch (c.DefType)
-    {
-      case 'ngPanel':
-      case 'ngText':
-      case 'ngImage':
-      case 'ngImageMap':
-      case 'ngButton':
-      case 'ngGroup':
-      case 'ngEdit':
-      case 'ngMemo':
-      case 'ngPages':
-      case 'ngToolBar':
-      case 'ngProgressBar':
-      case 'ngWebBrowser':
-
-      // Derived controls
-      case 'ngFrame':
-      case 'ngRadioButton':
-      case 'ngCheckBox':
-      case 'ngDropDownList':
-      case 'ngDropDown':
-      case 'ngEditNum':
-        break;
+    if(!def.CtrlInheritanceDepth) {
+      var di = {};
+      // define common DesignInfo
+      var events = (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events) ? c.DesignInfo.Properties.Events : {},
+          eventstype = ['After', 'Before', 'Override'],
+          id;
+      di.Properties = ngNullVal(di.Properties, {});
+      for (var i = 0; i < eventstype.length; i++)
+      {
+        id = eventstype[i] + 'Events';
+        di.Properties[id] = ngNullVal(c.DesignInfo.Properties[id], {});
+        ng_MergeVar(di.Properties[id], events);
+      }
+      return di;
     }
+  },
+  OnInit: function() {
+    if(!ngDESIGNINFO) return;
 
-    di = ngNullVal(di, {});
+    ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
+      return {
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 },
+              H: { Value: 100 }
+            }
+          }
+        },
+      };
+    });
 
-    // define common DesignInfo
-    var events = (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events) ? c.DesignInfo.Properties.Events : {},
-        eventstype = ['After', 'Before', 'Override'],
-        id;
-    di.Properties = ngNullVal(di.Properties, {});
-    for (var i = 0; i < eventstype.length; i++)
-    {
-      id = eventstype[i] + 'Events';
-      di.Properties[id] = ngNullVal(c.DesignInfo.Properties[id], {});
-      ng_MergeVar(di.Properties[id], events);
-    }
+    ngRegisterControlDesignInfo('ngText',function(d,c,ref) {
+      return {
+        NewControl: {
+          Default: {
+            Properties: {
+              Data: {
+                Properties: {
+                  Text: { }
+                }
+              }
+            },
+            OnCreating: function(initprops,di) {
+              initprops.Data.Properties.Text.Value=initprops.ControlRefName.Value;
+              return true;
+            }
+          }
+        },
+        Properties: {
+          Data: {
+            Types: {
+              'object': {
+                ObjectProperties:
+                {
+                  Text: {
+                    DefaultType: 'string',
+                    Types: {
+                      'string': { }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+    });
 
-    return di;
+    ngRegisterControlDesignInfo('ngImage',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngImageMap',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngButton',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngGroup',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngEdit',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngMemo',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngPages',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngToolBar',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngProgressBar',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngWebBrowser',function(d,c,ref) {
+      return {
+      };
+    });
+
+    // Derived controls
+
+    ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngCheckBox',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngDropDownList',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngDropDown',function(d,c,ref) {
+      return {
+      };
+    });
+    ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
+      return {
+      };
+    });
+
   }
 };

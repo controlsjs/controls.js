@@ -1008,6 +1008,8 @@ var ngControlsIDs = new Array();
 var ngControlImages = '';
 var ngRegisteredControlTypes = new Array();
 var ngOnRegisterControlType = ngOnRegisterControlType || null;
+var ngRegisteredControlDesignInfos = new Array();
+var ngOnRegisterControlDesignInfo = ngOnRegisterControlDesignInfo || null;
 var ngMouseInControls = new Array();
 var ngCurrentLib = 'ng_controls';
 var ngCurrentUserControls = '';
@@ -1097,6 +1099,20 @@ function ngRegisterControlType(type, def)
       });
       break;
   }
+}
+
+function ngRegisterControlDesignInfo(type, di)
+{
+  if((!ngHASDEBUG())||(!ngDESIGNINFO)||(typeof di!=='function')||(typeof type!=='string')) return;
+  if ((ngOnRegisterControlDesignInfo)&&(!ngVal(ngOnRegisterControlDesignInfo(type,di),false))) return;
+
+  if(typeof ngRegisteredControlDesignInfos[type] === 'function') {
+    ngDEBUGWARN('Duplicated registration of design info "%s".',ngVal(type,''),di);
+  }
+  if((ngCurrentLib!='')&&(typeof di.Lib === 'undefined')) di.Lib = ngCurrentLib;
+  if((ngCurrentControlsGroup!='')&&(typeof di.ControlsGroup === 'undefined')) di.ControlsGroup = ngCurrentControlsGroup;
+  if((ngCurrentUserControls!='')&&(typeof di.UserControls === 'undefined')) di.UserControls = ngCurrentUserControls;
+  ngRegisteredControlDesignInfos[type]=di;
 }
 
 ngRegisterControlType('ngPanel', function() { return new ngPanel; });
@@ -1359,8 +1375,7 @@ function ng_MergeDef(dst,def,allowundefined,callback)
  */
 function ngCreateControl(d,ref,parent)
 {
-  var j,c,uc;
-  c=null; uc=null;
+  var j,uc,c=null;
 
   d.CtrlInheritanceDepth=ngVal(d.CtrlInheritanceDepth,0)+1;
   try
@@ -1392,7 +1407,7 @@ function ngCreateControl(d,ref,parent)
     return null;
   }
 
-  c.CtrlInheritedFrom[c.CtrlInheritedFrom.length] = d.Type;
+  c.CtrlInheritedFrom.push(d.Type);
   c.DefType = d.Type;
   c.Owner = ref;
 
@@ -1440,35 +1455,42 @@ function ngCreateControl(d,ref,parent)
   }
 
   var hasdi=ngHASDESIGNINFO();
-  if(uc) {
-    for(j in ngUserControls)
-    {
-      uc=ngUserControls[j];
-      if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
-      if((hasdi)&&(typeof uc.OnControlDesignInfo === 'function'))
-      {
-        var di = uc.OnControlDesignInfo(d,c,ref);
-        if(typeof di !== 'undefined')
-        {
-          d.DesignInfo = ngVal(d.DesignInfo, {});
-          ng_MergeVar(di, d.DesignInfo);
-          d.DesignInfo = di;
+  if(hasdi) {
+    if(d.DesignInfo!==null) {
+      if(typeof c.DesignInfo!=='object') c.DesignInfo={};
+
+      var createdifnc=ngRegisteredControlDesignInfos[d.Type];
+      if(typeof createdifnc === 'function') {
+        var di=createdifnc(d, c, ref);
+        if((di)&&(typeof di === 'object')) {
+          ng_MergeVarReplace(c.DesignInfo,di);
         }
       }
-    }
-  }
 
-  if(hasdi)
+      for(j in ngUserControls)
+      {
+        uc=ngUserControls[j];
+        if(typeof uc.OnControlDesignInfo === 'function')
+        {
+          var di = uc.OnControlDesignInfo(d,c,ref);
+          if((di)&&(typeof di === 'object')) {
+            ng_MergeVarReplace(c.DesignInfo,di);
+          }
+        }
+      }
+
+      if(typeof d.DesignInfo==='object') {
+        ng_MergeVarReplace(c.DesignInfo,d.DesignInfo);
+      }
+    }
+    else hasdi=false;
+  }
+  for(j in ngUserControls)
   {
-    if(typeof d.DesignInfo==='object')
-    {
-      if(typeof c.DesignInfo==='object') ng_MergeVar(d.DesignInfo,c.DesignInfo);
-      c.DesignInfo=d.DesignInfo;
-    }
-    delete d.DesignInfo;
+    uc=ngUserControls[j];
+    if(typeof uc.OnControlCreated === 'function') uc.OnControlCreated(d,c,ref);
   }
-  else delete c.DesignInfo;
-
+  if(!hasdi) delete c.DesignInfo;
   return c;
 }
 
