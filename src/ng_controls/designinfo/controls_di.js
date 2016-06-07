@@ -965,7 +965,7 @@ ngUserControls['controls_designinfo'] = {
           Default: {
             Properties: {
               Data: {
-                Properties: {
+                ObjectProperties: {
                   Text: { }
                 }
               }
