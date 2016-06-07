@@ -74,7 +74,7 @@
                 Enabled: {
                   Types: {
                     'boolean': {
-                      DefaultValue: 'true'
+                      DefaultValue: true
                     }
                   }
                 }
@@ -426,7 +426,7 @@
                 Visible: {
                   Types: {
                     'boolean': {
-                      DefaultValue: 'true'
+                      DefaultValue: true
                     }
                   }
                 },
@@ -955,7 +955,7 @@ ngUserControls['controls_designinfo'] = {
               H: { Value: 100 }
             }
           }
-        },
+        }
       };
     });
 
