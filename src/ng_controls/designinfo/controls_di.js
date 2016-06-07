@@ -971,7 +971,7 @@ ngUserControls['controls_designinfo'] = {
               }
             },
             OnCreating: function(initprops,di) {
-              initprops.Data.Properties.Text.Value=initprops.ControlRefName.Value;
+              initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
               return true;
             }
           }
