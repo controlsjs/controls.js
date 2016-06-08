@@ -30,12 +30,13 @@
             'string': {
               Editor: 'ngfeEditor_ControlType'
             }
-          }
+          },
+          Level: 'basic'
         },
-        L: { DefaultType: 'bounds' },
-        T: { DefaultType: 'bounds' },
-        R: { DefaultType: 'bounds' },
-        B: { DefaultType: 'bounds' },
+        L: { DefaultType: 'bounds', Level: 'basic' },
+        T: { DefaultType: 'bounds', Level: 'basic' },
+        R: { DefaultType: 'bounds', Level: 'basic' },
+        B: { DefaultType: 'bounds', Level: 'basic' },
         ParentReferences: {
           DefaultType: 'boolean',
           Types: {
@@ -51,8 +52,7 @@
             'function': {
               DefaultValue: 'function(def ,ref, parent, options) { return true; }'
             }
-          },
-          Level: 'advanced'
+          }
         },
         OnCreated: {
           DefaultType: 'events',
@@ -60,8 +60,7 @@
             'function': {
               DefaultValue: 'function(c, refs, options) {}'
             }
-          },
-          Level: 'advanced'
+          }
         },
 
         Data: {
@@ -80,7 +79,8 @@
                 }
               }
             }
-          }
+          },
+          Level: 'basic'
         },
 
         ModifyControls: {
@@ -95,7 +95,6 @@
 
         Events: {
           DefaultType: 'object',
-          Level: 'advanced',
           Types: {
             'object': {
               DestroyIfEmpty: true,
@@ -107,8 +106,7 @@
                     'function': {
                       DefaultValue: 'function(c, v, p) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnEnabledChanged: {
                   DefaultType: 'events',
@@ -126,7 +124,6 @@
 
         Methods: {
           DefaultType: 'object',
-          Level: 'advanced',
           Types: {
             'object': {
               DestroyIfEmpty: true,
@@ -147,8 +144,7 @@
                     'function': {
                       DefaultValue: 'function() { if (ng_IsOverriden(this.DoDispose)) return this.DoDispose.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 DoCreate: {
                   DefaultType: 'function',
@@ -156,8 +152,7 @@
                     'function': {
                       DefaultValue: 'function(props, ref, nd, parent) { if (ng_IsOverriden(this.DoCreate)) this.DoCreate.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 DoSetEnabled: {
                   DefaultType: 'function',
@@ -165,8 +160,7 @@
                     'function': {
                       DefaultValue: 'function(v) { if (ng_IsOverriden(this.DoSetEnabled)) this.DoSetEnabled.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 Enable: { DefaultType: 'function', Level: 'optional',
                   Types: {
@@ -247,8 +241,8 @@
 
     obj.DesignInfo = {
       Properties: {
-        W: { DefaultType: 'bounds' },
-        H: { DefaultType: 'bounds' },
+        W: { DefaultType: 'bounds', Level: 'basic' },
+        H: { DefaultType: 'bounds', Level: 'basic' },
         ScrollBars: {
           DefaultType: 'identifier',
           Types: {
@@ -264,7 +258,6 @@
         },
         style: {
           DefaultType: 'object',
-          Level: 'advanced',
           Types: {
             'object': {
               DestroyIfEmpty: true,
@@ -375,7 +368,7 @@
                     }
                   }
                 },
-                zIndex: { DefaultType: 'integer', Level: 'advanced' }
+                zIndex: { DefaultType: 'integer' }
               }
             }
           }
@@ -389,7 +382,7 @@
           },
           Level: 'basic'
         },
-        className: { DefaultType: 'string', Level: 'advanced' },
+        className: { DefaultType: 'string' },
         innerHTML: { DefaultType: 'string', Level: 'hidden' },
         id: { DefaultType: 'string', Level: 'optional' },
         parent: {
@@ -428,9 +421,10 @@
                     'boolean': {
                       DefaultValue: true
                     }
-                  }
+                  },
+                  Level: 'basic'
                 },
-                IsPopup: { DefaultType: 'boolean', Level: 'advanced' },
+                IsPopup: { DefaultType: 'boolean' },
                 Gestures: {
                   DefaultType: 'object',
                   Types: {
@@ -438,21 +432,21 @@
                       DestroyIfEmpty: true,
                       ObjectProperties:
                       {
-                        drag: { DefaultType: 'boolean', Level: 'advanced' },
+                        drag: { DefaultType: 'boolean' },
                         drapleft: { DefaultType: 'boolean', Level: 'optional' },
                         dragright: { DefaultType: 'boolean', Level: 'optional' },
                         dragup: { DefaultType: 'boolean', Level: 'optional' },
                         dragdown: { DefaultType: 'boolean', Level: 'optional' },
-                        hold: { DefaultType: 'boolean', Level: 'advanced' },
-                        release: { DefaultType: 'boolean', Level: 'advanced' },
-                        swipe: { DefaultType: 'boolean', Level: 'advanced' },
+                        hold: { DefaultType: 'boolean' },
+                        release: { DefaultType: 'boolean' },
+                        swipe: { DefaultType: 'boolean' },
                         swipeleft: { DefaultType: 'boolean', Level: 'optional' },
                         swiperight: { DefaultType: 'boolean', Level: 'optional' },
                         swipeup: { DefaultType: 'boolean', Level: 'optional' },
                         swipedown: { DefaultType: 'boolean', Level: 'optional' },
-                        tap: { DefaultType: 'boolean', Level: 'advanced' },
-                        doubletap: { DefaultType: 'boolean', Level: 'advanced' },
-                        touch: { DefaultType: 'boolean', Level: 'advanced' },
+                        tap: { DefaultType: 'boolean' },
+                        doubletap: { DefaultType: 'boolean' },
+                        touch: { DefaultType: 'boolean' },
                         transform: { DefaultType: 'boolean', Level: 'optional' },
                         pinch: { DefaultType: 'boolean', Level: 'optional' },
                         pinchin: { DefaultType: 'boolean', Level: 'optional' },
@@ -490,8 +484,7 @@
                     'function': {
                       DefaultValue: 'function(c, v) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnVisibleChanged: {
                   DefaultType: 'events',
@@ -508,8 +501,7 @@
                     'function': {
                       DefaultValue: 'function(c) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnUpdated: {
                   DefaultType: 'events',
@@ -517,8 +509,7 @@
                     'function': {
                       DefaultValue: 'function(c, elm) {}'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnMouseEnter: {
                   DefaultType: 'events',
@@ -545,8 +536,7 @@
                     'function': {
                       DefaultValue: 'function(c, target, intype, e) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnClickOutside: {
                   DefaultType: 'events',
@@ -554,8 +544,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnPointerDown: {
                   DefaultType: 'events',
@@ -563,8 +552,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnPointerUp: {
                   DefaultType: 'events',
@@ -572,8 +560,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnPtrStart: {
                   DefaultType: 'events',
@@ -581,8 +568,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) {}'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnPtrEnd: {
                   DefaultType: 'events',
@@ -590,8 +576,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) {}'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnGesture: {
                   DefaultType: 'events',
@@ -599,8 +584,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnPtrDrag: {
                   DefaultType: 'events',
@@ -608,8 +592,7 @@
                     'function': {
                       DefaultValue: 'function(c, pi) { return true; }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 }
               }
             }
@@ -663,8 +646,7 @@
                     'function': {
                       DefaultValue: 'function(elm, gestures) { if (ng_IsOverriden(this.DoAcceptGestures)) this.DoAcceptGestures.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 DoAcceptPtrGestures: {
                   DefaultType: 'function',
@@ -691,10 +673,9 @@
                     'function': {
                       DefaultValue: 'function(elm) { if (ng_IsOverriden(this.DoUpdate)) return this.DoUpdate.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
-                DoAttach: { DefaultType: 'function', Level: 'advanced',
+                DoAttach: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(elm, elmid) { if (ng_IsOverriden(this.DoAttach)) this.DoAttach.callParent.apply(this, arguments); }'
@@ -707,8 +688,7 @@
                     'function': {
                       DefaultValue: 'function(elm) { if (ng_IsOverriden(this.DoRelease)) this.DoRelease.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 DoSetVisible: {
                   DefaultType: 'function',
@@ -716,8 +696,7 @@
                     'function': {
                       DefaultValue: 'function(elm, v) { if (ng_IsOverriden(this.DoSetVisible)) this.DoSetVisible.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 DoResize: {
                   DefaultType: 'function',
@@ -725,8 +704,7 @@
                     'function': {
                       DefaultValue: 'function(elm) { if (ng_IsOverriden(this.DoResize)) return this.DoResize.callParent.apply(this, arguments); }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 SetVisible: { DefaultType: 'function', Level: 'optional',
                   Types: {
@@ -798,49 +776,49 @@
                     }
                   }
                 },
-                DoPointerDown: { DefaultType: 'function', Level: 'advanced',
+                DoPointerDown: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPointerDown)) return this.DoPointerDown.callParent.apply(this, arguments); }'
                     }
                   }
                 },
-                DoPointerUp: { DefaultType: 'function', Level: 'advanced',
+                DoPointerUp: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPointerUp)) return this.DoPointerUp.callParent.apply(this, arguments); }'
                     }
                   }
                 },
-                DoPtrStart: { DefaultType: 'function', Level: 'advanced',
+                DoPtrStart: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrStart)) return this.DoPtrStart.callParent.apply(this, arguments); }'
                     }
                   }
                 },
-                DoPtrEnd: { DefaultType: 'function', Level: 'advanced',
+                DoPtrEnd: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrEnd)) return this.DoPtrEnd.callParent.apply(this, arguments); }'
                     }
                   }
                 },
-                DoPtrDrag: { DefaultType: 'function', Level: 'advanced',
+                DoPtrDrag: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrDrag)) return this.DoPtrDrag.callParent.apply(this, arguments); }'
                     }
                   }
                 },
-                DoPtrClick: { DefaultType: 'function', Level: 'advanced',
+                DoPtrClick: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrClick)) this.DoPtrClick.callParent.apply(this, arguments); }'
                     }
                   }
                 },
-                DoPtrDblClick: { DefaultType: 'function', Level: 'advanced',
+                DoPtrDblClick: { DefaultType: 'function',
                   Types: {
                     'function': {
                       DefaultValue: 'function(pi) { if (ng_IsOverriden(this.DoPtrDblClick)) this.DoPtrDblClick.callParent.apply(this, arguments); }'
@@ -865,8 +843,8 @@
       NonVisual: true,
       ControlCategory: 'System',
       Properties: {
-        R: { Level: 'advanced' },
-        B: { Level: 'advanced' }
+        R: {},
+        B: {}
       }
     };
 
@@ -986,7 +964,8 @@ ngUserControls['controls_designinfo'] = {
                     DefaultType: 'string',
                     Types: {
                       'string': { }
-                    }
+                    },
+                    Level: 'basic'
                   }
                 }
               }

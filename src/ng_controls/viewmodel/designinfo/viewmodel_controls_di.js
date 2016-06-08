@@ -17,7 +17,7 @@ var ViewModel_Controls_DesignInfo = null;
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      Calls: { DefaultType: 'object', Level: 'advanced',
+      Calls: { DefaultType: 'object',
         Types: {
           'databind_string': {}
         }
@@ -30,10 +30,11 @@ var ViewModel_Controls_DesignInfo = null;
               DatabindFunction: true
             }
           }
-        }
+        },
+        Level: 'basic'
       },
-      Data: { DefaultType: 'databind_string', Level: 'advanced' },
-      Link: { DefaultType: 'databind_string' },
+      Data: { DefaultType: 'databind_string' },
+      Link: { DefaultType: 'databind_string', Level: 'basic' },
       OnClick: {
         DefaultType: 'databind_string',
         Types: {
@@ -46,8 +47,8 @@ var ViewModel_Controls_DesignInfo = null;
         Level: 'optional'
       },
       ReadOnly: { DefaultType: 'databind_string', Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' },
-      Error: { DefaultType: 'databind_string', Level: 'advanced' },
-      ShowError: { DefaultType: 'databind_string', Level: 'advanced' }
+      Error: { DefaultType: 'databind_string' },
+      ShowError: { DefaultType: 'databind_string' }
     };
 
     // dependent bindings
@@ -57,21 +58,22 @@ var ViewModel_Controls_DesignInfo = null;
         DefaultType: 'object',
         Types: {
           'databind_string': {}
-        }
+        },
+        Level: 'basic'
       };
     }
 
     if (typeof c.Elm === 'function' && c.DesignInfo && !c.DesignInfo.NonVisual)
     {
       props.style = {
-        DefaultType: 'object', Level: 'advanced',
+        DefaultType: 'object',
         Types: {
           'databind_string': {}
         }
       };
-      props.className = { DefaultType: 'databind_string', Level: 'advanced' };
-      props.SubClassName = { DefaultType: 'databind_string', Level: 'advanced' };
-      props.BaseClassName = { DefaultType: 'databind_string', Level: 'advanced' };
+      props.className = { DefaultType: 'databind_string' };
+      props.SubClassName = { DefaultType: 'databind_string' };
+      props.BaseClassName = { DefaultType: 'databind_string' };
     }
 
     if (typeof c.SetFocus === 'function')
@@ -81,24 +83,24 @@ var ViewModel_Controls_DesignInfo = null;
 
     if (typeof c.SetOpacity === 'function')
     {
-      props.Opacity = { DefaultType: 'databind_string' };
+      props.Opacity = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     if (typeof c.SetEnabled === 'function')
     {
-      props.Enabled = { DefaultType: 'databind_string' };
-      props.Disabled = { DefaultType: 'databind_string' };
+      props.Enabled = { DefaultType: 'databind_string', Level: 'basic' };
+      props.Disabled = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     if (typeof c.SetVisible === 'function')
     {
-      props.Visible = { DefaultType: 'databind_string' };
+      props.Visible = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     if (typeof c.SetText === 'function')
     {
-      props.Text = { DefaultType: 'databind_string' };
-      props.ngText = { DefaultType: 'databind_string' };
+      props.Text = { DefaultType: 'databind_string', Level: 'basic' };
+      props.ngText = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     var has_alt=(typeof c.Alt!=='undefined');
@@ -111,8 +113,8 @@ var ViewModel_Controls_DesignInfo = null;
 
     if (typeof c.SetInvalid === 'function')
     {
-      props.Invalid = { DefaultType: 'databind_string' };
-      props.Valid = { DefaultType: 'databind_string' };
+      props.Invalid = { DefaultType: 'databind_string', Level: 'basic' };
+      props.Valid = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     var instantUpdateProperty = {
@@ -124,7 +126,8 @@ var ViewModel_Controls_DesignInfo = null;
             IgnoreDataModel: true
           }
         }
-      }
+      },
+      Level: 'basic'
     };
 
     var delayedUpdateProperty = {
@@ -136,7 +139,8 @@ var ViewModel_Controls_DesignInfo = null;
             IgnoreDataModel: true
           }
         }
-      }
+      },
+      Level: 'basic'
     };
 
     switch (c.DefType)
@@ -145,31 +149,31 @@ var ViewModel_Controls_DesignInfo = null;
         props.InstantUpdate = instantUpdateProperty;
         props.DelayedUpdate = delayedUpdateProperty;
         props.Focus = { Level: 'basic' };
-        props.Lookup = { DefaultType: 'databind_string' };
-        props.Value = { DefaultType: 'databind_string' };
+        props.Lookup = { DefaultType: 'databind_string', Level: 'basic' };
+        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngMemo':
         props.InstantUpdate = instantUpdateProperty;
         props.DelayedUpdate = delayedUpdateProperty;
         props.Focus = { Level: 'basic' };
-        props.Value = { DefaultType: 'databind_string' };
+        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngList':
         props.Focus = { Level: 'basic' };
-        props.Value = { DefaultType: 'databind_string' };
-        props.Selected = { DefaultType: 'databind_string' };
-        props.Checked = { DefaultType: 'databind_string' };
+        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+        props.Selected = { DefaultType: 'databind_string', Level: 'basic' };
+        props.Checked = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngButton':
       case 'ngSysAction':
-        props.Value = { DefaultType: 'databind_string' };
-        props.Checked = { DefaultType: 'databind_string' };
-        props.Command = { DefaultType: 'databind_string' };
+        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+        props.Checked = { DefaultType: 'databind_string', Level: 'basic' };
+        props.Command = { DefaultType: 'databind_string', Level: 'basic' };
         break;
 
       case 'ngSysTimer':
-        props.Value = { DefaultType: 'databind_string' };
-        props.Command = { DefaultType: 'databind_string' };
+        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+        props.Command = { DefaultType: 'databind_string', Level: 'basic' };
         break;
 
       case 'ngPages':
@@ -179,13 +183,13 @@ var ViewModel_Controls_DesignInfo = null;
       case 'ngSysURLParams':
       case 'ngSysViewModelSettings':
       case 'ngSysRPC':
-        props.Value = { DefaultType: 'databind_string' };
+        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
         break;
 
       default:
         if (typeof c.SetText === 'function')
         {
-          props.Value = { DefaultType: 'databind_string' };
+          props.Value = { DefaultType: 'databind_string', Level: 'basic' };
         }
         break;
     }
@@ -211,7 +215,8 @@ var ViewModel_Controls_DesignInfo = null;
           Types: {
             'function': {},
             'identifier': {}
-          }
+          },
+          Level: 'basic'
         },
         DataBind: {
           DefaultType: 'databind',
@@ -229,7 +234,8 @@ var ViewModel_Controls_DesignInfo = null;
               DestroyIfEmpty: true,
               ObjectProperties: props
             }
-          }
+          },
+          Level: 'basic'
         },
         Data: {
           Types: {
@@ -267,8 +273,7 @@ var ViewModel_Controls_DesignInfo = null;
                     'function': {
                       DefaultValue: 'function(c, oldval) { }'
                     }
-                  },
-                  Level: 'advanced'
+                  }
                 },
                 OnDataBindingInit: {
                   DefaultType: 'events',
@@ -338,8 +343,7 @@ var ViewModel_Controls_DesignInfo = null;
             DestroyIfEmpty: true,
             ObjectProperties: {}
           }
-        },
-        Level: 'advanced'
+        }
       };
       for (var i in o)
       {
@@ -373,31 +377,60 @@ var ViewModel_Controls_DesignInfo = null;
   ViewModel_Controls_DesignInfo = {
     OnControlDesignInfo: function(def, c, ref)
     {
-      var di;
-
-      if (!c) return di;
-
-      switch (c.DefType)
+      if(c)
       {
-        case 'ngSysViewModel':
-        case 'ngViewModelForm':
-        case 'ngSysViewModelSettings':
-        case 'ngEditField':
-        case 'ngEditNumField':
-        case 'ngEditDateField':
-        case 'ngEditTimeField':
-        case 'ngDropDownField':
-        case 'ngDropDownListField':
-        case 'ngMemoField':
-          break;
+        // define Databind DesignInfo of all controls
+        var di = {};
+        add_databind_di(di, def, c, ref);
+        return di;
       }
+    },
 
-      di = ngNullVal(di, {});
+    OnInit: function()
+    {
+      if(!ngDESIGNINFO) return;
 
-      // define Databind DesignInfo of all controls
-      add_databind_di(di, def, c, ref);
+      ngRegisterControlDesignInfo('ngSysViewModel',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngViewModelForm',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngSysViewModelSettings',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngEditField',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngEditNumField',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngEditDateField',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngEditTimeField',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngDropDownField',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngDropDownListField',function(d,c,ref) {
+        return {
+        };
+      });
+      ngRegisterControlDesignInfo('ngMemoField',function(d,c,ref) {
+        return {
+        };
+      });
 
-      return di;
     }
   };
 
