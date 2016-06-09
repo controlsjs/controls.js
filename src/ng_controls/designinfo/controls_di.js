@@ -31,12 +31,13 @@
               Editor: 'ngfeEditor_ControlType'
             }
           },
-          Level: 'basic'
+          Level: 'basic',
+          Order: 0.01
         },
-        L: { DefaultType: 'bounds', Level: 'basic' },
-        T: { DefaultType: 'bounds', Level: 'basic' },
-        R: { DefaultType: 'bounds', Level: 'basic' },
-        B: { DefaultType: 'bounds', Level: 'basic' },
+        L: { DefaultType: 'bounds', Level: 'basic', Order: 0.11 },
+        T: { DefaultType: 'bounds', Level: 'basic', Order: 0.12 },
+        R: { DefaultType: 'bounds', Level: 'basic', Order: 0.15 },
+        B: { DefaultType: 'bounds', Level: 'basic', Order: 0.16 },
         ParentReferences: {
           DefaultType: 'boolean',
           Types: {
@@ -44,7 +45,8 @@
               DefaultValue: true
             }
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.302
         },
         OnCreating: {
           DefaultType: 'events',
@@ -52,7 +54,8 @@
             'function': {
               DefaultValue: 'function(def ,ref, parent, options) { return true; }'
             }
-          }
+          },
+          Order: 0.306
         },
         OnCreated: {
           DefaultType: 'events',
@@ -60,7 +63,8 @@
             'function': {
               DefaultValue: 'function(c, refs, options) {}'
             }
-          }
+          },
+          Order: 0.307
         },
 
         Data: {
@@ -75,12 +79,14 @@
                     'boolean': {
                       DefaultValue: true
                     }
-                  }
+                  },
+                  Level: 'basic'
                 }
               }
             }
           },
-          Level: 'basic'
+          Level: 'basic',
+          Order: 0.4
         },
 
         ModifyControls: {
@@ -90,7 +96,8 @@
               DestroyIfEmpty: true
             }
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.7
         },
 
         Events: {
@@ -119,7 +126,8 @@
                 }
               }
             }
-          }
+          },
+          Order: 0.92
         },
 
         Methods: {
@@ -227,7 +235,8 @@
                 }
               }
             }
-          }
+          },
+          Order: 0.8
         }
       }
     };
@@ -241,8 +250,8 @@
 
     obj.DesignInfo = {
       Properties: {
-        W: { DefaultType: 'bounds', Level: 'basic' },
-        H: { DefaultType: 'bounds', Level: 'basic' },
+        W: { DefaultType: 'bounds', Level: 'basic', Order: 0.13 },
+        H: { DefaultType: 'bounds', Level: 'basic', Order: 0.14 },
         ScrollBars: {
           DefaultType: 'identifier',
           Types: {
@@ -254,7 +263,8 @@
               }
             }
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.301
         },
         style: {
           DefaultType: 'object',
@@ -371,7 +381,8 @@
                 zIndex: { DefaultType: 'integer' }
               }
             }
-          }
+          },
+          Order: 0.252
         },
         Opacity: {
           DefaultType: 'float',
@@ -380,17 +391,19 @@
               DefaultValue: 1.0
             }
           },
-          Level: 'basic'
+          Level: 'basic',
+          Order: 0.253
         },
-        className: { DefaultType: 'string' },
-        innerHTML: { DefaultType: 'string', Level: 'hidden' },
-        id: { DefaultType: 'string', Level: 'optional' },
+        className: { DefaultType: 'string', Order: 0.251 },
+        innerHTML: { DefaultType: 'string', Level: 'hidden', Order: 0.303 },
+        id: { DefaultType: 'string', Level: 'optional', Order: 0.05 },
         parent: {
           DefaultType: 'string',
           Types: {
             'object': {}
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.07
         },
         IE6AlignFix: {
           DefaultType: 'boolean',
@@ -399,7 +412,8 @@
               DefaultValue: ngIE6AlignFix
             }
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.304
         },
         OnCreateHTMLElement: {
           DefaultType: 'events',
@@ -408,7 +422,8 @@
               DefaultValue: 'function(props, ref, c) {}'
             }
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.305
         },
 
         Data: {
@@ -469,7 +484,8 @@
               DestroyIfEmpty: true
             }
           },
-          Level: 'optional'
+          Level: 'optional',
+          Order: 0.65
         },
 
         Events: {
@@ -859,48 +875,6 @@ ngUserControls['controls_designinfo'] = {
   {
     FE.RegisterPropertyTypesGroup('events', ['function', 'identifier', 'null', 'undefined']);
     FE.AddPropertyTypeToGroup('object', 'images');
-
-    // define Definition properties order
-    FE.Params.PropertiesOrderPriority = ngNullVal(FE.Params.PropertiesOrderPriority, [
-      FE.Params.ControlRefNameProperty,
-      'Type',
-      'ID',
-      'L', 'T', 'W', 'H', 'R', 'B', 'CW', 'CH',
-      'id',
-      'Theme', 'ColorScheme', 'BackgroundColor',
-      'Layout',
-      'NavigatorAppearance',
-      'Namespace',
-      'ServerURL',
-      'ActiveCommand',
-      'DefaultValues',
-      'FieldDefs', 'ViewModel', 'DBViewModel',
-      'EditButtons',
-      'ErrorHint',
-      'className', 'style', 'Opacity',
-      'ScrollBars',
-      'parent',
-      'ParentReferences',
-      'innerHTML',
-      'IE6AlignFix',
-      'OnCreateHTMLElement',
-      'OnCreating',
-      'OnCreated',
-      'TreeImg',
-      'DropDown',
-      'ArrowsAlign',
-      'Arrows',
-      'DroppedDown',
-      'Mover',
-      'CloseBtn', 'HelpBtn', 'MaxBtn', 'MinBtn',
-      'Menu', 'PopupMenu',
-      'ButtonDef',
-      'Data',
-      'DataBind',
-      'Pages', 'ControlsPanel', 'ControlsPanel1', 'ControlsPanel2', 'Controls1', 'Controls2', 'Controls',
-      'ModifyControls',
-      'Methods', 'BeforeEvents', 'Events', 'AfterEvents', 'OverrideEvents'
-    ]);
   },
 
   OnControlDesignInfo: function(def, c, ref)
@@ -909,14 +883,15 @@ ngUserControls['controls_designinfo'] = {
       var di = {};
       // define common DesignInfo
       var events = (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events) ? c.DesignInfo.Properties.Events : {},
-          eventstype = ['After', 'Before', 'Override'],
+          eventstype = [{ id: 'Before', order: 0.91 }, { id: 'After', order: 0.93 }, { id: 'Override', order: 0.94 }],
           id;
       di.Properties = ngNullVal(di.Properties, {});
       for (var i = 0; i < eventstype.length; i++)
       {
-        id = eventstype[i] + 'Events';
+        id = eventstype[i].id + 'Events';
         di.Properties[id] = ngNullVal(c.DesignInfo.Properties[id], {});
         ng_MergeVar(di.Properties[id], events);
+        di.Properties[id].Order = eventstype[i].order;
       }
       return di;
     }

@@ -216,7 +216,8 @@ var ViewModel_Controls_DesignInfo = null;
             'function': {},
             'identifier': {}
           },
-          Level: 'basic'
+          Level: 'basic',
+          Order: 0.21
         },
         DataBind: {
           DefaultType: 'databind',
@@ -235,7 +236,8 @@ var ViewModel_Controls_DesignInfo = null;
               ObjectProperties: props
             }
           },
-          Level: 'basic'
+          Level: 'basic',
+          Order: 0.5
         },
         Data: {
           Types: {
@@ -333,7 +335,8 @@ var ViewModel_Controls_DesignInfo = null;
             DestroyIfEmpty: true,
             ObjectProperties: o
           }
-        }
+        },
+        Order: undefined
       };
       var eventprop2 = {
         DefaultType: 'object',
@@ -349,6 +352,7 @@ var ViewModel_Controls_DesignInfo = null;
       {
         eventprop2.Types['object'].ObjectProperties[i] = ng_CopyVar(o[i]);
         eventprop2.Types['object'].ObjectProperties[i].Level = 'advanced';
+        delete eventprop2.Types['object'].ObjectProperties[i].Order;
       }
 
       var vm_events_di = {
