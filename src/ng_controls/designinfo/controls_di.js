@@ -306,16 +306,7 @@
                 borderWidth: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
                 color: { DefaultType: 'css_colors', Level: 'optional', Types: { 'css_colors': { DefaultValue: '#000000' } } },
                 cursor: {
-                  DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'auto',
-                      Editor: 'ngfeEditor_DropDown',
-                      EditorOptions: {
-                        Items: ['auto','crosshair','default','hand','pointer','move','e-resize','ne-resize','nw-resize','n-resize','se-resize','sw-resize','s-resize','w-resize','text','wait', 'help','url("")']
-                      }
-                    }
-                  }
+                  DefaultType: 'css_cursor', Level: 'optional'
                 },
                 fontFamily: { DefaultType: 'string', Level: 'optional',
                   Types: {
@@ -1227,16 +1218,7 @@ ngUserControls['controls_designinfo'] = {
                             },
                             Level: 'basic'
                           },
-            Cursor:       { DefaultType: 'string',
-                            Types: {
-                              'string': {
-                                 DefaultValue: 'auto',
-                                 Editor: 'ngfeEditor_DropDown',
-                                 EditorOptions: {
-                                   Items: ['auto','crosshair','default','hand','pointer','move','e-resize','ne-resize','nw-resize','n-resize','se-resize','sw-resize','s-resize','w-resize','text','wait', 'help','url("")']
-                                 }
-                               }
-                            },
+            Cursor:       { DefaultType: 'css_cursor',
                             Level: 'basic'
                           },
             Shapes:       { DefaultType: 'array',
