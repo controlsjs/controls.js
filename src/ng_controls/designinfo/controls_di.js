@@ -304,7 +304,7 @@
                   }
                 },
                 borderWidth: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
-                color: { DefaultType: 'css_colors', Level: 'optional' },
+                color: { DefaultType: 'css_colors', Level: 'optional', Types: { 'css_colors': { DefaultValue: '#000000' } } },
                 cursor: {
                   DefaultType: 'string', Level: 'optional',
                   Types: {
@@ -317,8 +317,29 @@
                     }
                   }
                 },
-                font: { DefaultType: 'string', Level: 'optional' },
-                fontSize: { DefaultType: 'string', Level: 'optional' },
+                fontFamily: { DefaultType: 'string', Level: 'optional',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_DropDownList',
+                      EditorOptions: {
+                        Items: ['"Times New Roman", Times, serif',
+                                'Georgia, serif',
+                                'Arial, Helvetica, sans-serif',
+                                '"Arial Black", Gadget, sans-serif',
+                                '"Comic Sans MS", cursive, sans-serif',
+                                'Impact, Charcoal, sans-serif',
+                                'Tahoma, Geneva, sans-serif',
+                                'Verdana, Geneva, sans-serif',
+                                '"Courier New", Courier, monospace',
+                                '"Lucida Console", Monaco, monospace'
+                               ]
+                      }
+                    }
+                  }
+
+                },
+                fontSize: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
                 fontStyle: {
                   DefaultType: 'string', Level: 'optional',
                   Types: {
@@ -343,7 +364,7 @@
                     }
                   }
                 },
-                lineHeight: { DefaultType: 'integer', Level: 'optional' },
+                lineHeight: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
                 margin: { DefaultType: 'string', Level: 'optional' },
                 marginBottom: { DefaultType: 'string_px', Level: 'optional' },
                 marginLeft: { DefaultType: 'string_px', Level: 'optional' },
@@ -361,7 +382,19 @@
                       DefaultValue: 'left',
                       Editor: 'ngfeEditor_DropDownList',
                       EditorOptions: {
-                        Items: ['left','center','right','justify']
+                        Items: ['left','center','right','justify','initial','inherit']
+                      }
+                    }
+                  }
+                },
+                verticalAlign: {
+                  DefaultType: 'string', Level: 'optional',
+                  Types: {
+                    'string': {
+                      DefaultValue: 'baseline',
+                      Editor: 'ngfeEditor_DropDown',
+                      EditorOptions: {
+                        Items: ['baseline','sub','super','top','text-top','middle','bottom','text-bottom','initial','inherit']
                       }
                     }
                   }
@@ -374,6 +407,30 @@
                       Editor: 'ngfeEditor_DropDownList',
                       EditorOptions: {
                         Items: ['none','underline','overline','line-through','initial','inherit']
+                      }
+                    }
+                  }
+                },
+                textTransform: {
+                  DefaultType: 'string', Level: 'optional',
+                  Types: {
+                    'string': {
+                      DefaultValue: 'none',
+                      Editor: 'ngfeEditor_DropDownList',
+                      EditorOptions: {
+                        Items: ['none','uppercase','lowercase','capitalize','initial','inherit']
+                      }
+                    }
+                  }
+                },
+                whiteSpace: {
+                  DefaultType: 'string', Level: 'optional',
+                  Types: {
+                    'string': {
+                      DefaultValue: 'normal',
+                      Editor: 'ngfeEditor_DropDownList',
+                      EditorOptions: {
+                        Items: ['normal','nowrap','pre','pre-line','pre-wrap','initial','inherit']
                       }
                     }
                   }
@@ -901,6 +958,8 @@ ngUserControls['controls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true,
         NewControl: {
           Default: {
             Properties: {
@@ -913,13 +972,16 @@ ngUserControls['controls_designinfo'] = {
     });
 
     ngRegisterControlDesignInfo('ngText',function(d,c,ref) {
+      var stylelvl=d.CtrlInheritanceDepth ? 'advanced' : 'basic';
       return {
+        ControlCategory: 'Labels',
         NewControl: {
           Default: {
             Properties: {
               Data: {
                 ObjectProperties: {
-                  Text: { }
+                  Text: { },
+                  HTMLEncode: { Value: true }
                 }
               }
             },
@@ -929,65 +991,154 @@ ngUserControls['controls_designinfo'] = {
             }
           }
         },
-        Properties: {
+        Properties: ng_DIProperties({
+          style: {
+            color: { Level: stylelvl },
+            fontFamily: { Level: stylelvl },
+            fontSize: { Level: stylelvl },
+            fontStyle: { Level: stylelvl },
+            fontWeight: { Level: stylelvl },
+            lineHeight: { Level: stylelvl },
+            textTransform: { Level: stylelvl },
+            whiteSpace: { Level: stylelvl }
+          },
+
           Data: {
-            Types: {
-              'object': {
-                ObjectProperties:
-                {
-                  Text: {
-                    DefaultType: 'string',
-                    Types: {
-                      'string': { }
-                    },
-                    Level: 'basic'
-                  }
-                }
-              }
-            }
+            TextAlign:    { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'left',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right','center','justify']
+                                }
+                              }
+                            }
+                          },
+            AutoSize:     { DefaultType: 'boolean',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: false
+                               }
+                            }
+                          },
+            AutoSizeMode: { DefaultType: 'string',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'auto',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['auto','horizontal','vertical']
+                                }
+                              }
+                            }
+                          },
+            MinWidth:     { DefaultType: 'integer' },
+            MinHeight:    { DefaultType: 'integer' },
+
+            Text:         { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                Editor: 'ngfeEditor_Text',
+                              }
+                            }
+                          },
+            Alt:          { DefaultType: 'string' },
+            HTMLEncode:   { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                            }
+                          },
+            CanSelect:    { DefaultType: 'boolean',
+                            Types: {
+                              'boolean': { DefaultValue: true }
+                            }
+                          }
+          },
+          OverrideEvents: {
+            OnSetText:    { DefaultType: 'events',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(text,c) { return text; }'
+                              }
+                            }
+                          }
+          },
+          Events: {
+            OnGetText:    { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetAlt:     { DefaultType: 'events',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          }
           }
-        }
+        })
       };
     });
 
     ngRegisterControlDesignInfo('ngImage',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc'
       };
     });
     ngRegisterControlDesignInfo('ngImageMap',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc'
       };
     });
     ngRegisterControlDesignInfo('ngButton',function(d,c,ref) {
       return {
+        ControlCategory: 'Buttons'
       };
     });
     ngRegisterControlDesignInfo('ngGroup',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true
       };
     });
     ngRegisterControlDesignInfo('ngEdit',function(d,c,ref) {
       return {
+        ControlCategory: 'Edits'
       };
     });
     ngRegisterControlDesignInfo('ngMemo',function(d,c,ref) {
       return {
+        ControlCategory: 'Edits'
       };
     });
     ngRegisterControlDesignInfo('ngPages',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true
       };
     });
     ngRegisterControlDesignInfo('ngToolBar',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true
       };
     });
     ngRegisterControlDesignInfo('ngProgressBar',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc'
       };
     });
     ngRegisterControlDesignInfo('ngWebBrowser',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc'
       };
     });
 
@@ -995,6 +1146,15 @@ ngUserControls['controls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
       return {
+        Properties: {
+          ParentReferences: {
+            Types: {
+              'boolean': {
+                DefaultValue: false
+              }
+            }
+          }
+        }
       };
     });
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
