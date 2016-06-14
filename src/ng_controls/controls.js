@@ -1066,6 +1066,25 @@ function ngGetControlByElement(elm, type)
   return c;
 }
 
+/**
+ *  Function: ngRegisterControlType
+ *  Registers new control type.
+ *
+ *  Syntax:
+ *    void *ngRegisterControlType* (string type, mixed def)
+ *
+ *  Parameters:
+ *    type - unique control type identifier
+ *    def - definition of control
+ *
+ *  Definition of control:
+ *    string def - alias to existing control type
+ *    object def - registration by definition, ancesor is defined by def.Type
+ *    function def - registration by factory function(def,ref,parent)
+ *
+ *  Returns:
+ *    -
+ */
 function ngRegisterControlType(type, def)
 {
   if(typeof type!=='string') return;
@@ -1101,6 +1120,20 @@ function ngRegisterControlType(type, def)
   }
 }
 
+/**
+ *  Function: ngRegisterControlDesignInfo
+ *  Registers new control design info.
+ *
+ *  Syntax:
+ *    void *ngRegisterControlType* (string type, function di)
+ *
+ *  Parameters:
+ *    type - control type identifier
+ *    di - design info factory function(def,ref,parent)
+ *
+ *  Returns:
+ *    -
+ */
 function ngRegisterControlDesignInfo(type, di)
 {
   if((!ngHASDEBUG())||(!ngDESIGNINFO)||(typeof di!=='function')||(typeof type!=='string')) return;
@@ -1114,6 +1147,48 @@ function ngRegisterControlDesignInfo(type, di)
   if((ngCurrentUserControls!='')&&(typeof di.UserControls === 'undefined')) di.UserControls = ngCurrentUserControls;
   ngRegisteredControlDesignInfos[type]=di;
 }
+
+/**
+ *  Function: ng_DIProperties
+ *  Creates control design info Properties.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIProperties* (object props [, object data={}])
+ *
+ *  Parameters:
+ *    props - simplified properties definition
+ *    data - optional standard properties definition to which props are merged to
+ *
+ *  Returns:
+ *    Control design info Properties.
+ */
+function ng_DIProperties(props,data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  for(var i in props) {
+    switch(i) {
+      case 'Data':
+      case 'Events':
+      case 'OverrideEvents':
+      case 'Controls':
+      case 'Methods':
+      case 'style':
+        if(typeof di[i]==='undefined') di[i]={};
+        ng_MergeVar(di[i],{
+          Types: {
+            'object': {
+              ObjectProperties: props[i]
+            }
+          }
+        });
+        break;
+      default:
+        di[i]=props[i];
+        break;
+    }
+  }
+  return di;
+};
 
 ngRegisterControlType('ngPanel', function() { return new ngPanel; });
 ngRegisterControlType('ngText', function() { return new ngText; });
