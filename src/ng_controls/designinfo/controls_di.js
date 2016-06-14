@@ -489,6 +489,7 @@
               ObjectProperties:
               {
                 Visible: {
+                  DefaultType: 'boolean',
                   Types: {
                     'boolean': {
                       DefaultValue: true
@@ -528,6 +529,66 @@
                     }
                   },
                   Level: 'advanced'
+                },
+                ngText: {
+                  DefaultType: 'string',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_Lang'
+                    }
+                  },
+                  Level: 'optional'
+                },
+                ngTextD: {
+                  DefaultType: 'string',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_Lang'
+                    }
+                  },
+                  Level: 'optional'
+                },
+                ngAlt: {
+                  DefaultType: 'string',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_Lang'
+                    }
+                  },
+                  Level: 'optional'
+                },
+                ngAltD: {
+                  DefaultType: 'string',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_Lang'
+                    }
+                  },
+                  Level: 'optional'
+                },
+                ngHint: {
+                  DefaultType: 'string',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_Lang'
+                    }
+                  },
+                  Level: 'optional'
+                },
+                ngHintD: {
+                  DefaultType: 'string',
+                  Types: {
+                    'string': {
+                      DefaultValue: '',
+                      Editor: 'ngfeEditor_Lang'
+                    }
+                  },
+                  Level: 'optional'
                 }
               }
             }
@@ -1037,6 +1098,8 @@ ngUserControls['controls_designinfo'] = {
             MinWidth:     { DefaultType: 'integer' },
             MinHeight:    { DefaultType: 'integer' },
 
+            ngText:       { Level: 'basic' },
+            ngTextD:      { Level: 'basic' },
             Text:         { DefaultType: 'string',
                             Level: 'basic',
                             Types: {
@@ -1045,7 +1108,11 @@ ngUserControls['controls_designinfo'] = {
                               }
                             }
                           },
-            Alt:          { DefaultType: 'string' },
+            ngAlt:        { Level: 'basic' },
+            ngAltD:       { Level: 'basic' },
+            Alt:          { DefaultType: 'string',
+                            Level: 'basic'
+                          },
             HTMLEncode:   { DefaultType: 'boolean',
                             Level: 'basic',
                             Types: {
@@ -1053,6 +1120,7 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             CanSelect:    { DefaultType: 'boolean',
+                            Level: 'basic',
                             Types: {
                               'boolean': { DefaultValue: true }
                             }
@@ -1065,9 +1133,7 @@ ngUserControls['controls_designinfo'] = {
                                 DefaultValue: 'function(text,c) { return text; }'
                               }
                             }
-                          }
-          },
-          Events: {
+                          },
             OnGetText:    { DefaultType: 'events',
                             Level: 'basic',
                             Types: {
@@ -1077,6 +1143,7 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             OnGetAlt:     { DefaultType: 'events',
+                            Level: 'basic',
                             Types: {
                               'function': {
                                 DefaultValue: 'function(c) { return ""; }'
@@ -1090,13 +1157,157 @@ ngUserControls['controls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngImage',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc'
+        ControlCategory: 'Misc',
+        Properties: ng_DIProperties({
+          Data: {
+            ngAlt:        { Level: 'basic' },
+            ngAltD:       { Level: 'basic' },
+            Alt:          { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            AutoSize:     { DefaultType: 'boolean',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: true
+                               }
+                            }
+                          },
+            Img:          { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null
+                               }
+                            },
+                            Level: 'basic'
+                          }
+          },
+          OverrideEvents: {
+            OnGetImg:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return null; }'
+                              }
+                            }
+                          },
+            OnGetAlt:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngImageMap',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc'
-      };
+        ControlCategory: 'Misc',
+        Properties: ng_DIProperties({
+          Data: {
+            ngAlt:        { Level: 'basic' },
+            ngAltD:       { Level: 'basic' },
+            Alt:          { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            AutoSize:     { DefaultType: 'boolean',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: true
+                               }
+                            }
+                          },
+            Img:          { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            Cursor:       { DefaultType: 'string',
+                            Types: {
+                              'string': {
+                                 DefaultValue: 'auto',
+                                 Editor: 'ngfeEditor_DropDown',
+                                 EditorOptions: {
+                                   Items: ['auto','crosshair','default','hand','pointer','move','e-resize','ne-resize','nw-resize','n-resize','se-resize','sw-resize','s-resize','w-resize','text','wait', 'help','url("")']
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            Shapes:       { DefaultType: 'array',
+                            Types: {
+                              'array': {
+                                // TODO: define item, shapes editor?
+                               }
+                            },
+                            Level: 'basic'
+                          }
+          },
+          Events: {
+             OnShapeClick:  { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e) { }'
+                                }
+                              }
+                            },
+             OnMouseEnter:  { DefaultType: 'events',
+                              Level: 'basic'
+                            },
+             OnMouseLeave:  { DefaultType: 'events',
+                              Level: 'basic'
+                            },
+             OnMouseShapeEnter: { DefaultType: 'events',
+                                  Level: 'basic',
+                                  Types: {
+                                    'function': {
+                                      DefaultValue: 'function(c,shapeidx) { }'
+                                    }
+                                  }
+                                },
+             OnMouseShapeLeave: { DefaultType: 'events',
+                                  Level: 'basic',
+                                  Types: {
+                                    'function': {
+                                      DefaultValue: 'function(c,shapeidx) { }'
+                                    }
+                                  }
+                                }
+          },
+          OverrideEvents: {
+            OnGetImg:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return null; }'
+                              }
+                            }
+                          },
+            OnGetAlt:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+             OnGetShapeAlt: { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c,shapeidx) { return ""; }'
+                                }
+                              }
+                            }
+            }
+          })
+      }
     });
     ngRegisterControlDesignInfo('ngButton',function(d,c,ref) {
       return {
