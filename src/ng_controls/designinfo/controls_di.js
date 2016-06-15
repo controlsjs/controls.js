@@ -303,7 +303,7 @@
                     }
                   }
                 },
-                borderWidth: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
+                borderWidth: { DefaultType: 'css_dim_px', Level: 'optional', Types: { 'string': {} } },
                 color: { DefaultType: 'css_colors', Level: 'optional', Types: { 'css_colors': { DefaultValue: '#000000' } } },
                 cursor: {
                   DefaultType: 'css_cursor', Level: 'optional'
@@ -330,7 +330,7 @@
                   }
 
                 },
-                fontSize: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
+                fontSize: { DefaultType: 'css_dim_px', Level: 'optional', Types: { 'string': {} } },
                 fontStyle: {
                   DefaultType: 'string', Level: 'optional',
                   Types: {
@@ -355,17 +355,17 @@
                     }
                   }
                 },
-                lineHeight: { DefaultType: 'string_px', Level: 'optional', Types: { 'string': {} } },
+                lineHeight: { DefaultType: 'css_dim_px', Level: 'optional', Types: { 'string': {} } },
                 margin: { DefaultType: 'string', Level: 'optional' },
-                marginBottom: { DefaultType: 'string_px', Level: 'optional' },
-                marginLeft: { DefaultType: 'string_px', Level: 'optional' },
-                marginRight: { DefaultType: 'string_px', Level: 'optional' },
-                marginTop: { DefaultType: 'string_px', Level: 'optional' },
+                marginBottom: { DefaultType: 'css_dim_px', Level: 'optional' },
+                marginLeft: { DefaultType: 'css_dim_px', Level: 'optional' },
+                marginRight: { DefaultType: 'css_dim_px', Level: 'optional' },
+                marginTop: { DefaultType: 'css_dim_px', Level: 'optional' },
                 padding: { DefaultType: 'string', Level: 'optional' },
-                paddingBottom: { DefaultType: 'string_px', Level: 'optional' },
-                paddingLeft: { DefaultType: 'string_px', Level: 'optional' },
-                paddingRight: { DefaultType: 'string_px', Level: 'optional' },
-                paddingTop: { DefaultType: 'string_px', Level: 'optional' },
+                paddingBottom: { DefaultType: 'css_dim_px', Level: 'optional' },
+                paddingLeft: { DefaultType: 'css_dim_px', Level: 'optional' },
+                paddingRight: { DefaultType: 'css_dim_px', Level: 'optional' },
+                paddingTop: { DefaultType: 'css_dim_px', Level: 'optional' },
                 textAlign: {
                   DefaultType: 'string', Level: 'optional',
                   Types: {
@@ -1323,12 +1323,7 @@ ngUserControls['controls_designinfo'] = {
             ngText:       { Level: 'basic' },
             ngTextD:      { Level: 'basic' },
             Text:         { DefaultType: 'string',
-                            Level: 'basic',
-                            Types: {
-                              'string': {
-                                Editor: 'ngfeEditor_Text',
-                              }
-                            }
+                            Level: 'basic'
                           },
             ngAlt:        { Level: 'basic' },
             ngAltD:       { Level: 'basic' },
@@ -1535,7 +1530,75 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngGroup',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-        IsContainer: true
+        IsContainer: true,
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 },
+              H: { Value: 100 },
+              Data: {
+                ObjectProperties: {
+                  Text: { },
+                  HTMLEncode: { Value: true }
+                }
+              }
+            },
+            OnCreating: function(initprops,di) {
+              initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
+              return true;
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          CW:               { DefaultType: 'integer',
+                              Level: 'advanced'
+                            },
+          CH:               { DefaultType: 'integer',
+                              Level: 'advanced'
+                            },
+          Data: {
+            ngText:         { Level: 'basic' },
+            ngTextD:        { Level: 'basic' },
+            Text:           { DefaultType: 'string',
+                              Level: 'basic'
+                            },
+            HTMLEncode:     { DefaultType: 'boolean',
+                              Level: 'basic',
+                              Types: {
+                                'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                              }
+                            },
+            Frame:          { DefaultType: 'img_frame',
+                              Level: 'basic',
+                              Collapsed: true
+                            },
+            ControlsInside: { DefaultType: 'boolean',
+                              Level: 'basic',
+                              Types: {
+                                'boolean': {
+                                   DefaultValue: true
+                                 }
+                              }
+                            }
+          },
+          OverrideEvents: {
+            OnSetText:    { DefaultType: 'events',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(text,c) { return text; }'
+                              }
+                            }
+                          },
+            OnGetText:    { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngEdit',function(d,c,ref) {
@@ -1588,10 +1651,46 @@ ngUserControls['controls_designinfo'] = {
     });
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
       return {
+        Properties: ng_DIProperties({
+          Data: {
+            RadioGroup:         { Types: {
+                                    'string': { DefaultValue: 'default' }
+                                  }
+                                },
+            AllowGrayed:        { DefaultType: 'boolean',
+                                  Level: 'basic',
+                                  Types: {
+                                    'boolean': {
+                                       DefaultValue: false
+                                     }
+                                  }
+                                },
+            RadioAllowUncheck:  { DefaultType: 'boolean',
+                                  Level: 'basic',
+                                  Types: {
+                                    'boolean': {
+                                       DefaultValue: false
+                                     }
+                                  }
+                                }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngCheckBox',function(d,c,ref) {
       return {
+        Properties: ng_DIProperties({
+          Data: {
+            AllowGrayed:  { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: false
+                               }
+                            }
+                          }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngDropDownList',function(d,c,ref) {
