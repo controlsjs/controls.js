@@ -30,8 +30,7 @@ var ViewModel_Controls_DesignInfo = null;
               DatabindFunction: true
             }
           }
-        },
-        Level: 'basic'
+        }
       },
       Data: { DefaultType: 'databind_string' },
       Link: { DefaultType: 'databind_string', Level: 'basic' },
