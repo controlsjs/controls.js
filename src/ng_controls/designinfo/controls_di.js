@@ -642,8 +642,7 @@
                     'function': {
                       DefaultValue: 'function(c) {}'
                     }
-                  },
-                  Level: 'basic'
+                  }
                 },
                 OnMouseLeave: {
                   DefaultType: 'events',
@@ -651,8 +650,7 @@
                     'function': {
                       DefaultValue: 'function(c) {}'
                     }
-                  },
-                  Level: 'basic'
+                  }
                 },
 
                 OnIsInsidePopup: {
@@ -1239,14 +1237,9 @@ ngUserControls['controls_designinfo'] = {
                                 }
                               }
                             },
-             OnMouseEnter:  { DefaultType: 'events',
-                              Level: 'basic'
-                            },
-             OnMouseLeave:  { DefaultType: 'events',
-                              Level: 'basic'
-                            },
+             OnMouseEnter:  { },
+             OnMouseLeave:  { },
              OnMouseShapeEnter: { DefaultType: 'events',
-                                  Level: 'basic',
                                   Types: {
                                     'function': {
                                       DefaultValue: 'function(c,shapeidx) { }'
@@ -1254,7 +1247,6 @@ ngUserControls['controls_designinfo'] = {
                                   }
                                 },
              OnMouseShapeLeave: { DefaultType: 'events',
-                                  Level: 'basic',
                                   Types: {
                                     'function': {
                                       DefaultValue: 'function(c,shapeidx) { }'
@@ -1293,7 +1285,251 @@ ngUserControls['controls_designinfo'] = {
     });
     ngRegisterControlDesignInfo('ngButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons'
+        ControlCategory: 'Buttons',
+        NewControl: {
+          Default: {
+            Properties: {
+              Data: {
+                ObjectProperties: {
+                  Text: { },
+                  HTMLEncode: { Value: true }
+                }
+              }
+            },
+            OnCreating: function(initprops,di) {
+              initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
+              return true;
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          Data: {
+            Action:       { DefaultType: 'string',
+                            Level: 'basic'
+                            // TODO: browse from existing actions
+                          },
+            TextAlign:    { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'center',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right','center','justify']
+                                }
+                              }
+                            }
+                          },
+            ngText:       { Level: 'basic' },
+            ngTextD:      { Level: 'basic' },
+            Text:         { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                Editor: 'ngfeEditor_Text',
+                              }
+                            }
+                          },
+            ngAlt:        { Level: 'basic' },
+            ngAltD:       { Level: 'basic' },
+            Alt:          { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            HTMLEncode:   { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                            }
+                          },
+            AutoSize:     { DefaultType: 'boolean',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: true
+                               }
+                            }
+                          },
+            MinWidth:     { DefaultType: 'integer' },
+            Checked:      { DefaultType: 'integer',
+                            Level: 'basic',
+                            Types: {
+                              'integer': {
+                                 DefaultValue: 0,
+                                 Editor: 'ngfeEditor_DropDownList',
+                                 EditorOptions: {
+                                   Items: [{ID:0,Text:'cbUnchecked'},{ID:1,Text:'chChecked'},{ID:2,Text:'cbGrayed'}] //TODO: make id-values working
+                                 }
+                               }
+                            }
+                          },
+            RadioGroup:   { DefaultType: 'string',
+                            Level: 'basic'
+                            // TODO: browse from existing radio groups
+                          },
+            Cursor:       { DefaultType: 'css_cursor',
+                            Level: 'basic',
+                            Types: {
+                              'css_cursor': {
+                                DefaultValue: 'pointer'
+                              }
+                            }
+                          },
+            ReadOnly:     { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: false
+                               }
+                            }
+                          },
+            Img:          { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   HorizontalImages: false,
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            ImgAlign:     { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'left',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right']
+                                }
+                              }
+                            }
+                          },
+            ImgIndent:    { DefaultType: 'integer',
+                            Level: 'basic'
+                          },
+            LeftImg:      { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   HorizontalImages: false,
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            MiddleImg:    { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            RightImg:     { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   HorizontalImages: false,
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            Default:      { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: false
+                               }
+                            }
+                          },
+            Cancel:       { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                 DefaultValue: false
+                               }
+                            }
+                          }
+          },
+          Events: {
+            OnCheckChanged: { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c) { }'
+                                }
+                              }
+                            },
+            OnDblClick:     { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e) { }'
+                                }
+                              }
+                            },
+            OnClick:        { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e) { }'
+                                }
+                              }
+                            },
+            OnMouseEnter:  { },
+            OnMouseLeave:  { }
+          },
+          OverrideEvents: {
+            OnSetText:    { DefaultType: 'events',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(text,c) { return text; }'
+                              }
+                            }
+                          },
+            OnGetText:    { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetAlt:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetImg:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c,idx) { return null; }'
+                              }
+                            }
+                          },
+            OnGetClassName: { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c,cls,text) { return cls; }'
+                                }
+                              }
+                            }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngGroup',function(d,c,ref) {
