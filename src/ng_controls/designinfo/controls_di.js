@@ -1017,6 +1017,10 @@ ngUserControls['controls_designinfo'] = {
               H: { Value: 100 }
             }
           }
+        },
+        Properties: {
+          ParentReferences: { Level: 'advanced' },
+          ScrollBars: { Level: 'basic' }
         }
       };
     });
@@ -1087,7 +1091,7 @@ ngUserControls['controls_designinfo'] = {
             MinWidth:     { DefaultType: 'integer' },
             MinHeight:    { DefaultType: 'integer' },
 
-            ngText:       { Level: 'basic' },
+            ngText:       { Level: 'advanced' },
             ngTextD:      { Level: 'basic' },
             Text:         { DefaultType: 'string',
                             Level: 'basic',
@@ -1097,7 +1101,7 @@ ngUserControls['controls_designinfo'] = {
                               }
                             }
                           },
-            ngAlt:        { Level: 'basic' },
+            ngAlt:        { Level: 'advanced' },
             ngAltD:       { Level: 'basic' },
             Alt:          { DefaultType: 'string',
                             Level: 'basic'
@@ -1149,7 +1153,7 @@ ngUserControls['controls_designinfo'] = {
         ControlCategory: 'Misc',
         Properties: ng_DIProperties({
           Data: {
-            ngAlt:        { Level: 'basic' },
+            ngAlt:        { Level: 'advanced' },
             ngAltD:       { Level: 'basic' },
             Alt:          { DefaultType: 'string',
                             Level: 'basic'
@@ -1196,7 +1200,7 @@ ngUserControls['controls_designinfo'] = {
         ControlCategory: 'Misc',
         Properties: ng_DIProperties({
           Data: {
-            ngAlt:        { Level: 'basic' },
+            ngAlt:        { Level: 'advanced' },
             ngAltD:       { Level: 'basic' },
             Alt:          { DefaultType: 'string',
                             Level: 'basic'
@@ -1320,12 +1324,12 @@ ngUserControls['controls_designinfo'] = {
                               }
                             }
                           },
-            ngText:       { Level: 'basic' },
+            ngText:       { Level: 'advanced' },
             ngTextD:      { Level: 'basic' },
             Text:         { DefaultType: 'string',
                             Level: 'basic'
                           },
-            ngAlt:        { Level: 'basic' },
+            ngAlt:        { Level: 'advanced' },
             ngAltD:       { Level: 'basic' },
             Alt:          { DefaultType: 'string',
                             Level: 'basic'
@@ -1550,14 +1554,23 @@ ngUserControls['controls_designinfo'] = {
           }
         },
         Properties: ng_DIProperties({
+          ParentReferences: { Level: 'advanced' },
           CW:               { DefaultType: 'integer',
                               Level: 'advanced'
                             },
           CH:               { DefaultType: 'integer',
                               Level: 'advanced'
                             },
+          ControlPanel:     { DefaultType: 'control',
+                              Level: 'basic',
+                              Types: {
+                                'control': {
+                                  DefaultValue: '{ Type: \'ngPanel\' }'
+                                }
+                              }
+                            },
           Data: {
-            ngText:         { Level: 'basic' },
+            ngText:         { Level: 'advanced' },
             ngTextD:        { Level: 'basic' },
             Text:           { DefaultType: 'string',
                               Level: 'basic'
@@ -1640,6 +1653,7 @@ ngUserControls['controls_designinfo'] = {
       return {
         Properties: {
           ParentReferences: {
+            Level: 'optional',
             Types: {
               'boolean': {
                 DefaultValue: false
