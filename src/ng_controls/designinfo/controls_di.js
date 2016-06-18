@@ -2028,8 +2028,257 @@ ngUserControls['controls_designinfo'] = {
       };
     });
     ngRegisterControlDesignInfo('ngMemo',function(d,c,ref) {
+      var hintstyle='ngHintHideOnInput';
+      switch(ngDefaultHintStyle)
+      {
+        case 0: hintstyle='ngHintHideOnFocus'; break;
+        case 1: hintstyle='ngHintHideOnInput'; break;
+      }
       return {
-        ControlCategory: 'Edits'
+        ControlCategory: 'Edits',
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 },
+              H: { Value: 100 },
+              Data: {
+                ObjectProperties: {
+                  Text: { }
+                }
+              }
+            },
+            OnCreating: function(initprops,di) {
+              if(initprops.Data.ObjectProperties.Text)
+                initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
+              return true;
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          Data: {
+            ngText:       { Level: 'advanced' },
+            ngTextD:      { Level: 'basic' },
+            Text:         { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            DefaultText:  { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            TextAlign:    { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'left',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right','center']
+                                }
+                              }
+                            }
+                          },
+            ngAlt:        { Level: 'advanced' },
+            ngAltD:       { Level: 'basic' },
+            Alt:          { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            ngHint:       { Level: 'advanced' },
+            ngHintD:      { Level: 'basic' },
+            Hint:         { DefaultType: 'string',
+                            Level: 'basic'
+                          },
+            HintStyle:    {
+                            DefaultType: 'identifier',
+                            Level: 'basic',
+                            Types: {
+                              'identifier': {
+                                DefaultValue: hintstyle,
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['ngHintHideOnFocus','ngHintHideOnInput']
+                                }
+                              }
+                            }
+                          },
+            ReadOnly:     { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': { DefaultValue: false }
+                            }
+                          },
+            Frame:        { DefaultType: 'img_frame',
+                            Level: 'basic'
+                          },
+            SelectOnFocus:  { DefaultType: 'boolean',
+                              Level: 'basic',
+                              Types: {
+                                'boolean': { DefaultValue: true }
+                              }
+                            },
+            LockHintCaretPos: { DefaultType: 'boolean',
+                                Level: 'basic',
+                                Types: {
+                                  'boolean': { DefaultValue: true }
+                                }
+                              },
+            Invalid:        { DefaultType: 'boolean',
+                              Level: 'basic',
+                              Types: {
+                                'boolean': { DefaultValue: false }
+                              }
+                            }
+          },
+          Methods: {
+            DoFocus:  {
+                        DefaultType: 'function',
+                        Types: {
+                          'function': {
+                            DefaultValue: 'function(e, elm) { this.DoFocus.callParent.apply(this, arguments); }'
+                          }
+                        }
+                      },
+            DoBlur:   {
+                        DefaultType: 'function',
+                        Types: {
+                          'function': {
+                            DefaultValue: 'function(e, elm) { this.DoBlur.callParent.apply(this, arguments); }'
+                          }
+                        }
+                      },
+            DoUpdateImages: {
+                              DefaultType: 'function',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function() { this.DoUpdateImages.callParent.apply(this, arguments); }'
+                                }
+                              }
+                            },
+            DoSetInvalid:   {
+                              DefaultType: 'function',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(state, update) { if (ng_IsOverriden(this.DoSetInvalid)) this.DoSetInvalid.callParent.apply(this, arguments); }'
+                                }
+                              }
+                            }
+          },
+          OverrideEvents: {
+            OnSetText:    { DefaultType: 'events',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(text, c) { return text; }'
+                              }
+                            }
+                          },
+            OnGetText:    { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetAlt:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetHint:    { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetClassName: { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, cls, text, hint) { return cls; }'
+                                }
+                              }
+                            }
+          },
+          Events: {
+            OnTextChanged:  { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c) { }'
+                                }
+                              }
+                            },
+            OnKeyDown:      { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e, elm) { return true; }'
+                                }
+                              }
+                            },
+            OnKeyUp:        { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e, elm) { return true; }'
+                                }
+                              }
+                            },
+            OnKeyPress:     { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e, elm) { return true; }'
+                                }
+                              }
+                            },
+            OnMouseEnter:   { },
+            OnMouseLeave:   { },
+            OnFocus:        { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c) { }'
+                                }
+                              }
+                            },
+            OnBlur:         { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c) { }'
+                                }
+                              }
+                            },
+            OnSetInvalid:   { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, state, update) { return true; }'
+                                }
+                              }
+                            },
+            OnSetReadOnly:  { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, state) { return true; }'
+                                }
+                              }
+                            },
+            OnReadOnlyChanged:  { DefaultType: 'events',
+                                  Level: 'basic',
+                                  Types: {
+                                    'function': {
+                                      DefaultValue: 'function(c, state) { }'
+                                    }
+                                  }
+                                }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngPages',function(d,c,ref) {
