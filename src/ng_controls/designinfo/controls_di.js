@@ -2250,7 +2250,97 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-        IsContainer: true
+        IsContainer: true,
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 },
+              H: { Value: 50 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          Data: {
+            AutoSize:     { DefaultType: 'boolean' },
+            Vertical:     { DefaultType: 'boolean',
+                            Level: 'basic' },
+            VPadding:     { DefaultType: 'integer',
+                            Level: 'basic' },
+            HPadding:     { DefaultType: 'integer',
+                            Level: 'basic' },
+            VAlign:       { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'top',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['top','bottom']
+                                }
+                              }
+                            }
+                          },
+            HAlign:       { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'left',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right']
+                                }
+                              }
+                            }
+                          },
+            Wrapable:     { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                DefaultValue: true
+                              }
+                            }
+                          }
+          },
+        }),
+        ChildControlsDesignInfo: {
+
+          Properties: ng_DIProperties({
+            Data: {
+              ToolBarIgnore:      { DefaultType: 'boolean',
+                                    Level: 'basic'
+                                  },
+              ToolBarAutoUpdate:  { DefaultType: 'boolean',
+                                    Level: 'basic',
+                                    Types: {
+                                      'boolean': {
+                                        DefaultValue: true
+                                      }
+                                    }
+                                  },
+              ToolBarIndent:      { DefaultType: 'integer',
+                                    Level: 'basic',
+                                  },
+              ToolBarHPadding:    { DefaultType: 'integer',
+                                    Level: 'basic',
+                                  },
+              ToolBarVPadding:    { DefaultType: 'integer',
+                                    Level: 'basic',
+                                  },
+              ToolBarWidth:       { DefaultType: 'integer',
+                                    Level: 'basic',
+                                  },
+              ToolBarHeight:      { DefaultType: 'integer',
+                                    Level: 'basic',
+                                  },
+              ToolBarBreak:       { DefaultType: 'boolean',
+                                    Level: 'basic'
+                                  },
+              ToolBarNoWrap:      { DefaultType: 'boolean',
+                                    Level: 'basic'
+                                  }
+            }
+          })
+        }
       };
     });
     ngRegisterControlDesignInfo('ngProgressBar',function(d,c,ref) {
