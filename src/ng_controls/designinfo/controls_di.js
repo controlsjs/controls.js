@@ -1070,13 +1070,7 @@ ngUserControls['controls_designinfo'] = {
                               }
                             }
                           },
-            AutoSize:     { DefaultType: 'boolean',
-                            Types: {
-                              'boolean': {
-                                 DefaultValue: false
-                               }
-                            }
-                          },
+            AutoSize:     { DefaultType: 'boolean' },
             AutoSizeMode: { DefaultType: 'string',
                             Types: {
                               'string': {
@@ -1372,12 +1366,7 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             ReadOnly:     { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': {
-                                 DefaultValue: false
-                               }
-                            }
+                            Level: 'basic'
                           },
             Img:          { DefaultType: 'image',
                             Types: {
@@ -1442,20 +1431,10 @@ ngUserControls['controls_designinfo'] = {
                             Level: 'basic'
                           },
             Default:      { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': {
-                                 DefaultValue: false
-                               }
-                            }
+                            Level: 'basic'
                           },
             Cancel:       { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': {
-                                 DefaultValue: false
-                               }
-                            }
+                            Level: 'basic'
                           }
           },
           Events: {
@@ -1684,16 +1663,10 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             ReadOnly:     { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': { DefaultValue: false }
-                            }
+                            Level: 'basic'
                           },
             Password:     { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': { DefaultValue: false }
-                            }
+                            Level: 'basic'
                           },
             MaxLength:    { DefaultType: 'integer',
                             Level: 'basic'
@@ -1773,16 +1746,9 @@ ngUserControls['controls_designinfo'] = {
                                 }
                               },
             Invalid:        { DefaultType: 'boolean',
-                              Level: 'basic',
-                              Types: {
-                                'boolean': { DefaultValue: false }
-                              }
+                              Level: 'basic'
                             },
-            Suggestion:     { DefaultType: 'boolean',
-                              Types: {
-                                'boolean': { DefaultValue: false }
-                              }
-                            },
+            Suggestion:     { DefaultType: 'boolean' },
             SuggestionDelay:  { DefaultType: 'integer',
                                 Types: {
                                   'integer': { DefaultValue: 200 }
@@ -2100,10 +2066,7 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             ReadOnly:     { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': { DefaultValue: false }
-                            }
+                            Level: 'basic'
                           },
             Frame:        { DefaultType: 'img_frame',
                             Level: 'basic'
@@ -2121,10 +2084,7 @@ ngUserControls['controls_designinfo'] = {
                                 }
                               },
             Invalid:        { DefaultType: 'boolean',
-                              Level: 'basic',
-                              Types: {
-                                'boolean': { DefaultValue: false }
-                              }
+                              Level: 'basic'
                             }
           },
           Methods: {
@@ -2295,12 +2255,116 @@ ngUserControls['controls_designinfo'] = {
     });
     ngRegisterControlDesignInfo('ngProgressBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc'
+        ControlCategory: 'Misc',
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          Data: {
+            Position:     { DefaultType: 'integer',
+                            Level: 'basic' },
+            Smooth:       { DefaultType: 'boolean',
+                            Level: 'basic' },
+            LeftImg:      { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   HorizontalImages: false,
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            MiddleImg:    { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            RightImg:     { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   HorizontalImages: false,
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          },
+            BarImg:       { DefaultType: 'image',
+                            Types: {
+                              'image': {
+                                 DefaultValue: null,
+                                 EditorOptions: {
+                                   VerticalImages: false
+                                 }
+                               }
+                            },
+                            Level: 'basic'
+                          }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('ngWebBrowser',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc'
+        ControlCategory: 'Misc',
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 },
+              H: { Value: 100 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          Data: {
+            URL:       { DefaultType: 'url',
+                         Level: 'basic' }
+          },
+          OverrideEvents: {
+            OnGetURL:       { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, url) { return url; }'
+                                }
+                              }
+                            },
+            OnSetHTML:      { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, html) { return html; }'
+                                }
+                              }
+                            },
+          },
+          Events: {
+            OnSetURL:       { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, url) { return true; }'
+                                }
+                              }
+                            },
+          }
+
+        })
       };
     });
 
@@ -2330,20 +2394,10 @@ ngUserControls['controls_designinfo'] = {
                                   }
                                 },
             AllowGrayed:        { DefaultType: 'boolean',
-                                  Level: 'basic',
-                                  Types: {
-                                    'boolean': {
-                                       DefaultValue: false
-                                     }
-                                  }
+                                  Level: 'basic'
                                 },
             RadioAllowUncheck:  { DefaultType: 'boolean',
-                                  Level: 'basic',
-                                  Types: {
-                                    'boolean': {
-                                       DefaultValue: false
-                                     }
-                                  }
+                                  Level: 'basic'
                                 }
           }
         })
@@ -2354,12 +2408,7 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           Data: {
             AllowGrayed:  { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': {
-                                 DefaultValue: false
-                               }
-                            }
+                            Level: 'basic'
                           }
           }
         })
@@ -2457,12 +2506,7 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             StepRound:    { DefaultType: 'boolean',
-                            Level: 'basic',
-                            Types: {
-                              'boolean': {
-                                 DefaultValue: false
-                               }
-                            }
+                            Level: 'basic'
                           },
             MinNum:       { DefaultType: 'integer',
                             Level: 'basic'
