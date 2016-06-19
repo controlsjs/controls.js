@@ -1535,7 +1535,7 @@ ngUserControls['controls_designinfo'] = {
           ParentReferences: { Level: 'advanced' },
           CW:               { DefaultType: 'integer' },
           CH:               { DefaultType: 'integer' },
-          ControlPanel:     { DefaultType: 'control',
+          ControlsPanel:    { DefaultType: 'control',
                               Level: 'basic',
                               Types: {
                                 'control': {
@@ -2244,7 +2244,181 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngPages',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-        IsContainer: true
+        IsContainer: true,
+        NewControl: {
+          Default: {
+            Properties: {
+              W: { Value: 100 },
+              H: { Value: 100 },
+              Data: {
+                ObjectProperties: {
+                  HTMLEncode: { Value: true }
+                }
+              },
+              Pages: {
+                Value: [{}]
+              }
+            },
+            OnCreating: function(initprops,di) {
+              if(initprops.Pages)
+                initprops.Pages.Value[0].Text=initprops.ControlRefName.Value;
+              return true;
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          Pages:          { DefaultType: 'array',
+                            Level: 'basic'
+                          },
+          ControlsPanel:  { DefaultType: 'control',
+                            Level: 'basic',
+                            Types: {
+                              'control': {
+                                DefaultValue: '{ Type: \'ngPanel\' }'
+                              }
+                            }
+                          },
+          Data: {
+            Page:         { DefaultType: 'integer',
+                            Level: 'basic' },
+            PagesVisible: { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                DefaultValue: true
+                              }
+                            }
+                          },
+            PagesIndent:  { DefaultType: 'integer',
+                            Level: 'basic' },
+            PagesSize:    { DefaultType: 'integer',
+                            Level: 'basic' },
+            MaxRows:      { DefaultType: 'integer',
+                            Level: 'basic' },
+            PagesAlign:   { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'left',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right']
+                                }
+                              }
+                            }
+                          },
+            PagesVAlign:  { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'top',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['top','bottom']
+                                }
+                              }
+                            }
+                          },
+            TextAlign:    { DefaultType: 'string',
+                            Level: 'basic',
+                            Types: {
+                              'string': {
+                                DefaultValue: 'left',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right','center','justify']
+                                }
+                              }
+                            }
+                          },
+            HTMLEncode:   { DefaultType: 'boolean',
+                            Level: 'basic',
+                            Types: {
+                              'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                            }
+                          },
+            RowOverlap:   { DefaultType: 'integer',
+                            Level: 'basic' },
+            PageImages:   { DefaultType: 'array',
+                            Level: 'basic' },
+            Frame:        { DefaultType: 'img_frame',
+                            Level: 'basic',
+                            Collapsed: true
+                          }
+          },
+          OverrideEvents: {
+            OnGetText:    { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c, pg) { return ""; }'
+                              }
+                            }
+                          },
+            OnGetAlt:     { DefaultType: 'events',
+                            Level: 'basic',
+                            Types: {
+                              'function': {
+                                DefaultValue: 'function(c, pg) { return ""; }'
+                              }
+                            }
+                          }
+          },
+          Events: {
+            OnPageChanging: { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, page) { return true; }'
+                                }
+                              }
+                            },
+            OnPageChanged:  { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(c, oldpage) { return true; }'
+                                }
+                              }
+                            },
+            OnClick:        { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e) { return true; }'
+                                }
+                              }
+                            },
+            OnDblClick:     { DefaultType: 'events',
+                              Level: 'basic',
+                              Types: {
+                                'function': {
+                                  DefaultValue: 'function(e) { return true; }'
+                                }
+                              }
+                            },
+
+          }
+        }),
+        TargetContainer: function(selected_id, target_id)
+        {
+          var ref = FormEditor.GetControlById(selected_id);
+          if (!ref) return '';
+
+          return 'Pages.'+ref.Page+'.Controls';
+        },
+
+        ContainerProperties: function(selected_id)
+        {
+          var ref = FormEditor.GetControlById(selected_id);
+          if (!ref) return null;
+
+          var groups = [];
+          for (var i = 0; i < ref.Pages.length; i++) groups.push('Pages.'+i+'.Controls');
+
+          return groups;
+        }
+
       };
     });
     ngRegisterControlDesignInfo('ngToolBar',function(d,c,ref) {
@@ -2451,7 +2625,7 @@ ngUserControls['controls_designinfo'] = {
                                   DefaultValue: 'function(c, url) { return true; }'
                                 }
                               }
-                            },
+                            }
           }
 
         })
