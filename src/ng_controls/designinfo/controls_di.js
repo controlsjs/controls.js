@@ -1010,6 +1010,7 @@ ngUserControls['controls_designinfo'] = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
+        BaseControl: 'ngPanel',
         NewControl: {
           Default: {
             Properties: {
@@ -1026,7 +1027,6 @@ ngUserControls['controls_designinfo'] = {
     });
 
     ngRegisterControlDesignInfo('ngText',function(d,c,ref) {
-      var stylelvl=d.CtrlInheritanceDepth ? 'advanced' : 'basic';
       return {
         ControlCategory: 'Labels',
         NewControl: {
@@ -1047,14 +1047,14 @@ ngUserControls['controls_designinfo'] = {
         },
         Properties: ng_DIProperties({
           style: {
-            color: { Level: stylelvl },
-            fontFamily: { Level: stylelvl },
-            fontSize: { Level: stylelvl },
-            fontStyle: { Level: stylelvl },
-            fontWeight: { Level: stylelvl },
-            lineHeight: { Level: stylelvl },
-            textTransform: { Level: stylelvl },
-            whiteSpace: { Level: stylelvl }
+            color: { Level: 'basic' },
+            fontFamily: { Level: 'basic' },
+            fontSize: { Level: 'basic' },
+            fontStyle: { Level: 'basic' },
+            fontWeight: { Level: 'basic' },
+            lineHeight: { Level: 'basic' },
+            textTransform: { Level: 'basic' },
+            whiteSpace: { Level: 'basic' }
           },
 
           Data: {
@@ -1145,6 +1145,7 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngImage',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
+        BaseControl: 'ngImage',
         Properties: ng_DIProperties({
           Data: {
             ngAlt:        { Level: 'advanced' },
@@ -1160,11 +1161,6 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             Img:          { DefaultType: 'image',
-                            Types: {
-                              'image': {
-                                 DefaultValue: null
-                               }
-                            },
                             Level: 'basic'
                           }
           },
@@ -1192,6 +1188,7 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngImageMap',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
+        BaseControl: 'ngImageMap',
         Properties: ng_DIProperties({
           Data: {
             ngAlt:        { Level: 'advanced' },
@@ -1207,11 +1204,6 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
             Img:          { DefaultType: 'image',
-                            Types: {
-                              'image': {
-                                 DefaultValue: null
-                               }
-                            },
                             Level: 'basic'
                           },
             Cursor:       { DefaultType: 'css_cursor',
@@ -1301,6 +1293,15 @@ ngUserControls['controls_designinfo'] = {
           }
         },
         Properties: ng_DIProperties({
+          H: { Level: 'optional' },
+          style: {
+            color: { Level: 'basic' },
+            fontFamily: { Level: 'basic' },
+            fontSize: { Level: 'basic' },
+            fontStyle: { Level: 'basic' },
+            fontWeight: { Level: 'basic' },
+            textTransform: { Level: 'basic' },
+          },
           Data: {
             Action:       { DefaultType: 'string',
                             Level: 'basic'
@@ -1313,7 +1314,7 @@ ngUserControls['controls_designinfo'] = {
                                 DefaultValue: 'center',
                                 Editor: 'ngfeEditor_DropDownList',
                                 EditorOptions: {
-                                  Items: ['left','right','center','justify']
+                                  Items: ['left','right','center']
                                 }
                               }
                             }
@@ -1371,7 +1372,6 @@ ngUserControls['controls_designinfo'] = {
             Img:          { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -1398,7 +1398,6 @@ ngUserControls['controls_designinfo'] = {
             LeftImg:      { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -1410,7 +1409,6 @@ ngUserControls['controls_designinfo'] = {
             MiddleImg:    { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    VerticalImages: false
                                  }
@@ -1421,7 +1419,6 @@ ngUserControls['controls_designinfo'] = {
             RightImg:     { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -1674,7 +1671,6 @@ ngUserControls['controls_designinfo'] = {
             LeftImg:      { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -1686,7 +1682,6 @@ ngUserControls['controls_designinfo'] = {
             MiddleImg:    { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    VerticalImages: false
                                  }
@@ -1697,7 +1692,6 @@ ngUserControls['controls_designinfo'] = {
             RightImg:     { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -2245,6 +2239,7 @@ ngUserControls['controls_designinfo'] = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
+        BaseControl: 'ngPages',
         NewControl: {
           Default: {
             Properties: {
@@ -2425,6 +2420,7 @@ ngUserControls['controls_designinfo'] = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
+        BaseControl: 'ngToolBar',
         NewControl: {
           Default: {
             Properties: {
@@ -2536,7 +2532,6 @@ ngUserControls['controls_designinfo'] = {
             LeftImg:      { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -2548,7 +2543,6 @@ ngUserControls['controls_designinfo'] = {
             MiddleImg:    { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    VerticalImages: false
                                  }
@@ -2559,7 +2553,6 @@ ngUserControls['controls_designinfo'] = {
             RightImg:     { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    HorizontalImages: false,
                                    VerticalImages: false
@@ -2571,7 +2564,6 @@ ngUserControls['controls_designinfo'] = {
             BarImg:       { DefaultType: 'image',
                             Types: {
                               'image': {
-                                 DefaultValue: null,
                                  EditorOptions: {
                                    VerticalImages: false
                                  }
@@ -2586,6 +2578,7 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngWebBrowser',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
+        BaseControl: 'ngWebBrowser',
         NewControl: {
           Default: {
             Properties: {
@@ -2636,6 +2629,7 @@ ngUserControls['controls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
       return {
+        BaseControl: 'ngFrame',
         Properties: {
           ParentReferences: {
             Level: 'optional',
