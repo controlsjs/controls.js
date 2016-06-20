@@ -2487,7 +2487,7 @@ ngUserControls['controls_designinfo'] = {
                                     }
                                   },
               ToolBarIndent:      { DefaultType: 'integer',
-                                    Level: 'basic',
+                                    Level: 'basic'
                                   },
               ToolBarHPadding:    { DefaultType: 'integer',
                                     Level: 'basic'
