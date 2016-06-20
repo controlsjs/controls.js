@@ -2004,7 +2004,7 @@ var WinEightControls = {
 
         var o=this.Elm();
         if(!o) return;
-        var po=o.offsetParent;
+        var po=o.parentNode;
         var ph=ng_ClientHeightEx(po);
 
         var cmw=ng_OuterWidth(o)-ng_ClientWidth(this.ControlsPanel.Elm());
