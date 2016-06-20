@@ -144,7 +144,7 @@ function ngw_Center()
 {
   var o=this.Elm();
   if(!o) return;
-  var pw,ph,sl,st,po=o.offsetParent;
+  var pw,ph,sl,st,po=o.parentNode;
 
   ng_BeginMeasureElement(po);
   sl=ng_ScrollX(po);
@@ -170,7 +170,7 @@ function ngw_CalcAutoSize()
 
     var o=this.Elm();
     if(!o) return;
-    var po=o.offsetParent;
+    var po=o.parentNode;
     var pw=ng_ClientWidthEx(po);
     var ph=ng_ClientHeightEx(po);
 
@@ -320,7 +320,7 @@ function ngw_CheckBounds()
 {
   var o=this.Elm();
   if(!o) return false;
-  var po=o.offsetParent;
+  var po=o.parentNode;
   var pw=ng_ClientWidthEx(po);
   var ph=ng_ClientHeightEx(po);
 
@@ -481,7 +481,7 @@ function ngw_DoPtrDrag(pi)
       W: ng_ClientWidth(o)-pi.FrameHorzBorder,
       H: ng_ClientHeight(o)-pi.FrameVertBorder
     };
-    var po=o.offsetParent;
+    var po=o.parentNode;
     var pw=ng_ClientWidthEx(po);
     var ph=ng_ClientHeightEx(po);
     
@@ -591,7 +591,7 @@ function ngw_DoPtrEnd(pi)
     }
     else    
     {  
-      var po=o.offsetParent;
+      var po=o.parentNode;
       var pw=ng_ClientWidthEx(po);
       var ph=ng_ClientHeightEx(po);
       
@@ -2526,7 +2526,7 @@ function nghtxt_DoHintUpdate(o)
       else
       {
         var found='';
-        var po=o.offsetParent;
+        var po=o.parentNode;
         var pw=ng_ClientWidthEx(po);
           
         var to=c.Elm();

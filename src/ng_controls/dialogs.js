@@ -117,7 +117,7 @@ function dlgbx_Center()
 {
   var o=this.Elm();
   if(!o) return;
-  var pw,ph,sl,st,po=o.offsetParent;
+  var pw,ph,sl,st,po=o.parentNode;
   ng_BeginMeasureElement(po);
   sl=ng_ScrollX(po);
   st=ng_ScrollY(po);
@@ -144,7 +144,7 @@ function dlgbx_CalcAutoSize()
  
   var o=this.Elm();
   if(!o) return;
-  var po=o.offsetParent;
+  var po=o.parentNode;
   var pw=ng_ClientWidthEx(po);
   var ph=ng_ClientHeightEx(po);
 
