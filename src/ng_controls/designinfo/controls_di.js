@@ -1091,7 +1091,7 @@ ngUserControls['controls_designinfo'] = {
                             Level: 'basic',
                             Types: {
                               'string': {
-                                Editor: 'ngfeEditor_Text',
+                                Editor: 'ngfeEditor_Text'
                               }
                             }
                           },
@@ -1300,7 +1300,7 @@ ngUserControls['controls_designinfo'] = {
             fontSize: { Level: 'basic' },
             fontStyle: { Level: 'basic' },
             fontWeight: { Level: 'basic' },
-            textTransform: { Level: 'basic' },
+            textTransform: { Level: 'basic' }
           },
           Data: {
             Action:       { DefaultType: 'string',
@@ -1766,7 +1766,7 @@ ngUserControls['controls_designinfo'] = {
                                   }
                                 },
             SuggestionURL:      { DefaultType: 'url' },
-            SuggestionType: { DefaultType: 'string', }
+            SuggestionType: { DefaultType: 'string' }
           },
           Methods: {
             DoFocus:  {
@@ -2391,8 +2391,7 @@ ngUserControls['controls_designinfo'] = {
                                   DefaultValue: 'function(e) { return true; }'
                                 }
                               }
-                            },
-
+                            }
           }
         }),
         TargetContainer: function(selected_id, target_id)
@@ -2470,7 +2469,7 @@ ngUserControls['controls_designinfo'] = {
                               }
                             }
                           }
-          },
+          }
         }),
         ChildControlsDesignInfo: {
 
@@ -2491,16 +2490,16 @@ ngUserControls['controls_designinfo'] = {
                                     Level: 'basic',
                                   },
               ToolBarHPadding:    { DefaultType: 'integer',
-                                    Level: 'basic',
+                                    Level: 'basic'
                                   },
               ToolBarVPadding:    { DefaultType: 'integer',
-                                    Level: 'basic',
+                                    Level: 'basic'
                                   },
               ToolBarWidth:       { DefaultType: 'integer',
-                                    Level: 'basic',
+                                    Level: 'basic'
                                   },
               ToolBarHeight:      { DefaultType: 'integer',
-                                    Level: 'basic',
+                                    Level: 'basic'
                                   },
               ToolBarBreak:       { DefaultType: 'boolean',
                                     Level: 'basic'
@@ -2589,8 +2588,8 @@ ngUserControls['controls_designinfo'] = {
         },
         Properties: ng_DIProperties({
           Data: {
-            URL:       { DefaultType: 'url',
-                         Level: 'basic' }
+            URL:          { DefaultType: 'url',
+                            Level: 'basic' }
           },
           OverrideEvents: {
             OnGetURL:       { DefaultType: 'events',
@@ -2608,7 +2607,7 @@ ngUserControls['controls_designinfo'] = {
                                   DefaultValue: 'function(c, html) { return html; }'
                                 }
                               }
-                            },
+                            }
           },
           Events: {
             OnSetURL:       { DefaultType: 'events',
