@@ -2452,7 +2452,7 @@ function ngc_Focus(e, elm, type)
   var o=ngGetControlByElement(elm, type);
   if((o)&&(!o.ControlHasFocus))
   {
-    if(ng_IsInactiveModalElm(o)) return;
+    if(ng_IsInactiveModalElm(elm)) return;
 
     o.ControlHasFocus=true;
     if(o.DoFocus) o.DoFocus(e, elm);
@@ -13099,7 +13099,7 @@ function ngwb_DoUpdate(o)
   ng_SetClientHeight(frame,h);
 
   var url=this.GetURL();
-  if(frame.src!=this.opened_url)
+  if((frame.src!=this.opened_url)&&((!this.InDesignMode)||(this.DesignLive)))
   {
     frame.src=url;
     this.opened_url=frame.src;
@@ -13112,7 +13112,7 @@ function ngwb_SetURL(url)
   if((this.OnSetURL)&&(!ngVal(this.OnSetURL(this,url),false))) return;
   this.URL=url;
   var br=this.GetBrowser()
-  if(br)
+  if((br)&&((!this.InDesignMode)||(this.LiveDesign)))
   {
     br.src=url;
     this.opened_url=br.src;
