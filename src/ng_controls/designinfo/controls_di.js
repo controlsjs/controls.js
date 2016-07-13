@@ -2589,6 +2589,8 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           Data: {
             URL:          { DefaultType: 'url',
+                            Level: 'basic' },
+            DesignLive:   { DefaultType: 'boolean',
                             Level: 'basic' }
           },
           OverrideEvents: {
