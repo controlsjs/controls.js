@@ -1034,14 +1034,10 @@ ngUserControls['controls_designinfo'] = {
             Properties: {
               Data: {
                 ObjectProperties: {
-                  Text: { },
+                  Text: { ValueByRefName: true },
                   HTMLEncode: { Value: true }
                 }
               }
-            },
-            OnCreating: function(initprops,di) {
-              initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
-              return true;
             }
           }
         },
@@ -1281,14 +1277,10 @@ ngUserControls['controls_designinfo'] = {
             Properties: {
               Data: {
                 ObjectProperties: {
-                  Text: { },
+                  Text: { ValueByRefName: true },
                   HTMLEncode: { Value: true }
                 }
               }
-            },
-            OnCreating: function(initprops,di) {
-              initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
-              return true;
             }
           }
         },
@@ -1517,14 +1509,10 @@ ngUserControls['controls_designinfo'] = {
               H: { Value: 100 },
               Data: {
                 ObjectProperties: {
-                  Text: { },
+                  Text: { ValueByRefName: true },
                   HTMLEncode: { Value: true }
                 }
               }
-            },
-            OnCreating: function(initprops,di) {
-              initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
-              return true;
             }
           }
         },
@@ -1600,14 +1588,9 @@ ngUserControls['controls_designinfo'] = {
               W: { Value: 100 },
               Data: {
                 ObjectProperties: {
-                  Text: { }
+                  Text: { ValueByRefName: true }
                 }
               }
-            },
-            OnCreating: function(initprops,di) {
-              if(initprops.Data.ObjectProperties.Text)
-                initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
-              return true;
             }
           }
         },
@@ -2003,14 +1986,9 @@ ngUserControls['controls_designinfo'] = {
               H: { Value: 100 },
               Data: {
                 ObjectProperties: {
-                  Text: { }
+                  Text: { ValueByRefName: true }
                 }
               }
-            },
-            OnCreating: function(initprops,di) {
-              if(initprops.Data.ObjectProperties.Text)
-                initprops.Data.ObjectProperties.Text.Value=initprops.ControlRefName.Value;
-              return true;
             }
           }
         },
