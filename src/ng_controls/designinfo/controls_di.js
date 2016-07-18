@@ -1342,7 +1342,7 @@ ngUserControls['controls_designinfo'] = {
                                  DefaultValue: 0,
                                  Editor: 'ngfeEditor_DropDownList',
                                  EditorOptions: {
-                                   Items: [{ID:0,Text:'cbUnchecked'},{ID:1,Text:'chChecked'},{ID:2,Text:'cbGrayed'}] //TODO: make id-values working
+                                   Items: [{Value:0,Text:'cbUnchecked'},{Value:1,Text:'chChecked'},{Value:2,Text:'cbGrayed'}]
                                  }
                                }
                             }
