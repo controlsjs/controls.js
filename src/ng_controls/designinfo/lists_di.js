@@ -139,7 +139,13 @@ ngUserControls['list_designinfo'] = {
         Basic: false,
         Options: {
           ChildDesignInfo: {
-            DefaultType: 'ngListItem'
+            DefaultType: 'ngListItem',
+            Types: {
+              'ngListItem': {
+                DefaultValue: "{}",
+                InitValue: "{ Text: 'Item' }"
+              }
+            }
           }
         }
       }
