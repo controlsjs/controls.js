@@ -495,7 +495,8 @@ var WinEightControls = {
       Chat: 61,
       Chart: 62,
       Balance: 63,
-      Swing:64
+      Swing:64,
+      PieChart:65
     },{
       // automaticaly created from AppIcons
     }
