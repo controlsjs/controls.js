@@ -342,9 +342,25 @@ function ngfd_GetTypedDefaultValue()
   }
 }
 
-function ngfd_GetTypedValue()
+function ngfd_GetTypedValue(exception, defval)
 {
-  return this.TypedValue(ko.ng_getvalue(this.Value));
+  var v=ko.ng_getvalue(this.Value);
+  if(exception===false) {
+    try {
+      v=this.TypedValue(v);
+    } catch(e) {
+      if(arguments.length===2) {
+        try {
+          v=this.TypedValue(defval);
+        } catch(e) {
+          v=defval;
+        }
+      }
+      else v=this.GetTypedDefaultValue();
+    }
+    return v;
+  }
+  return this.TypedValue(v);
 }
 
 function ngfd_TypedValue(v)
@@ -994,7 +1010,11 @@ function ngFieldDef(id, type, attrs)
    *  Gets field *typed* value.   
    *   
    *  Syntax:
-   *    mixed *GetTypedValue* ()
+   *    mixed *GetTypedValue* ([bool exception=true, mixed defval])
+   *
+   *  Parameters:
+   *    exception - if false field's DefaultValue is returned instead of throwing exception
+   *    defval - if defined this value is returned instead of field's DefaultValue if execption is false
    *     
    *  Returns:
    *    The field value.     
