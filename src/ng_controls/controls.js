@@ -1936,7 +1936,17 @@ function ngc_Create(props, ref)
   var parent=props.parent;
   var id=ngVal(props.id,'');
 
-  if((parent)&&(typeof parent === 'string')) parent=document.getElementById(parent);
+  if(typeof parent === 'string') {
+    var o=document.getElementById(parent);
+    if(o) parent=o;
+    else {
+      switch(parent) {
+        case '__appelm':    parent=(((typeof ngApp === 'object')&&(ngApp)) ? ngApp.Elm() : null); break;
+        case '__apptopelm': parent=(((typeof ngApp === 'object')&&(ngApp)) ? ngApp.TopElm() : null); break;
+        case '__docbody':   parent=document.body; break;
+      }
+    }
+  }
   if(!parent) return null;
 
   if(id=='') id=ngCreateControlId(props.Type);
