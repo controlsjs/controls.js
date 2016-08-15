@@ -16,6 +16,7 @@ ngc_Lang['en']['viewmodel_err_www']   = 'Value is not a WWW address.';
 ngc_Lang['en']['viewmodel_err_email'] = 'Value is not an e-mail address.';
 ngc_Lang['en']['viewmodel_err_ip4']   = 'Value is not an IPv4 address.';
 ngc_Lang['en']['viewmodel_err_ip6']   = 'Value is not an IPv6 address.';
+ngc_Lang['en']['viewmodel_err_ip46']  = 'Value is not an IPv4 or IPv6 address.';
 
 ngc_Lang['en']['viewmodel_err_notphone']                   = 'Value is not a valid phone number.';
 ngc_Lang['en']['viewmodel_err_invalidphoneprefix']         = 'Invalid phone prefix (allowed: %s).';

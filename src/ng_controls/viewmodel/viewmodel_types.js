@@ -617,7 +617,7 @@ function ngfd_IP4DoTypedValue(v)
 }
 
 /*  Class: ngFieldDef_IP4
- *  <ngViewModel> IP4 string field (based on <ngFieldDef> NVARCHAR).
+ *  <ngViewModel> IPv4 string field (based on <ngFieldDef> NVARCHAR).
  *  
  *  Syntax:
  *    new *ngFieldDef_IP4* ([string id ='', object attrs={}])
@@ -640,7 +640,7 @@ function ngfd_IP6DoTypedValue(v)
 }
 
 /*  Class: ngFieldDef_IP6
- *  <ngViewModel> IP6 string field (based on <ngFieldDef> NVARCHAR).
+ *  <ngViewModel> IPv6 string field (based on <ngFieldDef> NVARCHAR).
  *  
  *  Syntax:
  *    new *ngFieldDef_IP6* ([string id ='', object attrs={}])
@@ -653,6 +653,29 @@ function ngFieldDef_IP6(id, attrs)
 {
   ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
   this.DoTypedValue = ngfd_IP6DoTypedValue;
+}
+
+function ngfd_IP46DoTypedValue(v)
+{
+  var s=ng_toString(v);
+  if((s!='')&&(!ng_isIP6(s))&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip46');
+  return v;
+}
+
+/*  Class: ngFieldDef_IP46
+ *  <ngViewModel> IPv4/IPv6 string field (based on <ngFieldDef> NVARCHAR).
+ *
+ *  Syntax:
+ *    new *ngFieldDef_IP46* ([string id ='', object attrs={}])
+ *
+ *  Parameters:
+ *    id - field id
+ *    attrs - field attributes
+ */
+function ngFieldDef_IP46(id, attrs)
+{
+  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+  this.DoTypedValue = ngfd_IP46DoTypedValue;
 }
 
 function ngfd_CurrencyFormatString(v)

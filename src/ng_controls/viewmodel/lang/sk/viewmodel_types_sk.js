@@ -16,6 +16,7 @@ ngc_Lang['sk']['viewmodel_err_www']   = 'Hodnota nie je WWW adresa.';
 ngc_Lang['sk']['viewmodel_err_email'] = 'Hodnota nie je e-mailová adresa.';
 ngc_Lang['sk']['viewmodel_err_ip4']   = 'Hodnota nie je IPv4 adresa.';
 ngc_Lang['sk']['viewmodel_err_ip6']   = 'Hodnota nie je IPv6 adresa.';
+ngc_Lang['sk']['viewmodel_err_ip46']  = 'Hodnota nie je IPv4 nebo IPv6 adresa.';
 
 ngc_Lang['sk']['viewmodel_err_notphone']                   = 'Hodnota nie je telefónne číslo.';
 ngc_Lang['sk']['viewmodel_err_invalidphoneprefix']         = 'Neplatná telefónna predvoľba (platné: %s).';
