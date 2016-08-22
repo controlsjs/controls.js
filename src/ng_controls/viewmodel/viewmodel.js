@@ -3336,7 +3336,6 @@ ngUserControls['viewmodel'] = {
             else c=v;
             for(var i in c) {
               val=(!recursive || (ref && ref[i]) ? ko.ng_unwrapobservable(c[i]) : getvalueint(c[i]));
-              val=ko.ng_unwrapobservable(c[i]);
               if(val!==c[i]) {
                 if(c===v) v=copywithoutprop(c,i);
                 v[i]=val;
