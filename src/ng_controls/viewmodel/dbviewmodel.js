@@ -272,13 +272,7 @@ function ngdbvm_AllDBFields(fillvalues)
         if(fid===true) fid=instance.ID;
         var dbf={ DBFieldId: fid, FieldDef: instance };
         if(fillvalues) {
-          var val=instance.Value();
-          try {
-            val=instance.TypedValue(val);
-          }
-          catch(e) {
-          }
-          dbf.Value=val;
+          dbf.Value=instance.GetTypedValue(false);
         }
         ret[fid]=dbf;
       }
@@ -294,7 +288,7 @@ function ngdbvm_GetDBValues(dbfields,notreadonly,notprimarykey)
   notprimarykey=ngVal(notprimarykey,false)
   dbfields=ngVal(dbfields,null);
   var fields={};
-  var fd,val,dbf;
+  var fd,dbf;
   if(dbfields===null) dbfields=this.AllDBFields(false);
   for(var i in dbfields)
   {
@@ -302,13 +296,7 @@ function ngdbvm_GetDBValues(dbfields,notreadonly,notprimarykey)
     fd=dbf.FieldDef;
     if((notreadonly)&&(ngVal(fd.Attrs['ReadOnly'],false))) continue;
     if((notprimarykey)&&(ngVal(fd.Attrs['PrimaryKey'],false))) continue;
-    val=fd.Value();
-    try {
-      val=fd.TypedValue(val);
-    }
-    catch(e) {
-    }
-    dbf.Value=val;
+    dbf.Value=fd.GetTypedValue(false);
     fields[i]=dbf;
   }
   return fields;
