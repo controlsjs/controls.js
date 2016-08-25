@@ -85,7 +85,7 @@ function ngdsc_GetColumnSortDir(id)
 {
   var vm=this.ViewModel;
   if(!vm) return;
-  var sortby=vm.ViewModel.SortBy.Value();
+  var sortby=vm.ViewModel.SortBy ? vm.ViewModel.SortBy.GetTypedValue(false) : null;
   if(ng_isEmptyOrNull(sortby)) return;
 
   if(id.substr(0,8)==='Columns.') id=id.substring(8,id.length);
@@ -99,12 +99,13 @@ function ngdsc_GetColumnSortDir(id)
 function ngdsc_SetColumnSortDir(id, sortdir)
 {
   var vm=this.ViewModel;
-  if(!vm) return false;
+  if((!vm)||(!vm.ViewModel.SortBy)) return false;
+
 
   if(id.substr(0,8)==='Columns.') id=id.substring(8,id.length);
   
   var i,changed=false;
-  var sortby=ng_CopyVar(vm.ViewModel.SortBy.Value());
+  var sortby=ng_CopyVar(vm.ViewModel.SortByGetTypedValue(false));
   if(ng_isEmptyOrNull(sortby)) return false;
   for(i=0;i<sortby.length;i++)
   {
@@ -122,7 +123,7 @@ function ngdsc_SetColumnSortDir(id, sortdir)
   }
   if(changed) 
   {
-    var i,j,al,allowed=vm.ViewModel.AllowedSortBy.Value();
+    var i,j,al,allowed=vm.ViewModel.AllowedSortBy ? vm.ViewModel.AllowedSortBy.GetTypedValue(false) : null;
     var ok=false;
     if(ng_isEmptyOrNull(allowed)) return false;
 
@@ -142,7 +143,7 @@ function ngdsc_SetColumnSortDir(id, sortdir)
     }
     if(ok) 
     {
-      vm.ViewModel.SortBy.Value(sortby);
+      vm.ViewModel.SortBy.SetTypedValue(sortby,false);
       return true;
     }  
   }
@@ -152,16 +153,16 @@ function ngdsc_SetColumnSortDir(id, sortdir)
 function ngdsc_ToggleColumnSortDir(id, clear)
 {
   var vm=this.ViewModel;
-  if(!vm) return;
+  if((!vm)||(!vm.ViewModel.SortBy)) return;
 
   clear=ngVal(clear,true);
   var sortdir=ngVal(this.GetColumnSortDir(id),1);
 
-  var oldsd=vm.ViewModel.SortBy.Value();
-  if(clear) vm.ViewModel.SortBy.Value([]);
+  var oldsd=vm.ViewModel.SortBy.GetTypedValue(false);
+  if(clear) vm.ViewModel.SortBy.SetTypedValue([],false);
     
   if(this.SetColumnSortDir(id, sortdir==0 ? 1 : 0)) return true;
-  vm.ViewModel.SortBy.Value(oldsd);
+  vm.ViewModel.SortBy.SetTypedValue(oldsd,false);
   return false;
 }
 
@@ -193,7 +194,7 @@ function ngdsc_ColumnText(l,it,col)
   if(ngIsFieldDef(fd))
   {
     if(ds.OnGetFieldDefValue) return ngVal(ds.OnGetFieldDefValue(ds,fd,it,col),'');
-    return fd.FormatString(fd.Value());
+    return fd.FormatString(ko.ng_getvalue(fd.Value));
   }
   else val=(ko.isObservable(fd) ? fd() : fd);
   return ng_toString(val);
@@ -214,7 +215,7 @@ function ngdsc_LoadData(ds, list, idx, cnt)
   var vm=ds.ViewModel;
   if(!vm) return [];
   var undefined;
-  vm.ViewModel.Records.Value(undefined);
+  vm.ViewModel.Records.SetTypedValue(undefined,false);
   if(idx==999999999) 
   {
     vm.ViewModel.Offset.Value(undefined);
@@ -250,8 +251,8 @@ function ngdsc_DataLoaded(vm,cmd)
   else
   {  
     ds.GetRecordsCommand = 'getrecords';    
-    var offset=vm.ViewModel.Offset.Value();
-    var records=vm.ViewModel.Records.Value();
+    var offset=vm.ViewModel.Offset.GetTypedValue(false);
+    var records=vm.ViewModel.Records.GetTypedValue(false);
     var data=new Array();
     if(ng_IsArrayVar(records))
       for(var i=0;i<records.length;i++)
@@ -362,25 +363,25 @@ function Create_ngDataSet(def, ref, parent,basetype)
   var c=ngCreateControlAsType(def, ngVal(basetype,'ngPageList'), ref, parent);
   if(!c) return c;
 
+  c.OnLoadData=ngdsc_LoadData;
+
   def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
     var vm=ng_FindViewModel(def, c);
     if(ng_typeObject(vm)) c.SetViewModel(vm);
 
     var list=c.Controls.List;
     if(list) {
-      c.AutoDataSetColumns=(list.Columns.length==0); 
-       
-      list.AddEvent('OnGetColumnCaption', ngdsc_ColumnCaption); 
+      c.AutoDataSetColumns=(list.Columns.length==0);
+
+      list.AddEvent('OnGetColumnCaption', ngdsc_ColumnCaption);
       list.AddEvent('OnGetText', ngdsc_ColumnText);
       list.AddEvent('OnDrawItem', ngdsc_DrawItem);
       list.AddEvent('OnCaptionClick', ngdsc_CaptionClick);
     }
 
-    c.AddEvent('OnLoadData', ngdsc_LoadData);
     c.UpdateDataSetColumns();
   });
 
-  
   /*
    *  Group: Properties
    */
