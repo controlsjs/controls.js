@@ -363,6 +363,26 @@ function ngfd_GetTypedValue(exception, defval)
   return this.TypedValue(v);
 }
 
+function ngfd_SetTypedValue(v, exception, defval)
+{
+  if(exception===false) {
+    try {
+      v=this.TypedValue(v);
+    } catch(e) {
+      if(arguments.length===2) {
+        try {
+          v=this.TypedValue(defval);
+        } catch(e) {
+          v=defval;
+        }
+      }
+      else v=this.GetTypedDefaultValue();
+    }
+  }
+  else v=this.TypedValue(v);
+  ko.ng_setvalue(this.Value,v);
+}
+
 function ngfd_TypedValue(v)
 {
   if(this.__typingvalue) return v;
@@ -1020,6 +1040,22 @@ function ngFieldDef(id, type, attrs)
    *    The field value.     
    */
   this.GetTypedValue = ngfd_GetTypedValue;
+
+  /*  Function: SetTypedValue
+   *  Sets field *typed* value.
+   *
+   *  Syntax:
+   *    mixed *SetTypedValue* (mixed value, [bool exception=true, mixed defval])
+   *
+   *  Parameters:
+   *    value - value to be set
+   *    exception - if false field's DefaultValue is set as value instead of throwing exception
+   *    defval - if defined this value is set instead of field's DefaultValue if execption is false
+   *
+   *  Returns:
+   *    -.
+   */
+  this.SetTypedValue = ngfd_SetTypedValue;
 
   /*  Function: GetTypedDefaultValue
    *  Gets field *typed* default value.   
@@ -3353,23 +3389,24 @@ ngUserControls['viewmodel'] = {
 
     /*  Function: ko.ng_setvalue
      *  Sets value to ko.observable or ngFieldDef target.
-     *  If any object properties, present in target, are ko.observable or ngFieldDef then
-     *  they are preserved regardless if they are present or not in input value and reference
-     *  to target value is not changed.
+     *  If any object properties, present in target, are ko.observable, ngFieldDef or marked
+     *  as reference by ng_SetByRef then they are preserved regardless if they are present
+     *  or not in input value and reference to target value is not changed.
      *
      *  Syntax:
-     *    function *ko.ng_setvalue* (mixed t, mixed val, [, bool recursive=true])
+     *    function *ko.ng_setvalue* (mixed t, mixed val, [, bool recursive=true, bool ref=false])
      *
      *  Parameters:
      *    t - target value
      *    val - input value
      *    recursive - if TRUE the ko.ng_setvalue is called recursively on object properties if they are objects
+     *    ret - if true, return always target value whatever ko.observable or ngFieldDef is present or not
      *
      *  Returns:
-     *    Target value if is ko.observable or ngFieldDef.
+     *    Target value if is ko.observable, ngFieldDef or reference
      *    Otherwise it returns the input value.
      */
-    ko.ng_setvalue=function(t,val,recursive) {
+    ko.ng_setvalue=function(t,val,recursive,ref) {
       var ov=t;
       if(ngIsFieldDef(t)) t=t.Value;
       if(ng_typeObject(val)) {
@@ -3379,10 +3416,13 @@ ngUserControls['viewmodel'] = {
 
           if(typeof recursive==='undefined') recursive=true;
 
-          var hasobservable=false;
+          var hasobservable=(ref ? true : false);
           var nv;
           var vref=val['_byRef'];
-          var n={},ex={};
+          var dref=d['_byRef'];
+          var n,ex={'_byRef':true};
+
+          if(!hasobservable) n=ng_IsArrayVar(d) ? [] : {};
 
           function sethasobservable() {
             if(hasobservable) return;
@@ -3393,8 +3433,9 @@ ngUserControls['viewmodel'] = {
 
           for(var i in val) {
             ex[i]=true;
+            if((dref)&&(dref[i])) sethasobservable();
             if((recursive)&&((!vref)||(!vref[i]))) {
-              nv=ko.ng_setvalue(d[i],val[i],true);
+              nv=ko.ng_setvalue(d[i],val[i],true, ((dref)&&(dref[i])) );
             } else {
               if(ko.isWriteableObservable(d[i])) {
                 nv=d[i];
@@ -3414,6 +3455,10 @@ ngUserControls['viewmodel'] = {
               sethasobservable();
               continue;
             }
+            if((dref)&&(dref[i])) {
+              sethasobservable();
+              continue;
+            }
             if((ng_typeObject(d[i]))&&!(ng_typeDate(d[i]))) {
               nv=ko.ng_getvalue(d[i]); // detect if object has observables
               if(nv!==d[i]) {
@@ -3424,7 +3469,20 @@ ngUserControls['viewmodel'] = {
             delkeys[i]=true;
           }
           delete n;
-          for(var i in delkeys) delete d[i];
+          if(ng_IsArrayVar(d)) {
+            var undefined;
+            for(var i=d.length-1;i>=0;i--) {
+              if(delkeys[i]) {
+                d.length=i;
+                delete delkeys[i];
+              }
+              else break;
+            }
+            for(var i in delkeys) d[i]=undefined;
+          }
+          else {
+            for(var i in delkeys) delete d[i];
+          }
           if(hasobservable) {
             if(t!==d) {
               return ov;
