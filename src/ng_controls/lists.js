@@ -4997,6 +4997,12 @@ function npgl_DoLoadData(idx,cnt,retry)
   }
   if((typeof data==='object')&&(data))
   {
+    this.async_dataindex = undefined;
+    this.async_datacount = undefined;
+
+    if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+    this.async_datatimeout_timer=null;
+
     var j;
     if((data.length>0)&&(data.length<cnt)) // trim length if not enough data
     {
@@ -5010,7 +5016,7 @@ function npgl_DoLoadData(idx,cnt,retry)
         list.Items.length=j;
         if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.MaxLength=j;
       }
-      if(typeof data[i] !== 'undefined')  list.Replace(j,ng_CopyVar(data[i]));
+      if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
     }
   }
   return true;
@@ -5058,7 +5064,7 @@ function npgl_SetAsyncData(idx, data)
       }
       if(typeof data[i] !== 'undefined')
       {
-        list.Replace(j,ng_CopyVar(data[i]));
+        list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
         if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
       }
     }
