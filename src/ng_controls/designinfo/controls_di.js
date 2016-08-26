@@ -587,13 +587,16 @@
         },
 
         Controls: {
-          DefaultType: 'object',
+          DefaultType: 'controls',
+          Level: 'optional',
+          DisplayInControls: true,
           Types: {
-            'object': {
-              DestroyIfEmpty: true
+            'controls': {
+              ChildDesignInfo: {
+                DisplayInControls: true
+              }
             }
           },
-          Level: 'optional',
           Order: 0.65
         },
 
@@ -1006,6 +1009,24 @@ ngUserControls['controls_designinfo'] = {
   OnInit: function() {
     if(!ngDESIGNINFO) return;
 
+
+    // register generic control
+    function feGenericControl(id)
+    {
+      ngControl(this, id, 'feGenericControl');
+      ngControlCreated(this);
+    }
+    ngRegisterControlType('feGenericControl', function() { return new feGenericControl; });
+
+    function feGenericSysControl(id)
+    {
+      ngSysControl(this, id, 'feGenericSysControl');
+      ngControlCreated(this);
+    }
+    ngRegisterControlType('feGenericSysControl', function() { return new feGenericSysControl; });
+
+
+
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
@@ -1021,7 +1042,8 @@ ngUserControls['controls_designinfo'] = {
         },
         Properties: {
           ParentReferences: { Level: 'advanced' },
-          ScrollBars: { Level: 'basic' }
+          ScrollBars: { Level: 'basic' },
+          Controls: { Level: 'basic' }
         }
       };
     });
@@ -1524,7 +1546,7 @@ ngUserControls['controls_designinfo'] = {
                               Level: 'basic',
                               Types: {
                                 'control': {
-                                  DefaultValue: '{ Type: \'ngPanel\' }'
+                                  DefaultValue: { Type: "'ngPanel'" }
                                 }
                               }
                             },
@@ -1570,6 +1592,9 @@ ngUserControls['controls_designinfo'] = {
                             }
                           }
           }
+        },
+        {
+          Controls: { Level: 'basic' }
         })
       };
     });
@@ -1595,8 +1620,22 @@ ngUserControls['controls_designinfo'] = {
           }
         },
         Properties: ng_DIProperties({
-          Buttons:        { DefaultType: 'array',
-                            Level: 'basic' },
+          Buttons:        { DefaultType: 'controls_array',
+                            Level: 'basic',
+                            Collapsed: false,
+                            Types: {
+                              'controls_array': {
+                                DestroyIfEmpty: true,
+                                ChildDesignInfo: {
+                                  Types: {
+                                    'control': {
+                                      InheritedFrom: 'ngButton'
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
           DropDown:       { DefaultType: 'control' },
           Data: {
             ngText:       { Level: 'advanced' },
@@ -2241,13 +2280,106 @@ ngUserControls['controls_designinfo'] = {
         },
         Properties: ng_DIProperties({
           Pages:          { DefaultType: 'array',
-                            Level: 'basic'
+                            Level: 'basic',
+                            Collapsed: false,
+                            Types: {
+                              'array': {
+                                ChildDesignInfo: {
+                                  DefaultType: 'object',
+                                  Collapsed: false,
+                                  Types: {
+                                    'object': {
+                                      ObjectProperties: {
+                                        id:            { DefaultType: 'undefined',
+                                                         InitType: 'string',
+                                                         Level: 'basic'
+                                                       },
+                                        Text:          { DefaultType: 'undefined',
+                                                         InitType: 'string',
+                                                         Level: 'basic'
+                                                       },
+                                        Alt:           { DefaultType: 'undefined',
+                                                         InitType: 'string',
+                                                         Level: 'basic'
+                                                       },
+                                        Visible:       { DefaultType: 'boolean',
+                                                         Types: {
+                                                           'boolean': {
+                                                             DefaultValue: true
+                                                           }
+                                                         },
+                                                         Level: 'basic'
+                                                       },
+                                        Enabled:       { DefaultType: 'boolean',
+                                                         Types: {
+                                                           'boolean': {
+                                                             DefaultValue: true
+                                                           }
+                                                         },
+                                                         Level: 'basic'
+                                                       },
+                                        ControlsPanel: { DefaultType: 'control',
+                                                         Level: 'basic'
+                                                       },
+                                        W:             { DefaultType: 'undefined',
+                                                         InitType: 'bounds_integer',
+                                                         Types: {
+                                                           'bounds': {}
+                                                         },
+                                                         Level: 'basic'
+                                                       },
+                                        H:             { DefaultType: 'undefined',
+                                                         InitType: 'bounds_integer',
+                                                         Types: {
+                                                           'bounds': {}
+                                                         },
+                                                         Level: 'basic'
+                                                       },
+                                        MinWidth:      { DefaultType: 'undefined',
+                                                         InitType: 'integer',
+                                                         Level: 'basic'
+                                                       },
+                                        Controls:      { DefaultType: 'controls',
+                                                         Types: {
+                                                           'controls': {
+                                                             ChildDesignInfo: {
+                                                               DisplayInControls: true
+                                                             }
+                                                           }
+                                                         },
+                                                         DisplayInControls: true,
+                                                         Level: 'basic'
+                                                       }
+                                      }
+                                    }
+                                  },
+                                  OnPropertyInit: function(ch)
+                                  {
+                                    if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
+                                    {
+                                      var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
+                                      if (pname)
+                                      {
+                                        var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
+                                        var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
+
+                                        if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
+
+                                        ch.Value.Text = "'Page " + (itemscnt + 1) + "'";
+                                      }
+                                    }
+
+                                    return true;
+                                  }
+                                }
+                              }
+                            }
                           },
           ControlsPanel:  { DefaultType: 'control',
                             Level: 'basic',
                             Types: {
                               'control': {
-                                DefaultValue: '{ Type: \'ngPanel\' }'
+                                DefaultValue: { Type: "'ngPanel'" }
                               }
                             }
                           },
@@ -2372,21 +2504,22 @@ ngUserControls['controls_designinfo'] = {
                             }
           }
         }),
-        TargetContainer: function(selected_id, target_id)
-        {
-          var ref = FormEditor.GetControlById(selected_id);
-          if (!ref) return '';
 
-          return 'Pages.'+ref.Page+'.Controls';
+        TargetContainer: function(control, target_control)
+        {
+          if (!control) return 'Pages.0.Controls';
+          return 'Pages.' + ngVal(control.Page, 0) + '.Controls';
         },
 
-        ContainerProperties: function(selected_id)
+        ContainerProperties: function(c)
         {
-          var ref = FormEditor.GetControlById(selected_id);
-          if (!ref) return null;
+          if (!c || !c.Pages) return [/^Pages.[\d]+.Controls$/];
 
           var groups = [];
-          for (var i = 0; i < ref.Pages.length; i++) groups.push('Pages.'+i+'.Controls');
+          for (var i = 0; i < c.Pages.length; i++)
+          {
+            groups.push('Pages.' + i +'.Controls');
+          }
 
           return groups;
         }
@@ -2448,6 +2581,9 @@ ngUserControls['controls_designinfo'] = {
                             }
                           }
           }
+        },
+        {
+          Controls: { Level: 'basic' }
         }),
         ChildControlsDesignInfo: {
 

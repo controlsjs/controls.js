@@ -23,18 +23,30 @@ ngUserControls['list_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            Text:           { DefaultType: 'string',
-                              Types: {
-                                'string': {
-                                  InitValue: 'Item'
-                                }
-                              },
+            Text:           { DefaultType: 'undefined',
+                              InitType: 'string',
                               Level: 'basic',
-                              Order: 0.5
+                              Order: 0.5,
+                              OnPropertyInit: function(ch)
+                              {
+                                if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
+                                {
+                                  var tmp = ch.Name.split('.');
+                                  var itemID = ng_toInteger(tmp[tmp.length - 2]);
+                                  if (!isNaN(itemID)) ch.Value = 'Item ' + (itemID + 1);
+                                }
+
+                                return true;
+                              }
                             },
-            Alt:            { DefaultType: 'string', Order: 0.51 },
+            Alt:            { DefaultType: 'undefined',
+                              InitType: 'string',
+                              Level: 'basic',
+                              Order: 0.51
+                            },
             ID:             { DefaultType: 'undefined',
                               InitType: 'string',
+                              Level: 'basic',
                               Order: 0.55
                             },
             Checked:        { DefaultType: 'integer',
@@ -52,65 +64,83 @@ ngUserControls['list_designinfo'] = {
                               }
                             },
             AllowGrayed:    { DefaultType: 'boolean',
-                              Order: 0.61,
                               Types: {
                                 'boolean': {
                                   DefaultValue: false,
                                   InitValue: true
                                 }
-                              }
+                              },
+                              Level: 'basic',
+                              Order: 0.61
                             },
             Collapsed:      { DefaultType: 'boolean',
-                              Order: 0.62,
                               Types: {
                                 'boolean': {
                                   DefaultValue: false,
                                   InitValue: true
                                 }
-                              }
+                              },
+                              Level: 'basic',
+                              Order: 0.62
                             },
             Visible:        { DefaultType: 'boolean',
-                              Order: 0.65,
                               Types: {
                                 'boolean': {
                                   DefaultValue: true
                                 }
                               },
-                              Level: 'basic'
+                              Level: 'basic',
+                              Order: 0.65
                             },
             Enabled:        { DefaultType: 'boolean',
-                              Order: 0.66,
                               Types: {
                                 'boolean': {
                                   DefaultValue: true
                                 }
                               },
-                              Level: 'basic'
+                              Level: 'basic',
+                              Order: 0.66
                             },
             RadioGroup:     { DefaultType: 'undefined',
-                              InitType: 'undefined',
+                              InitType: 'string',
+                              Level: 'basic',
                               Order: 0.67
                             },
             H:              { DefaultType: 'undefined',
                               InitType: 'integer',
+                              Level: 'basic',
                               Order: 0.7
                             },
             MinHeight:      { DefaultType: 'undefined',
                               InitType: 'integer',
+                              Level: 'basic',
                               Order: 0.71
                             },
-            Image:          { DefaultType: 'image', Order: 0.73 },
+            Image:          { DefaultType: 'image',
+                              Level: 'basic',
+                              Order: 0.73
+                            },
             Parent:         { DefaultType: 'undefined',
-                              Order: 0.8,
                               Types: {
                                 'object': {},
                                 'null': {}
                               },
-                              Level: 'hidden'
+                              Level: 'hidden',
+                              Order: 0.8
                             },
-            Items:          { DefaultType: 'ngListItems' },
+            Items:          { DefaultType: 'undefined',
+                              InitType: 'ngListItems',
+                              Level: 'basic',
+                              Order: 0.85
+                            },
             Controls:       { DefaultType: 'undefined',
-                              InitType: 'object',
+                              InitType: 'controls',
+                              Types: {
+                                'controls': {
+                                  DestroyIfEmpty: true
+                                }
+                              },
+                              Level: 'basic',
                               Order: 0.9
                             },
             ControlsHolder: { DefaultType: 'undefined',
@@ -140,11 +170,24 @@ ngUserControls['list_designinfo'] = {
         Options: {
           ChildDesignInfo: {
             DefaultType: 'ngListItem',
-            Types: {
-              'ngListItem': {
-                DefaultValue: "{}",
-                InitValue: "{ Text: 'Item' }"
+            Level: 'basic',
+            Collapsed: false,
+            OnPropertyInit: function(ch)
+            {
+              if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
+              {
+                var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
+                if (pname)
+                {
+                  var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
+                  var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
+
+                  if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
+                  ch.Value.Text = "'Item " + (itemscnt + 1) + "'";
+                }
               }
+
+              return true;
             }
           }
         }
@@ -176,12 +219,11 @@ ngUserControls['list_designinfo'] = {
               Data: {
                 ObjectProperties: {
                   Items: { Type: 'array',
-                           //Value: [], // TODO - merge arrays
                            ObjectProperties: {
                              0: {
-                               Type: 'object',
+                               Type: 'ngListItem',
                                Value: {
-                                 Text: 'Item 1'
+                                 Text: "'Item 1'"
                                }
                              }
                            }
@@ -192,6 +234,7 @@ ngUserControls['list_designinfo'] = {
           }
         },
         Properties: ng_DIProperties({
+          // TODO - define all properties
           Data: {
             Items: { DefaultType: 'ngListItems',
                      Level: 'basic',
