@@ -3386,6 +3386,27 @@ ngUserControls['viewmodel'] = {
       return getvalueint(v);
     };
 
+    /*  Function: ko.ng_gettypedvalue
+     *  Gets typed value into variable.
+     *  Typing is done only if variable is type of ngFieldDef.
+     *
+     *  Syntax:
+     *    function *ko.ng_gettypedvalue* (mixed var [, bool exception=true, midex defval])
+     *
+     *  Parameters:
+     *    var - variable from which value will be extracted (ko.obervable or ngFieldDef)
+     *    exception - if false and var is ngFieldDef the field's DefaultValue is set as value instead of throwing exception
+     *    defval - if defined and var is ngFieldDef this value is set instead of field's DefaultValue if execption is false
+     *
+     *  Returns:
+     *    Unwrapped value. See for detailed description <ko.ng_getvalue>.
+     */
+    ko.ng_gettypedvalue=function(v,exception,defval) {
+      if(ngIsFieldDef(v)) {
+        return (arguments.length===3) ? v.GetTypedValue(exception,defval) : v.GetTypedValue(exception);
+      }
+      else return ko.ng_getvalue(v);
+    }
 
     /*  Function: ko.ng_setvalue
      *  Sets value to ko.observable or ngFieldDef target.
@@ -3497,6 +3518,30 @@ ngUserControls['viewmodel'] = {
       }
       return val;
     };
+
+    /*  Function: ko.ng_settypedvalue
+     *  Sets typed value into variable.
+     *  Typing is done only if variable is type of ngFieldDef.
+     *
+     *  Syntax:
+     *    function *ko.ng_settypedvalue* (mixed var, mixed val, [, bool exception=true, midex defval])
+     *
+     *  Parameters:
+     *    var - variable to be set (ko.obervable or ngFieldDef)
+     *    val - input value
+     *    exception - if false and var is ngFieldDef the field's DefaultValue is set as value instead of throwing exception
+     *    defval - if defined and var is ngFieldDef this value is set instead of field's DefaultValue if execption is false
+     *
+     *  Returns:
+     *    -
+     */
+    ko.ng_settypedvalue=function(v,val,exception,defval) {
+      if(ngIsFieldDef(v)) {
+        if(arguments.length===4) v.SetTypedValue(val,exception,defval);
+        else v.SetTypedValue(val,exception);
+      }
+      else ko.ng_setvalue(v,val);
+    }
 
     /*  Function: ko.ng_fielddef
      *  Encapsulates <ngFieldDef> into viewmodel.
