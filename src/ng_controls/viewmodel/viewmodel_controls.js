@@ -3190,7 +3190,7 @@ ngUserControls['viewmodel_controls'] = {
             value_lock('Paging',c,function() {
               if(ko.isObservable(val)) val=val();
               if(!ng_typeObject(val)) return;
-              var totalcount=(idx==999999999)&&((ko.isObservable(val.TotalCount))||(typeof val.GetRecordsCount === 'function'));
+              var totalcount=(idx==999999999)&&((ko.isObservable(val.TotalCount))||(typeof val.GetTotalCount === 'function'));
               val.Records.PagingChanging=true;
               if(val.TotalCount) val.TotalCount.PagingChanging=true;
               try {
@@ -3205,8 +3205,8 @@ ngUserControls['viewmodel_controls'] = {
                 paging_subscribe(c,val);
                 var getrecs=true;
                 if(totalcount) {
-                  if(typeof val.GetRecordsCount === 'function') {
-                    val.GetRecordsCount();
+                  if(typeof val.GetTotalCount === 'function') {
+                    val.GetTotalCount();
                     getrecs=false;
                   }
                 }
