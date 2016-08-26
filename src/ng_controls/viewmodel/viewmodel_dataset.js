@@ -81,11 +81,29 @@ function ngdsc_CaptionClick(e,list,colidx,elm)
     ds.Reset(true);
 }
 
-function ngdsc_GetColumnSortDir(id)
+function ngdsc_DoGetSortBy()
 {
   var vm=this.ViewModel;
   if(!vm) return;
-  var sortby=vm.ViewModel.SortBy ? vm.ViewModel.SortBy.GetTypedValue(false) : null;
+  var sb=vm.ViewModel.SortBy;
+  if(sb) sb=ko.ng_gettypedvalue(sb,false);
+  if(this.OnGetSortBy) return this.OnGetSortBy(this,sb);
+  return sb;
+}
+
+function ngdsc_DoSetSortBy(val)
+{
+  if((this.OnSetSortBy)&&(!ngVal(this.OnSetSortBy(this,val),false))) return;
+
+  var vm=this.ViewModel;
+  if(!vm) return;
+  var sb=vm.ViewModel.SortBy;
+  if(sb) ko.ng_settypedvalue(sb,val,false);
+}
+
+function ngdsc_GetColumnSortDir(id)
+{
+  var sortby=this.DoGetSortBy();
   if(ng_isEmptyOrNull(sortby)) return;
 
   if(id.substr(0,8)==='Columns.') id=id.substring(8,id.length);
@@ -99,14 +117,20 @@ function ngdsc_GetColumnSortDir(id)
 function ngdsc_SetColumnSortDir(id, sortdir)
 {
   var vm=this.ViewModel;
-  if((!vm)||(!vm.ViewModel.SortBy)) return false;
+  if(!vm) return false;
 
+  var allowed=vm.ViewModel.AllowedSortBy;
+  if(allowed) allowed=ko.ng_gettypedvalue(allowed,false);
+  if(this.OnGetAllowedSortBy) allowed=this.OnGetAllowedSortBy(this,allowed);
+  if(ng_isEmptyOrNull(allowed)) return false;
 
   if(id.substr(0,8)==='Columns.') id=id.substring(8,id.length);
   
   var i,changed=false;
-  var sortby=ng_CopyVar(vm.ViewModel.SortByGetTypedValue(false));
-  if(ng_isEmptyOrNull(sortby)) return false;
+  var sortby=this.DoGetSortBy();
+  if(ng_isEmptyOrNull(sortby)) sortby=[];
+  else sortby=ng_CopyVar(sortby);
+
   for(i=0;i<sortby.length;i++)
   {
     if(sortby[i].FieldID==id) 
@@ -123,9 +147,8 @@ function ngdsc_SetColumnSortDir(id, sortdir)
   }
   if(changed) 
   {
-    var i,j,al,allowed=vm.ViewModel.AllowedSortBy ? vm.ViewModel.AllowedSortBy.GetTypedValue(false) : null;
+    var i,j,al;
     var ok=false;
-    if(ng_isEmptyOrNull(allowed)) return false;
 
     for(i=0;i<allowed.length;i++)
     {
@@ -143,7 +166,7 @@ function ngdsc_SetColumnSortDir(id, sortdir)
     }
     if(ok) 
     {
-      vm.ViewModel.SortBy.SetTypedValue(sortby,false);
+      this.DoSetSortBy(sortby);
       return true;
     }  
   }
@@ -152,24 +175,24 @@ function ngdsc_SetColumnSortDir(id, sortdir)
 
 function ngdsc_ToggleColumnSortDir(id, clear)
 {
-  var vm=this.ViewModel;
-  if((!vm)||(!vm.ViewModel.SortBy)) return;
-
   clear=ngVal(clear,true);
   var sortdir=ngVal(this.GetColumnSortDir(id),1);
 
-  var oldsd=vm.ViewModel.SortBy.GetTypedValue(false);
-  if(clear) vm.ViewModel.SortBy.SetTypedValue([],false);
+  var oldsd=this.DoGetSortBy();
+  if(clear) this.DoSetSortBy([]);
     
   if(this.SetColumnSortDir(id, sortdir==0 ? 1 : 0)) return true;
-  vm.ViewModel.SortBy.SetTypedValue(oldsd,false);
+  this.DoSetSortBy(oldsd);
   return false;
 }
 
 function ngdsc_GetRecord(it)
 {
-  if((!it)||(!ng_typeObject(it.Record))) return null;
-  return ng_CopyVar(it.Record);
+  if(!it) return null;
+  var rec=it.Record;
+  if(this.OnGetRecord) rec=this.OnGetRecord(this,it);
+  if(!ng_typeObject(rec)) return null;
+  return ng_CopyVar(rec);
 }
 
 function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
@@ -178,7 +201,9 @@ function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
   if(!ds) return true;
   var vm=ds.ViewModel;
   if(!vm) return true;
-  var vals={ Columns: it.Record };
+  var rec=it.Record;
+  if(ds.OnGetRecord) rec=ds.OnGetRecord(this,it);
+  var vals={ Columns: rec };
   vm.SetValues(vals);    
   return true;
 }
@@ -213,10 +238,10 @@ function ngdsc_GetValues(vm,values, writableonly, valuenames, errors, convtimest
 function ngdsc_LoadData(ds, list, idx, cnt)
 { 
   var vm=ds.ViewModel;
-  if(!vm) return [];
+  if((!vm)||(!vm.ViewModel.Records)||(!vm.ViewModel.Offset)||(!vm.ViewModel.Count)) return [];
   var undefined;
   vm.ViewModel.Records.SetTypedValue(undefined,false);
-  if(idx==999999999) 
+  if(idx==999999999)
   {
     vm.ViewModel.Offset.Value(undefined);
     vm.ViewModel.Count.Value(undefined);
@@ -396,11 +421,14 @@ function Create_ngDataSet(def, ref, parent,basetype)
   c.SetViewModel         = ngdsc_SetViewModel;
   c.UpdateDataSetColumns = ngdsc_UpdateDataSetColumns;
 
+  c.DoGetSortBy          = ngdsc_DoGetSortBy;
+  c.DoSetSortBy          = ngdsc_DoSetSortBy;
+
   c.GetColumnSortDir = ngdsc_GetColumnSortDir;
   c.SetColumnSortDir = ngdsc_SetColumnSortDir;
   c.ToggleColumnSortDir = ngdsc_ToggleColumnSortDir;
   
-  c.GetRecord           = ngdsc_GetRecord; 
+  c.GetRecord           = ngdsc_GetRecord;
 
   c.ReloadDataSet       = ngdsc_ReloadDataSet; 
   c.ApplyFilters        = ngdsc_ApplyFilters; 
@@ -411,6 +439,10 @@ function Create_ngDataSet(def, ref, parent,basetype)
    */
   c.OnGetFieldDefValue = null;
   c.OnSetViewModel = null;
+  c.OnGetRecord = null;
+  c.OnGetSortBy = null;
+  c.OnSetSortBy = null;
+  c.OnGetAllowedSortBy = null;
   return c;
 }
 
