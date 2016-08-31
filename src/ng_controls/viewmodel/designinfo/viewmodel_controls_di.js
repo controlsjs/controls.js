@@ -370,10 +370,10 @@ var ViewModel_Controls_DesignInfo = null;
           }
         }
       };
-      ng_MergeVar(di, vm_events_di);
+      ng_MergeDI(di, vm_events_di);
     }
 
-    ng_MergeVar(di, vm_di);
+    ng_MergeDI(di, vm_di);
   }
 
 

@@ -1347,14 +1347,14 @@ function ngInitUserControls()
  */
 function ng_MergeDef(dst,def,allowundefined,callback)
 {
-  function merge_events(d,o,before)
+  function merge_events(d,o,before,override)
   {
     var isdarr,isoarr,j;
     var isdfnc,isofnc;
 
     for(var i in o)
     {
-      if((typeof d[i]==='undefined')||(d[i]===null)) { d[i]=o[i]; continue; }
+      if((typeof d[i]==='undefined')||((!override)&&(d[i]===null))) { d[i]=o[i]; continue; }
       isdarr=ng_IsArrayVar(d[i]);
       isdfnc=(typeof d[i]==='function');
       if((isdarr)||(isdfnc))
@@ -1406,7 +1406,7 @@ function ng_MergeDef(dst,def,allowundefined,callback)
 
     if((typeof d.Methods === 'object')&&(typeof o.Methods === 'object')&&(d.Methods)&&(o.Methods))
     {
-      merge_events(d.Methods,o.Methods,false);
+      merge_events(d.Methods,o.Methods,false,true);
       delete o.Methods;
     }
     if((typeof d.Events === 'object')&&(typeof o.Events === 'object')&&(d.Events)&&(o.Events))
@@ -1426,9 +1426,42 @@ function ng_MergeDef(dst,def,allowundefined,callback)
     }
     if((typeof d.OverrideEvents === 'object')&&(typeof o.OverrideEvents === 'object')&&(d.OverrideEvents)&&(o.OverrideEvents))
     {
-      merge_events(d.OverrideEvents,o.OverrideEvents,false);
+      merge_events(d.OverrideEvents,o.OverrideEvents,false,true);
       delete o.OverrideEvents;
     }
+    return true;
+  });
+}
+
+/**
+ *  Function: ng_MergeDI
+ *  Merges two control DesignInfos.
+ *
+ *  Syntax:
+ *    void *ng_MergeDI* (mixed dst, mixed def [, bool allowundefined=false, function callback])
+ *
+ *  Parameters:
+ *    dst - destination definition
+ *    def - definition to be merged
+ *    allowundefined - if FALSE (default), undefined values in parameter var are ignored
+ *    callback - optional callback function
+ *
+ *  Returns:
+ *    -
+ */
+function ng_MergeDI(dst,def,allowundefined,callback)
+{
+  def=ng_CopyVar(def);
+  if(!ngVal(allowundefined,false)) def=ng_CleanUndefined(def);
+  ng_MergeVarReplace(dst,def,true,function(d,o) {
+
+    if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return false;
+    if(d._noMerge===true) return false;
+
+    if((typeof d.OnActionsMenuCreating === 'function')&&(typeof o.OnActionsMenuCreating === 'function')) {
+      o.OnActionsMenuCreating = ng_OverrideFunction(d.OnActionsMenuCreating,o.OnActionsMenuCreating,o);
+    }
+
     return true;
   });
 }
@@ -1538,7 +1571,7 @@ function ngCreateControl(d,ref,parent)
       if(typeof createdifnc === 'function') {
         var di=createdifnc(d, c, ref);
         if((di)&&(typeof di === 'object')) {
-          ng_MergeVarReplace(c.DesignInfo,di);
+          ng_MergeDI(c.DesignInfo,di);
         }
       }
 
@@ -1549,13 +1582,13 @@ function ngCreateControl(d,ref,parent)
         {
           var di = uc.OnControlDesignInfo(d,c,ref);
           if((di)&&(typeof di === 'object')) {
-            ng_MergeVarReplace(c.DesignInfo,di);
+            ng_MergeDI(c.DesignInfo,di);
           }
         }
       }
 
       if(typeof d.DesignInfo==='object') {
-        ng_MergeVarReplace(c.DesignInfo,d.DesignInfo);
+        ng_MergeDI(c.DesignInfo,d.DesignInfo);
       }
     }
     else hasdi=false;

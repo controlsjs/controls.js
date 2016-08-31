@@ -589,7 +589,7 @@
         Controls: {
           DefaultType: 'controls',
           Level: 'optional',
-          DisplayInControls: true,
+          ContainerProperty: true,
           Types: {
             'controls': {
               ChildDesignInfo: {
@@ -958,7 +958,7 @@
       }
     };
 
-    ng_MergeVar(obj.DesignInfo ,getBaseProperties());
+    ng_MergeDI(obj.DesignInfo ,getBaseProperties());
   };
 
   window.ngSysControlDesignInfo = function(obj)
@@ -974,7 +974,7 @@
       }
     };
 
-    ng_MergeVar(obj.DesignInfo ,getBaseProperties());
+    ng_MergeDI(obj.DesignInfo ,getBaseProperties());
   };
 })()
 
@@ -1000,7 +1000,7 @@ ngUserControls['controls_designinfo'] = {
       {
         id = eventstype[i].id + 'Events';
         di.Properties[id] = ngNullVal(c.DesignInfo.Properties[id], {});
-        ng_MergeVar(di.Properties[id], events);
+        ng_MergeDI(di.Properties[id], events);
         di.Properties[id].Order = eventstype[i].order;
       }
       return di;
@@ -1543,6 +1543,7 @@ ngUserControls['controls_designinfo'] = {
           CW:               { DefaultType: 'integer' },
           CH:               { DefaultType: 'integer' },
           ControlsPanel:    { DefaultType: 'control',
+                              IsContainer: false,
                               Level: 'basic',
                               Types: {
                                 'control': {
@@ -2319,6 +2320,7 @@ ngUserControls['controls_designinfo'] = {
                                                          Level: 'basic'
                                                        },
                                         ControlsPanel: { DefaultType: 'control',
+                                                         IsContainer: false,
                                                          Level: 'basic'
                                                        },
                                         W:             { DefaultType: 'undefined',
@@ -2340,14 +2342,16 @@ ngUserControls['controls_designinfo'] = {
                                                          Level: 'basic'
                                                        },
                                         Controls:      { DefaultType: 'controls',
+                                                         ContainerProperty: true,
+                                                         Level: 'basic',
                                                          Types: {
                                                            'controls': {
+                                                             DestroyIfEmpty: true,
                                                              ChildDesignInfo: {
                                                                DisplayInControls: true
                                                              }
                                                            }
                                                          },
-                                                         DisplayInControls: true,
                                                          Level: 'basic'
                                                        }
                                       }
@@ -2376,6 +2380,7 @@ ngUserControls['controls_designinfo'] = {
                             }
                           },
           ControlsPanel:  { DefaultType: 'control',
+                            IsContainer: false,
                             Level: 'basic',
                             Types: {
                               'control': {
@@ -2511,17 +2516,151 @@ ngUserControls['controls_designinfo'] = {
           return 'Pages.' + ngVal(control.Page, 0) + '.Controls';
         },
 
-        ContainerProperties: function(c)
-        {
-          if (!c || !c.Pages) return [/^Pages.[\d]+.Controls$/];
+        ActionsMenu: {
+          'add_page': {
+            Text: 'Add Page',
+            MultiSelect: false,
+            Checked: 0,
+            OnMenuClick: function(e, m, it)
+            {
+              var pages = FormEditor.GetSelectedControlsProperty('Pages');
+              for (var i in pages)
+              {
+                var p = pages[i];
+                if (!p) continue;
 
-          var groups = [];
-          for (var i = 0; i < c.Pages.length; i++)
-          {
-            groups.push('Pages.' + i +'.Controls');
+                var pages_cnt;
+                if (p.PropertyDefined === 0) pages_cnt = 0;
+                else pages_cnt = ng_IsArrayVar(p.PropertyValue) ? p.PropertyValue.length : 0;
+
+                FormEditor.SetControlsProperty({ Name: 'Pages.' + pages_cnt,                           ControlID: p.ControlID, UseInit: true, Interactive: true });
+                FormEditor.SetControlsProperty({ Name: 'Data.Page', Type: 'integer', Value: pages_cnt, ControlID: p.ControlID });
+              }
+
+              return false;
+            }
+          },
+          'delete_page': {
+            Text: '@%add_page+:Delete Page',
+            MultiSelect: false,
+            Checked: 0,
+            OnMenuClick: function(e, m, it)
+            {
+              var selected = FormEditor.GetSelectedControls();
+              if (selected.length !== 1 || !selected[0]) return false;
+
+              var cidx = selected[0].ControlID,
+                  pages = FormEditor.GetControlsProperty('Pages', [cidx]),
+                  pages_defined = (pages.PropertyDefined !== 0),
+                  pages_cnt = (pages_defined && ng_IsArrayVar(pages[0].PropertyValue)) ? pages[0].PropertyValue.length : 0;
+              if (pages_cnt === 0) return false;
+
+              var page_selected = 0;
+              var pgs = FormEditor.GetControlsProperty('Data.Page', [cidx]);
+              if (pgs && pgs[0] && pgs[0].PropertyDefined !== 0 && ng_isInteger(pgs[0].PropertyValue)) page_selected = pgs[0].PropertyValue;
+
+              var new_pg_select = page_selected - 1;
+              if (new_pg_select < 0) new_pg_select = 0;
+
+              FormEditor.SetControlsProperty({ Name: 'Pages.' + page_selected, Destroy: true });
+              FormEditor.SetControlsProperty({ Name: 'Data.Page', Destroy: new_pg_select === 0, Type: 'integer', Value: new_pg_select });
+
+              return false;
+            }
           }
+        },
 
-          return groups;
+        OnActionsMenuCreating: function(actions)
+        {
+          if (!actions) actions = {};
+
+          var selected = FormEditor.GetSelectedControls();
+          if (selected.length === 0) return;
+
+          // add actions
+          actions['delim1'] = { Text: '@%delete_page+:-' };
+
+          var selected_pages = FormEditor.GetSelectedControlsProperty('Pages'),
+              lastid = 'delim1';
+          for (var i in selected)
+          {
+            if (!selected[i]) continue;
+
+            var ctrlType = selected[i].DefType;
+            if (!FormEditor.TypeInheritsFrom(ctrlType, 'ngPages')) continue;
+
+            var pages = selected_pages[i];
+            if (!pages) continue;
+
+            var refname = (selected[i] && selected[i].ControlRefName) ? selected[i].ControlRefName : '';
+            if (refname)
+            {
+              var cidx = selected[i].ControlID,
+                  id = 'select_page_' + cidx,
+                  pages_defined = (pages.PropertyDefined !== 0),
+                  pages_cnt = (pages_defined && ng_IsArrayVar(pages.PropertyValue)) ? pages.PropertyValue.length : 0,
+                  rootadd = (selected.length === 1);
+
+              var page_selected = 0,
+                  pgs = FormEditor.GetControlsProperty('Data.Page', [cidx]);
+              if (pgs && pgs[0] && pgs[0].PropertyDefined !== 0 && ng_isInteger(pgs[0].PropertyValue)) page_selected = pgs[0].PropertyValue;
+
+              if (!rootadd)
+              {
+                actions[id] = {
+                  Text: refname + ' (' + pages_cnt + ' Pages Inside)',
+                  MultiSelect: true,
+                  Enabled: pages_cnt > 0,
+                  Checked: 0,
+                  OnMenuClick: function(e, m, it)
+                  {
+                    return false;
+                  }
+                };
+              }
+
+              var selit;
+              for (var pg = 0; pg < pages_cnt; pg++)
+              {
+                var pg_Text = FormEditor.GetControlsProperty('Pages.'+pg+'.Text', [cidx]),
+                    pg_txt = (pg_Text && pg_Text[0] && pg_Text[0].PropertyDefined !== 0 && typeof pg_Text[0].PropertyValue === 'string') ? pg_Text[0].PropertyValue : '',
+                    checked = (pg === page_selected) ? 1 : 0;
+
+                var action = {
+                  Text: (!rootadd ? ('%'+id+'\\') : '@%'+lastid+'+:' ) + ('('+pg+') - ' + pg_txt),
+                  MultiSelect: true,
+                  ControlID: cidx,
+                  Page: pg,
+                  PageText: pg_txt,
+                  Checked: checked,
+                  OnMenuClick: function(e, m, it)
+                  {
+                    FormEditor.SetControlsProperty({ Name: 'Data.Page', Type: 'integer', Value: it.Page, ControlID: it.ControlID });
+
+                    return false;
+                  }
+                };
+                lastid = id+'_'+pg;
+                actions[lastid] = action;
+
+                if (checked) selit = action;
+              }
+
+              if (selected.length === 1)
+              {
+                var dit = actions['delete_page'];
+                if (dit)
+                {
+                  dit.Enabled = (ngVal(dit.Enabled, true) && (pages_cnt > 0));
+                  if (dit.Enabled && selit)
+                  {
+                    dit.Text = '@%add_page+:Delete Page (' + (selit.PageText ? selit.PageText : selit.Page) + ')';
+                    dit.Text = dit.Text.replace(/ /g, '&nbsp;');
+                  }
+                }
+              }
+            }
+          }
         }
 
       };
@@ -2834,12 +2973,12 @@ ngUserControls['controls_designinfo'] = {
                         }
         })
       };
-      ng_MergeVar(di,DropDownDI(d,c,ref));
+      ng_MergeDI(di,DropDownDI(d,c,ref));
       return di;
     });
     ngRegisterControlDesignInfo('ngDropDown',function(d,c,ref) {
       var di={};
-      ng_MergeVar(di,DropDownDI(d,c,ref));
+      ng_MergeDI(di,DropDownDI(d,c,ref));
       return di;
     });
     ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
