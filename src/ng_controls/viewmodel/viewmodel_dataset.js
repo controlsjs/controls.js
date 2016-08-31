@@ -219,10 +219,9 @@ function ngdsc_ColumnText(l,it,col)
   if(ngIsFieldDef(fd))
   {
     if(ds.OnGetFieldDefValue) return ngVal(ds.OnGetFieldDefValue(ds,fd,it,col),'');
-    return fd.FormatString(ko.ng_getvalue(fd.Value));
+    return fd.FormatString(ko.ng_getvalue(fd.Value,false,true,true));
   }
-  else val=(ko.isObservable(fd) ? fd() : fd);
-  return ng_toString(val);
+  return ng_toString(ko.isObservable(fd) ? fd.peek() : fd);
 }
 
 function ngdsc_GetValues(vm,values, writableonly, valuenames, errors, convtimestamps, serialize)
