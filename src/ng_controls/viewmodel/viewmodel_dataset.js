@@ -216,12 +216,22 @@ function ngdsc_ColumnText(l,it,col)
   var vm=ds.ViewModel;
   if(!vm) return '';
   var fd=vm.GetFieldByID(col.ID);
-  if(ngIsFieldDef(fd))
+  var kodd=ko.dependencyDetection.registerDependency; 
+  try
   {
-    if(ds.OnGetFieldDefValue) return ngVal(ds.OnGetFieldDefValue(ds,fd,it,col),'');
-    return fd.FormatString(ko.ng_getvalue(fd.Value,false,true,true));
+    // prevent dependency detection to register observables used only
+    // for output formating
+    ko.dependencyDetection.registerDependency=function() {};
+    if(ngIsFieldDef(fd))
+    {
+      if(ds.OnGetFieldDefValue) return ngVal(ds.OnGetFieldDefValue(ds,fd,it,col),'');
+      return fd.FormatString(ko.ng_getvalue(fd.Value,false,true,false));
+    }
+    return ng_toString(ko.isObservable(fd) ? fd.peek() : fd);
   }
-  return ng_toString(ko.isObservable(fd) ? fd.peek() : fd);
+  finally {
+    ko.dependencyDetection.registerDependency=kodd;
+  }
 }
 
 function ngdsc_GetValues(vm,values, writableonly, valuenames, errors, convtimestamps, serialize)
