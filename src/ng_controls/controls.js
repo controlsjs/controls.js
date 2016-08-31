@@ -1873,6 +1873,32 @@ function ngDisposeControls(ref)
   }
 }
 
+var ngInvalidatedControls = null;
+var ngInvalidatedControlsTimer = null;
+var ngUpdatingInvalidatedControls = false;
+
+function ngUpdateInvalidated() {
+  if(ngUpdatingInvalidatedControls) return;
+
+  if(ngInvalidatedControlsTimer) clearTimeout(ngInvalidatedControlsTimer);
+  ngInvalidatedControlsTimer=null;
+
+  if(ngInvalidatedControls!==null) {
+    ngUpdatingInvalidatedControls = true;
+    try {
+      var c;
+      for(var i in ngInvalidatedControls) {
+        c=ngInvalidatedControls[i];
+        if((c)&&(typeof c.Update === 'function')) c.Update();
+      }
+      ngInvalidatedControls=null;
+    }
+    finally {
+      ngUpdatingInvalidatedControls = false;
+    }
+  }
+}
+
 function ngCreateControlHTML(props)
 {
   if(typeof props==='undefined') props=new Object;
@@ -2353,8 +2379,47 @@ function ngc_Align(o)
   return r;
 }
 
+function ngc_Validate() {
+  if((ngInvalidatedControls===null)||(this.ID=='')||(typeof ngInvalidatedControls[this.ID]==='undefined')) return;
+  ngInvalidatedControls[this.ID]=null;
+  if((this.OnValidated)&&(!ngUpdatingInvalidatedControls)) this.OnValidated(this);
+}
+
+function ngc_Invalidate() {
+  if(ngUpdatingInvalidatedControls) this.Update();
+  if(this.ID!='') {
+    if(!ngInvalidatedControls) ngInvalidatedControls={};
+    ngInvalidatedControls[this.ID]=this;
+    if(!ngInvalidatedControlsTimer) ngInvalidatedControlsTimer=setTimeout(ngUpdateInvalidated,1);
+
+    function updateafter(c) {
+      var cc=c.ChildControls;
+      if(typeof cc !== 'undefined')
+      {
+        for(var i=0;i<cc.length;i++)
+        {
+          c=cc[i];
+          if((c.ID!='')&&(ngInvalidatedControls[c.ID])) {
+            delete ngInvalidatedControls[c.ID]; // put child after parent
+            ngInvalidatedControls[c.ID]=c;
+          }
+          updateafter(c);
+        }
+      }
+    }
+    updateafter(this);
+
+    if(this.OnInvalidated) this.OnInvalidated(this);
+  }
+}
+
+function ngc_IsInvalidated() {
+  return ((this.ID!='')&&(ngInvalidatedControls!==null)&&(ngInvalidatedControls[this.ID]));
+}
+
 function ngc_Update(recursive)
 {
+  this.Validate();
   if(!this.Visible) return;
   var p=this.ParentControl;
   while(p)
@@ -3079,6 +3144,38 @@ function ngControl(obj, id, type)
    */
   obj.Update = ngc_Update;
 
+  /*  Function: Invalidate
+   *  Marks control for late update.
+   *
+   *  Syntax:
+   *    void *Invalidate* ()
+   *
+   *  Returns:
+   *    -
+   */
+  obj.Invalidate = ngc_Invalidate;
+
+  /*  Function: IsInvalidated
+   *  Checks if control was marked for late update.
+   *
+   *  Syntax:
+   *    bool *Invalidated* ()
+   *
+   *  Returns:
+   *    TRUE if control was invalidated.
+   */
+  obj.IsInvalidated = ngc_IsInvalidated;
+
+  /*  Function: Validate
+   *  Unmark control from late update.
+   *
+   *  Syntax:
+   *    void *Validate* ()
+   *
+   *  Returns:
+   *    -
+   */
+  obj.Validate = ngc_Validate;
   /*
    *  Group: Events
    */
@@ -3133,6 +3230,14 @@ function ngControl(obj, id, type)
    *  Event: OnUpdated
    */
   obj.OnUpdated        = null;
+  /*
+   *  Event: OnInvalidated
+   */
+  obj.OnInvalidated    = null;
+  /*
+   *  Event: OnValidated
+   */
+  obj.OnValidated      = null;
   /*
    *  Event: OnMouseEnter
    */
