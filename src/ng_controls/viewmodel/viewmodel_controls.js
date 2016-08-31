@@ -2867,16 +2867,7 @@ ngUserControls['viewmodel_controls'] = {
             c.EndUpdate();
             if(needupdate) {
               c.need_update=true;
-              if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
-              c.binding_update_timer=setTimeout(function() {
-                if(typeof c.Update === 'function') { // check if dispose was not called
-                  clearTimeout(c.binding_update_timer);
-                  c.binding_update_timer=null;
-                  if(c.need_update) {
-                    c.Update();
-                  }
-                }
-              },1);
+              c.Invalidate();
             }
           }
 
