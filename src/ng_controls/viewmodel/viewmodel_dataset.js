@@ -225,9 +225,9 @@ function ngdsc_ColumnText(l,it,col)
     if(ngIsFieldDef(fd))
     {
       if(ds.OnGetFieldDefValue) return ngVal(ds.OnGetFieldDefValue(ds,fd,it,col),'');
-      return fd.FormatString(ko.ng_getvalue(fd.Value,false,true,false));
+      return fd.FormatString(ko.ng_getvalue(fd.Value));
     }
-    return ng_toString(ko.isObservable(fd) ? fd.peek() : fd);
+    return ng_toString(ko.isObservable(fd) ? fd() : fd);
   }
   finally {
     ko.dependencyDetection.registerDependency=kodd;
