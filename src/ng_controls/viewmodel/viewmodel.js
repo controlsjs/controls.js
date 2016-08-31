@@ -3306,19 +3306,20 @@ ngUserControls['viewmodel'] = {
      *  Extracts/Unwraps value from ko.observable or ngFieldDef.
      *
      *  Syntax:
-     *    function *ko.ng_unwrapobservable* (mixed val)
+     *    function *ko.ng_unwrapobservable* (mixed val [, bool peek=false])
      *
      *  Parameters:
      *    val - input value
+     *    peek - if TRUE the peek() method is used for unwrap
      *
      *  Returns:
      *    Unwrapped value.
      *    If input value is not ko.observable or ngFieldDef the returned
      *    value is the same.
      */
-    ko.ng_unwrapobservable=function(v) {
+    ko.ng_unwrapobservable=function(v, peek) {
       if(ngIsFieldDef(v)) v=v.Value;
-      return ko.isObservable(v) ? v() : v;
+      return ko.isObservable(v) ? (peek ? v.peek() : v()) : v;
     };
 
     /*  Function: ko.ng_getvalue
@@ -3334,6 +3335,7 @@ ngUserControls['viewmodel'] = {
      *    v - input value
      *    needcopy - if TRUE always return copy of value
      *    recursive - if TRUE the ko.ng_getvalue is called recursively on object properties if they are objects
+     *    peek - if TRUE the peek() method of observables is used for getting values
      *
      *  Returns:
      *    Unwrapped value.
@@ -3341,7 +3343,7 @@ ngUserControls['viewmodel'] = {
      *    was also uwrapped or if needcopy parameter is TRUE.
      *    If value is date then copy is returned only if needcopy parameter id TRUE.
      */
-    ko.ng_getvalue=function(v,needcopy,recursive) {
+    ko.ng_getvalue=function(v,needcopy,recursive,peek) {
       if(typeof recursive==='undefined') recursive=true;
 
       function copywithoutprop(c,p) {
@@ -3357,7 +3359,7 @@ ngUserControls['viewmodel'] = {
       function getvalueint(v)
       {
         var c=v;
-        v=ko.ng_unwrapobservable(v);
+        v=ko.ng_unwrapobservable(v,peek);
         if(ng_typeObject(v)) {
           if(ng_typeDate(v)) {
             if((c!==v)||(needcopy)) v=ng_CopyVar(v);
@@ -3371,7 +3373,7 @@ ngUserControls['viewmodel'] = {
             }
             else c=v;
             for(var i in c) {
-              val=(!recursive || (ref && ref[i]) ? ko.ng_unwrapobservable(c[i]) : getvalueint(c[i]));
+              val=(!recursive || (ref && ref[i]) ? ko.ng_unwrapobservable(c[i],peek) : getvalueint(c[i]));
               if(val!==c[i]) {
                 if(c===v) v=copywithoutprop(c,i);
                 v[i]=val;
