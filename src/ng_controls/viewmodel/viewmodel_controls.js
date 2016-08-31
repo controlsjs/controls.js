@@ -2760,7 +2760,25 @@ ngUserControls['viewmodel_controls'] = {
             synclistupdateex(items, parent);
           }
           finally {
+            var needupdate=false;
+            if((c.update_cnt==1)&&(c.need_update)&&(bindinfo.DelayedUpdate<=0)) {
+              c.need_update=false;
+              needupdate=true;
+            }
             c.EndUpdate();
+            if(needupdate) {
+              c.need_update=true;
+              if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
+              c.binding_update_timer=setTimeout(function() {
+                if(typeof c.Update === 'function') { // check if dispose was not called
+                  clearTimeout(c.binding_update_timer);
+                  c.binding_update_timer=null;
+                  if(c.need_update) {
+                    c.Update();
+                  }
+                }
+              },1);
+            }
           }
         }
 
@@ -2826,6 +2844,7 @@ ngUserControls['viewmodel_controls'] = {
           if(e.ListItem) selval=vmGetFieldValueByID(e.ListItem,keyfield);
         }
         var binding=allBindingsAccessor();
+        bindinfo.DelayedUpdate = ngVal(binding["DelayedUpdate"],10);
         bindinfo.KeyField  = binding["KeyField"];
 
         value_lock('Value',c,function() {
@@ -2845,21 +2864,31 @@ ngUserControls['viewmodel_controls'] = {
           }
 
           var val=ko.ng_unwrapobservable(valueAccessor());
-          if(ng_IsArrayVar(val))
-          {
-            synclistupdate(val, c);
-          }
-          else
-          {
-            c.BeginUpdate();
-            c.Clear();
-            c.EndUpdate();
-            if((keyfield)&&(typeof selval!=='undefined'))
+
+          function updatevm() {
+            if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
+            c.binding_update_timer=null;
+            if(ng_IsArrayVar(val))
             {
-              e.ListItem = { };
-              vmSetFieldValueByID(e.ListItem,keyfield,selval);
-              e.SetText('');
+              synclistupdate(val, c);
             }
+            else
+            {
+              c.BeginUpdate();
+              c.Clear();
+              c.EndUpdate();
+              if((keyfield)&&(typeof selval!=='undefined'))
+              {
+                e.ListItem = { };
+                vmSetFieldValueByID(e.ListItem,keyfield,selval);
+                e.SetText('');
+              }
+            }
+          }
+
+          if(bindinfo.DelayedUpdate<=0) updatevm();
+          else {
+            c.binding_update_timer=setTimeout(updatevm,bindinfo.DelayedUpdate);
           }
 
           if(checkedacc) {
