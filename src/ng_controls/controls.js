@@ -1873,30 +1873,35 @@ function ngDisposeControls(ref)
   }
 }
 
-var ngInvalidatedControls = null;
-var ngInvalidatedControlsTimer = null;
-var ngUpdatingInvalidatedControls = false;
+var ngLateUpdateControls = null;
+var ngLateUpdateControlsTimer = null;
+var ngLateUpdateInProgress = false;
 
-function ngUpdateInvalidated() {
-  if(ngUpdatingInvalidatedControls) return;
+function ngProcessLateUpdates() {
+  if(ngLateUpdateInProgress) return;
 
-  if(ngInvalidatedControlsTimer) clearTimeout(ngInvalidatedControlsTimer);
-  ngInvalidatedControlsTimer=null;
+  if(ngLateUpdateControlsTimer) clearTimeout(ngLateUpdateControlsTimer);
+  ngLateUpdateControlsTimer=null;
 
-  if(ngInvalidatedControls!==null) {
-    ngUpdatingInvalidatedControls = true;
+  if(ngLateUpdateControls!==null) {
+    ngUpdatingLateUpdateControls = true;
     try {
       var c;
-      for(var i in ngInvalidatedControls) {
-        c=ngInvalidatedControls[i];
+      for(var i in ngLateUpdateControls) {
+        c=ngLateUpdateControls[i];
         if((c)&&(typeof c.Update === 'function')) c.Update();
       }
-      ngInvalidatedControls=null;
+      ngLateUpdateControls=null;
     }
     finally {
-      ngUpdatingInvalidatedControls = false;
+      ngLateUpdateInProgress = false;
     }
   }
+}
+
+function ngResetCtrlLateUpdate(c) {
+  if((ngLateUpdateControls!==null)&&(c.ID!='')&&(typeof ngLateUpdateControls[c.ID]!=='undefined'))
+    ngLateUpdateControls[c.ID]=null;
 }
 
 function ngCreateControlHTML(props)
@@ -2379,47 +2384,54 @@ function ngc_Align(o)
   return r;
 }
 
-function ngc_Validate() {
-  if((ngInvalidatedControls===null)||(this.ID=='')||(typeof ngInvalidatedControls[this.ID]==='undefined')) return;
-  ngInvalidatedControls[this.ID]=null;
-  if((this.OnValidated)&&(!ngUpdatingInvalidatedControls)) this.OnValidated(this);
-}
+function ngc_UpdateLater(s) {
+  if(ngVal(s,true)) {
+    if(ngLateUpdateInProgress) {
+      this.Update();
+      return;
+    }
+    if(this.ID!='') {
+      if(!ngLateUpdateControls) ngLateUpdateControls={};
+      if(ngLateUpdateControls[this.ID]===this) return;
 
-function ngc_Invalidate() {
-  if(ngUpdatingInvalidatedControls) this.Update();
-  if(this.ID!='') {
-    if(!ngInvalidatedControls) ngInvalidatedControls={};
-    ngInvalidatedControls[this.ID]=this;
-    if(!ngInvalidatedControlsTimer) ngInvalidatedControlsTimer=setTimeout(ngUpdateInvalidated,1);
+      ngLateUpdateControls[this.ID]=this;
+      if(!ngLateUpdateControlsTimer) ngLateUpdateControlsTimer=setTimeout(function() { nga_ProcessInvokeLater(); ngProcessLateUpdates(); },1);
 
-    function updateafter(c) {
-      var cc=c.ChildControls;
-      if(typeof cc !== 'undefined')
-      {
-        for(var i=0;i<cc.length;i++)
+      function updateafter(c) {
+        var cc=c.ChildControls;
+        if(typeof cc !== 'undefined')
         {
-          c=cc[i];
-          if((c.ID!='')&&(ngInvalidatedControls[c.ID])) {
-            delete ngInvalidatedControls[c.ID]; // put child after parent
-            ngInvalidatedControls[c.ID]=c;
+          for(var i=0;i<cc.length;i++)
+          {
+            c=cc[i];
+            if((c.ID!='')&&(ngLateUpdateControls[c.ID])) {
+              delete ngLateUpdateControls[c.ID]; // put child after parent
+              ngLateUpdateControls[c.ID]=c;
+            }
+            updateafter(c);
           }
-          updateafter(c);
         }
       }
-    }
-    updateafter(this);
+      updateafter(this);
 
-    if(this.OnInvalidated) this.OnInvalidated(this);
+      if(this.OnUpdateLater) this.OnUpdateLater(this,true);
+    }
+  }
+  else {
+    if((ngLateUpdateControls===null)||(this.ID=='')||(typeof ngLateUpdateControls[this.ID]==='undefined')||(ngLateUpdateControls[this.ID]===null)) return;
+    ngLateUpdateControls[this.ID]=null;
+    if((this.OnUpdateLater)&&(!ngLateUpdateInProgress)) this.OnUpdateLater(this,false);
   }
 }
 
-function ngc_IsInvalidated() {
-  return ((this.ID!='')&&(ngInvalidatedControls!==null)&&(ngInvalidatedControls[this.ID]));
+function ngc_WillUpdateLater() {
+  return ((this.ID!='')&&(ngLateUpdateControls!==null)&&(ngLateUpdateControls[this.ID]));
 }
 
 function ngc_Update(recursive)
 {
-  this.Validate();
+  ngResetCtrlLateUpdate(this);
+
   if(!this.Visible) return;
   var p=this.ParentControl;
   while(p)
@@ -3144,38 +3156,31 @@ function ngControl(obj, id, type)
    */
   obj.Update = ngc_Update;
 
-  /*  Function: Invalidate
-   *  Marks control for late update.
+  /*  Function: UpdateLater
+   *  Sets state of late update for control.
    *
    *  Syntax:
-   *    void *Invalidate* ()
+   *    void *UpdateLater* ([bool state=true])
+   *
+   *  Parameters:
+   *    state - if TRUE the controls is marked for late update.
    *
    *  Returns:
    *    -
    */
-  obj.Invalidate = ngc_Invalidate;
+  obj.UpdateLater = ngc_UpdateLater;
 
-  /*  Function: IsInvalidated
+  /*  Function: WillUpdateLater
    *  Checks if control was marked for late update.
    *
    *  Syntax:
-   *    bool *Invalidated* ()
+   *    bool *WillUpdateLater* ()
    *
    *  Returns:
-   *    TRUE if control was invalidated.
+   *    TRUE if control was marked for late update.
    */
-  obj.IsInvalidated = ngc_IsInvalidated;
+  obj.WillUpdateLater = ngc_WillUpdateLater;
 
-  /*  Function: Validate
-   *  Unmark control from late update.
-   *
-   *  Syntax:
-   *    void *Validate* ()
-   *
-   *  Returns:
-   *    -
-   */
-  obj.Validate = ngc_Validate;
   /*
    *  Group: Events
    */
@@ -3231,13 +3236,9 @@ function ngControl(obj, id, type)
    */
   obj.OnUpdated        = null;
   /*
-   *  Event: OnInvalidated
+   *  Event: OnUpdateLater
    */
-  obj.OnInvalidated    = null;
-  /*
-   *  Event: OnValidated
-   */
-  obj.OnValidated      = null;
+  obj.OnUpdateLater    = null;
   /*
    *  Event: OnMouseEnter
    */

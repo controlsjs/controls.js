@@ -2867,7 +2867,7 @@ ngUserControls['viewmodel_controls'] = {
             c.EndUpdate();
             if(needupdate) {
               c.need_update=true;
-              c.Invalidate();
+              c.UpdateLater();
             }
           }
 
