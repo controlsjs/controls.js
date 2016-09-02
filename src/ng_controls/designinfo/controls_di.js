@@ -983,6 +983,85 @@ if (typeof ngUserControls === 'undefined') ngUserControls = [];
 ngUserControls['controls_designinfo'] = {
   OnFormEditorInit: function(FE)
   {
+    var types = [
+      // ngPage
+      {
+        TypeID: 'ngPage',
+        TypeBase: 'object',
+        Name: 'ngPage',
+        ShortName: 'page',
+        Basic: false,
+        Options: {
+          ObjectProperties: {
+            id:            { DefaultType: 'undefined',
+                             InitType: 'string',
+                             Level: 'basic'
+                           },
+            Text:          { DefaultType: 'undefined',
+                             InitType: 'string',
+                             Level: 'basic'
+                           },
+            Alt:           { DefaultType: 'undefined',
+                             InitType: 'string',
+                             Level: 'basic'
+                           },
+            Visible:       { DefaultType: 'boolean',
+                             Types: {
+                               'boolean': {
+                                 DefaultValue: true
+                               }
+                             },
+                             Level: 'basic'
+                           },
+            Enabled:       { DefaultType: 'boolean',
+                             Types: {
+                               'boolean': {
+                                 DefaultValue: true
+                               }
+                             },
+                             Level: 'basic'
+                           },
+            ControlsPanel: { DefaultType: 'control',
+                             IsContainer: false,
+                             Level: 'basic'
+                           },
+            W:             { DefaultType: 'undefined',
+                             InitType: 'bounds_integer',
+                             Types: {
+                               'bounds': {}
+                             },
+                             Level: 'basic'
+                           },
+            H:             { DefaultType: 'undefined',
+                             InitType: 'bounds_integer',
+                             Types: {
+                               'bounds': {}
+                             },
+                             Level: 'basic'
+                           },
+            MinWidth:      { DefaultType: 'undefined',
+                             InitType: 'integer',
+                             Level: 'basic'
+                           },
+            Controls:      { DefaultType: 'controls',
+                             ContainerProperty: true,
+                             Level: 'basic',
+                             Types: {
+                               'controls': {
+                                 DestroyIfEmpty: true,
+                                 ChildDesignInfo: {
+                                   DisplayInControls: true
+                                 }
+                               }
+                             },
+                             Level: 'basic'
+                           }
+          }
+        }
+      }
+    ];
+    FormEditor.RegisterPropertyType(types);
+
     FE.RegisterPropertyTypesGroup('events', ['function', 'identifier', 'null', 'undefined']);
     FE.AddPropertyTypeToGroup('object', 'images');
   },
@@ -2286,90 +2365,17 @@ ngUserControls['controls_designinfo'] = {
                             Types: {
                               'array': {
                                 ChildDesignInfo: {
-                                  DefaultType: 'object',
+                                  DefaultType: 'ngPage',
                                   Collapsed: false,
-                                  Types: {
-                                    'object': {
-                                      ObjectProperties: {
-                                        id:            { DefaultType: 'undefined',
-                                                         InitType: 'string',
-                                                         Level: 'basic'
-                                                       },
-                                        Text:          { DefaultType: 'undefined',
-                                                         InitType: 'string',
-                                                         Level: 'basic'
-                                                       },
-                                        Alt:           { DefaultType: 'undefined',
-                                                         InitType: 'string',
-                                                         Level: 'basic'
-                                                       },
-                                        Visible:       { DefaultType: 'boolean',
-                                                         Types: {
-                                                           'boolean': {
-                                                             DefaultValue: true
-                                                           }
-                                                         },
-                                                         Level: 'basic'
-                                                       },
-                                        Enabled:       { DefaultType: 'boolean',
-                                                         Types: {
-                                                           'boolean': {
-                                                             DefaultValue: true
-                                                           }
-                                                         },
-                                                         Level: 'basic'
-                                                       },
-                                        ControlsPanel: { DefaultType: 'control',
-                                                         IsContainer: false,
-                                                         Level: 'basic'
-                                                       },
-                                        W:             { DefaultType: 'undefined',
-                                                         InitType: 'bounds_integer',
-                                                         Types: {
-                                                           'bounds': {}
-                                                         },
-                                                         Level: 'basic'
-                                                       },
-                                        H:             { DefaultType: 'undefined',
-                                                         InitType: 'bounds_integer',
-                                                         Types: {
-                                                           'bounds': {}
-                                                         },
-                                                         Level: 'basic'
-                                                       },
-                                        MinWidth:      { DefaultType: 'undefined',
-                                                         InitType: 'integer',
-                                                         Level: 'basic'
-                                                       },
-                                        Controls:      { DefaultType: 'controls',
-                                                         ContainerProperty: true,
-                                                         Level: 'basic',
-                                                         Types: {
-                                                           'controls': {
-                                                             DestroyIfEmpty: true,
-                                                             ChildDesignInfo: {
-                                                               DisplayInControls: true
-                                                             }
-                                                           }
-                                                         },
-                                                         Level: 'basic'
-                                                       }
-                                      }
-                                    }
-                                  },
                                   OnPropertyInit: function(ch)
                                   {
-                                    if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
+                                    if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'ngPage'))
                                     {
-                                      var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
-                                      if (pname)
+                                      var pageid = ng_toInteger(ch.Name.substring(ch.Name.lastIndexOf('.') + 1));
+                                      if (!isNaN(pageid))
                                       {
-                                        var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
-                                        var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
-
                                         if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
-
-                                        ch.Value.Text = "'Page " + (itemscnt + 1) + "'";
+                                        ch.Value.Text = "'Page " + (pageid + 1) + "'";
                                       }
                                     }
 
@@ -2533,7 +2539,7 @@ ngUserControls['controls_designinfo'] = {
                 if (p.PropertyDefined === 0) pages_cnt = 0;
                 else pages_cnt = ng_IsArrayVar(p.PropertyValue) ? p.PropertyValue.length : 0;
 
-                FormEditor.SetControlsProperty({ Name: 'Pages.' + pages_cnt,                           ControlID: p.ControlID, UseInit: true, Interactive: true });
+                FormEditor.SetControlsProperty({ Name: 'Pages.' + pages_cnt,                           ControlID: p.ControlID, UseInit: FormEditor.Params.PEInitializePropertiesOnAdd, Interactive: FormEditor.Params.PEInitializePropertiesOnAdd });
                 FormEditor.SetControlsProperty({ Name: 'Data.Page', Type: 'integer', Value: pages_cnt, ControlID: p.ControlID });
               }
 
