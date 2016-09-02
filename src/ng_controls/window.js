@@ -1502,7 +1502,6 @@ function ngCreateHint(def,parent)
   if(typeof def==='string') def={Type: def};
   ng_MergeDef(def, {
     Data: {
-      DiscardOnHide: true,
       IsPopup: true
     }
   }); 
