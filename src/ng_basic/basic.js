@@ -2780,7 +2780,17 @@ function ng_OverrideMethod(cls,method,fnc) {
     if(typeof evlist === 'undefined') {
       evlist=[fnc,parent];
       var handler = function() {
-        return evlist[0].apply(cls,arguments);
+        var ret,olddive=dive;
+        dive=0;
+        try {
+          ret=evlist[0].apply(cls,arguments);
+        } finally {
+          dive=olddive;
+        }
+        return ret;
+      };
+      handler.hasParent = function() {
+        return ((dive+1)<evlist.length);
       };
       handler.callParent = function() {
         var ret;
@@ -2857,6 +2867,53 @@ function ng_OverrideFunction(oldfnc,fnc,thisarg) {
  */
 function ng_IsOverriden(fnc) {
   return ((typeof fnc==='function')&&(typeof fnc.callParent === 'function')&&((typeof fnc.overrides !== 'object')||(fnc.overrides.length>1)));
+}
+
+/**
+ *  Function: ng_CallParent
+ *  Invoke original implementation of method if method was overriden
+ *  by <ng_OverrideMethod>.
+ *
+ *  Syntax:
+ *    mixed *ng_CallParent* (object class, string metod, array args [, mixed retval = undefined])
+ *
+ *  Parameters:
+ *    class - the class which method should be called
+ *    method - name of the method to be called
+ *    args - method arguments in a form of array
+ *    retval - return value if method was not overriden
+ *
+ *  Returns:
+ *    Value returned by original implementation of method or value of retval parameter
+ *    if method was not overriden.
+ */
+function ng_CallParent(cls,method,args,retval) {
+  var fnc=cls[method];
+  if((ng_IsOverriden(fnc))&&(fnc.hasParent())) return fnc.callParent.apply(cls,args);
+  return retval;
+}
+
+/**
+ *  Function: ng_CallParentEx
+ *  Invoke original implementation of method if method was overriden
+ *  by <ng_OverrideMethod>.
+ *
+ *  Syntax:
+ *    mixed *ng_CallParentEx* (object class, string metod, array args)
+ *
+ *  Parameters:
+ *    class - the class which method should be called
+ *    method - name of the method to be called
+ *    args - method arguments in a form of array
+ *
+ *  Returns:
+ *    Object with property named ReturnValue where value returned by original
+ *    implementation of method is stored or null if method was not overriden.
+ */
+function ng_CallParentEx(cls,method,args) {
+  var fnc=cls[method];
+  if((ng_IsOverriden(fnc))&&(fnc.hasParent())) return { ReturnValue: fnc.callParent.apply(cls,args) };
+  return null;
 }
 
 // --- ngCookies ---------------------------------------------------------------
