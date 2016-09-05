@@ -900,7 +900,7 @@ function ng_sprintf()
         case 'd': subst = parseInt(param) ? parseInt(param) : 0; break;
         case 'u': subst = Math.abs(param); break;
         case 'o': subst = parseInt(param).toString(8); break;
-        case 's': subst = '' + param; break;
+        case 's': subst = ('' + param).replace(/%/g, '%%'); break;
         case 'x': subst = ('' + parseInt(param).toString(16)).toLowerCase(); break;
         case 'X': subst = ('' + parseInt(param).toString(16)).toUpperCase(); break;
         case 'f':
