@@ -4284,6 +4284,10 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
         if((cnt)&&(ih)) pl.DisplayedItems=cnt+Math.floor(maxh/(ih/cnt)); // guess displayed items
       }
       if(pl.DisplayedItems<=0) pl.DisplayedItems=1;
+
+      if(this.displayed_items!=pl.DisplayedItems) { // number of displayed items changed
+        list.paging_needs_update=true;
+      }
       if(changed_height)
       {
         var op=pl.Page;
@@ -4579,7 +4583,7 @@ function npgl_IsPagingVisible()
   {
     case plDisplayPagingAlways: v=true; break;
     case plDisplayPagingNotEmpty: v=(this.Controls.List)&&(this.GetLength()>0); break;
-    case plDisplayPagingMorePages: v=(this.Controls.List)&&((this.Page>0)||(this.TopIndex+this.DisplayedItems<this.GetLength())); break;
+    case plDisplayPagingMorePages: v=(this.Controls.List)&&((this.Page>0)||(this.IsNextPageAvailable())); break;
   }
   return v;
 }
@@ -4591,16 +4595,17 @@ function npgl_IsPrevPageAvailable()
 
 function npgl_IsNextPageAvailable()
 {
+  if((this.IsDynamicData())&&(typeof this.MaxLength === 'undefined')) return true;
   return (this.TopIndex+this.DisplayedItems<this.GetLength());
 }
 
 function npgl_UpdatePaging()
 {
-  var s,numitems=this.GetLength();
+  var s;
   var pginfo = {
     PageNo: ''+(this.Page+1),
-    PrevPage:  (this.TopIndex>0),
-    NextPage:  (this.TopIndex+this.DisplayedItems<numitems),
+    PrevPage:  this.IsPrevPageAvailable(),
+    NextPage:  this.IsNextPageAvailable(),
     PagingVisible: this.IsPagingVisible(),
     PagingTo: this.Page+ngVal(this.PagingLookout,Math.floor((this.PagingSize-1)/2)),
     Update: false
@@ -4615,6 +4620,7 @@ function npgl_UpdatePaging()
 
   if((!this.IsDynamicData())||(typeof this.MaxLength !== 'undefined'))
   {
+    var numitems=this.GetLength();
     while(pginfo.PagingTo>this.Page) // remove pages over last page
     {
       s=this.Controls.List.page_start[pginfo.PagingTo];
