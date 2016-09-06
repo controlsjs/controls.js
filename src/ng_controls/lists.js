@@ -5162,7 +5162,7 @@ function npgl_IndexOf(it, parent)
         if(this.Items[i]==it) return i;
     }
   }
-  return this.DefaultIndexOf(it,parent);
+  return this.IndexOf.callParent(it,parent);
 }
 
 function npgl_Reset(doclear)
@@ -5792,18 +5792,17 @@ function Create_ngPageList(def, ref, parent)
   def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
 
     // Handle focus
-    c._DefaultSetFocus=c.SetFocus;
-    c.SetFocus=function(s) {
+    ng_OverrideMethod(c,'SetFocus',function(s) {
       if(ngVal(s,true)) {
         if(c.List) c.List.SetFocus(true);
-        else c._DefaultSetFocus(true);
+        else c.SetFocus.callParent(true);
       }
       else
       {
         if(c.List) c.List.SetFocus(false);
-        c._DefaultSetFocus(false);
+        c.SetFocus.callParent(false);
       }
-    };
+    });
     // Group pages in paging and save visibility
     if(c.Controls.Paging)
     {
@@ -5886,8 +5885,7 @@ function Create_ngPageList(def, ref, parent)
       l.ListPagingChanged=npgl_ListPagingChanged;
       l.ListPagingChanged();
 
-      l.DefaultIndexOf=l.IndexOf;
-      l.IndexOf=npgl_IndexOf;
+      ng_OverrideMethod(l,'IndexOf',npgl_IndexOf);
 
       l.AddEvent(npgl_DoUpdateBefore,'DoUpdate');
       l.AddEvent('OnKeyDown', npgl_OnKeyDown);
