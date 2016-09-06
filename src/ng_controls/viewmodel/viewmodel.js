@@ -3350,6 +3350,7 @@ ngUserControls['viewmodel'] = {
         var n=(ng_IsArrayVar(c) ? [] : {});
         var ref=c['_byRef'];
         for(var i in c) {
+          if(i==='__ng_setvalue') continue;
           if(i===p) break;
           n[i]=(ref && ref[i] ? c[i] : ng_CopyVar(c[i]));
         }
@@ -3373,6 +3374,7 @@ ngUserControls['viewmodel'] = {
             }
             else c=v;
             for(var i in c) {
+              if(i==='__ng_setvalue') continue;
               val=(!recursive || (ref && ref[i]) ? ko.ng_unwrapobservable(c[i],peek) : getvalueint(c[i]));
               if(val!==c[i]) {
                 if(c===v) v=copywithoutprop(c,i);
@@ -3435,87 +3437,122 @@ ngUserControls['viewmodel'] = {
       if(ng_typeObject(val)) {
         var d=ko.isObservable(t) ? t() : t;
         if((ng_typeObject(d))&&(!ng_typeDate(d))) {
-          if((t!==d)&&(!ko.isWriteableObservable(t))) return val;
+          if(t!==d) {
+            if(!ko.isWriteableObservable(t)) return ov;
+            if(typeof t.valueWillMutate === 'function') t.valueWillMutate();
+          }
 
           if(typeof recursive==='undefined') recursive=true;
 
-          var hasobservable=(ref ? true : false);
-          var nv;
-          var vref=val['_byRef'];
-          var dref=d['_byRef'];
-          var n,ex={'_byRef':true};
-
-          if(!hasobservable) n=ng_IsArrayVar(d) ? [] : {};
-
-          function sethasobservable() {
-            if(hasobservable) return;
+          var hasobservable;
+          if(typeof d.__ng_setvalue === 'function')
+          {
             hasobservable=true;
-            for(var i in n) d[i]=n[i];
-            delete n;
-          }
-
-          for(var i in val) {
-            ex[i]=true;
-            if((dref)&&(dref[i])) sethasobservable();
-            if((recursive)&&((!vref)||(!vref[i]))) {
-              nv=ko.ng_setvalue(d[i],val[i],true, ((dref)&&(dref[i])) );
-            } else {
-              if(ko.isWriteableObservable(d[i])) {
-                nv=d[i];
-                if(ngIsFieldDef(nv)) nv.Value(val[i]);
-                else nv(val[i]);
+            var r,setter=d.__ng_setvalue;
+            try {
+              delete d.__ng_setvalue;
+              r=setter.apply(d,[d,val,recursive]);
+            } finally {
+              if(typeof d.__ng_setvalue==='undefined') {
+                d.__ng_setvalue=setter;
               }
-              else nv=val[i];
+              if((typeof r!=='undefined')&&(r!==d)) {
+                if(t!==d) {
+                  var oldwillmutate=t.valueWillMutate; // valueWillMutate already called, swallow call
+                  if(typeof oldwillmutate === 'function') t.valueWillMutate=function() { /*nop*/ };
+                  try {
+                    t(r);
+                  }
+                  finally {
+                    if(typeof oldwillmutate === 'function') t.valueWillMutate=oldwillmutate;
+                  }
+                  return ov;
+                }
+                else return r;
+              }
             }
-            if((!hasobservable)&&((ng_typeObject(nv))||(ko.isObservable(nv)))&&(nv===d[i])) sethasobservable();
-            if(hasobservable) d[i]=nv;
-            else n[i]=nv;
           }
-          var delkeys={}
-          for(var i in d) {
-            if(ex[i]) continue;
-            if(ko.isObservable(d[i])) {
-              sethasobservable();
-              continue;
+          else {
+            var nv;
+            var vref=val['_byRef'];
+            var dref=d['_byRef'];
+            var n,ex={'_byRef':true};
+
+            hasobservable=(ref ? true : false);
+            if(!hasobservable) n=ng_IsArrayVar(d) ? [] : {};
+
+            function sethasobservable() {
+              if(hasobservable) return;
+              hasobservable=true;
+              for(var i in n) d[i]=n[i];
+              delete n;
             }
-            if((dref)&&(dref[i])) {
-              sethasobservable();
-              continue;
+
+            for(var i in val) {
+              ex[i]=true;
+              if((dref)&&(dref[i])) sethasobservable();
+              if((recursive)&&((!vref)||(!vref[i]))) {
+                nv=ko.ng_setvalue(d[i],val[i],true, ((dref)&&(dref[i])) );
+              } else {
+                nv=d[i];
+                if(ngIsFieldDef(nv)) nv=nv.Value;
+                if(ko.isObservable(nv)) {
+                  if(ko.isWriteableObservable(nv)) nv(val[i]);
+                }
+                else nv=val[i];
+              }
+              if((!hasobservable)&&(((ko.isObservable(nv))&&(nv===d[i]))||((ng_typeObject(nv))&&((nv===d[i])||(nv!==val[i]))))) sethasobservable();
+              if(hasobservable) d[i]=nv;
+              else n[i]=nv;
             }
-            if((ng_typeObject(d[i]))&&!(ng_typeDate(d[i]))) {
-              nv=ko.ng_getvalue(d[i]); // detect if object has observables
-              if(nv!==d[i]) {
+            var delkeys={}
+            for(var i in d) {
+              if(ex[i]) continue;
+              if(ko.isObservable(d[i])) {
                 sethasobservable();
                 continue;
               }
-            }
-            delkeys[i]=true;
-          }
-          delete n;
-          if(ng_IsArrayVar(d)) {
-            var undefined;
-            for(var i=d.length-1;i>=0;i--) {
-              if(delkeys[i]) {
-                d.length=i;
-                delete delkeys[i];
+              if((dref)&&(dref[i])) {
+                sethasobservable();
+                continue;
               }
-              else break;
+              if((ng_typeObject(d[i]))&&!(ng_typeDate(d[i]))) {
+                nv=ko.ng_getvalue(d[i]); // detect if object has observables
+                if(nv!==d[i]) {
+                  sethasobservable();
+                  continue;
+                }
+              }
+              delkeys[i]=true;
             }
-            for(var i in delkeys) d[i]=undefined;
-          }
-          else {
-            for(var i in delkeys) delete d[i];
+            delete n;
+            if(ng_IsArrayVar(d)) {
+              var undefined;
+              for(var i=d.length-1;i>=0;i--) {
+                if(delkeys[i]) {
+                  d.length=i;
+                  delete delkeys[i];
+                }
+                else break;
+              }
+              for(var i in delkeys) d[i]=undefined;
+            }
+            else {
+              for(var i in delkeys) delete d[i];
+            }
           }
           if(hasobservable) {
             if(t!==d) {
+              if(typeof t.valueHasMutated === 'function') t.valueHasMutated();
+              else t(d);
               return ov;
             }
             else val=d;
           }
         }
       }
-      if((t)&&(ko.isWriteableObservable(t))) {
-        t(val);
+      if((t)&&(ko.isObservable(t))) {
+        if(ko.isWriteableObservable(t)) t(val);
         return ov;
       }
       return val;
