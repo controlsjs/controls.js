@@ -4173,15 +4173,21 @@ function npgl_DoUpdateBefore(o)
   }
 
   this.Loading=false;
-  var ncnt=Math.max(this.max_displayed_items, pl.DisplayedItems)+((pl.DisplayMode==plDisplayFit) ? 2 : 1);
+  var fit=(pl.DisplayMode==plDisplayFit);
+  var ncnt=Math.max(this.max_displayed_items, pl.DisplayedItems)+(fit ? 2 : 1);
   if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt)) { this.Loading=true; return false; }
-  if((!this.draw_measure)&&(!pl.NeedData(pl.TopIndex,ncnt)))
-  {
-    if(pl.AsyncWaiting()) this.Loading=true;
-    return false;
-  }
+  if(!this.draw_measure) {
+    if(!pl.NeedData(pl.TopIndex,ncnt))
+    {
+      if(pl.AsyncWaiting()) this.Loading=true;
+      return false;
+    }
 
-  this.draw_measure=(pl.DisplayMode==plDisplayFit);
+    if(fit) {
+      this.measure_loadto=pl.TopIndex+ncnt;
+    }
+  }
+  this.draw_measure=fit;
   return true;
 }
 
@@ -4232,52 +4238,59 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
 
       var cnt=0;
       var i,it,items,tmp_html,ih=0;
+      var fit=(pl.DisplayMode==plDisplayFit);
       list.in_measure=true;
-      for(i=pl.TopIndex;i<list.Items.length;i++)
-      {
-        tmp_html=new ngStringBuilder(html);
-
-        if(!pl.IsDataLoaded(i+1))
+      try {
+        for(i=pl.TopIndex;i<list.Items.length;i++)
         {
-          var lcnt=(cnt && ih ? Math.floor(maxh/(ih/cnt)) : 0);
-          var dcnt=(Math.max(this.max_displayed_items, pl.DisplayedItems)+1)-(i-pl.TopIndex);
-          if(dcnt>lcnt) lcnt=dcnt;
-          if(lcnt<1) lcnt=1;
+          tmp_html=new ngStringBuilder(html);
 
-          if(pl.IsAsyncLoadingBlock(i+1,lcnt)) list.Loading=true;
-          else pl.DoLoadData(i+1,lcnt);
+          if(!pl.IsDataLoaded(i+1))
+          {
+            var lcnt=(cnt && ih ? Math.floor(maxh/(ih/cnt)) : 0);
+            var dcnt=Math.max(this.max_displayed_items, pl.DisplayedItems)-(i-pl.TopIndex);
+            if(dcnt>lcnt) lcnt=dcnt;
+            if(lcnt<1) lcnt=1;
+            lcnt+=(fit ? 2 : 1);
+
+            if(pl.IsAsyncLoadingBlock(i+1,lcnt)) list.Loading=true;
+            else pl.DoLoadData(i+1,lcnt);
+            if(i+1+lcnt>list.measure_loadto) list.measure_loadto=i+1+lcnt;
+          }
+
+          it=list.Items[i];
+          if(typeof it === 'undefined') it=new Object;
+
+          items=it.Items;
+          it.Items=undefined;
+          l=list.DrawItem(tmp_html, it, i, 0, false);
+          it.Items=items;
+
+          if(l.l>0) tmp_html.append('</tbody>');
+          if(list.Columns.length>0) tmp_html.append('</table>');
+          ng_SetInnerHTML(o,tmp_html.toString());
+
+          io=document.getElementById(list.ID+'_'+i);
+          if(io)
+          {
+            o.style.display='block';
+            h=ng_OuterHeight(io);
+            o.style.display=(this.Visible ? 'block' : 'none');
+          }
+          else h=0;
+
+          maxh-=h;
+          if(maxh<0) break;
+
+          ih+=h;
+          cnt++;
+          if((typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
         }
-
-        it=list.Items[i];
-        if(typeof it === 'undefined') it=new Object;
-
-        items=it.Items;
-        it.Items=undefined;
-        l=list.DrawItem(tmp_html, it, i, 0, false);
-        it.Items=items;
-
-        if(l.l>0) tmp_html.append('</tbody>');
-        if(list.Columns.length>0) tmp_html.append('</table>');
-        ng_SetInnerHTML(o,tmp_html.toString());
-
-        io=document.getElementById(list.ID+'_'+i);
-        if(io)
-        {
-          o.style.display='block';
-          h=ng_OuterHeight(io);
-          o.style.display=(this.Visible ? 'block' : 'none');
-        }
-        else h=0;
-
-        maxh-=h;
-        if(maxh<0) break;
-
-        ih+=h;
-        cnt++;
-        if((typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
+      } finally {
+        delete list.measure_loadto;
+        list.in_measure=false;
+        ng_SetInnerHTML(o,'');
       }
-      list.in_measure=false;
-      ng_SetInnerHTML(o,'');
       if(i<list.Items.length) pl.DisplayedItems=cnt;
       else
       {
@@ -4839,7 +4852,11 @@ function npgl_IsDataLoaded(idx)
   if(idx>=list.Items.length) return false;
 
   // if caching is disabled, anything outside current view is not loaded (up-to-date)
-  if((!this.CacheData)&&((idx<this.TopIndex)||(idx>=this.TopIndex+this.DisplayedItems))) return false;
+  if((!this.CacheData)
+    &&((idx<this.TopIndex)
+     ||(idx>=(typeof list.measure_loadto!=='undefined' ? list.measure_loadto :
+             (this.DisplayMode==plDisplayFit ? 0 :
+              this.TopIndex+this.DisplayedItems))))) return false;
 
   var it=list.Items[idx];
   if(typeof it==='undefined') return false;
