@@ -5027,7 +5027,7 @@ function npgl_DoLoadData(idx,cnt,retry)
     this.async_datatimeout_timer=null;
 
     var j;
-    if((data.length>0)&&(data.length<cnt)) // trim length if not enough data
+    if((data.length>=0)&&(data.length<cnt)) // trim length if not enough data
     {
       this.SetLength(idx+data.length);
     }
@@ -5037,7 +5037,7 @@ function npgl_DoLoadData(idx,cnt,retry)
       if(j>=list.Items.length)
       {
         list.Items.length=j;
-        if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.MaxLength=j;
+        if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
       }
       if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
     }
@@ -5072,7 +5072,7 @@ function npgl_SetAsyncData(idx, data)
   {
     var j;
     var asynclast=this.async_dataindex+this.async_datacount;
-    if((idx==this.async_dataindex)&&(data.length>0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
+    if((idx==this.async_dataindex)&&(data.length>=0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
     {
       this.SetLength(idx+data.length);
       changed=true;
@@ -5083,7 +5083,7 @@ function npgl_SetAsyncData(idx, data)
       if(j>=list.Items.length)
       {
         list.Items.length=j;
-        if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.MaxLength=j;
+        if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
       }
       if(typeof data[i] !== 'undefined')
       {
@@ -5091,7 +5091,6 @@ function npgl_SetAsyncData(idx, data)
         if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
       }
     }
-    if((!data.length)&&(!idx)&&(typeof this.MaxLength==='undefined')) { this.SetLength(0); changed=true; }
   }
   idx=this.async_dataindex;
   var cnt=this.async_datacount;
@@ -5133,21 +5132,18 @@ function npgl_SetAsyncData(idx, data)
 function npgl_SetLength(l)
 {
   if(this.OnSetLength) l=this.OnSetLength(this,l);
+  var list=this.Controls.List;
+  if(list) list.paging_needs_update=true;
 
   if(!this.IsDynamicData()) // not dynamic data, adjust list length
   {
     if(typeof l === 'undefined') return;
-
-    var list=this.Controls.List;
     if(list) list.Items.length=l;
   }
   else
   {
     this.MaxLength=l;
-
     if(typeof l === 'undefined') return;
-
-    var list=this.Controls.List;
     if((list)&&(l<list.Items.length)) list.Items.length=l;
   }
 }
