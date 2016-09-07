@@ -85,8 +85,7 @@ function ngdsc_CaptionClick(e,list,colidx,elm)
 function ngdsc_DoGetSortBy()
 {
   var vm=this.ViewModel;
-  if(!vm) return;
-  var sb=vm.ViewModel.SortBy;
+  var sb=vm && vm.ViewModel && this.SortByVMField!='' ? vm.ViewModel[this.SortByVMField] : null;
   if(sb) sb=ko.ng_gettypedvalue(sb,false);
   if(this.OnGetSortBy) return this.OnGetSortBy(this,sb);
   return sb;
@@ -97,8 +96,8 @@ function ngdsc_DoSetSortBy(val)
   if((this.OnSetSortBy)&&(!ngVal(this.OnSetSortBy(this,val),false))) return;
 
   var vm=this.ViewModel;
-  if(!vm) return;
-  var sb=vm.ViewModel.SortBy;
+  if((!vm)||(this.SortByVMField=='')) return;
+  var sb=vm.ViewModel[this.SortByVMField];
   if(sb) ko.ng_settypedvalue(sb,val,false);
 }
 
@@ -115,20 +114,47 @@ function ngdsc_GetColumnSortDir(id)
   }
 }
 
-function ngdsc_SetColumnSortDir(id, sortdir)
+function ngdsc_IsAllowedSortBy(sortby)
 {
+  if(!ng_typeArray(sortby)) return false;
   var vm=this.ViewModel;
-  if(!vm) return false;
-
-  var allowed=vm.ViewModel.AllowedSortBy;
+  var allowed=vm && vm.ViewModel && this.AllowedSortByVMField!='' ? vm.ViewModel[this.AllowedSortByVMField] : null;
   if(allowed) allowed=ko.ng_gettypedvalue(allowed,false);
   if(this.OnGetAllowedSortBy) allowed=this.OnGetAllowedSortBy(this,allowed);
   if(ng_isEmptyOrNull(allowed)) return false;
 
+  var i,j,al;
+
+  for(i=0;i<allowed.length;i++)
+  {
+    al=allowed[i];
+    if(!ng_typeArray(al)) {
+      if(ng_typeObject(al)) {
+        if(ng_typeArray(al.SortBy)) al=[al.SortBy];
+        else al=[al];
+      }
+    }
+    if((al.length>0)&&(al[0].FieldID=='*')) return true;
+    if(al.length==sortby.length)
+    {
+      for(j=0;j<sortby.length;j++)
+      {
+        if(!ng_typeObject(sortby[j])) return false;
+        if(al[j].FieldID=='*') return true;
+        if((al[j].FieldID!=sortby[j].FieldID)||(al[j].SortDir!=sortby[j].SortDir)) break;
+      }
+      if(j==sortby.length) return true;
+    }
+  }
+  return false;
+}
+
+function ngdsc_SetColumnSortDir(id, sortdir, clear)
+{
   if(id.substr(0,8)==='Columns.') id=id.substring(8,id.length);
   
   var i,changed=false;
-  var sortby=this.DoGetSortBy();
+  var sortby=(clear ? null : this.DoGetSortBy());
   if(ng_isEmptyOrNull(sortby)) sortby=[];
   else sortby=ng_CopyVar(sortby);
 
@@ -146,44 +172,18 @@ function ngdsc_SetColumnSortDir(id, sortdir)
     sortby.push({FieldID: id, SortDir: sortdir});
     changed=true;
   }
-  if(changed) 
+  if((changed)&&(this.IsAllowedSortBy(sortby)))
   {
-    var i,j,al;
-    var ok=false;
-
-    for(i=0;i<allowed.length;i++)
-    {
-      al=allowed[i];
-      if((al.length>0)&&(al[0].FieldID=='*')) { ok=true; break; }
-      if(al.length==sortby.length)
-      {
-        for(j=0;j<sortby.length;j++)
-        {
-          if(al[j].FieldID=='*') { j=sortby.length; break; }
-          if((al[j].FieldID!=sortby[j].FieldID)||(al[j].SortDir!=sortby[j].SortDir)) break;
-        }
-        if(j==sortby.length) { ok=true; break; }
-      }
-    }
-    if(ok) 
-    {
-      this.DoSetSortBy(sortby);
-      return true;
-    }  
+    this.DoSetSortBy(sortby);
+    return true;
   }
   return false;     
 }
 
 function ngdsc_ToggleColumnSortDir(id, clear)
 {
-  clear=ngVal(clear,true);
   var sortdir=ngVal(this.GetColumnSortDir(id),1);
-
-  var oldsd=this.DoGetSortBy();
-  if(clear) this.DoSetSortBy([]);
-    
-  if(this.SetColumnSortDir(id, sortdir==0 ? 1 : 0)) return true;
-  this.DoSetSortBy(oldsd);
+  if(this.SetColumnSortDir(id, sortdir==0 ? 1 : 0,ngVal(clear,true))) return true;
   return false;
 }
 
@@ -443,16 +443,16 @@ function Create_ngDataSet(def, ref, parent,basetype)
 
   c.DoGetSortBy          = ngdsc_DoGetSortBy;
   c.DoSetSortBy          = ngdsc_DoSetSortBy;
-
-  c.GetColumnSortDir = ngdsc_GetColumnSortDir;
-  c.SetColumnSortDir = ngdsc_SetColumnSortDir;
-  c.ToggleColumnSortDir = ngdsc_ToggleColumnSortDir;
+  c.IsAllowedSortBy      = ngdsc_IsAllowedSortBy;
+  c.GetColumnSortDir     = ngdsc_GetColumnSortDir;
+  c.SetColumnSortDir     = ngdsc_SetColumnSortDir;
+  c.ToggleColumnSortDir  = ngdsc_ToggleColumnSortDir;
   
-  c.GetRecord           = ngdsc_GetRecord;
+  c.GetRecord            = ngdsc_GetRecord;
 
-  c.ReloadDataSet       = ngdsc_ReloadDataSet; 
-  c.ApplyFilters        = ngdsc_ApplyFilters; 
-  c.ResetFilters        = ngdsc_ResetFilters; 
+  c.ReloadDataSet        = ngdsc_ReloadDataSet;
+  c.ApplyFilters         = ngdsc_ApplyFilters;
+  c.ResetFilters         = ngdsc_ResetFilters;
 
   /*
    *  Group: Events
