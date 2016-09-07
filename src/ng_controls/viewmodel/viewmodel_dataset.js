@@ -435,6 +435,9 @@ function Create_ngDataSet(def, ref, parent,basetype)
   c.AutoDataSetColumns   = false;
   c.GetRecordsCommand    = 'resetfilters';
 
+  c.SortByVMField        = 'SortBy';
+  c.AllowedSortByVMField = 'AllowedSortBy';
+
   /*
    *  Group: Methods
    */
