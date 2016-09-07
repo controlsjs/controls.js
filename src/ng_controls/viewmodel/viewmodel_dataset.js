@@ -77,8 +77,9 @@ function ngdsc_ColumnCaption(l,col,idx)
 function ngdsc_CaptionClick(e,list,colidx,elm)
 {
   var ds=list.Owner.Owner;
-  if(ds.ToggleColumnSortDir(list.Columns[colidx].ID, !ngVal(e.ctrlKey,false)))
-    ds.Reset(true);
+  if(ds.ToggleColumnSortDir(list.Columns[colidx].ID, !ngVal(e.ctrlKey,false))) {
+    if(ds.IsDynamicData()) ds.Reset(true);
+  }
 }
 
 function ngdsc_DoGetSortBy()
@@ -305,18 +306,20 @@ function ngdsc_ViewModelChanged(vm)
 
 function ngdsc_ReloadDataSet()
 {
-  this.Reset(true);
+  if((this.OnReloadDataSet)&&(!ngVal(this.OnReloadDataSet(this),false))) return;
+  if(this.IsDynamicData()) this.Reset(true);
 }
 
 function ngdsc_ApplyFilters()
 {
   this.GetRecordsCommand='applyfilters';
-  this.Reset(true);
+  if((this.OnApplyFilters)&&(!ngVal(this.OnApplyFilters(this),false))) return;
+  if(this.IsDynamicData()) this.Reset(true);
 }
 
 function ngdsc_ResetFilters()
 {
-  var filters=this.ViewModel.ViewModel.Filters;
+  var filters=this.ViewModel ? this.ViewModel.ViewModel.Filters : null;
   if(ng_typeObject(filters)) 
   {
     function resetfilters(o)
@@ -337,7 +340,8 @@ function ngdsc_ResetFilters()
   }
 
   this.GetRecordsCommand='resetfilters';
-  this.Reset(true);
+  if((this.OnResetFilters)&&(!ngVal(this.OnResetFilters(this),false))) return;
+  if(this.IsDynamicData()) this.Reset(true);
 }
 
 function ngdscvm_ReloadDataSet()
@@ -456,6 +460,9 @@ function Create_ngDataSet(def, ref, parent,basetype)
   c.OnGetFieldDefValue = null;
   c.OnSetViewModel = null;
   c.OnGetRecord = null;
+  c.OnReloadDataSet = null;
+  c.OnApplyFilters = null;
+  c.OnResetFilters = null;
   c.OnGetSortBy = null;
   c.OnSetSortBy = null;
   c.OnGetAllowedSortBy = null;
