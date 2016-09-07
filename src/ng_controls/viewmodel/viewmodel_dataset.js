@@ -247,7 +247,9 @@ function ngdsc_GetValues(vm,values, writableonly, valuenames, errors, convtimest
 function ngdsc_LoadData(ds, list, idx, cnt)
 { 
   var vm=ds.ViewModel;
-  if((!vm)||(!vm.ViewModel.Records)||(!vm.ViewModel.Offset)||(!vm.ViewModel.Count)) return [];
+  if((!vm)||(!vm.ViewModel.Records)||(!ngIsFieldDef(vm.ViewModel.Offset))||(!ngIsFieldDef(vm.ViewModel.Count))) {
+    return [];
+  }
   var undefined;
   vm.ViewModel.Records.SetTypedValue(undefined,false);
   if(idx==999999999)
@@ -363,7 +365,8 @@ function ngdsc_SetViewModel(vm)
   var ovm=this.ViewModel;
   if(ovm)
   {
-    ovm.RemoveEvent('OnGetValues', ngdsc_GetValues); 
+    this.RemoveEvent('OnLoadData',ngdsc_LoadData);
+    ovm.RemoveEvent('OnGetValues', ngdsc_GetValues);
     ovm.RemoveEvent('OnCommandData', ngdsc_DataLoaded);
     ovm.RemoveEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
     delete ovm.DataSetControl;
@@ -380,7 +383,13 @@ function ngdsc_SetViewModel(vm)
       this.ApplyFilters = ngdscvm_ApplyFilters; 
       this.ResetFilters = ngdscvm_ResetFilters; 
     });
-    vm.AddEvent('OnGetValues', ngdsc_GetValues); 
+
+    if(!this.OnLoadData) {
+      if((vm.ViewModel.Records)&&(ngIsFieldDef(vm.ViewModel.Offset))&&(ngIsFieldDef(vm.ViewModel.Count))) {
+        this.OnLoadData=ngdsc_LoadData;
+      }
+    }
+    vm.AddEvent('OnGetValues', ngdsc_GetValues);
     vm.AddEvent('OnCommandData', ngdsc_DataLoaded);
     vm.AddEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
   }
@@ -396,8 +405,6 @@ function Create_ngDataSet(def, ref, parent,basetype)
 {
   var c=ngCreateControlAsType(def, ngVal(basetype,'ngPageList'), ref, parent);
   if(!c) return c;
-
-  c.OnLoadData=ngdsc_LoadData;
 
   def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
     var vm=ng_FindViewModel(def, c);
