@@ -2336,6 +2336,11 @@ ngUserControls['controls_designinfo'] = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
+        TargetContainer: function(control, target_control, control_elm, target_elm)
+        {
+          if (!control) return 'Pages.0.Controls';
+          return 'Pages.' + ngVal(control.Page, 0) + '.Controls';
+        },
         BaseControl: 'ngPages',
         NewControl: {
           Default: {
@@ -2515,12 +2520,6 @@ ngUserControls['controls_designinfo'] = {
                             }
           }
         }),
-
-        TargetContainer: function(control, target_control)
-        {
-          if (!control) return 'Pages.0.Controls';
-          return 'Pages.' + ngVal(control.Page, 0) + '.Controls';
-        },
 
         ActionsMenu: {
           'add_page': {

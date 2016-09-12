@@ -130,6 +130,9 @@ ngUserControls['list_designinfo'] = {
                             },
             Items:          { DefaultType: 'undefined',
                               InitType: 'ngListItems',
+                              Types: {
+                                'ngListStringItems': {}
+                              },
                               Level: 'basic',
                               Order: 0.85
                             },
@@ -168,6 +171,7 @@ ngUserControls['list_designinfo'] = {
         ShortName: 'items',
         Basic: false,
         Options: {
+          Priority: 0.51,
           ChildDesignInfo: {
             DefaultType: 'ngListItem',
             Level: 'basic',
@@ -190,6 +194,82 @@ ngUserControls['list_designinfo'] = {
               return true;
             }
           }
+        },
+        Read: function(v, type, Interface)
+        {
+          if (ng_IsOverriden(this.Read)) v = this.Read.callParent.apply(this, arguments);
+
+          if (FormEditor.PropertyTypeInheritsFrom(type, 'ngListStringItems'))
+          {
+            if (ng_IsArrayVar(v))
+            {
+              for (var i = 0; i < v.length; i++)
+              {
+                v[i] = "{ Text: " + v[i] + " }";
+              }
+            }
+          };
+
+          return v;
+        }
+      },
+
+      // ngListStringItems
+      {
+        TypeID: 'ngListStringItems',
+        TypeBase: 'array_strings',
+        Name: 'ngListStringItems',
+        ShortName: 'items',
+        Basic: false,
+        Options: {
+          Priority: 0.52
+        },
+        Read: function(v, type, Interface)
+        {
+          if (ng_IsOverriden(this.Read)) v = this.Read.callParent.apply(this, arguments);
+
+          if (FormEditor.PropertyTypeInheritsFrom(type, 'ngListItems'))
+          {
+            if (ng_IsArrayVar(v))
+            {
+              var node = Interface.GetEsprimaNode();
+              if (node)
+              {
+                var v2 = [];
+                for (var i = 0; i < node.elements.length; i++)
+                {
+                  var str = '';
+                  if (node.elements[i])
+                  {
+                    switch(node.elements[i].type)
+                    {
+                      case 'ObjectExpression':
+                        var props = node.elements[i].properties;
+                        for (var j in props)
+                        {
+                          if (props[j] && props[j].key && props[j].key.name === 'Text' && props[j].value && props[j].value.type === 'Literal' && typeof props[j].value.value === 'string')
+                          {
+                            str = props[j].value.value;
+                            break;
+                          }
+                        }
+                        break;
+
+                      case 'Literal':
+                        if (typeof node.elements[i].value === 'string') str = node.elements[i].value;
+                        break;
+                    }
+                  }
+
+                  v2.push("'" + str + "'");
+                }
+
+                return v2;
+              }
+            }
+          };
+
+          return v;
         }
       }
 
@@ -218,7 +298,7 @@ ngUserControls['list_designinfo'] = {
               H: { Value: 180 },
               Data: {
                 ObjectProperties: {
-                  Items: { Type: 'array',
+                  Items: { Type: 'ngListItems',
                            ObjectProperties: {
                              0: {
                                Type: 'ngListItem',
@@ -237,6 +317,9 @@ ngUserControls['list_designinfo'] = {
           // TODO - define all properties
           Data: {
             Items: { DefaultType: 'ngListItems',
+                     Types: {
+                       'ngListStringItems': {}
+                     },
                      Level: 'basic',
                      Collapsed: true
                    }
