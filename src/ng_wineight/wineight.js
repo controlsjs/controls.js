@@ -3326,7 +3326,8 @@ var WinEightControls = {
         c.DropDownButton.Default = false;
         c.DropDownButton.Theme = th;
         c.DropDownButton.AddEvent('OnUpdate',function(){
-          this.Elm().style.marginTop = '2px';
+          var o=this.Elm();
+          if(o) o.style.marginTop = '2px';
           return true;
         });
         return c;
