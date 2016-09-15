@@ -1210,6 +1210,9 @@ var WinXPControls = {
       {
         ng_MergeDef(def, {
           className: 'wxpListBox',
+          Data: {
+            AverageItemHeight: 20
+          },
           /*
            *  Group: Controls
            */

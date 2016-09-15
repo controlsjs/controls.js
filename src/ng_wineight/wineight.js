@@ -1655,6 +1655,9 @@ var WinEightControls = {
         var th=theme(def);
         ng_MergeDef(def, {
           className: (th ? 'weListBoxLight' : 'weListBoxDark'),
+          Data: {
+            AverageItemHeight: 38
+          },
           /*
            *  Group: Controls
            */
