@@ -445,7 +445,7 @@ function ngl_ItemById(id)
   for(var j=0,i=id.length-1;i>=0;i--)
     if(id.charAt(i)=='_')
     {
-      idx[j++]=parseInt(id.substring(i+1,id.length));
+      idx[j++]=parseInt(id.substring(i+1,id.length),10);
       id=id.substring(0,i);
       list=ngGetControlById(id, 'ngList');
       if(list)
@@ -473,7 +473,7 @@ function nglist_ItemById(id)
   {
     if (id.charAt(i) == '_')
     {
-      var item_id = parseInt(id.substring(0, i));
+      var item_id = parseInt(id.substring(0, i),10);
       id = id.substring(i + 1);
       if (!item_id.isNaN && result.Items && (item_id >= 0) && (item_id < result.Items.length) && (result.Items[item_id] !== null))
         result = result.Items[item_id];
@@ -1386,7 +1386,7 @@ function ngl_DoPtrStart(pi)
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
-    var cid=parseInt(eid.substring(4,eid.length));
+    var cid=parseInt(eid.substring(4,eid.length),10);
     ngl_GetClickInfo(pi.StartEvent,pi.StartElement,cid);
     pi.SrcElement=pi.StartEvent.listRowObj;
 
@@ -1454,7 +1454,7 @@ function ngl_DoPtrClick(pi)
   {
     if((pi.EndTime-pi.StartTime>200)&&(!pi.IsInSrcElement())) return;
     var e=pi.StartEvent;
-    var cid=parseInt(eid.substring(4,eid.length));
+    var cid=parseInt(eid.substring(4,eid.length),10);
     ngl_GetClickInfo(e,pi.StartElement,cid);
     this.ClickItem(e.listItem, e);
     if((eid!=='item0')&&(ng_inDOM(pi.StartElement)))
@@ -1471,7 +1471,7 @@ function ngl_DoPtrClick(pi)
   else if(eidp==='capt')
   {
     var e=pi.StartEvent;
-    var cid=parseInt(eid.substring(4,eid.length));
+    var cid=parseInt(eid.substring(4,eid.length),10);
     if(e.gesture)
     {
       var srce=e.gesture.srcEvent;
@@ -1494,7 +1494,7 @@ function ngl_DoPtrDblClick(pi)
   {
     if((pi.EndTime-pi.StartTime>=200)&&(!pi.IsInSrcElement())) return;
     var e=pi.StartEvent;
-    var cid=parseInt(eid.substring(4,eid.length));
+    var cid=parseInt(eid.substring(4,eid.length),10);
     ngl_GetClickInfo(e,pi.StartElement,cid);
     if((!e.listItem)||(!ngVal(e.listItem.Enabled,true))) return;
 
@@ -1513,7 +1513,7 @@ function ngl_DoPtrDblClick(pi)
   else if(eidp==='capt')
   {
     var e=pi.StartEvent;
-    var cid=parseInt(eid.substring(4,eid.length));
+    var cid=parseInt(eid.substring(4,eid.length),10);
     if(this.OnCaptionDblClick) this.OnCaptionDblClick(e,this,cid,this.StartElement);
   }
 }
@@ -4174,7 +4174,19 @@ function npgl_DoUpdateBefore(o)
 
   this.Loading=false;
   var fit=(pl.DisplayMode==plDisplayFit);
-  var ncnt=Math.max(this.max_displayed_items, pl.DisplayedItems)+(fit ? 2 : 1);
+  var ncnt=pl.DisplayedItems;
+  if(fit) {
+    if((!this.max_displayed_items)&&(!this.draw_measure)) {
+      var aih=ngVal(pl.GetAverageItemHeight(),0);
+      if(aih>0) {
+        var gcnt = Math.floor((ng_ClientHeight(o)-1)/aih);
+        if(gcnt>ncnt) ncnt=gcnt;
+      }
+    }
+    else ncnt=Math.max(this.max_displayed_items, ncnt);
+    ncnt+=2;
+  }
+  else ncnt++;
   if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt)) { this.Loading=true; return false; }
   if(!this.draw_measure) {
     if(!pl.NeedData(pl.TopIndex,ncnt))
@@ -4189,6 +4201,54 @@ function npgl_DoUpdateBefore(o)
   }
   this.draw_measure=fit;
   return true;
+}
+
+function npgl_GetAverageItemHeight()
+{
+  var ih,mih;
+  var list=this.Controls.List;
+  if(list) {
+    ih=list.ItemHeight;
+    mih=list.MinItemHeight;
+  }
+  if(typeof ih==='undefined') ih=this.AverageItemHeight;
+  if((typeof mih!=='undefined')&&(ngVal(ih,0)<mih)) ih=mih;
+  return ih;
+}
+
+function npgl_getitemsperpage(max)
+{
+  var ncnt=this.DisplayedItems;
+  if(this.DisplayMode==plDisplayFit) {
+    var list=this.Controls.List;
+    if(list) {
+      var maxh=ngVal(list.list_maxheight,0);
+      if((maxh>0)||(max)) {
+        var aih=ngVal(this.GetAverageItemHeight(),0);
+        if(aih>0) {
+          if((max)&&(!maxh)) {
+            // max possible items wanted, list was not rendered
+            // use full height of list (header and paging height are ignored)
+            var lo=list.Elm();
+            if(lo) maxh=ng_ClientHeight(lo);
+          }
+          if(maxh>0) ncnt=Math.floor(maxh/aih);
+        }
+      }
+      if((max)&&(list.max_displayed_items)) ncnt=Math.max(list.max_displayed_items, ncnt);
+    }
+  }
+  return ncnt;
+}
+
+function npgl_ItemsPerPage()
+{
+  return this.getitemsperpage();
+}
+
+function npgl_DataRequestPerPage()
+{
+  return this.getitemsperpage(true)+(this.DisplayMode==plDisplayFit ? 2 : 1);
 }
 
 function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
@@ -4235,10 +4295,10 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
       }
       maxh -= list.draw_paging_height;
       maxh -= hheight;
+      list.list_maxheight=maxh;
 
       var cnt=0;
       var i,it,items,tmp_html,ih=0;
-      var fit=(pl.DisplayMode==plDisplayFit);
       list.in_measure=true;
       try {
         for(i=pl.TopIndex;i<list.Items.length;i++)
@@ -4247,11 +4307,13 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
 
           if(!pl.IsDataLoaded(i+1))
           {
-            var lcnt=(cnt && ih ? Math.floor(maxh/(ih/cnt)) : 0);
+            var aih=ngVal(pl.GetAverageItemHeight(),0);
+            if((aih<=0)&&(cnt)) aih=(ih/cnt);
+            var lcnt=(aih>0 ? Math.floor(maxh/aih) : 0);
             var dcnt=Math.max(this.max_displayed_items, pl.DisplayedItems)-(i-pl.TopIndex);
             if(dcnt>lcnt) lcnt=dcnt;
             if(lcnt<1) lcnt=1;
-            lcnt+=(fit ? 2 : 1);
+            lcnt+=2;
 
             if(pl.IsAsyncLoadingBlock(i+1,lcnt)) list.Loading=true;
             else pl.DoLoadData(i+1,lcnt);
@@ -4291,10 +4353,17 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
         list.in_measure=false;
         ng_SetInnerHTML(o,'');
       }
-      if(i<list.Items.length) pl.DisplayedItems=cnt;
+      if(i<list.Items.length) {
+        pl.DisplayedItems=cnt;
+        if(pl.DisplayedItems>this.max_displayed_items) this.max_displayed_items=pl.DisplayedItems;
+      }
       else
       {
-        if((cnt)&&(ih)) pl.DisplayedItems=cnt+Math.floor(maxh/(ih/cnt)); // guess displayed items
+        if((cnt)&&(ih)) {
+          var aih=ngVal(pl.GetAverageItemHeight(),0);
+          if(aih<=0) aih=(ih/cnt);
+          pl.DisplayedItems=cnt+Math.floor(maxh/aih); // guess displayed items
+        }
       }
       if(pl.DisplayedItems<=0) pl.DisplayedItems=1;
 
@@ -4312,7 +4381,8 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
         }
         else // guess page no
         {
-          if(pl.DisplayedItems>0) pl.Page=Math.floor((pl.TopIndex+pl.DisplayedItems-1)/pl.DisplayedItems);
+          var ipp=pl.ItemsPerPage();
+          if(ipp>0) pl.Page=Math.floor((pl.TopIndex+ipp-1)/ipp);
         }
         if(op!=pl.Page)
         {
@@ -4403,7 +4473,6 @@ function npgl_DoUpdateAfter(o)
   this.draw_page=pl.Page;
   this.draw_length=this.Items.length;
   this.displayed_items=pl.DisplayedItems;
-  if(pl.DisplayedItems>this.max_displayed_items) this.max_displayed_items=pl.DisplayedItems;
   this.display_mode=pl.DisplayMode;
   delete this.draw_paging_height;
 
@@ -4437,11 +4506,12 @@ function npgl_OnExpanding(l,it)
 
 function npgl_SetPage(p)
 {
-  p=parseInt(p);
+  p=parseInt(p,10);
   if((isNaN(p))||((p<0)&&(p!=plFirstPage)&&(p!=plLastPage))) return;
-  if((p!=this.Page)||(this.TopIndex==999999999))
+  if((p!=this.Page)||(this.TopIndex===999999999))
   {
-    if(this.TopIndex==999999999) this.TopIndex=0;
+    if((p===plFirstPage)&&(this.TopIndex===0)) return;
+    if(this.TopIndex===999999999) this.TopIndex=0;
     var needupdate=false;
     var list=this.Controls.List;
     if((this.OnPageChanging)&&(!ngVal(this.OnPageChanging(this,p),false))) return;
@@ -4476,7 +4546,7 @@ function npgl_SetPage(p)
           else
           {
             list.page_start_found=false;
-            this.TopIndex-=this.DisplayedItems;
+            this.TopIndex-=this.ItemsPerPage();
           }
           if(this.TopIndex<0) this.TopIndex=0;
           break;
@@ -4517,7 +4587,8 @@ function npgl_SetPage(p)
                     }
                   }*/
                 }
-                this.TopIndex=s+(p-i)*this.DisplayedItems;
+                this.TopIndex=s+(p-i);
+                if(this.TopIndex!=0) this.TopIndex*=this.ItemsPerPage();
                 list.page_start_found=false;
               }
             }
@@ -4634,10 +4705,13 @@ function npgl_UpdatePaging()
   if((!this.IsDynamicData())||(typeof this.MaxLength !== 'undefined'))
   {
     var numitems=this.GetLength();
+    var ipp=this.ItemsPerPage();
     while(pginfo.PagingTo>this.Page) // remove pages over last page
     {
       s=this.Controls.List.page_start[pginfo.PagingTo];
-      if(typeof s==='undefined') s=this.TopIndex+(pginfo.PagingTo-this.Page)*this.DisplayedItems;
+      if(typeof s==='undefined') {
+        s=this.TopIndex+(pginfo.PagingTo-this.Page)*ipp;
+      }
       if(s<numitems) break;
       pginfo.PagingTo--;
     }
@@ -4776,14 +4850,18 @@ function npgl_PageByIndex(idx)
       if(typeof s!=='undefined')
       {
         d=Math.abs(s-idx);
-        if(d<mind) { mind=d; pg=parseInt(i); pgstart=parseInt(s); }
+        if(d<mind) { mind=d; pg=parseInt(i,10); pgstart=parseInt(s,10); }
       }
     }
   }
-  if(this.DisplayedItems>0)
-  {
-    d=Math.floor((idx-pgstart)/this.DisplayedItems);
-    pg+=d;
+  var ni=(idx-pgstart);
+  if(ni>0) {
+    var ipp=this.ItemsPerPage();
+    if(ipp>0)
+    {
+      d=Math.floor(ni/ipp);
+      pg+=d;
+    }
   }
   return pg;
 }
@@ -4966,6 +5044,10 @@ function npgl_DoLoadData(idx,cnt,retry)
   {
     this.async_datatimeout_retry=-1;
     return true;
+  }
+
+  if((typeof this.MinDataBatch!=='undefined')&&(cnt<this.MinDataBatch)) {
+    cnt=this.MinDataBatch;
   }
 
   var lato=this.last_asyncdata_index+this.last_asyncdata_count;
@@ -5297,7 +5379,7 @@ function Create_ngPageList(def, ref, parent)
               TextAlign: 'center'
             },
             Events: {
-              OnKeyDown: function(e) { if(e.keyCode==13) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.SetPage(parseInt(e.Owner.GetText())-1); return false; } return true; }
+              OnKeyDown: function(e) { if(e.keyCode==13) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.SetPage(parseInt(e.Owner.GetText())-1,10); return false; } return true; }
             }
           },
           Page0: {
@@ -5436,6 +5518,13 @@ function Create_ngPageList(def, ref, parent)
    */
   c.DisplayedItems=10;
 
+  /*  Variable: AverageItemHeight
+   *  ...
+   *  Type: int
+   *  Default value: *undefined*
+   */
+  c.AverageItemHeight = undefined;
+
   /*  Variable: MaxLength
    *  ...
    *  Type: int
@@ -5449,6 +5538,13 @@ function Create_ngPageList(def, ref, parent)
    *  Default value: *true*
    */
   c.CacheData = true;
+
+  /*  Variable: MinDataBatch
+   *  ...
+   *  Type: int
+   *  Default value: *undefined*
+   */
+  c.MinDataBatch=undefined;
 
   /*  Variable: AsyncData
    *  ...
@@ -5578,6 +5674,44 @@ function Create_ngPageList(def, ref, parent)
    *    -
    */
   c.SetPagingType = npgl_SetPagingType;
+
+  /*  Function: ItemsPerPage
+   *  Returns number of displayed items per page.
+   *
+   *  Syntax:
+   *    int *ItemsPerPage* ()
+   *
+   *  Returns:
+   *    Number of items.
+   */
+  c.ItemsPerPage = npgl_ItemsPerPage;
+
+  c.getitemsperpage = npgl_getitemsperpage;
+
+  /*  Function: DataRequestPerPage
+   *  Determines how much data is needed to fill the page when doing dynamic requests.
+   *
+   *  Syntax:
+   *    int *DataRequestPerPage* ()
+   *
+   *  Returns:
+   *    Requested number of items.
+   */
+  c.DataRequestPerPage = npgl_DataRequestPerPage;
+
+  /*  Function: GetAverageItemHeight
+   *  Determines average height of list item.
+   *  The average item height is based on ngPageList property AverageItemHeight (if defined)
+   *  and list properties ItemHeight and/or MinItemHeight. The item height cannot be determited
+   *  if none of these properties are defined.
+   *
+   *  Syntax:
+   *    mixed *GetAverageItemHeight* ()
+   *
+   *  Returns:
+   *    Height of the item or undefined if cannot be determined.
+   */
+  c.GetAverageItemHeight = npgl_GetAverageItemHeight;
 
   c.IsPagingVisible = npgl_IsPagingVisible;
   c.UpdatePaging = npgl_UpdatePaging;
