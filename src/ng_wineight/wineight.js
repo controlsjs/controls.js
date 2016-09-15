@@ -37,7 +37,7 @@ var WinEightControls = {
     'img/we_base.png?4',
     'img/we_hbox.png?3',
     'img/we_vbox.png?3',
-    'img/we_icons.png?11',
+    'img/we_icons.png?12',
 
     // pre-load
     'img/progressline_black.gif?1',
@@ -495,8 +495,14 @@ var WinEightControls = {
       Chat: 61,
       Chart: 62,
       Balance: 63,
-      Swing:64,
-      PieChart:65
+      Swing: 64,
+      PieChart: 65,
+      Eye: 66,
+      Globe: 67,
+      Sector: 68,
+      Star: 69,
+      Table: 70
+
     },{
       // automaticaly created from AppIcons
     }
@@ -665,7 +671,7 @@ var WinEightControls = {
         }
       });
       return ngCreateControlAsType(def, ngVal(controltype,'ngCheckBox'), ref, parent);
-    }
+    };
     /*  Class: weCheckBox
      *  Standard check box control (based on <ngCheckBox>).
      */
@@ -747,7 +753,7 @@ var WinEightControls = {
         }
       }
       return c;
-    }
+    };
 
 
     ngRegisterControlType('weButton', function(def,ref,parent) {
@@ -809,7 +815,7 @@ var WinEightControls = {
         c.MiddleImg=img;
       }
       return c;
-    }
+    };
 
     ngRegisterControlType('weAppButton', function(def,ref,parent) { return skinfnc.Create_weAppButton(def,ref,parent); });
 
@@ -841,7 +847,7 @@ var WinEightControls = {
         if((c)&&(ng_EmptyVar(c.Frame))) c.Frame=(c.Text == '' && (!c.OnGetText) ? winimages.GroupBoxNoText : winimages.GroupBox);
       });
       return c;
-    }
+    };
     ngRegisterControlType('weGroup', skinfnc.Create_weGroup);
     ngRegisterControlType('weGroupBox', skinfnc.Create_weGroup);
 
@@ -928,7 +934,7 @@ var WinEightControls = {
         wineight.weEdit_AddProperties(def,c,th);
       }
       return c;
-    }
+    };
 
     /*  Class: weEdit
      *  Standard edit control (based on <ngEdit>).
@@ -980,7 +986,7 @@ var WinEightControls = {
        */
       c.OnEllipsis=null;
       return c;
-    }
+    };
 
     ngRegisterControlType('weEditBoxBtn', function(def,ref,parent) { return skinfnc.Create_weEditBoxBtn(def,ref,parent); });
 
@@ -1033,7 +1039,7 @@ var WinEightControls = {
        */
       // c.OnSearch=null;
       return c;
-    }
+    };
     ngRegisterControlType('weSearchBox', function(def,ref,parent) { return skinfnc.Create_weSearchBox(def,ref,parent); });
 
     /*  Class: weEditNum
@@ -1077,7 +1083,7 @@ var WinEightControls = {
         c.ButtonDown.ButtonAlign='left';
       }
       return c;
-    }
+    };
     ngRegisterControlType('weEditNum', function(def,ref,parent) { return skinfnc.Create_weEditNum(def,ref,parent); });
     ngRegisterControlType('weEditBoxNum', function(def,ref,parent) { return skinfnc.Create_weEditNum(def,ref,parent); });
 
@@ -1155,7 +1161,7 @@ var WinEightControls = {
         e.DropDownButton.Update();
       };
       return c;
-    }
+    };
     ngRegisterControlType('weColorEdit', function(def,ref,parent) { return skinfnc.Create_weColorEdit(def,ref,parent); });
     ngRegisterControlType('weColorEditBox', function(def,ref,parent) { return skinfnc.Create_weColorEdit(def,ref,parent); });
 
@@ -1242,7 +1248,7 @@ var WinEightControls = {
         };
 
         return c;
-      }
+      };
       ngRegisterControlType('weMaskEdit', function(def,ref,parent) { return skinfnc.Create_weMaskEdit(def,ref,parent); });
       ngRegisterControlType('weMaskEditBox', function(def,ref,parent) { return skinfnc.Create_weMaskEdit(def,ref,parent); });
     }
@@ -1282,7 +1288,7 @@ var WinEightControls = {
       c.DropDownButton.LeftImg=winimages.DropDown;
       wineight.Prepare_DropDown(def);
       return c;
-    }
+    };
     ngRegisterControlType('weDropDown', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngEdit'); });
 
     /*  Class: weDropDownList
@@ -1371,7 +1377,7 @@ var WinEightControls = {
         if(update) c.DoUpdateImages();
       };
       return c;
-    }
+    };
     ngRegisterControlType('weMemo', function(def,ref,parent) { return skinfnc.Create_weMemo(def,ref,parent); });
 
     skinfnc.Create_wePages=function(def,ref,parent) {
@@ -1403,7 +1409,7 @@ var WinEightControls = {
         }
       });
       return c;
-    }
+    };
     /*  Class: wePages
      *  Standard pages control (based on <ngPages>).
      */
@@ -1465,7 +1471,7 @@ var WinEightControls = {
         }, 'OnGetText');
       }
       return c;
-    }
+    };
 
     /*  Class: weProgressRing
      *  Standard progress dot control (based on <ngText>).
@@ -1575,7 +1581,7 @@ var WinEightControls = {
         });
 
         return c;
-      }
+      };
       ngRegisterControlType('weList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
       ngRegisterControlType('weListBox', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
       ngRegisterControlType('weTreeList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
@@ -1713,7 +1719,7 @@ var WinEightControls = {
         });
 
         return ngCreateControlAsType(def, ngVal(controltype,'ngPageList'), ref, parent);
-      }
+      };
       ngRegisterControlType('wePageList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList'); });
       ngRegisterControlType('wePageTreeList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList','weTreeList'); });
     }
@@ -1770,7 +1776,7 @@ var WinEightControls = {
           c.HandleImg=(vsplit ? (th ? winimages.VSplitLight : winimages.VSplitDark) : (th ? winimages.HSplitLight : winimages.HSplitDark));
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weSplitPanel', function(def,ref,parent) { return skinfnc.Create_weSplitPanel(def,ref,parent); });
 
@@ -1801,7 +1807,7 @@ var WinEightControls = {
           if(typeof def.R==='undefined') def.R=0;
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weDropPanel', function(def,ref,parent) { return skinfnc.Create_weDropPanel(def,ref,parent); });
     }
@@ -1944,7 +1950,7 @@ var WinEightControls = {
           c.Buttons[c.Buttons.length]=b;
         }
         return c;
-      }
+      };
       ngRegisterControlType('weWindow', function(def,ref,parent) { return skinfnc.Create_weWindow(def,ref,parent); });
       ngRegisterControlType('weDialog', function(def,ref,parent) { return skinfnc.Create_weWindow(def,ref,parent); });
 
@@ -2228,7 +2234,7 @@ var WinEightControls = {
         }
         if(def.DialogType==='weMessageDlg')  def.DialogType='weDialog';
         return ngCreateControlAsType(def, 'ngMessageDlg', ref, parent);
-      }
+      };
 
       ngRegisterControlType('weMessageDlg', function(def,ref,parent) { return skinfnc.Create_weMessageDlg(def,ref,parent);});
 
@@ -2240,7 +2246,7 @@ var WinEightControls = {
         delete def.DialogType;
         def.DlgButtons=ngVal(def.DlgButtons,mbOK);
         return ngCreateControlAsType(def, 'weMessageDlg', ref, parent);
-      }
+      };
       ngRegisterControlType('weDlgMessageBox', function(def,ref,parent) { return skinfnc.Create_dlgMessageBox(def,ref,parent);});
 
       /*  Class: dlgInputBox
@@ -2530,7 +2536,7 @@ var WinEightControls = {
           });
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weDlgListBox', function(def,ref,parent) { return skinfnc.Create_dlgListBox(def,ref,parent);});
 
@@ -2571,7 +2577,7 @@ var WinEightControls = {
           }
         });
         return ngCreateControlAsType(def, 'weMessageDlg', ref, parent);
-      }
+      };
 
       ngRegisterControlType('weDlgProgressBox', function(def,ref,parent) { return skinfnc.Create_dlgProgressBox(def,ref,parent);});
 
@@ -2606,7 +2612,7 @@ var WinEightControls = {
           }
         });
         return ngCreateControlAsType(def, 'weMessageDlg', ref, parent);
-      }
+      };
 
       ngRegisterControlType('weDlgWaitBox', function(def,ref,parent) { return skinfnc.Create_dlgWaitBox(def,ref,parent);});
 
@@ -2668,7 +2674,7 @@ var WinEightControls = {
         }
         ng_MergeDef(def, cdef, true);
         return ngCreateControlAsType(def, 'ngAboutDlg', ref, parent);
-      }
+      };
 
       ngRegisterControlType('weDlgAbout', function(def,ref,parent) { return skinfnc.Create_dlgAbout(def,ref,parent);});
     }
@@ -2708,7 +2714,7 @@ var WinEightControls = {
           b.className='weButton'+(th ? 'Light' : 'Dark')+' weCalBtn';
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weCalendar', function(def,ref,parent) { return skinfnc.Create_weCalendar(def,ref,parent); });
 
@@ -2736,7 +2742,7 @@ var WinEightControls = {
         c.DropDownButton.Alt = ngTxt('calendar');
         c.DropDownButton.Default = false;
         return c;
-      }
+      };
 
       ngRegisterControlType('weEditDate', function(def,ref,parent) { return skinfnc.Create_weEditDate(def,ref,parent); });
 
@@ -2796,7 +2802,7 @@ var WinEightControls = {
         c.DropDownButton.Default = false;
         wineight.Prepare_DropDown(def);
         return c;
-      }
+      };
 
       ngRegisterControlType('weEditTime', function(def,ref,parent) { return skinfnc.Create_weEditTime(def,ref,parent); });
     }
@@ -3464,7 +3470,7 @@ var WinEightControls = {
           };
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weMenu', function(def,ref,parent) { return skinfnc.Create_weMenu(def,ref,parent); });
 
@@ -3504,7 +3510,7 @@ var WinEightControls = {
           c.RightImg=winimages.ButtonLight.MenuRightBtnImg;
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weSplitButton', function(def,ref,parent) { return skinfnc.Create_weSplitButton(def,ref,parent); });
     }
@@ -3612,7 +3618,7 @@ var WinEightControls = {
         });
 
         return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
-      }
+      };
       ngRegisterControlType('weFileUploader', function(def,ref,parent) { return skinfnc.Create_weFileUploader(def,ref,parent); });
     }
 
@@ -3645,7 +3651,7 @@ var WinEightControls = {
           });
         }
         return c;
-      }
+      };
 
       ngRegisterControlType('weViewModelForm', function(def,ref,parent) { return skinfnc.Create_weViewModelForm(def,ref,parent); } );
 
@@ -3664,7 +3670,7 @@ var WinEightControls = {
             Type: 'weTextHint'
           }
         });
-      }
+      };
 
       skinfnc.Create_weEditField=function(def,ref,parent) {
         var th=theme(def);
@@ -3676,7 +3682,7 @@ var WinEightControls = {
           wineight.weEdit_AddProperties(def,c,th);
         }
         return c;
-      }
+      };
       ngRegisterControlType('weEditField', function(def,ref,parent) { return skinfnc.Create_weEditField(def,ref,parent); });
 
       /*  Class: weSearchBoxField
@@ -3867,7 +3873,7 @@ var WinEightControls = {
           }
         });
         return ngCreateControlAsType(def, 'ngDBToolBar', ref, parent);
-      }
+      };
 
       ngRegisterControlType('weDBToolBar', function(def,ref,parent) { return skinfnc.Create_weDBToolBar(def,ref,parent); });
 
@@ -3920,7 +3926,7 @@ var WinEightControls = {
           }
         });
         return skinfnc.Create_wePageList(def,ref,parent,'ngDBDataSet');
-      }
+      };
 
       ngRegisterControlType('weDBDataSet', function (def,ref,parent) { return skinfnc.Create_weDBDataSet(def,ref,parent); });
     }
