@@ -303,7 +303,7 @@ var WinXP_DesignInfo = {
                                     Types: {
                                       'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightBottom' }
                                     }
-                                  },
+                                  }
                                 }
                               }
                             }
