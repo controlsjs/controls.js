@@ -171,7 +171,7 @@ ngUserControls['list_designinfo'] = {
         ShortName: 'items',
         Basic: false,
         Options: {
-          Priority: 0.51,
+          Priority: 0.52,
           ChildDesignInfo: {
             DefaultType: 'ngListItem',
             Level: 'basic',
@@ -194,6 +194,29 @@ ngUserControls['list_designinfo'] = {
               return true;
             }
           }
+        },
+        Detect: function(esprimanode, raw, options)
+        {
+          if (ng_IsOverriden(this.Detect))
+          {
+            if (!this.Detect.callParent.apply(this, arguments)) return false;
+          }
+
+          // exclude arrays of strings
+          var elms = esprimanode.elements;
+          if (elms && elms.length > 0)
+          {
+            for (var i = 0; i < elms.length; i++)
+            {
+              if (!elms[i] || elms[i].type !== 'Literal' || typeof elms[i].value !== 'string')
+              {
+                return true;
+              }
+            }
+            return false;
+          }
+
+          return true;
         },
         Read: function(v, type, Interface)
         {
@@ -221,8 +244,14 @@ ngUserControls['list_designinfo'] = {
         Name: 'ngListStringItems',
         ShortName: 'items',
         Basic: false,
+        Parse: true,
         Options: {
-          Priority: 0.52
+          Priority: 0.51,
+          ChildDesignInfo: {
+            DefaultType: 'string',
+            Level: 'basic',
+            Collapsed: false
+          }
         },
         Read: function(v, type, Interface)
         {
