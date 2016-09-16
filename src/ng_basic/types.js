@@ -2473,7 +2473,7 @@ function ng_DaysInMonth(m,y)
 // Hour (1-24)  | kk (2 digits)      | k (1 or 2 digits)
 // Minute       | mm (2 digits)      | m (1 or 2 digits)
 // Second       | ss (2 digits)      | s (1 or 2 digits)
-// Microsecond  | u                  | 
+// Milliseconds | u                  |
 // AM/PM        | a                  |
 
 /**
@@ -2557,7 +2557,7 @@ function ng_FormatDate(date, format, def)
  *   m - minute (1 or 2 digits)
  *   ss - second (2 digits)
  *   s - second (1 or 2 digits)
- *   u - microsecond   
+ *   u - milliseconds
  *   a - AM/PM      
  *  
  *  Returns:
@@ -2590,7 +2590,11 @@ function ng_FormatDateTime(date, format,def)
   else if(!H) h=12;	
   var K=(H>11 ? H-12 : H);
 
-  function LZ(x) { return(x<10 ? '0'+x : x); }  
+  function LZ(x) { return(x<10 ? '0'+x : x); }
+  function formatms(x) {
+    var t=('000'+(x%1000));
+    return t.substr(t.length-3,3);
+  }
   
   var res='';
   var token,c,i=0;
@@ -2627,7 +2631,7 @@ function ng_FormatDateTime(date, format,def)
       case 's':    res+=s; break;
       case 'ss':   res+=LZ(s); break;
       case 'a':    res+=(H>11 ? 'PM' : 'AM'); break;
-      case 'u':    res+=u; break;
+      case 'u':    res+=formatms(u); break;
       default:     res+=token; break;
     }		
   }
@@ -2853,8 +2857,10 @@ function ng_ParseDateTime(val, format, def)
         break;
       case 'u':
         uu=getInt(val,i_val,1,3);
-        if((uu==null)||(uu<0)) return def;
+        if(uu==null) return def;
         i_val+=uu.length;
+        uu=(uu+'000').substr(0,3);
+        if((uu<0)||(uu>=1000)) return def;
         break;
       default:
         if(val.substring(i_val,i_val+token.length)!=token) return def;
