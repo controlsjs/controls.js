@@ -1091,6 +1091,9 @@ var WireframeControls = {
       {
         ng_MergeDef(def, {
           className: 'wfrListBox',
+          Data: {
+            AverageItemHeight: 24
+          },
           Controls: {
             List: {
               Type: (def.Type && def.Type === 'wfrPageTreeList') ? 'wfrTreeList' : 'wfrList'
