@@ -202,7 +202,18 @@ ngUserControls['list_designinfo'] = {
           Priority: 0.51,
           ChildDesignInfo: {
             DefaultType: 'string', Level: 'basic',
-            Collapsed: false
+            Collapsed: false,
+            OnPropertyInit: function(ch)
+            {
+              if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
+              {
+                var tmp = ch.Name.split('.'),
+                    itemID = ng_toInteger(tmp[tmp.length - 1]);
+                if (!isNaN(itemID)) ch.Value = 'Item ' + (itemID + 1);
+              }
+
+              return true;
+            }
           }
         },
         Read: function(v, type, Interface)
