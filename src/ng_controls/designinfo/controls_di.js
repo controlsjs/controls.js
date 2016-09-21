@@ -1670,7 +1670,7 @@ ngUserControls['controls_designinfo'] = {
             Properties: {
               "W": { Value: 100 },
               "H": { Value: 100 },
-              Data: {
+              "Data": {
                 ObjectProperties: {
                   "Text": { ValueByRefName: true },
                   "HTMLEncode": { Value: true }
