@@ -1159,9 +1159,9 @@ ngUserControls['controls_designinfo'] = {
 
     function di_initasrefname(ch) {
       if (!ch.Value) {
-        var selected = FormEditor.GetSelectedControls();
+        var selected = FormEditor.GetSelectedControlsIDs();
         if (selected.length === 1) {
-          ch.Value = selected[0].ControlRefName;
+          ch.Value = FormEditor.GetControlRefNameById(selected[0]);
         }
       }
       return true;
