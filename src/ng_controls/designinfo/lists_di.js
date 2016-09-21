@@ -23,136 +23,90 @@ ngUserControls['list_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            Text:           { DefaultType: 'undefined',
-                              InitType: 'string',
-                              Level: 'basic',
-                              Order: 0.5,
-                              OnPropertyInit: function(ch)
-                              {
-                                if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
-                                {
-                                  var tmp = ch.Name.split('.');
-                                  var itemID = ng_toInteger(tmp[tmp.length - 2]);
-                                  if (!isNaN(itemID)) ch.Value = 'Item ' + (itemID + 1);
-                                }
+            "Text": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.5,
+              OnPropertyInit: function(ch)
+              {
+                if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
+                {
+                  var tmp = ch.Name.split('.');
+                  var itemID = ng_toInteger(tmp[tmp.length - 2]);
+                  if (!isNaN(itemID)) ch.Value = 'Item ' + (itemID + 1);
+                }
 
-                                return true;
-                              }
-                            },
-            Alt:            { DefaultType: 'undefined',
-                              InitType: 'string',
-                              Level: 'basic',
-                              Order: 0.51
-                            },
-            ID:             { DefaultType: 'undefined',
-                              InitType: 'string',
-                              Level: 'basic',
-                              Order: 0.55
-                            },
-            Checked:        { DefaultType: 'integer',
-                              Level: 'basic',
-                              Order: 0.6,
-                              Types: {
-                                'integer': {
-                                   DefaultValue: 0,
-                                   InitValue: 1,
-                                   Editor: 'ngfeEditor_DropDownList',
-                                   EditorOptions: {
-                                     Items: [{Value:0,Text:'cbUnchecked'},{Value:1,Text:'chChecked'},{Value:2,Text:'cbGrayed'}]
-                                   }
-                                 }
-                              }
-                            },
-            AllowGrayed:    { DefaultType: 'boolean',
-                              Types: {
-                                'boolean': {
-                                  DefaultValue: false,
-                                  InitValue: true
-                                }
-                              },
-                              Level: 'basic',
-                              Order: 0.61
-                            },
-            Collapsed:      { DefaultType: 'boolean',
-                              Types: {
-                                'boolean': {
-                                  DefaultValue: false,
-                                  InitValue: true
-                                }
-                              },
-                              Level: 'basic',
-                              Order: 0.62
-                            },
-            Visible:        { DefaultType: 'boolean',
-                              Types: {
-                                'boolean': {
-                                  DefaultValue: true
-                                }
-                              },
-                              Level: 'basic',
-                              Order: 0.65
-                            },
-            Enabled:        { DefaultType: 'boolean',
-                              Types: {
-                                'boolean': {
-                                  DefaultValue: true
-                                }
-                              },
-                              Level: 'basic',
-                              Order: 0.66
-                            },
-            RadioGroup:     { DefaultType: 'undefined',
-                              InitType: 'string',
-                              Level: 'basic',
-                              Order: 0.67
-                            },
-            H:              { DefaultType: 'undefined',
-                              InitType: 'integer',
-                              Level: 'basic',
-                              Order: 0.7
-                            },
-            MinHeight:      { DefaultType: 'undefined',
-                              InitType: 'integer',
-                              Level: 'basic',
-                              Order: 0.71
-                            },
-            Image:          { DefaultType: 'image',
-                              Level: 'basic',
-                              Order: 0.73
-                            },
-            Parent:         { DefaultType: 'undefined',
-                              Types: {
-                                'object': {},
-                                'null': {}
-                              },
-                              Level: 'hidden',
-                              Order: 0.8
-                            },
-            Items:          { DefaultType: 'undefined',
-                              InitType: 'ngListItems',
-                              Types: {
-                                'ngListStringItems': {}
-                              },
-                              Level: 'basic',
-                              Order: 0.85
-                            },
-            Controls:       { DefaultType: 'undefined',
-                              InitType: 'controls',
-                              Types: {
-                                'controls': {
-                                  DestroyIfEmpty: true
-                                }
-                              },
-                              Level: 'basic',
-                              Order: 0.9
-                            },
-            ControlsHolder: { DefaultType: 'undefined',
-                              Types: {
-                                'object': {}
-                              },
-                              Level: 'hidden',
-                              Order: 0.91
-                            }
+                return true;
+              }
+            },
+            "Alt": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.51 },
+            "ID": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.55 },
+            "Checked": { DefaultType: 'integer', Level: 'basic', Order: 0.6,
+              Types: {
+                'integer': {
+                   DefaultValue: 0,
+                   InitValue: 1,
+                   Editor: 'ngfeEditor_DropDownList',
+                   EditorOptions: {
+                     Items: [{Value:0,Text:'cbUnchecked'},{Value:1,Text:'chChecked'},{Value:2,Text:'cbGrayed'}]
+                   }
+                 }
+              }
+            },
+            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic', Order: 0.61,
+              Types: {
+                'boolean': {
+                  DefaultValue: false,
+                  InitValue: true
+                }
+              }
+            },
+            "Collapsed": { DefaultType: 'boolean', Level: 'basic', Order: 0.62,
+              Types: {
+                'boolean': {
+                  DefaultValue: false,
+                  InitValue: true
+                }
+              }
+            },
+            "Visible": { DefaultType: 'boolean', Level: 'basic', Order: 0.65,
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "Enabled": { DefaultType: 'boolean', Level: 'basic', Order: 0.66,
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "RadioGroup": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.67 },
+            "H": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.7 },
+            "MinHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.71 },
+            "Image": { DefaultType: 'image', Level: 'basic', Order: 0.73 },
+            "Parent": { DefaultType: 'undefined', Level: 'hidden', Order: 0.8,
+              Types: {
+                'object': {},
+                'null': {}
+              }
+            },
+            "Items": { DefaultType: 'undefined', InitType: 'ngListItems', Level: 'basic', Order: 0.85,
+              Types: {
+                'ngListStringItems': {}
+              }
+            },
+            "Controls": { DefaultType: 'undefined', InitType: 'controls', Level: 'basic', Order: 0.9,
+              Types: {
+                'controls': {
+                  DestroyIfEmpty: true
+                }
+              }
+            },
+            "ControlsHolder": { DefaultType: 'undefined', Level: 'hidden', Order: 0.91,
+              Types: {
+                'object': {}
+              }
+            }
             // TODO - check API for all properties
 
             //OnCollapsing
@@ -173,8 +127,7 @@ ngUserControls['list_designinfo'] = {
         Options: {
           Priority: 0.52,
           ChildDesignInfo: {
-            DefaultType: 'ngListItem',
-            Level: 'basic',
+            DefaultType: 'ngListItem', Level: 'basic',
             Collapsed: false,
             OnPropertyInit: function(ch)
             {
@@ -248,8 +201,7 @@ ngUserControls['list_designinfo'] = {
         Options: {
           Priority: 0.51,
           ChildDesignInfo: {
-            DefaultType: 'string',
-            Level: 'basic',
+            DefaultType: 'string', Level: 'basic',
             Collapsed: false
           }
         },
@@ -323,20 +275,20 @@ ngUserControls['list_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              W: { Value: 120 },
-              H: { Value: 180 },
+              "W": { Value: 120 },
+              "H": { Value: 180 },
               Data: {
                 ObjectProperties: {
-                  Items: { Type: 'ngListItems',
-                           ObjectProperties: {
-                             0: {
-                               Type: 'ngListItem',
-                               Value: {
-                                 Text: "'Item 1'"
-                               }
-                             }
-                           }
-                         }
+                  "Items": { Type: 'ngListItems',
+                    ObjectProperties: {
+                      0: {
+                        Type: 'ngListItem',
+                        Value: {
+                          Text: "'Item 1'"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -344,18 +296,16 @@ ngUserControls['list_designinfo'] = {
         },
         Properties: ng_DIProperties({
           // TODO - define all properties
-          Data: {
-            Items: { DefaultType: 'ngListItems',
-                     Types: {
-                       'ngListStringItems': {}
-                     },
-                     Level: 'basic',
-                     Collapsed: true
-                   }
+          "Data": {
+            "Items": { DefaultType: 'ngListItems', Level: 'basic',
+              Collapsed: true,
+              Types: {
+                'ngListStringItems': {}
+              }
+            }
           }
         })
       };
     });
-
   }
 };
