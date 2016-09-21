@@ -34,17 +34,16 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdText',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpText'
               }
             }
           },
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           }
         })
       };
@@ -52,8 +51,7 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdImage',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpImage'
@@ -66,35 +64,35 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdCheckBox',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpCheckBox'
               }
             }
           },
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          Data: {
-            TextAlign:    { Types: {
-                              'string': {
-                                DefaultValue: 'right',
-                                EditorOptions: {
-                                  Items: ['left','right']
-                                }
-                              }
-                            }
-                          },
-            LeftImg:      { Level: 'advanced',
-                            Types: {
-                              'image': { DefaultValue: 'WinXPControls.Images.CheckBoxLeft' }
-                            }
-                          },
-            MiddleImg:    { Level: 'advanced' },
-            RightImg:     { Level: 'advanced' }
+          "Data": {
+            "TextAlign": {
+              Types: {
+                'string': {
+                  DefaultValue: 'right',
+                  EditorOptions: {
+                    Items: ['left','right']
+                  }
+                }
+              }
+            },
+            "LeftImg": { Level: 'advanced',
+              Types: {
+                'image': { DefaultValue: 'WinXPControls.Images.CheckBoxLeft' }
+              }
+            },
+            "MiddleImg": { Level: 'advanced' },
+            "RightImg": { Level: 'advanced' }
           }
         })
       };
@@ -102,35 +100,35 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdRadioButton',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpRadio'
               }
             }
           },
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          Data: {
-            TextAlign:    { Types: {
-                              'string': {
-                                DefaultValue: 'right',
-                                EditorOptions: {
-                                  Items: ['left','right']
-                                }
-                              }
-                            }
-                          },
-            LeftImg:      { Level: 'advanced',
-                            Types: {
-                              'image': { DefaultValue: 'WinXPControls.Images.RadioLeft' }
-                            }
-                          },
-            MiddleImg:    { Level: 'advanced' },
-            RightImg:     { Level: 'advanced' }
+          "Data": {
+            "TextAlign": {
+              Types: {
+                'string': {
+                  DefaultValue: 'right',
+                  EditorOptions: {
+                    Items: ['left','right']
+                  }
+                }
+              }
+            },
+            "LeftImg": { Level: 'advanced',
+              Types: {
+                'image': { DefaultValue: 'WinXPControls.Images.RadioLeft' }
+              }
+            },
+            "MiddleImg": { Level: 'advanced' },
+            "RightImg": { Level: 'advanced' }
           }
         })
       };
@@ -138,33 +136,29 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdButton',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpButton'
               }
             }
           },
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          Data: {
-            LeftImg: {
-              Level: 'advanced',
+          "Data": {
+            "LeftImg": { Level: 'advanced',
               Types: {
                 'image': { DefaultValue: 'WinXPControls.Images.DefButton.LeftImg' }
               }
             },
-            MiddleImg: {
-              Level: 'advanced',
+            "MiddleImg": { Level: 'advanced',
               Types: {
                 'image': { DefaultValue: 'WinXPControls.Images.DefButton.MiddleImg' }
               }
             },
-            RightImg: {
-              Level: 'advanced',
+            "RightImg": { Level: 'advanced',
               Types: {
                 'image': { DefaultValue: 'WinXPControls.Images.DefButton.RightImg' }
               }
@@ -176,23 +170,22 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdFlatButton',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          style: {
-            color: { Level: 'advanced' },
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "color": { Level: 'advanced' },
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpFlatButton'
               }
             }
           },
-          Data: {
-            LeftImg:      { Level: 'advanced' },
-            MiddleImg:    { Level: 'advanced' },
-            RightImg:     { Level: 'advanced' }
+          "Data": {
+            "LeftImg": { Level: 'advanced' },
+            "MiddleImg": { Level: 'advanced' },
+            "RightImg": { Level: 'advanced' }
           }
         })
       };
@@ -200,22 +193,21 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdLabel',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpLabel'
               }
             }
           },
-          Data: {
-            LeftImg:      { Level: 'advanced' },
-            MiddleImg:    { Level: 'advanced' },
-            RightImg:     { Level: 'advanced' }
+          "Data": {
+            "LeftImg": { Level: 'advanced' },
+            "MiddleImg": { Level: 'advanced' },
+            "RightImg": { Level: 'advanced' }
           }
         })
       };
@@ -223,22 +215,21 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdLink',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpLink'
               }
             }
           },
-          Data: {
-            LeftImg:      { Level: 'advanced' },
-            MiddleImg:    { Level: 'advanced' },
-            RightImg:     { Level: 'advanced' }
+          "Data": {
+            "LeftImg": { Level: 'advanced' },
+            "MiddleImg": { Level: 'advanced' },
+            "RightImg": { Level: 'advanced' }
           }
         })
       };
@@ -247,67 +238,66 @@ var WinXP_DesignInfo = {
     function stdGroupDI(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          style: {
-            fontFamily: { Level: 'advanced' },
-            fontSize: { Level: 'advanced' }
+          "style": {
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' }
           },
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpGroupBox'
               }
             }
           },
-          Data: {
-            Frame:        { Level: 'advanced',
-                            Types: {
-                              'img_frame': {
-                                ObjectProperties: {
-                                  LeftTop: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.LeftTop' }
-                                    }
-                                  },
-                                  Top: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Top' }
-                                    }
-                                  },
-                                  RightTop: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightTop' }
-                                    }
-                                  },
-                                  Left: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Left' }
-                                    }
-                                  },
-                                  Right: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Right' }
-                                    }
-                                  },
-                                  LeftBottom: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.LeftBottom' }
-                                    }
-                                  },
-                                  Bottom: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Bottom' }
-                                    }
-                                  },
-                                  RightBottom: {
-                                    Types: {
-                                      'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightBottom' }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
+          "Data": {
+            "Frame": { Level: 'advanced',
+              Types: {
+                'img_frame': {
+                  ObjectProperties: {
+                    "LeftTop": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.LeftTop' }
+                      }
+                    },
+                    "Top": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Top' }
+                      }
+                    },
+                    "RightTop": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightTop' }
+                      }
+                    },
+                    "Left": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Left' }
+                      }
+                    },
+                    "Right": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Right' }
+                      }
+                    },
+                    "LeftBottom": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.LeftBottom' }
+                      }
+                    },
+                    "Bottom": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Bottom' }
+                      }
+                    },
+                    "RightBottom": {
+                      Types: {
+                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightBottom' }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         })
       };
@@ -322,8 +312,7 @@ var WinXP_DesignInfo = {
     function stdEditDI(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          className: {
-            Level: 'advanced',
+          "className": { Level: 'advanced',
             Types: {
               'string': {
                 DefaultValue: 'wxpEdit'
@@ -331,20 +320,17 @@ var WinXP_DesignInfo = {
             }
           },
           Data: {
-            LeftImg: {
-              Level: 'advanced',
+            "LeftImg": { Level: 'advanced',
               Types: {
                 'image': { DefaultValue: 'WinXPControls.Images.Edit.LeftImg' }
               }
             },
-            MiddleImg: {
-              Level: 'advanced',
+            "MiddleImg": { Level: 'advanced',
               Types: {
                 'image': { DefaultValue: 'WinXPControls.Images.Edit.MiddleImg' }
               }
             },
-            RightImg: {
-              Level: 'advanced',
+            "RightImg": { Level: 'advanced',
               Types: {
                 'image': { DefaultValue: 'WinXPControls.Images.Edit.RightImg' }
               }
