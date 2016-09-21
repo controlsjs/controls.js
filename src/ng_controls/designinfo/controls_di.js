@@ -288,6 +288,7 @@
                   Types: {
                     'string': {
                       DefaultValue: '',
+                      InitValue: 'Arial, Helvetica, sans-serif',
                       Editor: 'ngfeEditor_DropDownList',
                       EditorOptions: {
                         Items: ['"Times New Roman", Times, serif',
@@ -305,7 +306,13 @@
                     }
                   }
                 },
-                "fontSize": { DefaultType: 'css_dim_px', Level: 'optional', Types: { 'string': {} } },
+                "fontSize": { DefaultType: 'css_dim_px', Level: 'optional',
+                  Types: {
+                    'css_dim_px': {
+                      InitValue: '12px'
+                    }
+                  }
+                },
                 "fontStyle": { DefaultType: 'string', Level: 'optional',
                   Types: {
                     'string': {
@@ -330,7 +337,9 @@
                 },
                 "lineHeight": { DefaultType: 'css_dim_px', Level: 'optional',
                   Types: {
-                    'string': {}
+                    'css_dim_px': {
+                      InitValue: '12px'
+                    }
                   }
                 },
                 "margin": { DefaultType: 'string', Level: 'optional' },
@@ -445,33 +454,159 @@
                     }
                   }
                 },
-                "IsPopup": { DefaultType: 'boolean' },
+                "IsPopup": { DefaultType: 'boolean',
+                  Types: {
+                    'boolean': {
+                      InitValue: true
+                    }
+                  }
+                },
                 "Gestures": { DefaultType: 'object', Level: 'advanced',
                   Types: {
                     'object': {
                       DestroyIfEmpty: true,
                       ObjectProperties:
                       {
-                        "drag": { DefaultType: 'boolean' },
-                        "dragleft": { DefaultType: 'boolean', Level: 'optional' },
-                        "dragright": { DefaultType: 'boolean', Level: 'optional' },
-                        "dragup": { DefaultType: 'boolean', Level: 'optional' },
-                        "dragdown": { DefaultType: 'boolean', Level: 'optional' },
-                        "hold": { DefaultType: 'boolean' },
-                        "release": { DefaultType: 'boolean' },
-                        "swipe": { DefaultType: 'boolean' },
-                        "swipeleft": { DefaultType: 'boolean', Level: 'optional' },
-                        "swiperight": { DefaultType: 'boolean', Level: 'optional' },
-                        "swipeup": { DefaultType: 'boolean', Level: 'optional' },
-                        "swipedown": { DefaultType: 'boolean', Level: 'optional' },
-                        "tap": { DefaultType: 'boolean' },
-                        "doubletap": { DefaultType: 'boolean' },
-                        "touch": { DefaultType: 'boolean' },
-                        "transform": { DefaultType: 'boolean', Level: 'optional' },
-                        "pinch": { DefaultType: 'boolean', Level: 'optional' },
-                        "pinchin": { DefaultType: 'boolean', Level: 'optional' },
-                        "pinchout": { DefaultType: 'boolean', Level: 'optional' },
-                        "rotate": { DefaultType: 'boolean', Level: 'optional' }
+                        "drag": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "dragleft": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "dragright": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "dragup": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "dragdown": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "hold": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "release": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "swipe": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "swipeleft": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "swiperight": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "swipeup": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "swipedown": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "tap": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "doubletap": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "touch": { DefaultType: 'boolean',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "transform": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "pinch": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "pinchin": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "pinchout": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        },
+                        "rotate": { DefaultType: 'boolean', Level: 'optional',
+                          Types: {
+                            'boolean': {
+                              InitValue: true
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -906,6 +1041,39 @@ ngUserControls['controls_designinfo'] = {
   OnFormEditorInit: function(FE)
   {
     var types = [
+      // ngImageShape
+      {
+        TypeID: 'ngImageShape',
+        TypeBase: 'object',
+        Name: 'ngImageShape',
+        ShortName: 'shape',
+        Basic: false,
+        Options: {
+          Add: false,
+          ObjectProperties: {
+            "Shape": { DefaultType: 'string', Level: 'basic', Order: 0.4,
+              Types: {
+                'string': {
+                  DefaultValue: 'rect',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['rect','circle','poly']
+                  }
+                }
+              }
+            },
+            "Coords": { DefaultType: 'string', Level: 'basic', Order: 0.41 },
+            "Alt": { DefaultType: 'string', Level: 'basic' },
+            "OnClick": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            }
+          }
+        }
+      },
       // ngPage
       {
         TypeID: 'ngPage',
@@ -989,6 +1157,15 @@ ngUserControls['controls_designinfo'] = {
   OnInit: function() {
     if(!ngDESIGNINFO) return;
 
+    function di_initasrefname(ch) {
+      if (!ch.Value) {
+        var selected = FormEditor.GetSelectedControls();
+        if (selected.length === 1) {
+          ch.Value = selected[0].ControlRefName;
+        }
+      }
+      return true;
+    }
 
     // register generic control
     function feGenericControl(id)
@@ -1067,7 +1244,13 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "AutoSize": { DefaultType: 'boolean' },
+            "AutoSize": { DefaultType: 'boolean',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "AutoSizeMode": { DefaultType: 'string',
               Types: {
                 'string': {
@@ -1079,8 +1262,8 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "MinWidth":  { DefaultType: 'integer' },
-            "MinHeight": { DefaultType: 'integer' },
+            "MinWidth":  { DefaultType: 'undefined', InitType: 'integer' },
+            "MinHeight": { DefaultType: 'undefined', InitType: 'integer' },
 
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
@@ -1089,14 +1272,18 @@ ngUserControls['controls_designinfo'] = {
                 'string': {
                   Editor: 'ngfeEditor_Text'
                 }
-              }
+              },
+              OnPropertyInit: di_initasrefname
             },
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
             "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
               Types: {
-                'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                'boolean': {
+                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
+                  InitValue: true
+                }
               }
             },
             "CanSelect": { DefaultType: 'boolean', Level: 'basic',
@@ -1191,8 +1378,10 @@ ngUserControls['controls_designinfo'] = {
             "Shapes": { DefaultType: 'array', Level: 'basic',
               Types: {
                 'array': {
-                  // TODO: define item, shapes editor?
-                 }
+                  ChildDesignInfo: {
+                    DefaultType: 'ngImageShape'
+                  }
+                }
               }
             }
           },
@@ -1290,13 +1479,18 @@ ngUserControls['controls_designinfo'] = {
             },
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic' },
+            "Text": { DefaultType: 'string', Level: 'basic',
+              OnPropertyInit: di_initasrefname
+            },
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
             "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
               Types: {
-                'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                'boolean': {
+                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
+                  InitValue: true
+                }
               }
             },
             "AutoSize": { DefaultType: 'boolean',
@@ -1306,7 +1500,7 @@ ngUserControls['controls_designinfo'] = {
                  }
               }
             },
-            "MinWidth": { DefaultType: 'integer' },
+            "MinWidth": { DefaultType: 'undefined', InitType: 'integer' },
             "Checked": { DefaultType: 'integer', Level: 'basic',
               Types: {
                 'integer': {
@@ -1318,7 +1512,7 @@ ngUserControls['controls_designinfo'] = {
                  }
               }
             },
-            "RadioGroup": { DefaultType: 'string'
+            "RadioGroup": { DefaultType: 'undefined', InitType: 'string'
               // TODO: browse from existing radio groups
             },
             "Cursor": { DefaultType: 'css_cursor', Level: 'basic',
@@ -1328,7 +1522,13 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "ReadOnly": { DefaultType: 'boolean', Level: 'basic' },
+            "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "Img": { DefaultType: 'image', Level: 'basic',
               Types: {
                 'image': {
@@ -1380,8 +1580,20 @@ ngUserControls['controls_designinfo'] = {
                  }
               }
             },
-            "Default": { DefaultType: 'boolean', Level: 'basic' },
-            "Cancel": { DefaultType: 'boolean', Level: 'basic' }
+            "Default": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "Cancel": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            }
           },
           "Events": {
             "OnCheckChanged": { DefaultType: 'events', Level: 'basic',
@@ -1482,10 +1694,15 @@ ngUserControls['controls_designinfo'] = {
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic' },
+            "Text": { DefaultType: 'string', Level: 'basic',
+              OnPropertyInit: di_initasrefname
+            },
             "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
               Types: {
-                'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                'boolean': {
+                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
+                  InitValue: true
+                }
               }
             },
             "Frame": { DefaultType: 'img_frame', Level: 'basic',
@@ -1642,7 +1859,7 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "DropDownWidth": { DefaultType: 'integer' },
+            "DropDownWidth": { DefaultType: 'undefined', InitType: 'integer' },
             "DropDownAlign": { DefaultType: 'string',
               Types: {
                 'string': {
@@ -2207,7 +2424,10 @@ ngUserControls['controls_designinfo'] = {
             },
             "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
               Types: {
-                'boolean': { DefaultValue: ngVal(ngDefaultHTMLEncoding,false) }
+                'boolean': {
+                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
+                  InitValue: true
+                }
               }
             },
             "RowOverlap": { DefaultType: 'integer', Level: 'basic' },
@@ -2464,29 +2684,57 @@ ngUserControls['controls_designinfo'] = {
           }
         },
         {
-          "Controls": { Level: 'basic' }
-        }),
-        ChildControlsDesignInfo: {
-          Properties: ng_DIProperties({
-            "Data": {
-              "ToolBarIgnore": { DefaultType: 'boolean', Level: 'basic' },
-              "ToolBarAutoUpdate": { DefaultType: 'boolean', Level: 'basic',
-                Types: {
-                  'boolean': {
-                    DefaultValue: true
+          "Controls": {
+            Level: 'basic',
+            Types: {
+              'controls': {
+                ChildDesignInfo: {
+                  Types: {
+                    'control': {
+                      ObjectProperties: ng_DIProperties({
+                        "Data": {
+                          "ToolBarIgnore": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                InitValue: true
+                              }
+                            }
+                          },
+                          "ToolBarAutoUpdate": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                InitValue: true
+                              }
+                            }
+                          },
+                          "ToolBarIndent": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+                          "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+                          "ToolBarVPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+                          "ToolBarWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+                          "ToolBarHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+                          "ToolBarBreak": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                InitValue: true
+                              }
+                            }
+                          },
+                          "ToolBarNoWrap": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                            Types: {
+                              'boolean': {
+                                InitValue: true
+                              }
+                            }
+                          }
+                        }
+                      })
+                    }
                   }
                 }
-              },
-              "ToolBarIndent": { DefaultType: 'integer', Level: 'basic' },
-              "ToolBarHPadding": { DefaultType: 'integer', Level: 'basic' },
-              "ToolBarVPadding": { DefaultType: 'integer', Level: 'basic' },
-              "ToolBarWidth": { DefaultType: 'integer', Level: 'basic' },
-              "ToolBarHeight": { DefaultType: 'integer', Level: 'basic' },
-              "ToolBarBreak": { DefaultType: 'boolean', Level: 'basic' },
-              "ToolBarNoWrap": { DefaultType: 'boolean', Level: 'basic' }
+              }
             }
-          })
-        }
+          }
+        })
       };
     });
 
