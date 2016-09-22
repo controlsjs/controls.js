@@ -1681,8 +1681,18 @@ ngUserControls['controls_designinfo'] = {
         },
         Properties: ng_DIProperties({
           "ParentReferences": { Level: 'advanced' },
-          "CW": { DefaultType: 'integer' },
-          "CH": { DefaultType: 'integer' },
+          "W": { 
+            Exclude: ['CW']
+          },
+          "H": {
+            Exclude: ['CH']
+          },
+          "CW": { DefaultType: 'integer', Order: 0.141,
+            Exclude: ['W']
+          },
+          "CH": { DefaultType: 'integer', Order: 0.142,
+            Exclude: ['H']
+          },
           "ControlsPanel": { DefaultType: 'control', Level: 'basic',
             IsContainer: false,
             Types: {
@@ -1763,24 +1773,45 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           "Buttons": { DefaultType: 'controls_array', Level: 'basic',
             Collapsed: false,
+            DisplayInControls: true,
             Types: {
               'controls_array': {
                 DestroyIfEmpty: true,
                 ChildDesignInfo: {
+                  DisplayInControls: true,
                   Types: {
                     'control': {
-                      InheritedFrom: 'ngButton'
+                      InheritedFrom: 'ngButton',
+                      ObjectProperties: ng_DIProperties({
+                        "Data": {
+                          "ButtonAlign": { DefaultType: 'string', Level: 'basic', Order: 0.8,
+                            Types: {
+                              'string': {
+                                DefaultValue: 'right',
+                                Editor: 'ngfeEditor_DropDownList',
+                                EditorOptions: {
+                                  Items: ['left','right']
+                                }
+                              }
+                            }
+                          }
+                        }
+                      })
                     }
                   }
                 }
               }
             }
           },
-          "DropDown": { DefaultType: 'control' },
+          "DropDown": { DefaultType: 'control', 
+            DisplayInControls: true
+          },
           "Data": {
             "ngText":  { Level: 'advanced' },
-            "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic' },
+            "ngTextD": { Level: 'optional' },
+            "Text": { DefaultType: 'string', Level: 'basic',
+              OnPropertyInit: di_initasrefname
+            },
             "DefaultText": { DefaultType: 'string', Level: 'basic' },
             "TextAlign": { DefaultType: 'string', Level: 'basic',
               Types: {
@@ -1810,8 +1841,20 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "ReadOnly": { DefaultType: 'boolean', Level: 'basic' },
-            "Password": { DefaultType: 'boolean', Level: 'basic' },
+            "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "Password": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "MaxLength": { DefaultType: 'integer', Level: 'basic' },
             "LeftImg": { DefaultType: 'image', Level: 'basic',
               Types: {
@@ -1848,7 +1891,7 @@ ngUserControls['controls_designinfo'] = {
                 'boolean': { DefaultValue: true }
               }
             },
-            "DropDownType": { DefaultType: 'identifier',
+            "DropDownType": { DefaultType: 'identifier', 
               Types: {
                 'identifier': {
                   DefaultValue: 'ngeDropDownEdit',
@@ -1860,7 +1903,7 @@ ngUserControls['controls_designinfo'] = {
               }
             },
             "DropDownWidth": { DefaultType: 'undefined', InitType: 'integer' },
-            "DropDownAlign": { DefaultType: 'string',
+            "DropDownAlign": { DefaultType: 'string', 
               Types: {
                 'string': {
                   DefaultValue: 'left',
@@ -1876,8 +1919,20 @@ ngUserControls['controls_designinfo'] = {
                 'boolean': { DefaultValue: true }
               }
             },
-            "Invalid": { DefaultType: 'boolean', Level: 'basic' },
-            "Suggestion": { DefaultType: 'boolean' },
+            "Invalid": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "Suggestion": { DefaultType: 'boolean',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "SuggestionDelay": { DefaultType: 'integer',
               Types: {
                 'integer': { DefaultValue: 200 }
@@ -1895,7 +1950,7 @@ ngUserControls['controls_designinfo'] = {
                   DefaultValue: 2,
                   Editor: 'ngfeEditor_DropDownList',
                   EditorOptions: {
-                    Items: ['0','1','2'] // TODO: Add value texts
+                    Items: [{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}]
                   }
                 }
               }
@@ -2129,8 +2184,10 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           "Data": {
             "ngText":  { Level: 'advanced' },
-            "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic' },
+            "ngTextD": { Level: 'optional' },
+            "Text": { DefaultType: 'string', Level: 'basic',
+              OnPropertyInit: di_initasrefname
+            },
             "DefaultText": { DefaultType: 'string', Level: 'basic' },
             "TextAlign": { DefaultType: 'string', Level: 'basic',
               Types: {
@@ -2160,7 +2217,13 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "ReadOnly": { DefaultType: 'boolean', Level: 'basic' },
+            "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "Frame": { DefaultType: 'img_frame', Level: 'basic' },
             "SelectOnFocus": { DefaultType: 'boolean', Level: 'basic',
               Types: {
@@ -2172,7 +2235,13 @@ ngUserControls['controls_designinfo'] = {
                 'boolean': { DefaultValue: true }
               }
             },
-            "Invalid": { DefaultType: 'boolean', Level: 'basic' }
+            "Invalid": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            }
           },
           "Methods": {
             "DoFocus": { DefaultType: 'function',
@@ -2333,13 +2402,14 @@ ngUserControls['controls_designinfo'] = {
                 }
               },
               "Pages": {
-                Value: [{}]
+                ObjectProperties: {
+                  "0": {
+                    ObjectProperties: {
+                      Text: { Value: 'Page 1', Type: 'string' }
+                    }
+                  }
+                }
               }
-            },
-            OnCreating: function(initprops,di) {
-              if(initprops.Pages)
-                initprops.Pages.Value[0].Text=initprops.ControlRefName.Value;
-              return true;
             }
           }
         },
@@ -2693,33 +2763,33 @@ ngUserControls['controls_designinfo'] = {
                     'control': {
                       ObjectProperties: ng_DIProperties({
                         "Data": {
-                          "ToolBarIgnore": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                          "ToolBarIgnore": { DefaultType: 'boolean', Level: 'basic', Order: 0.8,
                             Types: {
                               'boolean': {
                                 InitValue: true
                               }
                             }
                           },
-                          "ToolBarAutoUpdate": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                          "ToolBarAutoUpdate": { DefaultType: 'boolean', Level: 'basic', Order: 0.8,
+                            Types: {
+                              'boolean': {
+                                DefaultValue: true
+                              }
+                            }
+                          },
+                          "ToolBarIndent": { DefaultType: 'integer', Level: 'basic', Order: 0.8 },
+                          "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
+                          "ToolBarVPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
+                          "ToolBarWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
+                          "ToolBarHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
+                          "ToolBarBreak": { DefaultType: 'boolean', Level: 'basic', Order: 0.8,
                             Types: {
                               'boolean': {
                                 InitValue: true
                               }
                             }
                           },
-                          "ToolBarIndent": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-                          "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-                          "ToolBarVPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-                          "ToolBarWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-                          "ToolBarHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-                          "ToolBarBreak": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
-                            Types: {
-                              'boolean': {
-                                InitValue: true
-                              }
-                            }
-                          },
-                          "ToolBarNoWrap": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+                          "ToolBarNoWrap": { DefaultType: 'boolean', Level: 'basic', Order: 0.8,
                             Types: {
                               'boolean': {
                                 InitValue: true
@@ -2751,7 +2821,13 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           "Data": {
             "Position": { DefaultType: 'integer', Level: 'basic' },
-            "Smooth": { DefaultType: 'boolean', Level: 'basic' },
+            "Smooth": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "LeftImg": { DefaultType: 'image', Level: 'basic',
               Types: {
                 'image': {
@@ -2810,7 +2886,13 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           "Data": {
             "URL": { DefaultType: 'url', Level: 'basic' },
-            "DesignLive": { DefaultType: 'boolean', Level: 'basic' }
+            "DesignLive": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            }
           },
           "OverrideEvents": {
             "OnGetURL": { DefaultType: 'events', Level: 'basic',
@@ -2868,8 +2950,20 @@ ngUserControls['controls_designinfo'] = {
                 'string': { DefaultValue: 'default' }
               }
             },
-            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic' },
-            "RadioAllowUncheck": { DefaultType: 'boolean', Level: 'basic' }
+            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "RadioAllowUncheck": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            }
           }
         })
       };
@@ -2879,7 +2973,13 @@ ngUserControls['controls_designinfo'] = {
       return {
         Properties: ng_DIProperties({
           "Data": {
-            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic' }
+            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            }
           }
         })
       };
@@ -2918,6 +3018,11 @@ ngUserControls['controls_designinfo'] = {
                 ObjectProperties: {
                   "Text": undefined
                 }
+              },
+              "DropDown": {
+                ObjectProperties: {
+                  "Type": "'ngList'"
+                }
               }
             }
           }
@@ -2936,7 +3041,19 @@ ngUserControls['controls_designinfo'] = {
       return di;
     });
     ngRegisterControlDesignInfo('ngDropDown',function(d,c,ref) {
-      var di={};
+      var di={
+        NewControl: {
+          Default: {
+            Properties: {
+              "DropDown": {
+                ObjectProperties: {
+                  "Type": "'ngList'"
+                }
+              }
+            }
+          }
+        }
+      };
       ng_MergeDI(di,DropDownDI(d,c,ref));
       return di;
     });
@@ -2973,7 +3090,13 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "StepRound": { DefaultType: 'boolean', Level: 'basic' },
+            "StepRound": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
             "MinNum": { DefaultType: 'integer', Level: 'basic' },
             "MaxNum": { DefaultType: 'integer', Level: 'basic' },
             "DefaultNum": { DefaultType: 'integer', Level: 'basic' }
