@@ -5075,6 +5075,11 @@ function ngc_ImgDrawProps(id, type, ctrlid, s, enabled, o)
 
 // --- ngApplication -----------------------------------------------------------
 
+var ngaStateStopped = 0;
+var ngaStateRunning = 1;
+var ngaStateInitializing = 2;
+var ngaStateTerminated = -1;
+
 var APPPARAM_SERVER = 1
 var APPPARAM_CLIENT = 2;
 var APPPARAM_URL    = 4;
@@ -5134,10 +5139,14 @@ function nga_Resource(rid)
   return ngRes(rid);
 }
 
-nga_RunTimer=null;
+var nga_RunTimer=null;
 function nga_DoRunFinal()
 {
-  if((ngApp.OnRun)&&(!ngVal(ngApp.OnRun(),false))) return;
+  if((ngApp.OnRun)&&(!ngVal(ngApp.OnRun(),false))) {
+    if(ngApp.State === ngaStateInitializing) ngApp.State = ngaStateTerminated;
+    return;
+  }
+  ngApp.State = ngaStateRunning;
 
   if(typeof ngMain === 'function') ngMain();
 
@@ -5156,6 +5165,8 @@ function nga_DoRunFinal()
 function nga_DoRun()
 {
   if(nga_RunTimer) clearTimeout(nga_RunTimer); nga_RunTimer=null;
+
+  ngApp.State = ngaStateInitializing;
 
   // Language detection
   ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
@@ -5176,6 +5187,8 @@ function nga_DoRun()
   }
   if((reqver>ngControlsVer)||((reqver==ngControlsVer)&&(reqsubver>ngControlsSubVer)))
   {
+    ngApp.State = ngaStateTerminated;
+
     var o=document.getElementById('ngAppLoading');
     if(o) o.style.display='none';
 
@@ -5211,9 +5224,19 @@ function nga_DoRun()
   ng_PreloadImagesEnd(nga_DoRunFinal);
 }
 
+function nga_BeginAsyncInit()
+{
+  ng_PreloadImagesBegin();
+}
+
+function nga_EndAsyncInit(callback)
+{
+  ng_PreloadImagesEnd(callback);
+}
+
 function nga_Run()
 {
-  nga_RunTimer=setTimeout("nga_DoRun();",100);
+  nga_RunTimer=setTimeout(nga_DoRun,100);
 }
 
 function nga_SetTitle(t)
@@ -5386,7 +5409,7 @@ function nga_OnResize(e)
   if((typeof ngApp === 'undefined')||(!ngApp))
   {
     if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
-    if((ngAutoResize)&&(ngAutoResizeCnt>0)) ngAutoResizeTimer=setTimeout("nga_DoResize()", 100);
+    if((ngAutoResize)&&(ngAutoResizeCnt>0)) ngAutoResizeTimer=setTimeout(nga_DoResize, 100);
     return;
   }
   var ae=ngApp.Elm();
@@ -5430,7 +5453,7 @@ function nga_OnResize(e)
   ngc_HidePopups();
 
   if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
-  if((ngApp.OnDeviceChanged)||((ngAutoResize)&&(ngAutoResizeCnt>0))) ngAutoResizeTimer=setTimeout("nga_DoResize()", 100);
+  if((ngApp.OnDeviceChanged)||((ngAutoResize)&&(ngAutoResizeCnt>0))) ngAutoResizeTimer=setTimeout(nga_DoResize, 100);
 }
 
 function nga_DoResizeElement(id)
@@ -6228,7 +6251,7 @@ function nga_ProcessInvokeLater()
     ngApp.invokelater_events.splice(0,1);
     if(typeof fnc==='function') fnc();
     if(ngApp.invokelater_events.length>0)
-      ngApp.invokelater_timer=setTimeout("nga_ProcessInvokeLater()",1);
+      ngApp.invokelater_timer=setTimeout(nga_ProcessInvokeLater,1);
   }
 }
 
@@ -6237,7 +6260,7 @@ function nga_InvokeLater(fnc)
   if(typeof fnc!=='function') return;
 
   if(!this.invokelater_timer)
-    this.invokelater_timer=setTimeout("nga_ProcessInvokeLater()",1);
+    this.invokelater_timer=setTimeout(nga_ProcessInvokeLater,1);
   this.invokelater_events.push(fnc);
 }
 
@@ -6345,6 +6368,13 @@ function ngApplication(startparams, elm, autorun)
   catch(e)
   {
   }
+
+  /*  Variable: State
+   *  ...
+   *  Type: integer
+   */
+  this.State = ngaStateStopped;
+
   /*  Variable: MobileKeyboardFix
    *  ...
    *  Type: bool
@@ -6394,6 +6424,31 @@ function ngApplication(startparams, elm, autorun)
    *    -
    */
   this.Resource=nga_Resource;
+
+  /*  Function: BeginAsyncInit
+   *  Signal asynchronous initialization is in process.
+   *
+   *  Syntax:
+   *    void *BeginAsyncInit* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.BeginAsyncInit=nga_BeginAsyncInit;
+  /*  Function: EndAsyncInit
+   *  Signal asynchronous initialization is finished.
+   *
+   *  Syntax:
+   *    void *EndAsyncInit* ([function callback=null])
+   *
+   *  Parameters:
+   *    callback - callback function called after all asynchronous initialization
+   *    processes are finished
+   *
+   *  Returns:
+   *    -
+   */
+  this.EndAsyncInit=nga_EndAsyncInit;
   /*  Function: Run
    *  Executes the application.
    *
