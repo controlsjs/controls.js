@@ -11,8 +11,7 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = [];
-var ViewModel_Controls_DesignInfo = null;
-(function()
+var ViewModel_Controls_DesignInfo = (function()
 {
   function add_databind_di(di, def, c, ref)
   {
@@ -238,6 +237,25 @@ var ViewModel_Controls_DesignInfo = null;
           Level: 'basic',
           Order: 0.5
         },
+        DOMDataBind: {
+          DefaultType: 'databind',
+          Types: {
+            'databind_string': {},
+            'object': {
+              DestroyIfEmpty: true,
+              ObjectProperties: {
+                Default: {
+                  DefaultType: 'object'
+                }
+              }
+            },
+            'databind': {
+              DestroyIfEmpty: true
+            }
+          },
+          Level: 'optional',
+          Order: 0.5
+        },
         Data: {
           Types: {
             'object': {
@@ -370,22 +388,19 @@ var ViewModel_Controls_DesignInfo = null;
           }
         }
       };
-      ng_MergeDI(di, vm_events_di);
+      ng_MergeVar(di, vm_events_di);
     }
 
-    ng_MergeDI(di, vm_di);
+    ng_MergeVar(di, vm_di);
   }
 
-
-  ViewModel_Controls_DesignInfo = {
+  return {
     OnControlDesignInfo: function(def, c, ref)
     {
       if(c)
       {
         // define Databind DesignInfo of all controls
-        var di = {};
-        add_databind_di(di, def, c, ref);
-        return di;
+        add_databind_di(c.DesignInfo, def, c, ref);
       }
     },
 
@@ -436,6 +451,5 @@ var ViewModel_Controls_DesignInfo = null;
 
     }
   };
-
-  ngUserControls['viewmodel_controls_designinfo'] = ViewModel_Controls_DesignInfo;
 })();
+ngUserControls['viewmodel_controls_designinfo'] = ViewModel_Controls_DesignInfo;
