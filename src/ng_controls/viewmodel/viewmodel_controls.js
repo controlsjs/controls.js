@@ -1390,7 +1390,6 @@ ngUserControls['viewmodel_controls'] = {
         var o=c.Elm();
         if(o) {
           var vm=ng_FindViewModel(def, c);
-        console.log(vm);
           if(vm) ko.applyBindings(vm, o);
         }
         return true;
