@@ -1384,6 +1384,24 @@ ngUserControls['viewmodel_controls'] = {
   OnControlCreated: function(def,c,ref) {
     if((typeof def.ViewModel !== 'undefined')&&(typeof c.ViewModel === 'undefined')) c.ViewModel=def.ViewModel;
 
+    var dombind=def.DOMDataBind;
+    if(typeof dombind !== 'undefined') {
+      def.OnCreated=ngAddEvent(def.OnCreated, function(c,ref) {
+        var o=c.Elm();
+        if(o) {
+          var vm=ng_FindViewModel(def, c);
+        console.log(vm);
+          if(vm) ko.applyBindings(vm, o);
+        }
+        return true;
+      });
+      ng_OverrideMethod(c,'DoAttach', function(o,oid) {
+        if(o) o.setAttribute('data-bind',dombind);
+        ng_CallParent(c,'DoAttach',arguments);
+      });
+      delete def.DOMDataBind;
+    }
+
     var bind=def.DataBind;
     if(typeof bind !== 'undefined') {
       def.OnCreated=ngAddEvent(def.OnCreated, function(c,ref) {
