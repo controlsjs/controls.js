@@ -1505,9 +1505,10 @@ ngUserControls['controls_designinfo'] = {
               Types: {
                 'integer': {
                    DefaultValue: 0,
+                   InitValue: 1,
                    Editor: 'ngfeEditor_DropDownList',
                    EditorOptions: {
-                     Items: [{Value:0,Text:'cbUnchecked'},{Value:1,Text:'chChecked'},{Value:2,Text:'cbGrayed'}]
+                     Items: [{Value:0,Text:'Unchecked'},{Value:1,Text:'Checked'},{Value:2,Text:'Grayed'}]
                    }
                  }
               }
@@ -1529,16 +1530,7 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "Img": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "Img": { DefaultType: 'image', Level: 'basic' },
             "ImgAlign": { DefaultType: 'string', Level: 'basic',
               Types: {
                 'string': {
@@ -1551,35 +1543,17 @@ ngUserControls['controls_designinfo'] = {
               }
             },
             "ImgIndent": { DefaultType: 'integer', Level: 'basic' },
-            "LeftImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "LeftImg": { DefaultType: 'image', Level: 'basic' },
             "MiddleImg": { DefaultType: 'image', Level: 'basic',
               Types: {
                 'image': {
                    EditorOptions: {
-                     VerticalImages: false
+                     HorizontalImages: true
                    }
                  }
               }
             },
-            "RightImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "RightImg": { DefaultType: 'image', Level: 'basic' },
             "Default": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -1834,9 +1808,16 @@ ngUserControls['controls_designinfo'] = {
               Types: {
                 'identifier': {
                   DefaultValue: hintstyle,
-                  Editor: 'ngfeEditor_DropDownList',
+                  Editor: 'ngfeEditor_DropDown',
                   EditorOptions: {
                     Items: ['ngHintHideOnFocus','ngHintHideOnInput']
+                  }
+                },
+                'integer': {
+                  DefaultValue: ngDefaultHintStyle,
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: [{Value:0,Text:'ngHintHideOnFocus'},{Value:1,Text:'ngHintHideOnInput'}]
                   }
                 }
               }
@@ -1856,35 +1837,17 @@ ngUserControls['controls_designinfo'] = {
               }
             },
             "MaxLength": { DefaultType: 'integer', Level: 'basic' },
-            "LeftImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "LeftImg": { DefaultType: 'image', Level: 'basic' },
             "MiddleImg": { DefaultType: 'image', Level: 'basic',
               Types: {
                 'image': {
                    EditorOptions: {
-                     VerticalImages: false
+                     HorizontalImages: true
                    }
                  }
               }
             },
-            "RightImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "RightImg": { DefaultType: 'image', Level: 'basic' },
             "OffsetTop": { DefaultType: 'integer', Level: 'basic' },
             "SelectOnFocus": { DefaultType: 'boolean', Level: 'basic',
               Types: {
@@ -1895,9 +1858,16 @@ ngUserControls['controls_designinfo'] = {
               Types: {
                 'identifier': {
                   DefaultValue: 'ngeDropDownEdit',
-                  Editor: 'ngfeEditor_DropDownList',
+                  Editor: 'ngfeEditor_DropDown',
                   EditorOptions: {
                     Items: ['ngeDropDownEdit','ngeDropDownList']
+                  }
+                },
+                'integer': {
+                  DefaultValue: 0,
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: [{Value:0,Text:'ngeDropDownEdit'},{Value:1,Text:'ngeDropDownList'}]
                   }
                 }
               }
@@ -2210,9 +2180,16 @@ ngUserControls['controls_designinfo'] = {
               Types: {
                 'identifier': {
                   DefaultValue: hintstyle,
-                  Editor: 'ngfeEditor_DropDownList',
+                  Editor: 'ngfeEditor_DropDown',
                   EditorOptions: {
                     Items: ['ngHintHideOnFocus','ngHintHideOnInput']
+                  }
+                },
+                'integer': {
+                  DefaultValue: ngDefaultHintStyle,
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: [{Value:0,Text:'ngHintHideOnFocus'},{Value:1,Text:'ngHintHideOnInput'}]
                   }
                 }
               }
@@ -2828,40 +2805,22 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "LeftImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "LeftImg": { DefaultType: 'image', Level: 'basic' },
             "MiddleImg": { DefaultType: 'image', Level: 'basic',
               Types: {
                 'image': {
                    EditorOptions: {
-                     VerticalImages: false
+                     HorizontalImages: true
                    }
                  }
               }
             },
-            "RightImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: false,
-                     VerticalImages: false
-                   }
-                 }
-              }
-            },
+            "RightImg": { DefaultType: 'image', Level: 'basic' },
             "BarImg": { DefaultType: 'image', Level: 'basic',
               Types: {
                 'image': {
                    EditorOptions: {
-                     VerticalImages: false
+                     HorizontalImages: true
                    }
                  }
               }
