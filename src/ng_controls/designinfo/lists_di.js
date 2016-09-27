@@ -14,6 +14,49 @@ if (typeof ngUserControls === 'undefined') ngUserControls = [];
 ngUserControls['list_designinfo'] = {
   OnFormEditorInit: function(FE) {
     var list_types = [
+      // ngListCol
+      {
+        TypeID: 'ngListCol',
+        TypeBase: 'object',
+        Name: 'ngListCol',
+        ShortName: 'col',
+        Basic: false,
+        Options: {
+          ObjectProperties: {
+            "ID": { DefaultType: 'string', Level: 'basic', Order: 0.4 },
+            "Caption": { DefaultType: 'string', Level: 'basic', Order: 0.41 },
+            "Align": { DefaultType: 'string', Level: 'basic',
+              Types: {
+                'string': {
+                  DefaultValue: 'left',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['left','center','right']
+                  }
+                }
+              }
+            },
+            "VAlign": { DefaultType: 'string', Level: 'basic',
+              Types: {
+                'string': {
+                  DefaultValue: 'top',
+                  Editor: 'ngfeEditor_DropDownList',
+                  EditorOptions: {
+                    Items: ['top','middle','bottom','baseline']
+                  }
+                }
+              }
+            },
+            "Width": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  InitValue: 100
+                }
+              }
+            }
+          }
+        }
+      },
       // ngListItem
       {
         TypeID: 'ngListItem',
@@ -23,7 +66,15 @@ ngUserControls['list_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "Text": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.5,
+            "Text": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.4,
+              Types: {
+                'string': {},
+                'object': {
+                  ChildDesignInfo: {
+                    DefaultType: 'string'
+                  }
+                }
+              },
               OnPropertyInit: function(ch)
               {
                 if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
@@ -36,83 +87,197 @@ ngUserControls['list_designinfo'] = {
                 return true;
               }
             },
-            "Alt": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.51 },
-            "ID": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.55 },
-            "Checked": { DefaultType: 'integer', Level: 'basic', Order: 0.6,
+            "Action": { DefaultType: 'string', Level: 'basic',
+              // TODO: browse from existing actions
+            },
+            "Alt": { DefaultType: 'undefined', InitType: 'string', Level: 'basic',
               Types: {
+                'string': {},
+                'object': {
+                  ChildDesignInfo: {
+                    DefaultType: 'string'
+                  }
+                }
+              },
+            },
+            "ID": { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
+            "Checked": { DefaultType: 'identifier', Level: 'basic',
+              Types: {
+                'identifier': {
+                   DefaultValue: 'nglUnchecked',
+                   InitValue: 'nglChecked',
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: ['nglUnchecked','nglChecked','nglGrayed']
+                   }
+                 },
                 'integer': {
                    DefaultValue: 0,
                    InitValue: 1,
                    Editor: 'ngfeEditor_DropDownList',
                    EditorOptions: {
-                     Items: [{Value:0,Text:'cbUnchecked'},{Value:1,Text:'chChecked'},{Value:2,Text:'cbGrayed'}]
+                     Items: [{Value:0,Text:'nglUnchecked'},{Value:1,Text:'nglChecked'},{Value:2,Text:'nglGrayed'}]
                    }
                  }
               }
             },
-            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic', Order: 0.61,
+            "CheckGroup": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
-                  DefaultValue: false,
                   InitValue: true
                 }
               }
             },
-            "Collapsed": { DefaultType: 'boolean', Level: 'basic', Order: 0.62,
+            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
-                  DefaultValue: false,
                   InitValue: true
                 }
               }
             },
-            "Visible": { DefaultType: 'boolean', Level: 'basic', Order: 0.65,
+            "Collapsed": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "Visible": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
                   DefaultValue: true
                 }
               }
             },
-            "Enabled": { DefaultType: 'boolean', Level: 'basic', Order: 0.66,
+            "Enabled": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
                   DefaultValue: true
                 }
               }
             },
-            "RadioGroup": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.67 },
-            "H": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.7 },
-            "MinHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.71 },
-            "Image": { DefaultType: 'image', Level: 'basic', Order: 0.73 },
-            "Parent": { DefaultType: 'undefined', Level: 'hidden', Order: 0.8,
+            "RadioGroup": { DefaultType: 'undefined', InitType: 'string', Level: 'basic'
+              // TODO: browse from existing radio groups
+            },
+            "RadioAllowUncheck": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "H": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+            "MinHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+            "Image": { DefaultType: 'image', Level: 'basic' },
+            "Parent": { DefaultType: 'undefined', Level: 'hidden',
               Types: {
                 'object': {},
                 'null': {}
               }
             },
-            "Items": { DefaultType: 'undefined', InitType: 'ngListItems', Level: 'basic', Order: 0.85,
+            "Items": { DefaultType: 'undefined', InitType: 'ngListItems', Level: 'basic',
               Types: {
                 'ngListStringItems': {}
               }
             },
-            "Controls": { DefaultType: 'undefined', InitType: 'controls', Level: 'basic', Order: 0.9,
+            "Controls": { DefaultType: 'controls', Level: 'basic',
+              DisplayInControls: true,
               Types: {
                 'controls': {
-                  DestroyIfEmpty: true
+                  DestroyIfEmpty: true,
+                  ChildDesignInfo: {
+                    DisplayInControls: true
+                  }
                 }
               }
             },
-            "ControlsHolder": { DefaultType: 'undefined', Level: 'hidden', Order: 0.91,
+            "ControlsHolder": { DefaultType: 'undefined', Level: 'hidden',
               Types: {
                 'object': {}
               }
+            },
+            "OnClick": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnDblClick": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnClickItem": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) {}'
+                }
+              }
+            },
+            "OnCollapsing": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) { return true; }'
+                }
+              }
+            },
+            "OnCollapsed": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
+            },
+            "OnExpanding": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) { return true; }'
+                }
+              }
+            },
+            "OnExpanded": { DefaultType: 'events', Order: 0.9,
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
             }
-            // TODO - check API for all properties
+          }
+        }
+      },
 
-            //OnCollapsing
-            //OnCollapsed
-            //OnExpanding
-            //OnExpanded
+      // ngListColumns
+      {
+        TypeID: 'ngListColumns',
+        TypeBase: 'array',
+        Name: 'ngListColumns',
+        ShortName: 'cols',
+        Basic: false,
+        Options: {
+          Priority: 0.52,
+          ChildDesignInfo: {
+            DefaultType: 'ngListCol', Level: 'basic',
+            Collapsed: true,
+            OnPropertyInit: function(ch)
+            {
+              if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
+              {
+                var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
+                if (pname)
+                {
+                  var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
+                  var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
+
+                  if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
+                  ch.Value.Caption = "'Column" + (itemscnt + 1) + "'";
+                  ch.Value.ID = "'c" + (itemscnt + 1) + "'";
+                }
+              }
+              return true;
+            }
           }
         }
       },
@@ -136,11 +301,19 @@ ngUserControls['list_designinfo'] = {
                 var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
                 if (pname)
                 {
+//                  var columns = FormEditor.GetControlsProperty('Columns', [ch.ControlID]);
+//                  var hascolumns = (columns[0] && (ng_IsArrayVar(columns[0].PropertyValue))) ? columns[0].PropertyValue.length>0 : false;
+
                   var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
                   var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
 
                   if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
-                  ch.Value.Text = "'Item " + (itemscnt + 1) + "'";
+                  var columnid = FormEditor.GetControlsProperty('Data.Columns.0.ID', [ch.ControlID]);
+                  if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
+                    ch.Value.Text = "{ '" + columnid[0].PropertyValue + "': 'Item " + (itemscnt + 1) + "' }";
+                    console.log(ch);
+                  }
+                  else ch.Value.Text = "'Item " + (itemscnt + 1) + "'";
                 }
               }
 
@@ -264,10 +437,6 @@ ngUserControls['list_designinfo'] = {
           return v;
         }
       }
-
-      //TODO
-      // list_column
-      // list_columns
     ];
 
     FormEditor.RegisterPropertyType(list_types);
@@ -286,10 +455,11 @@ ngUserControls['list_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              "W": { Value: 120 },
-              "H": { Value: 180 },
+              "W": { Value: 100 },
+              "H": { Value: 200 },
               Data: {
                 ObjectProperties: {
+                  "HTMLEncode": { Value: true },
                   "Items": { Type: 'ngListItems',
                     ObjectProperties: {
                       0: {
@@ -303,15 +473,474 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             }
+          },
+          "Multi Column": {
+            Properties: {
+              "W": { Value: 100 },
+              "H": { Value: 200 },
+              Data: {
+                ObjectProperties: {
+                  "HTMLEncode": { Value: true },
+                  "Columns": { Type: 'ngListColumns',
+                    ObjectProperties: {
+                      0: {
+                        Type: 'ngListCol',
+                        Value: {
+                          Caption: "'Column1'",
+                          ID: "'c1'"
+                        }
+                      }
+                    }
+                  },
+                  "Items": { Type: 'ngListItems',
+                    ObjectProperties: {
+                      0: {
+                        Type: 'ngListItem',
+                        Value: {
+                          Text: "{ 'c1': 'Item 1' }"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
+
         },
         Properties: ng_DIProperties({
-          // TODO - define all properties
           "Data": {
+            "Columns": { DefaultType: 'ngListColumns', Level: 'basic' },
             "Items": { DefaultType: 'ngListItems', Level: 'basic',
               Collapsed: true,
               Types: {
+                'ngListItems': {},
                 'ngListStringItems': {}
+              }
+            },
+            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
+                  InitValue: true
+                }
+              }
+            },
+            "ListIndent": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+            "DefaultIndent": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+            "Indent": { DefaultType: 'null', InitType: 'integer', Level: 'basic',
+              Types: {
+                'null': {},
+                'integer': {},
+                'array': {
+                  ChildDesignInfo: {
+                    DefaultType: 'integer'
+                  }
+                }
+              }
+            },
+            "ShowCheckboxes": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "RadioAllowUncheck": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "ShowHeader": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "CheckImg": { DefaultType: 'image', Level: 'basic' },
+            "TreeImg": { DefaultType: 'image', Level: 'basic' },
+            "ItemImg": { DefaultType: 'image', Level: 'basic' },
+            "KeyEvents": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "PageSize": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 10
+                }
+              }
+            },
+            "ItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  InitValue: 12
+                }
+              }
+            },
+            "MinItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
+            "MouseEvents": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "SelectType": { DefaultType: 'identifier', Level: 'basic',
+              Types: {
+                'identifier': {
+                   DefaultValue: 'nglSelectNone',
+                   InitValue: 'nglSelectSingle',
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: ['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt']
+                   }
+                 },
+                'integer': {
+                   DefaultValue: 0,
+                   InitValue: 1,
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: [{Value:0,Text:'nglSelectNone'},{Value:1,Text:'nglSelectSingle'},{Value:2,Text:'nglSelectMulti'},{Value:3,Text:'nglSelectMultiExt'},{Value:4,Text:'nglSelectSingleExt'}]
+                   }
+                 }
+              }
+            },
+            "SelCount": { DefaultType: 'integer', Level: 'hidden' },
+            "SortColumn": { DefaultType: 'string', Level: 'basic' },
+            "SortDir": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'identifier': {
+                   DefaultValue: 'nglSortAsc',
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: ['nglSortAsc','nglSortDesc']
+                   }
+                 },
+                'integer': {
+                   DefaultValue: 0,
+                   Editor: 'ngfeEditor_DropDownList',
+                   EditorOptions: {
+                     Items: [{Value:0,Text:'nglSortAsc'},{Value:1,Text:'nglSortDesc'}]
+                   }
+                 }
+              }
+            },
+            "SortCaseSensitive": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "CheckedChangedDelay": { DefaultType: 'integer', Level: 'basic' },
+            "ItemsControls": { DefaultType: 'controls_array', Level: 'hidden' },
+            "ParentReferences": { Level: 'basic' },
+            "Frame": { DefaultType: 'img_frame', Level: 'basic',
+              Collapsed: true
+            }
+          },
+          "Events": {
+            "OnAdd": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, parent) { return true; }'
+                }
+              }
+            },
+            "OnRemove": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, parent) {}'
+                }
+              }
+            },
+            "OnItemsChanged": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, items) {}'
+                }
+              }
+            },
+            "OnExpanding": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) { return true; }'
+                }
+              }
+            },
+            "OnExpanded": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
+            },
+            "OnCollapsing": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) { return true; }'
+                }
+              }
+            },
+            "OnCollapsed": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
+            },
+            "OnItemCheckChanged": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
+            },
+            "OnCheckChanged": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnSetItemVisible": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
+            },
+            "OnSetItemEnabled": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it) {}'
+                }
+              }
+            },
+            "OnSelectChanged": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnRedrawSelected": { DefaultType: 'events', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, elm, selected, itemid) {}'
+                }
+              }
+            },
+            "OnClickItem": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnDblClickItem": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnDblClick": { DefaultType: 'events', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnClick": { DefaultType: 'events', Level: 'advanced',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnCaptionClick": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e, list, colid, startelm) {}' // TODO: Check startelm
+                }
+              }
+            },
+            "OnCaptionDblClick": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e, list, colid, startelm) {}' // TODO: Check startelm'
+                }
+              }
+            },
+            "OnKeyDown": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnKeyUp": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(e) { return true; }'
+                }
+              }
+            },
+            "OnScroll": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, e, contentelm) { return true; }'
+                }
+              }
+            },
+            "OnMouseEnter": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnMouseLeave": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnEnterRow": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, eid) {}'
+                }
+              }
+            },
+            "OnLeaveRow": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, eid) {}'
+                }
+              }
+            },
+            "OnFocus": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnBlur": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnDrawItem": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, retval, html, it, id, level, pcollapsed) { return true; }'
+                }
+              }
+            },
+            "OnDrawItemText": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, html, it, id, level) { return true; }'
+                }
+              }
+            }
+          },
+          "OverrideEvents": {
+            "OnGetText": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, colid) { return "" }'
+                }
+              }
+            },
+            "OnGetAlt": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, colid) { return "" }'
+                }
+              }
+            },
+            "OnCompareItem": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, a, b) { return 0; }'
+                }
+              }
+            },
+            "OnGetRowClassName": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, id) { return \'\'; }'
+                }
+              }
+            },
+            "OnMeasureItem": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, id, level) { return it.H; }'
+                }
+              }
+            },
+            "OnCalcIndent": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, id, level) { return level*10; }'
+                }
+              }
+            },
+            "OnGetItemImg": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, id, level) { return null; }'
+                }
+              }
+            },
+            "OnGetCheckImg": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, id) { return null; }'
+                }
+              }
+            },
+            "OnGetTreeImg": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, it, id) { return null; }'
+                }
+              }
+            },
+            "OnGetColumnCaption": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, col, i) { return \'Column\'+(i+1); }'
+                }
+              }
+            },
+            "OnGetColumnWidth": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, col, i, caption) { return 0; }'
+                }
               }
             }
           }
