@@ -1663,7 +1663,7 @@ function ngCreateControls(defs,ref,parent,options)
             parentCtrl=parent;
             parent=parent.Elm();
           }
-          else if(ngVal(parent.id,'')!='') parentCtrl=ngGetControlById(parent.id);
+          else parentCtrl=ngGetControlByElement(parent);
         }
       }
       for(i in defs)
@@ -2024,7 +2024,7 @@ function ngc_Create(props, ref)
       nd=props.OnCreateHTMLElement(props,ref,this);
       if(!nd) return null;
     }
-    else nd=document.createElement('div');
+    else nd=document.createElement(ngVal(props.DOMTagName,'div'));
     nd.id=id;
     nd.style.display='none';
   }
