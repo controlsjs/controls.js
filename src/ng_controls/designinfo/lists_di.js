@@ -457,7 +457,7 @@ ngUserControls['list_designinfo'] = {
             Properties: {
               "W": { Value: 100 },
               "H": { Value: 200 },
-              Data: {
+              "Data": {
                 ObjectProperties: {
                   "HTMLEncode": { Value: true },
                   "Items": { Type: 'ngListItems',
@@ -478,7 +478,7 @@ ngUserControls['list_designinfo'] = {
             Properties: {
               "W": { Value: 100 },
               "H": { Value: 200 },
-              Data: {
+              "Data": {
                 ObjectProperties: {
                   "HTMLEncode": { Value: true },
                   "Columns": { Type: 'ngListColumns',
@@ -869,14 +869,14 @@ ngUserControls['list_designinfo'] = {
             "OnGetText": { DefaultType: 'events', Level: 'basic',
               Types: {
                 'function': {
-                  DefaultValue: 'function(c, it, colid) { return "" }'
+                  DefaultValue: 'function(c, it, colid) { return ""; }'
                 }
               }
             },
             "OnGetAlt": { DefaultType: 'events', Level: 'basic',
               Types: {
                 'function': {
-                  DefaultValue: 'function(c, it, colid) { return "" }'
+                  DefaultValue: 'function(c, it, colid) { return ""; }'
                 }
               }
             },
@@ -890,7 +890,7 @@ ngUserControls['list_designinfo'] = {
             "OnGetRowClassName": { DefaultType: 'events', Level: 'basic',
               Types: {
                 'function': {
-                  DefaultValue: 'function(c, it, id) { return \'\'; }'
+                  DefaultValue: 'function(c, it, id) { return ""; }'
                 }
               }
             },
@@ -932,7 +932,7 @@ ngUserControls['list_designinfo'] = {
             "OnGetColumnCaption": { DefaultType: 'events', Level: 'basic',
               Types: {
                 'function': {
-                  DefaultValue: 'function(c, col, i) { return \'Column\'+(i+1); }'
+                  DefaultValue: 'function(c, col, i) { return "Column"+(i+1); }'
                 }
               }
             },
@@ -947,5 +947,425 @@ ngUserControls['list_designinfo'] = {
         })
       };
     });
+
+    ngRegisterControlDesignInfo('ngPageList',function(d,c,ref) {
+      return {
+        ControlCategory: 'Lists',
+        BaseControl: 'ngPageList',
+        IsContainer: false,
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 100 },
+              "H": { Value: 200 },
+              "ModifyControls": {
+                ObjectProperties: {
+                  "List": {
+                    ObjectProperties: {
+                      "Data": {
+                        Type: 'object',
+                        ObjectProperties: {
+                          "HTMLEncode": { Type: 'boolean', Value: true },
+                          "Items": { Type: 'ngListItems',
+                            ObjectProperties: {
+                              0: {
+                                Type: 'ngListItem',
+                                Value: {
+                                  Text: "'Item 1'"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "Multi Column": {
+            Properties: {
+              "W": { Value: 100 },
+              "H": { Value: 200 },
+              "ModifyControls": {
+                ObjectProperties: {
+                  "List": {
+                    ObjectProperties: {
+                      "Data": {
+                        Type: 'object',
+                        ObjectProperties: {
+                          "HTMLEncode": { Type: 'boolean', Value: true },
+                          "Columns": { Type: 'ngListColumns',
+                            ObjectProperties: {
+                              0: {
+                                Type: 'ngListCol',
+                                Value: {
+                                  Caption: "'Column1'",
+                                  ID: "'c1'"
+                                }
+                              }
+                            }
+                          },
+                          "Items": { Type: 'ngListItems',
+                            ObjectProperties: {
+                              0: {
+                                Type: 'ngListItem',
+                                Value: {
+                                  Text: "{ 'c1': 'Item 1' }"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          "Data": {
+            "DisplayMode": { DefaultType: 'identifier', Level: 'basic',
+              Types: {
+                'identifier': {
+                   DefaultValue: 'plDisplayFit',
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: ['plDisplayFixed','plDisplayFit']
+                   }
+                 },
+                'integer': {
+                   DefaultValue: 1,
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: [{Value:0,Text:'plDisplayFixed'},{Value:1,Text:'plDisplayFit'}]
+                   }
+                 }
+              }
+            },
+            "PagingType": { DefaultType: 'bitmask', Level: 'basic',
+              Types: {
+                'bitmask': {
+                  DefaultValue: {
+                    value: plPagingSimple
+                  },
+                  EditorOptions: {
+                    BitMaskIdentifiers: [
+                      {value: plPaging_First,        id: 'plPaging_First'},
+                      {value: plPaging_Prev,         id: 'plPaging_Prev'},
+                      {value: plPaging_Next,         id: 'plPaging_Next'},
+                      {value: plPaging_Last,         id: 'plPaging_Last'},
+                      {value: plPaging_Pages,        id: 'plPaging_Pages'},
+                      {value: plPaging_PageNo,       id: 'plPaging_PageNo'},
+                      {value: plPaging_HideDisabled, id: 'plPaging_HideDisabled'},
+
+                      {value: plPagingSimple,        id: 'plPagingSimple'},
+                      {value: plPagingSimple2,       id: 'plPagingSimple2'},
+                      {value: plPagingSimpleEx,      id: 'plPagingSimpleEx'},
+                      {value: plPagingPages,         id: 'plPagingPages'},
+                      {value: plPagingPages2,        id: 'plPagingPages2'},
+                      {value: plPagingPagesEx,       id: 'plPagingPagesEx'},
+                      {value: plPagingPagesEx2,      id: 'plPagingPagesEx2'},
+                      {value: plPagingDataSet,       id: 'plPagingDataSet'},
+                      {value: plPagingDataSetEx,     id: 'plPagingDataSetEx'},
+                      {value: plPagingAll,           id: 'plPagingAll'}
+                    ]
+                  }
+                }
+              }
+            },
+            "PagingSize": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 5
+                }
+              }
+            },
+            "PagingMinSize": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 0
+                }
+              }
+            },
+            "PagingLookout": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 2
+                }
+              }
+            },
+            "PagingInside": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "PagingHideDisabled": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "DisplayPaging": { DefaultType: 'identifier', Level: 'basic',
+              Types: {
+                'identifier': {
+                   DefaultValue: 'plDisplayPagingMorePages',
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: ['plDisplayPagingNone','plDisplayPagingAlways','plDisplayPagingNotEmpty','plDisplayPagingMorePages']
+                   }
+                 },
+                'integer': {
+                   DefaultValue: 3,
+                   Editor: 'ngfeEditor_DropDown',
+                   EditorOptions: {
+                     Items: [{Value:0,Text:'plDisplayPagingNone'},{Value:1,Text:'plDisplayPagingAlways'},{Value:2,Text:'plDisplayPagingNotEmpty'},{Value:3,Text:'plDisplayPagingMorePages'}]
+                   }
+                 }
+              }
+            },
+            "KeyEvents": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "AutoSelectFirstItem": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  InitValue: true
+                }
+              }
+            },
+            "Page": { DefaultType: 'integer', Level: 'basic' },
+            "DisplayedItems": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 10
+                }
+              }
+            },
+            "TopIndex": { DefaultType: 'integer', Level: 'hidden' },
+            "AverageItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
+              Types: {
+                'undefined': {},
+                'integer': {
+                  InitValue: 12
+                }
+              }
+            },
+            "MaxLength": { DefaultType: 'undefined', InitType: 'integer', Level: 'optional',
+              Types: {
+                'undefined': {},
+                'integer': {}
+              }
+            },
+            "CacheData": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "MinDataBatch": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
+              Types: {
+                'undefined': {},
+                'integer': {
+                  InitValue: 50
+                }
+              }
+            },
+            "AsyncData": { DefaultType: 'boolean', Level: 'basic',
+              Types: {
+                'boolean': {
+                  DefaultValue: true
+                }
+              }
+            },
+            "AsyncDataTimeout": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 30
+                }
+              }
+            },
+            "AsyncDataRetryCnt": { DefaultType: 'integer', Level: 'basic',
+              Types: {
+                'integer': {
+                  DefaultValue: 3
+                }
+              }
+            },
+            "AsyncDataURL": { DefaultType: 'url', Level: 'basic' }
+          },
+          "Events": {
+            "OnPageChanging": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, page) { return true; }'
+                }
+              }
+            },
+            "OnPageChanged": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, oldpage) {}'
+                }
+              }
+            },
+            "OnPagingUpdating": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pginfo) { return true; }'
+                }
+              }
+            },
+            "OnPagingUpdated": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, pginfo) { return true; }'
+                }
+              }
+            },
+            "OnInvalidateData": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, idx, cnt) { return true; }'
+                }
+              }
+            },
+            "OnSetAsyncData": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, idx, data) { return true; }'
+                }
+              }
+            },
+            "OnShowLoading": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnShowLoading": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            },
+            "OnHideLoading": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c) {}'
+                }
+              }
+            }
+          },
+          "OverrideEvents": {
+            "OnLoadData": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, list, idx, cnt) { return []; }'
+                }
+              }
+            },
+            "OnAsyncURLRequest": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, url, idx, cnt) { return url; }'
+                }
+              }
+            },
+            "OnSetLength": { DefaultType: 'events', Level: 'basic',
+              Types: {
+                'function': {
+                  DefaultValue: 'function(c, len) { return len; }'
+                }
+              }
+            }
+          },
+          "ModifyControls": {
+            "List": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngList',
+                  InheritedFrom: 'ngList'
+                }
+              }
+            },
+            "Paging": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngToolBar',
+                  InheritedFrom: 'ngToolBar'
+                }
+              }
+            },
+            "FirstPage": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngButton',
+                  InheritedFrom: 'ngButton'
+                }
+              }
+            },
+            "PrevPage": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngButton',
+                  InheritedFrom: 'ngButton'
+                }
+              }
+            },
+            "PageNo": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngEdit',
+                  InheritedFrom: 'ngEdit'
+                }
+              }
+            },
+            "Page0": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngButton',
+                  InheritedFrom: 'ngButton'
+                }
+              }
+            },
+            "NextPage": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngButton',
+                  InheritedFrom: 'ngButton'
+                }
+              }
+            },
+            "LastPage": { DefaultType: 'control', Level: 'basic',
+              Types: {
+                'control': {
+                  Type: 'ngButton',
+                  InheritedFrom: 'ngButton'
+                }
+              }
+            }
+          }
+        },{
+          Properties: {
+            "ModifyControls": { Level: 'basic' }
+          }
+        })
+      };
+    });
+
   }
 };
