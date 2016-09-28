@@ -12,6 +12,117 @@
 
 (function()
 {
+  /**
+   *  Class: DesignInfo
+   */
+  /*
+   *  Group: Properties
+   */
+  /*
+    {
+      ControlCategory: 'category',
+      BaseControl: 'basetype',
+      NonVisual: false,
+      Image: {...},
+
+      NewControl: {
+        Default: {
+          Properties: {
+            "prop1": {
+              Value: val,
+              ValueByRefName: false
+            },
+            "prop2": { // object
+              ObjectProperties: {
+                "objpropname1": { ValueByRefName: true }
+                ...
+                "objpropnameN": { ... }
+              }
+            },
+            ...
+            "propN": { ... }
+          },
+          OnCreated: function(id, initprops, di, target_id, target_container) {
+          }
+        },
+        'variant1': {
+        },
+        ...
+        'variantN': {
+        }
+      },
+      Properties: {
+        "property1": {
+          DefaultType: 'type',
+          InitType: 'type',
+          Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental)
+          Order: 0.5,
+          Collapsed: false,
+          Types: {
+            'type1': {
+              DefaultValue: val,
+              InitValue: val,
+
+              typeoption1: ...,
+              ...
+              typeoptionN: ...,
+
+              Editor: 'ngfeEditor_XXX',
+              EditorOptions: {
+                ...
+              },
+
+              DestroyIfEmpty: true,
+              ObjectProperties: {
+                "objprop1": { ... },
+                ...
+                "objpropN": { ... }
+              },
+              ChildDesignInfo: {
+                "childprop1": { ... },
+                ...
+                "childpropN": { ... }
+              },
+
+              ContainerProperty: false,
+
+              OnPropertyInit: function(ch) {
+              },
+              OnPropertySetValue: function(ch) {
+              }
+
+            }
+            ...
+            'typeN': {
+            }
+          }
+        },
+        ...
+        "propertyN": {
+        }
+      },
+
+      ActionsMenu: {
+        'menuid1': {
+          MultiSelect: true,
+          Checked: 0,
+          ...
+          OnMenuClick: function(e, m, it) {
+          }
+        },
+        ...
+        'menuidN': {
+        }
+      },
+
+      IsContainer: false,
+      TargetContainer: function(control, target_control, control_elm, target_elm) {
+        return null;
+      }
+
+    }
+  */
+
   function getBaseProperties()
   {
     var BaseDI = {
