@@ -1170,13 +1170,23 @@ function ng_DIProperties(props,data) {
       case 'Data':
       case 'Events':
       case 'OverrideEvents':
-      case 'Controls':
       case 'Methods':
       case 'style':
         if(typeof di[i]==='undefined') di[i]={};
         ng_MergeVar(di[i],{
           Types: {
             'object': {
+              ObjectProperties: props[i]
+            }
+          }
+        });
+        break;
+      case 'Controls':
+      case 'ModifyControls':
+        if(typeof di[i]==='undefined') di[i]={};
+        ng_MergeVar(di[i],{
+          Types: {
+            'controls': {
               ObjectProperties: props[i]
             }
           }
