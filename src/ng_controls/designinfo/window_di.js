@@ -255,6 +255,8 @@ ngUserControls['window_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngTextHint',function(d,c,ref) {
       return {
+        ControlCategory: 'Labels',
+        IsContainer: false,
         NewControl: {
           Default: {
             Properties: {
