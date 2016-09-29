@@ -133,6 +133,7 @@ function ngw_Close()
 function ngw_Restore()
 {
   if(!this.StateBounds) return;  
+  if((this.OnRestore)&&(!ngVal(this.OnRestore(this),false))) return;
   this.StateBounds=null;
   this.CheckBounds();
   this.SetBounds();
@@ -1723,8 +1724,8 @@ function ngh_DoUpdate(o)
 {
   var x,y,dp,anchor = null, anchorid='';
 
-  if(typeof this.PopupX === 'undefined') this.PopupX=ngVal(this.Bounds.L,0);
-  if(typeof this.PopupY === 'undefined') this.PopupY=ngVal(this.Bounds.T,0);
+  if((typeof this.PopupX === 'undefined')||(this.InDesignMode)) this.PopupX=ngVal(this.Bounds.L,0);
+  if((typeof this.PopupY === 'undefined')||(this.InDesignMode)) this.PopupY=ngVal(this.Bounds.T,0);
   
   delete this.PopupAnchor;
   
@@ -1823,8 +1824,10 @@ function ngh_DoUpdate(o)
       if(typeof anchor.HX !== 'undefined') x-=anchor.HX; 
       if(typeof anchor.HY !== 'undefined') y-=anchor.HY; 
       ng_setLeftTop(o,x,y);
-      this.Bounds.L=x;
-      this.Bounds.T=y;
+      if(!this.InDesignMode) {
+        this.Bounds.L=x;
+        this.Bounds.T=y;
+      }
     }
   }
 
@@ -2057,7 +2060,7 @@ function ngh_SetVisible(v)
     delete this.PopupY;
     delete this.PopupElm;
     delete this.PopupAnchor; 
-    if(this.DisposeOnHide) 
+    if((this.DisposeOnHide)&&(!this.InDesignMode))
     {
       var self=this;
       var dispose_timer=setTimeout(function() {
@@ -2081,7 +2084,7 @@ function ngh_SetVisible(v)
   else
   {
     var ht=ngVal(this.AutoHideTimeout,0);
-    if(ht>0) this.HintAutoHideTimer = setTimeout("ngh_HintAutoHideTimer('"+this.ID+"')",ht);
+    if((ht>0)&&(!this.InDesignMode)) this.HintAutoHideTimer = setTimeout("ngh_HintAutoHideTimer('"+this.ID+"')",ht);
   }
 }
 
