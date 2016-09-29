@@ -82,51 +82,15 @@ ngUserControls['list_designinfo'] = {
             },
             "ID": { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
             "Checked": ng_DIPropertyIntConstants(0,['nglUnchecked','nglChecked','nglGrayed'],{ Level: 'basic' }),
-            "CheckGroup": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
-            "AllowGrayed": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
-            "Collapsed": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
-            "Visible": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
-            "Enabled": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
+            "CheckGroup": ng_DIPropertyBool(false, { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic' }),
+            "AllowGrayed": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "Collapsed": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "Visible": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "Enabled": ng_DIPropertyBool(true, { Level: 'basic' }),
             "RadioGroup": { DefaultType: 'undefined', InitType: 'string', Level: 'basic'
               // TODO: browse from existing radio groups
             },
-            "RadioAllowUncheck": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
+            "RadioAllowUncheck": ng_DIPropertyBool(false, { Level: 'basic' }),
             "H": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "MinHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "Image": { DefaultType: 'image', Level: 'basic' },
@@ -157,55 +121,13 @@ ngUserControls['list_designinfo'] = {
                 'object': {}
               }
             },
-            "OnClick": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnDblClick": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnClickItem": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) {}'
-                }
-              }
-            },
-            "OnCollapsing": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) { return true; }'
-                }
-              }
-            },
-            "OnCollapsed": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            },
-            "OnExpanding": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) { return true; }'
-                }
-              }
-            },
-            "OnExpanded": { DefaultType: 'events', Order: 0.9,
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            }
+            "OnClick": ng_DIPropertyEvent('function(e) { return true; }', { Order: 0.9 }),
+            "OnDblClick": ng_DIPropertyEvent('function(e) { return true; }', { Order: 0.9 }),
+            "OnClickItem": ng_DIPropertyEvent('function(e) {}', { Order: 0.9 }),
+            "OnCollapsing": ng_DIPropertyEvent('function(c, it) { return true; }', { Order: 0.9 }),
+            "OnCollapsed": ng_DIPropertyEvent('function(c, it) {}', { Order: 0.9 }),
+            "OnExpanding": ng_DIPropertyEvent('function(c, it) { return true; }', { Order: 0.9 }),
+            "OnExpanded": ng_DIPropertyEvent('function(c, it) {}', { Order: 0.9 })
           }
         }
       },
@@ -499,44 +421,14 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             },
-            "ShowCheckboxes": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
-            "RadioAllowUncheck": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
-            "ShowHeader": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
+            "ShowCheckboxes": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "RadioAllowUncheck": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "ShowHeader": ng_DIPropertyBool(true, { Level: 'basic' }),
             "CheckImg": { DefaultType: 'image', Level: 'basic' },
             "TreeImg": { DefaultType: 'image', Level: 'basic' },
             "ItemImg": { DefaultType: 'image', Level: 'basic' },
-            "KeyEvents": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
-            "PageSize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 10
-                }
-              }
-            },
+            "KeyEvents": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "PageSize": ng_DIProperty('integer', 10, { Level: 'basic' }),
             "ItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
               Types: {
                 'integer': {
@@ -545,31 +437,13 @@ ngUserControls['list_designinfo'] = {
               }
             },
             "MinItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-            "MouseEvents": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
-            "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
+            "MouseEvents": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "ReadOnly": ng_DIPropertyBool(false, { Level: 'basic' }),
             "SelectType": ng_DIPropertyIntConstants(0,['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt'],{ Level: 'basic' }),
             "SelCount": { DefaultType: 'integer', Level: 'hidden' },
             "SortColumn": { DefaultType: 'string', Level: 'basic' },
             "SortDir": ng_DIPropertyIntConstants(0,['nglSortAsc','nglSortDesc'],{ Level: 'basic' }),
-            "SortCaseSensitive": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
+            "SortCaseSensitive": ng_DIPropertyBool(false, { Level: 'basic' }),
             "CheckedChangedDelay": { DefaultType: 'integer', Level: 'basic' },
             "ItemsControls": { DefaultType: 'controls_array', Level: 'hidden' },
             "ParentReferences": { Level: 'basic' },
@@ -578,295 +452,49 @@ ngUserControls['list_designinfo'] = {
             }
           },
           "Events": {
-            "OnAdd": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, parent) { return true; }'
-                }
-              }
-            },
-            "OnRemove": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, parent) {}'
-                }
-              }
-            },
-            "OnItemsChanged": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, items) {}'
-                }
-              }
-            },
-            "OnExpanding": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) { return true; }'
-                }
-              }
-            },
-            "OnExpanded": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            },
-            "OnCollapsing": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) { return true; }'
-                }
-              }
-            },
-            "OnCollapsed": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            },
-            "OnItemCheckChanged": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            },
-            "OnCheckChanged": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnSetItemVisible": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            },
-            "OnSetItemEnabled": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it) {}'
-                }
-              }
-            },
-            "OnSelectChanged": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnRedrawSelected": { DefaultType: 'events', Level: 'advanced',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, elm, selected, itemid) {}'
-                }
-              }
-            },
-            "OnClickItem": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnDblClickItem": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnDblClick": { DefaultType: 'events', Level: 'advanced',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnClick": { DefaultType: 'events', Level: 'advanced',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnCaptionClick": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e, list, colid, startelm) {}' // TODO: Check startelm
-                }
-              }
-            },
-            "OnCaptionDblClick": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e, list, colid, startelm) {}' // TODO: Check startelm'
-                }
-              }
-            },
-            "OnKeyDown": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnKeyUp": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e) { return true; }'
-                }
-              }
-            },
-            "OnScroll": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, e, contentelm) { return true; }'
-                }
-              }
-            },
-            "OnMouseEnter": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnMouseLeave": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnEnterRow": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, eid) {}'
-                }
-              }
-            },
-            "OnLeaveRow": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, eid) {}'
-                }
-              }
-            },
-            "OnFocus": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnBlur": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnDrawItem": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, retval, html, it, id, level, pcollapsed) { return true; }'
-                }
-              }
-            },
-            "OnDrawItemText": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, html, it, id, level) { return true; }'
-                }
-              }
-            }
+            "OnAdd": ng_DIPropertyEvent('function(c, it, parent) { return true; }', { Level: 'basic' }),
+            "OnRemove": ng_DIPropertyEvent('function(c, it, parent) {}', { Level: 'basic' }),
+            "OnItemsChanged": ng_DIPropertyEvent('function(c, items) {}', { Level: 'basic' }),
+            "OnExpanding": ng_DIPropertyEvent('function(c, it) { return true; }', { Level: 'basic' }),
+            "OnExpanded": ng_DIPropertyEvent('function(c, it) {}', { Level: 'basic' }),
+            "OnCollapsing": ng_DIPropertyEvent('function(c, it) { return true; }', { Level: 'basic' }),
+            "OnCollapsed": ng_DIPropertyEvent('function(c, it) {}', { Level: 'basic' }),
+            "OnItemCheckChanged": ng_DIPropertyEvent('function(c, it) {}', { Level: 'basic' }),
+            "OnCheckChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnSetItemVisible": ng_DIPropertyEvent('function(c, it) {}', { Level: 'basic' }),
+            "OnSetItemEnabled": ng_DIPropertyEvent('function(c, it) {}', { Level: 'basic' }),
+            "OnSelectChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnRedrawSelected": ng_DIPropertyEvent('function(c, elm, selected, itemid) {}', { Level: 'advanced' }),
+            "OnClickItem": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnDblClickItem": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnDblClick": ng_DIPropertyEvent('function(e) { return true; }'),
+            "OnClick": ng_DIPropertyEvent('function(e) { return true; }'),
+            "OnCaptionClick": ng_DIPropertyEvent('function(e, list, colid, startelm) {}', { Level: 'basic' }), // TODO: Check startelm
+            "OnCaptionDblClick": ng_DIPropertyEvent('function(e, list, colid, startelm) {}', { Level: 'basic' }), // TODO: Check startelm'
+            "OnKeyDown": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnKeyUp": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnScroll": ng_DIPropertyEvent('function(c, e, contentelm) { return true; }', { Level: 'basic' }),
+            "OnMouseEnter": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnMouseLeave": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnEnterRow": ng_DIPropertyEvent('function(c, it, eid) {}', { Level: 'basic' }),
+            "OnLeaveRow": ng_DIPropertyEvent('function(c, it, eid) {}', { Level: 'basic' }),
+            "OnFocus": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnBlur": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnDrawItem": ng_DIPropertyEvent('function(c, retval, html, it, id, level, pcollapsed) { return true; }', { Level: 'basic' }),
+            "OnDrawItemText": ng_DIPropertyEvent('function(c, html, it, id, level) { return true; }', { Level: 'basic' }),
           },
           "OverrideEvents": {
-            "OnGetText": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, colid) { return ""; }'
-                }
-              }
-            },
-            "OnGetAlt": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, colid) { return ""; }'
-                }
-              }
-            },
-            "OnCompareItem": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, a, b) { return 0; }'
-                }
-              }
-            },
-            "OnGetRowClassName": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, id) { return ""; }'
-                }
-              }
-            },
-            "OnMeasureItem": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, id, level) { return it.H; }'
-                }
-              }
-            },
-            "OnCalcIndent": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, id, level) { return level*10; }'
-                }
-              }
-            },
-            "OnGetItemImg": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, id, level) { return null; }'
-                }
-              }
-            },
-            "OnGetCheckImg": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, id) { return null; }'
-                }
-              }
-            },
-            "OnGetTreeImg": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, it, id) { return null; }'
-                }
-              }
-            },
-            "OnGetColumnCaption": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, col, i) { return "Column"+(i+1); }'
-                }
-              }
-            },
-            "OnGetColumnWidth": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, col, i, caption) { return 0; }'
-                }
-              }
-            }
+            "OnGetText": ng_DIPropertyEvent('function(c, it, colid) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_DIPropertyEvent('function(c, it, colid) { return ""; }', { Level: 'basic' }),
+            "OnCompareItem": ng_DIPropertyEvent('function(c, a, b) { return 0; }', { Level: 'basic' }),
+            "OnGetRowClassName": ng_DIPropertyEvent('function(c, it, id) { return ""; }', { Level: 'basic' }),
+            "OnMeasureItem": ng_DIPropertyEvent('function(c, it, id, level) { return it.H; }', { Level: 'basic' }),
+            "OnCalcIndent": ng_DIPropertyEvent('function(c, it, id, level) { return level*10; }', { Level: 'basic' }),
+            "OnGetItemImg": ng_DIPropertyEvent('function(c, it, id, level) { return null; }', { Level: 'basic' }),
+            "OnGetCheckImg": ng_DIPropertyEvent('function(c, it, id) { return null; }', { Level: 'basic' }),
+            "OnGetTreeImg": ng_DIPropertyEvent('function(c, it, id) { return null; }', { Level: 'basic' }),
+            "OnGetColumnCaption": ng_DIPropertyEvent('function(c, col, i) { return "Column"+(i+1); }', { Level: 'basic' }),
+            "OnGetColumnWidth": ng_DIPropertyEvent('function(c, col, i, caption) { return 0; }', { Level: 'basic' })
           }
         })
       };
@@ -983,64 +611,16 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             },
-            "PagingSize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 5
-                }
-              }
-            },
-            "PagingMinSize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 0
-                }
-              }
-            },
-            "PagingLookout": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 2
-                }
-              }
-            },
-            "PagingInside": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
-            "PagingHideDisabled": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
+            "PagingSize": ng_DIProperty('integer', 5, { Level: 'basic' }),
+            "PagingMinSize": { DefaultType: 'integer', Level: 'basic' },
+            "PagingLookout": ng_DIProperty('integer', 2, { Level: 'basic' }),
+            "PagingInside": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "PagingHideDisabled": ng_DIPropertyBool(false, { Level: 'basic' }),
             "DisplayPaging": ng_DIPropertyIntConstants(3,['plDisplayPagingNone','plDisplayPagingAlways','plDisplayPagingNotEmpty','plDisplayPagingMorePages'],{ Level: 'basic' }),
-            "KeyEvents": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
-            "AutoSelectFirstItem": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  InitValue: true
-                }
-              }
-            },
+            "KeyEvents": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "AutoSelectFirstItem": ng_DIPropertyBool(false, { Level: 'basic' }),
             "Page": { DefaultType: 'integer', Level: 'basic' },
-            "DisplayedItems": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 10
-                }
-              }
-            },
+            "DisplayedItems": ng_DIProperty('integer', 10, { Level: 'basic' }),
             "TopIndex": { DefaultType: 'integer', Level: 'hidden' },
             "AverageItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
               Types: {
@@ -1056,13 +636,7 @@ ngUserControls['list_designinfo'] = {
                 'integer': {}
               }
             },
-            "CacheData": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
+            "CacheData": ng_DIPropertyBool(true, { Level: 'basic' }),
             "MinDataBatch": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
               Types: {
                 'undefined': {},
@@ -1071,116 +645,26 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             },
-            "AsyncData": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
-            "AsyncDataTimeout": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 30
-                }
-              }
-            },
-            "AsyncDataRetryCnt": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 3
-                }
-              }
-            },
+            "AsyncData": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "AsyncDataTimeout": ng_DIProperty('integer', 30, { Level: 'basic' }),
+            "AsyncDataRetryCnt": ng_DIProperty('integer', 3, { Level: 'basic' }),
             "AsyncDataURL": { DefaultType: 'url', Level: 'basic' }
           },
           "Events": {
-            "OnPageChanging": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, page) { return true; }'
-                }
-              }
-            },
-            "OnPageChanged": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, oldpage) {}'
-                }
-              }
-            },
-            "OnPagingUpdating": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, pginfo) { return true; }'
-                }
-              }
-            },
-            "OnPagingUpdated": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, pginfo) { return true; }'
-                }
-              }
-            },
-            "OnInvalidateData": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, idx, cnt) { return true; }'
-                }
-              }
-            },
-            "OnSetAsyncData": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, idx, data) { return true; }'
-                }
-              }
-            },
-            "OnShowLoading": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnShowLoading": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnHideLoading": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            }
+            "OnPageChanging": ng_DIPropertyEvent('function(c, page) { return true; }', { Level: 'basic' }),
+            "OnPageChanged": ng_DIPropertyEvent('function(c, oldpage) {}', { Level: 'basic' }),
+            "OnPagingUpdating": ng_DIPropertyEvent('function(c, pginfo) { return true; }', { Level: 'basic' }),
+            "OnPagingUpdated": ng_DIPropertyEvent('function(c, pginfo) { return true; }', { Level: 'basic' }),
+            "OnInvalidateData": ng_DIPropertyEvent('function(c, idx, cnt) { return true; }', { Level: 'basic' }),
+            "OnSetAsyncData": ng_DIPropertyEvent('function(c, idx, data) { return true; }', { Level: 'basic' }),
+            "OnShowLoading": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnShowLoading": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnHideLoading": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnLoadData": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, list, idx, cnt) { return []; }'
-                }
-              }
-            },
-            "OnAsyncURLRequest": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, url, idx, cnt) { return url; }'
-                }
-              }
-            },
-            "OnSetLength": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, len) { return len; }'
-                }
-              }
-            }
+            "OnLoadData": ng_DIPropertyEvent('function(c, list, idx, cnt) { return []; }', { Level: 'basic' }),
+            "OnAsyncURLRequest": ng_DIPropertyEvent('function(c, url, idx, cnt) { return url; }', { Level: 'basic' }),
+            "OnSetLength": ng_DIPropertyEvent('function(c, len) { return len; }', { Level: 'basic' }),
           },
           "ModifyControls": {
             "List": { DefaultType: 'control', Level: 'basic',

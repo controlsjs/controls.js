@@ -27,13 +27,7 @@ ngUserControls['panels_designinfo'] = {
       },
       Properties: ng_DIProperties({
         "Data": {
-          "AutoSize": { DefaultType: 'boolean', Level: 'basic',
-            Types: {
-              'boolean': {
-                InitValue: true
-              }
-            }
-          }
+          "AutoSize": ng_DIPropertyBool(false, { Level: 'basic' })
         }
       },
       {
@@ -46,13 +40,7 @@ ngUserControls['panels_designinfo'] = {
                     ObjectProperties: ng_DIProperties({
                       "Data": {
                         "ControlAlign": ng_DIPropertyIntConstants('alNone',['alNone','alClient', 'alLeft','alRight', 'alTop', 'alBottom'],{ Level: 'basic',  Order: 0.8 }),
-                        "AlignAutoUpdate": { DefaultType: 'boolean', Level: 'basic',  Order: 0.8,
-                          Types: {
-                            'boolean': {
-                              DefaultValue: true
-                            }
-                          }
-                        }
+                        "AlignAutoUpdate": ng_DIPropertyBool(true, { Level: 'basic',  Order: 0.8 })
                       }
                     })
                   }
@@ -76,13 +64,7 @@ ngUserControls['panels_designinfo'] = {
       var di={
         BaseControl: 'ngAlignFrame',
         Properties: {
-          "ParentReferences": { Level: 'optional',
-            Types: {
-              'boolean': {
-                DefaultValue: false
-              }
-            }
-          }
+          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' })
         }
       };
       ng_MergeVar(di,alignpanel_DI);
@@ -116,13 +98,7 @@ ngUserControls['panels_designinfo'] = {
           "CH": { DefaultType: 'integer', Order: 0.142,
             Exclude: ['H']
           },
-          "DroppedDown": { DefaultType: 'boolean', Level: 'basic',
-            Types: {
-              'boolean': {
-                InitValue: true
-              }
-            }
-          },
+          "DroppedDown": ng_DIPropertyBool(false, { Level: 'basic' }),
           "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
             IsContainer: false,
             Types: {
@@ -140,13 +116,7 @@ ngUserControls['panels_designinfo'] = {
             }
           },
           "Events": {
-            "OnDropDown": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, state) { return true; }'
-                }
-              }
-            }
+            "OnDropDown": ng_DIPropertyEvent('function(c, state) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -235,48 +205,12 @@ ngUserControls['panels_designinfo'] = {
                 }
               }
             },
-            "Size": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 200
-                }
-              }
-            },
-            "MinSize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 0
-                }
-              }
-            },
-            "MaxSize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 0
-                }
-              }
-            },
-            "AutoMinimize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 0
-                }
-              }
-            },
-            "AutoMaximize": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'integer': {
-                  DefaultValue: 0
-                }
-              }
-            },
-            "HandleVisible": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: true
-                }
-              }
-            },
+            "Size": ng_DIProperty('integer',200, { Level: 'basic' }),
+            "MinSize": { DefaultType: 'integer', Level: 'basic' },
+            "MaxSize": { DefaultType: 'integer', Level: 'basic' },
+            "AutoMinimize": { DefaultType: 'integer', Level: 'basic' },
+            "AutoMaximize": { DefaultType: 'integer', Level: 'basic' },
+            "HandleVisible": ng_DIPropertyBool(true, { Level: 'basic' }),
             "MoverStartImg": { DefaultType: 'image', Level: 'basic' },
             "MoverMiddleImg": { DefaultType: 'image', Level: 'basic',
               Types: {
@@ -291,78 +225,18 @@ ngUserControls['panels_designinfo'] = {
             "HandleImg": { DefaultType: 'image', Level: 'basic' }
           },
           "Events": {
-            "OnResize": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) { return true; }'
-                }
-              }
-            },
-            "OnHandleClick": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) { return true; }'
-                }
-              }
-            },
-            "OnHandleEnter": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnHandleLeave": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnSizeChanging": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, cursize) { return true; }'
-                }
-              }
-            },
-            "OnSizeChanged": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) {}'
-                }
-              }
-            },
-            "OnMinimize": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) { return true; }'
-                }
-              }
-            },
-            "OnMaximize": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) { return true; }'
-                }
-              }
-            },
-            "OnRestore": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c) { return true; }'
-                }
-              }
-            }
+            "OnResize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnHandleClick": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnHandleEnter": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnHandleLeave": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnSizeChanging": ng_DIPropertyEvent('function(c, cursize) { return true; }', { Level: 'basic' }),
+            "OnSizeChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnMinimize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnMaximize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnRestore": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnGetImg": { DefaultType: 'events', Level: 'basic',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(c, imgidx) { return null; }'
-                }
-              }
-            }
+            "OnGetImg": ng_DIPropertyEvent('function(c, imgidx) { return null; }', { Level: 'basic' })
           }
         })
       };
