@@ -42,7 +42,12 @@
             ...
             "propN": { ... }
           },
-          OnCreated: function(id, initprops, di, target_id, target_container) {
+          OnCreating: function(initprops, di, target_id, target_container) {
+            return true;
+          },
+          OnCreatingPreview: function(initprops, di, target_id, target_container) {
+          },
+          OnCreated: function(control_id, initprops, di, target_id, target_container) {
           }
         },
         'variant1': {
@@ -56,12 +61,24 @@
           DefaultType: 'type',
           InitType: 'type',
           Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental)
+          PropertyGroup: 'All'(Definition|Data|DataBind|Events|...Events|Methods|Controls|All),
           Order: 0.5,
           Collapsed: false,
+          ContainerProperty: false,
+          Required: false,
+          FixedType: false,
+          OnPropertyInit: function(ch) {
+            return true;
+          },
+          OnPropertySetValue: function(ch) {
+            return true;
+          },
           Types: {
             'type1': {
               DefaultValue: val,
               InitValue: val,
+
+              Level: 'basic' (basic|hidden|invalid|deprecated|experimental),
 
               typeoption1: ...,
               ...
@@ -82,15 +99,7 @@
                 "childprop1": { ... },
                 ...
                 "childpropN": { ... }
-              },
-
-              ContainerProperty: false,
-
-              OnPropertyInit: function(ch) {
-              },
-              OnPropertySetValue: function(ch) {
               }
-
             }
             ...
             'typeN': {
@@ -113,6 +122,8 @@
         ...
         'menuidN': {
         }
+      },
+      OnActionsMenuCreating: function(ActionsMenu) {
       },
 
       IsContainer: false,
