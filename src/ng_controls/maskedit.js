@@ -49,6 +49,10 @@ var MaskEditControl = {
 
       def.OnCreated = ngAddEvent(def.OnCreated, function (c, ref) {
         c.SetMask(mask);
+        if(typeof c.Text!=='undefined') {
+          c.SetText(c.Text);
+          delete c.Text;
+        }
         return true;
       });
 
