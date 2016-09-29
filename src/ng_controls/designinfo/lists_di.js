@@ -67,7 +67,7 @@ ngUserControls['list_designinfo'] = {
                 return true;
               }
             },
-            "Action": { DefaultType: 'string', Level: 'basic',
+            "Action": { DefaultType: 'string', Level: 'basic'
               // TODO: browse from existing actions
             },
             "Alt": { DefaultType: 'undefined', InitType: 'string', Level: 'basic',
@@ -78,7 +78,7 @@ ngUserControls['list_designinfo'] = {
                     DefaultType: 'string'
                   }
                 }
-              },
+              }
             },
             "ID": { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
             "Checked": ng_DIPropertyIntConstants(0,['nglUnchecked','nglChecked','nglGrayed'],{ Level: 'basic' }),
@@ -106,12 +106,12 @@ ngUserControls['list_designinfo'] = {
               }
             },
             "Controls": { DefaultType: 'controls', Level: 'basic',
-              DisplayInControls: true,
+              PropertyGroup: 'Controls',
               Types: {
                 'controls': {
                   DestroyIfEmpty: true,
                   ChildDesignInfo: {
-                    DisplayInControls: true
+                    PropertyGroup: 'Controls'
                   }
                 }
               }
@@ -194,7 +194,6 @@ ngUserControls['list_designinfo'] = {
                   var columnid = FormEditor.GetControlsProperty('Data.Columns.0.ID', [ch.ControlID]);
                   if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
                     ch.Value.Text = "{ '" + columnid[0].PropertyValue + "': 'Item " + (itemscnt + 1) + "' }";
-                    console.log(ch);
                   }
                   else ch.Value.Text = "'Item " + (itemscnt + 1) + "'";
                 }
@@ -481,7 +480,7 @@ ngUserControls['list_designinfo'] = {
             "OnFocus": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
             "OnBlur": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
             "OnDrawItem": ng_DIPropertyEvent('function(c, retval, html, it, id, level, pcollapsed) { return true; }', { Level: 'basic' }),
-            "OnDrawItemText": ng_DIPropertyEvent('function(c, html, it, id, level) { return true; }', { Level: 'basic' }),
+            "OnDrawItemText": ng_DIPropertyEvent('function(c, html, it, id, level) { return true; }', { Level: 'basic' })
           },
           "OverrideEvents": {
             "OnGetText": ng_DIPropertyEvent('function(c, it, colid) { return ""; }', { Level: 'basic' }),
@@ -664,7 +663,7 @@ ngUserControls['list_designinfo'] = {
           "OverrideEvents": {
             "OnLoadData": ng_DIPropertyEvent('function(c, list, idx, cnt) { return []; }', { Level: 'basic' }),
             "OnAsyncURLRequest": ng_DIPropertyEvent('function(c, url, idx, cnt) { return url; }', { Level: 'basic' }),
-            "OnSetLength": ng_DIPropertyEvent('function(c, len) { return len; }', { Level: 'basic' }),
+            "OnSetLength": ng_DIPropertyEvent('function(c, len) { return len; }', { Level: 'basic' })
           },
           "ModifyControls": {
             "List": { DefaultType: 'control', Level: 'basic',

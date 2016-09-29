@@ -53,7 +53,7 @@ ngUserControls['panels_designinfo'] = {
     };
     ngRegisterControlDesignInfo('ngAlignPanel',function(d,c,ref) {
       var di={
-        BaseControl: 'ngAlignPanel',
+        BaseControl: 'ngAlignPanel'
       };
       ng_MergeVar(di,alignpanel_DI);
       return di;
@@ -153,7 +153,7 @@ ngUserControls['panels_designinfo'] = {
             Types: {
               'controls': {
                 ChildDesignInfo: {
-                  DisplayInControls: true
+                  PropertyGroup: 'Controls'
                 }
               }
             }
@@ -163,7 +163,7 @@ ngUserControls['panels_designinfo'] = {
             Types: {
               'controls': {
                 ChildDesignInfo: {
-                  DisplayInControls: true
+                  PropertyGroup: 'Controls'
                 }
               }
             }

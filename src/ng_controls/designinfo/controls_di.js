@@ -167,7 +167,7 @@
             'controls': {
               DestroyIfEmpty: true,
               ChildDesignInfo: {
-                DisplayInControls: true
+                PropertyGroup: 'Controls'
               }
             }
           }
@@ -488,7 +488,7 @@
           Types: {
             'controls': {
               ChildDesignInfo: {
-                DisplayInControls: true
+                PropertyGroup: 'Controls'
               }
             }
           }
@@ -825,7 +825,7 @@ ngUserControls['controls_designinfo'] = {
                 'controls': {
                   DestroyIfEmpty: true,
                   ChildDesignInfo: {
-                    DisplayInControls: true
+                    PropertyGroup: 'Controls'
                   }
                 }
               }
@@ -965,7 +965,7 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "CanSelect": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "CanSelect": ng_DIPropertyBool(true, { Level: 'basic' })
           },
           "OverrideEvents": {
             "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
@@ -1023,7 +1023,7 @@ ngUserControls['controls_designinfo'] = {
             "OnMouseEnter":  { },
             "OnMouseLeave":  { },
             "OnMouseShapeEnter": ng_DIPropertyEvent('function(c, shapeidx) { }'),
-            "OnMouseShapeLeave": ng_DIPropertyEvent('function(c, shapeidx) { }'),
+            "OnMouseShapeLeave": ng_DIPropertyEvent('function(c, shapeidx) { }')
           },
           "OverrideEvents": {
             "OnGetImg": ng_DIPropertyEvent('function(c) { return null; }', { Level: 'basic' }),
@@ -1186,7 +1186,7 @@ ngUserControls['controls_designinfo'] = {
             "Frame": { DefaultType: 'img_frame', Level: 'basic',
               Collapsed: true
             },
-            "ControlsInside": ng_DIPropertyBool(true, { Level: 'basic' }),
+            "ControlsInside": ng_DIPropertyBool(true, { Level: 'basic' })
           },
           "OverrideEvents": {
             "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
@@ -1217,12 +1217,12 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           "Buttons": { DefaultType: 'controls_array', Level: 'basic',
             Collapsed: false,
-            DisplayInControls: true,
+            PropertyGroup: 'Controls',
             Types: {
               'controls_array': {
                 DestroyIfEmpty: true,
                 ChildDesignInfo: {
-                  DisplayInControls: true,
+                  PropertyGroup: 'Controls',
                   Types: {
                     'control': {
                       InheritedFrom: 'ngButton',
@@ -1238,7 +1238,7 @@ ngUserControls['controls_designinfo'] = {
             }
           },
           "DropDown": { DefaultType: 'control', 
-            DisplayInControls: true
+            PropertyGroup: 'Controls'
           },
           "Data": {
             "ngText":  { Level: 'advanced' },
@@ -1322,7 +1322,7 @@ ngUserControls['controls_designinfo'] = {
             "OnGetClassName": ng_DIPropertyEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' }),
             "OnGetImg": ng_DIPropertyEvent('function(c, idx) { return null; }', { Level: 'basic' }),
             "OnSuggestionSetText": ng_DIPropertyEvent('function(text, it) { return text; }'),
-            "OnSuggestionURL": ng_DIPropertyEvent('function(c, url) { return url; }'),
+            "OnSuggestionURL": ng_DIPropertyEvent('function(c, url) { return url; }')
           },
           "Events": {
             "OnTextChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
@@ -1383,7 +1383,7 @@ ngUserControls['controls_designinfo'] = {
             "Frame": { DefaultType: 'img_frame', Level: 'basic' },
             "SelectOnFocus": ng_DIPropertyBool(true, { Level: 'basic' }),
             "LockHintCaretPos": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "Invalid": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "Invalid": ng_DIPropertyBool(false, { Level: 'basic' })
           },
           "Methods": {
             "DoFocus": { DefaultType: 'function',
@@ -1530,7 +1530,7 @@ ngUserControls['controls_designinfo'] = {
           },
           "OverrideEvents": {
             "OnGetText": ng_DIPropertyEvent('function(c, pg) { return ""; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c, pg) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_DIPropertyEvent('function(c, pg) { return ""; }', { Level: 'basic' })
           },
           "Events": {
             "OnPageChanging": ng_DIPropertyEvent('function(c, page) { return true; }', { Level: 'basic' }),
@@ -1586,8 +1586,39 @@ ngUserControls['controls_designinfo'] = {
               var new_pg_select = page_selected - 1;
               if (new_pg_select < 0) new_pg_select = 0;
 
-              FormEditor.SetControlsProperty({ Name: 'Pages.' + page_selected, Destroy: true });
-              FormEditor.SetControlsProperty({ Name: 'Data.Page', Destroy: new_pg_select === 0, Type: 'integer', Value: new_pg_select });
+              var pg_Text = FormEditor.GetControlsProperty('Pages.'+page_selected+'.Text', [cidx]),
+                  pg_txt = (pg_Text && pg_Text[0] && pg_Text[0].PropertyDefined !== 0 && typeof pg_Text[0].PropertyValue === 'string') ? pg_Text[0].PropertyValue : '';
+
+              FormEditor.MessageDlg('feMessageBox', 'Delete page `'+pg_txt+'` (ID: '+page_selected+')?', 'Delete Page', function(c) {
+                if (c.DialogResult === mbYes)
+                {
+                  FormEditor.SetControlsProperty({ Name: 'Pages.' + page_selected, Destroy: true });
+                  FormEditor.SetControlsProperty({ Name: 'Data.Page', Destroy: new_pg_select === 0, Type: 'integer', Value: new_pg_select });
+
+                  return true;
+                }
+
+                return true;
+              }, {
+                CloseBtn: true,
+                DlgButtons: mbYes|mbNo,
+                DlgIcon: mbIconQuestion,
+                Controls: {
+                  Buttons: {
+                    Controls: {
+                      Yes: {
+                        Data: { Default: false }
+                      },
+                      No: {
+                        Data: {
+                          Default: true,
+                          Cancel: true
+                        }
+                      }
+                    }
+                  }
+                }
+              });
 
               return false;
             }
@@ -1798,11 +1829,11 @@ ngUserControls['controls_designinfo'] = {
         Properties: ng_DIProperties({
           "Data": {
             "URL": { DefaultType: 'url', Level: 'basic' },
-            "DesignLive": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "DesignLive": ng_DIPropertyBool(false, { Level: 'basic' })
           },
           "OverrideEvents": {
             "OnGetURL": ng_DIPropertyEvent('function(c, url) { return url; }', { Level: 'basic' }),
-            "OnSetHTML": ng_DIPropertyEvent('function(c, html) { return html; }', { Level: 'basic' }),
+            "OnSetHTML": ng_DIPropertyEvent('function(c, html) { return html; }', { Level: 'basic' })
           },
           "Events": {
             "OnSetURL": ng_DIPropertyEvent('function(c, url) { return true; }', { Level: 'basic' })
@@ -1829,7 +1860,7 @@ ngUserControls['controls_designinfo'] = {
           "Data": {
             "RadioGroup": ng_DIProperty('string','default', { Level: 'basic' }),
             "AllowGrayed": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "RadioAllowUncheck": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "RadioAllowUncheck": ng_DIPropertyBool(false, { Level: 'basic' })
           }
         })
       };
