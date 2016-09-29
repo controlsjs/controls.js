@@ -1200,6 +1200,135 @@ function ng_DIProperties(props,data) {
   return di;
 };
 
+/**
+ *  Function: ng_DIPropertyValues
+ *  Creates property design info for list of values.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyValues* (string type, string defvalue, array values [, object data={}])
+ *
+ *  Parameters:
+ *    type - property type
+ *    defvalue - property default value or name
+ *    values - list of values defined as object { Value: X, Text: 'Value1' }
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyValues(type, defvalue, values, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var c,defival;
+  for(var i=values.length-1;i>=0;i--) {
+    c=values[i];
+    if(typeof c==='undefined') { values.splice(i,1); continue; }
+    if(typeof c==='string') { c={ Text:c, Value: i }; values[i]=c; }
+    if(c.Text===defvalue) defival=c.Value;
+    else if(c.Value===defvalue) { defival=c.Value; defvalue=c.Text; }
+  }
+
+  var mdi={
+    DefaultType: type,
+    Types: {}
+  };
+  mdi.Types[type]={
+    DefaultValue: defival,
+    Editor: 'ngfeEditor_DropDownList',
+    EditorOptions: {
+      Items: values
+    }
+  }
+  ng_MergeVar(di, mdi);
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyStrings
+ *  Creates property design info for list of strings.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyStrings* (string defvalue, array strings [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value
+ *    strings - list of strings
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyStrings(defvalue, strings, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'string',
+    Types: {
+      'string': {
+        DefaultValue: defvalue,
+        Editor: 'ngfeEditor_DropDownList',
+        EditorOptions: {
+          Items: strings
+        }
+      }
+    }
+  });
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyIntConstants
+ *  Creates property design info for list of integer constants.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyIntConstants* (mixed defvalue, array consts [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value, constant name or value
+ *    consts - list of constants, constant is defined as object { Value: X, Text: 'Const1' } or as string,
+ *             if string is used the value is considered as item order in a array,
+ *             undefined items are skipped
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+//function ng_DITypeIntIdentifier(defvalue, consts, data) {
+function ng_DIPropertyIntConstants(defvalue, consts, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var c,defival;
+  var ids=[];
+  for(var i=consts.length-1;i>=0;i--) {
+    c=consts[i];
+    if(typeof c==='undefined') { consts.splice(i,1); continue; }
+    if(typeof c==='string') { c={ Text:c, Value: i }; consts[i]=c; }
+    if(c.Text===defvalue) defival=c.Value;
+    else if(c.Value===defvalue) { defival=c.Value; defvalue=c.Text; }
+    ids.push(c.Text);
+  }
+  ng_MergeVar(di, {
+    DefaultType: 'identifier',
+    Types: {
+      'identifier': {
+        DefaultValue: defvalue,
+        Editor: 'ngfeEditor_DropDown',
+        EditorOptions: {
+          Items: ids
+        }
+      },
+      'integer': {
+        DefaultValue: defival,
+        Editor: 'ngfeEditor_DropDownList',
+        EditorOptions: {
+          Items: consts
+        }
+      }
+    }
+  });
+  return di;
+}
+
 ngRegisterControlType('ngPanel', function() { return new ngPanel; });
 ngRegisterControlType('ngText', function() { return new ngText; });
 ngRegisterControlType('ngImage', function() { return new ngImage; });
