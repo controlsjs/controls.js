@@ -1287,6 +1287,38 @@ function ng_DIPropertyEvent(defvalue, data) {
 }
 
 /**
+ *  Function: ng_DIPropertyRefName
+ *  Creates property design info which is initialized by its reference name.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyRefName* ([object data={}])
+ *
+ *  Parameters:
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyRefName(data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'string', 
+    OnPropertyInit: function (ch) {
+      if (!ch.Value) {
+        var selected = FormEditor.GetSelectedControlsIDs();
+        if (selected.length === 1) {
+          ch.Value = FormEditor.GetControlRefNameById(selected[0]);
+        }
+      }
+      return true;
+    }
+  });
+  return di;
+}
+
+
+/**
  *  Function: ng_DIPropertyValues
  *  Creates property design info for list of values.
  *  Helper function.
