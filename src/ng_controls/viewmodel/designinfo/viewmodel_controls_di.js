@@ -239,6 +239,7 @@ var ViewModel_Controls_DesignInfo = (function()
         },
         DOMDataBind: {
           DefaultType: 'databind',
+          PropertyGroup: 'DataBind',
           Types: {
             'databind_string': {},
             'object': {
