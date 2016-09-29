@@ -64,12 +64,13 @@ var FileUploaderControl = {
             }
           },
           UploadWindow: {
-            Type: 'ngDialog',
+            Type: 'ngWindow',
             W: 260, H: 80,
             Data: {
               Centered: false,
               ngText: 'ngfup_AddFile',
               Visible: false,
+              Modal: true,
               IFrameSize: { W: 250, H: 45 }
             },
             Controls: {
@@ -796,6 +797,8 @@ var FileUploaderControl = {
        *    TRUE if drop target was registered.
        */
       c.RegisterDropTarget = function(t,ondragover,ondragleave,ondrop) {
+        if(c.InDesignMode) return false;
+
         var o=null;
         if(typeof t==='string') o=document.getElementByID(t);
         else {
@@ -832,6 +835,8 @@ var FileUploaderControl = {
        *    -
        */
       c.UnregisterDropTarget = function(t) {
+        if(c.InDesignMode) return;
+
         var o=null;
         if(typeof t==='string') o=document.getElementByID(t);
         else {
