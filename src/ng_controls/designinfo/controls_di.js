@@ -338,17 +338,7 @@
       Properties: {
         "W": { DefaultType: 'bounds', Level: 'basic', Order: 0.13 },
         "H": { DefaultType: 'bounds', Level: 'basic', Order: 0.14 },
-        "ScrollBars": { DefaultType: 'identifier', Level: 'optional', Order: 0.301,
-          Types: {
-            'identifier': {
-              DefaultValue: 'ssNone',
-              Editor: 'ngfeEditor_DropDownList',
-              EditorOptions: {
-                Items: ['ssNone','ssDefault','ssAuto','ssBoth','ssHorizontal','ssVertical']
-              }
-            }
-          }
-        },
+        "ScrollBars": ng_DIPropertyIntConstants('ssNone',['ssNone','ssDefault','ssAuto','ssBoth','ssHorizontal','ssVertical'],{ Level: 'optional', Order: 0.301 }),
         "style": { DefaultType: 'object', Order: 0.252,
           Types: {
             'object': {
@@ -370,18 +360,7 @@
                 "borderLeft": { DefaultType: 'string', Level: 'optional' },
                 "borderRight": { DefaultType: 'string', Level: 'optional' },
                 "borderTop": { DefaultType: 'string', Level: 'optional' },
-                "borderStyle": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'none',
-                      DefaultCode: "'none'",
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['none','solid','dotted','dashed','double','groove','ridge','inset','outset']
-                      }
-                    }
-                  }
-                },
+                "borderStyle": ng_DIPropertyStrings('none', ['none','solid','dotted','dashed','double','groove','ridge','inset','outset'],{ Level: 'optional' }),
                 "borderWidth": { DefaultType: 'css_dim_px', Level: 'optional',
                   Types: {
                     'string': {}
@@ -395,28 +374,27 @@
                   }
                 },
                 "cursor": { DefaultType: 'css_cursor', Level: 'optional' },
-                "fontFamily": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: '',
-                      InitValue: 'Arial, Helvetica, sans-serif',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['"Times New Roman", Times, serif',
-                                'Georgia, serif',
-                                'Arial, Helvetica, sans-serif',
-                                '"Arial Black", Gadget, sans-serif',
-                                '"Comic Sans MS", cursive, sans-serif',
-                                'Impact, Charcoal, sans-serif',
-                                'Tahoma, Geneva, sans-serif',
-                                'Verdana, Geneva, sans-serif',
-                                '"Courier New", Courier, monospace',
-                                '"Lucida Console", Monaco, monospace'
-                               ]
+                "fontFamily": ng_DIPropertyStrings('',
+                  [ '"Times New Roman", Times, serif',
+                    'Georgia, serif',
+                    'Arial, Helvetica, sans-serif',
+                    '"Arial Black", Gadget, sans-serif',
+                    '"Comic Sans MS", cursive, sans-serif',
+                    'Impact, Charcoal, sans-serif',
+                    'Tahoma, Geneva, sans-serif',
+                    'Verdana, Geneva, sans-serif',
+                    '"Courier New", Courier, monospace',
+                    '"Lucida Console", Monaco, monospace'
+                  ],
+                  {
+                    Level: 'optional',
+                    Types: {
+                      'string': {
+                        InitValue: 'Arial, Helvetica, sans-serif'
                       }
                     }
                   }
-                },
+                ),
                 "fontSize": { DefaultType: 'css_dim_px', Level: 'optional',
                   Types: {
                     'css_dim_px': {
@@ -424,28 +402,8 @@
                     }
                   }
                 },
-                "fontStyle": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'normal',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['normal','italic','oblique','initial','inherit']
-                      }
-                    }
-                  }
-                },
-                "fontWeight": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'normal',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['normal','bold','bolder','lighter','100','200','300','400','500','600','700','800','900']
-                      }
-                    }
-                  }
-                },
+                "fontStyle": ng_DIPropertyStrings('normal', ['normal','italic','oblique','initial','inherit'], { Level: 'optional' }),
+                "fontWeight": ng_DIPropertyStrings('normal', ['normal','bold','bolder','lighter','100','200','300','400','500','600','700','800','900'], { Level: 'optional' }),
                 "lineHeight": { DefaultType: 'css_dim_px', Level: 'optional',
                   Types: {
                     'css_dim_px': {
@@ -463,61 +421,11 @@
                 "paddingLeft": { DefaultType: 'css_dim_px', Level: 'optional' },
                 "paddingRight": { DefaultType: 'css_dim_px', Level: 'optional' },
                 "paddingTop": { DefaultType: 'css_dim_px', Level: 'optional' },
-                "textAlign": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'left',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['left','center','right','justify','initial','inherit']
-                      }
-                    }
-                  }
-                },
-                "verticalAlign": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'baseline',
-                      Editor: 'ngfeEditor_DropDown',
-                      EditorOptions: {
-                        Items: ['baseline','sub','super','top','text-top','middle','bottom','text-bottom','initial','inherit']
-                      }
-                    }
-                  }
-                },
-                "textDecoration": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'none',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['none','underline','overline','line-through','initial','inherit']
-                      }
-                    }
-                  }
-                },
-                "textTransform": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'none',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['none','uppercase','lowercase','capitalize','initial','inherit']
-                      }
-                    }
-                  }
-                },
-                "whiteSpace": { DefaultType: 'string', Level: 'optional',
-                  Types: {
-                    'string': {
-                      DefaultValue: 'normal',
-                      Editor: 'ngfeEditor_DropDownList',
-                      EditorOptions: {
-                        Items: ['normal','nowrap','pre','pre-line','pre-wrap','initial','inherit']
-                      }
-                    }
-                  }
-                },
+                "textAlign": ng_DIPropertyStrings('left', ['left','center','right','justify','initial','inherit'],{ Level: 'optional' }),
+                "verticalAlign": ng_DIPropertyStrings('baseline', ['baseline','sub','super','top','text-top','middle','bottom','text-bottom','initial','inherit'], { Level: 'optional' }),
+                "textDecoration": ng_DIPropertyStrings('none', ['none','underline','overline','line-through','initial','inherit'], { Level: 'optional' }),
+                "textTransform": ng_DIPropertyStrings('none', ['none','uppercase','lowercase','capitalize','initial','inherit'], { Level: 'optional' }),
+                "whiteSpace": ng_DIPropertyStrings('normal', ['normal','nowrap','pre','pre-line','pre-wrap','initial','inherit'], { Level: 'optional' }),
                 "zIndex": { DefaultType: 'integer' }
               }
             }
@@ -1162,17 +1070,7 @@ ngUserControls['controls_designinfo'] = {
         Options: {
           Add: false,
           ObjectProperties: {
-            "Shape": { DefaultType: 'string', Level: 'basic', Order: 0.4,
-              Types: {
-                'string': {
-                  DefaultValue: 'rect',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['rect','circle','poly']
-                  }
-                }
-              }
-            },
+            "Shape": ng_DIPropertyStrings('rect', ['rect','circle','poly'], { Level: 'basic', Order: 0.4 }),
             "Coords": { DefaultType: 'string', Level: 'basic', Order: 0.41 },
             "Alt": { DefaultType: 'string', Level: 'basic' },
             "OnClick": { DefaultType: 'events', Level: 'basic',
@@ -1344,17 +1242,7 @@ ngUserControls['controls_designinfo'] = {
           },
 
           "Data": {
-            "TextAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right','center','justify']
-                  }
-                }
-              }
-            },
+            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center','justify'], { Level: 'basic' }),
             "AutoSize": { DefaultType: 'boolean',
               Types: {
                 'boolean': {
@@ -1362,17 +1250,7 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "AutoSizeMode": { DefaultType: 'string',
-              Types: {
-                'string': {
-                  DefaultValue: 'auto',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['auto','horizontal','vertical']
-                  }
-                }
-              }
-            },
+            "AutoSizeMode": ng_DIPropertyStrings('auto', ['auto','horizontal','vertical']),
             "MinWidth":  { DefaultType: 'undefined', InitType: 'integer' },
             "MinHeight": { DefaultType: 'undefined', InitType: 'integer' },
 
@@ -1577,17 +1455,7 @@ ngUserControls['controls_designinfo'] = {
             "Action": { DefaultType: 'string', Level: 'basic'
               // TODO: browse from existing actions
             },
-            "TextAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'center',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right','center']
-                  }
-                }
-              }
-            },
+            "TextAlign": ng_DIPropertyStrings('center', ['left','right','center'], { Level: 'basic' }),
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
             "Text": { DefaultType: 'string', Level: 'basic',
@@ -1612,18 +1480,13 @@ ngUserControls['controls_designinfo'] = {
               }
             },
             "MinWidth": { DefaultType: 'undefined', InitType: 'integer' },
-            "Checked": { DefaultType: 'integer', Level: 'basic',
+            "Checked": ng_DIPropertyValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic',
               Types: {
                 'integer': {
-                   DefaultValue: 0,
-                   InitValue: 1,
-                   Editor: 'ngfeEditor_DropDownList',
-                   EditorOptions: {
-                     Items: [{Value:0,Text:'Unchecked'},{Value:1,Text:'Checked'},{Value:2,Text:'Grayed'}]
-                   }
+                   InitValue: 1
                  }
               }
-            },
+            }),
             "RadioGroup": { DefaultType: 'undefined', InitType: 'string'
               // TODO: browse from existing radio groups
             },
@@ -1642,17 +1505,7 @@ ngUserControls['controls_designinfo'] = {
               }
             },
             "Img": { DefaultType: 'image', Level: 'basic' },
-            "ImgAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
+            "ImgAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
             "ImgIndent": { DefaultType: 'integer', Level: 'basic' },
             "LeftImg": { DefaultType: 'image', Level: 'basic' },
             "MiddleImg": { DefaultType: 'image', Level: 'basic',
@@ -1782,7 +1635,7 @@ ngUserControls['controls_designinfo'] = {
             IsContainer: false,
             Types: {
               'control': {
-                DefaultValue: { Type: "'ngPanel'" }
+                Type: 'ngPanel'
               }
             }
           },
@@ -1835,12 +1688,6 @@ ngUserControls['controls_designinfo'] = {
     });
 
     ngRegisterControlDesignInfo('ngEdit',function(d,c,ref) {
-      var hintstyle='ngHintHideOnInput';
-      switch(ngDefaultHintStyle)
-      {
-        case 0: hintstyle='ngHintHideOnFocus'; break;
-        case 1: hintstyle='ngHintHideOnInput'; break;
-      }
       return {
         ControlCategory: 'Edits',
         NewControl: {
@@ -1869,17 +1716,7 @@ ngUserControls['controls_designinfo'] = {
                       InheritedFrom: 'ngButton',
                       ObjectProperties: ng_DIProperties({
                         "Data": {
-                          "ButtonAlign": { DefaultType: 'string', Level: 'basic', Order: 0.8,
-                            Types: {
-                              'string': {
-                                DefaultValue: 'right',
-                                Editor: 'ngfeEditor_DropDownList',
-                                EditorOptions: {
-                                  Items: ['left','right']
-                                }
-                              }
-                            }
-                          }
+                          "ButtonAlign": ng_DIPropertyStrings('right', ['left','right'], { Level: 'basic', Order: 0.8 })
                         }
                       })
                     }
@@ -1898,41 +1735,14 @@ ngUserControls['controls_designinfo'] = {
               OnPropertyInit: di_initasrefname
             },
             "DefaultText": { DefaultType: 'string', Level: 'basic' },
-            "TextAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right','center']
-                  }
-                }
-              }
-            },
+            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
             "ngHint":  { Level: 'advanced' },
             "ngHintD": { Level: 'basic' },
             "Hint": { DefaultType: 'string', Level: 'basic' },
-            "HintStyle": { DefaultType: 'identifier', Level: 'basic',
-              Types: {
-                'identifier': {
-                  DefaultValue: hintstyle,
-                  Editor: 'ngfeEditor_DropDown',
-                  EditorOptions: {
-                    Items: ['ngHintHideOnFocus','ngHintHideOnInput']
-                  }
-                },
-                'integer': {
-                  DefaultValue: ngDefaultHintStyle,
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: [{Value:0,Text:'ngHintHideOnFocus'},{Value:1,Text:'ngHintHideOnInput'}]
-                  }
-                }
-              }
-            },
+            "HintStyle": ng_DIPropertyIntConstants(ngDefaultHintStyle,['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
             "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -1965,36 +1775,9 @@ ngUserControls['controls_designinfo'] = {
                 'boolean': { DefaultValue: true }
               }
             },
-            "DropDownType": { DefaultType: 'identifier', 
-              Types: {
-                'identifier': {
-                  DefaultValue: 'ngeDropDownEdit',
-                  Editor: 'ngfeEditor_DropDown',
-                  EditorOptions: {
-                    Items: ['ngeDropDownEdit','ngeDropDownList']
-                  }
-                },
-                'integer': {
-                  DefaultValue: 0,
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: [{Value:0,Text:'ngeDropDownEdit'},{Value:1,Text:'ngeDropDownList'}]
-                  }
-                }
-              }
-            },
+            "DropDownType": ng_DIPropertyIntConstants(0,['ngeDropDownEdit','ngeDropDownList']),
             "DropDownWidth": { DefaultType: 'undefined', InitType: 'integer' },
-            "DropDownAlign": { DefaultType: 'string', 
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
+            "DropDownAlign": ng_DIPropertyStrings('left', ['left','right']),
             "LockHintCaretPos": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': { DefaultValue: true }
@@ -2025,17 +1808,7 @@ ngUserControls['controls_designinfo'] = {
                 'boolean': { DefaultValue: true }
               }
             },
-            "SuggestionPartial":  { DefaultType: 'integer',
-              Types: {
-                'integer': {
-                  DefaultValue: 2,
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: [{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}]
-                  }
-                }
-              }
-            },
+            "SuggestionPartial": ng_DIPropertyValues('integer',2,[{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}]),
             "SuggestionURL": { DefaultType: 'url' },
             "SuggestionType": { DefaultType: 'string' }
           },
@@ -2241,12 +2014,6 @@ ngUserControls['controls_designinfo'] = {
       };
     });
     ngRegisterControlDesignInfo('ngMemo',function(d,c,ref) {
-      var hintstyle='ngHintHideOnInput';
-      switch(ngDefaultHintStyle)
-      {
-        case 0: hintstyle='ngHintHideOnFocus'; break;
-        case 1: hintstyle='ngHintHideOnInput'; break;
-      }
       return {
         ControlCategory: 'Edits',
         NewControl: {
@@ -2270,41 +2037,14 @@ ngUserControls['controls_designinfo'] = {
               OnPropertyInit: di_initasrefname
             },
             "DefaultText": { DefaultType: 'string', Level: 'basic' },
-            "TextAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right','center']
-                  }
-                }
-              }
-            },
+            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
             "ngHint": { Level: 'advanced' },
             "ngHintD": { Level: 'basic' },
             "Hint": { DefaultType: 'string', Level: 'basic' },
-            "HintStyle": { DefaultType: 'identifier', Level: 'basic',
-              Types: {
-                'identifier': {
-                  DefaultValue: hintstyle,
-                  Editor: 'ngfeEditor_DropDown',
-                  EditorOptions: {
-                    Items: ['ngHintHideOnFocus','ngHintHideOnInput']
-                  }
-                },
-                'integer': {
-                  DefaultValue: ngDefaultHintStyle,
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: [{Value:0,Text:'ngHintHideOnFocus'},{Value:1,Text:'ngHintHideOnInput'}]
-                  }
-                }
-              }
-            },
+            "HintStyle": ng_DIPropertyIntConstants(ngDefaultHintStyle,['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
             "ReadOnly": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -2531,7 +2271,7 @@ ngUserControls['controls_designinfo'] = {
             IsContainer: false,
             Types: {
               'control': {
-                DefaultValue: { Type: "'ngPanel'" }
+                Type: 'ngPanel'
               }
             }
           },
@@ -2547,39 +2287,9 @@ ngUserControls['controls_designinfo'] = {
             "PagesIndent": { DefaultType: 'integer', Level: 'basic' },
             "PagesSize": { DefaultType: 'integer', Level: 'basic' },
             "MaxRows": { DefaultType: 'integer', Level: 'basic' },
-            "PagesAlign": { DefaultType: 'string',Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
-            "PagesVAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'top',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['top','bottom']
-                  }
-                }
-              }
-            },
-            "TextAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right','center','justify']
-                  }
-                }
-              }
-            },
+            "PagesAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
+            "PagesVAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
+            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center','justify'], { Level: 'basic' }),
             "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -2810,28 +2520,8 @@ ngUserControls['controls_designinfo'] = {
             "Vertical": { DefaultType: 'boolean', Level: 'basic' },
             "VPadding": { DefaultType: 'integer', Level: 'basic' },
             "HPadding": { DefaultType: 'integer', Level: 'basic' },
-            "VAlign":   { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'top',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['top','bottom']
-                  }
-                }
-              }
-            },
-            "HAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
+            "VAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
+            "HAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
             "Wrapable": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -3102,6 +2792,9 @@ ngUserControls['controls_designinfo'] = {
             Types: {
               'identifier': {
                 DefaultValue: 'ngeDropDownList'
+              },
+              'integer': {
+                DefaultValue: 1
               }
             }
           }
@@ -3130,28 +2823,8 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          "ArrowsAlign": { DefaultType: 'string', Level: 'basic',
-            Types: {
-              'string': {
-                DefaultValue: 'right',
-                Editor: 'ngfeEditor_DropDownList',
-                EditorOptions: {
-                  Items: ['left','right','both']
-                }
-              }
-            }
-          },
-          "Arrows": { DefaultType: 'string', Level: 'basic',
-            Types: {
-              'string': {
-                DefaultValue: 'leftright',
-                Editor: 'ngfeEditor_DropDownList',
-                EditorOptions: {
-                  Items: ['none','leftright','updown']
-                }
-              }
-            }
-          },
+          "ArrowsAlign": ng_DIPropertyStrings('right', ['left','right','both'], { Level: 'basic' }),
+          "Arrows": ng_DIPropertyStrings('leftright', ['none','leftright','updown'], { Level: 'basic' }),
           "Data": {
             "Step": { DefaultType: 'integer', Level: 'basic',
               Types: {
