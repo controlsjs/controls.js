@@ -1093,7 +1093,7 @@ ngUserControls['controls_designinfo'] = {
         Options: {
           ObjectProperties: {
             "id":   { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
-            "Text": { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
+            "Text": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.4 },
             "Alt":  { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
             "Visible": { DefaultType: 'boolean', Level: 'basic',
               Types: {
@@ -1109,8 +1109,13 @@ ngUserControls['controls_designinfo'] = {
                 }
               }
             },
-            "ControlsPanel": { DefaultType: 'control', Level: 'basic',
-              IsContainer: false
+            "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
+              IsContainer: false,
+              Types: {
+                'control': {
+                  Type: 'ngPanel'
+                }
+              }
             },
             "W": { DefaultType: 'undefined', InitType: 'bounds_integer', Level: 'basic',
               Types: {
@@ -1631,7 +1636,7 @@ ngUserControls['controls_designinfo'] = {
           "CH": { DefaultType: 'integer', Order: 0.142,
             Exclude: ['H']
           },
-          "ControlsPanel": { DefaultType: 'control', Level: 'basic',
+          "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
             IsContainer: false,
             Types: {
               'control': {
@@ -2267,7 +2272,7 @@ ngUserControls['controls_designinfo'] = {
               }
             }
           },
-          "ControlsPanel": { DefaultType: 'control', Level: 'basic',
+          "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
             IsContainer: false,
             Types: {
               'control': {
