@@ -25,28 +25,8 @@ ngUserControls['list_designinfo'] = {
           ObjectProperties: {
             "ID": { DefaultType: 'string', Level: 'basic', Order: 0.4 },
             "Caption": { DefaultType: 'string', Level: 'basic', Order: 0.41 },
-            "Align": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'left',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['left','center','right']
-                  }
-                }
-              }
-            },
-            "VAlign": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  DefaultValue: 'top',
-                  Editor: 'ngfeEditor_DropDownList',
-                  EditorOptions: {
-                    Items: ['top','middle','bottom','baseline']
-                  }
-                }
-              }
-            },
+            "Align": ng_DIPropertyStrings('left', ['left','center','right'], { Level: 'basic' }),
+            "VAlign": ng_DIPropertyStrings('top', ['top','middle','bottom','baseline'], { Level: 'basic' }),
             "Width": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
               Types: {
                 'integer': {
@@ -101,26 +81,7 @@ ngUserControls['list_designinfo'] = {
               },
             },
             "ID": { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
-            "Checked": { DefaultType: 'identifier', Level: 'basic',
-              Types: {
-                'identifier': {
-                   DefaultValue: 'nglUnchecked',
-                   InitValue: 'nglChecked',
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: ['nglUnchecked','nglChecked','nglGrayed']
-                   }
-                 },
-                'integer': {
-                   DefaultValue: 0,
-                   InitValue: 1,
-                   Editor: 'ngfeEditor_DropDownList',
-                   EditorOptions: {
-                     Items: [{Value:0,Text:'nglUnchecked'},{Value:1,Text:'nglChecked'},{Value:2,Text:'nglGrayed'}]
-                   }
-                 }
-              }
-            },
+            "Checked": ng_DIPropertyIntConstants(0,['nglUnchecked','nglChecked','nglGrayed'],{ Level: 'basic' }),
             "CheckGroup": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -451,7 +412,6 @@ ngUserControls['list_designinfo'] = {
     ngRegisterControlDesignInfo('ngList',function(d,c,ref) {
       return {
         ControlCategory: 'Lists',
-        BaseControl: 'ngList',
         NewControl: {
           Default: {
             Properties: {
@@ -599,46 +559,10 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             },
-            "SelectType": { DefaultType: 'identifier', Level: 'basic',
-              Types: {
-                'identifier': {
-                   DefaultValue: 'nglSelectNone',
-                   InitValue: 'nglSelectSingle',
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: ['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt']
-                   }
-                 },
-                'integer': {
-                   DefaultValue: 0,
-                   InitValue: 1,
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: [{Value:0,Text:'nglSelectNone'},{Value:1,Text:'nglSelectSingle'},{Value:2,Text:'nglSelectMulti'},{Value:3,Text:'nglSelectMultiExt'},{Value:4,Text:'nglSelectSingleExt'}]
-                   }
-                 }
-              }
-            },
+            "SelectType": ng_DIPropertyIntConstants(0,['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt'],{ Level: 'basic' }),
             "SelCount": { DefaultType: 'integer', Level: 'hidden' },
             "SortColumn": { DefaultType: 'string', Level: 'basic' },
-            "SortDir": { DefaultType: 'integer', Level: 'basic',
-              Types: {
-                'identifier': {
-                   DefaultValue: 'nglSortAsc',
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: ['nglSortAsc','nglSortDesc']
-                   }
-                 },
-                'integer': {
-                   DefaultValue: 0,
-                   Editor: 'ngfeEditor_DropDownList',
-                   EditorOptions: {
-                     Items: [{Value:0,Text:'nglSortAsc'},{Value:1,Text:'nglSortDesc'}]
-                   }
-                 }
-              }
-            },
+            "SortDir": ng_DIPropertyIntConstants(0,['nglSortAsc','nglSortDesc'],{ Level: 'basic' }),
             "SortCaseSensitive": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -951,7 +875,6 @@ ngUserControls['list_designinfo'] = {
     ngRegisterControlDesignInfo('ngPageList',function(d,c,ref) {
       return {
         ControlCategory: 'Lists',
-        BaseControl: 'ngPageList',
         IsContainer: false,
         NewControl: {
           Default: {
@@ -1028,24 +951,7 @@ ngUserControls['list_designinfo'] = {
         },
         Properties: ng_DIProperties({
           "Data": {
-            "DisplayMode": { DefaultType: 'identifier', Level: 'basic',
-              Types: {
-                'identifier': {
-                   DefaultValue: 'plDisplayFit',
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: ['plDisplayFixed','plDisplayFit']
-                   }
-                 },
-                'integer': {
-                   DefaultValue: 1,
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: [{Value:0,Text:'plDisplayFixed'},{Value:1,Text:'plDisplayFit'}]
-                   }
-                 }
-              }
-            },
+            "DisplayMode": ng_DIPropertyIntConstants(1,['plDisplayFixed','plDisplayFit'],{ Level: 'basic' }),
             "PagingType": { DefaultType: 'bitmask', Level: 'basic',
               Types: {
                 'bitmask': {
@@ -1112,24 +1018,7 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             },
-            "DisplayPaging": { DefaultType: 'identifier', Level: 'basic',
-              Types: {
-                'identifier': {
-                   DefaultValue: 'plDisplayPagingMorePages',
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: ['plDisplayPagingNone','plDisplayPagingAlways','plDisplayPagingNotEmpty','plDisplayPagingMorePages']
-                   }
-                 },
-                'integer': {
-                   DefaultValue: 3,
-                   Editor: 'ngfeEditor_DropDown',
-                   EditorOptions: {
-                     Items: [{Value:0,Text:'plDisplayPagingNone'},{Value:1,Text:'plDisplayPagingAlways'},{Value:2,Text:'plDisplayPagingNotEmpty'},{Value:3,Text:'plDisplayPagingMorePages'}]
-                   }
-                 }
-              }
-            },
+            "DisplayPaging": ng_DIPropertyIntConstants(3,['plDisplayPagingNone','plDisplayPagingAlways','plDisplayPagingNotEmpty','plDisplayPagingMorePages'],{ Level: 'basic' }),
             "KeyEvents": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
