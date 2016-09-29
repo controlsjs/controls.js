@@ -64,13 +64,29 @@ ngUserControls['panels_designinfo'] = {
       })
     };
     ngRegisterControlDesignInfo('ngAlignPanel',function(d,c,ref) {
-      alignpanel_DI.BaseControl='ngAlignPanel';
-      return alignpanel_DI;
+      var di={
+        BaseControl: 'ngAlignPanel',
+      };
+      ng_MergeVar(di,alignpanel_DI);
+      return di;
     });
 
     ngRegisterControlDesignInfo('ngAlignFrame',function(d,c,ref) {
-      alignpanel_DI.BaseControl='ngAlignFrame';
-      return alignpanel_DI;
+
+      var di={
+        BaseControl: 'ngAlignFrame',
+        Properties: {
+          "ParentReferences": { Level: 'optional',
+            Types: {
+              'boolean': {
+                DefaultValue: false
+              }
+            }
+          }
+        }
+      };
+      ng_MergeVar(di,alignpanel_DI);
+      return di;
     });
 
     ngRegisterControlDesignInfo('ngDropPanel',function(d,c,ref) {
@@ -107,7 +123,7 @@ ngUserControls['panels_designinfo'] = {
               }
             }
           },
-          "ControlsPanel": { DefaultType: 'control', Level: 'basic',
+          "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
             IsContainer: false,
             Types: {
               'control': {
@@ -182,7 +198,7 @@ ngUserControls['panels_designinfo'] = {
               }
             }
           },
-          "ControlsPanel1": { DefaultType: 'control', Level: 'basic',
+          "ControlsPanel1": { DefaultType: 'control', Level: 'advanced',
             IsContainer: false,
             Types: {
               'control': {
@@ -190,7 +206,7 @@ ngUserControls['panels_designinfo'] = {
               }
             }
           },
-          "ControlsPanel2": { DefaultType: 'control', Level: 'basic',
+          "ControlsPanel2": { DefaultType: 'control', Level: 'advanced',
             IsContainer: false,
             Types: {
               'control': {
