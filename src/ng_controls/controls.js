@@ -1201,6 +1201,92 @@ function ng_DIProperties(props,data) {
 };
 
 /**
+ *  Function: ng_DIProperty
+ *  Creates property design info with specified type and default value.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIProperty* (string type, string defvalue [, object data={}])
+ *
+ *  Parameters:
+ *    type - property type
+ *    defvalue - property default value
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIProperty(type, defvalue, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var mdi={
+    DefaultType: type,
+    Types: {}
+  };
+  mdi.Types[type]={
+    DefaultValue: defvalue
+  };
+  ng_MergeVar(di, mdi);
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyBool
+ *  Creates boolean property design info.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyBool* (string defvalue [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyBool(defvalue, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var mdi={
+    DefaultType: 'boolean',
+    Types: {
+      'boolean': {}
+    }
+  };
+  if(defvalue) mdi.Types['boolean'].DefaultValue=true;
+  else         mdi.Types['boolean'].InitValue=true;
+  ng_MergeVar(di, mdi);
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyEvent
+ *  Creates event property design info.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyEvent* (string defvalue [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyEvent(defvalue, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'events',
+    Types: {
+      'function': {
+        DefaultValue: defvalue
+      }
+    }
+  });
+  return di;
+}
+
+/**
  *  Function: ng_DIPropertyValues
  *  Creates property design info for list of values.
  *  Helper function.
