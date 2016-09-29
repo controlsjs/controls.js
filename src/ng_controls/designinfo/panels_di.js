@@ -17,6 +17,9 @@ ngUserControls['panels_designinfo'] = {
     if(!ngDESIGNINFO) return;
 
     var alignpanel_DI={
+      ControlCategory: 'Containers',
+      IsContainer: true,
+
       NewControl: {
         Default: {
           Properties: {
@@ -125,7 +128,6 @@ ngUserControls['panels_designinfo'] = {
     ngRegisterControlDesignInfo('ngSplitPanel',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-
         IsContainer: true,
         TargetContainer: function(control, target_control, control_elm, target_elm)
         {
