@@ -873,16 +873,6 @@ ngUserControls['controls_designinfo'] = {
   OnInit: function() {
     if(!ngDESIGNINFO) return;
 
-    function di_initasrefname(ch) {
-      if (!ch.Value) {
-        var selected = FormEditor.GetSelectedControlsIDs();
-        if (selected.length === 1) {
-          ch.Value = FormEditor.GetControlRefNameById(selected[0]);
-        }
-      }
-      return true;
-    }
-
     // register generic control
     function feGenericControl(id)
     {
@@ -901,10 +891,7 @@ ngUserControls['controls_designinfo'] = {
 
 
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
-      return {
-        ControlCategory: 'Containers',
-        IsContainer: true,
-        BaseControl: 'ngPanel',
+      var di={
         NewControl: {
           Default: {
             Properties: {
@@ -919,6 +906,12 @@ ngUserControls['controls_designinfo'] = {
           "Controls": { Level: 'basic' }
         }
       };
+      if(!d.CtrlInheritanceDepth) {
+        di.ControlCategory='Containers';
+        di.IsContainer=true;
+        di.BaseControl='ngPanel';
+      }
+      return di;
     });
 
     ngRegisterControlDesignInfo('ngText',function(d,c,ref) {
@@ -957,14 +950,13 @@ ngUserControls['controls_designinfo'] = {
 
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic',
+            "Text": ng_DIPropertyRefName({ Level: 'basic',
               Types: {
                 'string': {
                   Editor: 'ngfeEditor_Text'
                 }
-              },
-              OnPropertyInit: di_initasrefname
-            },
+              }
+            }),
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
@@ -1077,9 +1069,7 @@ ngUserControls['controls_designinfo'] = {
             "TextAlign": ng_DIPropertyStrings('center', ['left','right','center'], { Level: 'basic' }),
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic',
-              OnPropertyInit: di_initasrefname
-            },
+            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
@@ -1183,9 +1173,7 @@ ngUserControls['controls_designinfo'] = {
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": { DefaultType: 'string', Level: 'basic',
-              OnPropertyInit: di_initasrefname
-            },
+            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
             "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
               Types: {
                 'boolean': {
@@ -1254,9 +1242,7 @@ ngUserControls['controls_designinfo'] = {
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'optional' },
-            "Text": { DefaultType: 'string', Level: 'basic',
-              OnPropertyInit: di_initasrefname
-            },
+            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
             "DefaultText": { DefaultType: 'string', Level: 'basic' },
             "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
@@ -1378,9 +1364,7 @@ ngUserControls['controls_designinfo'] = {
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'optional' },
-            "Text": { DefaultType: 'string', Level: 'basic',
-              OnPropertyInit: di_initasrefname
-            },
+            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
             "DefaultText": { DefaultType: 'string', Level: 'basic' },
             "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
@@ -1857,12 +1841,17 @@ ngUserControls['controls_designinfo'] = {
     // Derived controls
 
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
-      return {
-        BaseControl: 'ngFrame',
+      var di={
         Properties: {
           "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' })
         }
       };
+      if(!d.CtrlInheritanceDepth) {
+        di.ControlCategory='Containers';
+        di.IsContainer=true;
+        di.BaseControl='ngFrame';
+      }
+      return di;
     });
 
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
