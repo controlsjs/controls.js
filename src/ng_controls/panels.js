@@ -610,7 +610,7 @@ function ngs_HandleLeave(e, elm, c)
   ngc_LeaveImg(elm.id+'E');
   ngc_LeaveImg(elm.id+'I');
 
-  if ((c)&&(c.OnHandleEnter)) c.OnHandleEnter(c);
+  if ((c)&&(c.OnHandleLeave)) c.OnHandleLeave(c);
 }
 
 function ngs_DoHandleClick()
@@ -1356,6 +1356,14 @@ function ngSplitPanel(id)
    *  Event: OnHandleClick
    */     
   this.OnHandleClick = null;
+  /*
+   *  Event: OnHandleEnter
+   */
+  this.OnHandleEnter = null;
+  /*
+   *  Event: OnHandleLeave
+   */
+  this.OnHandleLeave = null;
   /*
    *  Event: OnSizeChanging
    */     
