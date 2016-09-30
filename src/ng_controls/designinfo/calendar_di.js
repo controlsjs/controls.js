@@ -129,11 +129,7 @@ ngUserControls['calendar_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              "Data": {
-                ObjectProperties: {
-                  "Text": undefined // TODO: Check undefine
-                }
-              }
+              "W": { Value: 100 }
             }
           }
         },
@@ -155,11 +151,7 @@ ngUserControls['calendar_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              "Data": {
-                ObjectProperties: {
-                  "Text": undefined // TODO: Check undefine
-                }
-              }
+              "W": { Value: 100 }
             }
           }
         },
