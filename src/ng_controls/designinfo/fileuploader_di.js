@@ -35,24 +35,9 @@ var FileUploaderControl_DesignInfo = {
           "ListFiles": ng_DIPropertyBool(true, { Level: 'basic' }),
           "DropTarget": ng_DIPropertyBool(true, { Level: 'basic' }),
           "Data": {
-            "MaxFilesCount": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
-              Types: {
-                'undefined': {},
-                'integer': {}
-              }
-            },
-            "MaxFileSize": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
-              Types: {
-                'undefined': {},
-                'integer': {}
-              }
-            },
-            "MaxBatchSize": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
-              Types: {
-                'undefined': {},
-                'integer': {}
-              }
-            },
+            "MaxFilesCount": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
+            "MaxFileSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
+            "MaxBatchSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
             "AllowedExtensions": { DefaultType: 'undefined', InitType: 'array_strings', Level: 'basic',
               Types: {
                 'undefined': {},
@@ -75,30 +60,9 @@ var FileUploaderControl_DesignInfo = {
             "OnHideWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
           },
           "ModifyControls": {
-            "UploadIFrame": { DefaultType: 'control', Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'ngText',
-                  InheritedFrom: 'ngText'
-                }
-              }
-            },
-            "UploadWindow": { DefaultType: 'control', Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'ngWindow',
-                  InheritedFrom: 'ngWindow'
-                }
-              }
-            },
-            "ListFiles": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngList',
-                  InheritedFrom: 'ngList'
-                }
-              }
-            },
+            "UploadIFrame": ng_DIPropertyControl('ngText', { Level: 'advanced' }, 'ngText'),
+            "UploadWindow": ng_DIPropertyControl('ngWindow', { Level: 'advanced' }, 'ngWindow'),
+            "ListFiles": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList'),
             "DragAndDropPanel": { DefaultType: 'control', Level: 'basic',
               Types: {
                 'control': {
@@ -113,37 +77,10 @@ var FileUploaderControl_DesignInfo = {
                 }
               }
             },
-            "DragAndDropInfo": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngText'
-                }
-              }
-            },
-            "Buttons": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngToolBar',
-                  InheritedFrom: 'ngToolBar'
-                }
-              }
-            },
-            "BtnAddFile": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "BtnRemoveCheckedFiles": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            }
+            "DragAndDropInfo": ng_DIPropertyControl('ngText', { Level: 'basic' }),
+            "Buttons": ng_DIPropertyControl('ngToolBar', { Level: 'basic' }, 'ngToolBar'),
+            "BtnAddFile": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "BtnRemoveCheckedFiles": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
           }
         },{
           Properties: {

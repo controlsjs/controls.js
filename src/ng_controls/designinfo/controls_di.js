@@ -552,24 +552,9 @@ ngUserControls['controls_designinfo'] = {
             "Alt":  { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
             "Visible": ng_DIPropertyBool(true, { Level: 'basic' }),
             "Enabled": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
-              IsContainer: false,
-              Types: {
-                'control': {
-                  Type: 'ngPanel'
-                }
-              }
-            },
-            "W": { DefaultType: 'undefined', InitType: 'bounds_integer', Level: 'basic',
-              Types: {
-                'bounds': {}
-              }
-            },
-            "H": { DefaultType: 'undefined', InitType: 'bounds_integer', Level: 'basic',
-              Types: {
-                'bounds': {}
-              }
-            },
+            "ControlsPanel": ng_DIPropertyControl('ngPanel', { Level: 'advanced', IsContainer: false }),
+            "W": ng_DIProperty(['undefined','bounds'],undefined, { InitType: 'bounds_integer', Level: 'basic' }),
+            "H": ng_DIProperty(['undefined','bounds'],undefined, { InitType: 'bounds_integer', Level: 'basic' }),
             "MinWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "Controls": { DefaultType: 'controls', Level: 'basic',
               ContainerProperty: true,
@@ -701,14 +686,7 @@ ngUserControls['controls_designinfo'] = {
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
-            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
-                  InitValue: true
-                }
-              }
-            },
+            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "CanSelect": ng_DIPropertyBool(true, { Level: 'basic' })
           },
           "OverrideEvents": {
@@ -814,14 +792,7 @@ ngUserControls['controls_designinfo'] = {
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
-            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
-                  InitValue: true
-                }
-              }
-            },
+            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "AutoSize": ng_DIPropertyBool(true),
             "MinWidth": { DefaultType: 'undefined', InitType: 'integer' },
             "Checked": ng_DIPropertyValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic',
@@ -915,14 +886,7 @@ ngUserControls['controls_designinfo'] = {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
             "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
-                  InitValue: true
-                }
-              }
-            },
+            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "Frame": { DefaultType: 'img_frame', Level: 'basic',
               Collapsed: true
             },
@@ -1250,14 +1214,7 @@ ngUserControls['controls_designinfo'] = {
             "PagesAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
             "PagesVAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
             "TextAlign": ng_DIPropertyStrings('left', ['left','right','center','justify'], { Level: 'basic' }),
-            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
-                  InitValue: true
-                }
-              }
-            },
+            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "RowOverlap": { DefaultType: 'integer', Level: 'basic' },
             "PageImages": { DefaultType: 'array', Level: 'basic' },
             "Frame": { DefaultType: 'img_frame', Level: 'basic',
@@ -1705,20 +1662,8 @@ ngUserControls['controls_designinfo'] = {
             "DefaultNum": { DefaultType: 'integer', Level: 'basic' }
           },
           "Methods": {
-            "DoDown": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function() { ng_CallParent(this, "DoDown", arguments); }'
-                }
-              }
-            },
-            "DoUp": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function() { ng_CallParent(this, "DoUp", arguments); }'
-                }
-              }
-            }
+            "DoDown": ng_DIProperty('function','function() { ng_CallParent(this, "DoDown", arguments); }'),
+            "DoUp": ng_DIProperty('function','function() { ng_CallParent(this, "DoUp", arguments); }')
           },
           "OverrideEvents": {
             "OnGetNum": ng_DIPropertyEvent('function(c) { return 0; }')

@@ -44,38 +44,10 @@ var MaskEdit_DesignInfo = {
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": { DefaultType: 'string', Level: 'basic' },
-            "LeftDef": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "EditDef": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngEdit',
-                  InheritedFrom: 'ngEdit'
-                }
-              }
-            },
-            "StaticDef": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "RightDef": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
+            "LeftDef": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "EditDef": ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
+            "StaticDef": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "RightDef": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
 
             "Mask": ng_DIPropertyStrings('',[
               '00:00:00',

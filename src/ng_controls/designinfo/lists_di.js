@@ -94,17 +94,8 @@ ngUserControls['list_designinfo'] = {
             "H": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "MinHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "Image": { DefaultType: 'image', Level: 'basic' },
-            "Parent": { DefaultType: 'undefined', Level: 'hidden',
-              Types: {
-                'object': {},
-                'null': {}
-              }
-            },
-            "Items": { DefaultType: 'undefined', InitType: 'ngListItems', Level: 'basic',
-              Types: {
-                'ngListStringItems': {}
-              }
-            },
+            "Parent": ng_DIProperty(['undefined','object','null'],undefined,{ Level: 'hidden' }),
+            "Items": ng_DIProperty(['undefined', 'ngListItems','ngListStringItems'], undefined, {  InitType: 'ngListItems', Level: 'basic' }),
             "Controls": { DefaultType: 'controls', Level: 'basic',
               PropertyGroup: 'Controls',
               Types: {
@@ -116,11 +107,7 @@ ngUserControls['list_designinfo'] = {
                 }
               }
             },
-            "ControlsHolder": { DefaultType: 'undefined', Level: 'hidden',
-              Types: {
-                'object': {}
-              }
-            },
+            "ControlsHolder": ng_DIProperty(['undefined','object'], undefined, { Level: 'hidden' }),
             "OnClick": ng_DIPropertyEvent('function(e) { return true; }', { Order: 0.9 }),
             "OnDblClick": ng_DIPropertyEvent('function(e) { return true; }', { Order: 0.9 }),
             "OnClickItem": ng_DIPropertyEvent('function(e) {}', { Order: 0.9 }),
@@ -392,21 +379,8 @@ ngUserControls['list_designinfo'] = {
         Properties: ng_DIProperties({
           "Data": {
             "Columns": { DefaultType: 'ngListColumns', Level: 'basic' },
-            "Items": { DefaultType: 'ngListItems', Level: 'basic',
-              Collapsed: true,
-              Types: {
-                'ngListItems': {},
-                'ngListStringItems': {}
-              }
-            },
-            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
-                  InitValue: true
-                }
-              }
-            },
+            "Items": ng_DIProperty(['ngListItems','ngListStringItems'],undefined, { Level: 'basic', Collapsed: true }),
+            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "ListIndent": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "DefaultIndent": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "Indent": { DefaultType: 'null', InitType: 'integer', Level: 'basic',
@@ -666,70 +640,14 @@ ngUserControls['list_designinfo'] = {
             "OnSetLength": ng_DIPropertyEvent('function(c, len) { return len; }', { Level: 'basic' })
           },
           "ModifyControls": {
-            "List": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngList',
-                  InheritedFrom: 'ngList'
-                }
-              }
-            },
-            "Paging": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngToolBar',
-                  InheritedFrom: 'ngToolBar'
-                }
-              }
-            },
-            "FirstPage": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "PrevPage": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "PageNo": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngEdit',
-                  InheritedFrom: 'ngEdit'
-                }
-              }
-            },
-            "Page0": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "NextPage": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "LastPage": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            }
+            "List": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList'),
+            "Paging": ng_DIPropertyControl('ngToolBar', { Level: 'basic' }, 'ngToolBar'),
+            "FirstPage": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "PrevPage": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "PageNo": ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
+            "Page0": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "NextPage": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "LastPage": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
           }
         },{
           Properties: {
