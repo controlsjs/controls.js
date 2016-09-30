@@ -1206,11 +1206,11 @@ function ng_DIProperties(props,data) {
  *  Helper function.
  *
  *  Syntax:
- *    object *ng_DIProperty* (string type, string defvalue [, object data={}])
+ *    object *ng_DIProperty* (mixed type, string defvalue [, object data={}])
  *
  *  Parameters:
- *    type - property type
- *    defvalue - property default value
+ *    type - property type (or array of types)
+ *    defvalue - property default value (or array of values)
  *    data - optional standard property definition to which props are merged to
  *
  *  Returns:
@@ -1219,12 +1219,26 @@ function ng_DIProperties(props,data) {
 function ng_DIProperty(type, defvalue, data) {
   var di=((data)&&(typeof data==='object')) ? data : {};
   var mdi={
-    DefaultType: type,
     Types: {}
   };
-  mdi.Types[type]={
-    DefaultValue: defvalue
-  };
+  var arrdefval;
+  if(ng_IsArrayVar(type)) {
+    arrdefval=ng_IsArrayVar(defvalue);
+    var ftype,t;
+    for(var i in type) {
+      t=type[i];
+      if(typeof ftype === 'undefined') ftype=t;
+      mdi.Types[t]={};
+      if((arrdefval)&&(i<defvalue.length)&&(typeof defvalue[i]!=='undefined')) mdi.Types[t].DefaultValue=defvalue[i];
+    }
+    type=ftype;
+  }
+  mdi.DefaultType=type;
+  if((!arrdefval)&&(typeof defvalue!=='undefined')) {
+    mdi.Types[type]={
+      DefaultValue: defvalue
+    };
+  }
   ng_MergeVar(di, mdi);
   return di;
 }
@@ -1283,6 +1297,38 @@ function ng_DIPropertyEvent(defvalue, data) {
       }
     }
   });
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyControl
+ *  Creates control property design info.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyControl* (string type [, object data={}, string inheritedfrom])
+ *
+ *  Parameters:
+ *    typed - control type
+ *    data - optional standard property definition to which props are merged to
+ *    inheritedfrom - optional control inheritance restriction
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyControl(type, data, inheritedfrom) {
+  if(!type) type='feGenericControl';
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var mdi={
+    DefaultType: 'control',
+    Types: {
+      'control': {
+        Type: type
+      }
+    }
+  };
+  if(inheritedfrom) mdi.Types.control.InheritedFrom=inheritedfrom;
+  ng_MergeVar(di,mdi);
   return di;
 }
 
