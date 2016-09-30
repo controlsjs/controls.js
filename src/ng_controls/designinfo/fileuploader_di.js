@@ -19,6 +19,14 @@ var FileUploaderControl_DesignInfo = {
     ngRegisterControlDesignInfo('ngFileUploader',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 300 },
+              "H": { Value: 200 }
+            }
+          }
+        },
         Properties: ng_DIProperties({
           "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
           "FileUploaderID": ng_DIProperty('string', 'Main', { Level: 'basic' }),
