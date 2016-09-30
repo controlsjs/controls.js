@@ -24,8 +24,6 @@ var MaskEdit_DesignInfo = {
         NewControl: {
           Default: {
             Properties: {
-              "W": undefined,  // TODO: Check undefine
-              "H": undefined, // TODO: Check undefine
               "Data": {
                 ObjectProperties: {
                   "Mask": { Value: '00:00:00' }
@@ -115,15 +113,7 @@ var MaskEdit_DesignInfo = {
                 }
               }
             },
-            "PartInitValues": { DefaultType: 'array', 
-              Types: {
-                'array': {
-                  ChildDesignInfo: {
-                    DefaultType: 'string'
-                  }
-                }
-              }
-            },
+            "PartInitValues": { DefaultType: 'array_strings' },
             "DefaultValuesAsHint": ng_DIPropertyBool(true, { Level: 'basic' }),
             "PartDefs": { DefaultType: 'controls_array' },
             "Invalid": ng_DIPropertyBool(false, { Level: 'basic' }),
