@@ -81,6 +81,9 @@ ngUserControls['window_designinfo'] = {
               }
             }
           },
+          "style": {
+            "zIndex": { Level: 'hidden' }
+          },
           "Buttons": { DefaultType: 'controls_array', 
             Collapsed: false,
             PropertyGroup: 'Controls',
@@ -107,14 +110,7 @@ ngUserControls['window_designinfo'] = {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
             "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "HTMLEncode": { DefaultType: 'boolean', Level: 'basic',
-              Types: {
-                'boolean': {
-                  DefaultValue: ngVal(ngDefaultHTMLEncoding,false),
-                  InitValue: true
-                }
-              }
-            },
+            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "BackgroundColor": { DefaultType: 'css_colors', Level: 'basic' },
             "Sizeable": ng_DIPropertyBool(true, { Level: 'basic' }),
             "Moveable": ng_DIPropertyBool(true, { Level: 'basic' }),
@@ -288,7 +284,14 @@ ngUserControls['window_designinfo'] = {
               Types: {
                 'control': {
                   Type: 'ngText',
-                  InheritedFrom: 'ngText'
+                  InheritedFrom: 'ngText',
+                  ObjectProperties: ng_DIProperties({
+                    "Data": {
+                      "Text": { Level: 'hidden' },
+                      "ngText": { Level: 'hidden' },
+                      "ngTextD": { Level: 'hidden' }
+                    }
+                  })
                 }
               }
             }
