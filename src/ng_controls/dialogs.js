@@ -614,7 +614,7 @@ ngUserControls['dialogs'] = {
                 c=c.ParentControl.ParentControl;
                 var txt='<b>'+c.AppName+'</b>';
                 if(c.AppVersion!='') txt+='<br /><i>'+c.AppVersion+'</i>';
-                if(c.AppCopyright!='') txt+='<br />&nbsp;<br />'+appcopy;
+                if(c.AppCopyright!='') txt+='<br />&nbsp;<br />'+c.AppCopyright;
                 if(c.AppText!='') txt+='<br />&nbsp;<br />'+c.AppText;
                 return txt;
               }
