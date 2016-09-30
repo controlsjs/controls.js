@@ -12,7 +12,49 @@
 
 if (typeof ngUserControls === 'undefined') ngUserControls = [];
 ngUserControls['ngColorControls_designinfo'] = {
-  OnControlDesignInfo: function(def, c, ref)
+  OnInit: function()
   {
+    if(!ngDESIGNINFO) return;
+
+    var undefined;
+    ngRegisterControlDesignInfo('ngColorPicker',function(d,c,ref) {
+      return {
+        ControlCategory: 'Misc',
+        Properties: ng_DIProperties({
+          "Data": {
+          }
+        })
+      };
+    });
+
+    ngRegisterControlDesignInfo('ngColorPickerBox',function(d,c,ref) {
+      return {
+        ControlCategory: 'Misc'
+      };
+    });
+
+    ngRegisterControlDesignInfo('ngColorButton',function(d,c,ref) {
+      return {
+        ControlCategory: 'Buttons'
+      };
+    });
+
+    ngRegisterControlDesignInfo('ngColorPickerDropDown',function(d,c,ref) {
+      return {
+        ControlCategory: 'Edits'
+      };
+    });
+
+    ngRegisterControlDesignInfo('ngColorPickerHint',function(d,c,ref) {
+      return {
+        ControlCategory: 'Containers'
+      };
+    });
+
+    ngRegisterControlDesignInfo('ngColorPickerButton',function(d,c,ref) {
+      return {
+        ControlCategory: 'Buttons'
+      };
+    });
   }
 };
