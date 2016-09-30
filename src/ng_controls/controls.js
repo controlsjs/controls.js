@@ -1251,7 +1251,7 @@ function ng_DIPropertyBool(defvalue, data) {
     Types: {
       'boolean': {
         DefaultValue: (defvalue ? true : false),
-        InitValue: (defvalue ? false : true)
+        InitValue: true
       }
     }
   });
