@@ -4391,7 +4391,10 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
       }
       if((!pl.TopIndex)||((pl.Page>0)&&(typeof list.page_start[pl.Page] !== 'undefined')))
       {
-        list.page_start[pl.Page+1]=pl.TopIndex+pl.DisplayedItems;
+        var nti = pl.TopIndex+pl.DisplayedItems;
+        if((typeof pl.MaxLength === 'undefined') || (nti <= pl.MaxLength)){
+          list.page_start[pl.Page+1]=nti;
+        }
       }
 
       if(list.ContentElm) ng_SetScrollBars(list.ContentElm,scrollbars ? ssAuto : ssNone);
@@ -4587,8 +4590,10 @@ function npgl_SetPage(p)
                     }
                   }*/
                 }
-                this.TopIndex=s+(p-i);
-                if(this.TopIndex!=0) this.TopIndex*=this.ItemsPerPage();
+                var ap=(p-i);
+
+                this.TopIndex=s;
+                if(ap>0){this.TopIndex += ap*this.ItemsPerPage();}
                 list.page_start_found=false;
               }
             }
