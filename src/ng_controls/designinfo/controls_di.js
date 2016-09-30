@@ -10,130 +10,475 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
+/**
+ *  Class: DesignInfo
+ */
+/*
+ *  Group: Properties
+ */
+/*
+  {
+    ControlCategory: 'category',
+    BaseControl: 'basetype',
+    NonVisual: false,
+    Image: {...},
+
+    NewControl: {
+      Default: {
+        Properties: {
+          "prop1": {
+            Value: val,
+            ValueByRefName: false
+          },
+          "prop2": { // object
+            ObjectProperties: {
+              "objpropname1": { ValueByRefName: true }
+              ...
+              "objpropnameN": { ... }
+            }
+          },
+          ...
+          "propN": { ... }
+        },
+        OnCreating: function(initprops, di, target_id, target_container) {
+          return true;
+        },
+        OnCreatingPreview: function(initprops, di, target_id, target_container) {
+        },
+        OnCreated: function(control_id, initprops, di, target_id, target_container) {
+        }
+      },
+      'variant1': {
+      },
+      ...
+      'variantN': {
+      }
+    },
+    Properties: {
+      "property1": {
+        DefaultType: 'type',
+        InitType: 'type',
+        Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental)
+        PropertyGroup: 'All'(Definition|Data|DataBind|Events|...Events|Methods|Controls|All),
+        Order: 0.5,
+        Collapsed: false,
+        ContainerProperty: false,
+        Required: false,
+        FixedType: false,
+        OnPropertyInit: function(ch) {
+          return true;
+        },
+        OnPropertySetValue: function(ch) {
+          return true;
+        },
+        Types: {
+          'type1': {
+            DefaultValue: val,
+            InitValue: val,
+
+            Level: 'basic' (basic|hidden|invalid|deprecated|experimental),
+
+            typeoption1: ...,
+            ...
+            typeoptionN: ...,
+
+            Editor: 'ngfeEditor_XXX',
+            EditorOptions: {
+              ...
+            },
+
+            DestroyIfEmpty: true,
+            ObjectProperties: {
+              "objprop1": { ... },
+              ...
+              "objpropN": { ... }
+            },
+            ChildDesignInfo: {
+              "childprop1": { ... },
+              ...
+              "childpropN": { ... }
+            }
+          }
+          ...
+          'typeN': {
+          }
+        }
+      },
+      ...
+      "propertyN": {
+      }
+    },
+
+    ActionsMenu: {
+      'menuid1': {
+        MultiSelect: true,
+        Checked: 0,
+        ...
+        OnMenuClick: function(e, m, it) {
+        }
+      },
+      ...
+      'menuidN': {
+      }
+    },
+    OnActionsMenuCreating: function(ActionsMenu) {
+    },
+
+    IsContainer: false,
+    TargetContainer: function(control, target_control, control_elm, target_elm) {
+      return null;
+    }
+
+  }
+*/
+
+/**
+ *  Function: ng_DIProperties
+ *  Creates control design info Properties.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIProperties* (object props [, object data={}])
+ *
+ *  Parameters:
+ *    props - simplified properties definition
+ *    data - optional standard properties definition to which props are merged to
+ *
+ *  Returns:
+ *    Control design info Properties.
+ */
+function ng_DIProperties(props,data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  for(var i in props) {
+    switch(i) {
+      case 'Data':
+      case 'Events':
+      case 'OverrideEvents':
+      case 'Methods':
+      case 'style':
+        if(typeof di[i]==='undefined') di[i]={};
+        ng_MergeVar(di[i],{
+          Types: {
+            'object': {
+              ObjectProperties: props[i]
+            }
+          }
+        });
+        break;
+      case 'Controls':
+      case 'ModifyControls':
+        if(typeof di[i]==='undefined') di[i]={};
+        ng_MergeVar(di[i],{
+          Types: {
+            'controls': {
+              ObjectProperties: props[i]
+            }
+          }
+        });
+        break;
+      default:
+        di[i]=props[i];
+        break;
+    }
+  }
+  return di;
+};
+
+/**
+ *  Function: ng_DIProperty
+ *  Creates property design info with specified type and default value.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIProperty* (mixed type, string defvalue [, object data={}])
+ *
+ *  Parameters:
+ *    type - property type (or array of types)
+ *    defvalue - property default value (or array of values)
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIProperty(type, defvalue, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var mdi={
+    Types: {}
+  };
+  var arrdefval;
+  if(ng_IsArrayVar(type)) {
+    arrdefval=ng_IsArrayVar(defvalue);
+    var ftype,t;
+    for(var i in type) {
+      t=type[i];
+      if(typeof ftype === 'undefined') ftype=t;
+      mdi.Types[t]={};
+      if((arrdefval)&&(i<defvalue.length)&&(typeof defvalue[i]!=='undefined')) mdi.Types[t].DefaultValue=defvalue[i];
+    }
+    type=ftype;
+  }
+  mdi.DefaultType=type;
+  if((!arrdefval)&&(typeof defvalue!=='undefined')) {
+    mdi.Types[type]={
+      DefaultValue: defvalue
+    };
+  }
+  ng_MergeVar(di, mdi);
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyBool
+ *  Creates boolean property design info.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyBool* (string defvalue [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyBool(defvalue, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'boolean',
+    Types: {
+      'boolean': {
+        DefaultValue: (defvalue ? true : false),
+        InitValue: true
+      }
+    }
+  });
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyEvent
+ *  Creates event property design info.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyEvent* (string defvalue [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyEvent(defvalue, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'events',
+    Types: {
+      'function': {
+        DefaultValue: defvalue
+      }
+    }
+  });
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyControl
+ *  Creates control property design info.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyControl* (string type [, object data={}, string inheritedfrom])
+ *
+ *  Parameters:
+ *    typed - control type
+ *    data - optional standard property definition to which props are merged to
+ *    inheritedfrom - optional control inheritance restriction
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyControl(type, data, inheritedfrom) {
+  if(!type) type='feGenericControl';
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var mdi={
+    DefaultType: 'control',
+    Types: {
+      'control': {
+        Type: type
+      }
+    }
+  };
+  if(inheritedfrom) mdi.Types.control.InheritedFrom=inheritedfrom;
+  ng_MergeVar(di,mdi);
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyRefName
+ *  Creates property design info which is initialized by its reference name.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyRefName* ([object data={}])
+ *
+ *  Parameters:
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyRefName(data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'string',
+    OnPropertyInit: function (ch) {
+      if (!ch.Value) {
+        var selected = FormEditor.GetSelectedControlsIDs();
+        if (selected.length === 1) {
+          ch.Value = FormEditor.GetControlRefNameById(selected[0]);
+        }
+      }
+      return true;
+    }
+  });
+  return di;
+}
+
+
+/**
+ *  Function: ng_DIPropertyValues
+ *  Creates property design info for list of values.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyValues* (string type, string defvalue, array values [, object data={}])
+ *
+ *  Parameters:
+ *    type - property type
+ *    defvalue - property default value or name
+ *    values - list of values defined as object { Value: X, Text: 'Value1' }
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyValues(type, defvalue, values, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var c,defival;
+  for(var i=values.length-1;i>=0;i--) {
+    c=values[i];
+    if(typeof c==='undefined') { values.splice(i,1); continue; }
+    if(typeof c==='string') { c={ Text:c, Value: i }; values[i]=c; }
+    if(c.Text===defvalue) defival=c.Value;
+    else if(c.Value===defvalue) { defival=c.Value; defvalue=c.Text; }
+  }
+
+  var mdi={
+    DefaultType: type,
+    Types: {}
+  };
+  mdi.Types[type]={
+    DefaultValue: defival,
+    Editor: 'ngfeEditor_DropDownList',
+    EditorOptions: {
+      Items: values
+    }
+  }
+  ng_MergeVar(di, mdi);
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyStrings
+ *  Creates property design info for list of strings.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyStrings* (string defvalue, array strings [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value
+ *    strings - list of strings
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyStrings(defvalue, strings, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  ng_MergeVar(di, {
+    DefaultType: 'string',
+    Types: {
+      'string': {
+        DefaultValue: defvalue,
+        Editor: 'ngfeEditor_DropDownList',
+        EditorOptions: {
+          Items: strings
+        }
+      }
+    }
+  });
+  return di;
+}
+
+/**
+ *  Function: ng_DIPropertyIntConstants
+ *  Creates property design info for list of integer constants.
+ *  Helper function.
+ *
+ *  Syntax:
+ *    object *ng_DIPropertyIntConstants* (mixed defvalue, array consts [, object data={}])
+ *
+ *  Parameters:
+ *    defvalue - property default value, constant name or value
+ *    consts - list of constants, constant is defined as object { Value: X, Text: 'Const1' } or as string,
+ *             if string is used the value is considered as item order in a array,
+ *             undefined items are skipped
+ *    data - optional standard property definition to which props are merged to
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_DIPropertyIntConstants(defvalue, consts, data) {
+  var di=((data)&&(typeof data==='object')) ? data : {};
+  var c,defival;
+  var ids=[];
+  for(var i=consts.length-1;i>=0;i--) {
+    c=consts[i];
+    if(typeof c==='undefined') { consts.splice(i,1); continue; }
+    if(typeof c==='string') { c={ Text:c, Value: i }; consts[i]=c; }
+    if(c.Text===defvalue) defival=c.Value;
+    else if(c.Value===defvalue) { defival=c.Value; defvalue=c.Text; }
+    ids.push(c.Text);
+  }
+  ng_MergeVar(di, {
+    DefaultType: 'identifier',
+    Types: {
+      'identifier': {
+        DefaultValue: defvalue,
+        Editor: 'ngfeEditor_DropDown',
+        EditorOptions: {
+          Items: ids
+        }
+      },
+      'integer': {
+        DefaultValue: defival,
+        Level: 'hidden',
+        Editor: 'ngfeEditor_DropDownList',
+        EditorOptions: {
+          Items: consts
+        }
+      }
+    }
+  });
+  return di;
+}
+
 (function()
 {
-  /**
-   *  Class: DesignInfo
-   */
-  /*
-   *  Group: Properties
-   */
-  /*
-    {
-      ControlCategory: 'category',
-      BaseControl: 'basetype',
-      NonVisual: false,
-      Image: {...},
-
-      NewControl: {
-        Default: {
-          Properties: {
-            "prop1": {
-              Value: val,
-              ValueByRefName: false
-            },
-            "prop2": { // object
-              ObjectProperties: {
-                "objpropname1": { ValueByRefName: true }
-                ...
-                "objpropnameN": { ... }
-              }
-            },
-            ...
-            "propN": { ... }
-          },
-          OnCreating: function(initprops, di, target_id, target_container) {
-            return true;
-          },
-          OnCreatingPreview: function(initprops, di, target_id, target_container) {
-          },
-          OnCreated: function(control_id, initprops, di, target_id, target_container) {
-          }
-        },
-        'variant1': {
-        },
-        ...
-        'variantN': {
-        }
-      },
-      Properties: {
-        "property1": {
-          DefaultType: 'type',
-          InitType: 'type',
-          Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental)
-          PropertyGroup: 'All'(Definition|Data|DataBind|Events|...Events|Methods|Controls|All),
-          Order: 0.5,
-          Collapsed: false,
-          ContainerProperty: false,
-          Required: false,
-          FixedType: false,
-          OnPropertyInit: function(ch) {
-            return true;
-          },
-          OnPropertySetValue: function(ch) {
-            return true;
-          },
-          Types: {
-            'type1': {
-              DefaultValue: val,
-              InitValue: val,
-
-              Level: 'basic' (basic|hidden|invalid|deprecated|experimental),
-
-              typeoption1: ...,
-              ...
-              typeoptionN: ...,
-
-              Editor: 'ngfeEditor_XXX',
-              EditorOptions: {
-                ...
-              },
-
-              DestroyIfEmpty: true,
-              ObjectProperties: {
-                "objprop1": { ... },
-                ...
-                "objpropN": { ... }
-              },
-              ChildDesignInfo: {
-                "childprop1": { ... },
-                ...
-                "childpropN": { ... }
-              }
-            }
-            ...
-            'typeN': {
-            }
-          }
-        },
-        ...
-        "propertyN": {
-        }
-      },
-
-      ActionsMenu: {
-        'menuid1': {
-          MultiSelect: true,
-          Checked: 0,
-          ...
-          OnMenuClick: function(e, m, it) {
-          }
-        },
-        ...
-        'menuidN': {
-        }
-      },
-      OnActionsMenuCreating: function(ActionsMenu) {
-      },
-
-      IsContainer: false,
-      TargetContainer: function(control, target_control, control_elm, target_elm) {
-        return null;
-      }
-
-    }
-  */
-
   function getBaseProperties()
   {
     var BaseDI = {
