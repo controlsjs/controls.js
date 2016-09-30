@@ -137,14 +137,6 @@
   function getBaseProperties()
   {
     var BaseDI = {
-      NewControl: {
-        Default: {
-          Properties: {
-            "L": {},
-            "T": {}
-          }
-        }
-      },
       Properties: {
         "Type": { DefaultType: 'string', Level: 'basic', Order: 0.01,
           Types: {
@@ -172,6 +164,16 @@
           }
         },
 
+        "Controls": { DefaultType: 'controls', Level: 'optional', Order: 0.65,
+          ContainerProperty: true,
+          Types: {
+            'controls': {
+              ChildDesignInfo: {
+                PropertyGroup: 'Controls'
+              }
+            }
+          }
+        },
         "ModifyControls": { DefaultType: 'controls', Level: 'optional', Order: 0.7,
           ContainerProperty: true,
           Types: {
@@ -201,99 +203,24 @@
           Types: {
             'object': {
               DestroyIfEmpty: true,
+              // TODO: return values??
               ObjectProperties:
               {
-                "SetChildControlsEnabled": { DefaultType: 'function', Level: 'experimental',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(v, p) { ng_CallParent(this, "SetChildControlsEnabled", arguments); }'
-                    }
-                  }
-                },
-                "DoDispose": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function() { return ng_CallParent(this, "DoDispose", arguments, true); }' // TODO: return value??
-                    }
-                  }
-                },
-                "DoCreate": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }'
-                    }
-                  }
-                },
-                "DoSetEnabled": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(v) { ng_CallParent(this, "DoSetEnabled", arguments); }'
-                    }
-                  }
-                },
-                "Enable": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function() { ng_CallParent(this, "Enable", arguments); }'
-                    }
-                  }
-                },
-                "Disable": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function() { ng_CallParent(this, "Disable, arguments); }'
-                    }
-                  }
-                },
-                "SetEnabled": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(v, p) { ng_CallParent(this, "SetEnabled", arguments); }'
-                    }
-                  }
-                },
-                "Elm": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function() { return ng_CallParent(this, "Elm", arguments, null); }' // TODO: return value??
-                    }
-                  }
-                },
-                "CtrlInheritsFrom": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(type) { ng_CallParent(this, "CtrlInheritsFrom", arguments); }'
-                    }
-                  }
-                },
-                "Create": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(props, ref) { ng_CallParent(this, "Create", arguments); }'
-                    }
-                  }
-                },
-                "Dispose": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function() { ng_CallParent(this, "Dispose", arguments); }'
-                    }
-                  }
-                },
-                "AddEvent": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(ev, fce, once) { ng_CallParent(this, "AddEvent", arguments); }'
-                    }
-                  }
-                },
-                "RemoveEvent": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(ev, fce) { ng_CallParent(this, "RemoveEvent", arguments); }'
-                    }
-                  }
-                }
+                "SetChildControlsEnabled": ng_DIProperty('function','function(v, p) { ng_CallParent(this, "SetChildControlsEnabled", arguments); }', { Level: 'experimental' }),
+
+                "DoDispose": ng_DIProperty('function','function() { return ng_CallParent(this, "DoDispose", arguments, true); }'),
+                "DoCreate": ng_DIProperty('function','function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }'),
+                "DoSetEnabled": ng_DIProperty('function','function(v) { ng_CallParent(this, "DoSetEnabled", arguments); }'),
+
+                "Enable": ng_DIProperty('function','function() { ng_CallParent(this, "Enable", arguments); }',{ Level: 'optional' }),
+                "Disable": ng_DIProperty('function','function() { ng_CallParent(this, "Disable, arguments); }',{ Level: 'optional' }),
+                "SetEnabled": ng_DIProperty('function','function(v, p) { ng_CallParent(this, "SetEnabled", arguments); }',{ Level: 'optional' }),
+                "Elm": ng_DIProperty('function','function() { return ng_CallParent(this, "Elm", arguments, null); }',{ Level: 'optional' }),
+                "CtrlInheritsFrom": ng_DIProperty('function','function(type) { ng_CallParent(this, "CtrlInheritsFrom", arguments); }',{ Level: 'optional' }),
+                "Create": ng_DIProperty('function','function(props, ref) { ng_CallParent(this, "Create", arguments); }',{ Level: 'optional' }),
+                "Dispose": ng_DIProperty('function','function() { ng_CallParent(this, "Dispose", arguments); }',{ Level: 'optional' }),
+                "AddEvent": ng_DIProperty('function','function(ev, fce, once) { ng_CallParent(this, "AddEvent", arguments); }',{ Level: 'optional' }),
+                "RemoveEvent": ng_DIProperty('function','function(ev, fce) { ng_CallParent(this, "RemoveEvent", arguments); }',{ Level: 'optional' })
               }
             }
           }
@@ -494,17 +421,6 @@
           }
         },
 
-        "Controls": { DefaultType: 'controls', Level: 'optional', Order: 0.65,
-          ContainerProperty: true,
-          Types: {
-            'controls': {
-              ChildDesignInfo: {
-                PropertyGroup: 'Controls'
-              }
-            }
-          }
-        },
-
         "Events": {
           Types: {
             'object': {
@@ -534,219 +450,44 @@
         "Methods": {
           Types: {
             'object': {
+              // TODO: return values??
               ObjectProperties:
               {
-                "DoMouseEnter": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(e, mi, elm) { ng_CallParent(this, "DoMouseEnter", arguments); }'
-                    }
-                  }
-                },
-                "DoMouseLeave": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(e, mi, elm) { ng_CallParent(this, "DoMouseLeave", arguments); }'
-                    }
-                  }
-                },
-                "DoClickOutside": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoClickOutside", arguments); }'
-                    }
-                  }
-                },
-                "IsInsidePopup": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(target, intype, e) { ng_CallParent(this, "IsInsidePopup", arguments); }'
-                    }
-                  }
-                },
-                "DoAcceptGestures": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm, gestures) { ng_CallParent(this, "DoAcceptGestures", arguments); }'
-                    }
-                  }
-                },
-                "DoAcceptPtrGestures": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm, eid, gestures, ev) { ng_CallParent(this, "DoAcceptPtrGestures", arguments); }'
-                    }
-                  }
-                },
-                "DoGetPtrOptions": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(eid, opts) { ng_CallParent(this, "DoGetPtrOptions", arguments); }'
-                    }
-                  }
-                },
+                "DoMouseEnter": ng_DIProperty('function','function(e, mi, elm) { ng_CallParent(this, "DoMouseEnter", arguments); }', { Level: 'optional' }),
+                "DoMouseLeave": ng_DIProperty('function','function(e, mi, elm) { ng_CallParent(this, "DoMouseLeave", arguments); }', { Level: 'optional' }),
+                "DoClickOutside": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoClickOutside", arguments); }', { Level: 'optional' }),
+                "IsInsidePopup": ng_DIProperty('function','function(target, intype, e) { ng_CallParent(this, "IsInsidePopup", arguments); }', { Level: 'optional' }),
 
-                "DoUpdate": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm) { ng_CallParent(this, "DoUpdate", arguments); }'
-                    }
-                  }
-                },
-                "DoAttach": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm, elmid) { ng_CallParent(this, "DoAttach", arguments); }'
-                    }
-                  }
-                },
-                "DoRelease": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm) { ng_CallParent(this, "DoRelease", arguments); }'
-                    }
-                  }
-                },
-                "DoSetVisible": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm, v) { ng_CallParent(this, "DoSetVisible", arguments); }'
-                    }
-                  }
-                },
-                "DoResize": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(elm) { ng_CallParent(this, "DoResize", arguments); }'
-                    }
-                  }
-                },
-                "SetVisible": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(v) { ng_CallParent(this, "SetVisible", arguments); }'
-                    }
-                  }
-                },
-                "SetFocus": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(state) { ng_CallParent(this, "SetFocus", arguments); }'
-                    }
-                  }
-                },
-                "SetBounds": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(props) { ng_CallParent(this, "SetBounds", arguments); }'
-                    }
-                  }
-                },
-                "SetScrollBars": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(v) { ng_CallParent(this, "SetScrollBars", arguments); }'
-                    }
-                  }
-                },
-                "SetPopup": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(p) { ng_CallParent(this, "SetPopup", arguments); }'
-                    }
-                  }
-                },
-                "SetOpacity": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(v) { ng_CallParent(this, "SetOpacity", arguments); }'
-                    }
-                  }
-                },
-                "Align": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(o) { ng_CallParent(this, "Align", arguments); }'
-                    }
-                  }
-                },
-                "Attach": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(o) { ng_CallParent(this, "Attach", arguments); }'
-                    }
-                  }
-                },
-                "Release": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function() { ng_CallParent(this, "Release", arguments); }'
-                    }
-                  }
-                },
-                "Update": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(recursive) { ng_CallParent(this, "Update", arguments); }'
-                    }
-                  }
-                },
-                "UpdateLater": { DefaultType: 'function', Level: 'optional',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(s) { ng_CallParent(this, "UpdateLater", arguments); }'
-                    }
-                  }
-                },
-                "DoPointerDown": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPointerDown", arguments); }'
-                    }
-                  }
-                },
-                "DoPointerUp": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPointerUp", arguments); }'
-                    }
-                  }
-                },
-                "DoPtrStart": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPtrStart", arguments); }'
-                    }
-                  }
-                },
-                "DoPtrEnd": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPtrEnd", arguments); }'
-                    }
-                  }
-                },
-                "DoPtrDrag": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPtrDrag", arguments); }'
-                    }
-                  }
-                },
-                "DoPtrClick": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPtrClick", arguments); }'
-                    }
-                  }
-                },
-                "DoPtrDblClick": { DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(pi) { ng_CallParent(this, "DoPtrDblClick", arguments); }'
-                    }
-                  }
-                }
+                "DoAcceptGestures": ng_DIProperty('function','function(elm, gestures) { ng_CallParent(this, "DoAcceptGestures", arguments); }'),
+
+                "DoAcceptPtrGestures": ng_DIProperty('function','function(elm, eid, gestures, ev) { ng_CallParent(this, "DoAcceptPtrGestures", arguments); }', { Level: 'optional' }),
+                "DoGetPtrOptions": ng_DIProperty('function','function(eid, opts) { ng_CallParent(this, "DoGetPtrOptions", arguments); }', { Level: 'optional' }),
+
+                "DoUpdate": ng_DIProperty('function','function(elm) { ng_CallParent(this, "DoUpdate", arguments); }'),
+                "DoAttach": ng_DIProperty('function','function(elm, elmid) { ng_CallParent(this, "DoAttach", arguments); }'),
+                "DoRelease": ng_DIProperty('function','function(elm) { ng_CallParent(this, "DoRelease", arguments); }'),
+                "DoSetVisible": ng_DIProperty('function','function(elm, v) { ng_CallParent(this, "DoSetVisible", arguments); }'),
+                "DoResize": ng_DIProperty('function','function(elm) { ng_CallParent(this, "DoResize", arguments); }'),
+
+                "SetVisible": ng_DIProperty('function','function(v) { ng_CallParent(this, "SetVisible", arguments); }', { Level: 'optional' }),
+                "SetFocus": ng_DIProperty('function','function(state) { ng_CallParent(this, "SetFocus", arguments); }', { Level: 'optional' }),
+                "SetBounds": ng_DIProperty('function','function(props) { ng_CallParent(this, "SetBounds", arguments); }', { Level: 'optional' }),
+                "SetScrollBars": ng_DIProperty('function','function(v) { ng_CallParent(this, "SetScrollBars", arguments); }', { Level: 'optional' }),
+                "SetPopup": ng_DIProperty('function','function(p) { ng_CallParent(this, "SetPopup", arguments); }', { Level: 'optional' }),
+                "SetOpacity": ng_DIProperty('function','function(v) { ng_CallParent(this, "SetOpacity", arguments); }', { Level: 'optional' }),
+                "Align": ng_DIProperty('function','function(o) { ng_CallParent(this, "Align", arguments); }', { Level: 'optional' }),
+                "Attach": ng_DIProperty('function','function(o) { ng_CallParent(this, "Attach", arguments); }', { Level: 'optional' }),
+                "Release": ng_DIProperty('function','function() { ng_CallParent(this, "Release", arguments); }', { Level: 'optional' }),
+                "Update": ng_DIProperty('function','function(recursive) { ng_CallParent(this, "Update", arguments); }', { Level: 'optional' }),
+                "UpdateLater": ng_DIProperty('function','function(s) { ng_CallParent(this, "UpdateLater", arguments); }', { Level: 'optional' }),
+
+                "DoPointerDown": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPointerDown", arguments); }'),
+                "DoPointerUp": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPointerUp", arguments); }'),
+                "DoPtrStart": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPtrStart", arguments); }'),
+                "DoPtrEnd": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPtrEnd", arguments); }'),
+                "DoPtrDrag": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPtrDrag", arguments); }'),
+                "DoPtrClick": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPtrClick", arguments); }'),
+                "DoPtrDblClick": ng_DIProperty('function','function(pi) { ng_CallParent(this, "DoPtrDblClick", arguments); }')
               }
             }
           }
@@ -1723,8 +1464,8 @@ ngUserControls['controls_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              "W": { Value: 100 },
-              "H": { Value: 50 }
+              "W": { Value: 150 },
+              "H": { Value: 30 }
             }
           }
         },
