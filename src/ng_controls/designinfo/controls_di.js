@@ -483,6 +483,7 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
   {
     var BaseDI = {
       Properties: {
+        "ID": ng_DIPropertyRefName({ Level: 'optional', Order: 0.001 }),
         "Type": { DefaultType: 'string', Level: 'basic', Order: 0.01,
           Types: {
             'string': {
@@ -851,6 +852,14 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
     obj.DesignInfo = {
       NonVisual: true,
       ControlCategory: 'System',
+      NewControl: {
+        Default: {
+          Properties: {
+            "L": {},
+            "T": {}
+          }
+        }
+      },
       Properties: {
         "R": {},
         "B": {}
