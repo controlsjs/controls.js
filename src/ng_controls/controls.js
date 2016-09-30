@@ -1246,15 +1246,15 @@ function ng_DIProperty(type, defvalue, data) {
  */
 function ng_DIPropertyBool(defvalue, data) {
   var di=((data)&&(typeof data==='object')) ? data : {};
-  var mdi={
+  ng_MergeVar(di, {
     DefaultType: 'boolean',
     Types: {
-      'boolean': {}
+      'boolean': {
+        DefaultValue: (defvalue ? true : false),
+        InitValue: (defvalue ? false : true)
+      }
     }
-  };
-  if(defvalue) mdi.Types['boolean'].DefaultValue=true;
-  else         mdi.Types['boolean'].InitValue=true;
-  ng_MergeVar(di, mdi);
+  });
   return di;
 }
 
