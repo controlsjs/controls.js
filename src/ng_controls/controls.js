@@ -13293,7 +13293,7 @@ function ngwb_SetURL(url)
   if((this.OnSetURL)&&(!ngVal(this.OnSetURL(this,url),false))) return;
   this.URL=url;
   var br=this.GetBrowser()
-  if((br)&&((!this.InDesignMode)||(this.LiveDesign)))
+  if((br)&&((!this.InDesignMode)||(this.DesignLive)))
   {
     br.src=url;
     this.opened_url=br.src;
