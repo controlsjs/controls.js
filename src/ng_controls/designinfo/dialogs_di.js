@@ -70,6 +70,7 @@ ngUserControls['dialogs_designinfo'] = {
             "DialogResult": ng_DIPropertyIntConstants(0,[{Value:0,Text:'mbNone'},{Value:1,Text:'mbCancel'},{Value:2,Text:'mbOK'},{Value:4,Text:'mbYes'},{Value:8,Text:'mbNo'}],{ Level: 'basic' }),
 
             // changed ngWindow defaults
+            "AutoSize": { Level: 'optional' },
             "Centered": ng_DIPropertyBool(true),
             "Visible": ng_DIPropertyBool(false),
             "Sizeable": ng_DIPropertyBool(false),
@@ -77,62 +78,25 @@ ngUserControls['dialogs_designinfo'] = {
             "DisposeOnClose": ng_DIPropertyBool(true)
           },
           "ModifyControls": {
-            "Message": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngText',
-                  InheritedFrom: 'ngText'
-                }
-              }
-            },
-            "Content": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngPanel',
-                  InheritedFrom: 'ngPanel'
-                }
-              }
-            },
+            "Message": ng_DIPropertyControl('ngText', { Level: 'basic' }, 'ngText'),
+            "Content": ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
             "Buttons": { DefaultType: 'control', Level: 'basic',
               Types: {
                 'control': {
                   Type: 'ngToolBar',
-                  InheritedFrom: 'ngToolBar'
+                  InheritedFrom: 'ngToolBar',
+                  ObjectProperties: ng_DIProperties({
+                    "Data": {
+                      "CenterButtons": ng_DIPropertyBool(true, { Level: 'basic' })
+                    }
+                  })
                 }
               }
             },
-            "OK": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "Yes": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "No": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            },
-            "Cancel": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngButton',
-                  InheritedFrom: 'ngButton'
-                }
-              }
-            }
+            "OK": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "Yes": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "No": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "Cancel": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
           }
         },{
           Properties: {
@@ -146,6 +110,20 @@ ngUserControls['dialogs_designinfo'] = {
       return {
         ControlCategory: 'Dialogs',
         Properties: ng_DIProperties({
+          "AboutSystemInfo": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutComponents": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutLibraries": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutTrademarks": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutReleaseNotes": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+          "Data": {
+            "AppName": ng_DIProperty('string',ngTxt('ngAppName',document.title),{ Level: 'basic' }),
+            "AppVersion": ng_DIProperty('string','Version 1.0.0',{ Level: 'basic' }),
+            "AppCopyright": ng_DIProperty('string',ngTxt('ngAppCopyright',''),{ Level: 'basic' }),
+            "AppText": ng_DIProperty('string','',{ Level: 'basic' }),
+          },
+          "ModifyControls": {
+            "AppInfo": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList')
+          }
         })
       };
     });
