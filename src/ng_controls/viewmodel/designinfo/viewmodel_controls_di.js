@@ -21,78 +21,83 @@ var ViewModel_Controls_DesignInfo = (function()
           'databind_string': {}
         }
       },
-      MouseOver: {
-        DefaultType: 'databind_string',
-        Types: {
-          'databind_string': {
-            EditorOptions: {
-              DatabindFunction: true
-            }
-          }
-        }
-      },
       Data: { DefaultType: 'databind_string' },
       Link: { DefaultType: 'databind_string', Level: 'basic' },
-      OnClick: {
-        DefaultType: 'databind_string',
-        Types: {
-          'databind_string': {
-            EditorOptions: {
-              DatabindFunction: true
-            }
-          }
-        },
-        Level: 'optional'
-      },
       ReadOnly: { DefaultType: 'databind_string', Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' },
       Error: { DefaultType: 'databind_string' },
       ShowError: { DefaultType: 'databind_string' }
     };
 
     // dependent bindings
-    if (typeof c.SetBounds === 'function')
-    {
-      props.Bounds = {
-        DefaultType: 'object',
-        Types: {
-          'databind_string': {}
+    if(!di.NonVisual) {
+      ng_MergeVar(props, {
+        OnClick: {
+          DefaultType: 'databind_string',
+          Types: {
+            'databind_string': {
+              EditorOptions: {
+                DatabindFunction: true
+              }
+            }
+          },
+          Level: 'optional'
         },
-        Level: 'basic'
-      };
-    }
-
-    if (typeof c.Elm === 'function' && c.DesignInfo && !c.DesignInfo.NonVisual)
-    {
-      props.style = {
-        DefaultType: 'object',
-        Types: {
-          'databind_string': {}
+        MouseOver: {
+          DefaultType: 'databind_string',
+          Types: {
+            'databind_string': {
+              EditorOptions: {
+                DatabindFunction: true
+              }
+            }
+          }
         }
-      };
-      props.className = { DefaultType: 'databind_string' };
-      props.SubClassName = { DefaultType: 'databind_string' };
-      props.BaseClassName = { DefaultType: 'databind_string' };
-    }
+      });
 
-    if (typeof c.SetFocus === 'function')
-    {
-      props.Focus = { DefaultType: 'databind_string', Level: 'optional' };
-    }
+      if (typeof c.SetBounds === 'function')
+      {
+        props.Bounds = {
+          DefaultType: 'object',
+          Types: {
+            'databind_string': {}
+          },
+          Level: 'basic'
+        };
+      }
 
-    if (typeof c.SetOpacity === 'function')
-    {
-      props.Opacity = { DefaultType: 'databind_string', Level: 'basic' };
+      if (typeof c.Elm === 'function')
+      {
+        props.style = {
+          DefaultType: 'object',
+          Types: {
+            'databind_string': {}
+          }
+        };
+        props.className = { DefaultType: 'databind_string' };
+        props.SubClassName = { DefaultType: 'databind_string' };
+        props.BaseClassName = { DefaultType: 'databind_string' };
+      }
+
+      if (typeof c.SetFocus === 'function')
+      {
+        props.Focus = { DefaultType: 'databind_string', Level: 'optional' };
+      }
+
+      if (typeof c.SetOpacity === 'function')
+      {
+        props.Opacity = { DefaultType: 'databind_string', Level: 'basic' };
+      }
+
+      if (typeof c.SetVisible === 'function')
+      {
+        props.Visible = { DefaultType: 'databind_string', Level: 'basic' };
+      }
     }
 
     if (typeof c.SetEnabled === 'function')
     {
       props.Enabled = { DefaultType: 'databind_string', Level: 'basic' };
       props.Disabled = { DefaultType: 'databind_string', Level: 'basic' };
-    }
-
-    if (typeof c.SetVisible === 'function')
-    {
-      props.Visible = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     if (typeof c.SetText === 'function')
@@ -321,12 +326,12 @@ var ViewModel_Controls_DesignInfo = (function()
     };
 
     // handle DataBind Events properties
-    if (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events && c.DesignInfo.Properties.Events.Types && c.DesignInfo.Properties.Events.Types['object'])
+    if (di && di.Properties && di.Properties.Events && di.Properties.Events.Types && di.Properties.Events.Types['object'])
     {
       var netbeans = ((typeof CodeMirrorIntegration !== 'undefined')&&(typeof CodeMirrorIntegration.RunningInNetBeans === 'function')&&(CodeMirrorIntegration.RunningInNetBeans()));
 
       var o = {},
-          props = c.DesignInfo.Properties.Events.Types['object'].ObjectProperties;
+          props = di.Properties.Events.Types['object'].ObjectProperties;
       for (var i in props)
       {
         o[i] = {
@@ -398,7 +403,7 @@ var ViewModel_Controls_DesignInfo = (function()
   return {
     OnControlDesignInfo: function(def, c, ref)
     {
-      if(c)
+      if((c)&&(!def.CtrlInheritanceDepth))
       {
         // define Databind DesignInfo of all controls
         add_databind_di(c.DesignInfo, def, c, ref);
