@@ -650,9 +650,7 @@ ngUserControls['list_designinfo'] = {
             "LastPage": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
           }
         },{
-          Properties: {
-            "ModifyControls": { Level: 'basic' }
-          }
+          "ModifyControls": { Level: 'basic' }
         })
       };
     });

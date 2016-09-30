@@ -297,9 +297,7 @@ ngUserControls['window_designinfo'] = {
             }
           }
         },{
-          Properties: {
-            "ModifyControls": { Level: 'basic' }
-          }
+          "ModifyControls": { Level: 'basic' }
         })
       };
     });
