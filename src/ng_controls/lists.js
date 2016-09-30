@@ -4919,7 +4919,7 @@ function npgl_NeedData(idx,cnt)
 
 function npgl_IsDynamicData()
 {
-  return ((this.OnLoadData)||(this.AsyncDataURL!=''));
+  return ((this.OnLoadData)||(this.AsyncDataURL!=''))&&((!this.InDesignMode)||(this.DesignLive));
 }
 
 function npgl_IsDataLoaded(idx)

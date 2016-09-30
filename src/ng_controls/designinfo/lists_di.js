@@ -621,7 +621,8 @@ ngUserControls['list_designinfo'] = {
             "AsyncData": ng_DIPropertyBool(true, { Level: 'basic' }),
             "AsyncDataTimeout": ng_DIProperty('integer', 30, { Level: 'basic' }),
             "AsyncDataRetryCnt": ng_DIProperty('integer', 3, { Level: 'basic' }),
-            "AsyncDataURL": { DefaultType: 'url', Level: 'basic' }
+            "AsyncDataURL": { DefaultType: 'url', Level: 'basic' },
+            "DesignLive": ng_DIPropertyBool(false, { Level: 'basic' })
           },
           "Events": {
             "OnPageChanging": ng_DIPropertyEvent('function(c, page) { return true; }', { Level: 'basic' }),
