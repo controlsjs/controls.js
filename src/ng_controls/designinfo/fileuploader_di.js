@@ -96,7 +96,7 @@ var FileUploaderControl_DesignInfo = {
                 'control': {
                   Type: 'ngPanel',
                   InheritedFrom: 'ngPanel',
-                  ObjectProperties: ng_DIProperties({ // TODO: not working :(
+                  ObjectProperties: ng_DIProperties({
                     "Events": {
                       "OnFilesDragOver": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' }),
                       "OnFilesDragLeave": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' })
