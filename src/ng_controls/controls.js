@@ -1437,6 +1437,7 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
       },
       'integer': {
         DefaultValue: defival,
+        Level: 'hidden',
         Editor: 'ngfeEditor_DropDownList',
         EditorOptions: {
           Items: consts
@@ -1710,10 +1711,29 @@ function ng_MergeDI(dst,def,allowundefined,callback)
 {
   def=ng_CopyVar(def);
   if(!ngVal(allowundefined,false)) def=ng_CleanUndefined(def);
+  if((def.NewControl)&&(typeof def.NewControl==='object')&&(typeof def.NewControl._noMerge === 'undefined'))
+    def.NewControl._noMerge=true;
   ng_MergeVarReplace(dst,def,true,function(d,o) {
 
     if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return false;
-    if(d._noMerge===true) return false;
+    if(o._noMerge===true) {
+      var dref=d['_byRef'];
+      var oref=o ? o['_byRef'] : null;
+      var ex={};
+      for(var i in o) {
+        ex[i]=true;
+        if((oref)&&(oref[i])) ng_SetByRef(d,i,o[i]);
+        else {
+          if(dref) delete dref[i];
+          d[i]=ng_CopyVar(o[i]);
+        }
+      }
+      for(var i in d) {
+        if(!ex[i]) delete d[i];
+      }
+      delete d._noMerge;
+      return false;
+    }
 
     if((typeof d.OnActionsMenuCreating === 'function')&&(typeof o.OnActionsMenuCreating === 'function')) {
       o.OnActionsMenuCreating = ng_OverrideFunction(d.OnActionsMenuCreating,o.OnActionsMenuCreating,o);
