@@ -887,7 +887,7 @@ function ngmn_HideSubMenu()
   var m=this.ActiveSubMenu;
   if(m)
   {
-    if((this.OnHideSubMenu)&&(!ngVal(this.OnHideSubMenu(),false))) return;
+    if((this.OnHideSubMenu)&&(!ngVal(this.OnHideSubMenu(this),false))) return;
     this.ClearSelected();
     m.SetVisible(false);
     this.ActiveSubMenu=null;
@@ -1126,7 +1126,7 @@ function ngmn_DrawItemText(html, it, id, level)
   {
     it.Visible=false;
     var h=((this.Items[0]==it)||(this.Items[this.Items.length-1]==it));
-    if(this.OnDrawSeparator) this.OnDrawSeparator(html,it,id,level);
+    if(this.OnDrawSeparator) this.OnDrawSeparator(html,it,id,level,this);
     else
     {
       if(this.Columns.length>0) html.append('<tr class="'+cclass+'Row" '+(h ? 'style="display:none" ' : '')+'id="'+this.ID+'_'+id+'"><td colspan="'+this.Columns.length+'"><div class="'+cclass+'Separator">&nbsp;</div></td></tr>');
@@ -1672,10 +1672,12 @@ function ngmn_DefaultClick(e)
   {
     if(m.Visible)
     {
-      m.AutoPopup=true;
-      m.HideMenu();
+      if(typeof m.HideMenu === 'function') {
+        m.AutoPopup=true;
+        m.HideMenu();
+      }
     }
-    else if(this.Enabled) m.PopupCtrl(this);
+    else if((this.Enabled)&&(typeof m.PopupCtrl === 'function')) m.PopupCtrl(this);
   }
 }
 
@@ -1808,7 +1810,7 @@ function ng_SetControlMenu(c,m)
   var mb=ngVal(c.SplitButton,false);
   if(om) // unregister old
   {
-    om.HideMenu();
+    if(typeof om.HideMenu === 'function') om.HideMenu();
     if(!m)
     {
       c.RemoveEvent('SetVisible',ngmnb_SetControlVisible);
@@ -1984,7 +1986,7 @@ function ng_SetControlPopup(c,m)
   if(om == m) return;
   if(om) // unregister old
   {
-    om.HideMenu();
+    if(typeof om.HideMenu === 'function') om.HideMenu();
     if(!m)
     {
       c.RemoveEvent('SetVisible',ngmn_SetPopupControlVisible);
