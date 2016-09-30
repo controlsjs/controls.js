@@ -683,6 +683,7 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
               {
                 "Visible": ng_DIPropertyBool(true, { Level: 'basic' }),
                 "IsPopup": ng_DIPropertyBool(false),
+                "PopupGroup": ng_DIProperty('string','default', { Level: 'optional' }),
                 "Gestures": { DefaultType: 'object', Level: 'advanced',
                   Types: {
                     'object': {
