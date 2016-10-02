@@ -15,15 +15,19 @@ var WinXP_DesignInfo = {
   OnInit: function() {
     if(!ngDESIGNINFO) return;
 
-/*    ngRegisterControlDesignInfo('stdPanel',function(d,c,ref) {
+    ngRegisterControlDesignInfo('stdPanel',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true
       };
     });
     ngRegisterControlDesignInfo('stdFrame',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true
       };
     });
-    ngRegisterControlDesignInfo('stdAlignPanel',function(d,c,ref) {
+/*    ngRegisterControlDesignInfo('stdAlignPanel',function(d,c,ref) {
       return {
       };
     });
