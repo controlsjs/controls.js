@@ -57,11 +57,29 @@ ngUserControls['list_designinfo'] = {
               },
               OnPropertyInit: function(ch)
               {
-                if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
-                {
-                  var tmp = ch.Name.split('.');
-                  var itemID = ng_toInteger(tmp[tmp.length - 2]);
-                  if (!isNaN(itemID)) ch.Value = 'Item ' + (itemID + 1);
+                var val='';
+                var tmp = ch.Name.split('.');
+                var itemID = ng_toInteger(tmp[tmp.length - 2]);
+                if (!isNaN(itemID)) val = 'Item ' + (itemID + 1);
+
+                var columns = FormEditor.GetControlsProperty('Data.Columns', [ch.ControlID]);
+                var columnscnt = (columns[0] && (ng_IsArrayVar(columns[0].PropertyValue))) ? columns[0].PropertyValue.length : 0;
+                if(columnscnt>0) {
+                  var columnid,f=true,it={};
+                  for(var i=0;i<columnscnt;i++) {
+                    columnid = FormEditor.GetControlsProperty('Data.Columns.'+i+'.ID', [ch.ControlID]);
+                    if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
+                      it[columnid[0].PropertyValue]=(f ? val : '');
+                      f=false;
+                    }
+                  }
+                  // TODO: Type change doesn't work :(
+                  ch.Type = 'object';
+                  ch.Value= JSON.stringify(it);
+                }
+                else {
+                  ch.Type = 'string';
+                  ch.Value = 'Item ' + (itemID + 1);
                 }
 
                 return true;
@@ -99,12 +117,51 @@ ngUserControls['list_designinfo'] = {
             "Controls": { DefaultType: 'controls', Level: 'basic',
               PropertyGroup: 'Controls',
               Types: {
+                // TODO: Check priority 'object' vs 'controls'
+                'object': {
+                  DestroyIfEmpty: true,
+                  // TODO: Check why ChildDesignInfo doesn't work
+                  ChildDesingInfo: {
+                    DefaultType: 'controls',
+                    PropertyGroup: 'Controls',
+                    Types: {
+                      'controls': {
+                        DestroyIfEmpty: true,
+                        ChildDesignInfo: {
+                          PropertyGroup: 'Controls'
+                        }
+                      }
+                    }
+                  }
+                },
                 'controls': {
                   DestroyIfEmpty: true,
                   ChildDesignInfo: {
                     PropertyGroup: 'Controls'
                   }
                 }
+              },
+              OnPropertyInit: function(ch)
+              {
+                var columns = FormEditor.GetControlsProperty('Data.Columns', [ch.ControlID]);
+                var columnscnt = (columns[0] && (ng_IsArrayVar(columns[0].PropertyValue))) ? columns[0].PropertyValue.length : 0;
+                if(columnscnt>0) {
+                  var columnid,it={};
+                  for(var i=0;i<columnscnt;i++) {
+                    columnid = FormEditor.GetControlsProperty('Data.Columns.'+i+'.ID', [ch.ControlID]);
+                    if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
+                      it[columnid[0].PropertyValue]={};
+                    }
+                  }
+                  // TODO: Check why if item is not initialize only first column is created
+                  ch.Value=JSON.stringify(it);
+                }
+                else {
+                  ch.Value ='{}';
+                }
+                ch.Type = 'object';
+
+                return true;
               }
             },
             "ControlsHolder": ng_DIProperty(['undefined','object'], undefined, { Level: 'hidden' }),
@@ -171,16 +228,23 @@ ngUserControls['list_designinfo'] = {
                 var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
                 if (pname)
                 {
-//                  var columns = FormEditor.GetControlsProperty('Columns', [ch.ControlID]);
-//                  var hascolumns = (columns[0] && (ng_IsArrayVar(columns[0].PropertyValue))) ? columns[0].PropertyValue.length>0 : false;
+                  var columns = FormEditor.GetControlsProperty('Data.Columns', [ch.ControlID]);
+                  var columnscnt = (columns[0] && (ng_IsArrayVar(columns[0].PropertyValue))) ? columns[0].PropertyValue.length : 0;
 
                   var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
                   var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
 
                   if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
-                  var columnid = FormEditor.GetControlsProperty('Data.Columns.0.ID', [ch.ControlID]);
-                  if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
-                    ch.Value.Text = "{ '" + columnid[0].PropertyValue + "': 'Item " + (itemscnt + 1) + "' }";
+                  if(columnscnt>0) {
+                    var columnid,f=true,it={};
+                    for(var i=0;i<columnscnt;i++) {
+                      columnid = FormEditor.GetControlsProperty('Data.Columns.'+i+'.ID', [ch.ControlID]);
+                      if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
+                        it[columnid[0].PropertyValue]=(f ? 'Item ' + (itemscnt + 1) : '');
+                        f=false;
+                      }
+                    }
+                    ch.Value.Text=JSON.stringify(it);
                   }
                   else ch.Value.Text = "'Item " + (itemscnt + 1) + "'";
                 }
@@ -622,7 +686,7 @@ ngUserControls['list_designinfo'] = {
             "AsyncDataTimeout": ng_DIProperty('integer', 30, { Level: 'basic' }),
             "AsyncDataRetryCnt": ng_DIProperty('integer', 3, { Level: 'basic' }),
             "AsyncDataURL": { DefaultType: 'url', Level: 'basic' },
-            "DesignLive": ng_DIPropertyBool(false, { Level: 'basic' })
+            "DesignLive": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.95 })
           },
           "Events": {
             "OnPageChanging": ng_DIPropertyEvent('function(c, page) { return true; }', { Level: 'basic' }),
