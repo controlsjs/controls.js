@@ -416,44 +416,161 @@ var ViewModel_Controls_DesignInfo = (function()
 
       ngRegisterControlDesignInfo('ngSysViewModel',function(d,c,ref) {
         return {
+          ControlCategory: 'System',
+          BaseControl: 'ngSysViewModel',
+          NewControl: {
+            Default: {
+              Properties: {
+                "L": {},
+                "T": {},
+                "ID": { ValueByRefName: true }
+              }
+            }
+          },
+          Properties: ng_DIProperties({
+            "ID": { Level: 'basic' },
+            "Namespace": { DefaultType: 'string', Level: 'basic', Order: 0.05 },
+            "FieldDefs": { DefaultType: 'array', Level: 'basic', Order: 0.051,
+                // TODO: Add FieldDefs type
+            },
+            "ViewModel": { DefaultType: 'function', Level: 'basic', Order: 0.052,
+              // TODO: Add VM type
+              Types: {
+                'identifier': {},
+                'object': {},
+                'function': { DefaultValue: 'function(vm) {}' }
+              }
+            },
+            "RefViewModel": { DefaultType: 'string', Level: 'basic', Order: 0.053,
+              Types: {
+                'string': {},
+                'identifier': {}
+              }
+            },
+            "Data": {
+              "ViewModel": { DefaultType: 'object', Level: 'basic' },
+              "DefaultValues": { DefaultType: 'object', Level: 'basic' },
+              "ServerURL": { DefaultType: 'url', Level: 'basic' }
+            },
+            "Events": {
+              "OnSetValues": ng_DIPropertyEvent('function(c, values, deserialize) { return true; }',{ Level: 'basic' }),
+              "OnGetValues": ng_DIPropertyEvent('function(c, ret, writableonly, valuenames, errors, convtimestamps, serialize) {}',{ Level: 'basic' }),
+              "OnCommand": ng_DIPropertyEvent('function(c, cmd, options) { return true; }',{ Level: 'basic' }),
+              "OnDoCommand": ng_DIPropertyEvent('function(c, cmd, options, vals, err) { return true; }',{ Level: 'basic' }),
+              "OnCommandRequest": ng_DIPropertyEvent('function(c, rpc) { return true; }',{ Level: 'basic' }),
+              "OnCommandResults": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnCommandFinished": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnCommandCancel": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
+              "OnCommandData": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnViewModelChanged": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
+              "OnErrors": ng_DIPropertyEvent('function(c, errors) { return true; }',{ Level: 'basic' }),
+              "OnShowErrors": ng_DIPropertyEvent('function(c, errmsg, errors) { if(errmsg!="") alert(errmsg); }',{ Level: 'basic' }),
+              "OnAssign": ng_DIPropertyEvent('function(c, src) {}',{ Level: 'basic' })
+            },
+            "OverrideEvents": {
+              "OnSetValue": ng_DIPropertyEvent('function(c, setval, instance, valpath) { return setval; }',{ Level: 'basic' }),
+              "OnGetValue": ng_DIPropertyEvent('function(c, val,instance, valpath, errors) { return val; }',{ Level: 'basic' }),
+              "OnGetCommandValueNames": ng_DIPropertyEvent('function(c, cmd, options) { return []; }',{ Level: 'basic' }),
+              "OnSetViewModel": ng_DIPropertyEvent('function(c, vmodel) { return vmodel; }',{ Level: 'basic' }),
+              "OnResults": ng_DIPropertyEvent('function(c, results) { return results; }',{ Level: 'basic' })
+            }
+          })
         };
       });
       ngRegisterControlDesignInfo('ngViewModelForm',function(d,c,ref) {
         return {
+          ControlCategory: 'Containers',
+          IsContainer: true,
+          BaseControl: 'ngViewModelForm',
+          Properties: ng_DIProperties({
+            "ErrorHint": ng_DIPropertyControl('ngTextHint',{ Level: 'basic' }, 'ngHint'),
+            "Data": {
+              "DefaultFindFieldControlsBindings": ng_DIProperty('array_strings', ["'Data'","'Value'","'Checked'","'Selected'","'Lookup'","'Error'","'Link'"], { Level: 'basic' }),
+              "DisableOnCommand": ng_DIPropertyBool(true, { Level: 'basic' })
+            },
+            "Events": {
+              "OnSetViewModel": ng_DIPropertyEvent('function(c, vm, ovm) {}',{ Level: 'basic' }),
+              "OnResetErrors": ng_DIPropertyEvent('function(c) { return true; }',{ Level: 'basic' }),
+              "OnShowErrors": ng_DIPropertyEvent('function(c, errmsg, errors) {}',{ Level: 'basic' }),
+
+              "OnSetControlError": ng_DIPropertyEvent('function(c, ec, err, setfocus) { return true; }',{ Level: 'basic' }),
+
+              "OnSetControlVisible": ng_DIPropertyEvent('function(c, vc) { return true; }',{ Level: 'basic' }),
+              "OnSetControlFocus": ng_DIPropertyEvent('function(c, fc) {}',{ Level: 'basic' }),
+
+              "OnShowLoading": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
+              "OnHideLoading": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
+              "OnShowErrorMsg": ng_DIPropertyEvent('function(c, msg) { alert(msg); }',{ Level: 'basic' }),
+
+              "OnCommand": ng_DIPropertyEvent('function(c, cmd, options) { return true; }',{ Level: 'basic' }),
+              "OnCommandRequest": ng_DIPropertyEvent('function(c, rpc) { return true; }',{ Level: 'basic' }),
+              "OnCommandResults": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnCommandFinished": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnCommandCancel": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' })
+            },
+            "OverrideEvents": {
+              "OnFindFieldControls": ng_DIPropertyEvent('function(c, fid, visibleonly, bindings, parentfielddef) { return null; }',{ Level: 'basic' })
+            }
+          },
+          {
+            "Controls": {
+              Level: 'basic',
+              Types: {
+                'controls': {
+                  ChildDesignInfo: {
+                    Types: {
+                      'control': {
+                        ObjectProperties: ng_DIProperties({
+                          "Methods": {
+                            "SetInvalid": ng_DIProperty('function','function(s) { return ng_CallParent(this, "SetInvalid", arguments, true); }', { Level: 'basic' }),
+                            "SetErrorState": ng_DIProperty('function','function(s) { return ng_CallParent(this, "SetErrorState", arguments, true); }', { Level: 'basic' })
+                          }
+                        })
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          })
         };
       });
       ngRegisterControlDesignInfo('ngSysViewModelSettings',function(d,c,ref) {
         return {
+          ControlCategory: 'System',
+          BaseControl: 'ngSysViewModelSettings',
+          Properties: ng_DIProperties({
+            "Events": {
+              "OnSettingsLoaded": ng_DIPropertyEvent('function(c, settings) {}',{ Level: 'basic' }),
+              "OnInitialized": ng_DIPropertyEvent('function(c, settings) {}',{ Level: 'basic' })
+            }
+          })
         };
       });
-      ngRegisterControlDesignInfo('ngEditField',function(d,c,ref) {
+
+      function EditField(d,c,ref) {
         return {
+          ControlCategory: 'Edits',
+          Properties: ng_DIProperties({
+            "ErrorHint": ng_DIPropertyControl('ngTextHint',{ Level: 'basic' }, 'ngHint'),
+            "Data": {
+              "ErrorBindings": ng_DIProperty('array_strings', [ "'Value'", "'Lookup'" ], { Level: 'basic' })
+            },
+            "Events": {
+              "OnSetErrorState": ng_DIPropertyEvent('function(c, state) { return true; }',{ Level: 'basic' }),
+              "OnShowErrorHint": ng_DIPropertyEvent('function(c, msg) { return true; }',{ Level: 'basic' }),
+              "OnHideErrorHint": ng_DIPropertyEvent('function(c) { return true; }',{ Level: 'basic' })
+            }
+          })
         };
-      });
-      ngRegisterControlDesignInfo('ngEditNumField',function(d,c,ref) {
-        return {
-        };
-      });
-      ngRegisterControlDesignInfo('ngEditDateField',function(d,c,ref) {
-        return {
-        };
-      });
-      ngRegisterControlDesignInfo('ngEditTimeField',function(d,c,ref) {
-        return {
-        };
-      });
-      ngRegisterControlDesignInfo('ngDropDownField',function(d,c,ref) {
-        return {
-        };
-      });
-      ngRegisterControlDesignInfo('ngDropDownListField',function(d,c,ref) {
-        return {
-        };
-      });
-      ngRegisterControlDesignInfo('ngMemoField',function(d,c,ref) {
-        return {
-        };
-      });
+      }
+      ngRegisterControlDesignInfo('ngEditField',EditField);
+      ngRegisterControlDesignInfo('ngEditNumField',EditField);
+      ngRegisterControlDesignInfo('ngEditDateField',EditField);
+      ngRegisterControlDesignInfo('ngEditTimeField',EditField);
+      ngRegisterControlDesignInfo('ngDropDownField',EditField);
+      ngRegisterControlDesignInfo('ngDropDownListField',EditField);
+      ngRegisterControlDesignInfo('ngMemoField',EditField);
 
     }
   };
