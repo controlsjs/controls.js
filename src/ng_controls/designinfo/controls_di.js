@@ -65,6 +65,7 @@
         ContainerProperty: false,
         Required: false,
         FixedType: false,
+        Exclude: ['exprop1', 'exprop2', ... 'expropN'],
         OnPropertyInit: function(ch) {
           return true;
         },
@@ -984,13 +985,23 @@ ngUserControls['controls_designinfo'] = {
         Properties: {
           "ParentReferences": { Level: 'advanced' },
           "ScrollBars": { Level: 'basic' },
-          "Controls": { Level: 'basic' }
+          "Controls": { Level: 'basic' },
+          "Data": {
+            Types: {
+              'object': {
+                ObjectProperties: {
+                  "FormID": { DefaultType: 'string', Level: 'optional' }
+                }
+              }
+            }
+          }
         }
       };
       if(!d.CtrlInheritanceDepth) {
         di.ControlCategory='Containers';
         di.IsContainer=true;
         di.BaseControl='ngPanel';
+        di.Properties["Data"].Types.object.ObjectProperties["FormID"].Level='advanced';
       }
       return di;
     });
@@ -1903,6 +1914,7 @@ ngUserControls['controls_designinfo'] = {
         di.ControlCategory='Containers';
         di.IsContainer=true;
         di.BaseControl='ngFrame';
+        di.Properties["Data"].Types.object.ObjectProperties["FormID"].Level='advanced';
       }
       return di;
     });
