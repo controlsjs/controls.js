@@ -402,13 +402,7 @@ function ngSysViewModel(id, namespace)
 {
   ngSysControl(this, id, 'ngSysViewModel');
   this.DoCreate=ngsvm_DoCreate;
-
-  this.__viewModel = ngViewModel;
-  try {
-    this.__viewModel(id);
-  } finally {
-    delete this.__viewModel;
-  }
+  ngViewModel.apply(this,[id]);
   ngControlCreated(this);
 }
 
@@ -575,7 +569,7 @@ function ngvmf_OnCommandCancel(vm)
   var form=vm.ViewModelForm;
   if(form)
   {
-    if(form.OnCommandResults) form.OnCommandCancel(form);
+    if(form.OnCommandCancel) form.OnCommandCancel(form);
     if(form.disable_ctrls_timer) {
       clearTimeout(form.disable_ctrls_timer);
       delete form.disable_ctrls_timer;
@@ -740,7 +734,7 @@ function ngvmf_ShowControlError(c,err,setfocus)
   err=(ng_typeString(err) ? err : ng_ViewModelFormatError(err));
   c.ErrorMessage=err;
 
-  if((this.OnSetControlError)&&(!ngVal(this.OnSetControlError(form,c,err,setfocus),false))) return;
+  if((this.OnSetControlError)&&(!ngVal(this.OnSetControlError(this,c,err,setfocus),false))) return;
 
   if(typeof c.SetErrorState === 'function') c.SetErrorState(err!='');
   else
