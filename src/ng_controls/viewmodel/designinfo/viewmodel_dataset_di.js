@@ -18,9 +18,45 @@ var ViewModel_Dataset_DesignInfo = {
 
     ngRegisterControlDesignInfo('ngDataSet',function(d,c,ref) {
       return {
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 400 },
+              "H": { Value: 200 },
+              "ModifyControls": {
+                ObjectProperties: {
+                  "List": {
+                    ObjectProperties: {
+                      "Data": {
+                        Type: 'object',
+                        ObjectProperties: {
+                          "HTMLEncode": { Type: 'boolean', Value: true },
+                          "Columns": { Type: 'ngListColumns',
+                            ObjectProperties: {
+                              0: {
+                                Type: 'ngListCol',
+                                Value: {
+                                  Caption: "'Column1'",
+                                  ID: "'Columns.c1'"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         Properties: ng_DIProperties({
           "Data": {
-            "AutoDataSetColumns": ng_DIPropertyBool(false, { Level: 'basic' }),
+            "AutoDataSetColumns": ng_DIPropertyBool(false, { Level: 'basic',
+              // TODO: Check why not working
+              Exclude: ['ModifyControls.List.Data.Columns', 'Controls.List.Data.Columns']
+            }),
             "GetRecordsCommand": ng_DIProperty('string','resetfilters', { Level: 'advanced' }),
             "SortByVMField": ng_DIProperty('string','SortBy', { Level: 'basic' }),
             "AllowedSortByVMField": ng_DIProperty('string','AllowedSortBy', { Level: 'basic' }),
