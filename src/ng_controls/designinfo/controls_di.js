@@ -853,14 +853,6 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
     obj.DesignInfo = {
       NonVisual: true,
       ControlCategory: 'System',
-      NewControl: {
-        Default: {
-          Properties: {
-            "L": {},
-            "T": {}
-          }
-        }
-      },
       Properties: {
         "R": {},
         "B": {}
