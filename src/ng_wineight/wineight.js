@@ -1282,14 +1282,14 @@ var WinEightControls = {
     skinfnc.Create_weDropDown=function(def,ref,parent,basetype,dropdownlist) {
       var th=theme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
-      var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngEdit'),dropdownlist);
+      var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngDropDown'),dropdownlist);
       if(!c) return c;
       wineight.weEdit_AddProperties(def,c,th);
       c.DropDownButton.LeftImg=winimages.DropDown;
       wineight.Prepare_DropDown(def);
       return c;
     };
-    ngRegisterControlType('weDropDown', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngEdit'); });
+    ngRegisterControlType('weDropDown', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngDropDown'); });
 
     /*  Class: weDropDownList
      *  Standard drop down list control (based on <ngDropDownList>).
@@ -1317,7 +1317,7 @@ var WinEightControls = {
      *  Returns:
      *    -
      */
-    ngRegisterControlType('weDropDownList', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngEdit',true); });
+    ngRegisterControlType('weDropDownList', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngDropDownList',true); });
 
     /*  Class: weMemo
      *  Standard memo control (based on <ngMemo>).

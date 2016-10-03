@@ -969,14 +969,14 @@ var WinXPControls = {
      */
     skinfnc.Create_stdDropDown=function(def,ref,parent,basetype,dropdownlist) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
-      var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngEdit'),dropdownlist);
+      var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngDropDown'),dropdownlist);
       if(!c) return c;
       winxp.stdEdit_AddProperties(c);
       c.DropDownButton.LeftImg=winimages.DropDown;
       if(typeof def.DropDown.className === 'undefined') def.DropDown.className='wxpDropDown';
       return c;
     }
-    ngRegisterControlType('stdDropDown', function(def,ref,parent) { return skinfnc.Create_stdDropDown(def,ref,parent,'ngEdit',false); });
+    ngRegisterControlType('stdDropDown', function(def,ref,parent) { return skinfnc.Create_stdDropDown(def,ref,parent,'ngDropDown',false); });
 
     /*  Class: stdDropDownList
      *  Standard drop down list control (based on <ngDropDownList>).
@@ -1004,7 +1004,7 @@ var WinXPControls = {
      *  Returns:
      *    -
      */
-    ngRegisterControlType('stdDropDownList', function(def,ref,parent) { return skinfnc.Create_stdDropDown(def,ref,parent,'ngEdit',true); });
+    ngRegisterControlType('stdDropDownList', function(def,ref,parent) { return skinfnc.Create_stdDropDown(def,ref,parent,'ngDropDownList',true); });
 
 
     /*  Class: stdMemo

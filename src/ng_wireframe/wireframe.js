@@ -877,7 +877,7 @@ var WireframeControls = {
         }
       });
 
-      var c = ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngEdit'),dropdownlist);
+      var c = ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngDropDown'),dropdownlist);
       if(!c){return c;}
       WFR.wfrEdit_AddProperties(c);
       c.DropDownButton.LeftImg = WFRImages.DropDown;
@@ -890,12 +890,12 @@ var WireframeControls = {
 
     ngRegisterControlType('wfrDropDown',
         function(def,ref,parent){
-          return skinfnc.Create_wfrDropDown(def,ref,parent,'ngEdit',false);
+          return skinfnc.Create_wfrDropDown(def,ref,parent,'ngDropDown',false);
         }
     );
     ngRegisterControlType('wfrDropDownList',
         function(def,ref,parent){
-          return skinfnc.Create_wfrDropDown(def,ref,parent,'ngEdit',true);
+          return skinfnc.Create_wfrDropDown(def,ref,parent,'ngDropDownList',true);
         }
     );
 
