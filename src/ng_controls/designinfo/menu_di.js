@@ -60,8 +60,8 @@ ngUserControls['menu_designinfo'] = {
 
       ng_MergeVar(di, {
         Properties: {
-          "Menu": ng_DIPropertyControl('ngMenu', { Level: hasonclick ? 'basic' : 'optional' }, 'ngMenu'),
-          "PopupMenu": ng_DIPropertyControl('ngMenu', { Level: 'basic' }, 'ngMenu')
+          "Menu": ng_DIPropertyControl('ngMenu', { Level: hasonclick ? 'basic' : 'optional', PropertyGroup: 'Controls' }, 'ngMenu'),
+          "PopupMenu": ng_DIPropertyControl('ngMenu', { Level: 'basic', PropertyGroup: 'Controls'  }, 'ngMenu')
         }
       });
     }
