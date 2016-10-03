@@ -18,13 +18,23 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdPanel',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-        IsContainer: true
+        IsContainer: true,
+        Properties: ng_DIProperties({
+          "Data": {
+            "FormID": { Level: 'advanced' }
+          }
+        })
       };
     });
     ngRegisterControlDesignInfo('stdFrame',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-        IsContainer: true
+        IsContainer: true,
+        Properties: ng_DIProperties({
+          "Data": {
+            "FormID": { Level: 'advanced' }
+          }
+        })
       };
     });
 /*    ngRegisterControlDesignInfo('stdAlignPanel',function(d,c,ref) {
