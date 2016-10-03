@@ -1382,7 +1382,10 @@ ngUserControls['controls_designinfo'] = {
             "OnGetClassName": ng_DIPropertyEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' }),
             "OnGetImg": ng_DIPropertyEvent('function(c, idx) { return null; }', { Level: 'basic' }),
             "OnSuggestionSetText": ng_DIPropertyEvent('function(text, it) { return text; }'),
-            "OnSuggestionURL": ng_DIPropertyEvent('function(c, url) { return url; }')
+            "OnSuggestionURL": ng_DIPropertyEvent('function(c, url) { return url; }'),
+
+            // ngList DropDown Events
+            "OnListItemGetText":  ng_DIPropertyEvent('function(c, list, it, t) { return t; }',{ Level: 'optional' })
           },
           "Events": {
             "OnTextChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
@@ -1402,7 +1405,10 @@ ngUserControls['controls_designinfo'] = {
             "OnSuggestionSearch": ng_DIPropertyEvent('function(c, txt, res) { return true; }'),
             "OnSuggestionCompareItem": ng_DIPropertyEvent('function(c, txt, itemtxt, list, it, parent) { return (txt==itemtxt); }'),
             "OnSuggestionResults": ng_DIPropertyEvent('function(c, txt, data, res) { return true; }'),
-            "OnSuggestionData": ng_DIPropertyEvent('function(c, txt, data) { return true; }')
+            "OnSuggestionData": ng_DIPropertyEvent('function(c, txt, data) { return true; }'),
+
+            // ngList DropDown Events
+            "OnListItemChanged": ng_DIPropertyEvent('function(c, list, it, ddoli) { return true; }',{ Level: 'optional' })
           }
         })
       };
@@ -1938,6 +1944,7 @@ ngUserControls['controls_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
+              "W": { Value: 100 },
               "DropDown": { Value: "{ Type: 'ngList' }"}
             }
           }
@@ -1949,9 +1956,16 @@ ngUserControls['controls_designinfo'] = {
             "DropDownAlign":  { Level: 'basic' },
             "DropDownType":   { Level: 'optional' }
           },
+          "OverrideEvents": {
+            // ngList DropDown Events
+            "OnListItemGetText":  { Level: 'basic' }
+          },
           "Events": {
             "OnDropDown":     { Level: 'basic' },
-            "OnHideDropDown": { Level: 'basic' }
+            "OnHideDropDown": { Level: 'basic' },
+
+            // ngList DropDown Events
+            "OnListItemChanged": { Level: 'basic' }
           }
         })
       };
@@ -1962,11 +1976,6 @@ ngUserControls['controls_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              "Data": {
-                ObjectProperties: {
-                  "Text": undefined
-                }
-              },
               "DropDown": {
                 ObjectProperties: {
                   "Type": "'ngList'"
@@ -1996,6 +2005,11 @@ ngUserControls['controls_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
+              "Data": {
+                ObjectProperties: {
+                  "Text": { ValueByRefName: true }
+                }
+              },
               "DropDown": {
                 ObjectProperties: {
                   "Type": "'ngList'"
@@ -2005,7 +2019,7 @@ ngUserControls['controls_designinfo'] = {
           }
         }
       };
-      ng_MergeDI(di,DropDownDI(d,c,ref));
+      ng_MergeVar(di,DropDownDI(d,c,ref));
       return di;
     });
     ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
