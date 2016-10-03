@@ -16,22 +16,22 @@ var ViewModel_Controls_DesignInfo = (function()
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      Calls: { DefaultType: 'object',
+      "Calls": { DefaultType: 'object',
         Types: {
           'databind_string': {}
         }
       },
-      Data: { DefaultType: 'databind_string' },
-      Link: { DefaultType: 'databind_string', Level: 'basic' },
-      ReadOnly: { DefaultType: 'databind_string', Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' },
-      Error: { DefaultType: 'databind_string' },
-      ShowError: { DefaultType: 'databind_string' }
+      "Data": { DefaultType: 'databind_string' },
+      "Link": { DefaultType: 'databind_string', Level: 'basic' },
+      "ReadOnly": { DefaultType: 'databind_string', Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' },
+      "Error": { DefaultType: 'databind_string' },
+      "ShowError": { DefaultType: 'databind_string' }
     };
 
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
-        OnClick: {
+        "OnClick": {
           DefaultType: 'databind_string',
           Types: {
             'databind_string': {
@@ -42,7 +42,7 @@ var ViewModel_Controls_DesignInfo = (function()
           },
           Level: 'optional'
         },
-        MouseOver: {
+        "MouseOver": {
           DefaultType: 'databind_string',
           Types: {
             'databind_string': {
@@ -56,7 +56,7 @@ var ViewModel_Controls_DesignInfo = (function()
 
       if (typeof c.SetBounds === 'function')
       {
-        props.Bounds = {
+        props["Bounds"] = {
           DefaultType: 'object',
           Types: {
             'databind_string': {}
@@ -67,57 +67,57 @@ var ViewModel_Controls_DesignInfo = (function()
 
       if (typeof c.Elm === 'function')
       {
-        props.style = {
+        props["style"] = {
           DefaultType: 'object',
           Types: {
             'databind_string': {}
           }
         };
-        props.className = { DefaultType: 'databind_string' };
-        props.SubClassName = { DefaultType: 'databind_string' };
-        props.BaseClassName = { DefaultType: 'databind_string' };
+        props["className"] = { DefaultType: 'databind_string' };
+        props["SubClassName"] = { DefaultType: 'databind_string' };
+        props["BaseClassName"] = { DefaultType: 'databind_string' };
       }
 
       if (typeof c.SetFocus === 'function')
       {
-        props.Focus = { DefaultType: 'databind_string', Level: 'optional' };
+        props["Focus"] = { DefaultType: 'databind_string', Level: 'optional' };
       }
 
       if (typeof c.SetOpacity === 'function')
       {
-        props.Opacity = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Opacity"] = { DefaultType: 'databind_string', Level: 'basic' };
       }
 
       if (typeof c.SetVisible === 'function')
       {
-        props.Visible = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Visible"] = { DefaultType: 'databind_string', Level: 'basic' };
       }
     }
 
     if (typeof c.SetEnabled === 'function')
     {
-      props.Enabled = { DefaultType: 'databind_string', Level: 'basic' };
-      props.Disabled = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Enabled"] = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Disabled"] = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     if (typeof c.SetText === 'function')
     {
-      props.Text = { DefaultType: 'databind_string', Level: 'basic' };
-      props.ngText = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Text"] = { DefaultType: 'databind_string', Level: 'basic' };
+      props["ngText"] = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     var has_alt=(typeof c.Alt!=='undefined');
-    props.Alt = { DefaultType: 'databind_string', Level: has_alt ? 'basic' : 'optional' };
-    props.ngAlt = { DefaultType: 'databind_string', Level: has_alt ? 'basic' : 'optional' };
+    props["Alt"] = { DefaultType: 'databind_string', Level: has_alt ? 'basic' : 'optional' };
+    props["ngAlt"] = { DefaultType: 'databind_string', Level: has_alt ? 'basic' : 'optional' };
 
     var has_hint=(typeof c.Hint!=='undefined');
-    props.Hint = { DefaultType: 'databind_string', Level: has_hint ? 'basic' : 'optional' };
-    props.ngHint = { DefaultType: 'databind_string', Level: has_hint ? 'basic' : 'optional' };
+    props["Hint"] = { DefaultType: 'databind_string', Level: has_hint ? 'basic' : 'optional' };
+    props["ngHint"] = { DefaultType: 'databind_string', Level: has_hint ? 'basic' : 'optional' };
 
     if (typeof c.SetInvalid === 'function')
     {
-      props.Invalid = { DefaultType: 'databind_string', Level: 'basic' };
-      props.Valid = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Invalid"] = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Valid"] = { DefaultType: 'databind_string', Level: 'basic' };
     }
 
     var instantUpdateProperty = {
@@ -149,34 +149,34 @@ var ViewModel_Controls_DesignInfo = (function()
     switch (c.DefType)
     {
       case 'ngEdit':
-        props.InstantUpdate = instantUpdateProperty;
-        props.DelayedUpdate = delayedUpdateProperty;
-        props.Focus = { Level: 'basic' };
-        props.Lookup = { DefaultType: 'databind_string', Level: 'basic' };
-        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+        props["InstantUpdate"] = instantUpdateProperty;
+        props["DelayedUpdate"] = delayedUpdateProperty;
+        props["Focus"] = { Level: 'basic' };
+        props["Lookup"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngMemo':
-        props.InstantUpdate = instantUpdateProperty;
-        props.DelayedUpdate = delayedUpdateProperty;
-        props.Focus = { Level: 'basic' };
-        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+        props["InstantUpdate"] = instantUpdateProperty;
+        props["DelayedUpdate"] = delayedUpdateProperty;
+        props["Focus"] = { Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngList':
-        props.Focus = { Level: 'basic' };
-        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
-        props.Selected = { DefaultType: 'databind_string', Level: 'basic' };
-        props.Checked = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Focus"] = { Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Selected"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngButton':
       case 'ngSysAction':
-        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
-        props.Checked = { DefaultType: 'databind_string', Level: 'basic' };
-        props.Command = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Command"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
 
       case 'ngSysTimer':
-        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
-        props.Command = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Command"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
 
       case 'ngPages':
@@ -186,13 +186,13 @@ var ViewModel_Controls_DesignInfo = (function()
       case 'ngSysURLParams':
       case 'ngSysViewModelSettings':
       case 'ngSysRPC':
-        props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
 
       default:
         if (typeof c.SetText === 'function')
         {
-          props.Value = { DefaultType: 'databind_string', Level: 'basic' };
+          props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         }
         break;
     }
@@ -213,8 +213,9 @@ var ViewModel_Controls_DesignInfo = (function()
 
     var vm_di = {
       Properties: {
-        ViewModel: {
+        "ViewModel": {
           DefaultType: 'string',
+          PropertyGroup: 'DataBind',
           Types: {
             'function': {},
             'identifier': {}
@@ -222,7 +223,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Level: 'basic',
           Order: 0.21
         },
-        DataBind: {
+        "DataBind": {
           DefaultType: 'databind',
           Types: {
             'databind_string': {},
@@ -242,7 +243,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Level: 'basic',
           Order: 0.5
         },
-        DOMDataBind: {
+        "DOMDataBind": {
           DefaultType: 'databind',
           PropertyGroup: 'DataBind',
           Types: {
@@ -262,20 +263,20 @@ var ViewModel_Controls_DesignInfo = (function()
           Level: 'optional',
           Order: 0.5
         },
-        Data: {
+        "Data": {
           Types: {
             'object': {
               ObjectProperties: {
-                ViewModelData: { Level: 'hidden' }
+                "ViewModelData": { Level: 'hidden' }
               }
             }
           }
         },
-        Methods: {
+        "Methods": {
           Types: {
             'object': {
               ObjectProperties: {
-                SetViewModelData:{
+                "SetViewModelData":{
                   DefaultType: 'function',
                   Types: {
                     'function': {
@@ -288,11 +289,11 @@ var ViewModel_Controls_DesignInfo = (function()
             }
           }
         },
-        Events: {
+        "Events": {
           Types: {
             'object': {
               ObjectProperties: {
-                OnViewModelDataChanged: {
+                "OnViewModelDataChanged": {
                   DefaultType: 'events',
                   Types: {
                     'function': {
@@ -300,7 +301,7 @@ var ViewModel_Controls_DesignInfo = (function()
                     }
                   }
                 },
-                OnDataBindingInit: {
+                "OnDataBindingInit": {
                   DefaultType: 'events',
                   Types: {
                     'function': {
@@ -309,7 +310,7 @@ var ViewModel_Controls_DesignInfo = (function()
                   },
                   Level: 'optional'
                 },
-                OnDataBindingUpdate: {
+                "OnDataBindingUpdate": {
                   DefaultType: 'events',
                   Types: {
                     'function': {
@@ -380,14 +381,14 @@ var ViewModel_Controls_DesignInfo = (function()
 
       var vm_events_di = {
         Properties: {
-          DataBind: {
+          "DataBind": {
             Types: {
               'databind': {
                 ObjectProperties: {
-                  Events: eventprop1,
-                  AfterEvents: eventprop2,
-                  BeforeEvents: eventprop2,
-                  OverrideEvents: eventprop2
+                  "Events": eventprop1,
+                  "AfterEvents": eventprop2,
+                  "BeforeEvents": eventprop2,
+                  "OverrideEvents": eventprop2
                 }
               }
             }
