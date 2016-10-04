@@ -73,7 +73,6 @@ ngUserControls['list_designinfo'] = {
                       f=false;
                     }
                   }
-                  // TODO: Type change doesn't work :(
                   ch.Type = 'object';
                   ch.Value= JSON.stringify(it);
                 }
@@ -120,8 +119,7 @@ ngUserControls['list_designinfo'] = {
                 // TODO: Check priority 'object' vs 'controls'
                 'object': {
                   DestroyIfEmpty: true,
-                  // TODO: Check why ChildDesignInfo doesn't work
-                  ChildDesingInfo: {
+                  ChildDesignInfo: {
                     DefaultType: 'controls',
                     PropertyGroup: 'Controls',
                     Types: {
