@@ -212,19 +212,11 @@ var ViewModel_Controls_DesignInfo = (function()
     }
 
     var vm_di = {
-      Properties: {
-        "ViewModel": {
-          DefaultType: 'string',
-          PropertyGroup: 'DataBind',
-          Types: {
-            'function': {},
-            'identifier': {}
-          },
-          Level: 'basic',
-          Order: 0.21
+      Properties: ng_DIProperties({
+        "ViewModel": { DefaultType: 'viewmodel', Level: 'basic', Order: 0.21,
+          PropertyGroup: 'DataBind'
         },
-        "DataBind": {
-          DefaultType: 'databind',
+        "DataBind": { DefaultType: 'databind', Level: 'basic', Order: 0.5,
           Types: {
             'databind_string': {},
             'object': {
@@ -239,12 +231,9 @@ var ViewModel_Controls_DesignInfo = (function()
               DestroyIfEmpty: true,
               ObjectProperties: props
             }
-          },
-          Level: 'basic',
-          Order: 0.5
+          }
         },
-        "DOMDataBind": {
-          DefaultType: 'databind',
+        "DOMDataBind": { DefaultType: 'databind', Level: 'optional', Order: 0.5,
           PropertyGroup: 'DataBind',
           Types: {
             'databind_string': {},
@@ -260,70 +249,19 @@ var ViewModel_Controls_DesignInfo = (function()
               DestroyIfEmpty: true
             }
           },
-          Level: 'optional',
-          Order: 0.5
         },
         "Data": {
-          Types: {
-            'object': {
-              ObjectProperties: {
-                "ViewModelData": { Level: 'hidden' }
-              }
-            }
-          }
+          "ViewModelData": { Level: 'hidden' }
         },
         "Methods": {
-          Types: {
-            'object': {
-              ObjectProperties: {
-                "SetViewModelData":{
-                  DefaultType: 'function',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(val) { if (ng_IsOverriden(this.SetViewModelData)) this.SetViewModelData.callParent.apply(this, arguments); }'
-                    }
-                  },
-                  Level: 'advanced'
-                }
-              }
-            }
-          }
+          "SetViewModelData": ng_DIProperty('function', 'function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' })
         },
         "Events": {
-          Types: {
-            'object': {
-              ObjectProperties: {
-                "OnViewModelDataChanged": {
-                  DefaultType: 'events',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(c, oldval) { }'
-                    }
-                  }
-                },
-                "OnDataBindingInit": {
-                  DefaultType: 'events',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }'
-                    }
-                  },
-                  Level: 'optional'
-                },
-                "OnDataBindingUpdate": {
-                  DefaultType: 'events',
-                  Types: {
-                    'function': {
-                      DefaultValue: 'function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }'
-                    }
-                  },
-                  Level: 'optional'
-                }
-              }
-            }
-          }
+          "OnViewModelDataChanged": ng_DIPropertyEvent('function(c, oldval) { }', { Level: 'basic' }),
+          "OnDataBindingInit": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
+          "OnDataBindingUpdate": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' })
         }
-      }
+      })
     };
 
     // handle DataBind Events properties
@@ -402,6 +340,63 @@ var ViewModel_Controls_DesignInfo = (function()
   }
 
   return {
+    OnFormEditorInit: function(FE) {
+      var vm_types = [
+        // ViewModel Identifier
+        {
+          TypeID: 'vmid',
+          TypeBase: 'string',
+          Name: 'viewmodel id',
+          ShortName: 'vmi',
+          Options: {
+          }
+        },
+        // ViewModel Object
+        {
+          TypeID: 'vmobject',
+          TypeBase: 'object',
+          Name: 'viewmodel object',
+          ShortName: 'vm',
+          Options: {
+            ChildDesignInfo: {
+              DefaultType: 'undefined',
+              Types: {
+                'jstypes': {}
+              }
+            }
+          }
+        },
+        // ViewModel Constructor
+        {
+          TypeID: 'vmconstructor',
+          TypeBase: 'function',
+          Name: 'viewmodel constructor',
+          ShortName: 'vmc',
+          Options: {
+            // TODO: Check why not working?
+            DefaultValue: 'function(vm) {}'
+          }
+        },
+        // ngFieldDef
+        {
+          // TODO: add detect, method arguments as virtual properties
+          TypeID: 'ngFieldDef',
+          TypeBase: 'code',
+          Name: 'ngFieldDef',
+          ShortName: 'fd',
+          Options: {
+            DefaultValue: 'new ngFieldDef("name","type",{})'
+          }
+        }
+
+      ];
+      FormEditor.RegisterPropertyType(vm_types);
+
+      FE.RegisterPropertyTypesGroup('viewmodel',     ['vmid','vmobject']);
+      FE.RegisterPropertyTypesGroup('viewmodel_def', ['vmobject', 'vmconstructor']);
+      FE.RegisterPropertyTypesGroup('vmfielddef',    ['ngFieldDef']); // TODO: Implement more ngFieldDef_*
+
+    },
     OnControlDesignInfo: function(def, c, ref)
     {
       if((c)&&(!def.CtrlInheritanceDepth))
@@ -422,8 +417,6 @@ var ViewModel_Controls_DesignInfo = (function()
           NewControl: {
             Default: {
               Properties: {
-                "L": {},
-                "T": {},
                 "ID": { ValueByRefName: true }
               }
             }
@@ -432,25 +425,21 @@ var ViewModel_Controls_DesignInfo = (function()
             "ID": { Level: 'basic' },
             "Namespace": { DefaultType: 'string', Level: 'basic', Order: 0.05 },
             "FieldDefs": { DefaultType: 'array', Level: 'basic', Order: 0.051,
-                // TODO: Add FieldDefs type
-            },
-            "ViewModel": { DefaultType: 'function', Level: 'basic', Order: 0.052,
-              // TODO: Add VM type
               Types: {
-                'identifier': {},
-                'object': {},
-                'function': { DefaultValue: 'function(vm) {}' }
+                'array': {
+                  ChildDesignInfo: {
+                    DefaultType: 'vmfielddef'
+                  }
+                }
               }
             },
-            "RefViewModel": { DefaultType: 'string', Level: 'basic', Order: 0.053,
-              Types: {
-                'string': {},
-                'identifier': {}
-              }
+            "ViewModel": { DefaultType: 'viewmodel_def', Level: 'basic', Order: 0.052,
+              PropertyGroup: 'Definition'
             },
+            "RefViewModel": { DefaultType: 'vmid', Level: 'basic', Order: 0.053 },
             "Data": {
-              "ViewModel": { DefaultType: 'object', Level: 'basic' },
-              "DefaultValues": { DefaultType: 'object', Level: 'basic' },
+              "ViewModel": { DefaultType: 'vmobject', Level: 'basic' },
+              "DefaultValues": { DefaultType: 'jsobject', Level: 'basic' },
               "ServerURL": { DefaultType: 'url', Level: 'basic' }
             },
             "Events": {
@@ -475,6 +464,8 @@ var ViewModel_Controls_DesignInfo = (function()
               "OnSetViewModel": ng_DIPropertyEvent('function(c, vmodel) { return vmodel; }',{ Level: 'basic' }),
               "OnResults": ng_DIPropertyEvent('function(c, results) { return results; }',{ Level: 'basic' })
             }
+          },{
+            "DataBind": { Level: 'optional' },
           })
         };
       });
