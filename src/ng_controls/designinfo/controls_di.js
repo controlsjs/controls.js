@@ -1905,10 +1905,19 @@ ngUserControls['controls_designinfo'] = {
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
       var di={
         Properties: {
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' })
+          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
+          "Data": {
+            Types: {
+              'object': {
+                ObjectProperties: {
+                  "FormID": { DefaultType: 'string', Level: 'optional' }
+                }
+              }
+            }
+          }
         }
       };
-      if(!d.CtrlInheritanceDepth) {
+      if(d.CtrlInheritanceDepth<2) {
         di.ControlCategory='Containers';
         di.IsContainer=true;
         di.BaseControl='ngFrame';
