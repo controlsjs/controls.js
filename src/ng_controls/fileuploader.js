@@ -41,7 +41,6 @@ var FileUploaderControl = {
       }
 
       ng_MergeDef(def, {
-        W: 400, H: 200,
         ParentReferences: false,
         ListFiles: true,
         UseUploadWindow: uploadwin,
