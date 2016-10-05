@@ -151,13 +151,14 @@ ngUserControls['list_designinfo'] = {
                       it[columnid[0].PropertyValue]={};
                     }
                   }
-                  // TODO: Check why if item is not initialize only first column is created
-                  ch.Value=JSON.stringify(it);
+                  ch.Type = 'object';
+                  for (var j in it) it[j] = JSON.stringify(it[j]);
+                  ch.Value=it;
                 }
                 else {
+                  ch.Type = 'controls';
                   ch.Value ='{}';
                 }
-                ch.Type = 'object';
 
                 return true;
               }
