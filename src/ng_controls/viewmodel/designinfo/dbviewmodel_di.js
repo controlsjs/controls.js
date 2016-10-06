@@ -29,10 +29,10 @@ var DBViewModel_DesignInfo = {
                 'object': {
                   ChildDesignInfo: { DefaultType: 'boolean' },
                   ObjectProperties: {
-                    "recStateNewRecord": ng_DIPropertyBool(true, { Level: 'parent' }),
-                    "recStateLoaded": ng_DIPropertyBool(true, { Level: 'parent' }),
-                    "recStateNone": ng_DIPropertyBool(false, { Level: 'parent' }),
-                    "recStateDeleted": ng_DIPropertyBool(false, { Level: 'parent' })
+                    "recStateNewRecord": ng_DIPropertyBool(true, { Level: 'basic' }),
+                    "recStateLoaded": ng_DIPropertyBool(true, { Level: 'basic' }),
+                    "recStateNone": ng_DIPropertyBool(false, { Level: 'basic' }),
+                    "recStateDeleted": ng_DIPropertyBool(false, { Level: 'basic' })
                   }
                 }
               }
