@@ -354,11 +354,9 @@ function ngcal_UpdateCalendar()
   var o=this.Elm();
   if(!o) return;
   var cclass=this.BaseClassName;
-  var calid=this.ID;
   var now_date = ng_ExtractDate(new Date());
   var cur_month = this.CurrentDate.getMonth()+1;
   var cur_year = this.CurrentDate.getFullYear();
-  var cur_day = this.CurrentDate.getDate();
   var daysinmonth = new Array(0,31,28,31,30,31,30,31,31,30,31,30,31);
   if(ng_LeapYear(cur_year)) daysinmonth[2] = 29;
 
@@ -854,7 +852,7 @@ function ngCalendar(id)
   var b=new ngButton();
   b.Text = '&lt;';
   b.Alt = ngTxt('calendar_prevmonth');
-  b.OnClick = function(e) { if(e.Owner.Parent) e.Owner.Parent.PrevMonth(); };
+  b.OnClick = function(e) { if(e.Owner.Parent) e.Owner.Parent.PrevMonth(!e.Owner.Parent.YearNavigation); };
   /*  Variable: PrevMonBtn
    *  ...
    *  Type: object
@@ -874,7 +872,7 @@ function ngCalendar(id)
   b=new ngButton();
   b.Text = '&lt;';
   b.Alt = ngTxt('calendar_prevyear');
-  b.OnClick = function(e) { if(e.Owner.Parent) e.Owner.Parent.PrevYear(!e.Owner.Parent.YearNavigation); };
+  b.OnClick = function(e) { if(e.Owner.Parent) e.Owner.Parent.PrevYear(); };
   /*  Variable: PrevYearBtn
    *  ...
    *  Type: object
