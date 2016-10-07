@@ -453,7 +453,7 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
     if(typeof c==='string') { c={ Text:c, Value: i }; consts[i]=c; }
     if(c.Text===defvalue) defival=c.Value;
     else if(c.Value===defvalue) { defival=c.Value; defvalue=c.Text; }
-    ids.push(c.Text);
+    ids.unshift(c.Text);
   }
   ng_MergeVar(di, {
     DefaultType: 'identifier',

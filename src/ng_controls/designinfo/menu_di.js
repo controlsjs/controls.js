@@ -202,7 +202,19 @@ ngUserControls['menu_designinfo'] = {
         },
         Properties: ng_DIProperties({
           "Menu": { Level: 'basic' },
-          "Button": ng_DIPropertyControl('ngMenuBarButton',{ Level: 'basic' }, 'ngMenuBarButton')
+          "Button": {
+            Level: 'basic',
+            DefaultType: 'control',
+            Types: {
+              'control': {
+                Type: 'ngMenuBarButton',
+                InheritedFrom: 'ngMenuBarButton',
+                ObjectProperties: {
+                  "Type": { Required: true }
+                }
+              }
+            }
+          }
         })
       }
     });
@@ -224,8 +236,6 @@ ngUserControls['menu_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              "W": { Value: 150 },
-              "H": { Value: 30 },
               "Data": {
                 ObjectProperties: {
                   "Text": { ValueByRefName: true },
@@ -233,7 +243,6 @@ ngUserControls['menu_designinfo'] = {
                 }
               },
               "Menu": {
-                Type: 'object',
                 ObjectProperties: {
                   "Type": { Type: 'string', Value: 'ngMenu' }
                 }

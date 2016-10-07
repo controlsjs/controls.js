@@ -54,12 +54,11 @@ var ViewModel_Dataset_DesignInfo = {
         Properties: ng_DIProperties({
           "Data": {
             "AutoDataSetColumns": ng_DIPropertyBool(false, { Level: 'basic',
-              // TODO: Check why not working
               Exclude: ['ModifyControls.List.Data.Columns', 'Controls.List.Data.Columns']
             }),
             "GetRecordsCommand": ng_DIProperty('string','resetfilters', { Level: 'advanced' }),
             "SortByVMField": ng_DIProperty('string','SortBy', { Level: 'basic' }),
-            "AllowedSortByVMField": ng_DIProperty('string','AllowedSortBy', { Level: 'basic' }),
+            "AllowedSortByVMField": ng_DIProperty('string','AllowedSortBy', { Level: 'basic' })
           },
           "Events": {
             "OnSetViewModel": ng_DIPropertyEvent('function(c, vm, ovm) {}',{ Level: 'basic' }),
