@@ -110,7 +110,7 @@ ngUserControls['system_designinfo'] = {
           "Events": {
             "OnTimer": ng_DIPropertyEvent('function(c, tickcnt) { return true; }',{Level:'basic'}),
             "OnStart": ng_DIPropertyEvent('function(c) {}',{Level:'basic'}),
-            "OnStop": ng_DIPropertyEvent('function(c, tickcnt) {}',{Level:'basic'}),
+            "OnStop": ng_DIPropertyEvent('function(c, tickcnt) {}',{Level:'basic'})
           }
         })
       }
@@ -160,7 +160,7 @@ ngUserControls['system_designinfo'] = {
                   }
                 }
               }
-            },
+            }
           },
           "Events": {
             "OnRequest": ng_DIPropertyEvent('function(c, reqinfo) { return true; }',{ Level: 'basic' }),
@@ -171,10 +171,10 @@ ngUserControls['system_designinfo'] = {
             "OnHTTPReadyStateChanged": ng_DIPropertyEvent('function(c, xmlhttp, reqinfo) { return true; }'),
             "OnHTTPRequestFailed": ng_DIPropertyEvent('function(c, xmlhttp, reqinfo) {}'),
             "OnReceivedJSON": ng_DIPropertyEvent('function(c, data, xmlhttp) {}',{ Level: 'basic' }),
-            "OnReceivedData": ng_DIPropertyEvent('function(c, response, xmlhttp, reqinfo) { return true; }',{ Level: 'basic' }),
+            "OnReceivedData": ng_DIPropertyEvent('function(c, response, xmlhttp, reqinfo) { return true; }',{ Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnEncodeParam": ng_DIPropertyEvent('function(c, name, value) { return value; }',{ Level: 'basic' }),
+            "OnEncodeParam": ng_DIPropertyEvent('function(c, name, value) { return value; }',{ Level: 'basic' })
           }
         })
       }

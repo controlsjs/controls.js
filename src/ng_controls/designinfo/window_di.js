@@ -29,7 +29,7 @@ ngUserControls['window_designinfo'] = {
             "B": { DefaultType: 'integer', Level: 'basic', Order: 0.14 },
             "HX": { DefaultType: 'integer', Level: 'basic', Order: 0.15 },
             "HY": { DefaultType: 'integer', Level: 'basic', Order: 0.16 },
-            "Img": { DefaultType: 'image', Level: 'basic', Order: 0.17 },
+            "Img": { DefaultType: 'image', Level: 'basic', Order: 0.17 }
           }
         }
       }
@@ -273,11 +273,11 @@ ngUserControls['window_designinfo'] = {
             "Text": ng_DIPropertyRefName({ Level: 'basic' })
           },
           "Events": {
-            "OnClick": ng_DIPropertyEvent('function(e) {}'),
+            "OnClick": ng_DIPropertyEvent('function(e) {}')
           },
           "OverrideEvents": {
             "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' }),
+            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' })
           },
           "ModifyControls": {
             "Hint": { DefaultType: 'control', Level: 'basic',

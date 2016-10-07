@@ -249,7 +249,7 @@ ngUserControls['menu_designinfo'] = {
               }
             }
           }
-        },
+        }
       }
     });
   }

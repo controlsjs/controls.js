@@ -117,7 +117,7 @@ ngUserControls['dialogs_designinfo'] = {
             "AppName": ng_DIProperty('string',ngTxt('ngAppName',document.title),{ Level: 'basic' }),
             "AppVersion": ng_DIProperty('string','Version 1.0.0',{ Level: 'basic' }),
             "AppCopyright": ng_DIProperty('string',ngTxt('ngAppCopyright',''),{ Level: 'basic' }),
-            "AppText": ng_DIProperty('string','',{ Level: 'basic' }),
+            "AppText": ng_DIProperty('string','',{ Level: 'basic' })
           },
           "ModifyControls": {
             "AppInfo": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList')

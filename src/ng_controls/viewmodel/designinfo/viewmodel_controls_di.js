@@ -248,7 +248,7 @@ var ViewModel_Controls_DesignInfo = (function()
             'databind': {
               DestroyIfEmpty: true
             }
-          },
+          }
         },
         "Data": {
           "ViewModelData": { Level: 'hidden' }
@@ -465,7 +465,7 @@ var ViewModel_Controls_DesignInfo = (function()
               "OnResults": ng_DIPropertyEvent('function(c, results) { return results; }',{ Level: 'basic' })
             }
           },{
-            "DataBind": { Level: 'optional' },
+            "DataBind": { Level: 'optional' }
           })
         };
       });
