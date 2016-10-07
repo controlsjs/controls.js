@@ -3538,7 +3538,7 @@ var WinEightControls = {
             DragAndDropPanel: {
               Events: {
                 OnFilesDragOver: function(c,elm) {
-                  ngfup_AddDragBox(c.Owner.Owner,2,'dashed '+(!th ? '#FFFFFF' : '#000000'));
+                  ngfup_AddDragBox(c.Owner.Owner,2);
                 },
                 OnFilesDragLeave: function(c,elm) {
                   ngfup_RemoveDragBox(c.Owner.Owner);

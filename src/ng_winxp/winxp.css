@@ -1154,3 +1154,10 @@
 {
   background-color: #FFD0D0;
 }
+
+/* wxpFileUploader ************************************************************/
+.wxpFileUploader_Drag {
+  border-color: #000000;
+  border-style: dotted;
+}
+

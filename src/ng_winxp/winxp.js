@@ -2321,6 +2321,7 @@ var WinXPControls = {
       {
         ng_MergeDef(def, {
           Base: 'ngPanel',
+          className: 'wxpFileUploader',
           Controls: {
             UploadWindow: {
               Type: 'stdDialog',
@@ -2332,7 +2333,7 @@ var WinXPControls = {
             DragAndDropPanel: {
               Events: {
                 OnFilesDragOver: function(c,elm) {
-                  ngfup_AddDragBox(c.Owner.Owner,1,'dotted black');
+                  ngfup_AddDragBox(c.Owner.Owner,1);
                 },
                 OnFilesDragLeave: function(c,elm) {
                   ngfup_RemoveDragBox(c.Owner.Owner);

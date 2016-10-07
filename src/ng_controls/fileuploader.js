@@ -53,10 +53,10 @@ var FileUploaderControl = {
           UploadIFrame: {
             Type: 'ngText',
             L: 0, T: 0, W: 0, H: 0,
-            Data: {
-              Text: ng_sprintf(ngTxt('ngfup_IFrame'), id, '1', '1', '1')
-            },
             Events: {
+              OnGetText: function(){
+                return this.Owner.Owner.GetIFrameHTML('1',false);
+              },
               OnUpdated: function(o) {
                 c.GetForm(); // force IFRAME creation
               }
@@ -64,7 +64,6 @@ var FileUploaderControl = {
           },
           UploadWindow: {
             Type: 'ngWindow',
-            W: 260, H: 80,
             Data: {
               Centered: false,
               ngText: 'ngfup_AddFile',
@@ -109,9 +108,9 @@ var FileUploaderControl = {
                 if(l<0) l=0;
                 if(t<0) t=0;
                 o.SetBounds({L: l, T: t });
-
-                if ((visible) && (o.Controls.TxtAddFile.GetText()==''))
-                  o.Controls.TxtAddFile.SetText(ng_sprintf(ngTxt('ngfup_IFrame'), id, '2', o.IFrameSize.W, o.IFrameSize.H));
+              },
+              OnGetText: function(){
+                return this.Owner.Owner.GetIFrameHTML('2',true);
               }
             }
           },
@@ -160,6 +159,25 @@ var FileUploaderControl = {
                 Data: {
                   TextAlign: 'center',
                   ngText: 'ngfup_DragAndDropAllowed'
+                }
+              }
+            },
+            Events: {
+              OnFilesDragOver: function(c,elm){
+                var cElm = c.Owner.Owner.Elm();
+                if(!cElm){return;}
+
+                var cn=cElm.className;
+                if(cn.indexOf('_Drag')<0){cElm.className = cn+'_Drag';}
+              },
+              OnFilesDragLeave: function(c,elm){
+                var cElm = c.Owner.Owner.Elm();
+                if(!cElm){return;}
+
+                var cn=cElm.className;
+                var idx = cn.indexOf('_Drag');
+                if(idx>=0){
+                  cElm.className = cn.substring(0,idx)+cn.substring(idx+5);
                 }
               }
             }
@@ -991,6 +1009,26 @@ var FileUploaderControl = {
         return false;
       }
 
+      /*  Function: GetIFrameHTML
+       *  ...
+       *
+       *  Syntax:
+       *    string *GetIFrameHTML* (string iFrameId, bool vizual)
+       *
+       *  Returns:
+       *    HTML string
+       */
+
+      c.GetIFrameHTML = function (iFrameId,vizual) {
+        return ng_sprintf(
+          '<iframe id="IFRAME_FileUploader_%s_%s" scrolling="no" frameborder="0" '
+          +'style="overflow:hidden;border:0px;width:%spx;height:%spx;"></iframe>',
+          this.FileUploaderID,iFrameId,
+          (vizual ? this.IFrameSize.W : 1),
+          (vizual ? this.IFrameSize.H : 1)
+        );
+      };
+
       c.ShowError = function (errmsg, data) {
         if(errmsg!='') {
           if (c.OnError) c.OnError(c, errmsg, data);
@@ -1008,10 +1046,10 @@ var FileUploaderControl = {
         }
       }
 
-      window['ngfup_AddDragBox'] = function(c,w,border) {
+      window['ngfup_AddDragBox'] = function(c,w) {
         var elm=c.Elm();
+        if(!elm){return;}
         if(typeof w === 'undefined') w=1;
-        if(typeof border === 'undefined') border='dotted black';
         if(typeof c.Bounds.L !== 'undefined') {
           if(typeof c._dragboxMarginLeft === 'undefined') c._dragboxMarginLeft=elm.style.marginLeft;
           elm.style.marginLeft='-'+w+'px';
@@ -1028,17 +1066,18 @@ var FileUploaderControl = {
           if(typeof c._dragboxMarginBottom === 'undefined') c._dragboxMarginBottom=elm.style.marginBottom;
           elm.style.marginBottom='-'+w+'px';
         }
-        if(typeof c._dragboxBorder === 'undefined') c._dragboxBorder=elm.style.border;
-        elm.style.border=w+'px '+border;
+        if(typeof c._dragboxBorderWidth === 'undefined') c._dragboxBorder=elm.style.borderWidth;
+        elm.style.borderWidth=w+'px';
       };
 
       window['ngfup_RemoveDragBox'] = function(c) {
         var elm=c.Elm();
+        if(!elm){return;}
         if(typeof c._dragboxMarginLeft !== 'undefined') elm.style.marginLeft=c._dragboxMarginLeft;
         if(typeof c._dragboxMarginTop !== 'undefined') elm.style.marginTop=c._dragboxMarginTop;
         if(typeof c._dragboxMarginRight !== 'undefined') elm.style.marginRight=c._dragboxMarginRight;
         if(typeof c._dragboxMarginBottom !== 'undefined') elm.style.marginBottom=c._dragboxMarginBottom;
-        elm.style.border=ngVal(c._dragboxBorder,'');
+        elm.style.borderWidth=ngVal(c._dragboxBorderWidth,'');
         delete c._dragboxMarginLeft;
         delete c._dragboxMarginTop;
         delete c._dragboxMarginRight;

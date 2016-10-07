@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014-2015 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -1356,5 +1356,13 @@ TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
   user-select:none;
   outline:none;
   -webkit-tap-highlight-color:rgba(255,255,255,0);
+}
+.weFileUploaderLight_Drag {
+  border-color:#000000;
+  border-style:dashed;
+}
+.weFileUploaderDark_Drag {
+  border-color:#ffffff;
+  border-style:dashed;
 }
 .weFileUploaderLight .weListBoxLight, .weFileUploaderDark .weListBoxLight { background-color:#FFFFFF; }
