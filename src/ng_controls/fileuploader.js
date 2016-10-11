@@ -81,8 +81,6 @@ var FileUploaderControl = {
               OnVisibleChanged: function (o) {
                 if (typeof(o)==='undefined') return;
 
-                var visible = ngVal(o.Visible, true);
-
                 var winw,winh,cw,ch;
 
                 var ow=o.Elm();
@@ -377,7 +375,7 @@ var FileUploaderControl = {
         if (c[action]) c[action](data);
 
         return true;
-      }
+      };
 
       /*
        *  Group: Methods
@@ -447,7 +445,7 @@ var FileUploaderControl = {
           c.Controls.ListFiles.EndUpdate();
         }
         return true;
-      }
+      };
 
       function checkfiles(files) {
         var maxfiles=ngVal(c.MaxFilesCount,-1);
@@ -535,7 +533,7 @@ var FileUploaderControl = {
 
             if(Value!='') Value+=', ';
             Value+=input.files[i].name;
-            Files.push(input.files[i].name)
+            Files.push(input.files[i].name);
           }
         }
         else {
@@ -553,7 +551,7 @@ var FileUploaderControl = {
         sendfiles();
 
         return true;
-      }
+      };
 
       /*  Function: RemoveCheckedFiles
        *  ...
@@ -582,7 +580,7 @@ var FileUploaderControl = {
           c.Controls.ListFiles.EndUpdate();
         }
         return true;
-      }
+      };
 
       /*  Function: ClearFiles
        *  ...
@@ -609,7 +607,7 @@ var FileUploaderControl = {
         finally {
           list.EndUpdate();
         }
-      }
+      };
 
       /*  Function: GetForm
        *  ...
@@ -652,7 +650,7 @@ var FileUploaderControl = {
         if (!Form) return false;
 
         return Form;
-      }
+      };
 
       /*  Function: ShowForm
        *  ...
@@ -682,7 +680,7 @@ var FileUploaderControl = {
         }
         c.ShowWindow();
         return true;
-      }
+      };
 
       /*  Function: ShowWindow
        *  ...
@@ -704,7 +702,7 @@ var FileUploaderControl = {
         if (show) c.GetForm();
 
         return true;
-      }
+      };
 
       /*  Function: GetFiles
        *  ...
@@ -718,7 +716,7 @@ var FileUploaderControl = {
 
       c.GetFiles = function () {
         return c.Controls.ListFiles.Items;
-      }
+      };
 
       var registered_targets={};
 
@@ -840,7 +838,7 @@ var FileUploaderControl = {
           return true;
         }
         return false;
-      }
+      };
 
       /*  Function: UnregisterDropTarget
        *  ...
@@ -872,7 +870,7 @@ var FileUploaderControl = {
         }
 
         delete registered_targets[t];
-      }
+      };
 
       /*  Function: IsDropTarget
        *  ...
@@ -891,7 +889,7 @@ var FileUploaderControl = {
           else if(typeof t.id!=='undefined') { t=t.id; }
         }
         return typeof registered_targets[t] !== 'undefined';
-      }
+      };
 
       /*  Function: SetUploadProgress
        *  ...
@@ -904,7 +902,7 @@ var FileUploaderControl = {
        */
       c.SetUploadProgress = function(p) {
         if((c.OnUploadProgress)&&(!ngVal(c.OnUploadProgress(c,p),false))) return;
-      }
+      };
 
       c.GetRPC = function() {
         if(!c.file_rpc) {
@@ -935,7 +933,7 @@ var FileUploaderControl = {
                   if (event.lengthComputable) {
                     c.SetUploadProgress(event.loaded / event.total * 100 | 0);
                   }
-                }
+                };
               }
               else c.SetUploadProgress(/*undefined*/);
 
@@ -964,10 +962,10 @@ var FileUploaderControl = {
               if(params!='') reqinfo.URL=ng_AddURLParam(reqinfo.URL, params);
             }
             return true;
-          }
+          };
         }
         return c.file_rpc;
-      }
+      };
 
       /*  Function: UploadFile
        *  ...
@@ -1007,7 +1005,7 @@ var FileUploaderControl = {
           return true;
         }
         return false;
-      }
+      };
 
       /*  Function: GetIFrameHTML
        *  ...
@@ -1035,7 +1033,7 @@ var FileUploaderControl = {
           else alert(ng_htmlDecode(errmsg));
           return false;
         }
-      }
+      };
 
       c.ShowWaiting = function(v) {
         v=ngVal(v,true);
@@ -1044,7 +1042,7 @@ var FileUploaderControl = {
           if (v) { if (c.OnShowWaiting) c.OnShowWaiting(c); }
           else   { if (c.OnHideWaiting) c.OnHideWaiting(c); }
         }
-      }
+      };
 
       window['ngfup_AddDragBox'] = function(c,w) {
         var elm=c.Elm();
@@ -1154,8 +1152,7 @@ var FileUploaderControl = {
           }
 
           return true;
-
-        }
+        };
 
         //c.OnDataBindingUpdate = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) { return true; }
       }
