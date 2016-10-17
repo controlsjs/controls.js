@@ -37,7 +37,7 @@ var WinEightControls = {
     'img/we_base.png?4',
     'img/we_hbox.png?3',
     'img/we_vbox.png?3',
-    'img/we_icons.png?12',
+    'img/we_icons.png?13',
 
     // pre-load
     'img/progressline_black.gif?1',
@@ -492,17 +492,7 @@ var WinEightControls = {
       Phone: 58,
       Camera: 59,
       Favorites: 60,
-      Chat: 61,
-      Chart: 62,
-      Balance: 63,
-      Swing: 64,
-      PieChart: 65,
-      Eye: 66,
-      Globe: 67,
-      Sector: 68,
-      Star: 69,
-      Table: 70
-
+      Chat: 61
     },{
       // automaticaly created from AppIcons
     }
