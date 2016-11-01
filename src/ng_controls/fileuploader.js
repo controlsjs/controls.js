@@ -55,7 +55,7 @@ var FileUploaderControl = {
             L: 0, T: 0, W: 0, H: 0,
             Events: {
               OnGetText: function(){
-                return this.Owner.Owner.GetIFrameHTML('1',false);
+                return this.Owner.Owner.GetIFrameHTML('1');
               },
               OnUpdated: function(o) {
                 c.GetForm(); // force IFRAME creation
@@ -74,7 +74,17 @@ var FileUploaderControl = {
             Controls: {
               TxtAddFile: {
                 L: 5, T: 5, R: 0, B: 0,
-                Type: 'ngText'
+                Type: 'ngText',
+                Events: {
+                  OnGetText: function(){
+                    var iFrameSize = this.Owner.Owner.IFrameSize;
+                    return this.Owner.Owner.Owner.Owner.GetIFrameHTML(
+                      '2',
+                      iFrameSize ? iFrameSize.W : undefined,
+                      iFrameSize ? iFrameSize.H : undefined
+                    );
+                  }
+                }
               }
             },
             Events: {
@@ -106,9 +116,6 @@ var FileUploaderControl = {
                 if(l<0) l=0;
                 if(t<0) t=0;
                 o.SetBounds({L: l, T: t });
-              },
-              OnGetText: function(){
-                return this.Owner.Owner.GetIFrameHTML('2',true);
               }
             }
           },
@@ -1011,19 +1018,20 @@ var FileUploaderControl = {
        *  ...
        *
        *  Syntax:
-       *    string *GetIFrameHTML* (string iFrameId, bool vizual)
+       *    string *GetIFrameHTML* (string iFrameId [, integer iFrameWidth, integer iFrameWidth])
        *
        *  Returns:
        *    HTML string
        */
 
-      c.GetIFrameHTML = function (iFrameId,vizual) {
+      c.GetIFrameHTML = function (iFrameId,iFrameWidth,iFrameHeight) {
+        if(typeof iFrameWidth !== 'number'){iFrameWidth = 1;}
+        if(typeof iFrameHeight !== 'number'){iFrameHeight = 1;}
+
         return ng_sprintf(
           '<iframe id="IFRAME_FileUploader_%s_%s" scrolling="no" frameborder="0" '
           +'style="overflow:hidden;border:0px;width:%spx;height:%spx;"></iframe>',
-          this.FileUploaderID,iFrameId,
-          (vizual ? this.IFrameSize.W : 1),
-          (vizual ? this.IFrameSize.H : 1)
+          this.FileUploaderID,iFrameId,iFrameWidth,iFrameHeight
         );
       };
 
