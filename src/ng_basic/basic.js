@@ -279,6 +279,21 @@ function ngHammerJS()
   return (typeof Hammer === 'function')&&((typeof ngHammerJSDisabled === 'undefined')||(!ngHammerJSDisabled))&&((!ngIExplorer)||(ngIExplorerVersion>=9))&&((!ngOpera)||(ngOperaVersion>=10.5));
 }
 
+/**
+ *  Function: ngHammerJSVer
+ *  Gets HammerJS library major version.
+ *
+ *  Syntax:
+ *    integer *ngHammerJSVer* ()
+ *
+ *  Returns:
+ *    HammerJS library major version number or undefined if HammerJS is not present.
+ */
+function ngHammerJSVer()
+{
+  if(ngHammerJS()) return parseInt(Hammer.VERSION,10);
+}
+
 var ngPointerStartEvents;
 
 /** 
@@ -295,7 +310,7 @@ function ngPtrStartEvents()
 {
   if(typeof ngPointerStartEvents === 'undefined')
   {
-    if(ngHammerJS()) // HammerJS library is present
+    if(ngHammerJSVer()===1) // HammerJS library v1.x is present
     {  
       if(!Hammer.READY) Hammer.event.determineEventTypes();
       ngPointerStartEvents=Hammer.EVENT_TYPES[Hammer.EVENT_START].split(' ');
