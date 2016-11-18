@@ -4408,7 +4408,7 @@ function ngc_PtrListener(c, elm, eid, gestures, ev)
     if(!ngPointersInitialized) ngc_InitPointers();
     if(!c.GetPointerPos) c.GetPointerPos = ngc_GetPointerPos;
 
-    if(ngHammerJS()) // HammerJS library is present
+    if(ngHammerJSVer()===1) // HammerJS library v1.x is present
     {
       var opts={ drag_min_distance : 1, hold_threshold: 30 };
       if(c.DoGetPtrOptions) c.DoGetPtrOptions(eid, opts);
@@ -4629,7 +4629,7 @@ function ngc_InitPointers()
 {
   if(ngPointersInitialized) return;
 
-  if(!ngHammerJS()) // HammerJS library is NOT present
+  if(ngHammerJSVer()!==1) // HammerJS library v1.x is NOT present
   {
     function doc_mouse_down(e)
     {
