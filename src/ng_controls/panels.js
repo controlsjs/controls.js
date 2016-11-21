@@ -1745,7 +1745,7 @@ function ngDropPanel(id)
   ngControlCreated(this);
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['panels'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

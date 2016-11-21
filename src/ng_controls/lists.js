@@ -3161,7 +3161,7 @@ function ngList(id)
    */
   this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
 
-  this.radio_groups = new Array();
+  this.radio_groups = {};
 
   /*  Variable: ListIndent
    *  ...
@@ -6052,7 +6052,7 @@ function Create_ngPageList(def, ref, parent)
   return c;
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['list'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

@@ -16,7 +16,7 @@
 
 // --- ngSettings --------------------------------------------------------------
 
-var ngSettingsByID = new Array();
+var ngSettingsByID = {};
 var ngSettingsLastID = 0;
 
 var ngOnSettingsCreated = (typeof ngOnSettingsCreated !== 'undefined' ? ngOnSettingsCreated : null);
@@ -485,7 +485,7 @@ function ngSettings(id, options)
 }
 
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['settings'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

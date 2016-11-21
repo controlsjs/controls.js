@@ -40,7 +40,7 @@ function ngClipboard()
   }  
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['clipboard'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

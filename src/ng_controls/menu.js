@@ -2483,7 +2483,7 @@ function Create_ngSplitButton(def, ref, parent)
   return c;
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['menu'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

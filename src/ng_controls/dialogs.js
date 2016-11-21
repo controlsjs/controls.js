@@ -285,7 +285,7 @@ function ngAboutBrowser()
 
 // --- Controls Registration ---------------------------------------------------
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['dialogs'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

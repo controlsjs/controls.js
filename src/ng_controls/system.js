@@ -12,7 +12,7 @@
 
 // --- ngSysAction -------------------------------------------------------------
 
-var ngact_RadioGroups = new Array();
+var ngact_RadioGroups = {};
 
 function ngact_CheckRadioGroup()
 {
@@ -916,7 +916,7 @@ function ngSysURLParams(id)
   ngControlCreated(this);
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['system'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'System',

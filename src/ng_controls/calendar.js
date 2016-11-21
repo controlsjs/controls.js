@@ -1473,7 +1473,7 @@ function Create_ngEditTime(def, ref, parent)
   return c;
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['calendar'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

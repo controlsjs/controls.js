@@ -12,7 +12,7 @@
 
 // --- ngColorPicker --------------------------------------------------------------
 
-if(typeof ngUserControls == 'undefined'){ngUserControls = new Array();}
+if(typeof ngUserControls == 'undefined'){ngUserControls = {};}
 
 ngUserControls['ngColorControls'] = {
   Lib: 'ng_controls',

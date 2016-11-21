@@ -1073,5 +1073,5 @@ var MaskEditControl = {
   }
 };
 
-if (typeof(ngUserControls)==='undefined') ngUserControls = new Array();
+if (typeof(ngUserControls)==='undefined') ngUserControls = {};
 ngUserControls['maskedit'] = MaskEditControl;

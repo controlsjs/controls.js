@@ -26,7 +26,7 @@
  */
 var ngsCookieMaxLen = (typeof ngsCookieMaxLen === 'undefined' ? 4050 : ngsCookieMaxLen);
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['settings_cookies'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

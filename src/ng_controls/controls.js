@@ -1122,13 +1122,13 @@ function ng_GetScrollBars(o)
 
 // --- Controls ----------------------------------------------------------------
 
-var ngControlsIDs = new Array();
+var ngControlsIDs = {};
 var ngControlImages = '';
-var ngRegisteredControlTypes = new Array();
+var ngRegisteredControlTypes = {};
 var ngOnRegisterControlType = ngOnRegisterControlType || null;
-var ngRegisteredControlDesignInfos = new Array();
+var ngRegisteredControlDesignInfos = {};
 var ngOnRegisterControlDesignInfo = ngOnRegisterControlDesignInfo || null;
-var ngMouseInControls = new Array();
+var ngMouseInControls = {};
 var ngCurrentLib = 'ng_controls';
 var ngCurrentUserControls = '';
 var ngCurrentControlsGroup = 'Core';
@@ -1315,7 +1315,7 @@ function ngControlCreated(obj)
 
 // --- ngCreateControls --------------------------------------------------------
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 
 function ngUsrCtrlSetImages(obj, images)
 {
@@ -7922,7 +7922,7 @@ function ngImageMap(id)
 
 // --- ngButton ----------------------------------------------------------------
 
-var ngb_RadioGroups = new Array();
+var ngb_RadioGroups = {};
 
 function ngb_SimpleRect(b)
 {
