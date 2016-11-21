@@ -1915,7 +1915,7 @@ function ngUpdateControls(ref)
 {
   if(typeof ref === 'undefined') return;
   var c,p;
-  var upd_id=new Array();
+  var upd_id={};
   var upd=new Array();
   for(var i in ref)
   {
@@ -5498,8 +5498,8 @@ function ng_StartAutoResize(o,ref)
   if(typeof o === 'string') o=document.getElementById(o);
   if((!o)||(o.id=='')) return;
 
-  if(!ngAutoResize) ngAutoResize=new Array();
-  if(!ngAutoResizeRefs) ngAutoResizeRefs=new Array();
+  if(!ngAutoResize) ngAutoResize={};
+  if(!ngAutoResizeRefs) ngAutoResizeRefs={};
   if(typeof ngAutoResize[o.id] === 'undefined')
   {
     ngAutoResizeCnt++;
@@ -5508,7 +5508,7 @@ function ng_StartAutoResize(o,ref)
   var r=ngAutoResizeRefs[o.id];
   if(typeof r === 'undefined')
   {
-    r=new Array;
+    r={};
     ngAutoResizeRefs[o.id]=r;
   }
   r[ref]=true;
@@ -5860,7 +5860,7 @@ function nga_SetParam(p, v, type)
   {
     if(typeof type !== 'undefined')
     {
-      if(typeof this.ParamInfo === 'undefined') this.ParamInfo=new Array();
+      if(typeof this.ParamInfo === 'undefined') this.ParamInfo={};
       var pi = this.ParamInfo[p];
       if(typeof pi === 'undefined') { pi=new Object; this.ParamInfo[p] = pi; }
       pi.Type=type;
@@ -5872,7 +5872,7 @@ function nga_SetParam(p, v, type)
 
 function nga_SetParamEncodingFnc(param, encodefnc, decodefnc)
 {
-  if(typeof this.ParamInfo === 'undefined') this.ParamInfo=new Array();
+  if(typeof this.ParamInfo === 'undefined') this.ParamInfo={};
   var pi = this.ParamInfo[param];
   if(typeof pi === 'undefined') { pi=new Object; this.ParamInfo[param] = pi; }
   pi.Encode=encodefnc;
@@ -5920,7 +5920,7 @@ function nga_PersistParam(p, v)
 
   if(typeof this.ParamInfo === 'undefined')
   {
-    if(v) this.ParamInfo = new Array();
+    if(v) this.ParamInfo = {};
     else return;
   }
   var pi = this.ParamInfo[p];
@@ -5948,7 +5948,7 @@ function nga_SetParamType(p, type)
     this.params_parsed=true;
     this.ParseParams();
   }
-  if(typeof this.ParamInfo === 'undefined') this.ParamInfo = new Array();
+  if(typeof this.ParamInfo === 'undefined') this.ParamInfo = {};
   var pi = this.ParamInfo[p];
   if((typeof pi === 'undefined')||(!pi)) { pi=new Object; this.ParamInfo[p] = pi; }
   pi.Type = type;
@@ -6007,7 +6007,7 @@ function nga_ParseParams(url)
     ngURLParams[i]=clientparams[i];
 
   var pi,v;
-  if(typeof this.ParamInfo === 'undefined') this.ParamInfo = new Array();
+  if(typeof this.ParamInfo === 'undefined') this.ParamInfo = {};
   for(var i in urlparams)
   {
     pi = this.ParamInfo[i];
@@ -6244,7 +6244,7 @@ function nga_RegisterAPI(id, api, version, owner)
   {
     apidock=new Object;
     apidock.ID=id;
-    apidock.Versions=new Array();
+    apidock.Versions={};
     this.APIs[id]=apidock;
   }
   var lapi,i;
