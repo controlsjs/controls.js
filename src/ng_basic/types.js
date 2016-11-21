@@ -16,7 +16,7 @@ var ngTypesLang = 'en';
 function ngTypesTxt(t,defval)
 {
   if((typeof ngApp === 'object')&&(ngApp)&&(typeof ngApp.Text === 'function')) return ngApp.Text(t, defval); // Use Controls resources
-  if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
+  if(typeof ngc_Lang === 'undefined') ngc_Lang={};
   var l=ngc_Lang[ngTypesLang];
   if(typeof l === 'undefined') l=ngc_Lang['en'];
   if(typeof l === 'undefined') return ngVal(defval, t); 
