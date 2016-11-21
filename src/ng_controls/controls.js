@@ -71,8 +71,8 @@ function ngDesignInfoEnd() {
   if (ngDESIGNINFOCnt<0) ngDESIGNINFOCnt=0;
 }
 
-if(typeof ngc_Lang === 'undefined') ngc_Lang=new Array();
-if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=new Array();
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 ngc_Lang['en']['ngAppOldControlsVersion']='Application requires newer version of Controls.js!\nRequired %s.%s, used %s.%s.\n\nApplication terminated!';
 ngc_Lang['en']['ngEmptyString']=''; // Don't define that in other languages
 
@@ -121,12 +121,14 @@ function ngLang(id,data,lng,allowOverride)
   if(typeof allowOverride === 'undefined') allowOverride=true;
   lng=''+lng;
   if(lng=='') return;
-  lng=ngNormalizeLang(lng);
-  if(typeof ngc_Lang      === 'undefined') ngc_Lang=new Array();
-  if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]=new Array();
-  
-  if(!allowOverride && (typeof ngc_Lang[lng][id] !== 'undefined')) return;
-  ngc_Lang[lng][id]=data;
+  if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+  if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]={};
+  if((typeof ngc_Lang[lng][id] === 'undefined') || allowOverride) ngc_Lang[lng][id]=data;
+
+  var li=ngExtractLangId(lng);
+  if(typeof ngc_Lang[li.Lang] === 'undefined') ngc_Lang[li.Lang]={};
+  var sublang=ngMakeLangId(li.Lang,li.LangCountry);
+  if(typeof ngc_Lang[sublang] === 'undefined') ngc_Lang[sublang]={};
 }
 
 var ng_cur_lng = 'en';
@@ -173,12 +175,54 @@ function ngEndLang()
  */
 function ngNormalizeLang(lng)
 {
-  var pos=lng.indexOf('-');
-  if(pos>=0)
-    lng = lng.substr(0, pos);
-  lng = (''+lng).replace(/^\s+|\s+$/g,"").toLowerCase(); // trim + lowercase
-  if(lng=='cs') lng='cz';
+  var li=ngExtractLangId(lng);
+  lng = (''+li.Lang).replace(/^\s+|\s+$/g,"").toLowerCase(); // trim + lowercase
   return lng;
+}
+
+/**
+ *  Function: ngExtractLangId
+ *  Extracts language, country and variant from given identifier.
+ *
+ *  Syntax: object *ngExtractLangId* (string lngid)
+ *
+ *  Returns:
+ *    Object with extracted language info.
+ */
+function ngExtractLangId(lngid)
+{
+  var lng,cntry,variant;
+  var d=new RegExp('([a-z]*)([-\._|]([a-z]*)([-\._|]([a-z]*))?)?').exec((''+lngid).toLowerCase());
+  if(d) {
+    lng=d[1];
+    cntry=d[3];
+    variant=d[5];
+    if(cntry=='') variant='';
+    if(lng=='') {
+      cntry='';
+      variant='';
+    }
+  }
+  return {
+    Lang: lng,
+    LangCountry: cntry,
+    LangVariant: variant
+  };
+}
+
+/**
+ *  Function: ngMakeLangId
+ *  Combines language, country and variant to language identifier.
+ *
+ *  Syntax: string *ngMakeLangId* (lang [, country, variant, separator='-'])
+ *
+ *  Returns:
+ *    Language identifier.
+ */
+function ngMakeLangId(lang, country, variant, separator)
+{
+  if(!separator) separator='-';
+  return lang+(country ? separator+country+(variant ? separator + variant : '') : '');
 }
 
 /**
@@ -229,12 +273,22 @@ function ngGetSupportedLang(lng)
   lng = ngNormalizeLang(lng);
   if((lng=='')||(arr && !ngc_SupportedLangs[lng])||(!arr && typeof ngc_Lang[lng]==='undefined'))
   {
-    if((lng=='cz')&&((arr && ngc_SupportedLangs['sk'])||(!arr && typeof ngc_Lang['sk']!=='undefined'))) lng='sk';
-    else
-      if((lng=='sk')&&((arr && ngc_SupportedLangs['cz'])||(!arr && typeof ngc_Lang['cz']!=='undefined'))) lng='cz';
-      else
-        if((arr && ngc_SupportedLangs[deflang])||!arr) lng=deflang;
-        else for(var k in ngc_SupportedLangs) { lng = k; break; }
+    switch(lng)
+    {
+      case 'cs':
+        if((arr && ngc_SupportedLangs['cz'])||(!arr && typeof ngc_Lang['cz']!=='undefined')) return lng;
+        break;
+      case 'cz':
+        if((arr && ngc_SupportedLangs['cs'])||(!arr && typeof ngc_Lang['cs']!=='undefined')) return lng;
+        break;
+      case 'sk':
+        if((arr && (ngc_SupportedLangs['cs'] || ngc_SupportedLangs['cz']))
+        ||(!arr && (typeof ngc_Lang['cs']!=='undefined' || typeof ngc_Lang['cz']!=='undefined'))) return 'cs';
+        break;
+    }
+    if(((lng=='cs')||(lng=='cz'))&&((arr && ngc_SupportedLangs['sk'])||(!arr && typeof ngc_Lang['sk']!=='undefined'))) return 'sk';
+    if((arr && ngc_SupportedLangs[deflang])||!arr) lng=deflang;
+    else for(var k in ngc_SupportedLangs) { lng = k; break; }
   }
   return lng;
 }
@@ -323,19 +377,62 @@ function ngAddSupportedLang()
  */
 function ngTxt(t, defval)
 {
-  var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en');
-
-  function gettxt(def,t)
+  var lang,sublang,mainlang;
+  if((typeof ngApp === 'object') && ngApp)
   {
-    var l=def[lang];
-    var txt=(typeof l === 'undefined' ? l : l[t]);
-    if((typeof txt==='undefined')&&(lang!='en'))
+    mainlang=ngApp.Lang;
+    if(ngApp.LangCountry) sublang=ngApp.Lang+'-'+ngApp.LangCountry;
+    if(ngApp.LangVariant) lang=ngApp.Lang+'-'+ngApp.LangCountry+'-'+ngApp.LangVariant;
+  }
+  else mainlang='en';
+
+  function gettxt2(def,lng,t,olng)
+  {
+    var l=def[lng];
+    if(typeof l === 'undefined') return l;
+    var txt=l[t];
+    if((typeof txt!=='undefined')&&(olng)&&(olng!==lng))
     {
-      l=def['en'];
-      txt=(typeof l === 'undefined' ? l : l[t]);
+      if(typeof def[olng]==='undefined') def[olng]={};
+      def[olng][t]=ng_CopyVar(txt);
     }
     return txt;
   }
+
+  function gettxt(def,t)
+  {
+    var txt;
+    if(lang) {
+      txt=gettxt2(def,lang,t);
+      if(typeof txt!=='undefined') return txt;
+    }
+    if(sublang) {
+      txt=gettxt2(def,sublang,t,lang)
+      if(typeof txt!=='undefined') return txt;
+    }
+    if(mainlang) {
+      txt=gettxt2(def,mainlang,t,lang ? lang : sublang);
+      if(typeof txt!=='undefined') return txt;
+    }
+    switch(mainlang)
+    {
+      case 'cs':
+        txt=gettxt2(def,'cz',t,(sublang ? sublang : mainlang));
+        if(typeof txt!=='undefined') return txt;
+        break;
+      case 'cz':
+        txt=gettxt2(def,'cs',t,(sublang ? sublang : mainlang));
+        if(typeof txt!=='undefined') return txt;
+        break;
+      case 'en':
+        break;
+      default:
+        txt=gettxt2(def,'en',t,mainlang);
+        break;
+    }
+    return txt;
+  }
+
   var txt;
   if((typeof ngDevice !== 'undefined')&&(typeof ngc_Lang['DEV_'+ngDevice] !== 'undefined'))
   {
@@ -367,37 +464,58 @@ function ngTxt(t, defval)
  */
 function ngRes(rid)
 {
-  var lang=((typeof ngApp === 'object') && ngApp ? ngApp.Lang : 'en');
+  var lang,sublang,mainlang;
+  if((typeof ngApp === 'object') && ngApp)
+  {
+    mainlang=ngApp.Lang;
+    if(ngApp.LangCountry) sublang=ngApp.Lang+'-'+ngApp.LangCountry;
+    if(ngApp.LangVariant) lang=ngApp.Lang+'-'+ngApp.LangCountry+'-'+ngApp.LangVariant;
+  }
+  else mainlang='en';
+
+  function getres2(def,lng,rid,baseres)
+  {
+    var l=def[lng];
+    if(typeof l === 'undefined') return l;
+    var res=l[rid];
+    if(typeof res === 'undefined') return res;
+    var r=ng_CopyVar(res);
+    if(baseres) ng_MergeDef(r,baseres,true);
+    return r;
+  }
 
   function getres(def,rid, warn)
   {
+    var res;
     var le=def['en'];
     var eres=(typeof le === 'undefined' ? le : le[rid]);
-    if(lang=='en')
-    {
-      if((ngHASDEBUG())&&(typeof eres==='undefined')&&(warn))
-        ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
-      return ng_CopyVar(eres);
-    }
 
-    var l=def[lang];
-    var res=(typeof l === 'undefined' ? l : l[rid]);
-    if(typeof res === 'undefined')
-    {
-      if((ngHASDEBUG())&&(typeof eres==='undefined')&&(warn))
-        ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
-      return ng_CopyVar(eres);
+    if(lang) {
+      res=getres2(def,lang,rid,eres);
+      if(typeof res!=='undefined') return res;
     }
-    if(typeof eres === 'undefined')
-    {
-      if((ngHASDEBUG())&&(typeof res==='undefined')&&(warn))
-        ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
-      return ng_CopyVar(res);
+    if(sublang) {
+      res=getres2(def,sublang,rid,eres);
+      if(typeof res!=='undefined') return res;
     }
-
-    var r=ng_CopyVar(res);
-    ng_MergeDef(r,eres,true);
-    return r;
+    if((mainlang)&&(mainlang!=='en')) {
+      res=getres2(def,mainlang,rid,eres);
+      if(typeof res!=='undefined') return res;
+      switch(mainlang)
+      {
+        case 'cs':
+          res=getres2(def,'cz',rid,eres);
+          if(typeof res!=='undefined') return res;
+          break;
+        case 'cz':
+          res=getres2(def,'cs',rid,eres);
+          if(typeof res!=='undefined') return res;
+          break;
+      }
+    }
+    if((ngHASDEBUG())&&(typeof eres==='undefined')&&(warn))
+      ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
+    return ng_CopyVar(eres);
   }
 
   if((typeof ngDevice !== 'undefined')&&(typeof ngc_Lang['DEV_'+ngDevice] !== 'undefined'))
@@ -5089,7 +5207,45 @@ function nga_GetLang()
   return l;
 }
 
-function nga_DetectLang(defaultlang)
+function nga_SetLangById(lngid)
+{
+  var li=ngExtractLangId(lngid);
+  return this.SetLang(li.Lang,li.LangCountry,li.LangVariant);
+}
+
+function nga_SetLang(language, country, variant)
+{
+  var undefined;
+
+  var changed=false;
+  if(language !== this.Lang) changed=true;
+  else {
+    if(typeof country==='undefined') country=this.LangCountry;
+    else if(country!==this.LangCountry) changed=true;
+
+    if(!changed) {
+      if(typeof variant==='undefined') variant=this.LangVariant;
+      else if(variant!==this.LangVariant) changed=true;
+    }
+  }
+  if(changed) {
+    if(!country) {
+      country=undefined;
+      variant=undefined;
+    }
+    if(!language) {
+      language=undefined;
+      country=undefined;
+      variant=undefined;
+    }
+    this.Lang = typeof language === 'string' ? language.toLowerCase() : undefined;
+    this.LangCountry = typeof country === 'string' ? country.toLowerCase() : undefined;
+    this.LangVariant = typeof variant === 'string' ? variant.toLowerCase() : undefined;
+  }
+  return changed;
+}
+
+function nga_DetectLangEx(defaultlang)
 {
   var lng=ngVal(this.StartParams.Lang,'');
   if(lng=='') lng=ngVal(ng_GET('lang'),'');
@@ -5102,8 +5258,13 @@ function nga_DetectLang(defaultlang)
       lng = navigator.language;
   }
   if(lng=='') lng=ngVal(defaultlang,'');
-  lng = ngNormalizeLang(lng);
-  return lng;
+  return ngExtractLangId(lng);
+}
+
+function nga_DetectLang(defaultlang)
+{
+  var li=this.DetectLangEx(defaultlang);
+  return ngNormalizeLang(li.Lang);
 }
 
 function nga_Text(t, defval)
@@ -5148,7 +5309,19 @@ function nga_DoRun()
   // Language detection
   ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
   ngc_SupportedLangsLocked = (ngApp.StartParams.SupportedLangsLocked === true);
-  ngApp.Lang = ngGetSupportedLang(ngApp.DetectLang());
+  var li=ngApp.DetectLangEx();
+  var lng=ngGetSupportedLang(li.Lang);
+  if(lng!==li.Lang) {
+    var undefined;
+    ngApp.Lang=lng;
+    ngApp.LangCountry=undefined;
+    ngApp.LangVariant=undefined;
+  }
+  else {
+    ngApp.Lang=li.Lang;
+    ngApp.LangCountry=li.LangCountry;
+    ngApp.LangVariant=li.LangVariant;
+  }
 
   // Controls version check
   var reqver,reqsubver;
@@ -5218,13 +5391,13 @@ function nga_Run()
 
 function nga_SetTitle(t)
 {
-  if(ngVal(t,'')!='') { try { document.title=this.Text(t); } catch(e) { } }
+  if(ngVal(t,'')!='') { try { document.title=ngTxt(t,t); } catch(e) { } }
 }
 
 function nga_MessageBox(text,yesno)
 {
-  if(!ngVal(yesno,false)) alert(ng_htmlDecode(this.Text(text)));
-  else return confirm(ng_htmlDecode(this.Text(text)));
+  if(!ngVal(yesno,false)) alert(ng_htmlDecode(ngTxt(text,text)));
+  else return confirm(ng_htmlDecode(ngTxt(text,text)));
 }
 
 function ng_SetBounds(o,props)
@@ -5523,7 +5696,7 @@ function nga_sendRPCRequest(url,nocache)
     }
 
     if((typeof this.Params.lang === 'undefined')&&(typeof ngApp === 'object')) {
-      this.Params.lang=ngApp.Lang;
+      this.Params.lang=ngMakeLangId(ngApp.Lang,ngApp.LangCountry,ngApp.LangVariant);
       lngmodified=true;
     }
 
@@ -6308,12 +6481,24 @@ function ngApplication(startparams, elm, autorun)
   {
   }
 
-
   /*  Variable: Lang
    *  ...
    *  Type: string
    */
   this.Lang='';
+
+  /*  Variable: LangCountry
+   *  ...
+   *  Type: string
+   */
+  this.LangCountry='';
+
+  /*  Variable: LangVariant
+   *  ...
+   *  Type: string
+   */
+  this.LangVariant='';
+
   /*  Variable: ElmID
    *  ...
    *  Type: string
@@ -6371,6 +6556,28 @@ function ngApplication(startparams, elm, autorun)
    *    -
    */
   this.GetLang=nga_GetLang;
+
+  /*  Function: SetLang
+   *  Sets application language, language country and language variant.
+   *
+   *  Syntax:
+   *    bool *SetLang* (string language [, string country, string variant])
+   *
+   *  Returns:
+   *    TRUE if application language properties was changed.
+   */
+  this.SetLang=nga_SetLang;
+  /*  Function: SetLangById
+   *  Sets application language properties by language identifier.
+   *
+   *  Syntax:
+   *    bool *SetLangById* (string langid)
+   *
+   *  Returns:
+   *    TRUE if application language properties was changed.
+   */
+  this.SetLangById=nga_SetLangById;
+
   /*  Function: DetectLang
    *  Detects language.
    *
@@ -6381,6 +6588,16 @@ function ngApplication(startparams, elm, autorun)
    *    Detected language.
    */
   this.DetectLang=nga_DetectLang;
+  /*  Function: DetectLangEx
+   *  Detects language, language country and language variant.
+   *
+   *  Syntax:
+   *    object *DetectLangEx* ([string defaultlang])
+   *
+   *  Returns:
+   *    Detected language properties.
+   */
+  this.DetectLangEx=nga_DetectLangEx;
   /*  Function: Text
    *  Gets resource string by application language.
    *
