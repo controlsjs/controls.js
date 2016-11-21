@@ -574,7 +574,7 @@ function ng_DetectLibsURL(type,scripts)
   else ngLibsURL='libs/'; // not found :(, use default path
 }
 
-var ngPreloadedImages=new Array();
+var ngPreloadedImages={};
 var ngPreloadImgCnt=0;
 var ngPreloadImgCallback=null;
 
