@@ -10,7 +10,7 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 
 /**
  *  Variable: WireframeControls
