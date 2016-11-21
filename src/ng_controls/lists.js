@@ -999,7 +999,7 @@ function ngl_SelectItem(it, state)
 function ngl_ClearSelected()
 {
   this.last_selected='';
-  this.selected = new Array();
+  this.selected = {};
   this.SelectChanged();
 }
 
@@ -1250,8 +1250,8 @@ function ngl_FindItem(key, partial, ignorecase, visibleonly, fromitem, ongetsrch
     fi.key=(fi.ignorecase ? (''+key).toLowerCase() : key);
     if(this.Columns.length>0)
     {
-      fi.key=new Array(fi.key);
-      fi.cols=new Array(this.Columns[0]);
+      fi.key=[fi.key];
+      fi.cols=[this.Columns[0]];
     }
   }
   fi.found=null;
@@ -1576,14 +1576,14 @@ function ngl_ClickItem(it, e)
           ctrl=false;
         }
         if((this.SelectType==1)||((this.SelectType==3)&&(!ctrl)&&(!shift))) // Single
-          this.selected=new Array();
+          this.selected={};
         if(((this.SelectType==2)||(this.SelectType==3))&&(shift)&&(this.last_selected!=''))
         {
           var s=!ngVal(this.selected[this.ItemId(it)],false);
           var lit=ngl_ItemById(this.ID+'_'+this.last_selected);
           if(lit.item)
           {
-            var itms=new Array(lit.item);
+            var itms=[lit.item];
             var si=lit.item;
             while((si=this.NextVisibleItem(si))!=null)
             {
@@ -1593,7 +1593,7 @@ function ngl_ClickItem(it, e)
             if(!si)
             {
               si=lit.item;
-              itms=new Array(lit.item);
+              itms=[lit.item];
               while((si=this.PrevVisibleItem(si))!=null)
               {
                 if(ngVal(si.Enabled,true)) itms[itms.length]=si;
@@ -1612,7 +1612,7 @@ function ngl_ClickItem(it, e)
         }
         else if(this.SelectType==4){
           var select = !ngVal(this.selected[this.ItemId(it)],false);
-          this.selected=new Array();
+          this.selected={};
           this.SelectItem(it,select);
           this.SelectChanged();
         }
@@ -2486,7 +2486,7 @@ function ngl_DoUpdate(o)
 
   var cclass=this.BaseClassName;
   var html=new ngStringBuilder;
-  this.draw_selected = new Array();
+  this.draw_selected = {};
 
   var hascolumns=(this.Columns.length>0);
   if(hascolumns)
@@ -3687,8 +3687,8 @@ function ngList(id)
    */
   this.LastVisibleItem = ngl_LastVisibleItem;
 
-  this.draw_selected = new Array();
-  this.selected = new Array();
+  this.draw_selected = {};
+  this.selected = {};
   this.last_selected = '';
   this.SelectChanged = ngl_SelectChanged;
 
