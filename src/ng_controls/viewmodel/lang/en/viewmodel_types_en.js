@@ -9,8 +9,8 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
-if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
-if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=[];
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
 ngc_Lang['en']['viewmodel_err_www']   = 'Value is not a WWW address.';
 ngc_Lang['en']['viewmodel_err_email'] = 'Value is not an e-mail address.';

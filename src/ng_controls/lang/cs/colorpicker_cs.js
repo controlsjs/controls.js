@@ -9,24 +9,24 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
-if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
-if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=[];
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['cs'] === 'undefined') ngc_Lang['cs']={};
 
-ngc_Lang['cz']['colorpicker_hue']         = 'Odstín';
-ngc_Lang['cz']['colorpicker_saturation']  = 'Sytost';
-ngc_Lang['cz']['colorpicker_value']       = 'Jas';
-ngc_Lang['cz']['colorpicker_satval']      = 'Sytost a jas';
-ngc_Lang['cz']['colorpicker_red']         = 'Červená';
-ngc_Lang['cz']['colorpicker_green']       = 'Zelená';
-ngc_Lang['cz']['colorpicker_blue']        = 'Modrá';
-ngc_Lang['cz']['colorpicker_alpha']       = 'Krytí';
-ngc_Lang['cz']['colorpicker_hex']         = 'HTML';
-ngc_Lang['cz']['colorpicker_alphahex']    = 'HTML s krytím';
-ngc_Lang['cz']['colorpicker_from']        = 'Původní barva';
-ngc_Lang['cz']['colorpicker_to']          = 'Nová barva';
-ngc_Lang['cz']['colorpicker_H-SV']        = 'H-SV';
-ngc_Lang['cz']['colorpicker_HSV']         = 'HSV';
-ngc_Lang['cz']['colorpicker_RGB']         = 'RGB';
+ngc_Lang['cs']['colorpicker_hue']         = 'Odstín';
+ngc_Lang['cs']['colorpicker_saturation']  = 'Sytost';
+ngc_Lang['cs']['colorpicker_value']       = 'Jas';
+ngc_Lang['cs']['colorpicker_satval']      = 'Sytost a jas';
+ngc_Lang['cs']['colorpicker_red']         = 'Červená';
+ngc_Lang['cs']['colorpicker_green']       = 'Zelená';
+ngc_Lang['cs']['colorpicker_blue']        = 'Modrá';
+ngc_Lang['cs']['colorpicker_alpha']       = 'Krytí';
+ngc_Lang['cs']['colorpicker_hex']         = 'HTML';
+ngc_Lang['cs']['colorpicker_alphahex']    = 'HTML s krytím';
+ngc_Lang['cs']['colorpicker_from']        = 'Původní barva';
+ngc_Lang['cs']['colorpicker_to']          = 'Nová barva';
+ngc_Lang['cs']['colorpicker_H-SV']        = 'H-SV';
+ngc_Lang['cs']['colorpicker_HSV']         = 'HSV';
+ngc_Lang['cs']['colorpicker_RGB']         = 'RGB';
 
-ngc_Lang['cz']['colorpicker_Submit']='OK';
-ngc_Lang['cz']['colorpicker_Cancel']='Storno';
+ngc_Lang['cs']['colorpicker_Submit']='OK';
+ngc_Lang['cs']['colorpicker_Cancel']='Storno';

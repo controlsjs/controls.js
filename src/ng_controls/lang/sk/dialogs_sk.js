@@ -9,8 +9,8 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
-if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
-if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=[];
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']={};
 
 ngc_Lang['sk']['mbOK']='OK';
 ngc_Lang['sk']['mbCancel']='Storno';

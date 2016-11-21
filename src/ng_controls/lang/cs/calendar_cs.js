@@ -9,16 +9,16 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
-if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
-if(typeof ngc_Lang['cz'] === 'undefined') ngc_Lang['cz']=[];
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['cs'] === 'undefined') ngc_Lang['cs']={};
 
-ngc_Lang['cz']['calendar']              = 'Kalendář';
-ngc_Lang['cz']['calendar_today']        = 'Dnes';
-ngc_Lang['cz']['calendar_tomorrow']     = '+1';
-ngc_Lang['cz']['calendar_tomorrow_alt'] = 'Zítra';
-ngc_Lang['cz']['calendar_nextweek']     = '+7';
-ngc_Lang['cz']['calendar_nextweek_alt'] = 'Za týden';
-ngc_Lang['cz']['calendar_nextmonth']    = 'Následující měsíc';
-ngc_Lang['cz']['calendar_prevmonth']    = 'Předcházející měsíc';
-ngc_Lang['cz']['calendar_nextyear']     = 'Následující rok';
-ngc_Lang['cz']['calendar_prevyear']     = 'Předcházející rok';
+ngc_Lang['cs']['calendar']              = 'Kalendář';
+ngc_Lang['cs']['calendar_today']        = 'Dnes';
+ngc_Lang['cs']['calendar_tomorrow']     = '+1';
+ngc_Lang['cs']['calendar_tomorrow_alt'] = 'Zítra';
+ngc_Lang['cs']['calendar_nextweek']     = '+7';
+ngc_Lang['cs']['calendar_nextweek_alt'] = 'Za týden';
+ngc_Lang['cs']['calendar_nextmonth']    = 'Následující měsíc';
+ngc_Lang['cs']['calendar_prevmonth']    = 'Předcházející měsíc';
+ngc_Lang['cs']['calendar_nextyear']     = 'Následující rok';
+ngc_Lang['cs']['calendar_prevyear']     = 'Předcházející rok';

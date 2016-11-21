@@ -9,8 +9,8 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
-if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
-if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']=[];
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
 ngc_Lang['en']['dbviewmodel_err_failed']='Error: Operation failed.';
 ngc_Lang['en']['dbviewmodel_err_loadfailed']='Error: Unable to get record data.';

@@ -9,8 +9,8 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
-if(typeof ngc_Lang === 'undefined') ngc_Lang=[];
-if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']=[];
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']={};
 
 ngc_Lang['sk']['viewmodel_err_www']   = 'Hodnota nie je WWW adresa.';
 ngc_Lang['sk']['viewmodel_err_email'] = 'Hodnota nie je e-mailová adresa.';
