@@ -3022,7 +3022,7 @@ var ngOnRPCCreated     = null;
 var ngOnAnyRPCRequest  = null;
 
 var ngRPCLastID = 0;
-var ngRPCByID = new Array();
+var ngRPCByID = {};
 
 function getRPCByID(rpcid)
 {
