@@ -10,7 +10,7 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-if(typeof ngBindingsHandlers === 'undefined') ngBindingsHandlers = new Array();
+if(typeof ngBindingsHandlers === 'undefined') ngBindingsHandlers = {};
 
 var ngvmf_hintevents_initialized = false;
 
@@ -630,7 +630,7 @@ function ngvmf_FindFieldControls(fid, visibleonly, bindings, parentfielddef)
   var found=[];
   if(bindings)
   {
-    var b=new Array();
+    var b={};
     for(var j=0;j<bindings.length;j++)
       b[bindings[j]]=true;
     bindings=b;
@@ -1370,7 +1370,7 @@ function ng_FindViewModel(def, c)
   return vm;
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['viewmodel_controls'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',
@@ -3023,7 +3023,7 @@ ngUserControls['viewmodel_controls'] = {
         {
           value_read('Selected',c,valueAccessor,function(val) {
             var keyfield=ngVal(c.SelectKeyField, 'Value');
-            c.selected=new Array();
+            c.selected={};
             if(!ng_isEmpty(val))
             {
               if(!ng_typeArray(val))

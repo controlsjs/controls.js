@@ -472,7 +472,7 @@ function Create_ngDataSet(def, ref, parent,basetype)
   return c;
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['viewmodel_dataset'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

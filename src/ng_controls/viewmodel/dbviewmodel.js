@@ -1411,7 +1411,7 @@ function Create_ngDBToolBar(def, ref, parent, basetype)
   return ngCreateControlAsType(def, ngVal(basetype,'ngToolBar'), ref, parent);
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['dbviewmodel'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',

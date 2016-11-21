@@ -21,9 +21,9 @@ TODO:
 - file(s) upload
 */
 
-var ngViewModels = new Array();
+var ngViewModels = {};
 
-var ngViewModelNamespaces = new Array();
+var ngViewModelNamespaces = {};
 
 var fdNoTrim=0;
 var fdTrim=1;
@@ -2557,7 +2557,7 @@ function ngvm_InitServerNamespaces() {
   }
 }
 
-if(typeof ngUserControls === 'undefined') ngUserControls = new Array();
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['viewmodel'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',
