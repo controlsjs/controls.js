@@ -1863,12 +1863,16 @@ function ngCreateControls(defs,ref,parent,options)
       for(var i=0;i<options.CreatedControls.length;i++)
       {
         cinfo=options.CreatedControls[i];
+        c=cinfo.Control;
+        if(typeof c.ChildHandling!=='undefined') {
+          // Update children
+          c.SetChildControlsEnabled(c.Enabled);
+        }
         oc=cinfo.OnCreated;
         cinfo.OnCreated=null;
         if(oc)
         {
           ngCreateControlsOptions=cinfo.Options;
-          c=cinfo.Control;
           c.OnCreated=oc;
           oc(c,cinfo.Ref,cinfo.Options);
         }
@@ -2075,6 +2079,10 @@ function ngCreateControlHTML(props)
 }
 
 // --- ngControl (abstract) ----------------------------------------------------
+
+var ngChildEnabledAsParent    = 0;
+var ngChildEnabledParentAware = 1;
+var ngChildEnabledIndependent = 2;
 
 function ngc_Elm()
 {
@@ -2369,6 +2377,103 @@ function ngc_Disable()
   this.SetEnabled(false);
 }
 
+function ngc_SetChildControlsEnabled(v,p)
+{
+  var cc=this.ChildControls;
+  if((typeof cc === 'undefined')||(!cc.length)) return;
+  switch(ngVal(this.ChildHandling,0) & 7) // 3bits are reserved form enabled state handling
+  {
+    case 0: // ngChildEnabledAsParent
+      this._changingchildenabled=true;
+      try
+      {
+        if(typeof this.DoSetChildEnabled === 'function') {
+          for(var i=0;i<cc.length;i++) {
+            if(cc[i]) this.DoSetChildEnabled(cc[i],v,p);
+          }
+        }
+        else {
+          for(var i=0;i<cc.length;i++) {
+            if(cc[i]) cc[i].SetEnabled(v,p);
+          }
+        }
+      }
+      finally
+      {
+        delete this._changingchildenabled;
+      }
+      break;
+    case 1: // ngChildEnabledParentAware
+      this._changingchildenabled=true;
+      try
+      {
+        var self=this,undefined;
+        function setenabled(v,p)
+        {
+          if(self._changingchildenabled) return;
+
+          this._intEnabled=ngVal(v,true);
+          var cc=this.ChildControls;
+          if((typeof cc !== 'undefined')&&((ngVal(this.ChildHandling,0) & 7)===0 /* ngChildEnabledAsParent */)) {
+            for(var i=0;i<cc.length;i++) cc[i].SetEnabled(v,p);
+          }
+        }
+
+        function disablechildcontrols(f)
+        {
+          var c,ch;
+          for(var i=0;i<f.ChildControls.length;i++)
+          {
+            c=f.ChildControls[i];
+            if(!c) continue;
+            if((typeof c.ChildControls !== 'undefined')&&((ngVal(c.ChildHandling,0) & 7)===0 /* ngChildEnabledAsParent */)) {
+              disablechildcontrols(c);
+            }
+            if((typeof c.SetEnabled === 'function')&&(typeof c._intEnabled === 'undefined'))
+            {
+              c._intEnabled=ngVal(c.Enabled,true);
+              c._intSetEnabled = c.SetEnabled;
+              if(typeof self.DoSetChildEnabled === 'function') self.DoSetChildEnabled(c,false,f);
+              else c.SetEnabled(false);
+              c.SetEnabled=setenabled;
+            }
+          }
+        }
+
+        function enablechildcontrols(f)
+        {
+          var c;
+          for(var i=0;i<f.ChildControls.length;i++)
+          {
+            c=f.ChildControls[i];
+            if(!c) continue;
+            if(typeof c._intEnabled!=='undefined')
+            {
+              var s=c._intEnabled;
+              c.SetEnabled=c._intSetEnabled;
+              if(typeof self.DoSetChildEnabled === 'function') self.DoSetChildEnabled(c,s,f);
+              else c.SetEnabled(s);
+              delete c._intSetEnabled;
+              delete c._intEnabled;
+            }
+            if((typeof c.ChildControls !== 'undefined')&&((ngVal(c.ChildHandling,0) & 7)===0 /* ngChildEnabledAsParent */)) {
+              enablechildcontrols(c);
+            }
+          }
+        }
+        if(v) enablechildcontrols(this);
+        else  disablechildcontrols(this);
+      }
+      finally
+      {
+        delete this._changingchildenabled;
+      }
+      break;
+    case 2: // ngChildEnabledIndependent
+      break;
+  }
+}
+
 function ngc_SetEnabled(v,p)
 {
   v=ngVal(v,true);
@@ -2377,16 +2482,7 @@ function ngc_SetEnabled(v,p)
     if((this.OnSetEnabled)&&(!ngVal(this.OnSetEnabled(this,v,p),false))) return;
 
     p=ngVal(p,this);
-    if(typeof this.SetChildControlsEnabled === 'function')
-    {
-      this.SetChildControlsEnabled(v,p);
-    }
-    else
-    {
-      var cc=this.ChildControls;
-      if(typeof cc !== 'undefined')
-        for(var i=0;i<cc.length;i++) cc[i].SetEnabled(v,p);
-    }
+    this.SetChildControlsEnabled(v,p);
 
     if(this.DoSetEnabled) this.DoSetEnabled(v);
     else
@@ -3022,6 +3118,18 @@ function ngControl(obj, id, type)
    *  Type: array
    */
   //obj.ChildControls = new Array();
+
+  /*  Variable: ChildHandling
+   *  If present, describes how control state changes influence control children.
+   *  Type: integer
+   *
+   *  Constants:
+   *  - ngChildEnabledAsParent
+   *  - ngChildEnabledParentAware
+   *  - ngChildEnabledIndependent
+   */
+  //obj.ChildHandling = 0;
+
   /*  Variable: Gestures
    *  If present, the properties of object represents gestures and values
    *  specifies if gesture is enabled or not (true/false).
@@ -3072,6 +3180,19 @@ function ngControl(obj, id, type)
    *    -
    */
   obj.SetEnabled = ngc_SetEnabled;
+
+  /*  Function: SetChildControlsEnabled
+   *  Sets enabled state of control's children.
+   *
+   *  Syntax:
+   *    void *SetChildControlsEnabled* (bool enabled [, object parent])
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.SetChildControlsEnabled = ngc_SetChildControlsEnabled;
 
   /*  Function: SetVisible
    *  Sets control visibility.
@@ -3475,6 +3596,19 @@ function ngSysControl(obj, id, type)
    *    -
    */
   obj.SetEnabled = ngc_SetEnabled;
+
+  /*  Function: SetChildControlsEnabled
+   *  Sets enabled state of control's children.
+   *
+   *  Syntax:
+   *    void *SetChildControlsEnabled* (bool enabled [, object parent])
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.SetChildControlsEnabled = ngc_SetChildControlsEnabled;
 
   /*  Function: Elm
    *  Gets access to container DIV element object.
