@@ -455,51 +455,51 @@ function ngvmf_EnableControl(c,s)
   }
 }
 
-function ngvmf_SetChildControlsEnabled(v,p)
+function ngvmf_IntSetChildControlsEnabled(v,p)
 {
-  if(v) this.EnableControls();
-  else  this.DisableControls();
-} 
+  if(typeof this._intSetChildControlsEnabled!=='function') return;
+  var o=this['binding_updatingChildEnabled'];
+  var t=this.SetChildControlsEnabled;
+  try
+  {
+    this['binding_updatingChildEnabled']=true;
+    this.SetChildControlsEnabled=this._intSetChildControlsEnabled;
+    this.SetChildControlsEnabled.apply(this,arguments);
+  }
+  finally
+  {
+    this.SetChildControlsEnabled=t;
+    if(ng_isEmpty(o)) delete this['binding_updatingChildEnabled'];
+    else this['binding_updatingChildEnabled']=o;
+  }
+}
+
+function ngvmf_DoSetChildEnabled(c,v,p)
+{
+  if(!v) {
+    if((typeof c.SetChildControlsEnabled === 'function')&&(typeof c._intSetChildControlsEnabled === 'undefined'))
+    {
+      c._intSetChildControlsEnabled=c.SetChildControlsEnabled;
+      c.SetChildControlsEnabled=ngvmf_IntSetChildControlsEnabled;
+    }
+    this.EnableControl(c,v);
+  }
+  else {
+    this.EnableControl(c,v);
+    if(typeof c._intSetChildControlsEnabled!=='undefined')
+    {
+      c.SetChildControlsEnabled=c._intSetChildControlsEnabled;
+      delete c._intSetChildControlsEnabled;
+    }
+  }
+}
 
 function ngvmf_DisableControls()
 {
   if(this.disablectrlscnt<=0)
   {
     this.disablectrlscnt=0;
-    this._changingdisabledcontrols=true;
-    try
-    {
-      var self=this;
-      function setenabled(v,p)
-      {
-        if(!self._changingdisabledcontrols)
-          this._vmEnabled=ngVal(v,true);
-      }
-      
-      function disablecontrols(f)
-      {
-        if(!ng_typeObject(f.ChildControls)) return;
-        var c,enabled,undefined;
-        for(var i=0;i<f.ChildControls.length;i++)
-        {
-          c=f.ChildControls[i];
-          if(!c) continue;
-          if(typeof c.DisableControls !== 'function') disablecontrols(c);
-          if((typeof c.SetEnabled === 'function')&&(typeof c._vmEnabled === 'undefined'))
-          {
-            c._vmEnabled=ngVal(c.Enabled,true);
-            self.EnableControl(c,false);
-            c._vmSetEnabled = c.SetEnabled;
-            c.SetEnabled=setenabled;
-          }
-        }
-      }
-      disablecontrols(this);
-    }
-    finally
-    {
-      delete this._changingdisabledcontrols;
-    }
+    this.SetChildControlsEnabled(false);
   }
   this.disablectrlscnt++;
 }
@@ -508,38 +508,7 @@ function ngvmf_EnableControls()
 {
   if(this.disablectrlscnt<=0) return;
   this.disablectrlscnt--;
-  if(!this.disablectrlscnt)
-  {  
-    this._changingdisabledcontrols=true;
-    try
-    {
-      var self=this;
-      function enablecontrols(f)
-      {
-        if(!ng_typeObject(f.ChildControls)) return;
-        var c;
-        for(var i=0;i<f.ChildControls.length;i++)
-        {
-          c=f.ChildControls[i];
-          if(!c) continue;
-          if(typeof c._vmEnabled!=='undefined')
-          {
-            c.SetEnabled=c._vmSetEnabled;
-            delete c._vmSetEnabled;
-            self.EnableControl(c,c._vmEnabled);
-            delete c._vmEnabled;
-          }
-          if(typeof c.EnableControls !== 'function') enablecontrols(c);
-          
-        }
-      }
-      enablecontrols(this);
-    }
-    finally
-    {
-      delete this._changingdisabledcontrols;
-    }
-  }
+  if(!this.disablectrlscnt) this.SetChildControlsEnabled(true);
 }
 
 function ngvmf_OnCommandRequest(vm,rpc)
@@ -1074,11 +1043,12 @@ function Create_ngViewModelForm(def, ref, parent)
 
   c.DisableOnCommand = true;
 
+  c.ChildHandling = 1; // ngChildEnabledParentAware
   /*
    *  Group: Methods
    */
   c.DoDispose = ngvmf_DoDispose;
-  c.SetChildControlsEnabled = ngvmf_SetChildControlsEnabled;
+  c.DoSetChildEnabled = ngvmf_DoSetChildEnabled;
 
   c.GetErrorHint = ngvmf_GetErrorHint;
   c.DisableControls = ngvmf_DisableControls;
@@ -2014,6 +1984,41 @@ ngUserControls['viewmodel_controls'] = {
       },
       function (c, valueAccessor,allBindingsAccessor,viewModel) {
         init_enabled(c,valueAccessor,allBindingsAccessor,false);
+      }
+    );
+
+    function update_childenabled(c,valueAccessor,inverse)
+    {
+      value_read('ChildEnabled',c,valueAccessor,function(val) {
+        val=ng_toBool(val);
+        if(inverse) val=!val;
+        if(c.SetChildControlsEnabled) c.SetChildControlsEnabled(val);
+      });
+    }
+
+    function init_childenabled(c,valueAccessor,allBindingsAccessor,inverse)
+    {
+      ng_OverrideMethod(c,'SetChildControlsEnabled', function(v,p) {
+        ng_CallParent(this, "SetChildControlsEnabled", arguments);
+        value_write('ChildEnabled',inverse ? !v : v, c, valueAccessor, allBindingsAccessor);
+      });
+    }
+
+    ngRegisterBindingHandler('ChildEnabled',
+      function (c, valueAccessor) {
+        update_childenabled(c,valueAccessor,false);
+      },
+      function (c, valueAccessor,allBindingsAccessor,viewModel) {
+        init_childenabled(c,valueAccessor,allBindingsAccessor,false);
+      }
+    );
+
+    ngRegisterBindingHandler('ChildDisabled',
+      function (c, valueAccessor) {
+        update_childenabled(c,valueAccessor,true);
+      },
+      function (c, valueAccessor,allBindingsAccessor,viewModel) {
+        init_childenabled(c,valueAccessor,allBindingsAccessor,false);
       }
     );
 
