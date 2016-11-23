@@ -107,6 +107,7 @@ ngUserControls['window_designinfo'] = {
             }
           },
           "Data": {
+            "ChildHandling": { Level: 'advanced' },
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
             "Text": ng_DIPropertyRefName({ Level: 'basic' }),
@@ -215,6 +216,7 @@ ngUserControls['window_designinfo'] = {
             }
           },
           "Data": {
+            "ChildHandling": { Level: 'advanced' },
             "AutoSize": ng_DIPropertyBool(true),
             "MinWidth": ng_DIProperty('integer',0, { Level: 'basic' }),
             "MinHeight": ng_DIProperty('integer',0, { Level: 'basic' }),

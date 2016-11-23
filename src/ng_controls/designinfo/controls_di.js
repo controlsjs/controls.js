@@ -505,7 +505,24 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
               DestroyIfEmpty: true,
               ObjectProperties:
               {
-                "Enabled": ng_DIPropertyBool(true, { Level: 'basic' })
+                "Enabled": ng_DIPropertyBool(true, { Level: 'basic' }),
+                "ChildHandling": ng_DIPropertyIntConstants(0,['ngChildEnabledAsParent','ngChildEnabledParentAware','ngChildEnabledIndependent'],{ Level: 'optional' }) // TODO: change to bitmask when bitmask editor will be better
+                /*"ChildHandling": { DefaultType: 'bitmask', Level: 'optional',
+                  Types: {
+                    'bitmask': {
+                      DefaultValue: {
+                        value: ngChildEnabledAsParent
+                      },
+                      EditorOptions: {
+                        BitMaskIdentifiers: [
+                          {value: ngChildEnabledAsParent,    id: 'ngChildEnabledAsParent'},
+                          {value: ngChildEnabledParentAware, id: 'ngChildEnabledParentAware'},
+                          {value: ngChildEnabledIndependent, id: 'ngChildEnabledIndependent'}
+                        ]
+                      }
+                    }
+                  }
+                }*/
               }
             }
           }
@@ -553,15 +570,15 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
               // TODO: return values??
               ObjectProperties:
               {
-                "SetChildControlsEnabled": ng_DIProperty('function','function(v, p) { ng_CallParent(this, "SetChildControlsEnabled", arguments); }', { Level: 'experimental' }),
-
                 "DoDispose": ng_DIProperty('function','function() { return ng_CallParent(this, "DoDispose", arguments, true); }'),
                 "DoCreate": ng_DIProperty('function','function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }'),
                 "DoSetEnabled": ng_DIProperty('function','function(v) { ng_CallParent(this, "DoSetEnabled", arguments); }'),
+                "DoSetChildEnabled": ng_DIProperty('function','function(c, v, p) { ng_CallParent(this, "DoSetChildEnabled", arguments); }'),
 
                 "Enable": ng_DIProperty('function','function() { ng_CallParent(this, "Enable", arguments); }',{ Level: 'optional' }),
                 "Disable": ng_DIProperty('function','function() { ng_CallParent(this, "Disable, arguments); }',{ Level: 'optional' }),
                 "SetEnabled": ng_DIProperty('function','function(v, p) { ng_CallParent(this, "SetEnabled", arguments); }',{ Level: 'optional' }),
+                "SetChildControlsEnabled": ng_DIProperty('function','function(v, p) { ng_CallParent(this, "SetChildControlsEnabled", arguments); }', { Level: 'optional' }),
                 "Elm": ng_DIProperty('function','function() { return ng_CallParent(this, "Elm", arguments, null); }',{ Level: 'optional' }),
                 "CtrlInheritsFrom": ng_DIProperty('function','function(type) { ng_CallParent(this, "CtrlInheritsFrom", arguments); }',{ Level: 'optional' }),
                 "Create": ng_DIProperty('function','function(props, ref) { ng_CallParent(this, "Create", arguments); }',{ Level: 'optional' }),
@@ -982,6 +999,7 @@ ngUserControls['controls_designinfo'] = {
             Types: {
               'object': {
                 ObjectProperties: {
+                  "ChildHandling": { Level: 'optional' },
                   "FormID": { DefaultType: 'string', Level: 'optional' }
                 }
               }
@@ -994,6 +1012,7 @@ ngUserControls['controls_designinfo'] = {
         di.IsContainer=true;
         di.BaseControl='ngPanel';
         di.Properties["Data"].Types.object.ObjectProperties["FormID"].Level='advanced';
+        di.Properties["Data"].Types.object.ObjectProperties["ChildHandling"].Level='advanced';
       }
       return di;
     });
@@ -1241,6 +1260,7 @@ ngUserControls['controls_designinfo'] = {
             }
           },
           "Data": {
+            "ChildHandling": { Level: 'advanced' },
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
             "Text": ng_DIPropertyRefName({ Level: 'basic' }),
@@ -1570,6 +1590,7 @@ ngUserControls['controls_designinfo'] = {
             }
           },
           "Data": {
+            "ChildHandling": { Level: 'advanced' },
             "Page": { DefaultType: 'integer', Level: 'basic' },
             "PagesVisible": ng_DIPropertyBool(true, { Level: 'basic' }),
             "PagesIndent": { DefaultType: 'integer', Level: 'basic' },
@@ -1792,6 +1813,7 @@ ngUserControls['controls_designinfo'] = {
         },
         Properties: ng_DIProperties({
           "Data": {
+            "ChildHandling": { Level: 'advanced' },
             "AutoSize": ng_DIPropertyBool(false),
             "Vertical": ng_DIPropertyBool(false, { Level: 'basic' }),
             "VPadding": { DefaultType: 'integer', Level: 'basic' },
@@ -1910,6 +1932,7 @@ ngUserControls['controls_designinfo'] = {
             Types: {
               'object': {
                 ObjectProperties: {
+                  "ChildHandling": { Level: 'optional' },
                   "FormID": { DefaultType: 'string', Level: 'optional' }
                 }
               }
@@ -1922,6 +1945,7 @@ ngUserControls['controls_designinfo'] = {
         di.IsContainer=true;
         di.BaseControl='ngFrame';
         di.Properties["Data"].Types.object.ObjectProperties["FormID"].Level='advanced';
+        di.Properties["Data"].Types.object.ObjectProperties["ChildHandling"].Level='advanced';
       }
       return di;
     });

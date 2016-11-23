@@ -30,6 +30,7 @@ ngUserControls['panels_designinfo'] = {
       },
       Properties: ng_DIProperties({
         "Data": {
+          "ChildHandling": { Level: 'advanced' },
           "AutoSize": ng_DIPropertyBool(false, { Level: 'basic' })
         }
       },
@@ -187,6 +188,7 @@ ngUserControls['panels_designinfo'] = {
             }
           },
           "Data": {
+            "ChildHandling": { Level: 'advanced' },
             "PanelAlign": ng_DIPropertyStrings('left', ['left','right','top','bottom'], { Level: 'basic' }),
             "ResizeMode": { DefaultType: 'bitmask', Level: 'basic',
               Types: {
