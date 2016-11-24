@@ -6105,22 +6105,22 @@ function nga_EndUpdateParams()
 
 function nga_ParseParams2(url, septag)
 {
-  var arr=new Array();
-  if(url=='') return arr;
+  var obj={};
+  if(url=='') return obj;
   var vars = url.split(septag);
   var s;
   for(var i=0;i<vars.length;i++)
   {
     s=vars[i].split('=');
     if(s[0].substr(0,4)=='amp;') s[0]=s[0].substr(4);
-    arr[ ng_unescape(s[0]) ] = (s.length>1 ? s[1] : null);
+    obj[ ng_unescape(s[0]) ] = (s.length>1 ? s[1] : null);
   }
-  return arr;
+  return obj;
 }
 
 function nga_ParseParams(url)
 {
-  ngURLParams = new Array();
+  ngURLParams = {};
   var url=ngVal(url,window.location.href);
   var i1=url.indexOf('?');
   var i2=url.indexOf('#');

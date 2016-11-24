@@ -354,7 +354,7 @@ function ngPtrHTMLStartEvents(html,ev)
  *  Parsed URL parameters. 
  *  Use function <ng_GET> to get values of parameters.
  */    
-var ngURLParams = new Array();
+var ngURLParams = {};
 var ngURLParamsParsed=false;
 
 /** 
@@ -2138,7 +2138,7 @@ function ng_ProcessURLParams2(url, septag)
 
 function ng_ProcessURLParams(url)
 {
-  ngURLParams = new Array();
+  ngURLParams = {};
   url=ngVal(url,window.location.href);
   var i1=url.indexOf('?');
   var i2=url.indexOf('#');
