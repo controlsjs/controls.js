@@ -47,7 +47,7 @@ var FileUploaderControl = {
         DropTarget: (ngAndroid || ngiOS || ngWindowsPhone) ? false : true,
         Data: {
           FileUploaderID: id,
-          UploadURL: ngLibPath('ng_controls')+'fileuploader.php'
+          UploadURL: ngLibPath('ng_controls')+'ui/fileuploader.php'
         },
         Controls: {
           UploadIFrame: {

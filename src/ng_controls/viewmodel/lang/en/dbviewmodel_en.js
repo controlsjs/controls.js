@@ -23,17 +23,3 @@ ngc_Lang['en']['dbviewmodel_err_notexists']='Error: Record not found.';
 ngc_Lang['en']['dbviewmodel_err_datachanged']='Data changed since last update. Redo changes and save again.';
 ngc_Lang['en']['dbviewmodel_err_internal']='Error: Internal error.';
 ngc_Lang['en']['dbviewmodel_err_unknown']='Error: Unknown error.';
-
-ngc_Lang['en']['dbviewmodel_form_changed'] = 'Discard changes?';
-ngc_Lang['en']['dbviewmodel_form_deletequery'] = 'Are you sure you want to delete this record?';
-
-ngc_Lang['en']['dbviewmodel_dataset_new']     = 'New';
-ngc_Lang['en']['dbviewmodel_dataset_edit']    = 'Edit';
-ngc_Lang['en']['dbviewmodel_dataset_delete']  = 'Delete';
-ngc_Lang['en']['dbviewmodel_dataset_refresh'] = 'Refresh list';
-
-ngc_Lang['en']['dbviewmodel_toolbar_new']     = 'New';
-ngc_Lang['en']['dbviewmodel_toolbar_insert']  = 'Insert';
-ngc_Lang['en']['dbviewmodel_toolbar_update']  = 'Update';
-ngc_Lang['en']['dbviewmodel_toolbar_delete']  = 'Delete';
-ngc_Lang['en']['dbviewmodel_toolbar_cancel']  = 'Cancel';

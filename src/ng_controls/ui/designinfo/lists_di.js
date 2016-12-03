@@ -10,7 +10,7 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-if (typeof ngUserControls === 'undefined') ngUserControls = [];
+if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['list_designinfo'] = {
   OnFormEditorInit: function(FE) {
     var list_types = [

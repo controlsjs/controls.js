@@ -23,17 +23,3 @@ ngc_Lang['sk']['dbviewmodel_err_notexists']='Chyba: Záznam nebol nájdený.';
 ngc_Lang['sk']['dbviewmodel_err_datachanged']='Od poslednej aktualizácie došlo k zmene dát. Opakujte zmeny ktoré ste vykonali a následne ich uložte.';
 ngc_Lang['sk']['dbviewmodel_err_internal']='Chyba: Interná chyba.';
 ngc_Lang['sk']['dbviewmodel_err_unknown']='Chyba: Neznáma chyba.';
-
-ngc_Lang['sk']['dbviewmodel_form_changed'] = 'Zrušiť vykonané zmeny?';
-ngc_Lang['sk']['dbviewmodel_form_deletequery'] = 'Naozaj chcete zmazať tento záznam?';
-
-ngc_Lang['sk']['dbviewmodel_dataset_new']     = 'Nový';
-ngc_Lang['sk']['dbviewmodel_dataset_edit']    = 'Upraviť';
-ngc_Lang['sk']['dbviewmodel_dataset_delete']  = 'Zmazať';
-ngc_Lang['sk']['dbviewmodel_dataset_refresh'] = 'Obnoviť zoznam';
-
-ngc_Lang['sk']['dbviewmodel_toolbar_new']     = 'Nový';
-ngc_Lang['sk']['dbviewmodel_toolbar_insert']  = 'Vložiť';
-ngc_Lang['sk']['dbviewmodel_toolbar_update']  = 'Uložiť';
-ngc_Lang['sk']['dbviewmodel_toolbar_delete']  = 'Zmazať';
-ngc_Lang['sk']['dbviewmodel_toolbar_cancel']  = 'Storno';

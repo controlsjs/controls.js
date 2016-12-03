@@ -10,89 +10,13 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-if (typeof ngUserControls === 'undefined') ngUserControls = [];
+if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['system_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
 
     var undefined;
-    ngRegisterControlDesignInfo('ngSysAction',function(d,c,ref) {
-      return {
-        ControlCategory: 'System',
-        BaseControl: 'ngSysAction',
-        NewControl: {
-          Default: {
-            Properties: {
-              "L": {},
-              "T": {},
-              "ID": { ValueByRefName: true }
-            }
-          }
-        },
-        Properties: ng_DIProperties({
-          "ID": { Level: 'basic' },
-          "Data": {
-            "ngText": { DefaultType: 'string', Level: 'advanced',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "ngTextD": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "ngAlt": { DefaultType: 'string', Level: 'advanced',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "ngAltD": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "Checked": ng_DIPropertyValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic',
-              Types: {
-                'integer': {
-                   InitValue: 1
-                 }
-              }
-            }),
-            "RadioGroup": { DefaultType: 'undefined', InitType: 'string', Level: 'basic'
-              // TODO: browse from existing radio groups
-            },
-            "Img": { DefaultType: 'image', Level: 'basic' },
-            "Visible": ng_DIPropertyBool(true, { Level: 'basic' })
-          },
-          "Events": {
-            "OnClick": ng_DIPropertyEvent('function(e) { }', { Level: 'basic' }),
-            "OnCheckChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnSetVisible": ng_DIPropertyEvent('function(c, v) { return true; }'),
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnUpdate": ng_DIPropertyEvent('function(c) { return true; }')
-          },
-          "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetImg": ng_DIPropertyEvent('function(c, idx) { return null; }', { Level: 'basic' })
-          }
-        })
-      }
-    });
-
     ngRegisterControlDesignInfo('ngSysTimer',function(d,c,ref) {
       return {
         ControlCategory: 'System',

@@ -10,17 +10,6 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-/*
-TODO:
-- ngDataSet
-  - special types rendering (checkboxes, ...)
-- db struct generator
-
-- ngCalendar selected
-- two stage insert and update (sessions) and command repeat on timeout
-- file(s) upload
-*/
-
 var ngViewModels = {};
 
 var ngViewModelNamespaces = {};
