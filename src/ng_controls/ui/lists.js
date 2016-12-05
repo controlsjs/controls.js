@@ -866,6 +866,16 @@ function ngl_GetChecked()
   return ret;
 }
 
+function ngl_HasChecked()
+{
+  var has = false;
+  this.Scan(function (list, item, parent, userData) {
+    if (item.Checked){ has = true; return false; }
+    return true;
+  });
+  return has;
+}
+
 function ngl_SetItemVisible(it, state)
 {
   if(!it) return;
@@ -3523,7 +3533,6 @@ function ngList(id)
    *    -
    */
   this.UncheckAll = ngl_UncheckAll;
-
   /*  Function: GetChecked
    *  Gets references to all checked items.
    *
@@ -3534,6 +3543,16 @@ function ngList(id)
    *    Array of items.
    */
   this.GetChecked = ngl_GetChecked;
+  /*  Function: HasChecked
+   *  Gets if list contains any checked item.
+   *
+   *  Syntax:
+   *    boolean *HasChecked* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.HasChecked = ngl_HasChecked;
   /*  Function: ClickItem
    *  Clicks the item.
    *
