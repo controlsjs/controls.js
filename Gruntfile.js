@@ -106,10 +106,20 @@ module.exports = function(grunt) {
       for(var i in src) src[i]=releaseBuild(src[i]);
     }
     if(typeof banner==='undefined') banner='banner';
+
+    if(typeof banner==='object') {
+      var b=[];
+      for(var i in banner){b.push('<%= '+banner[i]+' %>');}
+      banner = b.join('\n');
+    }
+    else{
+      banner = '<%= '+banner+' %>';
+    }
+
     return {
       options: {
         position: 'top',
-        banner: '<%= '+banner+' %>'
+        banner: banner
       },
       files: {
         src: src
