@@ -19,47 +19,32 @@ module.exports = function(grunt) {
   // ---------------------------------------------------------------------------
 
   var packageJSON = grunt.file.readJSON('package.json');
-  
+
   grunt.file.write('VERSION',packageJSON.version); // Update VERSION file
 
   var config = {
     pkg: packageJSON,
 
     banner: grunt.file.read('src/srcheader.txt'),
-
-    copy: {},
-    concat: {},
-    closurecompiler: {},
-    cssmin: {},
-    usebanner: {},
-    clean: {
-      debug: [ debugBuild() ],
-      release: [ releaseBuild() ]
-    }
+    allow_debug: '\n// Debug ENABLED\nvar ngDEBUG=1;\n\n'
   };
 
   var files = {
     libs: [ 'src/loader/libs.js' ]
   };
-  
+
   function getFiles(t)
   {
     var f,i,ret=[];
-    if(typeof t==='object') {
-      for(var j in t) {
-        f=files[t[j]];
-        if(typeof f==='function') f=f();
-        for(i=0;i<f.length;i++) ret.push(f[i]);
-      }
-    }
-    else {
-      f=files[t];
+    if(typeof t!=='object') t=[t];
+    for(var j in t) {
+      f=files[t[j]];
       if(typeof f==='function') f=f();
       for(i=0;i<f.length;i++) ret.push(f[i]);
     }
     for(i=1;i<arguments.length;i++) ret.push(arguments[i]);
     return ret;
-  }  
+  }
 
   function releaseBuild(path)
   {
@@ -72,7 +57,7 @@ module.exports = function(grunt) {
   }
 
   function compilerfiles(dest,files) {
-    var files=getFiles(files);
+    files=getFiles(files);
     for(var i=2;i<arguments.length;i++) files.push(arguments[i]);
     var f={};
     f[releaseBuild(dest)]=files;
@@ -80,13 +65,17 @@ module.exports = function(grunt) {
   }
 
   function registerConfig(taskid,actions) {
-    for(var i in actions) config[i][taskid]=actions[i];
+      for(var i in actions){
+        if(!config[i]) config[i]={};
+        config[i][taskid]=actions[i];
+      }
   }
 
   function registerTask(taskid,actions,noregister) {
     var actlist=[];
     for(var i in actions) {
       if(actions[i]!==true) {
+        if(!config[i]) config[i]={};
         config[i][taskid]=actions[i];
         actlist.push(i+':'+taskid);
       }
@@ -105,20 +94,16 @@ module.exports = function(grunt) {
     else {
       for(var i in src) src[i]=releaseBuild(src[i]);
     }
-    if(typeof banner==='undefined') banner='banner';
+    if(typeof banner!=='object') banner=[banner];
 
-    if(typeof banner==='object') {
-      var b=[];
-      for(var i in banner){b.push('<%= '+banner[i]+' %>');}
-      banner = b.join('\n');
-    }
-    else{
-      banner = '<%= '+banner+' %>';
-    }
+    var b=[];
+    for(var i in banner) b.push('<%= '+banner[i]+' %>');
+    banner = b.join('\n');
 
     return {
       options: {
         position: 'top',
+        replace: true,
         banner: banner
       },
       files: {
@@ -129,12 +114,6 @@ module.exports = function(grunt) {
 
   function debugBanner(src,banner) { return defaultBanner(src,true,banner); }
   function releaseBanner(src,banner) { return defaultBanner(src,false,banner); }
-
-  function enableDebugBanner(file) {
-    var b=debugBanner(file);
-    b.options.banner+='\n// Debug ENABLED\nvar ngDEBUG=1;\n\n';
-    return b;
-  }
 
   // == Controls.js Design Info ================================================
 
@@ -162,7 +141,7 @@ module.exports = function(grunt) {
         src:   getFiles(files),
         dest:  debugBuild('libs/ng_controls/designinfo/controls_di.js')
       },
-      usebanner: debugBanner('libs/ng_controls/designinfo/controls_di.js')
+      usebanner: debugBanner('libs/ng_controls/designinfo/controls_di.js','banner')
     };
   }
 
@@ -216,7 +195,7 @@ module.exports = function(grunt) {
       cwd:  'src/ng_controls/',
       src:  'images/**',
       dest: debugBuild('libs/ng_controls/')
-    },
+    }
   });
 
   registerConfig('controls+vm-debug', {
@@ -233,7 +212,7 @@ module.exports = function(grunt) {
         src:   getFiles(files),
         dest:  debugBuild('controls-raw.js')
       },
-      usebanner: enableDebugBanner('controls-raw.js')
+      usebanner: debugBanner('controls-raw.js',['banner','allow_debug'])
     };
   }
 
@@ -250,8 +229,7 @@ module.exports = function(grunt) {
     copy: {
       src:   debugBuild('controls-raw.js'),
       dest:  debugBuild('controls.js')
-    },
-    usebanner: enableDebugBanner('controls.js')
+    }
   });
 
   registerTask('controls-lib-ui-debug', {
@@ -261,8 +239,7 @@ module.exports = function(grunt) {
                debugBuild('libs/lib_hammerjs/hammer.js')
              ],
       dest:  debugBuild('controls.js')
-    },
-    usebanner: enableDebugBanner('controls.js')
+    }
   });
 
   registerTask('controls-lib-vm-debug', {
@@ -272,8 +249,7 @@ module.exports = function(grunt) {
                debugBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  debugBuild('controls.js')
-    },
-    usebanner: enableDebugBanner('controls.js')
+    }
   });
 
   registerTask('controls-lib-ui-vm-debug', {
@@ -284,8 +260,7 @@ module.exports = function(grunt) {
                debugBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  debugBuild('controls.js')
-    },
-    usebanner: enableDebugBanner('controls.js')
+    }
   });
 
   registerTask('controls-prepare-debug', {
@@ -299,8 +274,9 @@ module.exports = function(grunt) {
       src:   getFiles('libs'),
       dest:  debugBuild('libs.js')
     },
+    usebanner: debugBanner('libs.js','banner'),
     'copy:ng_basic-img-debug': true,
-    'copy:ng_controls-img-debug': true,
+    'copy:ng_controls-img-debug': true
   });
 
   registerTask('controls-finalize-debug', {
@@ -312,7 +288,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-debug', [
     'lib_hammerjs-debug',
     'controls-prepare-debug',
-    'concat:controls-ui-raw-debug',
+    'controls-ui-raw-debug',
     'controls-lib-ui-debug',
     'controls-finalize-debug',
     'controls-di'
@@ -322,7 +298,7 @@ module.exports = function(grunt) {
     'lib_hammerjs-debug',
     'lib_knockout-debug',
     'controls-prepare-debug',
-    'concat:controls-ui-vm-raw-debug',
+    'controls-ui-vm-raw-debug',
     'controls-lib-ui-vm-debug',
     'controls-finalize-debug',
     'controls-ui-vm-di'
@@ -333,12 +309,11 @@ module.exports = function(grunt) {
     'lib_knockout-debug',
     'controls-prepare-debug',
 
-    'concat:controls-ui-vm-raw-debug',
+    'controls-ui-vm-raw-debug',
     'controls-lib-ui-vm-debug',
     'copy:controls+vm-debug',
-    'clean:controls-ui-vm-raw-debug',
 
-    'concat:controls-ui-raw-debug',
+    'controls-ui-raw-debug',
     'controls-lib-ui-debug',
 
     'controls-finalize-debug',
@@ -347,7 +322,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('controls-notouch-debug', [
     'controls-prepare-debug',
-    'concat:controls-ui-raw-debug',
+    'controls-ui-raw-debug',
     'controls-nolib-debug',
     'controls-finalize-debug',
     'controls-ui-di'
@@ -356,7 +331,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-vm-notouch-debug', [
     'lib_knockout-debug',
     'controls-prepare-debug',
-    'concat:controls-ui-vm-raw-debug',
+    'controls-ui-vm-raw-debug',
     'controls-lib-vm-debug',
     'controls-finalize-debug',
     'controls-ui-vm-di'
@@ -364,7 +339,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('controls-noui-debug', [
     'controls-prepare-debug',
-    'concat:controls-raw-debug',
+    'controls-raw-debug',
     'controls-nolib-debug',
     'controls-finalize-debug',
     'controls-di'
@@ -373,7 +348,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-vm-noui-debug', [
     'lib_knockout-debug',
     'controls-prepare-debug',
-    'concat:controls-vm-raw-debug',
+    'controls-vm-raw-debug',
     'controls-lib-vm-debug',
     'controls-finalize-debug',
     'controls-vm-di'
@@ -396,7 +371,7 @@ module.exports = function(grunt) {
       cwd:  'src/ng_controls/',
       src:  'images/**',
       dest: releaseBuild('libs/ng_controls/')
-    },
+    }
   });
 
   registerConfig('controls+vm-release', {
@@ -415,7 +390,7 @@ module.exports = function(grunt) {
           compilation_level: 'SIMPLE_OPTIMIZATIONS'
         }
       },
-      usebanner: releaseBanner('controls-raw.js')
+      usebanner: releaseBanner('controls-raw.js','banner')
     };
   }
 
@@ -432,8 +407,7 @@ module.exports = function(grunt) {
     copy: {
       src:   releaseBuild('controls-raw.js'),
       dest:  releaseBuild('controls.js')
-    },
-    usebanner: releaseBanner('controls.js')
+    }
   });
 
   registerTask('controls-lib-ui-release', {
@@ -443,8 +417,7 @@ module.exports = function(grunt) {
                releaseBuild('libs/lib_hammerjs/hammer.js')
              ],
       dest:  releaseBuild('controls.js')
-    },
-    usebanner: releaseBanner('controls.js')
+    }
   });
 
   registerTask('controls-lib-vm-release', {
@@ -454,8 +427,7 @@ module.exports = function(grunt) {
                releaseBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  releaseBuild('controls.js')
-    },
-    usebanner: releaseBanner('controls.js')
+    }
   });
 
   registerTask('controls-lib-ui-vm-release', {
@@ -466,10 +438,8 @@ module.exports = function(grunt) {
                releaseBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  releaseBuild('controls.js')
-    },
-    usebanner: releaseBanner('controls.js')
+    }
   });
-
 
   registerTask('controls-prepare-release', {
     clean: [ releaseBuild('libs.js'),
@@ -484,8 +454,9 @@ module.exports = function(grunt) {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
     },
+    usebanner: releaseBanner('libs.js','banner'),
     'copy:ng_basic-img-release': true,
-    'copy:ng_controls-img-release': true,
+    'copy:ng_controls-img-release': true
   });
 
   registerTask('controls-finalize-release', {
@@ -497,7 +468,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-release', [
     'lib_hammerjs-release',
     'controls-prepare-release',
-    'closurecompiler:controls-ui-raw-release',
+    'controls-ui-raw-release',
     'controls-lib-ui-release',
     'controls-finalize-release'
   ]);
@@ -506,7 +477,7 @@ module.exports = function(grunt) {
     'lib_hammerjs-release',
     'lib_knockout-release',
     'controls-prepare-release',
-    'closurecompiler:controls-ui-vm-raw-release',
+    'controls-ui-vm-raw-release',
     'controls-lib-ui-vm-release',
     'controls-finalize-release'
   ]);
@@ -516,21 +487,19 @@ module.exports = function(grunt) {
     'lib_knockout-release',
     'controls-prepare-release',
 
-    'closurecompiler:controls-ui-vm-raw-release',
+    'controls-ui-vm-raw-release',
     'controls-lib-ui-vm-release',
     'copy:controls+vm-release',
-    'clean:controls-ui-vm-raw-release',
 
-    'closurecompiler:controls-ui-raw-release',
+    'controls-ui-raw-release',
     'controls-lib-ui-release',
 
-    'controls-finalize-release',
-    'controls-ui-vm-di'
+    'controls-finalize-release'
   ]);
 
   grunt.registerTask('controls-notouch-release', [
     'controls-prepare-release',
-    'closurecompiler:controls-ui-raw-release',
+    'controls-ui-raw-release',
     'controls-nolib-release',
     'controls-finalize-release'
   ]);
@@ -538,14 +507,14 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-vm-notouch-release', [
     'lib_knockout-release',
     'controls-prepare-release',
-    'closurecompiler:controls-ui-vm-raw-release',
+    'controls-ui-vm-raw-release',
     'controls-lib-vm-release',
     'controls-finalize-release'
   ]);
 
   grunt.registerTask('controls-noui-release', [
     'controls-prepare-release',
-    'closurecompiler:controls-raw-release',
+    'controls-raw-release',
     'controls-nolib-release',
     'controls-finalize-release'
   ]);
@@ -553,7 +522,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-vm-noui-release', [
     'lib_knockout-release',
     'controls-prepare-release',
-    'closurecompiler:controls-vm-raw-release',
+    'controls-vm-raw-release',
     'controls-lib-vm-release',
     'controls-finalize-release'
   ]);
@@ -576,7 +545,8 @@ module.exports = function(grunt) {
     concat: {
       src:   getFiles('lib_hammerjs'),
       dest:  debugBuild('libs/lib_hammerjs/hammer.js')
-    }
+    },
+    usebanner: debugBanner('libs/lib_hammerjs/*.js','banner_hammerjs')
   });
 
   registerTask('lib_hammerjs-release', {
@@ -610,7 +580,7 @@ module.exports = function(grunt) {
     'libs/lib_knockout/src/subscribables/mappingHelpers.js',
     'libs/lib_knockout/src/binding/bindingProvider.js',
     'libs/lib_knockout/src/binding/expressionRewriting.js',
-    'libs/lib_knockout/src/binding/bindingAttributeSyntax.js',
+    'libs/lib_knockout/src/binding/bindingAttributeSyntax.js'
   ];
 
   config.banner_knockout =
@@ -626,7 +596,7 @@ module.exports = function(grunt) {
       src:   getFiles('lib_knockout'),
       dest:  debugBuild('libs/lib_knockout/knockout.js')
     },
-    usebanner: debugBanner('libs/lib_knockout/*.js', 'banner_knockout')
+    usebanner: debugBanner('libs/lib_knockout/*.js','banner_knockout')
   });
 
   registerTask('lib_knockout-release', {
@@ -637,7 +607,7 @@ module.exports = function(grunt) {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
     },
-    usebanner: releaseBanner('libs/lib_knockout/*.js', 'banner_knockout')
+    usebanner: releaseBanner('libs/lib_knockout/*.js','banner_knockout')
   });
 
   // == Loaders ================================================================
@@ -648,13 +618,25 @@ module.exports = function(grunt) {
     'src/loader/devices.js'
   ];
 
+  files['loaderbar'] = [
+    'src/loader/progress-bar.js'
+  ];
+
+  files['loaderpercent'] = [
+    'src/loader/progress-percent.js'
+  ];
+
+  files['loaderimage'] = [
+    'src/loader/progress-image.js'
+  ];
+
   registerTask('loader-debug', {
     clean: [ debugBuild('loader.js') ],
     concat: {
       src:   getFiles('loader'),
       dest:  debugBuild('loader.js')
     },
-    usebanner: enableDebugBanner('loader.js')
+    usebanner: debugBanner('loader.js',['banner','allow_debug'])
   });
 
   registerTask('loader-release', {
@@ -665,81 +647,81 @@ module.exports = function(grunt) {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
     },
-    usebanner: releaseBanner('loader.js')
+    usebanner: releaseBanner('loader.js','banner')
   });
 
   registerTask('loaderbar-debug', {
     clean: [ debugBuild('loader-bar.js') ],
     concat: {
-      src:   getFiles('loader','src/loader/progress-bar.js'),
+      src:   getFiles(['loader','loaderbar']),
       dest:  debugBuild('loader-bar.js')
     },
-    usebanner: enableDebugBanner('loader-bar.js')
+    usebanner: debugBanner('loader-bar.js',['banner','allow_debug'])
   });
 
   registerTask('loaderbar-release', {
     clean: [ releaseBuild('loader-bar.js') ],
     closurecompiler: {
-      files: compilerfiles('loader-bar.js','loader','src/loader/progress-bar.js'),
+      files: compilerfiles(['loader','loaderbar']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
     },
-    usebanner: releaseBanner('loader-bar.js')
+    usebanner: releaseBanner('loader-bar.js','banner')
   });
 
   registerTask('loaderpercent-debug', {
     clean: [ debugBuild('loader-percent.js') ],
     concat: {
-      src:   getFiles('loader','src/loader/progress-percent.js'),
+      src:   getFiles(['loader','loaderpercent']),
       dest:  debugBuild('loader-percent.js')
     },
-    usebanner: enableDebugBanner('loader-percent.js')
+    usebanner: debugBanner('loader-percent.js',['banner','allow_debug'])
   });
 
   registerTask('loaderpercent-release', {
     clean: [ releaseBuild('loader-percent.js') ],
     closurecompiler: {
-      files: compilerfiles('loader-percent.js','loader','src/loader/progress-percent.js'),
+      files: compilerfiles(['loader','loaderpercent']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
     },
-    usebanner: releaseBanner('loader-percent.js')
+    usebanner: releaseBanner('loader-percent.js','banner')
   });
 
   registerTask('loaderimage-debug', {
     clean: [ debugBuild('loader-image.js') ],
     concat: {
-      src:   getFiles('loader','src/loader/progress-image.js'),
+      src:   getFiles(['loader','loaderimage']),
       dest:  debugBuild('loader-image.js')
     },
-    usebanner: enableDebugBanner('loader-image.js')
+    usebanner: debugBanner('loader-image.js',['banner','allow_debug'])
   });
 
   registerTask('loaderimage-release', {
     clean: [ releaseBuild('loader-image.js') ],
     closurecompiler: {
-      files: compilerfiles('loader-image.js','loader','src/loader/progress-image.js'),
+      files: compilerfiles(['loader','loaderimage']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
     },
-    usebanner: releaseBanner('loader-image.js')
+    usebanner: releaseBanner('loader-image.js','banner')
   });
 
   grunt.registerTask('loaders-debug', [
     'loader-debug',
     'loaderbar-debug',
     'loaderpercent-debug',
-    'loaderimage-debug',
+    'loaderimage-debug'
   ]);
 
   grunt.registerTask('clean-loaders-debug', [
     'clean:loader-debug',
     'clean:loaderbar-debug',
     'clean:loaderpercent-debug',
-    'clean:loaderimage-debug',
+    'clean:loaderimage-debug'
   ]);
 
   grunt.registerTask('loaders-release', [
@@ -777,8 +759,8 @@ module.exports = function(grunt) {
       src:   getFiles('ng_wineight_di'),
       dest:  debugBuild('libs/ng_wineight/designinfo/wineight_di.js')
     },
-    usebanner: debugBanner('libs/ng_wineight/designinfo/wineight_di.js')
-  })
+    usebanner: debugBanner('libs/ng_wineight/designinfo/wineight_di.js','banner')
+  });
 
   registerTask('ng_wineight-debug', {
     clean: [ debugBuild('libs/ng_wineight/') ],
@@ -792,7 +774,7 @@ module.exports = function(grunt) {
       src: ['*.css','img/**'],
       dest: debugBuild('libs/ng_wineight/')
     },
-    usebanner: debugBanner('libs/ng_wineight/*.{js,css}'),
+    usebanner: debugBanner('libs/ng_wineight/*.{js,css}','banner'),
     'ng_wineight-di': true
   });
 
@@ -818,10 +800,10 @@ module.exports = function(grunt) {
         expand: true,
         cwd:  'src/ng_wineight/',
         src: ['wineight.css'],
-        dest: releaseBuild('libs/ng_wineight/'),
+        dest: releaseBuild('libs/ng_wineight/')
       }]
     },
-    usebanner: releaseBanner('libs/ng_wineight/*.{js,css}')
+    usebanner: releaseBanner('libs/ng_wineight/*.{js,css}','banner')
   });
 
   // == WinXP Skin =============================================================
@@ -840,8 +822,8 @@ module.exports = function(grunt) {
       src:   getFiles('ng_winxp_di'),
       dest:  debugBuild('libs/ng_winxp/designinfo/winxp_di.js')
     },
-    usebanner: debugBanner('libs/ng_winxp/designinfo/winxp_di.js')
-  })
+    usebanner: debugBanner('libs/ng_winxp/designinfo/winxp_di.js','banner')
+  });
 
   registerTask('ng_winxp-debug', {
     clean: [ debugBuild('libs/ng_winxp/') ],
@@ -855,7 +837,7 @@ module.exports = function(grunt) {
       src: ['*.css','*.png','*.gif'],
       dest: debugBuild('libs/ng_winxp/')
     },
-    usebanner: debugBanner('libs/ng_winxp/*.{js,css}'),
+    usebanner: debugBanner('libs/ng_winxp/*.{js,css}','banner'),
     'ng_winxp-di': true
   });
 
@@ -881,10 +863,10 @@ module.exports = function(grunt) {
         expand: true,
         cwd:  'src/ng_winxp/',
         src: ['winxp.css'],
-        dest: releaseBuild('libs/ng_winxp/'),
+        dest: releaseBuild('libs/ng_winxp/')
       }]
     },
-    usebanner: releaseBanner('libs/ng_winxp/*.{js,css}')
+    usebanner: releaseBanner('libs/ng_winxp/*.{js,css}','banner')
   });
 
   // == Wireframe Skin =========================================================
@@ -903,8 +885,8 @@ module.exports = function(grunt) {
       src:   getFiles('ng_wireframe_di'),
       dest:  debugBuild('libs/ng_wireframe/designinfo/wireframe_di.js')
     },
-    usebanner: debugBanner('libs/ng_wireframe/designinfo/wireframe_di.js')
-  })
+    usebanner: debugBanner('libs/ng_wireframe/designinfo/wireframe_di.js','banner')
+  });
 
   registerTask('ng_wireframe-debug', {
     clean: [ debugBuild('libs/ng_wireframe/') ],
@@ -918,7 +900,7 @@ module.exports = function(grunt) {
       src: ['*.css','images/**'],
       dest: debugBuild('libs/ng_wireframe/')
     },
-    usebanner: debugBanner('libs/ng_wireframe/*.{js,css}'),
+    usebanner: debugBanner('libs/ng_wireframe/*.{js,css}','banner'),
     'ng_wireframe-di': true
   });
 
@@ -944,10 +926,10 @@ module.exports = function(grunt) {
         expand: true,
         cwd:  'src/ng_wireframe/',
         src: ['wireframe.css'],
-        dest: releaseBuild('libs/ng_wireframe/'),
+        dest: releaseBuild('libs/ng_wireframe/')
       }]
     },
-    usebanner: releaseBanner('libs/ng_wireframe/*.{js,css}')
+    usebanner: releaseBanner('libs/ng_wireframe/*.{js,css}','banner')
   });
 
   // == Skins ==================================================================
@@ -983,17 +965,17 @@ module.exports = function(grunt) {
 
   // == Builds =================================================================
 
+  registerTask('clean-debug', {
+    clean: [ debugBuild() ]
+  });
+
+  registerTask('clean-release', {
+    clean: [ releaseBuild() ]
+  });
+
   grunt.registerTask('clean-all', [
-    'clean:debug',
-    'clean:release'
-  ]);
-
-  grunt.registerTask('clean-debug', [
-    'clean:debug'
-  ]);
-
-  grunt.registerTask('clean-release', [
-    'clean:release'
+    'clean-debug',
+    'clean-release'
   ]);
 
   grunt.registerTask('debug', [
