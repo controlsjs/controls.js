@@ -156,6 +156,7 @@ module.exports = function(grunt) {
   // == Controls.js ============================================================
 
   files['controlsjs'] = [
+    'src/ng_misc/*.js',
     'src/ng_basic/lang/'+lang+'/*.js',
     'src/ng_basic/*.js',
     'src/ng_controls/*.js',
