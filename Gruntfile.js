@@ -662,7 +662,7 @@ module.exports = function(grunt) {
   registerTask('loaderbar-release', {
     clean: [ releaseBuild('loader-bar.js') ],
     closurecompiler: {
-      files: compilerfiles(['loader','loaderbar']),
+      files: compilerfiles('loader-bar.js',['loader','loaderbar']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
@@ -682,7 +682,7 @@ module.exports = function(grunt) {
   registerTask('loaderpercent-release', {
     clean: [ releaseBuild('loader-percent.js') ],
     closurecompiler: {
-      files: compilerfiles(['loader','loaderpercent']),
+      files: compilerfiles('loader-percent.js',['loader','loaderpercent']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
@@ -702,7 +702,7 @@ module.exports = function(grunt) {
   registerTask('loaderimage-release', {
     clean: [ releaseBuild('loader-image.js') ],
     closurecompiler: {
-      files: compilerfiles(['loader','loaderimage']),
+      files: compilerfiles('loader-image.js',['loader','loaderimage']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
       }
