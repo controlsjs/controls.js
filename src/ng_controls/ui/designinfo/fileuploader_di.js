@@ -61,7 +61,8 @@ var FileUploaderControl_DesignInfo = {
             "OnFileDeleted": ng_DIPropertyEvent('function(c, it, chidx) {}', { Level: 'basic' }),
             "OnUploadProgress": ng_DIPropertyEvent('function(c, p) { return true; }', { Level: 'basic' }),
             "OnShowWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnHideWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnHideWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
+            "OnGetRequestParams": ng_DIPropertyEvent('function(params) {}', { Level: 'basic' })
           },
           "ModifyControls": {
             "UploadIFrame": ng_DIPropertyControl('ngText', { Level: 'advanced' }, 'ngText'),

@@ -448,6 +448,11 @@ var FileUploaderControl = {
        */
       c.OnHideWaiting = null;
 
+      /*
+       *  Event: OnGetRequestParams
+       */
+      c.OnGetRequestParams = null;
+
       if(typeof(ngRegisterBindingHandler) === 'function'){
         c.OnDataBindingInit = ngfup_OnDataBindingInit;
         //c.OnDataBindingUpdate = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) { return true; }
@@ -519,13 +524,19 @@ function ngfup_UploadFile(filename, content, contenttype){
   var rpc = this.GetRPC();
   if(rpc){
     rpc.clearParams();
-    rpc.SetParam('id',this.ID);
-    rpc.SetParam('fuid',this.FileUploaderID);
-    rpc.SetParam('action','upload');
     delete rpc.FileFormData;
     rpc.FileName = filename;
     rpc.FileContent = ngVal(content,'');
     rpc.FileContentType = contenttype;
+
+    var params = {
+      id: this.ID,
+      fuid: this.FileUploaderID,
+      action: 'upload'
+    };
+
+    if(this.OnGetRequestParams){this.OnGetRequestParams(params);}
+    for(var i in params){rpc.SetParam(i,params[i]);}
 
     rpc.sendRequest(this.UploadURL);
     return true;
@@ -650,14 +661,6 @@ function ngfup_OnAddFileButtonUpdated(){
   }
   if(form){
     form.style.display = (this.Enabled) ? 'block' : 'none';
-    form.action = ng_AddURLParam(
-      uploader.UploadURL,
-      'id='+ng_URLEncode(uploader.ID)
-      +'&fuid='+ng_URLEncode(uploader.FileUploaderID)
-      +'&action=upload'
-      +'&ts='+(new Date().getTime())
-      +'&lang='+ng_URLEncode(ngApp.Lang)
-    );
   }
   return true;
 }
@@ -740,21 +743,33 @@ function ngfup_Sendfiles(c){
   var Form = c.GetForm();
   if(!Form){return false;}
 
+  var params = {
+    id: c.ID,
+    fuid: c.FileUploaderID,
+    action: 'upload'
+  };
+
+  if(c.OnGetRequestParams){c.OnGetRequestParams(params);}
+
   if(!!window.FormData) {
-    var formData = new FormData(Form);
 
     var rpc = c.GetRPC();
     if(rpc){
       rpc.clearParams();
-      rpc.SetParam('id',c.ID);
-      rpc.SetParam('fuid',c.FileUploaderID);
-      rpc.SetParam('action','upload');
-      rpc.FileFormData = formData;
+      rpc.FileFormData = new FormData(Form);
+      for(var i in params){rpc.SetParam(i,params[i]);}
 
       rpc.sendRequest(c.UploadURL);
       return true;
     }
   }
+
+  var urlParams = 'ts='+(new Date().getTime())+'&lang='+ng_URLEncode(ngApp.Lang);
+  for(var i in params){
+    urlParams += '&'+ng_URLEncode(i)+'='+ng_URLEncode(params[i]);
+  }
+  Form.action = ng_AddURLParam(c.UploadURL,urlParams);
+
   c.ShowWaiting(true);
   c.SetUploadProgress();
   Form.submit();
@@ -963,6 +978,7 @@ function ngfup_ChangeFile(){
   if(this.OnFileChanged){this.OnFileChanged(this, Value, Files);}
   ngfup_Sendfiles(this);
 
+  Form.reset();
   return true;
 };
 
@@ -1124,10 +1140,16 @@ function ngfup_FileDrop(c,e){
   var rpc = c.GetRPC();
   if(rpc){
     rpc.clearParams();
-    rpc.SetParam('id',c.ID);
-    rpc.SetParam('fuid',c.FileUploaderID);
-    rpc.SetParam('action','upload');
     rpc.FileFormData = formData;
+
+    var params = {
+      id: c.ID,
+      fuid: c.FileUploaderID,
+      action: 'upload'
+    };
+
+    if(c.OnGetRequestParams){c.OnGetRequestParams(params);}
+    for(var i in params){rpc.SetParam(i,params[i]);}
 
     rpc.sendRequest(c.UploadURL);
   }
