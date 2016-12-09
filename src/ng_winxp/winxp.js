@@ -2323,10 +2323,6 @@ var WinXPControls = {
           Base: 'ngPanel',
           className: 'wxpFileUploader',
           Controls: {
-            UploadWindow: {
-              Type: 'stdDialog',
-              W: 280, H: 100
-            },
             ListFiles: {
               Type: 'stdList'
             },
@@ -2401,13 +2397,15 @@ var WinXPControls = {
         if(def.ListFiles === false) {
           if((typeof def.H === 'undefined')&&((typeof def.T === 'undefined')||(typeof def.B === 'undefined'))) def.H=23;
         }
-        def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-          var bo=c.Controls.Buttons.Elm();
-          if(bo) {
-            if(c.ButtonsAlign==='top') bo.style.marginBottom='10px';
-            else                       bo.style.marginTop='10px';
-          }
-        });
+        if(def.Controls.Buttons){
+          def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+            var bo=c.Controls.Buttons.Elm();
+            if(bo) {
+              if(c.ButtonsAlign==='top') bo.style.marginBottom='10px';
+              else                       bo.style.marginTop='10px';
+            }
+          });
+        }
 
         return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
       }

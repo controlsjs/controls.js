@@ -3514,10 +3514,6 @@ var WinEightControls = {
           Base: 'wePanel',
           className: th ? 'weFileUploaderLight' : 'weFileUploaderDark',
           Controls: {
-            UploadWindow: {
-              Type: 'weDialog',
-              W: 280, H: 100
-            },
             ListFiles: {
               Type: 'weList',
               Theme: WE_LIGHT,
@@ -3599,13 +3595,15 @@ var WinEightControls = {
         if(def.ListFiles === false) {
           if((typeof def.H === 'undefined')&&((typeof def.T === 'undefined')||(typeof def.B === 'undefined'))) def.H=32;
         }
-        def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-          var bo=c.Controls.Buttons.Elm();
-          if(bo) {
-            if(c.ButtonsAlign==='top') bo.style.marginBottom='20px';
-            else                       bo.style.marginTop='20px';
-          }
-        });
+        if(def.Controls.Buttons){
+          def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+            var bo=c.Controls.Buttons.Elm();
+            if(bo) {
+              if(c.ButtonsAlign==='top') bo.style.marginBottom='20px';
+              else                       bo.style.marginTop='20px';
+            }
+          });
+        }
 
         return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
       };
