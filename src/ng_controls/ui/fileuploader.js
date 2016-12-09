@@ -27,98 +27,20 @@ var FileUploaderControl = {
       var buttonsalign='top';
       var base = ngVal(def.Base, 'ngPanel');
       var id = ngVal(def.Data.FileUploaderID, 'Main');
-      // some browsers don't support click() on input file, define where support is available
-      var uploadwin = !( ngIExplorer || ((ngFireFox)&&(ngFireFoxVersion>=4)) || ngChrome || ngiOS || ((ngOpera)&&(ngOperaVersion>=12)) );
-
-
-      function isfileschecked(l) {
-        var ischecked=false;
-        l.Scan(function (list, item, parent, userData) {
-          if ((item.Checked)||(ischecked)) { ischecked=true; return false; }
-          return true;
-        });
-        return ischecked;
-      }
 
       ng_MergeDef(def, {
         ParentReferences: false,
         ListFiles: true,
-        UseUploadWindow: uploadwin,
-        DropTarget: (ngAndroid || ngiOS || ngWindowsPhone) ? false : true,
         Data: {
           FileUploaderID: id,
-          UploadURL: ngLibPath('ng_controls')+'ui/fileuploader.php'
+          UploadURL: ngLibPath('ng_controls')+'ui/fileuploader.php',
+          DropTarget: undefined,
+          MaxFilesCount: undefined,
+          MaxFileSize: undefined,
+          MaxBatchSize: undefined,
+          AllowedExtensions: undefined
         },
         Controls: {
-          UploadIFrame: {
-            Type: 'ngText',
-            L: 0, T: 0, W: 0, H: 0,
-            Events: {
-              OnGetText: function(){
-                return this.Owner.Owner.GetIFrameHTML('1');
-              },
-              OnUpdated: function(o) {
-                c.GetForm(); // force IFRAME creation
-              }
-            }
-          },
-          UploadWindow: {
-            Type: 'ngWindow',
-            Data: {
-              Centered: false,
-              ngText: 'ngfup_AddFile',
-              Visible: false,
-              Modal: true,
-              IFrameSize: { W: 250, H: 45 }
-            },
-            Controls: {
-              TxtAddFile: {
-                L: 5, T: 5, R: 0, B: 0,
-                Type: 'ngText',
-                Events: {
-                  OnGetText: function(){
-                    var iFrameSize = this.Owner.Owner.IFrameSize;
-                    return this.Owner.Owner.Owner.Owner.GetIFrameHTML(
-                      '2',
-                      iFrameSize ? iFrameSize.W : undefined,
-                      iFrameSize ? iFrameSize.H : undefined
-                    );
-                  }
-                }
-              }
-            },
-            Events: {
-              OnVisibleChanged: function (o) {
-                if (typeof(o)==='undefined') return;
-
-                var winw,winh,cw,ch;
-
-                var ow=o.Elm();
-                var oc=o.Owner.Owner.Elm();
-                ng_BeginMeasureElement(ow);
-                try {
-                  winw=ng_OuterWidth(ow);
-                  winh=ng_OuterHeight(ow);
-                } finally {
-                  ng_EndMeasureElement(ow);
-                }
-                ng_BeginMeasureElement(oc);
-                try {
-                  cw=ng_OuterWidth(oc);
-                  ch=ng_OuterHeight(oc);
-                } finally {
-                  ng_EndMeasureElement(oc);
-                }
-
-                var pp=ng_ParentPosition(oc,ow.parentNode);
-                var l=pp.x+Math.round((cw-winw)/2);
-                var t=pp.y+Math.round((ch-winh)/2);
-                if(l<0) l=0;
-                if(t<0) t=0;
-                o.SetBounds({L: l, T: t });
-              }
-            }
-          },
           ListFiles: {
             Type: 'ngList',
             L: 0, T: 0, B: 0, R: 0,
@@ -131,25 +53,11 @@ var FileUploaderControl = {
               )
             },
             Events: {
-              OnUpdated: function(l,o) {
-                if(l.Owner.DragAndDropPanel) {
-                  if(l.Owner.DragAndDropPanel.SetBounds(l.Bounds)) l.Owner.DragAndDropPanel.Update();
-                }
-              },
-              OnAdd: function(l,it,p) {
-                if(l.Owner.DragAndDropPanel) l.Owner.DragAndDropPanel.SetVisible(false);
-                return true;
-              },
-              OnRemove: function(l,it,p) {
-                if((l.Items.length==1)&&(l.Owner.DragAndDropPanel)) l.Owner.DragAndDropPanel.SetVisible(true);
-                return true;
-              },
-              OnCheckChanged: function(o) {
-                if(o.Owner.BtnRemoveCheckedFiles) o.Owner.BtnRemoveCheckedFiles.SetEnabled(isfileschecked(this));
-              },
-              OnClickItem: function (o) {
-                if ((o) && (o.listPart==0)) o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
-              }
+              OnUpdated: ngfup_ListOnUpdated,
+              OnAdd: ngfup_ListOnAdd,
+              OnRemove: ngfup_ListOnRemove,
+              OnCheckChanged: ngfup_ListOnCheckChanged,
+              OnClickItem: ngfup_ListOnClickItem
             }
           },
           DragAndDropPanel: {
@@ -168,35 +76,15 @@ var FileUploaderControl = {
               }
             },
             Events: {
-              OnFilesDragOver: function(c,elm){
-                var cElm = c.Owner.Owner.Elm();
-                if(!cElm){return;}
-
-                var cn=cElm.className;
-                if(cn.indexOf('_Drag')<0){cElm.className = cn+'_Drag';}
-              },
-              OnFilesDragLeave: function(c,elm){
-                var cElm = c.Owner.Owner.Elm();
-                if(!cElm){return;}
-
-                var cn=cElm.className;
-                var idx = cn.indexOf('_Drag');
-                if(idx>=0){
-                  cElm.className = cn.substring(0,idx)+cn.substring(idx+5);
-                }
-              }
+              OnFilesDragOver: ngfup_OnFilesDragOver,
+              OnFilesDragLeave: ngfup_OnFilesDragLeave
             }
           },
           Buttons: {
             Type: 'ngToolBar',
             L: 0, B: 0, R: 0,
             Events: {
-              OnUpdated: function(c,o) {
-                if(c.Owner.ListFiles) {
-                  var h=ng_OuterHeight(o);
-                  if(c.Owner.ListFiles.SetBounds(buttonsalign == 'top' ? {T:h} : {B:h})) c.Owner.ListFiles.Update();
-                }
-              }
+              OnUpdated: ngfup_OnButtonsUpdated
             },
             Controls: {
               BtnAddFile: {
@@ -205,7 +93,7 @@ var FileUploaderControl = {
                   ngText: 'ngfup_AddFile'
                 },
                 Events: {
-                  OnClick: function () { c.ShowForm(); }
+                  OnUpdated: ngfup_OnAddFileButtonUpdated
                 }
               },
               BtnRemoveCheckedFiles: {
@@ -215,14 +103,15 @@ var FileUploaderControl = {
                   Enabled: false
                 },
                 Events: {
-                  OnClick: function () { c.RemoveCheckedFiles(); }
+                  OnClick: ngfup_OnRemoveBtnClick
                 }
               }
             }
           }
         }
       });
-      uploadwin=uploadwin || def.UseUploadWindow;
+
+      def.Data.DropTarget = !!ngVal(def.DropTarget, !(ngAndroid || ngiOS || ngWindowsPhone));
 
       if(typeof def.Data.MaxFilesCount === 'undefined') {
         var max=parseInt(ngVal(ngApp.StartParams['ngFileUploader.'+id+'.MaxFilesCount'], 0),10);
@@ -245,52 +134,44 @@ var FileUploaderControl = {
       }
 
       if(def.Controls) {
-        if(typeof def.Controls.UploadWindow.parent === 'undefined') def.Controls.UploadWindow.parent=(typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body;
         if(!def.ListFiles) {
           if(def.Controls.Buttons) {
-            if(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles) ng_MergeVar(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles,{ Data: { Visible: false } });
+            if(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles){
+              ng_MergeVar(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles,
+                { Data: { Visible: false } }
+              );
+            }
           }
-          if(def.Controls.ListFiles) ng_MergeVar(def.Controls.ListFiles,{ Data: { Visible: false } });
-          if(def.Controls.DragAndDropPanel) ng_MergeVar(def.Controls.DragAndDropPanel,{ Data: { Visible: false } });
+          if(def.Controls.ListFiles){
+            ng_MergeVar(def.Controls.ListFiles,
+              { Data: { Visible: false } }
+            );
+          }
+          if(def.Controls.DragAndDropPanel){
+            ng_MergeVar(def.Controls.DragAndDropPanel,
+              { Data: { Visible: false } }
+            );
+          }
         }
 
-        if((!def.DropTarget)||(!window.FormData)||(!('draggable' in document.createElement('span'))))
+        if((!def.Data.DropTarget)||(!window.FormData)||(!('draggable' in document.createElement('span'))))
           delete def.Controls.DragAndDropPanel;
       }
 
       if(typeof def.ButtonsAlign!=='undefined') buttonsalign=def.ButtonsAlign;
       if(typeof def.Data.ButtonsAlign!=='undefined') buttonsalign=def.Data.ButtonsAlign;
 
-      if(buttonsalign=='top') {
+      if((buttonsalign=='top') && def.Controls.Buttons) {
         delete def.Controls.Buttons.B;
         if(def.Controls.Buttons.T==='undefined') def.Controls.Buttons.T=0;
       }
 
-      def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-        if((c.Controls.BtnRemoveCheckedFiles)&&(c.Controls.ListFiles)) {
-          c.Controls.BtnRemoveCheckedFiles.AddEvent('OnSetEnabled',function(o,v) {
-            if((v)&&(c.Controls.ListFiles)&&(!isfileschecked(c.Controls.ListFiles))) {
-              return false;
-            }
-            return true;
-          });
-        }
-
-        if(def.DropTarget) {
-          c.RegisterDropTarget(c,function(c,o) {
-            var dp=c.Controls.DragAndDropPanel;
-            if((dp)&&(dp.OnFilesDragOver)) dp.OnFilesDragOver(dp,o);
-          },function(c,o) {
-            var dp=c.Controls.DragAndDropPanel;
-            if((dp)&&(dp.OnFilesDragLeave)) dp.OnFilesDragLeave(dp,o);
-          });
-        }
-      });
+      def.OnCreated = ngAddEvent(def.OnCreated,ngfup_OnCreated);
 
       var c = ngCreateControlAsType(def, base, ref, parent);
-      if (!c) return c;
+      if(!c){return c;}
 
-      c.ButtonsAlign=buttonsalign;
+      c.ButtonsAlign = buttonsalign;
 
       // ===== PROPERTIES =====
 
@@ -343,47 +224,6 @@ var FileUploaderControl = {
 
       // ===== METHODS =====
 
-      function sendfiles()
-      {
-        if(!c.Enabled) return false;
-
-        var Form = c.GetForm();
-        if (!Form) return false;
-
-        if(!!window.FormData) {
-          var formData = new FormData(Form);
-
-          var rpc=c.GetRPC();
-          if(rpc) {
-            rpc.clearParams();
-            rpc.SetParam('id',c.ID);
-            rpc.SetParam('fuid',c.FileUploaderID);
-            rpc.SetParam('action','upload');
-            rpc.FileFormData = formData;
-
-            rpc.sendRequest(c.UploadURL);
-            return true;
-          }
-        }
-        c.ShowWaiting(true);
-        c.SetUploadProgress(/*undefined*/);
-        Form.submit();
-        return true;
-      }
-
-      window['ngfup_action'] = function (id, action, data)
-      {
-        if ((typeof(id)==='undefined') || (typeof(action)==='undefined')) return false;
-        data = ngVal(data, null);
-
-        var c = ngGetControlById(id);
-        if ((!c) || (!ng_inArray('ngFileUploader', c.CtrlInheritedFrom))) return false;
-
-        if (c[action]) c[action](data);
-
-        return true;
-      };
-
       /*
        *  Group: Methods
        */
@@ -399,119 +239,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-
-      c.ServerData = function (data) {
-        if (typeof(data)==='undefined') return false;
-
-        c.ShowWaiting(false);
-
-        var maxfiles=ngVal(c.MaxFilesCount,-1);
-
-        var errmsg='';
-        function fileuploaded(data) {
-          if (data === false) return;
-
-          if (data.Error) {
-            if(errmsg!='') errmsg+="\n";
-            if(ngVal(data.Name,'')!='') errmsg+=data.Name+': ';
-            errmsg+=ngTxt(data.Error);
-            return;
-          }
-
-          if((maxfiles>=0)&&(c.Controls.ListFiles.Items.length>=maxfiles)) {
-            if(errmsg!='') errmsg+="\n";
-            if(ngVal(data.Name,'')!='') errmsg+=data.Name+': ';
-            errmsg+=ngTxt('ngfup_Error_MaxFiles');
-            return;
-          }
-
-          c.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
-          if (c.OnFileAdded) c.OnFileAdded(c, data.Name, data);
-        }
-
-        c.Controls.ListFiles.BeginUpdate();
-        try {
-          if(ng_IsArrayVar(data)) {
-            for(var f=0;f<data.length;f++) {
-              fileuploaded(data[f]);
-            }
-            if(errmsg!='') {
-              c.ShowError(errmsg, data);
-              return false;
-            }
-          }
-          else {
-            if (data.Error) {
-              c.ShowError(ngTxt(data.Error), data);
-              return false;
-            }
-            fileuploaded(data);
-          }
-        }
-        finally {
-          c.Controls.ListFiles.EndUpdate();
-        }
-        return true;
-      };
-
-      function checkfiles(files) {
-        var maxfiles=ngVal(c.MaxFilesCount,-1);
-        var curfiles=0;
-        if(c.Controls.ListFiles) curfiles=c.Controls.ListFiles.Items.length;
-        if((maxfiles>=0)&&(curfiles+files.length>maxfiles)) {
-          c.ShowError(ngTxt('ngfup_Error_MaxFiles'),null);
-          return false;
-        }
-
-        function ext(fn) {
-          var i=fn.lastIndexOf('.');
-          if(i<0) return '';
-          return fn.substr(i+1);
-        }
-
-        var maxbatchsize=parseInt(ngVal(c.MaxBatchSize,0));
-        var maxsize=parseInt(ngVal(c.MaxFileSize,0));
-        var batchsize=0;
-        var checkext=(!ng_EmptyVar(c.AllowedExtensions));
-        if((checkext)||(maxsize>0)) {
-          var errmsg='';
-          var s,e,found;
-          for(var i=0;i<files.length;i++) {
-            if(checkext) {
-              e=ext(files[i].name).toLowerCase();
-              found=false;
-              if(e!='') {
-                for(var j in c.AllowedExtensions)
-                  if(c.AllowedExtensions[j].toLowerCase()===e) { found=true; break; }
-              }
-              if(!found) {
-                if(errmsg!='') errmsg+="\n";
-                errmsg+=files[i].name+': '+ngTxt('ngfup_Error_Extension');
-                continue;
-              }
-            }
-            if(typeof files[i].size !== 'undefined') {
-              s=parseInt(files[i].size,10);
-              if(batchsize>=0) batchsize+=s;
-              if((maxsize>0)&&(s>maxsize)) {
-                if(errmsg!='') errmsg+="\n";
-                errmsg+=files[i].name+': '+ngTxt('ngfup_Error_Size');
-                continue;
-              }
-            }
-            else batchsize=-1;
-          }
-          if(errmsg!='') {
-            c.ShowError(errmsg,null);
-            return false;
-          }
-          if((batchsize>0)&&(maxbatchsize>0)&&(batchsize>maxbatchsize)) {
-            c.ShowError(ngTxt('ngfup_Error_MaxBatch'),null);
-            return false;
-          }
-        }
-        return true;
-      }
+      c.ServerData = ngfup_ServerData;
 
       /*  Function: ChangeFile
        *  ...
@@ -522,43 +250,18 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
+      c.ChangeFile = ngfup_ChangeFile;
 
-      c.ChangeFile = function () {
-        if((new Date().getTime()-showformtime)<1000) return; // probably invoked by showing dialog
-        var Form = c.GetForm();
-        if (!Form) return false;
-
-        var Value = '';
-        var input=Form['ngfup_File[]'];
-        var Files = [];
-        if('files' in input) {
-          if(!input.files.length) return false;
-          if(!checkfiles(input.files)) return false;
-
-          for(var i=0;i<input.files.length;i++) {
-            if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, input.files[i].name), false))) return false;
-
-            if(Value!='') Value+=', ';
-            Value+=input.files[i].name;
-            Files.push(input.files[i].name);
-          }
-        }
-        else {
-          Value = input.value;
-          Value = Value.substring(Value.lastIndexOf('\\')+1, Value.length);  //Remove "fake" path (C:\fakepath\)
-          if(Value!='') Files.push(Value);
-          if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, input.value), false))) return false;
-        }
-
-        if ((c.OnFileChanging) && (!ngVal(c.OnFileChanging(c, Value, Files), false))) return false;
-
-        c.ShowWindow(false);
-
-        if (c.OnFileChanged) c.OnFileChanged(c, Value, Files);
-        sendfiles();
-
-        return true;
-      };
+      /*  Function: CheckFiles
+       *  ...
+       *
+       *  Syntax:
+       *    bool *CheckFiles* ()
+       *
+       *  Returns:
+       *    -
+       */
+      c.CheckFiles = ngfup_Checkfiles;
 
       /*  Function: RemoveCheckedFiles
        *  ...
@@ -569,25 +272,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-
-      c.RemoveCheckedFiles = function () {
-        var Checked = c.Controls.ListFiles.GetChecked();
-        if (Checked.length==0) return false;
-
-        c.Controls.ListFiles.BeginUpdate();
-        try {
-          for (var i=0;i<Checked.length;i++)
-          {
-            if ((c.OnFileDeleting) && (!ngVal(c.OnFileDeleting(c, Checked[i], i), false))) continue;
-            c.Controls.ListFiles.Remove(Checked[i]);
-            if (c.OnFileDeleted) c.OnFileDeleted(c, Checked[i], i);
-          }
-        }
-        finally {
-          c.Controls.ListFiles.EndUpdate();
-        }
-        return true;
-      };
+      c.RemoveCheckedFiles = ngfup_RemoveCheckedFiles;
 
       /*  Function: ClearFiles
        *  ...
@@ -598,23 +283,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-
-      c.ClearFiles = function () {
-        var list=c.Controls.ListFiles;
-
-        list.BeginUpdate();
-        try {
-          for (var i=list.Items.length-1;i>=0;i--)
-          {
-            if ((c.OnFileDeleting) && (!ngVal(c.OnFileDeleting(c, list.Items[i], i), false))) continue;
-            c.Controls.ListFiles.Remove(list.Items[i]);
-            if (c.OnFileDeleted) c.OnFileDeleted(c, list.Items[i], i);
-          }
-        }
-        finally {
-          list.EndUpdate();
-        }
-      };
+      c.ClearFiles = ngfup_ClearFiles;
 
       /*  Function: GetForm
        *  ...
@@ -625,91 +294,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-
-      c.GetForm = function () {
-        var IFrame;
-
-        //Get IFrame
-        if (!uploadwin) IFrame = document.getElementById('IFRAME_FileUploader_'+c.FileUploaderID+'_1');
-        else IFrame = document.getElementById('IFRAME_FileUploader_'+c.FileUploaderID+'_2');
-        if (!IFrame) return false;
-
-        //Get Document
-        var Doc = (IFrame.contentDocument ? IFrame.contentDocument : IFrame.contentWindow.document);
-        if (!Doc) return false;
-
-        //Get Form
-        var Form = Doc.getElementById('ngfup_Form_'+c.FileUploaderID);
-        if (!Form)  //Create Form if necessary
-        {
-          var CurDate = new Date();
-          var url=ng_AddURLParam(c.UploadURL,'id='+ng_URLEncode(c.ID)+'&fuid='+ng_URLEncode(c.FileUploaderID)+'&action=upload&ts='+CurDate.getTime()+'&lang='+ng_URLEncode(ngApp.Lang));
-
-          Doc.open();
-          Doc.write('<html><body><form id="ngfup_Form_'+c.FileUploaderID+'" enctype="multipart/form-data" action="'+url+'" method="POST">');
-          Doc.write('<input name="ngfup_File[]" type="file" onchange="if (typeof(parent.ngfup_action)===\'function\') parent.ngfup_action(\''+c.ID+'\', \'ChangeFile\');" size="20" '+(c.MaxFilesCount==1 ?  '' : 'multiple="multiple" ')+(c.Accept!='' ? 'accept="'+c.Accept+'" ' : '')+'/>');
-          Doc.write('</form></body></html>');
-          Doc.close();
-
-          Form = Doc.getElementById('ngfup_Form_'+c.FileUploaderID);
-        }
-
-        if (!Form) return false;
-
-        return Form;
-      };
-
-      /*  Function: ShowForm
-       *  ...
-       *
-       *  Syntax:
-       *    bool *ShowForm* ()
-       *
-       *  Returns:
-       *    -
-       */
-
-      var showformtime=0;
-      c.ShowForm = function () {
-        showformtime=new Date().getTime();
-        if (!uploadwin)
-        {
-          var Form = c.GetForm();
-          if (!Form) return false;
-
-          var uploadinput=Form['ngfup_File[]'];
-
-          if(uploadinput) {
-            uploadinput.value=null;
-            uploadinput.click();
-            return true;
-          }
-        }
-        c.ShowWindow();
-        return true;
-      };
-
-      /*  Function: ShowWindow
-       *  ...
-       *
-       *  Syntax:
-       *    bool *ShowWindow* ([bool show = true])
-       *
-       *  Parameters:
-       *    show - ...
-       *
-       *  Returns:
-       *    -
-       */
-
-      c.ShowWindow = function (show) {
-        show = ngVal(show, true);
-
-        c.Controls.UploadWindow.SetVisible(show);
-        if (show) c.GetForm();
-
-        return true;
-      };
+      c.GetForm = ngfup_GetForm;
 
       /*  Function: GetFiles
        *  ...
@@ -720,94 +305,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-
-      c.GetFiles = function () {
-        return c.Controls.ListFiles.Items;
-      };
-
-      var registered_targets={};
-
-      function stopevent(e) {
-        if(!e) e=window.event;
-        if(e.stopPropagation) e.stopPropagation();
-        else e.cancelBubble = true;
-        if(e.preventDefault) e.preventDefault();
-        else e.returnValue = false;
-      }
-
-      function filedrop(e) {
-	      stopevent(e);
-        if(!c.Enabled) return false;
-        var t=findtarget(e);
-        if(t) {
-          if(t.ondrop) {
-            if(!ngVal(t.ondrop(c,t.elm),false)) return false;
-          }
-          else if(t.ondragleave) t.ondragleave(c,t.elm);
-        }
-
-        var files = e.target.files || e.dataTransfer.files;
-
-        if(!checkfiles(files)) return false;
-
-        var formData = new FormData();
-        for (var i = 0; i < files.length; i++) {
-          formData.append('ngfup_File[]', files[i]);
-        }
-
-        var rpc=c.GetRPC();
-        if(rpc) {
-          rpc.clearParams();
-          rpc.SetParam('id',c.ID);
-          rpc.SetParam('fuid',c.FileUploaderID);
-          rpc.SetParam('action','upload');
-          rpc.FileFormData = formData;
-
-          rpc.sendRequest(c.UploadURL);
-        }
-        return false;
-      }
-
-      function findtarget(e) {
-        var t = e.target || e.srcElement || e.originalTarget;
-        while((t)&&(t!=document)) {
-          if((t.id!='')&&(typeof registered_targets[t.id]!=='undefined')) {
-            return registered_targets[t.id];
-            break;
-          }
-          t=t.parentNode;
-        }
-        return null;
-      }
-
-      function filedragover(e) {
-	      stopevent(e);
-        if(!c.Enabled) return false;
-        var t=findtarget(e);
-        if((t)&&(t.ondragover)) t.ondragover(c,t.elm);
-        return false;
-      }
-
-      function filedragleave(e) {
-	      stopevent(e);
-        if(!c.Enabled) return false;
-        var t=findtarget(e);
-        if((t)&&(t.ondragleave)) t.ondragleave(c,t.elm);
-        return false;
-      }
-
-      function dodispose() {
-        var delid=[];
-        for(var i in registered_targets) {
-          delid.push(i);
-        }
-        for(var i=0;i<delid.length;i++) {
-          c.UnregisterDropTarget(delid[i]);
-        }
-        return true;
-      }
-
-      c.AddEvent('DoDispose',dodispose);
+      c.GetFiles = ngfup_GetFiles;
 
       /*  Function: RegisterDropTarget
        *  ...
@@ -818,34 +316,7 @@ var FileUploaderControl = {
        *  Returns:
        *    TRUE if drop target was registered.
        */
-      c.RegisterDropTarget = function(t,ondragover,ondragleave,ondrop) {
-        if(c.InDesignMode) return false;
-
-        var o=null;
-        if(typeof t==='string') o=document.getElementByID(t);
-        else {
-          if(typeof t.Elm === 'function') {
-            o=t.Elm();
-            t=t.ID;
-          }
-          else if(typeof t.id!=='undefined') { o=t; t=t.id; }
-        }
-
-        if((o)&&(t!='')&&(('draggable' in o)&&(!!window.FormData))) {
-
-          registered_targets[t]={
-            elm: o,
-            ondrop: ondrop,
-            ondragover: ondragover,
-            ondragleave: ondragleave
-          };
-          o.addEventListener("drop", filedrop, false);
-          o.addEventListener("dragover", filedragover, false);
-          o.addEventListener("dragleave", filedragleave, false);
-          return true;
-        }
-        return false;
-      };
+      c.RegisterDropTarget = ngfup_RegisterDropTarget;
 
       /*  Function: UnregisterDropTarget
        *  ...
@@ -856,28 +327,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-      c.UnregisterDropTarget = function(t) {
-        if(c.InDesignMode) return;
-
-        var o=null;
-        if(typeof t==='string') o=document.getElementByID(t);
-        else {
-          if(typeof t.Elm === 'function') {
-            o=t.Elm();
-            t=t.ID;
-          }
-          else if(typeof t.id!=='undefined') { o=t; t=t.id; }
-        }
-        if((!o)&&(typeof registered_targets[t]!=='undefined')) o=registered_targets[t].elm;
-
-        if(o) {
-          o.removeEventListener("drop", filedrop, false);
-          o.removeEventListener("dragover", filedragover, false);
-          o.removeEventListener("dragleave", filedragleave, false);
-        }
-
-        delete registered_targets[t];
-      };
+      c.UnregisterDropTarget = ngfup_UnregisterDropTarget;
 
       /*  Function: IsDropTarget
        *  ...
@@ -888,15 +338,7 @@ var FileUploaderControl = {
        *  Returns:
        *    TRUE if target is a registered file uploader drop target.
        */
-      c.IsDropTarget = function(t) {
-        if(typeof t!=='string') {
-          if(typeof t.Elm === 'function') {
-            t=t.ID;
-          }
-          else if(typeof t.id!=='undefined') { t=t.id; }
-        }
-        return typeof registered_targets[t] !== 'undefined';
-      };
+      c.IsDropTarget = ngfup_IsDropTarget;
 
       /*  Function: SetUploadProgress
        *  ...
@@ -907,72 +349,18 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-      c.SetUploadProgress = function(p) {
-        if((c.OnUploadProgress)&&(!ngVal(c.OnUploadProgress(c,p),false))) return;
-      };
+      c.SetUploadProgress = ngfup_SetUploadProgress;
 
-      c.GetRPC = function() {
-        if(!c.file_rpc) {
-          c.file_rpc=new ngRPC(c.ID+'RPC','',true);
-          c.file_rpc.Type=rpcHttpRequestPOST;
-          c.file_rpc.OnReceivedData=function(rpc, response, xmlhttp,reqinfo) {
-            c.ShowWaiting(false); // hide waiting when request is finished
-            return true;
-          };
-          c.file_rpc.OnHTTPRequestFailed = function(rpc,xmlhttp,reqinfo) {
-            if(reqinfo.UploadFile) {
-              c.ServerData({Error: 'ngfup_Error_General'});
-            }
-          };
-          c.file_rpc.OnHTTPRequest=function (rpc,reqinfo) {
-            if(c.file_rpc.Params['action']==='upload') {
-
-              c.ShowWaiting(true);
-
-              if("upload" in reqinfo.XMLHttp) {
-                c.SetUploadProgress(0);
-
-                reqinfo.XMLHttp.onload = function() {
-                  c.SetUploadProgress(100);
-                };
-
-                reqinfo.XMLHttp.upload.onprogress = function (event) {
-                  if (event.lengthComputable) {
-                    c.SetUploadProgress(event.loaded / event.total * 100 | 0);
-                  }
-                };
-              }
-              else c.SetUploadProgress(/*undefined*/);
-
-              if(typeof rpc.FileFormData !== 'undefined') {
-                delete reqinfo.ReqHeaders["Content-type"];
-                delete reqinfo.ReqHeaders["Content-length"];
-                reqinfo.PostParams=rpc.FileFormData;
-              }
-              else {
-                var boundary=Math.random().toString().substr(2);
-                reqinfo.ReqHeaders["Content-type"]="multipart/form-data; charset=utf-8; boundary=" + boundary;
-
-                var multipart = "--" + boundary
-                           + "\r\nContent-Disposition: form-data; name=\"ngfup_File[]\"; filename=\""+rpc.FileName+"\""
-                           + "\r\nContent-type: " + ngVal(rpc.FileContentType,'text/plain; charset=utf-8')
-                           + "\r\n\r\n" + rpc.FileContent + "\r\n";
-                multipart += "--"+boundary+"--\r\n";
-
-                reqinfo.ReqHeaders["Content-length"]=multipart.length;
-                reqinfo.PostParams=multipart;
-              }
-              reqinfo.UploadFile=true;
-
-              // Move params to URL (were in PostParams which was replaced)
-              var params=rpc.GetURLParams();
-              if(params!='') reqinfo.URL=ng_AddURLParam(reqinfo.URL, params);
-            }
-            return true;
-          };
-        }
-        return c.file_rpc;
-      };
+      /*  Function: GetRPC
+       *  ...
+       *
+       *  Syntax:
+       *    ngRPC *GetRPC* ()
+       *
+       *  Returns:
+       *    -
+       */
+      c.GetRPC = ngfup_GetRPC;
 
       /*  Function: UploadFile
        *  ...
@@ -983,113 +371,31 @@ var FileUploaderControl = {
        *  Returns:
        *    TRUE if upload request was send.
        */
-      c.UploadFile = function (filename, content, contenttype) {
-        if((filename=='')||(/[<>|:/\?\"\\]/.test(filename))) {
-          throw 'Invalid filename!';
-        }
-        contenttype=ngVal(contenttype,'text/plain; charset=utf-8');
-        var ctype=contenttype;
-        var p=ctype.indexOf(';');
-        if(p>=0) ctype=ctype.substr(0,p);
+      c.UploadFile = ngfup_UploadFile;
 
-        var curtime=new Date();
-        if(!checkfiles([{name:filename, size: content.length, type: ctype, lastModified: curtime.getTime(), lastModifiedDate: curtime }])) return false;
-
-        if ((c.OnFileAdding) && (!ngVal(c.OnFileAdding(c, filename), false))) return false;
-
-        var rpc=c.GetRPC();
-        if(rpc) {
-          rpc.clearParams();
-          rpc.SetParam('id',c.ID);
-          rpc.SetParam('fuid',c.FileUploaderID);
-          rpc.SetParam('action','upload');
-          delete rpc.FileFormData;
-          rpc.FileName = filename;
-          rpc.FileContent = ngVal(content,'');
-          rpc.FileContentType = contenttype;
-
-          rpc.sendRequest(c.UploadURL);
-          return true;
-        }
-        return false;
-      };
-
-      /*  Function: GetIFrameHTML
+      /*  Function: ShowError
        *  ...
        *
        *  Syntax:
-       *    string *GetIFrameHTML* (string iFrameId [, integer iFrameWidth, integer iFrameWidth])
+       *    void *ShowError* (string errmsg, mixed data)
        *
        *  Returns:
-       *    HTML string
+       *    -
        */
+      c.ShowError = ngfup_ShowError;
 
-      c.GetIFrameHTML = function (iFrameId,iFrameWidth,iFrameHeight) {
-        if(typeof iFrameWidth !== 'number'){iFrameWidth = 1;}
-        if(typeof iFrameHeight !== 'number'){iFrameHeight = 1;}
+      /*  Function: ShowWaiting
+       *  ...
+       *
+       *  Syntax:
+       *    void *ShowWaiting* (boolean show)
+       *
+       *  Returns:
+       *    -
+       */
+      c.ShowWaiting = ngfup_ShowWaiting;
 
-        return ng_sprintf(
-          '<iframe id="IFRAME_FileUploader_%s_%s" scrolling="no" frameborder="0" '
-          +'style="overflow:hidden;border:0px;width:%spx;height:%spx;"></iframe>',
-          this.FileUploaderID,iFrameId,iFrameWidth,iFrameHeight
-        );
-      };
-
-      c.ShowError = function (errmsg, data) {
-        if(errmsg!='') {
-          if (c.OnError) c.OnError(c, errmsg, data);
-          else alert(ng_htmlDecode(errmsg));
-          return false;
-        }
-      };
-
-      c.ShowWaiting = function(v) {
-        v=ngVal(v,true);
-        if(v!=c.Waiting) {
-          c.Waiting=v;
-          if (v) { if (c.OnShowWaiting) c.OnShowWaiting(c); }
-          else   { if (c.OnHideWaiting) c.OnHideWaiting(c); }
-        }
-      };
-
-      window['ngfup_AddDragBox'] = function(c,w) {
-        var elm=c.Elm();
-        if(!elm){return;}
-        if(typeof w === 'undefined') w=1;
-        if(typeof c.Bounds.L !== 'undefined') {
-          if(typeof c._dragboxMarginLeft === 'undefined') c._dragboxMarginLeft=elm.style.marginLeft;
-          elm.style.marginLeft='-'+w+'px';
-        }
-        if(typeof c.Bounds.T !== 'undefined') {
-          if(typeof c._dragboxMarginTop === 'undefined') c._dragboxMarginTop=elm.style.marginTop;
-          elm.style.marginTop='-'+w+'px';
-        }
-        if(typeof c.Bounds.R !== 'undefined') {
-          if(typeof c._dragboxMarginRight === 'undefined') c._dragboxMarginRight=elm.style.marginRight;
-          elm.style.marginRight='-'+w+'px';
-        }
-        if(typeof c.Bounds.B !== 'undefined') {
-          if(typeof c._dragboxMarginBottom === 'undefined') c._dragboxMarginBottom=elm.style.marginBottom;
-          elm.style.marginBottom='-'+w+'px';
-        }
-        if(typeof c._dragboxBorderWidth === 'undefined') c._dragboxBorder=elm.style.borderWidth;
-        elm.style.borderWidth=w+'px';
-      };
-
-      window['ngfup_RemoveDragBox'] = function(c) {
-        var elm=c.Elm();
-        if(!elm){return;}
-        if(typeof c._dragboxMarginLeft !== 'undefined') elm.style.marginLeft=c._dragboxMarginLeft;
-        if(typeof c._dragboxMarginTop !== 'undefined') elm.style.marginTop=c._dragboxMarginTop;
-        if(typeof c._dragboxMarginRight !== 'undefined') elm.style.marginRight=c._dragboxMarginRight;
-        if(typeof c._dragboxMarginBottom !== 'undefined') elm.style.marginBottom=c._dragboxMarginBottom;
-        elm.style.borderWidth=ngVal(c._dragboxBorderWidth,'');
-        delete c._dragboxMarginLeft;
-        delete c._dragboxMarginTop;
-        delete c._dragboxMarginRight;
-        delete c._dragboxMarginBottom;
-        delete c._dragboxBorder;
-      };
+      c.AddEvent('DoDispose',ngfup_DoDispose);
 
       // ===== EVENTS =====
 
@@ -1142,34 +448,763 @@ var FileUploaderControl = {
        */
       c.OnHideWaiting = null;
 
-      if (typeof(ngRegisterBindingHandler)==='function')
-      {
-        c.OnDataBindingInit = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) {
-
-          switch (bindingKey)
-          {
-            case 'Value':
-              c.AddEvent(function (c) {
-                ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
-              }, 'OnFileAdded');
-
-              c.AddEvent(function (c) {
-                ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
-              }, 'OnFileDeleted');
-            break;
-          }
-
-          return true;
-        };
-
+      if(typeof(ngRegisterBindingHandler) === 'function'){
+        c.OnDataBindingInit = ngfup_OnDataBindingInit;
         //c.OnDataBindingUpdate = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) { return true; }
       }
 
       return c;
     }
-    ngRegisterControlType('ngFileUploader', function(def, ref, parent) { return Create_ngFileUploader(def, ref, parent); });
+    ngRegisterControlType('ngFileUploader', Create_ngFileUploader);
   }
 };
+
+function ngfup_ServerData(data){
+  if(typeof(data) === 'undefined'){return false;}
+
+  this.ShowWaiting(false);
+
+  this.Controls.ListFiles.BeginUpdate();
+  try{
+    if(ng_IsArrayVar(data)){
+      var errmsg = '';
+      for(var f = 0; f < data.length; f++){
+        var err = ngfup_FileUploaded(this,data[f]);
+        if(err){
+          errmsg += (errmsg == '') ? err : "\n"+err;
+        }
+      }
+      if(errmsg != ''){
+        this.ShowError(errmsg, data);
+        return false;
+      }
+    }
+    else{
+      if(data.Error){
+        this.ShowError(ngTxt(data.Error), data);
+        return false;
+      }
+      ngfup_FileUploaded(this,data);
+    }
+  }
+  finally{
+    this.Controls.ListFiles.EndUpdate();
+  }
+  return true;
+}
+
+function ngfup_UploadFile(filename, content, contenttype){
+  if((filename == '') || (/[<>|:/\?\"\\]/.test(filename))){
+    throw 'Invalid filename!';
+  }
+  contenttype = ngVal(contenttype,'text/plain; charset=utf-8');
+  var ctype = contenttype;
+  var p = ctype.indexOf(';');
+  if(p >= 0){ctype = ctype.substr(0,p);}
+
+  var curtime = new Date();
+
+  if(!this.CheckFiles([{
+    name: filename,
+    size: content.length,
+    type: ctype,
+    lastModified: curtime.getTime(),
+    lastModifiedDate: curtime
+  }])){return false;}
+
+  if((this.OnFileAdding) && (!ngVal(this.OnFileAdding(this, filename), false))){
+    return false;
+  }
+
+  var rpc = this.GetRPC();
+  if(rpc){
+    rpc.clearParams();
+    rpc.SetParam('id',this.ID);
+    rpc.SetParam('fuid',this.FileUploaderID);
+    rpc.SetParam('action','upload');
+    delete rpc.FileFormData;
+    rpc.FileName = filename;
+    rpc.FileContent = ngVal(content,'');
+    rpc.FileContentType = contenttype;
+
+    rpc.sendRequest(this.UploadURL);
+    return true;
+  }
+  return false;
+}
+
+function ngfup_FileUploaded(c,data){
+  if((typeof data !== 'object') || (data === null)){return null;}
+
+    var maxfiles = ngVal(c.MaxFilesCount,-1);
+    var errmsg = '';
+
+  if(data.Error){
+    if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
+    return errmsg+ngTxt(data.Error);
+  }
+
+  if((maxfiles >= 0) && (c.Controls.ListFiles.Items.length >= maxfiles)){
+    if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
+    return errmsg+ngTxt('ngfup_Error_MaxFiles');
+  }
+
+  c.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
+  if(c.OnFileAdded){c.OnFileAdded(c, data.Name, data);}
+  return null;
+}
+
+function ngfup_FilesChecked(list){
+  return list.HasChecked();
+}
+
+function ngfup_OnCreated(c){
+  var elm = c.Elm();
+  if(elm){
+    var frameId = 'FileUploader_'+c.ID+'_IF';
+    if(!document.getElementById(frameId)){
+      ng_AppendInnerHTML(elm,
+        '<iframe id="'+frameId+'" name="'+frameId+'"'
+        + ' scrolling="no" frameborder="0" style="'
+          + 'position:absolute;width:1px;height:1px;left:-1px;top:-1px;'
+          + 'overflow:hidden;border:0px;'
+        + '"></iframe>'
+      );
+    }
+  }
+
+  if((c.Controls.BtnRemoveCheckedFiles)&&(c.Controls.ListFiles)){
+    c.Controls.BtnRemoveCheckedFiles.AddEvent(
+      'OnSetEnabled',ngfup_OnSetRemoveBtnEnabled
+    );
+  }
+
+  if(c.DropTarget){
+    c.RegisterDropTarget(c,ngfup_OnDragOver,ngfup_OnDragLeave);
+  }
+}
+
+function ngfup_OnSetRemoveBtnEnabled(o,v){
+  var list = this.ParentControl.Owner.ListFiles;
+  return !(v && list && !list.HasChecked());
+}
+
+function ngfup_OnRemoveBtnClick(){
+  this.ParentControl.ParentControl.RemoveCheckedFiles();
+}
+
+function ngfup_OnDragOver(c,o){
+  var dp = c.Controls.DragAndDropPanel;
+  if((dp) && (dp.OnFilesDragOver)){dp.OnFilesDragOver(dp,o);}
+}
+
+function ngfup_OnDragLeave(c,o){
+  var dp = c.Controls.DragAndDropPanel;
+  if((dp) && (dp.OnFilesDragLeave)){dp.OnFilesDragLeave(dp,o);}
+}
+
+function ngfup_GetForm(){
+  return document.getElementById('FileUploader_'+this.ID+'_FO');
+}
+
+function ngfup_GetFiles(){
+  return this.Controls.ListFiles.Items;
+};
+
+function ngfup_OnAddFileButtonUpdated(){
+  var uploader = this.ParentControl.ParentControl;
+  var form = uploader.GetForm();
+  if(!form){
+    var node = this.Elm();
+    if(!node){return;}
+
+    var useLabel = !((ngFireFox && (ngFireFoxVersion<4)) || (ngOpera && (ngOperaVersion<12)));
+    var id = 'FileUploader_'+uploader.ID;
+
+    ng_AppendInnerHTML(node,
+      '<form id="'+id+'_FO" target="'+id+'_IF" action="" '
+        + 'enctype="multipart/form-data" method="POST" style="'
+        + 'position:absolute;left:0px;top:0px;width:100%;height:100%;margin:0px;padding:0px;'
+        + 'opacity:0;-moz-opacity:0;filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);'
+        + 'z-index:3'
+      + '" >'
+        + '<input id="'+id+'_FO_I" name="ngfup_File[]" type="file" size="20" '
+          + 'onchange="ngfup_action(\''+uploader.ID+'\', \'ChangeFile\');" '
+          + ((uploader.MaxFilesCount == 1) ?  '' : 'multiple="multiple" ')
+          + ((uploader.Accept != '') ? ' accept="'+uploader.Accept+'" ' : '')
+          + 'style="'
+            + 'position:absolute;left:-100%;top:0px;width:200%;height:100%;margin:0px;padding:0px;'
+            + 'font-size:10000px;cursor:pointer !important;'
+          + '"/>'
+        + (useLabel
+          ? '<label for="'+id+'_FO_I" style="'
+              + 'position:absolute;left:0;top:0;width:100%;height:100%;margin:0px;padding:0px;'
+              + 'cursor:pointer !important;'
+            + '"></label>'
+          : ''
+        )
+      + '</form>'
+    );
+
+    form = uploader.GetForm();
+  }
+  if(form){
+    form.style.display = (this.Enabled) ? 'block' : 'none';
+    form.action = ng_AddURLParam(
+      uploader.UploadURL,
+      'id='+ng_URLEncode(uploader.ID)
+      +'&fuid='+ng_URLEncode(uploader.FileUploaderID)
+      +'&action=upload'
+      +'&ts='+(new Date().getTime())
+      +'&lang='+ng_URLEncode(ngApp.Lang)
+    );
+  }
+  return true;
+}
+
+function ngfup_ListOnUpdated(l){
+  if(l.Owner.DragAndDropPanel && l.Owner.DragAndDropPanel.SetBounds(l.Bounds)){
+    l.Owner.DragAndDropPanel.Update();
+  }
+}
+
+function ngfup_ListOnAdd(l){
+  if(l.Owner.DragAndDropPanel){
+    l.Owner.DragAndDropPanel.SetVisible(false);
+  }
+  return true;
+}
+
+function ngfup_ListOnRemove(l){
+  if((l.Items.length==1)&&(l.Owner.DragAndDropPanel)){
+    l.Owner.DragAndDropPanel.SetVisible(true);
+  }
+  return true;
+}
+
+function ngfup_ListOnCheckChanged(o){
+  if(o.Owner.BtnRemoveCheckedFiles){
+    o.Owner.BtnRemoveCheckedFiles.SetEnabled(this.HasChecked());
+  }
+}
+function ngfup_ListOnClickItem(o){
+  if((o) && (o.listPart==0)){
+    o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
+  }
+}
+
+function ngfup_OnFilesDragOver(c){
+  var cElm = c.Owner.Owner.Elm();
+  if(!cElm){return;}
+
+  var cn = cElm.className;
+  if(cn.indexOf('_Drag')<0){cElm.className = cn+'_Drag';}
+}
+
+function ngfup_OnFilesDragLeave(c){
+  var cElm = c.Owner.Owner.Elm();
+  if(!cElm){return;}
+
+  var cn = cElm.className;
+  var idx = cn.indexOf('_Drag');
+  if(idx >= 0){
+    cElm.className = cn.substring(0,idx)+cn.substring(idx+5);
+  }
+}
+
+function ngfup_OnButtonsUpdated(c,o){
+  if(c.Owner.ListFiles){
+    var h = ng_OuterHeight(o);
+    var bounds = c.ParentControl.ButtonsAlign == 'top' ? {T:h} : {B:h};
+    if(c.Owner.ListFiles.SetBounds(bounds)){
+      c.Owner.ListFiles.Update();
+    }
+  }
+}
+
+function ngfup_action(id, action, data){
+  if((typeof(id)==='undefined') || (typeof(action)==='undefined')){return false;}
+  data = ngVal(data, null);
+
+  var c = ngGetControlById(id);
+  if((c) && ng_inArray('ngFileUploader',c.CtrlInheritedFrom)){
+    if(c[action]){c[action](data);}
+    return true;
+  }
+  return false;
+};
+
+function ngfup_Sendfiles(c){
+  if(!c.Enabled){return false;}
+
+  var Form = c.GetForm();
+  if(!Form){return false;}
+
+  if(!!window.FormData) {
+    var formData = new FormData(Form);
+
+    var rpc = c.GetRPC();
+    if(rpc){
+      rpc.clearParams();
+      rpc.SetParam('id',c.ID);
+      rpc.SetParam('fuid',c.FileUploaderID);
+      rpc.SetParam('action','upload');
+      rpc.FileFormData = formData;
+
+      rpc.sendRequest(c.UploadURL);
+      return true;
+    }
+  }
+  c.ShowWaiting(true);
+  c.SetUploadProgress();
+  Form.submit();
+  return true;
+}
+
+function ngfup_GetRPC(){
+  if(!this.file_rpc){
+    var rpc = new ngRPC(this.ID+'RPC','',true);
+    rpc.Type = rpcHttpRequestPOST;
+    rpc.Owner = this;
+    rpc.OnReceivedData = ngfup_RPC_OnReceivedData;
+    rpc.OnHTTPRequestFailed = ngfup_RPC_OnHTTPRequestFailed;
+    rpc.OnHTTPRequest = ngfup_RPC_OnHTTPRequest;
+    this.file_rpc = rpc;
+  }
+  return this.file_rpc;
+}
+
+function ngfup_RPC_OnReceivedData(rpc, response, xmlhttp,reqinfo){
+  rpc.Owner.ShowWaiting(false); // hide waiting when request is finished
+  return true;
+}
+
+function ngfup_RPC_OnHTTPRequestFailed(rpc,xmlhttp,reqinfo){
+  if(reqinfo.UploadFile){
+    rpc.Owner.ServerData({Error: 'ngfup_Error_General'});
+  }
+}
+
+function ngfup_RPC_OnHTTPRequest(rpc,reqinfo){
+  if(rpc.Owner.file_rpc.Params['action'] === 'upload'){
+    rpc.Owner.ShowWaiting(true);
+
+    if("upload" in reqinfo.XMLHttp){
+      rpc.Owner.SetUploadProgress(0);
+
+      reqinfo.XMLHttp.onload = function(){
+        rpc.Owner.SetUploadProgress(100);
+      };
+
+      reqinfo.XMLHttp.upload.onprogress = function(event){
+        if(event.lengthComputable){
+          rpc.Owner.SetUploadProgress(event.loaded / event.total * 100 | 0);
+        }
+      };
+    }
+    else{
+      rpc.Owner.SetUploadProgress();
+    }
+
+    if(typeof rpc.FileFormData !== 'undefined'){
+      delete reqinfo.ReqHeaders["Content-type"];
+      delete reqinfo.ReqHeaders["Content-length"];
+      reqinfo.PostParams = rpc.FileFormData;
+    }
+    else{
+      var boundary = Math.random().toString().substr(2);
+      reqinfo.ReqHeaders["Content-type"]="multipart/form-data; charset=utf-8; boundary=" + boundary;
+
+      var multipart = "--" + boundary
+        + "\r\nContent-Disposition: form-data; name=\"ngfup_File[]\"; filename=\""+rpc.FileName+"\""
+        + "\r\nContent-type: " + ngVal(rpc.FileContentType,'text/plain; charset=utf-8')
+        + "\r\n\r\n" + rpc.FileContent + "\r\n"
+        + "--"+boundary+"--\r\n";
+
+      reqinfo.ReqHeaders["Content-length"] = multipart.length;
+      reqinfo.PostParams = multipart;
+    }
+    reqinfo.UploadFile = true;
+
+    // Move params to URL (were in PostParams which was replaced)
+    var params = rpc.GetURLParams();
+    if(params != ''){reqinfo.URL = ng_AddURLParam(reqinfo.URL, params);}
+  }
+  return true;
+}
+
+function ngfup_Extension(fileName){
+  var i = fileName.lastIndexOf('.');
+  return (i < 0) ? '' : fileName.substr(i+1);
+}
+
+function ngfup_Checkfiles(files) {
+  var maxfiles = ngVal(this.MaxFilesCount,-1);
+  var curfiles = (this.Controls.ListFiles) ? this.Controls.ListFiles.Items.length : 0;
+  if((maxfiles >= 0) && (curfiles+files.length > maxfiles)){
+    this.ShowError(ngTxt('ngfup_Error_MaxFiles'),null);
+    return false;
+  }
+
+  var maxbatchsize = parseInt(ngVal(this.MaxBatchSize,0));
+  var maxsize = parseInt(ngVal(this.MaxFileSize,0));
+  var batchsize = 0;
+  var checkext = (!ng_EmptyVar(this.AllowedExtensions));
+  if((checkext) || (maxsize>0)){
+    var errmsg = '';
+    var s,e,found;
+    for(var i = 0; i < files.length; i++){
+      if(checkext){
+        e = ngfup_Extension(files[i].name).toLowerCase();
+        found = false;
+        if(e != ''){
+          for(var j in this.AllowedExtensions){
+            if(this.AllowedExtensions[j].toLowerCase() === e){
+              found = true;
+              break;
+            }
+          }
+        }
+        if(!found){
+          if(errmsg != ''){errmsg += "\n";}
+          errmsg += files[i].name+': '+ngTxt('ngfup_Error_Extension');
+          continue;
+        }
+      }
+      if(typeof files[i].size !== 'undefined'){
+        s = parseInt(files[i].size,10);
+        if(batchsize >= 0){batchsize += s;}
+        if((maxsize > 0) && (s > maxsize)){
+          if(errmsg != ''){errmsg += "\n";}
+          errmsg += files[i].name+': '+ngTxt('ngfup_Error_Size');
+          continue;
+        }
+      }
+      else batchsize = -1;
+    }
+    if(errmsg != ''){
+      this.ShowError(errmsg,null);
+      return false;
+    }
+    if((batchsize > 0) && (maxbatchsize > 0) && (batchsize > maxbatchsize)){
+      this.ShowError(ngTxt('ngfup_Error_MaxBatch'),null);
+      return false;
+    }
+  }
+  return true;
+}
+
+function ngfup_RemoveCheckedFiles(){
+  var Checked = this.Controls.ListFiles.GetChecked();
+  if(Checked.length == 0){return false;}
+
+  this.Controls.ListFiles.BeginUpdate();
+  try{
+    for(var i = 0; i < Checked.length; i++){
+      if(this.OnFileDeleting && (!ngVal(this.OnFileDeleting(this, Checked[i], i), false))){
+        continue;
+      }
+      this.Controls.ListFiles.Remove(Checked[i]);
+      if(this.OnFileDeleted){this.OnFileDeleted(this, Checked[i], i);}
+    }
+  }
+  finally{
+    this.Controls.ListFiles.EndUpdate();
+  }
+  return true;
+}
+
+function ngfup_ClearFiles(){
+  var list = this.Controls.ListFiles;
+
+  list.BeginUpdate();
+  try{
+    for(var i = list.Items.length-1; i >= 0; i--){
+      if(this.OnFileDeleting && (!ngVal(this.OnFileDeleting(this, list.Items[i], i), false))){
+        continue;
+      }
+      this.Controls.ListFiles.Remove(list.Items[i]);
+      if(this.OnFileDeleted){this.OnFileDeleted(this, list.Items[i], i);}
+    }
+  }
+  finally{
+    list.EndUpdate();
+  }
+}
+
+function ngfup_ChangeFile(){
+  var Form = this.GetForm();
+  if(!Form){return false;}
+
+  var Value = '';
+  var input=Form['ngfup_File[]'];
+  var Files = [];
+  if('files' in input){
+    if(!input.files.length){return false;}
+    if(!this.CheckFiles(input.files)){return false;}
+
+    for(var i = 0;i < input.files.length; i++){
+      if(this.OnFileAdding && (!ngVal(this.OnFileAdding(this, input.files[i].name), false))){return false;}
+
+      if(Value != ''){Value += ', ';}
+      Value += input.files[i].name;
+      Files.push(input.files[i].name);
+    }
+  }
+  else{
+    Value = input.value;
+    Value = Value.substring(Value.lastIndexOf('\\')+1, Value.length);  //Remove "fake" path (C:\fakepath\)
+    if(Value != ''){Files.push(Value);}
+    if(this.OnFileAdding && (!ngVal(this.OnFileAdding(this, input.value), false))){return false;}
+  }
+
+  if(this.OnFileChanging && (!ngVal(this.OnFileChanging(this, Value, Files), false))){return false;}
+
+  if(this.OnFileChanged){this.OnFileChanged(this, Value, Files);}
+  ngfup_Sendfiles(this);
+
+  return true;
+};
+
+function ngfup_RegisterDropTarget(t,ondragover,ondragleave,ondrop){
+  if(this.InDesignMode){return false;}
+
+  var o = null;
+  if(typeof t === 'string'){
+    o = document.getElementByID(t);
+  }
+  else{
+    if(typeof t.Elm === 'function'){o = t.Elm(); t = t.ID;}
+    else if(typeof t.id !== 'undefined'){o = t; t = t.id;}
+  }
+
+  if(o && (t != '') && (('draggable' in o) && (!!window.FormData))){
+    if(!this._drop_targets){this._drop_targets = {};}
+    this._drop_targets[t] = {
+      elm: o,
+      ondrop: ondrop,
+      ondragover: ondragover,
+      ondragleave: ondragleave
+    };
+
+    var c = this;
+    ngfup_AddDropListener(o, "drop", function(e){ngfup_FileDrop(c,e);});
+    ngfup_AddDropListener(o, "dragover", function(e){ngfup_FileDragOver(c,e);});
+    ngfup_AddDropListener(o, "dragleave", function(e){ngfup_FileDragLeave(c,e);});
+    return true;
+  }
+  return false;
+};
+
+function ngfup_UnregisterDropTarget(t){
+  if(this.InDesignMode){return;}
+
+  var o = null;
+  if(typeof t==='string'){
+    o = document.getElementByID(t);
+  }
+  else{
+    if(typeof t.Elm === 'function'){o = t.Elm(); t = t.ID;}
+    else if(typeof t.id !== 'undefined'){o = t; t = t.id;}
+  }
+  if(!o && this._drop_targets && this._drop_targets[t]){
+    o = this._drop_targets[t].elm;
+  }
+
+  if(o){
+    ngfup_RemoveDropListener(o, "drop");
+    ngfup_RemoveDropListener(o, "dragover");
+    ngfup_RemoveDropListener(o, "dragleave");
+  }
+
+  delete this._drop_targets[t];
+}
+
+function ngfup_IsDropTarget(t){
+  if(typeof t !== 'string'){
+    if(typeof t.Elm === 'function'){t = t.ID;}
+    else if(typeof t.id !== 'undefined'){t = t.id;}
+  }
+  return !!this._drop_targets[t];
+}
+
+function ngfup_FindTarget(c,e){
+  var t = e.target || e.srcElement || e.originalTarget;
+  while(t && (t != document)){
+    if((t.id != '') && (typeof c._drop_targets[t.id]!=='undefined')){
+      return c._drop_targets[t.id];
+      break;
+    }
+    t = t.parentNode;
+  }
+  return null;
+}
+
+function ngfup_SetUploadProgress(p){
+  if(this.OnUploadProgress){this.OnUploadProgress(this,p);}
+}
+
+function ngfup_ShowError(errmsg, data){
+  if(errmsg != ''){
+    if(this.OnError){
+      return this.OnError(this, errmsg, data);
+    }
+    else{
+      alert(ng_htmlDecode(errmsg));
+      return true;
+    }
+  }
+  return false;
+}
+
+function ngfup_ShowWaiting(show){
+  show = ngVal(show,true);
+  if(show != this.Waiting){
+    this.Waiting = show;
+    if(show){
+      if(this.OnShowWaiting){this.OnShowWaiting(this);}
+    }
+    else{
+      if(this.OnHideWaiting){this.OnHideWaiting(this);}
+    }
+  }
+}
+
+function ngfup_DoDispose(){
+  var delid = [];
+  if(this._drop_targets){
+    for(var i in this._drop_targets){delid.push(i);}
+  }
+
+  for(var i = 0; i < delid.length; i++){
+    this.UnregisterDropTarget(delid[i]);
+  }
+  return true;
+}
+
+function ngfup_StopEvent(e){
+  if(!e){e = window.event;}
+  if(e.stopPropagation){e.stopPropagation();}
+  else{e.cancelBubble = true;}
+  if(e.preventDefault){e.preventDefault();}
+  else{e.returnValue = false;}
+}
+
+function ngfup_AddDropListener(o,e,f){
+  if(o.addEventListener){o.addEventListener(e,f,false);}
+  else if(o.attachEvent){o.attachEvent(e,f);}
+}
+function ngfup_RemoveDropListener(o,e){
+  if(o.removeEventListener){o.removeEventListener(e,o[e],false);}
+  else if(o.detachEvent){o.detachEvent(e,o[e]);}
+}
+
+function ngfup_FileDrop(c,e){
+  ngfup_StopEvent(e);
+  if(!c.Enabled){return false;}
+  var t = ngfup_FindTarget(c,e);
+  if(t){
+    if(t.ondrop){
+      if(!ngVal(t.ondrop(c,t.elm),false)){return false;}
+    }
+    else if(t.ondragleave){
+      t.ondragleave(c,t.elm);
+    }
+  }
+
+  var files = e.target.files || e.dataTransfer.files;
+
+  if(!c.CheckFiles(files)){return false;}
+
+  var formData = new FormData();
+  for(var i = 0; i < files.length; i++){
+    formData.append('ngfup_File[]', files[i]);
+  }
+
+  var rpc = c.GetRPC();
+  if(rpc){
+    rpc.clearParams();
+    rpc.SetParam('id',c.ID);
+    rpc.SetParam('fuid',c.FileUploaderID);
+    rpc.SetParam('action','upload');
+    rpc.FileFormData = formData;
+
+    rpc.sendRequest(c.UploadURL);
+  }
+  return false;
+}
+
+function ngfup_FileDragOver(c,e){
+  ngfup_StopEvent(e);
+  if(!c.Enabled){return false;}
+  var t = ngfup_FindTarget(c,e);
+  if(t && t.ondragover){t.ondragover(c,t.elm);}
+  return false;
+}
+
+function ngfup_FileDragLeave(c,e){
+  ngfup_StopEvent(e);
+  if(!c.Enabled){return false;}
+  var t = ngfup_FindTarget(c,e);
+  if(t && t.ondragleave){t.ondragleave(c,t.elm);}
+  return false;
+}
+
+function ngfup_AddDragBox(c,w){
+  var elm = c.Elm();
+  if(!elm){return;}
+  if(typeof w === 'undefined'){w = 1;}
+  if(typeof c.Bounds.L !== 'undefined'){
+    if(typeof c._dragboxMarginLeft === 'undefined'){c._dragboxMarginLeft = elm.style.marginLeft;}
+    elm.style.marginLeft = '-'+w+'px';
+  }
+  if(typeof c.Bounds.T !== 'undefined'){
+    if(typeof c._dragboxMarginTop === 'undefined'){c._dragboxMarginTop = elm.style.marginTop;}
+    elm.style.marginTop = '-'+w+'px';
+  }
+  if(typeof c.Bounds.R !== 'undefined'){
+    if(typeof c._dragboxMarginRight === 'undefined'){c._dragboxMarginRight = elm.style.marginRight;}
+    elm.style.marginRight = '-'+w+'px';
+  }
+  if(typeof c.Bounds.B !== 'undefined'){
+    if(typeof c._dragboxMarginBottom === 'undefined'){c._dragboxMarginBottom = elm.style.marginBottom;}
+    elm.style.marginBottom = '-'+w+'px';
+  }
+  if(typeof c._dragboxBorderWidth === 'undefined'){c._dragboxBorder = elm.style.borderWidth;}
+  elm.style.borderWidth = w+'px';
+}
+
+function ngfup_RemoveDragBox(c){
+  var elm = c.Elm();
+  if(!elm){return;}
+  if(typeof c._dragboxMarginLeft !== 'undefined'){elm.style.marginLeft = c._dragboxMarginLeft;}
+  if(typeof c._dragboxMarginTop !== 'undefined'){elm.style.marginTop = c._dragboxMarginTop;}
+  if(typeof c._dragboxMarginRight !== 'undefined'){elm.style.marginRight = c._dragboxMarginRight;}
+  if(typeof c._dragboxMarginBottom !== 'undefined'){elm.style.marginBottom = c._dragboxMarginBottom;}
+  elm.style.borderWidth = ngVal(c._dragboxBorderWidth,'');
+  delete c._dragboxMarginLeft;
+  delete c._dragboxMarginTop;
+  delete c._dragboxMarginRight;
+  delete c._dragboxMarginBottom;
+  delete c._dragboxBorder;
+}
+
+function ngfup_OnDataBindingInit(c, bindingKey, valueAccessor, allBindingsAccessor){
+  switch(bindingKey)
+  {
+    case 'Value':
+      c.AddEvent(function(c){
+        ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
+      }, 'OnFileAdded');
+
+      c.AddEvent(function(c){
+        ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
+      }, 'OnFileDeleted');
+    break;
+  }
+
+  return true;
+}
 
 if (typeof(ngUserControls)==='undefined') ngUserControls = {};
 ngUserControls['fileuploader'] = FileUploaderControl;

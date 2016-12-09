@@ -31,9 +31,13 @@ var FileUploaderControl_DesignInfo = {
           "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
           "FileUploaderID": ng_DIProperty('string', 'Main', { Level: 'basic' }),
           "ButtonsAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
-          "UseUploadWindow": ng_DIPropertyBool(false, { Level: 'basic' }),
           "ListFiles": ng_DIPropertyBool(true, { Level: 'basic' }),
-          "DropTarget": ng_DIPropertyBool(true, { Level: 'basic' }),
+          "DropTarget": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
+            Types: {
+              'undefined': {},
+              'boolean': {}
+            }
+          },
           "Data": {
             "MaxFilesCount": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
             "MaxFileSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
