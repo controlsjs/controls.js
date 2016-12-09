@@ -629,7 +629,7 @@ function ngfup_OnAddFileButtonUpdated(){
     var node = this.Elm();
     if(!node){return;}
 
-    var useLabel = !((ngFireFox && (ngFireFoxVersion<4)) || (ngOpera && (ngOperaVersion<12)));
+    var useLabel = !((ngFireFox && (ngFireFoxVersion<22)) || (ngOpera && (ngOperaVersion<12)));
     var id = 'FileUploader_'+uploader.ID;
 
     ng_AppendInnerHTML(node,
@@ -955,11 +955,16 @@ function ngfup_ChangeFile(){
   var input=Form['ngfup_File[]'];
   var Files = [];
   if('files' in input){
-    if(!input.files.length){return false;}
-    if(!this.CheckFiles(input.files)){return false;}
+    if(!input.files.length || !this.CheckFiles(input.files)){
+      Form.reset();
+      return false;
+    }
 
     for(var i = 0;i < input.files.length; i++){
-      if(this.OnFileAdding && (!ngVal(this.OnFileAdding(this, input.files[i].name), false))){return false;}
+      if(this.OnFileAdding && (!ngVal(this.OnFileAdding(this, input.files[i].name), false))){
+        Form.reset();
+        return false;
+      }
 
       if(Value != ''){Value += ', ';}
       Value += input.files[i].name;
@@ -970,10 +975,17 @@ function ngfup_ChangeFile(){
     Value = input.value;
     Value = Value.substring(Value.lastIndexOf('\\')+1, Value.length);  //Remove "fake" path (C:\fakepath\)
     if(Value != ''){Files.push(Value);}
-    if(this.OnFileAdding && (!ngVal(this.OnFileAdding(this, input.value), false))){return false;}
+
+    if(this.OnFileAdding && (!ngVal(this.OnFileAdding(this, input.value), false))){
+      Form.reset();
+      return false;
+    }
   }
 
-  if(this.OnFileChanging && (!ngVal(this.OnFileChanging(this, Value, Files), false))){return false;}
+  if(this.OnFileChanging && (!ngVal(this.OnFileChanging(this, Value, Files), false))){
+    Form.reset();
+    return false;
+  }
 
   if(this.OnFileChanged){this.OnFileChanged(this, Value, Files);}
   ngfup_Sendfiles(this);
