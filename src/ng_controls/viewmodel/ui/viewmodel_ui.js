@@ -1978,7 +1978,7 @@ ngUserControls['viewmodel_ui'] = {
               {
                 s=selected[i];
                 sval=vmGetFieldValueByID(s,keyfield);
-                if(sval != 'undefined') val.push(ng_CopyVar(sval));
+                if(typeof sval!=='undefined') val.push(ng_CopyVar(sval));
               }
               ngCtrlBindingWriteEx(val, valueAccessor, allBindingsAccessor);
             });
