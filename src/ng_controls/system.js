@@ -10,6 +10,32 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
+
+function ngSysContainer_Create(def, ref, parent)
+{
+  def.ParentReferences=ngVal(def.ParentReferences, false);
+  return new ngSysContainer;
+}
+
+/**
+ *  Class: ngSysContainer
+ *  This class implements non-visual container control.
+ *
+ *  Syntax:
+ *    new *ngSysContainer* ([string id])
+ *
+ *  Parameters:
+ *    id - control ID
+ *
+ *  See also:
+ *    Abstract class <ngSysControl>
+ */
+function ngSysContainer(id)
+{
+  ngSysControl(this, id, 'ngSysContainer');
+  ngControlCreated(this);
+}
+
 // --- ngTimer -----------------------------------------------------------------
 
 function ngtm_DoTimer() {
@@ -208,7 +234,7 @@ function ngstm_Stop() {
  *    id - control ID
  *
  *  See also:
- *    Abstract class <ngControl> and <ngTimer> class.
+ *    Abstract class <ngSysControl> and <ngTimer> class.
  */
 function ngSysTimer(id)
 {
@@ -248,7 +274,7 @@ function ngsrpc_sendRequest(url, nocache) {
  *    id - control ID
  *
  *  See also:
- *    Abstract class <ngControl> and <ngRPC> class.
+ *    Abstract class <ngSysControl> and <ngRPC> class.
  */
 function ngSysRPC(id)
 {
@@ -607,6 +633,7 @@ ngUserControls['system'] = {
   ControlsGroup: 'System',
 
   OnInit: function() {
+    ngRegisterControlType('ngSysContainer', ngSysContainer_Create);
     ngRegisterControlType('ngSysTimer', function() { return new ngSysTimer; });
     ngRegisterControlType('ngSysRPC', function() { return new ngSysRPC; });
     ngRegisterControlType('ngSysURLParams', function() { return new ngSysURLParams; });

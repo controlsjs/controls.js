@@ -17,6 +17,17 @@ ngUserControls['system_designinfo'] = {
     if(!ngDESIGNINFO) return;
 
     var undefined;
+    ngRegisterControlDesignInfo('ngSysContainer',function(d,c,ref) {
+      return {
+        ControlCategory: 'System',
+        BaseControl: 'ngSysContainer',
+        IsContainer: true,
+        Properties: {
+          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' })
+        }
+      };
+    });
+
     ngRegisterControlDesignInfo('ngSysTimer',function(d,c,ref) {
       return {
         ControlCategory: 'System',
