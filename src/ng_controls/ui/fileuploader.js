@@ -641,8 +641,6 @@ function ngfup_OnAddFileButtonUpdated(){
       + '" >'
         + '<input id="'+id+'_FO_I" name="ngfup_File[]" type="file" size="20" '
           + 'onchange="ngfup_action(\''+uploader.ID+'\', \'ChangeFile\');" '
-          + ((uploader.MaxFilesCount == 1) ?  '' : 'multiple="multiple" ')
-          + ((uploader.Accept != '') ? ' accept="'+uploader.Accept+'" ' : '')
           + 'style="'
             + 'position:absolute;left:-100%;top:0px;width:200%;height:100%;margin:0px;padding:0px;'
             + 'font-size:10000px;cursor:pointer !important;'
@@ -661,6 +659,24 @@ function ngfup_OnAddFileButtonUpdated(){
   }
   if(form){
     form.style.display = (this.Enabled) ? 'block' : 'none';
+    var input = form['ngfup_File[]'];
+    if(input){
+      var accept = '';
+      if(
+        (typeof uploader.Accept === 'string')
+        && (uploader.Accept !== '')
+      ){
+        accept = uploader.Accept;
+      }
+      else if(
+        ng_IsArrayVar(uploader.AllowedExtensions)
+        && (uploader.AllowedExtensions.length > 0)
+      ){
+        accept = '.'+uploader.AllowedExtensions.join(',.');
+      }
+      input.accept = accept;
+      input.multiple = !(uploader.MaxFilesCount == 1);
+    }
   }
   return true;
 }
