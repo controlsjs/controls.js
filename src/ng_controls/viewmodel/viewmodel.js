@@ -643,21 +643,25 @@ function ngfd_FormatString(v)
     var r=null;
     switch(this.DataType)
     {
-      case 'DATE':          
-        r=ng_FormatDate(ng_toDate(v),'',null);
+      case 'TIMESTAMP':
+      case 'DATETIME':
+        r=ng_FormatDateTime(ng_toDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
+        break;
+      case 'DATE':
+        r=ng_FormatDate(ng_toDate(v),ngVal(this.Attrs['DateFormat'],''),null);
         break;
       case 'TIME':          
-        r=ng_FormatTime(ng_toDate(v),'',null);
+        r=ng_FormatTime(ng_toDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
         break;
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
-        r=ng_FormatDateTime(ng_fromUTCDate(v),'',null);
+        r=ng_FormatDateTime(ng_fromUTCDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
         break;
       case 'UTCDATE':       
-        r=ng_FormatDate(ng_fromUTCDate(v),'',null);
+        r=ng_FormatDate(ng_fromUTCDate(v),ngVal(this.Attrs['DateFormat'],''),null);
         break;
       case 'UTCTIME':       
-        r=ng_FormatTime(ng_fromUTCDate(v),'',null);
+        r=ng_FormatTime(ng_fromUTCDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
         break;
       case 'ARRAY':
         if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
@@ -706,32 +710,48 @@ function ngfd_ParseString(v)
     {
       if((this.NullIfEmpty)&&(v.length==0)) v=null;
       else
-      {    
+      {
+        var r;
         switch(this.DataType)
         {
-          case 'DATE':          
-            var r=ng_ParseDate(v,'',null);
-            if(r!==null) v=r;
+          case 'TIMESTAMP':
+          case 'DATETIME':
+          case 'UTCTIMESTAMP':
+          case 'UTCDATETIME':
+            var fmt=this.Attrs['ParseDateTimeFormat'];
+            if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateTimeFormat'],'');
+            r=ng_ParseDateTime(v,fmt,null);
+            break;
+          case 'DATE':
+          case 'UTCDATE':
+            var fmt=this.Attrs['ParseDateFormat'];
+            if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateFormat'],'');
+            r=ng_ParseDate(v,fmt,null);
             break;
           case 'TIME':          
-            var r=ng_ParseTime(v,'',null);
+          case 'UTCTIME':
+            var fmt=this.Attrs['ParseTimeFormat'];
+            if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['TimeFormat'],'');
+            r=ng_ParseTime(v,fmt,null);
+            break;
+          case 'ARRAY':
+            r=v.split(','); 
+            break;
+        }
+
+        switch(this.DataType)
+        {
+          case 'TIMESTAMP':
+          case 'DATETIME':
+          case 'DATE':
+          case 'TIME':
             if(r!==null) v=r;
             break;
           case 'UTCTIMESTAMP':
           case 'UTCDATETIME':
-            var r=ng_ParseDateTime(v,'',null);          
+          case 'UTCDATE':
+          case 'UTCTIME':
             if(r!==null) v=ng_toUTCDate(r);
-            break;
-          case 'UTCDATE':       
-            var r=ng_ParseDate(v,'',null);
-            if(r!==null) v=ng_toUTCDate(r);
-            break;
-          case 'UTCTIME':       
-            var r=ng_ParseTime(v,'',null);
-            if(r!==null) v=ng_toUTCDate(r);
-            break;
-          case 'ARRAY':
-            r=v.split(','); 
             break;
         }
       }
