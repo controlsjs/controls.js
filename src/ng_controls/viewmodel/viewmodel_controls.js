@@ -1163,6 +1163,168 @@ ngUserControls['viewmodel_controls'] = {
       }
     );
 
+    ngRegisterBindingHandler('Controls',
+      function (c, valueAccessor, allBindingsAccessor) {
+        ngCtrlBindingRead('Controls',c,valueAccessor,function(val) {
+          var binding=allBindingsAccessor();
+          
+          var controlschecklo = ngVal(binding["ControlsCheckLengthOnly"],false);
+          var controlsdelayedupdate = ngVal(binding["ControlsDelayedUpdate"],10);
+          if(c._vmcontrolsupdtimer) clearTimeout(c._vmcontrolsupdtimer);
+          c._vmcontrolsupdtimer=null;
+
+          if(typeof val==='undefined') val=null;
+          if((val!==null)&&(!ng_typeArray(val))) val=[val];
+          if(!ng_typeArray(c.VMControls._oldval)) c.VMControls._oldval=[];
+          var oldval=c.VMControls._oldval;
+          var dfrom=0;
+          if(!controlschecklo) {
+            if((ng_typeArray(val))&&(ng_typeArray(oldval))) {
+              if(c.OnIsViewModelControlChanged)
+              {
+                for(var i=0;i<val.length && i<oldval.length;i++) {
+                  if(!ngVal(c.OnIsViewModelControlChanged(c,val[i],oldval[i]),true)) dfrom=i+1;
+                  else break;
+                }
+              }
+              else {
+                for(var i=0;i<val.length && i<oldval.length;i++) {
+                  if(ng_VarEquals(val[i],oldval[i])) dfrom=i+1;
+                  else break;
+                }
+              }
+            }
+            var l=oldval.length-dfrom;
+            if(l>0) oldval.splice(dfrom, l);
+          }
+          else {
+            if((val!==null)&&(ng_typeArray(c.VMControls))) {
+              dfrom=val.length < c.VMControls.length ? val.length : c.VMControls.length;
+            }
+          }
+          var changed=false;
+
+          var dispcnt=c.VMControls.length-dfrom;
+          if(dispcnt>0) {
+            if(controlsdelayedupdate>0) {
+              if(typeof c._vmdisposecontrols==='undefined') c._vmdisposecontrols=[];
+            }
+
+            function disposecntrl(vc) {
+              if(controlsdelayedupdate>0) {
+                c._vmdisposecontrols.push(vc);
+              }
+              else {
+                if(typeof vc.Dispose==='function') vc.Dispose();
+              }
+            }
+
+            var vc;
+            for(var i=c.VMControls.length-1;i>=dfrom;i--) {
+              vc=c.VMControls[i];
+              if(!vc) continue;
+              if(ng_typeArray(vc)) {
+                for(var j=0;j<vc.length;j++) {
+                  if(vc[j]) {
+                    changed=true;
+                    disposecntrl(vc[j]);
+                  }
+                }
+              }
+              else {
+                changed=true;
+                disposecntrl(vc);
+              }
+            }
+
+            c.VMControls.splice(dfrom, dispcnt);
+          }
+
+          if(val!==null) {
+            if(typeof c.DoCreateViewModelControl === 'function') {
+              var def;
+              var arrval=ko.ng_unwrapobservable(valueAccessor());
+
+              var ci={
+                Value: arrval,
+                UnwrappedValue: val,
+                UpdatingFrom: dfrom,
+                Count: val.length,
+                DisposedCount: dispcnt,
+                CreateCount: val.length-dfrom,
+                ValueAccessor: valueAccessor,
+                AllBindingsAccessor: allBindingsAccessor
+              };
+
+              function createcntrl(def) {
+                if(ng_typeObject(def)) {
+                  def.ParentReferences=false;
+                  var cdef={ Control: def };
+                  var ref=ngCreateControls(cdef,undefined,c);
+                  if(typeof ref.Control !== 'undefined') return ref.Control;
+                }
+                return null;
+              }
+
+              var cc;
+              for(var i=dfrom;i<val.length;i++) {
+                changed=true;
+                if(!controlschecklo) oldval[i]=ng_CopyVar(val[i]);
+                c.VMControls[i]=null;
+                def=c.DoCreateViewModelControl(i, val[i], arrval[i], ci);
+                if(ng_typeArray(def)) {
+                  cc=[];
+                  for(var j=0;j<def.length;j++)
+                    cc.push(createcntrl(def[j]));
+                }
+                else cc=createcntrl(def);
+                if(cc) c.VMControls[i]=cc;
+              }
+            }
+            else {
+              ngDEBUGWARN('Using binding "Controls" but method DoCreateViewModelControl() is missing!',c);
+            }
+          }
+          if(changed) {
+            if(controlsdelayedupdate>0) {
+              c._vmcontrolsupdtimer=setTimeout(function() {
+                if(c._vmcontrolsupdtimer) clearTimeout(c._vmcontrolsupdtimer);
+                c._vmcontrolsupdtimer=null;
+                if(ng_typeArray(c._vmdisposecontrols)) {
+                  for(var i=0;i<c._vmdisposecontrols.length;i++) {
+                    if(typeof c._vmdisposecontrols[i].Dispose==='function') c._vmdisposecontrols[i].Dispose();
+                  }
+                  c._vmdisposecontrols=[];
+                }
+                if(c.Update) c.Update();
+              },controlsdelayedupdate);
+            }
+            else {
+              if(c.Update) c.Update();
+            }
+          }
+        });
+
+      },
+      function (c, valueAccessor, allBindingsAccessor,viewModel) {
+        if(typeof c.VMControls === 'undefined') {
+          c.VMControls=[];
+          c.VMControls._oldval=[];
+        }
+        c.AddEvent(function() {
+          if(c._vmcontrolsupdtimer) clearTimeout(c._vmcontrolsupdtimer);
+          c._vmcontrolsupdtimer=null;
+          if(ng_typeArray(c._vmdisposecontrols)) {
+            for(var i=0;i<c._vmdisposecontrols.length;i++) {
+              if(typeof c._vmdisposecontrols[i].Dispose==='function') c._vmdisposecontrols[i].Dispose();
+            }
+          }
+          delete c._vmdisposecontrols;
+          return true;
+        },'DoDispose');
+      }
+    );
+
     ngRegisterBindingHandler('Link',null,null);
   }
 };

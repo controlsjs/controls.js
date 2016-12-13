@@ -22,7 +22,8 @@ var ViewModel_Controls_DesignInfo = (function()
         }
       },
       "Data": { DefaultType: 'databind_string' },
-      "Link": { DefaultType: 'databind_string', Level: 'basic' }
+      "Link": { DefaultType: 'databind_string', Level: 'basic' },
+      "Controls": { DefaultType: 'databind_string', Level: (di.IsContainer ? 'basic' : 'optional') }
     };
 
     // dependent bindings
@@ -158,12 +159,14 @@ var ViewModel_Controls_DesignInfo = (function()
           "ViewModelData": { Level: 'hidden' }
         },
         "Methods": {
-          "SetViewModelData": ng_DIProperty('function', 'function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' })
+          "SetViewModelData": ng_DIProperty('function', 'function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' }),
+          "DoCreateViewModelControl": ng_DIProperty('function', 'function(idx, itval, itvm, ci) { return { Type: \'\' }; }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         },
         "Events": {
           "OnViewModelDataChanged": ng_DIPropertyEvent('function(c, oldval) { }', { Level: 'basic' }),
           "OnDataBindingInit": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
-          "OnDataBindingUpdate": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' })
+          "OnDataBindingUpdate": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
+          "OnIsViewModelControlChanged": ng_DIPropertyEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         }
       })
     };
