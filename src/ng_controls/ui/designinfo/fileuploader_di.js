@@ -32,22 +32,12 @@ var FileUploaderControl_DesignInfo = {
           "FileUploaderID": ng_DIProperty('string', 'Main', { Level: 'basic' }),
           "ButtonsAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
           "ListFiles": ng_DIPropertyBool(true, { Level: 'basic' }),
-          "DropTarget": { DefaultType: 'undefined', InitType: 'boolean', Level: 'basic',
-            Types: {
-              'undefined': {},
-              'boolean': {}
-            }
-          },
+          "AllowedExtensions":  ng_DIProperty(['undefined','boolean'],undefined,{ InitType: 'boolean', Level: 'basic' }),
           "Data": {
             "MaxFilesCount": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
             "MaxFileSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
             "MaxBatchSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "AllowedExtensions": { DefaultType: 'undefined', InitType: 'array_strings', Level: 'basic',
-              Types: {
-                'undefined': {},
-                'array_strings': {}
-              }
-            },
+            "AllowedExtensions":  ng_DIProperty(['undefined','array_strings'],undefined,{ InitType: 'array_strings', Level: 'basic' }),
             "Accept": { DefaultType: 'string', Level: 'basic' },
             "UploadURL": { DefaultType: 'url', Level: 'basic' }
           },
