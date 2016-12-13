@@ -5686,7 +5686,7 @@ function ngtb_RegisterControl(c)
   c.tb_fncregistered=true;
 }
 
-function ngtb_UnreegisterControl(c)
+function ngtb_UnregisterControl(c)
 {
   if((typeof c!=='object')||(!c)) return;
 
