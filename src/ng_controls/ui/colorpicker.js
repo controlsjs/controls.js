@@ -19,47 +19,12 @@ ngUserControls['ngColorControls'] = {
   ControlsGroup: 'Core',
 
   OnInit: function(){
-    ngRegisterControlType(
-      'ngColorPicker',
-      function(def,ref,parent){
-        return ngColorPicker(def,ref,parent);
-      }
-    );
-
-    ngRegisterControlType(
-      'ngColorPickerBox',
-      function(def,ref,parent){
-        return ngColorPickerBox(def,ref,parent);
-      }
-    );
-
-    ngRegisterControlType(
-      'ngColorButton',
-      function(def,ref,parent){
-        return ngColorButton(def,ref,parent);
-      }
-    );
-
-    ngRegisterControlType(
-      'ngColorPickerDropDown',
-      function(def,ref,parent){
-        return ngColorPickerDropDown(def,ref,parent);
-      }
-    );
-
-    ngRegisterControlType(
-      'ngColorPickerHint',
-      function(def,ref,parent){
-        return ngColorPickerHint(def,ref,parent);
-      }
-    );
-
-    ngRegisterControlType(
-      'ngColorPickerButton',
-      function(def,ref,parent){
-        return ngColorPickerButton(def,ref,parent);
-      }
-    );
+    ngRegisterControlType('ngColorPicker',ngColorPicker);
+    ngRegisterControlType('ngColorPickerBox',ngColorPickerBox);
+    ngRegisterControlType('ngColorButton',ngColorButton);
+    ngRegisterControlType('ngColorPickerDropDown',ngColorPickerDropDown);
+    ngRegisterControlType('ngColorPickerHint',ngColorPickerHint);
+    ngRegisterControlType('ngColorPickerButton',ngColorPickerButton);
   }
 };
 
@@ -263,7 +228,7 @@ function ngColorPicker(def,ref,parent)
    *  Variable: Color
    *  -
    *  Type: string/object
-   *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#ff000000'}
+   *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'}
    */
 
   ng_MergeDef(def,{
@@ -483,7 +448,7 @@ function ngColorPicker(def,ref,parent)
     }
   });
 
-  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#000000ff'});
+  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'});
 
   var c = ngCreateControlAsType(
     def,
@@ -510,7 +475,7 @@ function ngColorPicker(def,ref,parent)
    *    value - null if do not set value
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('ShowHSV',ngcopch_ShowHSV);
 
@@ -527,7 +492,7 @@ function ngColorPicker(def,ref,parent)
    *    blue - null if do not set blue
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('ShowRGB',ngcopch_ShowRGB);
 
@@ -542,7 +507,7 @@ function ngColorPicker(def,ref,parent)
    *    hexColor -
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('ShowHEX',ngcopch_ShowHEX);
 
@@ -559,7 +524,7 @@ function ngColorPicker(def,ref,parent)
    *    value - null if do not set value
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('SetColorHSV',ngcopch_SetHSVColor);
 
@@ -576,7 +541,7 @@ function ngColorPicker(def,ref,parent)
    *    blue - null if do not set blue
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('SetColorRGB',ngcopch_SetRGBColor);
 
@@ -591,7 +556,7 @@ function ngColorPicker(def,ref,parent)
    *    hexColor -
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('SetColorHEX',ngcopch_SetHEXColor);
 
@@ -605,7 +570,7 @@ function ngColorPicker(def,ref,parent)
    *  Parameters:
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('GetColor',ngcop_GetColor);
 
@@ -621,7 +586,7 @@ function ngColorPicker(def,ref,parent)
    *    boolean *OnColorChanging* (object targetColor)
    *
    *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    *
    *  Returns:
    *    - if change
@@ -637,7 +602,7 @@ function ngColorPicker(def,ref,parent)
    *    void *OnColorChanged* (object color)
    *
    *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    *
    *  Returns:
    *    -
@@ -1079,7 +1044,7 @@ function ngcopch_GetHex()
  */
 function ngcopch_GetAHex()
 {
-  return ng_toString(this.Owner.Owner.GetColor().AHEX,'');
+  return ng_toString(this.Owner.Owner.GetColor().HEXA,'');
 }
 
 /**
@@ -1679,7 +1644,7 @@ function ngcopch_ValidateHexEditValue(edit)
 
       if(
         ((maxLng === 7) && (text === color.HEX.toUpperCase()))
-        || (text === color.AHEX.toUpperCase())
+        || (text === color.HEXA.toUpperCase())
       ){
         ngcopch_ChangeSelectedColor(picker,color);
 
@@ -2931,8 +2896,8 @@ function ngcop_SetDefColor(def,defColor)
       }
     }
 
-    if((typeof c.AHEX === 'string') && (c.AHEX.length === 9)){
-      var col = ngcop_HexToColor(c.AHEX);
+    if((typeof c.HEXA === 'string') && (c.HEXA.length === 9)){
+      var col = ngcop_HexToColor(c.HEXA);
       if(col){
         if(def.Data && (def.Data.AllowAplha === false)){
           col = ngcop_RemoveColorTransparency(col);
@@ -3015,7 +2980,7 @@ function ngcop_RecalculateHEX(color)
     color.HEX = ColorsConverter.RGBToHex(
         color.R,color.G,color.B
     );
-    color.AHEX = ColorsConverter.RGBAToHex(
+    color.HEXA = ColorsConverter.RGBAToHex(
         color.R,color.G,color.B,color.A
     );
 
@@ -3121,7 +3086,7 @@ function ngcop_RemoveColorTransparency(color)
 
   color.A = 1;
   if(typeof color.HEX === 'string'){
-    color.AHEX = '#ff'+color.HEX.substring(1,7);
+    color.HEXA = '#'+color.HEX.substring(1,7)+'ff';
   }
   return color;
 }
@@ -3147,13 +3112,13 @@ function ngcop_SetColor(target,color)
   if(typeof color.B !== 'number'){return pColor;}
   if(typeof color.A !== 'number'){return pColor;}
   if(typeof color.HEX !== 'string'){return pColor;}
-  if(typeof color.AHEX !== 'string'){return pColor;}
+  if(typeof color.HEXA !== 'string'){return pColor;}
 
   target.Color = {
     H: color.H, S: color.S, V: color.V,
     R: color.R, G: color.G, B: color.B,
     A: color.A,
-    HEX: color.HEX, AHEX: color.AHEX
+    HEX: color.HEX, HEXA: color.HEXA
   };
   if(typeof target.ShowColor === 'function'){
     target.ShowColor();
@@ -3572,122 +3537,118 @@ function ngColorButton(def,ref,parent)
       button.ShowColor();
       return true;
     },
+    /**
+     *  Group: Methods
+     */
+    Methods: {
+      /**
+       *  Function: ShowColor
+       *  -
+       *
+       *  Syntax:
+       *    void *ShowColor* ()
+       *
+       */
+      ShowColor: ngcob_ShowButtonColor,
+      /**
+       *  Function: SetColorHSV
+       *  -
+       *
+       *  Syntax:
+       *    object *SetColorHSV* (float/null hue, float/null saturation, float/null value)
+       *
+       *  Parameters:
+       *    hue - null if do not set hue
+       *    saturation - null if do not set saturation
+       *    value - null if do not set value
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorHSV: ngcob_SetHSV,
+      /**
+       *  Function: SetColorRGB
+       *  -
+       *
+       *  Syntax:
+       *    object *SetColorRGB* (integer/null red, integer/null green, integer/null blue)
+       *
+       *  Parameters:
+       *    red - null if do not set red
+       *    green - null if do not set green
+       *    blue - null if do not set blue
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorRGB: ngcob_SetRGB,
+      /**
+       *  Function: SetColorHEX
+       *  -
+       *
+       *  Syntax:
+       *    object *SetColorHEX* (string hexColor)
+       *
+       *  Parameters:
+       *    hexColor -
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorHEX: ngcob_SetHEX,
+      /**
+       *  Function: GetColor
+       *  -
+       *
+       *  Syntax:
+       *    object *GetColor* ()
+       *
+       *  Parameters:
+       *    -
+       *
+       *  Returns:
+       *    {R:0-255, G:0-255, B:0-255, A:0-1, [...]}
+       */
+      GetColor: ngcop_GetColor
+    },
+    /**
+     *  Group: Events
+     */
     Events: {
-      OnUpdated: ngcob_AddHTMLContent
+      OnUpdated: ngcob_AddHTMLContent,
+      /**
+       *  Function: OnColorChanging
+       *  -
+       *
+       *  Syntax:
+       *    boolean *OnColorChanging* (object targetColor)
+       *
+       *  Parameters:
+       *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       *
+       *  Returns:
+       *    - if change
+       */
+      OnColorChanging: null,
+      /**
+       *  Function: OnColorChanged
+       *  -
+       *
+       *  Syntax:
+       *    void *OnColorChanged* (object color)
+       *
+       *  Parameters:
+       *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       *
+       *  Returns:
+       *    -
+       */
+      OnColorChanged: null
     }
   });
 
   ngcop_SetDefColor(def,null);
-
-  var c = ngCreateControlAsType(def,'ngButton',ref,parent);
-  if(!c){return c;}
-
-  /**
-   *  Group: Methods
-   */
-
-  c.AddEvent('ShowColor',ngcob_ShowButtonColor);
-
-  /**
-   *  Function: SetColorHSV
-   *  -
-   *
-   *  Syntax:
-   *    object *SetColorHSV* (float/null hue, float/null saturation, float/null value)
-   *
-   *  Parameters:
-   *    hue - null if do not set hue
-   *    saturation - null if do not set saturation
-   *    value - null if do not set value
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
-   */
-  c.AddEvent('SetColorHSV',ngcob_SetHSV);
-
-  /**
-   *  Function: SetColorRGB
-   *  -
-   *
-   *  Syntax:
-   *    object *SetColorRGB* (integer/null red, integer/null green, integer/null blue)
-   *
-   *  Parameters:
-   *    red - null if do not set red
-   *    green - null if do not set green
-   *    blue - null if do not set blue
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
-   */
-  c.AddEvent('SetColorRGB',ngcob_SetRGB);
-
-  /**
-   *  Function: SetColorHEX
-   *  -
-   *
-   *  Syntax:
-   *    object *SetColorHEX* (string hexColor)
-   *
-   *  Parameters:
-   *    hexColor -
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
-   */
-  c.AddEvent('SetColorHEX',ngcob_SetHEX);
-
-  /**
-   *  Function: GetColor
-   *  -
-   *
-   *  Syntax:
-   *    object *GetColor* ()
-   *
-   *  Parameters:
-   *    -
-   *
-   *  Returns:
-   *    {R:0-255, G:0-255, B:0-255, A:0-1, [...]}
-   */
-  c.AddEvent('GetColor',ngcop_GetColor);
-
-  /**
-   *  Group: Events
-   */
-
-  /**
-   *  Function: OnColorChanging
-   *  -
-   *
-   *  Syntax:
-   *    boolean *OnColorChanging* (object targetColor)
-   *
-   *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
-   *
-   *  Returns:
-   *    - if change
-
-   */
-  c.OnColorChanging = null;
-
-  /**
-   *  Function: OnColorChanged
-   *  -
-   *
-   *  Syntax:
-   *    void *OnColorChanged* (object color)
-   *
-   *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
-   *
-   *  Returns:
-   *    -
-   */
-  c.OnColorChanged = null;
-
-  return c;
+  return ngCreateControlAsType(def,'ngButton',ref,parent);
 }
 
 /**
@@ -3870,7 +3831,7 @@ function ngColorPickerDropDown(def,ref,parent)
    *  Variable: Color
    *  -
    *  Type: string/object
-   *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#ff000000'}
+   *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'}
    */
 
   def.Data = ngNullVal(def.Data, {});
@@ -3929,7 +3890,7 @@ function ngColorPickerDropDown(def,ref,parent)
     }
   });
 
-  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',AHEX:'#000000ff'});
+  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'});
 
   var c = ngCreateControlAsType(def,
     (typeof def.CreateFrom === 'string') ? def.CreateFrom : 'ngDropDown',
@@ -3961,7 +3922,7 @@ function ngColorPickerDropDown(def,ref,parent)
    *    value - null if do not set value
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('SetColorHSV',ngcopdd_SetHSV);
 
@@ -3978,7 +3939,7 @@ function ngColorPickerDropDown(def,ref,parent)
    *    blue - null if do not set blue
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('SetColorRGB',ngcopdd_SetRGB);
 
@@ -3993,7 +3954,7 @@ function ngColorPickerDropDown(def,ref,parent)
    *    hexColor -
    *
    *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    */
   c.AddEvent('SetColorHEX',ngcopdd_SetHEX);
 
@@ -4024,7 +3985,7 @@ function ngColorPickerDropDown(def,ref,parent)
    *    boolean *OnColorChanging* (object targetColor)
    *
    *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    *
    *  Returns:
    *    - if change
@@ -4040,7 +4001,7 @@ function ngColorPickerDropDown(def,ref,parent)
    *    void *OnColorChanged* (object color)
    *
    *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, AHEX:#????????}
+   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
    *
    *  Returns:
    *    -
@@ -4202,7 +4163,7 @@ function ngcopdd_ShowDropDownColor()
     this.GetColor()
   );
 
-  var text = (this.AllowAlpha) ? color.AHEX : color.HEX;
+  var text = (this.AllowAlpha) ? color.HEXA : color.HEX;
   this.SetText(text.toUpperCase());
 
   if(this.DropDownControl.Visible){
@@ -4237,13 +4198,13 @@ function ngcopdd_ValidateHex(edit)
 
       if(typeof rgb.A === 'undefined'){rgb.A = 1;}
 
-      color = ngcop_RecalculateHSV(rgb);
+      var color = ngcop_RecalculateHSV(rgb);
       color = ngcop_RecalculateHEX(color);
 
       text = text.toUpperCase();
 
       if(
-        (edit.AllowAlpha && (text === color.AHEX.toUpperCase()))
+        (edit.AllowAlpha && (text === color.HEXA.toUpperCase()))
         || (!edit.AllowAlpha && (text === color.HEX.toUpperCase()))
       ){
         edit.SetInvalid(false);
