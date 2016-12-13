@@ -23,4 +23,5 @@ ngc_Lang['cs']['ngfup_Error_Size']      = 'Byla překročena maximální velikos
 ngc_Lang['cs']['ngfup_Error_Extension'] = 'Tento typ souboru není povolen.';
 ngc_Lang['cs']['ngfup_Error_MaxFiles']  = 'Byl překročen maximální počet souborů.';
 ngc_Lang['cs']['ngfup_Error_MaxBatch']  = 'Byla překročena maximální velikost dávky.';
-ngc_Lang['cs']['ngfup_DragAndDropAllowed'] = 'Sem přetáhněte soubory.';
+ngc_Lang['cs']['ngfup_DragAndDropOne'] = 'Sem přetáhněte soubor.';
+ngc_Lang['cs']['ngfup_DragAndDropMore'] = 'Sem přetáhněte soubory.';

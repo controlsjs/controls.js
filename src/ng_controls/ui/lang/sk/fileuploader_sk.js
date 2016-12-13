@@ -23,4 +23,5 @@ ngc_Lang['sk']['ngfup_Error_Size']      = 'Bola prekročená maximálna veľkos�
 ngc_Lang['sk']['ngfup_Error_Extension'] = 'Tento typ súboru nie je povolený.';
 ngc_Lang['sk']['ngfup_Error_MaxFiles']  = 'Bol prekročený maximálny počet súborov.';
 ngc_Lang['sk']['ngfup_Error_MaxBatch']  = 'Veľkosť dávky bola prekročená.';
-ngc_Lang['sk']['ngfup_DragAndDropAllowed'] = 'Pretiahnite súbory sem.';
+ngc_Lang['sk']['ngfup_DragAndDropOne'] = 'Pretiahnite súbor sem.';
+ngc_Lang['sk']['ngfup_DragAndDropMore'] = 'Pretiahnite súbory sem.';

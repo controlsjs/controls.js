@@ -70,8 +70,10 @@ var FileUploaderControl = {
                 Type: 'ngText',
                 L: 0, R: 0, T: '50%',
                 Data: {
-                  TextAlign: 'center',
-                  ngText: 'ngfup_DragAndDropAllowed'
+                  TextAlign: 'center'
+                },
+                Events: {
+                  OnGetText: ngfup_OnGetDragAndDropText
                 }
               }
             },
@@ -261,7 +263,18 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-      c.CheckFiles = ngfup_Checkfiles;
+      c.CheckFiles = ngfup_CheckFiles;
+
+      /*  Function: CheckMaxFiles
+       *  ...
+       *
+       *  Syntax:
+       *    bool *CheckMaxFiles* ()
+       *
+       *  Returns:
+       *    -
+       */
+      c.CheckMaxFiles = ngfup_CheckMaxFiles;
 
       /*  Function: RemoveCheckedFiles
        *  ...
@@ -547,15 +560,14 @@ function ngfup_UploadFile(filename, content, contenttype){
 function ngfup_FileUploaded(c,data){
   if((typeof data !== 'object') || (data === null)){return null;}
 
-    var maxfiles = ngVal(c.MaxFilesCount,-1);
-    var errmsg = '';
+  var errmsg = '';
 
   if(data.Error){
     if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
     return errmsg+ngTxt(data.Error);
   }
 
-  if((maxfiles >= 0) && (c.Controls.ListFiles.Items.length >= maxfiles)){
+  if(!c.CheckMaxFiles()){
     if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
     return errmsg+ngTxt('ngfup_Error_MaxFiles');
   }
@@ -869,10 +881,8 @@ function ngfup_Extension(fileName){
   return (i < 0) ? '' : fileName.substr(i+1);
 }
 
-function ngfup_Checkfiles(files) {
-  var maxfiles = ngVal(this.MaxFilesCount,-1);
-  var curfiles = (this.Controls.ListFiles) ? this.Controls.ListFiles.Items.length : 0;
-  if((maxfiles >= 0) && (curfiles+files.length > maxfiles)){
+function ngfup_CheckFiles(files) {
+  if(!this.CheckMaxFiles(files.length)){
     this.ShowError(ngTxt('ngfup_Error_MaxFiles'),null);
     return false;
   }
@@ -923,6 +933,13 @@ function ngfup_Checkfiles(files) {
     }
   }
   return true;
+}
+
+function ngfup_CheckMaxFiles(correction){
+  correction = ngVal(correction,0);
+  var maxfiles = ngVal(this.MaxFilesCount,-1);
+  var curfiles = (this.Controls.ListFiles) ? this.Controls.ListFiles.Items.length : 0;
+  return !((maxfiles >= 0) && (curfiles+correction > maxfiles));
 }
 
 function ngfup_RemoveCheckedFiles(){
@@ -1198,6 +1215,13 @@ function ngfup_FileDragLeave(c,e){
   var t = ngfup_FindTarget(c,e);
   if(t && t.ondragleave){t.ondragleave(c,t.elm);}
   return false;
+}
+
+function ngfup_OnGetDragAndDropText(){
+  return ngTxt(
+    (this.ParentControl.ParentControl.MaxFilesCount == 1)
+      ? 'ngfup_DragAndDropOne' : 'ngfup_DragAndDropMore'
+  );
 }
 
 function ngfup_AddDragBox(c,w){

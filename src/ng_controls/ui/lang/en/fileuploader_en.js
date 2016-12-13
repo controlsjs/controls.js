@@ -23,4 +23,5 @@ ngc_Lang['en']['ngfup_Error_Size']      = 'File size has been exceeded.';
 ngc_Lang['en']['ngfup_Error_Extension'] = 'This file type is not allowed.';
 ngc_Lang['en']['ngfup_Error_MaxFiles']  = 'The maximum number of files has been exceeded.';
 ngc_Lang['en']['ngfup_Error_MaxBatch']  = 'Batch size has been exceeded.';
-ngc_Lang['en']['ngfup_DragAndDropAllowed'] = 'Drag and drop files here.';
+ngc_Lang['en']['ngfup_DragAndDropOne'] = 'Drag and drop file here.';
+ngc_Lang['en']['ngfup_DragAndDropMore'] = 'Drag and drop files here.';
