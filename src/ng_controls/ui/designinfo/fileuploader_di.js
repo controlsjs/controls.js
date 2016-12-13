@@ -65,8 +65,6 @@ var FileUploaderControl_DesignInfo = {
             "OnGetRequestParams": ng_DIPropertyEvent('function(params) {}', { Level: 'basic' })
           },
           "ModifyControls": {
-            "UploadIFrame": ng_DIPropertyControl('ngText', { Level: 'advanced' }, 'ngText'),
-            "UploadWindow": ng_DIPropertyControl('ngWindow', { Level: 'advanced' }, 'ngWindow'),
             "ListFiles": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList'),
             "DragAndDropPanel": { DefaultType: 'control', Level: 'basic',
               Types: {
