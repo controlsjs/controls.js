@@ -77,6 +77,19 @@ ngUserControls['ngColorControls_designinfo'] = {
     ngRegisterControlDesignInfo('ngColorButton',function(d,c,ref) {
       return {
         ControlCategory: 'Buttons',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 100 },
+              "Data": {
+                ObjectProperties: {
+                  "Text": undefined,
+                  "HTMLEncode": undefined
+                }
+              }
+            }
+          }
+        },
         Properties: ng_DIProperties({
           'Data': {
             'Color': ng_DIProperty(['null','color_channels'],null,{ InitType: 'color_channels', Level: 'basic' }),
