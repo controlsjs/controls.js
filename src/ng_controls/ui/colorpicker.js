@@ -296,7 +296,7 @@ function ngColorPicker(def,ref,parent)
           Hue: ngcopch_GetSliderLayout(),
           HueEdit: ngcopch_GetEditLayout(),
           HueLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_hue' }
           }
         }
@@ -307,7 +307,7 @@ function ngColorPicker(def,ref,parent)
           Saturation: ngcopch_GetSliderLayout(),
           SaturationEdit: ngcopch_GetEditLayout(),
           SaturationLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_saturation' }
           }
         }
@@ -318,7 +318,7 @@ function ngColorPicker(def,ref,parent)
           Value: ngcopch_GetSliderLayout(),
           ValueEdit: ngcopch_GetEditLayout(),
           ValueLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_value' }
           }
         }
@@ -329,7 +329,7 @@ function ngColorPicker(def,ref,parent)
           Red: ngcopch_GetSliderLayout(),
           RedEdit: ngcopch_GetEditLayout(),
           RedLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_red' }
           }
         }
@@ -340,7 +340,7 @@ function ngColorPicker(def,ref,parent)
           Green: ngcopch_GetSliderLayout(),
           GreenEdit: ngcopch_GetEditLayout(),
           GreenLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_green' }
           }
         }
@@ -351,7 +351,7 @@ function ngColorPicker(def,ref,parent)
           Blue: ngcopch_GetSliderLayout(),
           BlueEdit: ngcopch_GetEditLayout(),
           BlueLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_blue' }
           }
         }
@@ -362,7 +362,7 @@ function ngColorPicker(def,ref,parent)
           Alpha: ngcopch_GetSliderLayout(),
           AlphaEdit: ngcopch_GetEditLayout(),
           AlphaLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_alpha' }
           }
         }
@@ -404,7 +404,7 @@ function ngColorPicker(def,ref,parent)
             }
           },
           SatValLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_satval' }
           }
         }
@@ -418,19 +418,12 @@ function ngColorPicker(def,ref,parent)
             Events: {
               GetValue: ngcopch_GetHex,
               OnUpdate: ngcopch_ShowHexEditValue,
-              OnBlur: function(){
-                return ngcopch_ValidateHexEditValue(this);
-              },
-              OnKeyPress: function(event,node){
-                if(event.keyCode === 13){
-                  return ngcopch_ValidateHexEditValue(this);
-                }
-                return true;
-              }
+              OnBlur: ngcopch_OnHexEditBlur,
+              OnKeyPress: ngcopch_OnHexEditKeyPress
             }
           },
           HexLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_hex' }
           },
           AHexEdit: {
@@ -439,19 +432,12 @@ function ngColorPicker(def,ref,parent)
             Events: {
               GetValue: ngcopch_GetAHex,
               OnUpdate: ngcopch_ShowHexEditValue,
-              OnBlur: function(){
-                return ngcopch_ValidateHexEditValue(this);
-              },
-              OnKeyPress: function(event,node){
-                if(event.keyCode === 13){
-                  return ngcopch_ValidateHexEditValue(this);
-                }
-                return true;
-              }
+              OnBlur: ngcopch_OnHexEditBlur,
+              OnKeyPress: ngcopch_OnHexEditKeyPress
             }
           },
           AHexLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_alphahex' }
           }
         }
@@ -461,12 +447,12 @@ function ngColorPicker(def,ref,parent)
         Controls: {
           From: { Type: 'ngColorButton' },
           FromLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_from' }
           },
           To: { Type: 'ngColorButton' },
           ToLabel: {
-            Type: 'ngButton',
+            Type: 'ngText',
             Data: { ngTextD: 'colorpicker_to' }
           }
         }
@@ -715,6 +701,28 @@ function ngcopch_OnEditKeyPress(event)
 {
   if(event.keyCode === 13){
     return ngcopch_ValidateEditValue(this);
+  }
+  return true;
+}
+
+/**
+ * VALIDATE ON HEX EDIT BLUR
+ * @returns (boolean)
+ */
+function ngcopch_OnHexEditBlur()
+{
+  return ngcopch_ValidateHexEditValue(this);
+}
+
+/**
+ * VALIDATE ON HEX EDIT ENTER PRESS
+ * @param event (object)
+ * @returns (boolean)
+ */
+function ngcopch_OnHexEditKeyPress(event)
+{
+  if(event.keyCode === 13){
+    return ngcopch_ValidateHexEditValue(this);
   }
   return true;
 }
