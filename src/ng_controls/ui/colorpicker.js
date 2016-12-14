@@ -475,7 +475,7 @@ function ngColorPicker(def,ref,parent)
     /**
      *  Group: Methods
      */
-    Metods: {
+    Methods: {
       /**
        *  Function: ShowHSV
        *  - set color, which color picker should be set to
@@ -3682,7 +3682,7 @@ function ngColorButton(def,ref,parent)
     }
   });
 
-  ngcop_SetDefColor(def,null);
+  ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'});
   return ngCreateControlAsType(def,'ngButton',ref,parent);
 }
 
