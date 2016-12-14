@@ -56,20 +56,12 @@ var FileUploaderControl_DesignInfo = {
           },
           "ModifyControls": {
             "ListFiles": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList'),
-            "DragAndDropPanel": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngPanel',
-                  InheritedFrom: 'ngPanel',
-                  ObjectProperties: ng_DIProperties({
-                    "Events": {
-                      "OnFilesDragOver": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' }),
-                      "OnFilesDragLeave": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' })
-                    }
-                  })
-                }
+            "DragAndDropPanel": ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
+              "Events": {
+                "OnFilesDragOver": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' }),
+                "OnFilesDragLeave": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' })
               }
-            },
+            })),
             "DragAndDropInfo": ng_DIPropertyControl('ngText', { Level: 'basic' }),
             "Buttons": ng_DIPropertyControl('ngToolBar', { Level: 'basic' }, 'ngToolBar'),
             "BtnAddFile": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),

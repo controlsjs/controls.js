@@ -291,17 +291,18 @@ function ng_DIPropertyEvent(defvalue, data) {
  *  Helper function.
  *
  *  Syntax:
- *    object *ng_DIPropertyControl* (string type [, object data={}, string inheritedfrom])
+ *    object *ng_DIPropertyControl* (string type [, object data={}, string inheritedfrom, object properties])
  *
  *  Parameters:
  *    typed - control type
  *    data - optional standard property definition to which props are merged to
  *    inheritedfrom - optional control inheritance restriction
+ *    properties - optional object properties definition
  *
  *  Returns:
  *    Property design info.
  */
-function ng_DIPropertyControl(type, data, inheritedfrom) {
+function ng_DIPropertyControl(type, data, inheritedfrom, properties) {
   if(!type) type='feGenericControl';
   var di=((data)&&(typeof data==='object')) ? data : {};
   var mdi={
@@ -313,6 +314,7 @@ function ng_DIPropertyControl(type, data, inheritedfrom) {
     }
   };
   if(inheritedfrom) mdi.Types.control.InheritedFrom=inheritedfrom;
+  if(properties) mdi.Types.control.ObjectProperties=properties;
   ng_MergeVar(di,mdi);
   return di;
 }
