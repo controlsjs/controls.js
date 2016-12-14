@@ -65,7 +65,7 @@ var FileUploaderControl_DesignInfo = {
             "DragAndDropInfo": ng_DIPropertyControl('ngText', { Level: 'basic' }),
             "Buttons": ng_DIPropertyControl('ngToolBar', { Level: 'basic' }, 'ngToolBar'),
             "BtnAddFile": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "BtnRemoveCheckedFiles": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
+            "BtnRemoveFiles": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
           }
         },{
           "ModifyControls": { Level: 'basic' }

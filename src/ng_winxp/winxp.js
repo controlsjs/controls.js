@@ -598,7 +598,7 @@ var WinXPControls = {
       c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
       c.MiddleImg=(req ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
       c.RightImg=(req ? winimages.Edit.RightImgReq : winimages.Edit.RightImg);
-      
+
       c.DoSetInvalid=function(r,update) {
         if(!r)
         {
@@ -1015,7 +1015,7 @@ var WinXPControls = {
       if(typeof def.className === 'undefined') def.className='wxpMemo';
       var c=ngCreateControlAsType(def, ngVal(basetype, 'ngMemo'), ref, parent);
       if(!c) return;
-      
+
       var req=ngVal(c.Invalid,false);
       c.Frame=(req ? winimages.MemoReq : winimages.Memo);
 
@@ -2324,7 +2324,22 @@ var WinXPControls = {
           className: 'wxpFileUploader',
           Controls: {
             ListFiles: {
-              Type: 'stdList'
+              Type: 'stdList',
+              Data: {
+                ShowCheckboxes: true
+              },
+              Events: {
+                OnCheckChanged: function(c){
+                  if(c.Owner.BtnRemoveFiles){
+                    c.Owner.BtnRemoveFiles.SetEnabled(this.HasChecked());
+                  }
+                },
+                OnClickItem: function(o){
+                  if((o) && (o.listPart==0)){
+                    o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
+                  }
+                }
+              }
             },
             DragAndDropPanel: {
               Events: {
@@ -2353,7 +2368,7 @@ var WinXPControls = {
                 BtnAddFile: {
                   Type: 'stdButton'
                 },
-                BtnRemoveCheckedFiles: {
+                BtnRemoveFiles: {
                   Type: 'stdButton'
                 }
               }
@@ -2391,6 +2406,16 @@ var WinXPControls = {
                 if (o.curDialog) o.curDialog.Close();
                 delete o.curDialog;
               }
+            }
+          },
+          Methods: {
+            HasFilesToRemove: function(){
+              var list = this.Controls.ListFiles;
+              return (list && list.HasChecked());
+            },
+            GetFilesToRemove: function(){
+              var list = this.Controls.ListFiles;
+              return (list) ? list.GetChecked() : null;
             }
           }
         });

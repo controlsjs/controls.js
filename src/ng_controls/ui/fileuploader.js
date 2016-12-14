@@ -46,7 +46,6 @@ var FileUploaderControl = {
             L: 0, T: 0, B: 0, R: 0,
             Data: {
               SelectType: nglSelectNone,
-              ShowCheckboxes: true,
               ShowHeader: false,
               Columns: new Array(
                 new ngListCol('File', ngTxt('ngfup_ColFile'))
@@ -55,9 +54,7 @@ var FileUploaderControl = {
             Events: {
               OnUpdated: ngfup_ListOnUpdated,
               OnAdd: ngfup_ListOnAdd,
-              OnRemove: ngfup_ListOnRemove,
-              OnCheckChanged: ngfup_ListOnCheckChanged,
-              OnClickItem: ngfup_ListOnClickItem
+              OnRemove: ngfup_ListOnRemove
             }
           },
           DragAndDropPanel: {
@@ -98,10 +95,10 @@ var FileUploaderControl = {
                   OnUpdated: ngfup_OnAddFileButtonUpdated
                 }
               },
-              BtnRemoveCheckedFiles: {
+              BtnRemoveFiles: {
                 Type: 'ngButton',
                 Data: {
-                  ngText: 'ngfup_RemoveCheckedFiles',
+                  ngText: 'ngfup_RemoveFiles',
                   Enabled: false
                 },
                 Events: {
@@ -138,8 +135,8 @@ var FileUploaderControl = {
       if(def.Controls) {
         if(!def.ListFiles) {
           if(def.Controls.Buttons) {
-            if(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles){
-              ng_MergeVar(def.Controls.Buttons.Controls.BtnRemoveCheckedFiles,
+            if(def.Controls.Buttons.Controls.BtnRemoveFiles){
+              ng_MergeVar(def.Controls.Buttons.Controls.BtnRemoveFiles,
                 { Data: { Visible: false } }
               );
             }
@@ -276,16 +273,16 @@ var FileUploaderControl = {
        */
       c.CheckMaxFiles = ngfup_CheckMaxFiles;
 
-      /*  Function: RemoveCheckedFiles
+      /*  Function: RemoveFiles
        *  ...
        *
        *  Syntax:
-       *    bool *RemoveCheckedFiles* ()
+       *    bool *RemoveFiles* ()
        *
        *  Returns:
        *    -
        */
-      c.RemoveCheckedFiles = ngfup_RemoveCheckedFiles;
+      c.RemoveFiles = ngfup_RemoveFiles;
 
       /*  Function: ClearFiles
        *  ...
@@ -418,6 +415,28 @@ var FileUploaderControl = {
        *    -
        */
       c.ShowWaiting = ngfup_ShowWaiting;
+
+      /*  Function: HasFilesToRemove
+       *  ...
+       *
+       *  Syntax:
+       *    bool *HasFilesToRemove* ()
+       *
+       *  Returns:
+       *    -
+       */
+      c.HasFilesToRemove = null;
+
+      /*  Function: GetFilesToRemove
+       *  ...
+       *
+       *  Syntax:
+       *    array *GetFilesToRemove* ()
+       *
+       *  Returns:
+       *    - array / null
+       */
+      c.GetFilesToRemove = null;
 
       c.AddEvent('DoDispose',ngfup_DoDispose);
 
@@ -577,10 +596,6 @@ function ngfup_FileUploaded(c,data){
   return null;
 }
 
-function ngfup_FilesChecked(list){
-  return list.HasChecked();
-}
-
 function ngfup_OnCreated(c){
   var elm = c.Elm();
   if(elm){
@@ -596,8 +611,8 @@ function ngfup_OnCreated(c){
     }
   }
 
-  if((c.Controls.BtnRemoveCheckedFiles)&&(c.Controls.ListFiles)){
-    c.Controls.BtnRemoveCheckedFiles.AddEvent(
+  if((c.Controls.BtnRemoveFiles)&&(c.Controls.ListFiles)){
+    c.Controls.BtnRemoveFiles.AddEvent(
       'OnSetEnabled',ngfup_OnSetRemoveBtnEnabled
     );
   }
@@ -608,12 +623,16 @@ function ngfup_OnCreated(c){
 }
 
 function ngfup_OnSetRemoveBtnEnabled(o,v){
-  var list = this.ParentControl.Owner.ListFiles;
-  return !(v && list && !list.HasChecked());
+  if(!v){return v;}
+  var uploader = this.ParentControl.ParentControl;
+  return (
+    (typeof uploader.HasFilesToRemove === 'function')
+    && uploader.HasFilesToRemove()
+  );
 }
 
 function ngfup_OnRemoveBtnClick(){
-  this.ParentControl.ParentControl.RemoveCheckedFiles();
+  this.ParentControl.ParentControl.RemoveFiles();
 }
 
 function ngfup_OnDragOver(c,o){
@@ -711,17 +730,6 @@ function ngfup_ListOnRemove(l){
     l.Owner.DragAndDropPanel.SetVisible(true);
   }
   return true;
-}
-
-function ngfup_ListOnCheckChanged(o){
-  if(o.Owner.BtnRemoveCheckedFiles){
-    o.Owner.BtnRemoveCheckedFiles.SetEnabled(this.HasChecked());
-  }
-}
-function ngfup_ListOnClickItem(o){
-  if((o) && (o.listPart==0)){
-    o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
-  }
 }
 
 function ngfup_OnFilesDragOver(c){
@@ -940,18 +948,19 @@ function ngfup_CheckMaxFiles(correction){
   return !((maxfiles >= 0) && (curfiles+correction > maxfiles));
 }
 
-function ngfup_RemoveCheckedFiles(){
-  var Checked = this.Controls.ListFiles.GetChecked();
-  if(Checked.length == 0){return false;}
+function ngfup_RemoveFiles(){
+  var items = (typeof this.GetFilesToRemove === 'function')
+    ? this.GetFilesToRemove() : null;
+  if(!ng_IsArrayVar(items) || (items.length < 1)){return false;}
 
   this.Controls.ListFiles.BeginUpdate();
   try{
-    for(var i = 0; i < Checked.length; i++){
-      if(this.OnFileDeleting && (!ngVal(this.OnFileDeleting(this, Checked[i], i), false))){
+    for(var i = 0; i < items.length; i++){
+      if(this.OnFileDeleting && (!ngVal(this.OnFileDeleting(this, items[i], i), false))){
         continue;
       }
-      this.Controls.ListFiles.Remove(Checked[i]);
-      if(this.OnFileDeleted){this.OnFileDeleted(this, Checked[i], i);}
+      this.Controls.ListFiles.Remove(items[i]);
+      if(this.OnFileDeleted){this.OnFileDeleted(this, items[i], i);}
     }
   }
   finally{

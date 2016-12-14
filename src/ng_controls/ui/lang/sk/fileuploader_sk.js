@@ -14,14 +14,14 @@ if(typeof ngc_Lang['sk'] === 'undefined') ngc_Lang['sk']={};
 
 ngc_Lang['sk']['ngfup_ColFile'] = 'Súbory';
 
-ngc_Lang['sk']['ngfup_AddFile']            = 'Pridať súbor';
-ngc_Lang['sk']['ngfup_RemoveCheckedFiles'] = 'Odobrať vybrané súbory';
-ngc_Lang['sk']['ngfup_Uploading']          = 'Prebieha nahrávanie súboru... Prosím čakajte.';
+ngc_Lang['sk']['ngfup_AddFile']     = 'Pridať súbor';
+ngc_Lang['sk']['ngfup_RemoveFiles'] = 'Odobrať vybrané súbory';
+ngc_Lang['sk']['ngfup_Uploading']   = 'Prebieha nahrávanie súboru... Prosím čakajte.';
 
 ngc_Lang['sk']['ngfup_Error_General']   = 'Došlo k chybe. Skúste to prosím znova.';
 ngc_Lang['sk']['ngfup_Error_Size']      = 'Bola prekročená maximálna veľkosť súboru.';
 ngc_Lang['sk']['ngfup_Error_Extension'] = 'Tento typ súboru nie je povolený.';
 ngc_Lang['sk']['ngfup_Error_MaxFiles']  = 'Bol prekročený maximálny počet súborov.';
 ngc_Lang['sk']['ngfup_Error_MaxBatch']  = 'Veľkosť dávky bola prekročená.';
-ngc_Lang['sk']['ngfup_DragAndDropOne'] = 'Pretiahnite súbor sem.';
+ngc_Lang['sk']['ngfup_DragAndDropOne']  = 'Pretiahnite súbor sem.';
 ngc_Lang['sk']['ngfup_DragAndDropMore'] = 'Pretiahnite súbory sem.';
