@@ -47,7 +47,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 360
             },
             Events: {
-              OnSelect: ngcopch_OnHueSelect,
+              OnSelect: ngcopch_OnHueSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawHue,
               GetValue: ngcopch_GetHue
             }
@@ -59,7 +61,9 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 6,
               MinValue: 0, MaxValue: 360
             },
-            Events: { GetValue: ngcopch_GetHue }
+            Methods: {
+              GetValue: ngcopch_GetHue
+            }
           }
         }
       },
@@ -71,7 +75,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 1
             },
             Events: {
-              OnSelect: ngcopch_OnSaturationSelect,
+              OnSelect: ngcopch_OnSaturationSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawSaturation,
               GetValue: ngcopch_GetSaturation
             }
@@ -83,7 +89,9 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 4,
               MinValue: 0, MaxValue: 1
             },
-            Events: { GetValue: ngcopch_GetSaturation }
+            Methods: {
+              GetValue: ngcopch_GetSaturation
+            }
           }
         }
       },
@@ -95,7 +103,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 1
             },
             Events: {
-              OnSelect: ngcopch_OnValueSelect,
+              OnSelect: ngcopch_OnValueSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawValue,
               GetValue: ngcopch_GetValue
             }
@@ -107,7 +117,9 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 4,
               MinValue: 0, MaxValue: 1
             },
-            Events: { GetValue: ngcopch_GetValue }
+            Methods: {
+              GetValue: ngcopch_GetValue
+            }
           }
         }
       },
@@ -119,7 +131,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 255
             },
             Events: {
-              OnSelect: ngcopch_OnRedSelect,
+              OnSelect: ngcopch_OnRedSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawRed,
               GetValue: ngcopch_GetRed
             }
@@ -130,7 +144,9 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 3,
               MinValue: 0, MaxValue: 255
             },
-            Events: { GetValue: ngcopch_GetRed }
+            Methods: {
+              GetValue: ngcopch_GetRed
+            }
           }
         }
       },
@@ -142,7 +158,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 255
             },
             Events: {
-              OnSelect: ngcopch_OnGreenSelect,
+              OnSelect: ngcopch_OnGreenSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawGreen,
               GetValue: ngcopch_GetGreen
             }
@@ -153,7 +171,9 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 3,
               MinValue: 0, MaxValue: 255
             },
-            Events: { GetValue: ngcopch_GetGreen }
+            Methods: {
+              GetValue: ngcopch_GetGreen
+            }
           }
         }
       },
@@ -165,7 +185,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 255
             },
             Events: {
-              OnSelect: ngcopch_OnBlueSelect,
+              OnSelect: ngcopch_OnBlueSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawBlue,
               GetValue: ngcopch_GetBlue
             }
@@ -176,7 +198,9 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 3,
               MinValue: 0, MaxValue: 255
             },
-            Events: { GetValue: ngcopch_GetBlue }
+            Methods: {
+              GetValue: ngcopch_GetBlue
+            }
           }
         }
       },
@@ -188,7 +212,9 @@ function ngColorPicker(def,ref,parent)
               MinValue: 0, MaxValue: 1
             },
             Events: {
-              OnSelect: ngcopch_OnAlphaSelect,
+              OnSelect: ngcopch_OnAlphaSelect
+            },
+            Methods: {
               DrawPlane: ngcopch_DrawAlpha,
               GetValue: ngcopch_GetAlpha
             }
@@ -200,14 +226,18 @@ function ngColorPicker(def,ref,parent)
               MaxLength: 4,
               MinValue: 0, MaxValue: 1
             },
-            Events: { GetValue: ngcopch_GetAlpha }
+            Methods: {
+              GetValue: ngcopch_GetAlpha
+            }
           }
         }
       },
       Preview_Panel: {
         Controls: {
           From: {
-            Events: { OnClick: ngcopch_OnFromPreviewClick }
+            Events: {
+              OnClick: ngcopch_OnFromPreviewClick
+            }
           },
           To: {
             Events: {
@@ -220,21 +250,20 @@ function ngColorPicker(def,ref,parent)
     }
   });
 
-  /**
-   *  Group: Properties
-   */
-
-  /**
-   *  Variable: Color
-   *  -
-   *  Type: string/object
-   *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'}
-   */
-
   ng_MergeDef(def,{
     ParentReferences: false,
     OnCreated: ngcopch_OnPickerCreated,
+    /**
+     *  Group: Properties
+     */
     Data: {
+      /**
+       *  Variable: Color
+       *  -
+       *  Type: string/object
+       *  Default value: {H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'}
+       */
+      Color: null,
       /**
        *  Variable: AutoHeight
        *  - Change height by displayed content.
@@ -258,7 +287,6 @@ function ngColorPicker(def,ref,parent)
        *  Default value: 1000
        */
       EditsUpdate_timeout: 1000,
-
       EditsUpdate_timer: null
     },
     Controls: {
@@ -359,7 +387,9 @@ function ngColorPicker(def,ref,parent)
               Cursor: {
                 Type: 'ngPanel',
                 style: {zIndex: 2},
-                Events: { OnUpdated: ngcopch_PositionSatValCursor }
+                Events: {
+                  OnUpdated: ngcopch_PositionSatValCursor
+                }
               },
               ClickCatcher: {
                 Type: 'ngPanel',
@@ -442,7 +472,149 @@ function ngColorPicker(def,ref,parent)
         }
       }
     },
+    /**
+     *  Group: Methods
+     */
+    Metods: {
+      /**
+       *  Function: ShowHSV
+       *  - set color, which color picker should be set to
+       *
+       *  Syntax:
+       *    object *ShowHSV* (float/null hue, float/null saturation, float/null value)
+       *
+       *  Parameters:
+       *    hue - null if do not set hue
+       *    saturation - null if do not set saturation
+       *    value - null if do not set value
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      ShowHSV: ngcopch_ShowHSV,
+      /**
+       *  Function: ShowRGB
+       *  - set color, which color picker should be set to
+       *
+       *  Syntax:
+       *    object *ShowRGB* (integer/null red, integer/null green, integer/null blue)
+       *
+       *  Parameters:
+       *    red - null if do not set red
+       *    green - null if do not set green
+       *    blue - null if do not set blue
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      ShowRGB: ngcopch_ShowRGB,
+      /**
+       *  Function: ShowHEX
+       *  - set color, which color picker should be set to
+       *
+       *  Syntax:
+       *    object *ShowHEX* (string hexColor)
+       *
+       *  Parameters:
+       *    hexColor -
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      ShowHEX: ngcopch_ShowHEX,
+      /**
+       *  Function: SetColorHSV
+       *  - set starting color, color picker will be set to this color too
+       *
+       *  Syntax:
+       *    object *SetColorHSV* (float/null hue, float/null saturation, float/null value)
+       *
+       *  Parameters:
+       *    hue - null if do not set hue
+       *    saturation - null if do not set saturation
+       *    value - null if do not set value
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorHSV: ngcopch_SetHSVColor,
+      /**
+       *  Function: SetColorRGB
+       *  - set starting color, color picker will be set to this color too
+       *
+       *  Syntax:
+       *    object *SetColorRGB* (integer/null red, integer/null green, integer/null blue)
+       *
+       *  Parameters:
+       *    red - null if do not set red
+       *    green - null if do not set green
+       *    blue - null if do not set blue
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorRGB: ngcopch_SetRGBColor,
+      /**
+       *  Function: SetColorHEX
+       *  - set starting color, color picker will be set to this color too
+       *
+       *  Syntax:
+       *    object *SetColorHEX* (string hexColor)
+       *
+       *  Parameters:
+       *    hexColor -
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorHEX: ngcopch_SetHEXColor,
+      /**
+       *  Function: GetColor
+       *  - get actual shown color
+       *
+       *  Syntax:
+       *    object *GetColor* ()
+       *
+       *  Parameters:
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      GetColor: ngcop_GetColor
+    },
+    /**
+     *  Group: Events
+     */
     Events: {
+      /**
+       *  Function: OnColorChanging
+       *  -
+       *
+       *  Syntax:
+       *    boolean *OnColorChanging* (object color)
+       *
+       *  Parameters:
+       *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       *
+       *  Returns:
+       *    - if change
+       */
+      OnColorChanging: null,
+      /**
+       *  Function: OnColorChanged
+       *  -
+       *
+       *  Syntax:
+       *    void *OnColorChanged* (object color)
+       *
+       *  Parameters:
+       *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       *
+       *  Returns:
+       *    -
+       */
+      OnColorChanged: null,
+
       OnUpdated: (def.Data && def.Data.AsToolbar )
         ? ngcopch_AutoHeight_Toolbar : ngcopch_AutoHeight_Panel
     }
@@ -450,167 +622,9 @@ function ngColorPicker(def,ref,parent)
 
   ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'});
 
-  var c = ngCreateControlAsType(
-    def,
-    (def.Data.AsToolbar) ? 'ngToolBar' : 'ngPanel',
-    ref,
-    parent
+  return ngCreateControlAsType(
+    def,(def.Data.AsToolbar) ? 'ngToolBar' : 'ngPanel',ref,parent
   );
-  if(!c){return c;}
-
-  /**
-   *  Group: Methods
-   */
-
-  /**
-   *  Function: ShowHSV
-   *  - set color, which color picker should be set to
-   *
-   *  Syntax:
-   *    object *ShowHSV* (float/null hue, float/null saturation, float/null value)
-   *
-   *  Parameters:
-   *    hue - null if do not set hue
-   *    saturation - null if do not set saturation
-   *    value - null if do not set value
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('ShowHSV',ngcopch_ShowHSV);
-
-  /**
-   *  Function: ShowRGB
-   *  - set color, which color picker should be set to
-   *
-   *  Syntax:
-   *    object *ShowRGB* (integer/null red, integer/null green, integer/null blue)
-   *
-   *  Parameters:
-   *    red - null if do not set red
-   *    green - null if do not set green
-   *    blue - null if do not set blue
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('ShowRGB',ngcopch_ShowRGB);
-
-  /**
-   *  Function: ShowHEX
-   *  - set color, which color picker should be set to
-   *
-   *  Syntax:
-   *    object *ShowHEX* (string hexColor)
-   *
-   *  Parameters:
-   *    hexColor -
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('ShowHEX',ngcopch_ShowHEX);
-
-  /**
-   *  Function: SetColorHSV
-   *  - set starting color, color picker will be set to this color too
-   *
-   *  Syntax:
-   *    object *SetColorHSV* (float/null hue, float/null saturation, float/null value)
-   *
-   *  Parameters:
-   *    hue - null if do not set hue
-   *    saturation - null if do not set saturation
-   *    value - null if do not set value
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('SetColorHSV',ngcopch_SetHSVColor);
-
-  /**
-   *  Function: SetColorRGB
-   *  - set starting color, color picker will be set to this color too
-   *
-   *  Syntax:
-   *    object *SetColorRGB* (integer/null red, integer/null green, integer/null blue)
-   *
-   *  Parameters:
-   *    red - null if do not set red
-   *    green - null if do not set green
-   *    blue - null if do not set blue
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('SetColorRGB',ngcopch_SetRGBColor);
-
-  /**
-   *  Function: SetColorHEX
-   *  - set starting color, color picker will be set to this color too
-   *
-   *  Syntax:
-   *    object *SetColorHEX* (string hexColor)
-   *
-   *  Parameters:
-   *    hexColor -
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('SetColorHEX',ngcopch_SetHEXColor);
-
-  /**
-   *  Function: GetColor
-   *  - get actual shown color
-   *
-   *  Syntax:
-   *    object *GetColor* ()
-   *
-   *  Parameters:
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('GetColor',ngcop_GetColor);
-
-  /**
-   *  Group: Events
-   */
-
-  /**
-   *  Function: OnColorChanging
-   *  -
-   *
-   *  Syntax:
-   *    boolean *OnColorChanging* (object targetColor)
-   *
-   *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   *
-   *  Returns:
-   *    - if change
-
-   */
-  c.OnColorChanging = null;
-
-  /**
-   *  Function: OnColorChanged
-   *  -
-   *
-   *  Syntax:
-   *    void *OnColorChanged* (object color)
-   *
-   *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   *
-   *  Returns:
-   *    -
-   */
-  c.OnColorChanged = null;
-
-  return c;
-
 }
 
 /**
@@ -637,14 +651,18 @@ function ngcopch_GetSliderLayout()
         innerHTML: ngcopch_GetPlaneHTML(),
         OnCreated: ngcopch_OnPlaneCreated,
         Events: {
-          OnUpdated: ngcopch_DrawSlider,
+          OnUpdated: ngcopch_DrawSlider
+        },
+        Methods: {
           GetImg: ngc_GetImg
         }
       },
       Cursor: {
         Type: 'ngPanel',
         style: {zIndex: 2},
-        Events: { OnUpdated: ngcopch_PositionSliderCursor }
+        Events: {
+          OnUpdated: ngcopch_PositionSliderCursor
+        }
       },
       ClickCatcher: {
         Type: 'ngPanel',
@@ -653,7 +671,9 @@ function ngcopch_GetSliderLayout()
         OnCreated: ngcopch_OnSliderClickCatcherCreated
       }
     },
-    Events: { OnEscPress: ngcopch_OnSliderEscPress }
+    Events: {
+      OnEscPress: ngcopch_OnSliderEscPress
+    }
   };
 }
 
@@ -671,17 +691,32 @@ function ngcopch_GetEditLayout()
     },
     Events: {
       OnUpdate: ngcopch_ShowEditValue,
-      OnBlur: function(){
-        return ngcopch_ValidateEditValue(this);
-      },
-      OnKeyPress: function(event,node){
-        if(event.keyCode === 13){
-          return ngcopch_ValidateEditValue(this);
-        }
-        return true;
-      }
+      OnBlur: ngcopch_OnEditBlur,
+      OnKeyPress: ngcopch_OnEditKeyPress
     }
   };
+}
+
+/**
+ * VALIDATE ON EDIT BLUR
+ * @returns (boolean)
+ */
+function ngcopch_OnEditBlur()
+{
+  return ngcopch_ValidateEditValue(this);
+}
+
+/**
+ * VALIDATE ON EDIT ENTER PRESS
+ * @param event (object)
+ * @returns (boolean)
+ */
+function ngcopch_OnEditKeyPress(event)
+{
+  if(event.keyCode === 13){
+    return ngcopch_ValidateEditValue(this);
+  }
+  return true;
 }
 
 /**
