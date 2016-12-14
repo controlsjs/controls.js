@@ -390,12 +390,23 @@ var FileUploaderControl = {
        *  ...
        *
        *  Syntax:
-       *    void *ShowError* (string errmsg, mixed data)
+       *    void *ShowError* (mixed data)
        *
        *  Returns:
        *    -
        */
       c.ShowError = ngfup_ShowError;
+
+      /*  Function: ErrorToMessage
+       *  ...
+       *
+       *  Syntax:
+       *    void *ErrorToMessage* (object data)
+       *
+       *  Returns:
+       *    -
+       */
+      c.ErrorToMessage = ngfup_ErrorToMessage;
 
       /*  Function: ShowWaiting
        *  ...
@@ -485,24 +496,22 @@ function ngfup_ServerData(data){
   this.Controls.ListFiles.BeginUpdate();
   try{
     if(ng_IsArrayVar(data)){
-      var errmsg = '';
+      var errorData = [];
       for(var f = 0; f < data.length; f++){
-        var err = ngfup_FileUploaded(this,data[f]);
-        if(err){
-          errmsg += (errmsg == '') ? err : "\n"+err;
-        }
+        var error = ngfup_FileUploaded(this,data[f]);
+        if(error){errorData.push(error);}
       }
-      if(errmsg != ''){
-        this.ShowError(errmsg, data);
+      if(errorData.length > 0){
+        this.ShowError(errorData);
         return false;
       }
     }
     else{
-      if(data.Error){
-        this.ShowError(ngTxt(data.Error), data);
+      var error = ngfup_FileUploaded(this,data);
+      if(error){
+        this.ShowError(error);
         return false;
       }
-      ngfup_FileUploaded(this,data);
     }
   }
   finally{
@@ -560,17 +569,8 @@ function ngfup_UploadFile(filename, content, contenttype){
 function ngfup_FileUploaded(c,data){
   if((typeof data !== 'object') || (data === null)){return null;}
 
-  var errmsg = '';
-
-  if(data.Error){
-    if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
-    return errmsg+ngTxt(data.Error);
-  }
-
-  if(!c.CheckMaxFiles()){
-    if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
-    return errmsg+ngTxt('ngfup_Error_MaxFiles');
-  }
+  if(data.Error){ return { Name: data.Name, Error: data.Error }; }
+  if(!c.CheckMaxFiles()){return { Name: data.Name, Error: 'ngfup_Error_MaxFiles' };}
 
   c.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
   if(c.OnFileAdded){c.OnFileAdded(c, data.Name, data);}
@@ -883,7 +883,7 @@ function ngfup_Extension(fileName){
 
 function ngfup_CheckFiles(files) {
   if(!this.CheckMaxFiles(files.length)){
-    this.ShowError(ngTxt('ngfup_Error_MaxFiles'),null);
+    this.ShowError({ Error: 'ngfup_Error_MaxFiles' });
     return false;
   }
 
@@ -892,7 +892,7 @@ function ngfup_CheckFiles(files) {
   var batchsize = 0;
   var checkext = (!ng_EmptyVar(this.AllowedExtensions));
   if((checkext) || (maxsize>0)){
-    var errmsg = '';
+    var errorData = [];
     var s,e,found;
     for(var i = 0; i < files.length; i++){
       if(checkext){
@@ -907,8 +907,7 @@ function ngfup_CheckFiles(files) {
           }
         }
         if(!found){
-          if(errmsg != ''){errmsg += "\n";}
-          errmsg += files[i].name+': '+ngTxt('ngfup_Error_Extension');
+          errorData.push({ Name: files[i].name, Error: 'ngfup_Error_Extension' });
           continue;
         }
       }
@@ -916,19 +915,18 @@ function ngfup_CheckFiles(files) {
         s = parseInt(files[i].size,10);
         if(batchsize >= 0){batchsize += s;}
         if((maxsize > 0) && (s > maxsize)){
-          if(errmsg != ''){errmsg += "\n";}
-          errmsg += files[i].name+': '+ngTxt('ngfup_Error_Size');
+          errorData.push({ Name: files[i].name, Error: 'ngfup_Error_Size' });
           continue;
         }
       }
       else batchsize = -1;
     }
-    if(errmsg != ''){
-      this.ShowError(errmsg,null);
+    if(errorData.length > 0){
+      this.ShowError(errorData);
       return false;
     }
     if((batchsize > 0) && (maxbatchsize > 0) && (batchsize > maxbatchsize)){
-      this.ShowError(ngTxt('ngfup_Error_MaxBatch'),null);
+      this.ShowError({ Error: 'ngfup_Error_MaxBatch' });
       return false;
     }
   }
@@ -1105,7 +1103,27 @@ function ngfup_SetUploadProgress(p){
   if(this.OnUploadProgress){this.OnUploadProgress(this,p);}
 }
 
-function ngfup_ShowError(errmsg, data){
+function ngfup_ErrorToMessage(data){
+  var errmsg = '';
+  if(!data || !data.Error){return errmsg;}
+  if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
+  errmsg += ngTxt(data.Error);
+  return errmsg;
+}
+
+function ngfup_ShowError(data){
+  var errmsg = '';
+
+  if(ng_IsArrayVar(data)){
+    for(var i in data){
+      var msg = this.ErrorToMessage(data[i]);
+      if(msg != ''){errmsg += (errmsg == '') ? msg : "\n"+msg;}
+    }
+  }
+  else{
+    errmsg += this.ErrorToMessage(data);
+  }
+
   if(errmsg != ''){
     if(this.OnError){
       return this.OnError(this, errmsg, data);
