@@ -2887,60 +2887,60 @@ function ngcop_SetDefColor(def,defColor)
   }
 
   var c = def.Data.Color;
-  var cType = typeof c;
+  switch(typeof c){
 
-  if(cType === 'string'){
-
-    var col = ngcop_HexToColor(c);
-    if(col){
-      if(def.Data && (def.Data.AllowAlpha === false)){
-        col = ngcop_RemoveColorTransparency(col);
-      }
-      def.Data.Color = col;
-      return;
-    }
-
-  }
-  else if(cType === 'object'){
-    var alpha = (typeof c.A === 'number') ? c.A : (typeof defColor === "object" ? defColor.A : 1);
-    if(def.Data && (def.Data.AllowAplha === false)){
-      alpha = 1;
-    }
-
-    if((typeof c.H === 'number') && (typeof c.S === 'number') && (typeof c.V === 'number')){
-      var col = ngcop_HSVAToColor(c.H,c.S,c.V,alpha);
+    case 'string':
+      var col = ngcop_HexToColor(c);
       if(col){
-        def.Data.Color = col;
-        return;
-      }
-    }
-
-    if((typeof c.R === 'number') && (typeof c.G === 'number') && (typeof c.B === 'number')){
-      var col = ngcop_RGBAToColor(c.R,c.G,c.B,alpha);
-      if(col){
-        def.Data.Color = col;
-        return;
-      }
-    }
-
-    if((typeof c.HEX === 'string') && (c.HEX.length === 7)){
-      var col = ngcop_HexToColor(c.HEX);
-      if(col){
-        def.Data.Color = col;
-        return;
-      }
-    }
-
-    if((typeof c.HEXA === 'string') && (c.HEXA.length === 9)){
-      var col = ngcop_HexToColor(c.HEXA);
-      if(col){
-        if(def.Data && (def.Data.AllowAplha === false)){
+        if(def.Data && (def.Data.AllowAlpha === false)){
           col = ngcop_RemoveColorTransparency(col);
         }
         def.Data.Color = col;
         return;
       }
-    }
+    break;
+    case 'object':
+      var alpha = 1;
+      if(!def.Data || (def.Data.AllowAplha !== false)){
+        if(typeof c.A === 'number'){alpha = c.A;}
+        else{alpha = (typeof defColor === "object" && defColor) ? defColor.A : 1;}
+      };
+
+      if((typeof c.H === 'number') && (typeof c.S === 'number') && (typeof c.V === 'number')){
+        var col = ngcop_HSVAToColor(c.H,c.S,c.V,alpha);
+        if(col){
+          def.Data.Color = col;
+          return;
+        }
+      }
+
+      if((typeof c.R === 'number') && (typeof c.G === 'number') && (typeof c.B === 'number')){
+        var col = ngcop_RGBAToColor(c.R,c.G,c.B,alpha);
+        if(col){
+          def.Data.Color = col;
+          return;
+        }
+      }
+
+      if((typeof c.HEX === 'string') && (c.HEX.length === 7)){
+        var col = ngcop_HexToColor(c.HEX);
+        if(col){
+          def.Data.Color = col;
+          return;
+        }
+      }
+
+      if((typeof c.HEXA === 'string') && (c.HEXA.length === 9)){
+        var col = ngcop_HexToColor(c.HEXA);
+        if(col){
+          if(def.Data && (def.Data.AllowAplha === false)){
+            col = ngcop_RemoveColorTransparency(col);
+          }
+          def.Data.Color = col;
+          return;
+        }
+      }
+    break;
   }
 
   def.Data.Color = defColor;
