@@ -187,6 +187,47 @@ ngUserControls['ngColorControls_designinfo'] = {
             'Src': ng_DIProperty('url','http://',{ Level: 'basic' })
           }
         }
+      },
+      {
+        TypeID: 'ngcop_layout',
+        TypeBase: 'bitmask',
+        Name: 'color picker layout',
+        ShortName: 'cop-l',
+        Options: {
+          DefaultCode: 'ngCopLayout_Default',
+          DefaultValue: {
+            value: ngCopLayout_Default
+          },
+          EditorOptions: {
+            BitMaskIdentifiers: [
+              { id: 'ngColorPickerH', value: ngColorPickerH },
+              { id: 'ngColorPickerS', value: ngColorPickerS },
+              { id: 'ngColorPickerV', value: ngColorPickerV },
+              { id: 'ngColorPickerSV', value: ngColorPickerSV },
+
+              { id: 'ngColorPickerR', value: ngColorPickerR },
+              { id: 'ngColorPickerG', value: ngColorPickerG },
+              { id: 'ngColorPickerB', value: ngColorPickerB },
+
+              { id: 'ngColorPickerA', value: ngColorPickerA },
+              { id: 'ngColorPickerPreview', value: ngColorPickerPreview },
+
+              { id: 'ngColorPickerHex', value: ngColorPickerHex },
+              { id: 'ngColorPickerAHex', value: ngColorPickerAHex },
+              { id: 'ngColorPickerEdits', value: ngColorPickerEdits },
+
+              { id: 'ngColorPickerModeBar', value: ngColorPickerModeBar },
+
+              { id: 'ngCopLayout_H_SV', value: ngCopLayout_H_SV },
+              { id: 'ngCopLayout_HA_SV', value: ngCopLayout_HA_SV },
+              { id: 'ngCopLayout_HSV', value: ngCopLayout_HSV },
+              { id: 'ngCopLayout_HSVA', value: ngCopLayout_HSVA },
+              { id: 'ngCopLayout_RGB', value: ngCopLayout_RGB },
+              { id: 'ngCopLayout_RGBA', value: ngCopLayout_RGBA },
+              { id: 'ngCopLayout_Default', value: ngCopLayout_Default }
+            ]
+          }
+        }
       }
     ]);
   },
@@ -198,6 +239,15 @@ ngUserControls['ngColorControls_designinfo'] = {
     ngRegisterControlDesignInfo('ngColorPicker',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 100 },
+              'H': { Value: 100 }
+            }
+          }
+        },
         Properties: ng_DIProperties({
           'Data': {
 //            'Color': ng_DIProperty(['null','color_hex6','color_hex8','color_chnls_hsv','color_chnls_rgb','color_chnls_hex','color_chnls_hexa'],null,{ InitType: 'color_hex6', Level: 'basic' }),
@@ -293,44 +343,7 @@ ngUserControls['ngColorControls_designinfo'] = {
       return {
         ControlCategory: 'Misc',
         Properties: ng_DIProperties({
-          'Layout': { DefaultType: 'bitmask', Level: 'basic',
-            Types: {
-              'bitmask': {
-                DefaultValue: {
-                  value: ngCopLayout_Default
-                },
-                EditorOptions: {
-                  BitMaskIdentifiers: [
-                    { id: 'ngColorPickerH', value: ngColorPickerH },
-                    { id: 'ngColorPickerS', value: ngColorPickerS },
-                    { id: 'ngColorPickerV', value: ngColorPickerV },
-                    { id: 'ngColorPickerSV', value: ngColorPickerSV },
-
-                    { id: 'ngColorPickerR', value: ngColorPickerR },
-                    { id: 'ngColorPickerG', value: ngColorPickerG },
-                    { id: 'ngColorPickerB', value: ngColorPickerB },
-
-                    { id: 'ngColorPickerA', value: ngColorPickerA },
-                    { id: 'ngColorPickerPreview', value: ngColorPickerPreview },
-
-                    { id: 'ngColorPickerHex', value: ngColorPickerHex },
-                    { id: 'ngColorPickerAHex', value: ngColorPickerAHex },
-                    { id: 'ngColorPickerEdits', value: ngColorPickerEdits },
-
-                    { id: 'ngColorPickerModeBar', value: ngColorPickerModeBar },
-
-                    { id: 'ngCopLayout_H_SV', value: ngCopLayout_H_SV },
-                    { id: 'ngCopLayout_HA_SV', value: ngCopLayout_HA_SV },
-                    { id: 'ngCopLayout_HSV', value: ngCopLayout_HSV },
-                    { id: 'ngCopLayout_HSVA', value: ngCopLayout_HSVA },
-                    { id: 'ngCopLayout_RGB', value: ngCopLayout_RGB },
-                    { id: 'ngCopLayout_RGBA', value: ngCopLayout_RGBA },
-                    { id: 'ngCopLayout_Default', value: ngCopLayout_Default }
-                  ]
-                }
-              }
-            }
-          },
+          'Layout': ng_DIProperty('ngcop_layout',ngCopLayout_Default,{ Level: 'basic' }),
           'ModifyControls': {
             'ModeBar': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
               'ModifyControls': {
@@ -393,7 +406,7 @@ ngUserControls['ngColorControls_designinfo'] = {
           _noMerge:true,
           Default: {
             Properties: {
-              'W': { Value: 200 }
+              'W': { Value: 100 }
             }
           }
         },
@@ -424,6 +437,15 @@ ngUserControls['ngColorControls_designinfo'] = {
     ngRegisterControlDesignInfo('ngColorPickerHint',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 100 },
+              'H': { Value: 100 }
+            }
+          }
+        },
         Properties: ng_DIProperties({
           'ModifyControls': {
             'Picker': ng_DIPropertyControl('ngColorPickerBox', { Level: 'basic' }, 'ngColorPickerBox', ng_DIProperties({
@@ -443,7 +465,21 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorPickerButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons'
+        ControlCategory: 'Buttons',
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 100 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          'Data': {
+            'PickerLayout': ng_DIProperty(['null','ngcop_layout'],null,{ InitType: 'ngcop_layout', Level: 'basic' }),
+            'HintDef': ng_DIPropertyControl('ngColorPickerHint', { Level: 'basic' }, 'ngColorPickerHint')
+          }
+        })
       };
     });
   }
