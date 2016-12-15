@@ -4298,7 +4298,6 @@ function ngcopdd_ValidateHex(edit)
  *  See also:
  *    Abstract class <ngHint>.
  */
-
 function ngColorPickerHint(def,ref,parent)
 {
   ng_MergeDef(def, {
@@ -4347,11 +4346,10 @@ function ngColorPickerHint(def,ref,parent)
 function ngColorPickerButton(def,ref,parent)
 {
   ng_MergeDef(def, {
+    /**
+     *  Group: Properties
+     */
     Data: {
-
-      /**
-       *  Group: Properties
-       */
 
       /**
        *  Variable: PickerLayout
@@ -4392,23 +4390,22 @@ function ngColorPickerButton(def,ref,parent)
         }
       }
     },
+    /**
+     *  Group: Methods
+     */
+    Methods: {
+      /**
+       *  Function: ShowColor
+       *  -
+       *
+       *  Syntax:
+       *    void *ShowColor* ()
+       *
+       */
+      ShowColor: ngcopb_ShowButtonColor
+    },
     Events: {
-      OnClick: function(){
-        if(!this.Hint && (typeof this.HintDef === 'object')){
-          this.Hint = ngCreateHint(this.HintDef);
-          this.Hint.Owner = this;
-        }
-        if(this.Hint && (typeof this.Hint.PopupCtrl === 'function')){
-          this.Hint.PopupCtrl(this);
-
-          var picker = this.Hint.Controls.Picker;
-          if(picker){
-            ngcopch_SetPickerColor(
-              picker,this.GetColor()
-            );
-          }
-        }
-      }
+      OnClick: ngcopb_OnClick
     }
   });
 
@@ -4425,15 +4422,10 @@ function ngColorPickerButton(def,ref,parent)
       (def.Data.AllowAlpha === false) ? false : true;
   }
 
-  var c = ngCreateControlAsType(def,
+  return ngCreateControlAsType(def,
     (typeof def.CreateFrom === 'string') ? def.CreateFrom : 'ngColorButton',
     ref,parent
   );
-  if(!c){return c;}
-
-  c.AddEvent('ShowColor',ngcopb_ShowButtonColor);
-
-  return c;
 }
 
 /**
@@ -4474,6 +4466,27 @@ function ngcopb_ShowButtonColor()
     var picker = this.Hint.Controls.Picker;
     if(picker){
       ngcopch_SetPickerColor(picker,this.GetColor());
+    }
+  }
+}
+
+/**
+ * SHOW HINT ON COLOR PICKER BUTTON CLICK
+ */
+function ngcopb_OnClick()
+{
+  if(!this.Hint && (typeof this.HintDef === 'object')){
+    this.Hint = ngCreateHint(this.HintDef);
+    this.Hint.Owner = this;
+  }
+  if(this.Hint && (typeof this.Hint.PopupCtrl === 'function')){
+    this.Hint.PopupCtrl(this);
+
+    var picker = this.Hint.Controls.Picker;
+    if(picker){
+      ngcopch_SetPickerColor(
+        picker,this.GetColor()
+      );
     }
   }
 }
