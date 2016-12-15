@@ -3257,7 +3257,7 @@ var ngColorPickerHex       = 512;
 var ngColorPickerAHex      = 1024;
 var ngColorPickerEdits     = 2048;
 
-var ngColorPickerModeBar     = 4096;
+var ngColorPickerModeBar   = 4096;
 
 var ngCopLayout_H_SV  = ngColorPickerH | ngColorPickerSV | ngColorPickerPreview;
 var ngCopLayout_HA_SV  = ngCopLayout_H_SV | ngColorPickerA;
@@ -3882,6 +3882,14 @@ function ngColorPickerDropDown(def,ref,parent)
   ng_MergeDef(def, {
     Data: {
       /**
+       *  Variable: Color
+       *  -
+       *  Type: string/object
+       *  Default value: null
+       */
+      Color: null,
+
+      /**
        *  Variable: AllowAlpha
        *  - If alpha channel is allowed.
        *  Type: boolean
@@ -3920,16 +3928,114 @@ function ngColorPickerDropDown(def,ref,parent)
       edit.ShowColor();
       return true;
     },
+    /**
+     *  Group: Methods
+     */
+    Methods: {
+      /**
+       *  Function: ShowColor
+       *  -
+       *
+       *  Syntax:
+       *    void *ShowColor* ()
+       *
+       */
+      ShowColor: ngcopdd_ShowDropDownColor,
+      /**
+       *  Function: SetColorHSV
+       *  -
+       *
+       *  Syntax:
+       *    object *SetColorHSV* (float/null hue, float/null saturation, float/null value)
+       *
+       *  Parameters:
+       *    hue - null if do not set hue
+       *    saturation - null if do not set saturation
+       *    value - null if do not set value
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorHSV: ngcopdd_SetHSV,
+      /**
+       *  Function: SetColorRGB
+       *  -
+       *
+       *  Syntax:
+       *    object *SetColorRGB* (integer/null red, integer/null green, integer/null blue)
+       *
+       *  Parameters:
+       *    red - null if do not set red
+       *    green - null if do not set green
+       *    blue - null if do not set blue
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorRGB: ngcopdd_SetRGB,
+      /**
+       *  Function: SetColorHEX
+       *  -
+       *
+       *  Syntax:
+       *    object *SetColorHEX* (string hexColor)
+       *
+       *  Parameters:
+       *    hexColor -
+       *
+       *  Returns:
+       *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       */
+      SetColorHEX: ngcopdd_SetHEX,
+      /**
+       *  Function: GetColor
+       *  -
+       *
+       *  Syntax:
+       *    object *GetColor* ()
+       *
+       *  Parameters:
+       *    -
+       *
+       *  Returns:
+       *    {R:0-255, G:0-255, B:0-255, A:0-1, [...]}
+       */
+      GetColor: ngcop_GetColor
+    },
+  /**
+   *  Group: Events
+   */
     Events: {
-      OnBlur: function(){
-        return ngcopdd_ValidateHex(this);
-      },
-      OnKeyPress: function(event,node){
-        if(event.keyCode === 13){
-          return ngcopdd_ValidateHex(this);
-        }
-        return true;
-      }
+      OnBlur: ngcopdd_OnBlur,
+      OnKeyPress: ngcopdd_OnKeyPress,
+      /**
+       *  Function: OnColorChanging
+       *  -
+       *
+       *  Syntax:
+       *    boolean *OnColorChanging* (object targetColor)
+       *
+       *  Parameters:
+       *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       *
+       *  Returns:
+       *    - if change
+       */
+      OnColorChanging: null,
+      /**
+       *  Function: OnColorChanged
+       *  -
+       *
+       *  Syntax:
+       *    void *OnColorChanged* (object color)
+       *
+       *  Parameters:
+       *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
+       *
+       *  Returns:
+       *    -
+       */
+      OnColorChanged: null
     }
   });
 
@@ -3941,117 +4047,41 @@ function ngColorPickerDropDown(def,ref,parent)
   );
   if(!c){return c;}
   c.DropDownButton.AddEvent('OnUpdated',ngcob_AddHTMLContent);
-  c.DropDownButton.AddEvent('GetColor',function(){return this.Color;});
+  c.DropDownButton.AddEvent('GetColor',ngcopdd_GetColor);
   c.DropDownButton.AddEvent('ShowColor',ngcob_ShowButtonColor);
   c.DropDownButton.AddEvent('OnClick',ngcopdd_OnUserDrop);
   c.DropDownButton.AllowAlpha = (c.AllowAlpha === false) ? false : true;
-
-  /**
-   *  Group: Methods
-   */
-
-  c.AddEvent('ShowColor',ngcopdd_ShowDropDownColor);
-
-  /**
-   *  Function: SetColorHSV
-   *  -
-   *
-   *  Syntax:
-   *    object *SetColorHSV* (float/null hue, float/null saturation, float/null value)
-   *
-   *  Parameters:
-   *    hue - null if do not set hue
-   *    saturation - null if do not set saturation
-   *    value - null if do not set value
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('SetColorHSV',ngcopdd_SetHSV);
-
-  /**
-   *  Function: SetColorRGB
-   *  -
-   *
-   *  Syntax:
-   *    object *SetColorRGB* (integer/null red, integer/null green, integer/null blue)
-   *
-   *  Parameters:
-   *    red - null if do not set red
-   *    green - null if do not set green
-   *    blue - null if do not set blue
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('SetColorRGB',ngcopdd_SetRGB);
-
-  /**
-   *  Function: SetColorHEX
-   *  -
-   *
-   *  Syntax:
-   *    object *SetColorHEX* (string hexColor)
-   *
-   *  Parameters:
-   *    hexColor -
-   *
-   *  Returns:
-   *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   */
-  c.AddEvent('SetColorHEX',ngcopdd_SetHEX);
-
-  /**
-   *  Function: GetColor
-   *  -
-   *
-   *  Syntax:
-   *    object *GetColor* ()
-   *
-   *  Parameters:
-   *    -
-   *
-   *  Returns:
-   *    {R:0-255, G:0-255, B:0-255, A:0-1, [...]}
-   */
-  c.AddEvent('GetColor',ngcop_GetColor);
-
-  /**
-   *  Group: Events
-   */
-
-  /**
-   *  Function: OnColorChanging
-   *  -
-   *
-   *  Syntax:
-   *    boolean *OnColorChanging* (object targetColor)
-   *
-   *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   *
-   *  Returns:
-   *    - if change
-
-   */
-  c.OnColorChanging = null;
-
-  /**
-   *  Function: OnColorChanged
-   *  -
-   *
-   *  Syntax:
-   *    void *OnColorChanged* (object color)
-   *
-   *  Parameters:
-   *    color - {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
-   *
-   *  Returns:
-   *    -
-   */
-  c.OnColorChanged = null;
-
   return c;
+}
+
+/**
+ * VALIDATE ON DROP DOWN BLUR
+ * @returns (boolean)
+ */
+function ngcopdd_OnBlur()
+{
+  return ngcopdd_ValidateHex(this);
+}
+
+/**
+ * VALIDATE ON DROP DOWN ENTER PRESS
+ * @param event (object)
+ * @returns (boolean)
+ */
+function ngcopdd_OnKeyPress(event)
+{
+  if(event.keyCode === 13){
+    return ngcopdd_ValidateHex(this);
+  }
+  return true;
+}
+
+/**
+ * DROP DOWN PICKER DROP DOWN BUTTON COLOR
+ */
+function ngcopdd_GetColor()
+{
+  return this.Color;
 }
 
 /**
