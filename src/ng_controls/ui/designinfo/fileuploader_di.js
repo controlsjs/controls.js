@@ -32,12 +32,13 @@ var FileUploaderControl_DesignInfo = {
           "FileUploaderID": ng_DIProperty('string', 'Main', { Level: 'basic' }),
           "ButtonsAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
           "ListFiles": ng_DIPropertyBool(true, { Level: 'basic' }),
-          "AllowedExtensions":  ng_DIProperty(['undefined','boolean'],undefined,{ InitType: 'boolean', Level: 'basic' }),
+          "AllowedExtensions": ng_DIProperty(['undefined','boolean'],undefined,{ InitType: 'boolean', Level: 'basic' }),
+          "SelectFileType":ng_DIPropertyIntConstants('ngFupSelect_CheckItem',['ngFupSelect_None','ngFupSelect_Select','ngFupSelect_CheckBox','ngFupSelect_CheckItem'],{ Level: 'optional' }),
           "Data": {
             "MaxFilesCount": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "MaxFileSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "MaxBatchSize":  ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "AllowedExtensions":  ng_DIProperty(['undefined','array_strings'],undefined,{ InitType: 'array_strings', Level: 'basic' }),
+            "MaxFileSize": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
+            "MaxBatchSize": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
+            "AllowedExtensions": ng_DIProperty(['undefined','array_strings'],undefined,{ InitType: 'array_strings', Level: 'basic' }),
             "Accept": { DefaultType: 'string', Level: 'basic' },
             "UploadURL": { DefaultType: 'url', Level: 'basic' }
           },

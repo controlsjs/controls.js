@@ -2324,22 +2324,7 @@ var WinXPControls = {
           className: 'wxpFileUploader',
           Controls: {
             ListFiles: {
-              Type: 'stdList',
-              Data: {
-                ShowCheckboxes: true
-              },
-              Events: {
-                OnCheckChanged: function(c){
-                  if(c.Owner.BtnRemoveFiles){
-                    c.Owner.BtnRemoveFiles.SetEnabled(this.HasChecked());
-                  }
-                },
-                OnClickItem: function(o){
-                  if((o) && (o.listPart==0)){
-                    o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
-                  }
-                }
-              }
+              Type: 'stdList'
             },
             DragAndDropPanel: {
               Events: {
@@ -2406,16 +2391,6 @@ var WinXPControls = {
                 if (o.curDialog) o.curDialog.Close();
                 delete o.curDialog;
               }
-            }
-          },
-          Methods: {
-            HasFilesToRemove: function(){
-              var list = this.Controls.ListFiles;
-              return (list && list.HasChecked());
-            },
-            GetFilesToRemove: function(){
-              var list = this.Controls.ListFiles;
-              return (list) ? list.GetChecked() : null;
             }
           }
         });

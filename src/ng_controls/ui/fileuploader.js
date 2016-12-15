@@ -10,6 +10,11 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
+var ngFupSelect_None      = 0;
+var ngFupSelect_Select    = 1;
+var ngFupSelect_CheckBox  = 2;
+var ngFupSelect_CheckItem = 3;
+
 var FileUploaderControl = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',
@@ -27,6 +32,8 @@ var FileUploaderControl = {
       var buttonsalign='top';
       var base = ngVal(def.Base, 'ngPanel');
       var id = ngVal(def.Data.FileUploaderID, 'Main');
+      var selectFileType = ngVal(def.SelectFileType, ngFupSelect_CheckItem);
+      selectFileType = ngVal(def.Data.SelectFileType, selectFileType);
 
       ng_MergeDef(def, {
         ParentReferences: false,
@@ -38,14 +45,16 @@ var FileUploaderControl = {
           MaxFilesCount: undefined,
           MaxFileSize: undefined,
           MaxBatchSize: undefined,
-          AllowedExtensions: undefined
+          AllowedExtensions: undefined,
+          SelectFileType: selectFileType
         },
         Controls: {
           ListFiles: {
             Type: 'ngList',
             L: 0, T: 0, B: 0, R: 0,
             Data: {
-              SelectType: nglSelectNone,
+              SelectType: (selectFileType == ngFupSelect_Select) ? nglSelectMulti : nglSelectNone ,
+              ShowCheckboxes: !!((selectFileType == ngFupSelect_CheckBox) || (selectFileType == ngFupSelect_CheckItem)),
               ShowHeader: false,
               Columns: new Array(
                 new ngListCol('File', ngTxt('ngfup_ColFile'))
@@ -54,7 +63,10 @@ var FileUploaderControl = {
             Events: {
               OnUpdated: ngfup_ListOnUpdated,
               OnAdd: ngfup_ListOnAdd,
-              OnRemove: ngfup_ListOnRemove
+              OnRemove: ngfup_ListOnRemove,
+              OnClickItem: ngfup_ListOnClickItem,
+              OnCheckChanged: ngfup_ListOnCheckChanged,
+              OnSelectChanged: ngfup_ListOnSelectChanged
             }
           },
           DragAndDropPanel: {
@@ -425,7 +437,7 @@ var FileUploaderControl = {
        *  Returns:
        *    -
        */
-      c.HasFilesToRemove = null;
+      c.HasFilesToRemove = ngfup_HasFilesToRemove;
 
       /*  Function: GetFilesToRemove
        *  ...
@@ -434,9 +446,9 @@ var FileUploaderControl = {
        *    array *GetFilesToRemove* ()
        *
        *  Returns:
-       *    - array / null
+       *    -
        */
-      c.GetFilesToRemove = null;
+      c.GetFilesToRemove = ngfup_GetFilesToRemove;
 
       c.AddEvent('DoDispose',ngfup_DoDispose);
 
@@ -625,10 +637,7 @@ function ngfup_OnCreated(c){
 function ngfup_OnSetRemoveBtnEnabled(o,v){
   if(!v){return true;}
   var uploader = this.ParentControl.ParentControl;
-  return (
-    (typeof uploader.HasFilesToRemove === 'function')
-    && uploader.HasFilesToRemove()
-  );
+  return uploader.HasFilesToRemove();
 }
 
 function ngfup_OnRemoveBtnClick(){
@@ -948,9 +957,37 @@ function ngfup_CheckMaxFiles(correction){
   return !((maxfiles >= 0) && (curfiles+correction > maxfiles));
 }
 
+function ngfup_HasFilesToRemove(){
+  var list = this.Controls.ListFiles;
+  switch(this.SelectFileType){
+    case ngFupSelect_Select:
+      var selected = (list) ? list.GetSelected() : [];
+      return (selected.length > 0);
+    break;
+    case ngFupSelect_CheckBox:
+    case ngFupSelect_CheckItem:
+      return (list && list.HasChecked());
+    break;
+  }
+  return false;
+}
+
+function ngfup_GetFilesToRemove(){
+  var list = this.Controls.ListFiles;
+  switch(this.SelectFileType){
+    case ngFupSelect_Select:
+      return (list) ? list.GetSelected() : [];
+    break;
+    case ngFupSelect_CheckBox:
+    case ngFupSelect_CheckItem:
+      return (list) ? list.GetChecked() : [];
+    break;
+  }
+  return null;
+}
+
 function ngfup_RemoveFiles(){
-  var items = (typeof this.GetFilesToRemove === 'function')
-    ? this.GetFilesToRemove() : null;
+  var items = this.GetFilesToRemove();
   if(!ng_IsArrayVar(items) || (items.length < 1)){return false;}
 
   this.Controls.ListFiles.BeginUpdate();
@@ -1249,6 +1286,39 @@ function ngfup_OnGetDragAndDropText(){
     (this.ParentControl.ParentControl.MaxFilesCount == 1)
       ? 'ngfup_DragAndDropOne' : 'ngfup_DragAndDropMore'
   );
+}
+
+function ngfup_ListOnClickItem(event){
+  if(!event){return;}
+  var uploader = this.ParentControl;
+  if(
+    (uploader.SelectFileType == ngFupSelect_CheckItem)
+    && (event.listPart == 0)
+  ){
+    var item = event.listItem;
+    this.CheckItem(item, !ngVal(item.Checked, false));
+  }
+}
+
+function ngfup_ListOnCheckChanged(){
+  var button = this.Owner.BtnRemoveFiles;
+  if(button){
+    var selectType = this.ParentControl.SelectFileType;
+    if((selectType == ngFupSelect_CheckItem) || (selectType == ngFupSelect_CheckBox)){
+      button.SetEnabled(this.HasChecked());
+    }
+  }
+}
+
+function ngfup_ListOnSelectChanged(){
+  var button = this.Owner.BtnRemoveFiles;
+  if(button){
+    var selectType = this.ParentControl.SelectFileType;
+    if(selectType == ngFupSelect_Select){
+      var selected = this.GetSelected();
+      button.SetEnabled(selected.length > 0);
+    }
+  }
 }
 
 function ngfup_AddDragBox(c,w){

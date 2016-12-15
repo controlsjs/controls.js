@@ -3518,20 +3518,7 @@ var WinEightControls = {
               Type: 'weList',
               Theme: WE_LIGHT,
               Data: {
-                ShowCheckboxes: true,
                 Frame: th ? winimages.FileUploaderFilesLight : null
-              },
-              Events: {
-                OnCheckChanged: function(c){
-                  if(c.Owner.BtnRemoveFiles){
-                    c.Owner.BtnRemoveFiles.SetEnabled(this.HasChecked());
-                  }
-                },
-                OnClickItem: function(o){
-                  if((o) && (o.listPart==0)){
-                    o.Owner.CheckItem(o.listItem, !ngVal(o.listItem.Checked, false));
-                  }
-                }
               }
             },
             DragAndDropPanel: {
@@ -3602,16 +3589,6 @@ var WinEightControls = {
                 if (o.curDialog) o.curDialog.Close();
                 delete o.curDialog;
               }
-            }
-          },
-          Methods: {
-            HasFilesToRemove: function(){
-              var list = this.Controls.ListFiles;
-              return (list && list.HasChecked());
-            },
-            GetFilesToRemove: function(){
-              var list = this.Controls.ListFiles;
-              return (list) ? list.GetChecked() : null;
             }
           }
         });
