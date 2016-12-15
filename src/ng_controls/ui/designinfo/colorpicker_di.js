@@ -184,7 +184,7 @@ ngUserControls['ngColorControls_designinfo'] = {
           ObjectProperties: {
             'L': ng_DIProperty('integer',0,{ Level: 'basic' }),
             'T': ng_DIProperty('integer',0,{ Level: 'basic' }),
-            'Src': ng_DIProperty('string','http://',{ Level: 'basic' })
+            'Src': ng_DIProperty('url','http://',{ Level: 'basic' })
           }
         }
       }
@@ -293,7 +293,69 @@ ngUserControls['ngColorControls_designinfo'] = {
       return {
         ControlCategory: 'Misc',
         Properties: ng_DIProperties({
+          'Layout': { DefaultType: 'bitmask', Level: 'basic',
+            Types: {
+              'bitmask': {
+                DefaultValue: {
+                  value: ngCopLayout_Default
+                },
+                EditorOptions: {
+                  BitMaskIdentifiers: [
+                    { id: 'ngColorPickerH', value: ngColorPickerH },
+                    { id: 'ngColorPickerS', value: ngColorPickerS },
+                    { id: 'ngColorPickerV', value: ngColorPickerV },
+                    { id: 'ngColorPickerSV', value: ngColorPickerSV },
 
+                    { id: 'ngColorPickerR', value: ngColorPickerR },
+                    { id: 'ngColorPickerG', value: ngColorPickerG },
+                    { id: 'ngColorPickerB', value: ngColorPickerB },
+
+                    { id: 'ngColorPickerA', value: ngColorPickerA },
+                    { id: 'ngColorPickerPreview', value: ngColorPickerPreview },
+
+                    { id: 'ngColorPickerHex', value: ngColorPickerHex },
+                    { id: 'ngColorPickerAHex', value: ngColorPickerAHex },
+                    { id: 'ngColorPickerEdits', value: ngColorPickerEdits },
+
+                    { id: 'ngColorPickerModeBar', value: ngColorPickerModeBar },
+
+                    { id: 'ngCopLayout_H_SV', value: ngCopLayout_H_SV },
+                    { id: 'ngCopLayout_HA_SV', value: ngCopLayout_HA_SV },
+                    { id: 'ngCopLayout_HSV', value: ngCopLayout_HSV },
+                    { id: 'ngCopLayout_HSVA', value: ngCopLayout_HSVA },
+                    { id: 'ngCopLayout_RGB', value: ngCopLayout_RGB },
+                    { id: 'ngCopLayout_RGBA', value: ngCopLayout_RGBA },
+                    { id: 'ngCopLayout_Default', value: ngCopLayout_Default }
+                  ]
+                }
+              }
+            }
+          },
+          'ModifyControls': {
+            'ModeBar': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
+              'ModifyControls': {
+                'Bar': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
+                  'ModifyControls': {
+                    'Env_H_SV': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
+                      'ModifyControls': {
+                        'To': ng_DIPropertyControl('ngRadioButton', { Level: 'basic' }, 'ngRadioButton')
+                      }
+                    }, { "ModifyControls": { Level: 'basic' } })),
+                    'Env_HSV': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
+                      'ModifyControls': {
+                        'To': ng_DIPropertyControl('ngRadioButton', { Level: 'basic' }, 'ngRadioButton')
+                      }
+                    }, { "ModifyControls": { Level: 'basic' } })),
+                    'Env_RGB': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
+                      'ModifyControls': {
+                        'To': ng_DIPropertyControl('ngRadioButton', { Level: 'basic' }, 'ngRadioButton')
+                      }
+                    }, { "ModifyControls": { Level: 'basic' } }))
+                  }
+                }, { "ModifyControls": { Level: 'basic' } }))
+              }
+            }, { "ModifyControls": { Level: 'basic' } }))
+          }
         })
       };
     });
