@@ -217,55 +217,55 @@ ngUserControls['ngColorControls_designinfo'] = {
                 'HueEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'HueLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Saturation_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
               'ModifyControls': {
                 'Saturation': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'SaturationEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'SaturationLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Value_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
               'ModifyControls': {
                 'Value': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'ValueEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'ValueLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Red_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
               'ModifyControls': {
                 'Red': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'RedEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'RedLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Green_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
               'ModifyControls': {
                 'Green': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'GreenEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'GreenLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Blue_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
               'ModifyControls': {
                 'Blue': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'BlueEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'BlueLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Alpha_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel',ng_DIProperties({
               'ModifyControls': {
                 'Alpha': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'AlphaEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'AlphaLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'SatVal_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
               'ModifyControls': {
                 'SatVal': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
                 'SatValLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Hex_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
               'ModifyControls': {
                 'HexEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
@@ -273,7 +273,7 @@ ngUserControls['ngColorControls_designinfo'] = {
                 'AHexEdit': ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
                 'AHexLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } })),
+            }, { 'ModifyControls': { Level: 'basic' } })),
             'Preview_Panel': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
               'ModifyControls': {
                 'From': ng_DIPropertyControl('ngColorButton', { Level: 'basic' }, 'ngColorButton'),
@@ -281,10 +281,10 @@ ngUserControls['ngColorControls_designinfo'] = {
                 'To': ng_DIPropertyControl('ngColorButton', { Level: 'basic' }, 'ngColorButton'),
                 'ToLabel': ng_DIPropertyControl('ngText', { Level: 'basic' })
               }
-            }, { "ModifyControls": { Level: 'basic' } }))
+            }, { 'ModifyControls': { Level: 'basic' } }))
           }
         },{
-          "ModifyControls": { Level: 'basic' }
+          'ModifyControls': { Level: 'basic' }
         })
       };
     });
@@ -364,15 +364,10 @@ ngUserControls['ngColorControls_designinfo'] = {
       return {
         ControlCategory: 'Buttons',
         NewControl: {
+          _noMerge:true,
           Default: {
             Properties: {
-              'W': { Value: 100 },
-              'Data': {
-                ObjectProperties: {
-                  'Text': undefined,
-                  'HTMLEncode': undefined
-                }
-              }
+              'W': { Value: 100 }
             }
           }
         },
@@ -393,7 +388,36 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorPickerDropDown',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits'
+        ControlCategory: 'Edits',
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 200 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          'Data': {
+//            'Color': ng_DIProperty(['null','color_hex6','color_hex8','color_chnls_hsv','color_chnls_rgb','color_chnls_hex','color_chnls_hexa'],null,{ InitType: 'color_hex6', Level: 'basic' }),
+            'Color': ng_DIProperty(['null','color_hex6','color_hex8'],null,{ InitType: 'color_hex6', Level: 'basic' }),
+            'AllowAlpha': ng_DIPropertyBool(false, { Level: 'basic' })
+          },
+          'Events': {
+            'OnColorChanging': ng_DIPropertyEvent('function(color) { return true; }', { Level: 'basic' }),
+            'OnColorChanged': ng_DIPropertyEvent('function(color) {}', { Level: 'basic' })
+          },
+          'DropDown': ng_DIPropertyControl('ngColorPickerBox', { Level: 'basic' }, 'ngColorPickerBox', ng_DIProperties({
+            'ModifyControls': {
+              'Buttons': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
+                'ModifyControls': {
+                  'Submit': ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+                  'Cancel': ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
+                }
+              }, { 'ModifyControls': { Level: 'basic' } }))
+            }
+          }, { "ModifyControls": { Level: 'basic' } }))
+        })
       };
     });
 
