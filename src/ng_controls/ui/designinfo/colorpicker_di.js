@@ -423,7 +423,21 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorPickerHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers'
+        ControlCategory: 'Containers',
+        Properties: ng_DIProperties({
+          'ModifyControls': {
+            'Picker': ng_DIPropertyControl('ngColorPickerBox', { Level: 'basic' }, 'ngColorPickerBox', ng_DIProperties({
+              'ModifyControls': {
+                'Buttons': ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
+                  'ModifyControls': {
+                    'Submit': ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+                    'Cancel': ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
+                  }
+                }, { 'ModifyControls': { Level: 'basic' } }))
+              }
+            }, { "ModifyControls": { Level: 'basic' } }))
+          }
+        }, { "ModifyControls": { Level: 'basic' } })
       };
     });
 
