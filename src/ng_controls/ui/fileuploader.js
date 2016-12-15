@@ -623,7 +623,7 @@ function ngfup_OnCreated(c){
 }
 
 function ngfup_OnSetRemoveBtnEnabled(o,v){
-  if(!v){return v;}
+  if(!v){return true;}
   var uploader = this.ParentControl.ParentControl;
   return (
     (typeof uploader.HasFilesToRemove === 'function')
