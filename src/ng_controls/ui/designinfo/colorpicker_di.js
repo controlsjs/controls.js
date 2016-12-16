@@ -466,14 +466,6 @@ ngUserControls['ngColorControls_designinfo'] = {
     ngRegisterControlDesignInfo('ngColorPickerButton',function(d,c,ref) {
       return {
         ControlCategory: 'Buttons',
-        NewControl: {
-          _noMerge:true,
-          Default: {
-            Properties: {
-              'W': { Value: 100 }
-            }
-          }
-        },
         Properties: ng_DIProperties({
           'Data': {
             'PickerLayout': ng_DIProperty(['null','ngcop_layout'],null,{ InitType: 'ngcop_layout', Level: 'basic' }),

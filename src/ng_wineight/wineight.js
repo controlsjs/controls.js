@@ -3240,7 +3240,6 @@ var WinEightControls = {
             Theme: WE_LIGHT,
             Layout : (def.Data && (def.Data.AllowAlpha === false)) ? ngCopLayout_Default : ngCopLayout_Default | ngColorPickerA,
             Data: {
-              AutoHeight: true,
               MaxHeight: 600
             },
             Controls: {
@@ -3349,7 +3348,6 @@ var WinEightControls = {
             Picker: {
               Type: 'weColorPickerBox',
               Theme: WE_LIGHT,
-              Data: { AutoHeight: true },
               W:296,
               Layout : layout,
               Controls: {
