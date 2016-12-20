@@ -566,7 +566,20 @@ function ngColorPicker(def,ref,parent)
        *  Returns:
        *    {H:0-360, S:0-1, V:0-1, R:0-255, G:0-255, B:0-255, A:0-1, HEX:#??????, HEXA:#????????}
        */
-      GetColor: ngcop_GetColor
+      GetColor: ngcop_GetColor,
+      /**
+       *  Function: ReDrawSatVal
+       *  - redraw saturation/value plane
+       *
+       *  Syntax:
+       *    object *ReDrawSatVal* ()
+       *
+       *  Parameters:
+       *
+       *  Returns:
+       *    -
+       */
+      ReDrawSatVal: ngcopch_ReDrawSatVal
     },
     /**
      *  Group: Events
@@ -1560,6 +1573,16 @@ function ngcopch_DrawSatVal(plane,node)
   }
 
   return true;
+}
+
+/**
+ * REDRAW SATURATION/VALUE PLANE
+ */
+function ngcopch_ReDrawSatVal()
+{
+  var satvalPlane = this.Controls.SatVal.Controls.Plane;
+  satvalPlane.Hue = null;
+  satvalPlane.Update();
 }
 
 /**
@@ -4302,6 +4325,7 @@ function ngColorPickerHint(def,ref,parent)
 {
   ng_MergeDef(def, {
     ParentReferences: false,
+    OnCreated: ngcoph_OnCreated,
     Controls: {
       Picker: {
         Type: 'ngColorPickerBox',
@@ -4333,6 +4357,14 @@ function ngColorPickerHint(def,ref,parent)
     (typeof def.CreateFrom === 'string') ? def.CreateFrom : 'ngHint',
     ref,parent
   );
+}
+
+/**
+ * REDRAW SATVAL PLANE IF HINT IS CREATED VISIBLE
+ */
+function ngcoph_OnCreated(hint)
+{
+  if(hint.Visible){hint.Controls.Picker.ReDrawSatVal();}
 }
 
 /**
@@ -4462,6 +4494,8 @@ function ngcopb_CancelColor()
  */
 function ngcopb_ShowButtonColor()
 {
+  this.ShowColor.callParent();
+
   if(this.Hint && this.Hint.Visible){
     var picker = this.Hint.Controls.Picker;
     if(picker){
