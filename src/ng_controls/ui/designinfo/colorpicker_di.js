@@ -414,7 +414,7 @@ ngUserControls['ngColorControls_designinfo'] = {
           'Data': {
 //            'Color': ng_DIProperty(['null','color_hex6','color_hex8','color_chnls_hsv','color_chnls_rgb','color_chnls_hex','color_chnls_hexa'],null,{ InitType: 'color_hex6', Level: 'basic' }),
             'Color': ng_DIProperty(['null','color_hex6','color_hex8'],null,{ InitType: 'color_hex6', Level: 'basic' }),
-            'AllowAlpha': ng_DIPropertyBool(false, { Level: 'basic' })
+            'AllowAlpha': ng_DIPropertyBool(true, { Level: 'basic' })
           },
           'Events': {
             'OnColorChanging': ng_DIPropertyEvent('function(color) { return true; }', { Level: 'basic' }),
