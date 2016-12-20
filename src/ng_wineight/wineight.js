@@ -3242,7 +3242,7 @@ var WinEightControls = {
             Data: {
               MaxHeight: 600
             },
-            Controls: {
+            ModifyControls: {
               ModeBar: {
                 Events:{
                   OnModeChanged: function(mode){
@@ -3253,13 +3253,9 @@ var WinEightControls = {
                   }
                 }
               },
-              Hue_Panel: {}, Saturation_Panel: {}, Value_Panel: {},
-              Red_Panel: {}, Green_Panel: {}, Blue_Panel: {},
-              Alpha_Panel: {},
               SatVal_Panel: {
                 H: (def.Data && (def.Data.AllowAlpha === false)) ? 236 : 194
               },
-              Hex_Panel: {}, Preview_Panel: {},
               Buttons: {
                 Type: 'ngPanel',
                 L:0,R:0,H:42,
@@ -3350,7 +3346,7 @@ var WinEightControls = {
               Theme: WE_LIGHT,
               W:296,
               Layout : layout,
-              Controls: {
+              ModifyControls: {
                 ModeBar: {
                   Events:{
                     OnModeChanged: function(mode){
@@ -3359,13 +3355,9 @@ var WinEightControls = {
                     }
                   }
                 },
-                Hue_Panel: {}, Saturation_Panel: {}, Value_Panel: {},
-                Red_Panel: {}, Green_Panel: {}, Blue_Panel: {},
-                Alpha_Panel: {},
                 SatVal_Panel: {
                   H: (def.Data && (def.Data.AllowAlpha === false)) ? 236 : 194
                 },
-                Hex_Panel: {}, Preview_Panel: {},
                 Buttons: {
                   Type: 'ngPanel',
                   L:0,R:0,H:42,
