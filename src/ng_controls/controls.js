@@ -1620,25 +1620,32 @@ function ngCreateControls(defs,ref,parent,options)
     ngCreateControlsLevel--;
     if(!ngCreateControlsLevel)
     {
-      var cinfo,c;
-      for(var i=0;i<options.CreatedControls.length;i++)
-      {
-        cinfo=options.CreatedControls[i];
-        c=cinfo.Control;
-        if(typeof c.ChildHandling!=='undefined') {
-          // Update children
-          c.SetChildControlsEnabled(c.Enabled);
-        }
-        oc=cinfo.OnCreated;
-        cinfo.OnCreated=null;
-        if(oc)
+      ngCreateControlsLevel++;
+      try {
+        var cinfo,c;
+        for(var i=0;i<options.CreatedControls.length;i++)
         {
-          ngCreateControlsOptions=cinfo.Options;
-          c.OnCreated=oc;
-          oc(c,cinfo.Ref,cinfo.Options);
+          cinfo=options.CreatedControls[i];
+          c=cinfo.Control;
+          if(typeof c.ChildHandling!=='undefined') {
+            // Update children
+            c.SetChildControlsEnabled(c.Enabled);
+          }
+          oc=cinfo.OnCreated;
+          cinfo.OnCreated=null;
+          if(oc)
+          {
+            ngCreateControlsOptions=cinfo.Options;
+            c.OnCreated=oc;
+            oc(c,cinfo.Ref,cinfo.Options);
+          }
+
+          if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,cinfo.Options);
+          if(options.OnCreated) options.OnCreated(c,cinfo.Ref,cinfo.Options);
         }
-        if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,cinfo.Options);
-        if(options.OnCreated) options.OnCreated(c,cinfo.Ref,cinfo.Options);
+      }
+      finally {
+        ngCreateControlsLevel--;
       }
     }
   }
