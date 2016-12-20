@@ -25,8 +25,8 @@ var WinXPControls = {
   ControlsGroup: 'WinXP Skin',
 
   ControlImages: [
-    'winxp_base.png?7',
-    'winxp_hbox.png?5',
+    'winxp_base.png?8',
+    'winxp_hbox.png?6',
     'winxp_vbox.png?5'
   ],
 
@@ -360,7 +360,25 @@ var WinXPControls = {
       }
     },
 
-    Close: { L: 205, T: 87, oL: 215, SL: 215, DL: 225, W: 10, H: 10 }
+    Close: { L: 205, T: 87, oL: 215, SL: 215, DL: 225, W: 10, H: 10 },
+
+    ColorButton: {
+      LeftImg: { L: 70, T: 2, H: 21, W: 1, DL: 86 },
+      MiddleImg: { L: 0, T: 642, H: 21, DT: 665, Src: 1 },
+      RightImg: { L: 76, T: 2, H: 21, W: 1, DL: 92 },
+      Background: { L: 0, T: 620, H: 21, Src: 1 }
+    },
+    ColorPicker: {
+//      HorizontalSliderCursor: { L: 283, T: 170, W: 16, H: 28 },
+//      VerticalSliderCursor: { L: 321, T: 170, W: 28, H: 16 },
+      AlphaSliderBackground: { L: 1, T: 621, H: 19, Src: 1 },
+      PreviewIcon: { L: 276, T: 23, W: 10, H: 20 }//,
+//      SatValCursor: { L: 355, T: 170, W: 10, H: 10}
+    },
+    ColorPickerDropDownButton: {
+        Background: { L: 0, T: 622, H: 21, Src: 1 },
+        Img: { L: -80, T: -17, H: 17, W: 80 }
+    }
 
   },
 
@@ -2249,9 +2267,552 @@ var WinXPControls = {
         c.DropDownButton.Default = false;
         if(typeof def.DropDown.className === 'undefined') def.DropDown.className='wxpDropDown';
         return c;
-      }
+      };
 
       ngRegisterControlType('stdEditTime', function(def,ref,parent) { return skinfnc.Create_stdEditTime(def,ref,parent); });
+    }
+
+        /**
+     * Color Controls
+     */
+    if(ngUserControls['ngColorControls'])
+    {
+
+      /**  Class: stdColorPickerBox
+       *  Standard color picker box control (based on <ngColorPickerBox>).
+       */
+      ngRegisterControlType('stdColorPickerBox', function(def,ref,parent) {
+        ng_MergeDef(def, {
+          className: 'wxpColorPicker',
+          Data: {
+            AutoHeight: true,
+            AsToolbar: true,
+            Vertical: true
+          },
+          Controls: {
+            ModeBar: {
+              L:0, R:0, H:28,
+              Controls: {
+                Bar: {
+                  L:5, R:5, T:5, H:23,
+                  Controls: {
+                    Env_H_SV: {
+                      L:0, T:0, W:'33%', B:0,
+                      Controls: {
+                        H_SV: {
+                          L:0, T:0, R:0,
+                          Type: 'stdButton',
+                          Events: { OnClick: function(){this.Check(true);return true;}}
+                        }
+                      }
+                    },
+                    Env_HSV: {
+                      L:'33%', R:'33%', T:0, B:0,
+                      Controls: {
+                        HSV: {
+                          L:0, R:0, T:0,
+                          Type: 'stdButton',
+                          Events: { OnClick: function(){this.Check(true);return true;}}
+                        }
+                      }
+                    },
+                    Env_RGB: {
+                      R:0,T:0, W:'33%', B:0,
+                      Controls: {
+                        RGB: {
+                          R:0,T:0, L:0,
+                          Type: 'stdButton',
+                          Events: { OnClick: function(){this.Check(true);return true;}}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              Events:{
+                OnModeChanged: function(mode){
+                  var showLabels = (mode !== 'h_sv');
+                  var sliderTop = (showLabels) ? 18 : 5;
+                  var sliderPanelH = (showLabels) ? 39 : 26;
+
+                  var controls = this.Owner;
+                  controls.HueLabel.SetVisible(showLabels);
+                  controls.AlphaLabel.SetVisible(showLabels);
+                  controls.SatValLabel.SetVisible(showLabels);
+                  controls.FromLabel.SetVisible(showLabels);
+                  controls.ToLabel.SetVisible(showLabels);
+                  controls.Hue.SetBounds({T:sliderTop});
+                  controls.Alpha.SetBounds({T:sliderTop});
+                  controls.SatVal.SetBounds({T:sliderTop});
+                  controls.From.SetBounds({T:sliderTop});
+                  controls.To.SetBounds({T:sliderTop});
+                  controls.PreviewIcon.SetBounds({T:sliderTop});
+                  controls.Hue_Panel.SetBounds({H:sliderPanelH});
+                  controls.Alpha_Panel.SetBounds({H:sliderPanelH});
+                  controls.Preview_Panel.SetBounds({H:sliderPanelH});
+                  controls.Hue_Panel.Update();
+                  controls.Alpha_Panel.Update();
+                  controls.Preview_Panel.Update();
+                }
+              }
+            },
+            Hue_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Hue: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  }
+                },
+                HueEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                HueLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Saturation_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Saturation: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  }
+                },
+                SaturationEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                SaturationLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Value_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Value: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  }
+                },
+                ValueEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                ValueLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Red_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Red: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  }
+                },
+                RedEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                RedLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Green_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Green: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  }
+                },
+                GreenEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                GreenLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Blue_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Blue: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  }
+                },
+                BlueEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                BlueLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Alpha_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                Alpha: {
+                  L:5,T:18,R:5,H:19,
+                  className: 'wxpColorPickerSlider',
+                  Data: {
+                    WithEditBounds: { R:60 },
+                    WithoutEditBounds: { R:5 }
+                  },
+                  Controls: {
+                    Plane: {
+                      Data: { Img: winimages.ColorPicker.AlphaSliderBackground }
+                    }
+                  }
+                },
+                AlphaEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:50,T:18
+                },
+                AlphaLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            SatVal_Panel: {
+              L:0,H:192,R:0,
+              Controls: {
+                SatVal: {
+                  L:5,R:5,T:18,B:0,
+                  className: 'wxpColorPickerSatVal',
+                  Controls: {
+                    Cursor: {
+                      Type: 'ngImage',
+                      Data: { Img: winimages.ColorPicker.SatValCursor }
+                    }
+                  }
+                },
+                SatValLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:5,T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Hex_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                AHexEdit: {
+                  Type: 'stdEdit',
+                  L:5,W:80,T:18,
+                  Data: { TextAlign: 'left' }
+                },
+                HexEdit: {
+                  Type: 'stdEdit',
+                  R:5,W:80,T:18,
+                  Data: { TextAlign: 'left' }
+                },
+                HexLabel: {
+                  Type: 'stdLabel',
+                  R:5,L:'50%',T:2,
+                  Data: { TextAlign: 'right' }
+                },
+                AHexLabel: {
+                  Type: 'stdLabel',
+                  L:5,R:'50%',T:2,
+                  Data: { TextAlign: 'left' }
+                }
+              }
+            },
+            Preview_Panel: {
+              L:0,R:0,H:39,
+              Controls: {
+                From: {
+                  Type: 'stdColorButton',
+                  L:5,W:80,T:18
+                },
+                FromLabel: {
+                  Type: 'stdLabel',
+                  L:5,W:80,T:2,
+                  Data: { TextAlign: 'left' }
+                },
+                To: {
+                  Type: 'stdColorButton',
+                  R:5,W:80,T:18
+                },
+                ToLabel: {
+                  Type: 'stdLabel',
+                  R:5,W:80,T:2,
+                  Data: { TextAlign: 'right' }
+                },
+                PreviewIcon: {
+                  Type: 'ngButton',
+                  L:'50%',T:18,
+                  style: { marginLeft: '-5px' },
+                  Data: { Img: winimages.ColorPicker.PreviewIcon }
+                }
+              }
+            }
+          }
+        });
+
+        var hs = winimages.ColorPicker.HorizontalSliderCursor;
+        var vs = winimages.ColorPicker.VerticalSliderCursor;
+
+        ng_MergeDef(def, {
+          Controls: {
+            Hue_Panel: {Controls: {Hue: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Hue_Panel.Controls.Hue.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Saturation_Panel: {Controls: {Saturation: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Saturation_Panel.Controls.Saturation.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Value_Panel: {Controls: {Value :{Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Value_Panel.Controls.Value.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Red_Panel: {Controls: {Red: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Red_Panel.Controls.Red.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Green_Panel: {Controls: {Green: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Green_Panel.Controls.Green.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Blue_Panel: {Controls: {Blue: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Blue_Panel.Controls.Blue.Data.Vertical)? vs : hs
+              }
+            }}}}},
+            Alpha_Panel: {Controls: {Alpha: {Controls: {Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (def.Controls.Alpha_Panel.Controls.Alpha.Data.Vertical)? vs : hs
+              }
+            }}}}}
+          }
+        });
+
+        var c = ngCreateControlAsType(def, 'ngColorPickerBox', ref, parent);
+        if(!c){return c;}
+        c.DoAutoHeight = function(height){return height+5;};
+        return c;
+      });
+
+      /**  Class: stdColorButton
+       *  Standard color button control (based on <ngColorButton>).
+       */
+      ngRegisterControlType('stdColorButton', function(def,ref,parent) {
+        ng_MergeDef(def, {
+          Data: {
+            BackgroundImg: winimages.ColorButton.Background,
+            LeftImg: winimages.ColorButton.LeftImg,
+            MiddleImg: winimages.ColorButton.MiddleImg,
+            RightImg:winimages.ColorButton.RightImg
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngColorButton', ref, parent);
+      });
+
+      /**  Class: stdColorPickerDropDown
+       *  Standard color picker drop down control (based on <ngColorPickerDropDown>).
+       */
+      ngRegisterControlType('stdColorPickerDropDown', function(def,ref,parent) {
+        ng_MergeDef(def, {
+          CreateFrom: 'stdDropDown',
+          Data: {
+            TextAlign: 'center',
+            DropDownAlign: 'right'
+          },
+          DropDown: {
+            W:196, H:309,
+            Type: 'stdColorPickerBox',
+            Layout : (def.Data && (def.Data.AllowAlpha === false)) ? ngCopLayout_Default : ngCopLayout_Default | ngColorPickerA,
+            Data: {
+              MaxHeight: 480
+            },
+            ModifyControls: {
+              ModeBar: {
+                Events:{
+                  OnModeChanged: function(mode){
+                    var edit = this.Owner.Owner.Owner;
+                    if(edit.DropDownControl.Visible){
+                      edit.DropDown();
+                    }
+                  }
+                }
+              },
+              SatVal_Panel: {
+                H: (def.Data && (def.Data.AllowAlpha === false)) ? 192 : 166
+              },
+              Buttons: {
+                Type: 'ngPanel',
+                L:0,R:10,H:28,
+                ScrollBars: ssDefault,
+                Controls: {
+                  Submit: {
+                    Type: 'stdButton',
+                    L:5,T:5,W:'50%'
+                  },
+                  Cancel: {
+                    Type: 'stdButton',
+                    R:-5,T:5,W:'50%'
+                  }
+                }
+              }
+            }
+          },
+          Events: {
+            OnFocus: function(){
+              this.DropDownButton.Check(true);
+            },
+            OnBlur: function(){
+              this.DropDownButton.Check(false);
+            },
+            OnMouseEnter: function(edit){
+              if(this.DropDownButton){
+                this.DropDownButton.DoMouseEnter();
+              }
+            },
+            OnMouseLeave: function(edit){
+              if(this.DropDownButton){
+                this.DropDownButton.DoMouseLeave();
+              }
+            }
+          }
+        });
+
+        var c = ngCreateControlAsType(def, 'ngColorPickerDropDown', ref, parent);
+        if(!c) return c;
+
+        c.DropDownButton.BackgroundImg = winimages.ColorPickerDropDownButton.Background;
+        c.DropDownButton.Img = winimages.ColorPickerDropDownButton.Img;
+        c.DropDownButton.LeftImg = null;
+        c.DropDownButton.MiddleImg = null;
+        c.DropDownButton.RightImg = null;
+        c.DropDownButton.Default = false;
+        c.DropDownButton.AddEvent('OnUpdate',function(){
+          var o=this.Elm();
+          if(o) o.style.marginTop = '2px';
+          return true;
+        });
+        return c;
+      });
+
+      /**  Class: stdColorPickerHint
+       *  Standard color picker hint control (based on <ngColorPickerHint>).
+       */
+      ngRegisterControlType('stdColorPickerHint', function(def,ref,parent) {
+        var layout = ngCopLayout_Default | ngColorPickerHex | ngColorPickerAHex;
+        if(def.Data && (def.Data.AllowAlpha) !== false){ layout = layout | ngColorPickerA; }
+
+        ng_MergeDef(def, {
+          CreateFrom: 'stdHint',
+          Controls: {
+            Picker: {
+              Type: 'stdColorPickerBox',
+              W:196,
+              Layout : layout,
+              ModifyControls: {
+                ModeBar: {
+                  Events:{
+                    OnModeChanged: function(mode){
+                      var picker = this.Owner.Owner;
+                      picker.ParentControl.ParentControl.Update(false);
+                    }
+                  }
+                },
+                SatVal_Panel: {
+                  H: (def.Data && (def.Data.AllowAlpha === false)) ? 192 : 166
+                },
+                Buttons: {
+                  Type: 'ngPanel',
+                  L:0,R:10,H:28,
+                  ScrollBars: ssDefault,
+                  Controls: {
+                    Submit: {
+                      Type: 'stdButton',
+                      L:5,T:5,W:'50%'
+                    },
+                    Cancel: {
+                      Type: 'stdButton',
+                      R:-5,T:5,W:'50%'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngColorPickerHint', ref, parent);
+      });
+
+      /**  Class: stdColorPickerButton
+       *  Standard color picker button control (based on <stdColorButton>).
+       */
+      ngRegisterControlType('stdColorPickerButton', function(def,ref,parent) {
+        ng_MergeDef(def, {
+          CreateFrom: 'stdColorButton',
+          Data: {
+            HintDef: {
+              Type: 'stdColorPickerHint'
+            }
+          }
+        });
+
+        return ngCreateControlAsType(def, 'ngColorPickerButton', ref, parent);
+      });
     }
 
     /**

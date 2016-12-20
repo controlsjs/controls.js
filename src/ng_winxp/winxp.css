@@ -21,7 +21,7 @@
   background-color: #FFFFFF;
 }
 
-/* Remove IE10+ text input buttons */ 
+/* Remove IE10+ text input buttons */
 ::-ms-clear {
     width : 0;
     height: 0;
@@ -94,12 +94,12 @@
   margin-right: 5px;
 }
 
-.wxpButtonBtn_Focus .wxpButtonText  
+.wxpButtonBtn_Focus .wxpButtonText
 {
   text-decoration: underline;
 }
 
-.wxpButtonBtnGrayed 
+.wxpButtonBtnGrayed
 {
   color: #a0a0a0;
 }
@@ -110,7 +110,7 @@
   text-decoration: underline;
 }
 
-.wxpButtonBtnChecked 
+.wxpButtonBtnChecked
 {
 }
 
@@ -119,8 +119,8 @@
   text-decoration: underline;
 }
 
-.wxpButtonBtnDisabled, 
-.wxpButtonBtnDisabled_Focus 
+.wxpButtonBtnDisabled,
+.wxpButtonBtnDisabled_Focus
 {
   color: #a0a0a0;
 }
@@ -148,7 +148,7 @@
 
 .wxpFlatButtonBtn
 {
-  color: #7F9DB9; 
+  color: #7F9DB9;
 }
 
 .wxpFlatButtonText
@@ -157,18 +157,18 @@
   margin-right: 5px;
 }
 
-.wxpFlatButtonBtn_Focus 
+.wxpFlatButtonBtn_Focus
 {
   color: #7F9DB9;
 }
 
-.wxpFlatButtonBtn_Focus .wxpFlatButtonText  
+.wxpFlatButtonBtn_Focus .wxpFlatButtonText
 {
   color: #FFA615;
   text-decoration: underline;
 }
 
-.wxpFlatButtonBtnGrayed 
+.wxpFlatButtonBtnGrayed
 {
   color: #a0a0a0;
 }
@@ -179,12 +179,12 @@
   text-decoration: underline;
 }
 
-.wxpFlatButtonBtnChecked 
+.wxpFlatButtonBtnChecked
 {
   color: #FFA615;
 }
 
-.wxpFlatButtonBtnChecked_Focus 
+.wxpFlatButtonBtnChecked_Focus
 {
   color: #FFA615;
 }
@@ -194,8 +194,8 @@
   text-decoration: underline;
 }
 
-.wxpFlatButtonBtnDisabled, 
-.wxpFlatButtonBtnDisabled_Focus 
+.wxpFlatButtonBtnDisabled,
+.wxpFlatButtonBtnDisabled_Focus
 {
   color: #a0a0a0;
 }
@@ -207,39 +207,39 @@
   text-decoration: underline;
 }
 
-.wxpLinkBtn_Focus 
+.wxpLinkBtn_Focus
 {
   text-decoration: underline;
   color: #FFA615;
 }
 
-.wxpLinkBtnGrayed 
+.wxpLinkBtnGrayed
 {
   text-decoration: underline;
   color: #a0a0a0;
 }
 
-.wxpLinkBtnGrayed_Focus 
+.wxpLinkBtnGrayed_Focus
 {
   color: #a0a0a0;
   text-decoration: underline;
 }
 
-.wxpLinkBtnChecked 
+.wxpLinkBtnChecked
 {
   text-decoration: underline;
   font-weight: bold;
 }
 
-.wxpLinkBtnChecked_Focus 
+.wxpLinkBtnChecked_Focus
 {
   text-decoration: underline;
   font-weight: bold;
   color: #FFA615;
 }
 
-.wxpLinkBtnDisabled, 
-.wxpLinkBtnDisabled_Focus 
+.wxpLinkBtnDisabled,
+.wxpLinkBtnDisabled_Focus
 {
   text-decoration: underline;
   color: #a0a0a0;
@@ -248,24 +248,24 @@
 /* wxpLabel ********************************************************************/
 
 .wxpLabelBtn,
-.wxpLabelBtn_Focus 
+.wxpLabelBtn_Focus
 {
 }
 
-.wxpLabelBtnGrayed, 
-.wxpLabelBtnGrayed_Focus 
+.wxpLabelBtnGrayed,
+.wxpLabelBtnGrayed_Focus
 {
   color: #a0a0a0;
 }
 
-.wxpLabelBtnChecked, 
-.wxpLabelBtnChecked_Focus 
+.wxpLabelBtnChecked,
+.wxpLabelBtnChecked_Focus
 {
   font-weight: bold;
 }
 
-.wxpLabelBtnDisabled, 
-.wxpLabelBtnDisabled_Focus 
+.wxpLabelBtnDisabled,
+.wxpLabelBtnDisabled_Focus
 {
   color: #a0a0a0;
 }
@@ -280,37 +280,37 @@
 .wxpRadioBtnLeft,
 .wxpRadioBtnLeftGrayed,
 .wxpCheckBoxBtnLeft,
-.wxpCheckBoxBtnLeftGrayed 
+.wxpCheckBoxBtnLeftGrayed
 {
   margin-left: 3px;
 }
 
-.wxpRadioBtnLeft_Focus, 
-.wxpRadioBtnLeftGrayed_Focus, 
-.wxpCheckBoxBtnLeft_Focus, 
-.wxpCheckBoxBtnLeftGrayed_Focus 
-{
-  text-decoration: underline;
-  margin-left: 3px;
-}
-
-.wxpRadioBtnLeftChecked, 
-.wxpCheckBoxBtnLeftChecked 
-{
-  margin-left: 3px;
-}
-
-.wxpRadioBtnLeftChecked_Focus, 
-.wxpCheckBoxBtnLeftChecked_Focus 
+.wxpRadioBtnLeft_Focus,
+.wxpRadioBtnLeftGrayed_Focus,
+.wxpCheckBoxBtnLeft_Focus,
+.wxpCheckBoxBtnLeftGrayed_Focus
 {
   text-decoration: underline;
   margin-left: 3px;
 }
 
-.wxpRadioBtnLeftDisabled, 
-.wxpRadioBtnLeftDisabled_Focus, 
-.wxpCheckBoxBtnLeftDisabled, 
-.wxpCheckBoxBtnLeftDisabled_Focus 
+.wxpRadioBtnLeftChecked,
+.wxpCheckBoxBtnLeftChecked
+{
+  margin-left: 3px;
+}
+
+.wxpRadioBtnLeftChecked_Focus,
+.wxpCheckBoxBtnLeftChecked_Focus
+{
+  text-decoration: underline;
+  margin-left: 3px;
+}
+
+.wxpRadioBtnLeftDisabled,
+.wxpRadioBtnLeftDisabled_Focus,
+.wxpCheckBoxBtnLeftDisabled,
+.wxpCheckBoxBtnLeftDisabled_Focus
 {
   margin-left: 3px;
   color: #a0a0a0;
@@ -319,37 +319,37 @@
 .wxpRadioBtnRight,
 .wxpRadioBtnRightGrayed,
 .wxpCheckBoxBtnRight,
-.wxpCheckBoxBtnRightGrayed 
+.wxpCheckBoxBtnRightGrayed
 {
   margin-right: 3px;
 }
 
-.wxpRadioBtnRight_Focus, 
-.wxpRadioBtnRightGrayed_Focus, 
-.wxpCheckBoxBtnRight_Focus, 
-.wxpCheckBoxBtnRightGrayed_Focus 
-{
-  text-decoration: underline;
-  margin-right: 3px;
-}
-
-.wxpRadioBtnRightChecked, 
-.wxpCheckBoxBtnRightChecked 
-{
-  margin-right: 3px;
-}
-
-.wxpRadioBtnRightChecked_Focus, 
-.wxpCheckBoxBtnRightChecked_Focus 
+.wxpRadioBtnRight_Focus,
+.wxpRadioBtnRightGrayed_Focus,
+.wxpCheckBoxBtnRight_Focus,
+.wxpCheckBoxBtnRightGrayed_Focus
 {
   text-decoration: underline;
   margin-right: 3px;
 }
 
-.wxpRadioBtnRightDisabled, 
-.wxpRadioBtnRightDisabled_Focus, 
-.wxpCheckBoxBtnRightDisabled, 
-.wxpCheckBoxBtnRightDisabled_Focus 
+.wxpRadioBtnRightChecked,
+.wxpCheckBoxBtnRightChecked
+{
+  margin-right: 3px;
+}
+
+.wxpRadioBtnRightChecked_Focus,
+.wxpCheckBoxBtnRightChecked_Focus
+{
+  text-decoration: underline;
+  margin-right: 3px;
+}
+
+.wxpRadioBtnRightDisabled,
+.wxpRadioBtnRightDisabled_Focus,
+.wxpCheckBoxBtnRightDisabled,
+.wxpCheckBoxBtnRightDisabled_Focus
 {
   margin-right: 3px;
   color: #a0a0a0;
@@ -500,17 +500,17 @@
   font-size: 11px;
   -moz-outline: 0px;
   outline: none;
-  -webkit-border-radius:0; 
+  -webkit-border-radius:0;
   border-radius:0;
   background: transparent;
 }
 
-.wxpEditInputDisabled, 
-.wxpEditInputDisabled_Focus, 
+.wxpEditInputDisabled,
+.wxpEditInputDisabled_Focus,
 .wxpEditInputHint,
 .wxpEditInputHint_Focus,
-.wxpEditInputHintDisabled, 
-.wxpEditInputHintDisabled_Focus 
+.wxpEditInputHintDisabled,
+.wxpEditInputHintDisabled_Focus
 {
   font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   padding: 1px 0px 0px 0px;
@@ -520,7 +520,7 @@
   color: #a0a0a0;
   -moz-outline: 0px;
   outline: none;
-  -webkit-border-radius:0; 
+  -webkit-border-radius:0;
   border-radius:0;
   background: transparent;
 }
@@ -546,12 +546,12 @@
   background: transparent;
 }
 
-.wxpMemoInputDisabled, 
-.wxpMemoInputDisabled_Focus, 
+.wxpMemoInputDisabled,
+.wxpMemoInputDisabled_Focus,
 .wxpMemoInputHint,
 .wxpMemoInputHint_Focus,
-.wxpMemoInputHintDisabled, 
-.wxpMemoInputHintDisabled_Focus 
+.wxpMemoInputHintDisabled,
+.wxpMemoInputHintDisabled_Focus
 {
   font-size: 11px;
   font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
@@ -582,8 +582,8 @@
   margin-right: 5px;
 }
 
-.wxpPagesPageSelected .wxpPagesPageText,  
-.wxpPagesPageSelected_Focus .wxpPagesPageText  
+.wxpPagesPageSelected .wxpPagesPageText,
+.wxpPagesPageSelected_Focus .wxpPagesPageText
 {
 }
 
@@ -592,8 +592,8 @@
   text-decoration: underline;
 }
 
-.wxpPagesPageDisabled .wxpPagesPageText,  
-.wxpPagesPageDisabled_Focus .wxpPagesPageText  
+.wxpPagesPageDisabled .wxpPagesPageText,
+.wxpPagesPageDisabled_Focus .wxpPagesPageText
 {
   color: #a0a0a0;
 }
@@ -626,23 +626,23 @@
   line-height: 21px;
 }
 
-.wxpCalendarHeader 
+.wxpCalendarHeader
 {
   margin-bottom: 5px;
 }
 
-.wxpCalendarFooter 
+.wxpCalendarFooter
 {
 }
 
-.wxpCalendarMonth 
+.wxpCalendarMonth
 {
   text-align: center;
   line-height: 13px;
   text-transform: uppercase;
 }
 
-.wxpCalendarMonthDisabled 
+.wxpCalendarMonthDisabled
 {
   color: #a0a0a0;
   text-align: center;
@@ -650,21 +650,21 @@
   text-transform: uppercase;
 }
 
-.wxpCalendarYear 
+.wxpCalendarYear
 {
   text-align: center;
   line-height: 13px;
 }
 
-.wxpCalendarYearDisabled 
+.wxpCalendarYearDisabled
 {
   color: #a0a0a0;
   text-align: center;
   line-height: 13px;
 }
 
-.wxpCalendarWeekDays 
-{  
+.wxpCalendarWeekDays
+{
   color: #000000;
   border-bottom: 1px solid #000000;
   cursor: default;
@@ -677,25 +677,25 @@
   line-height: 21px;
 }
 
-.wxpCalendarWeekDayHilite 
-{ 
+.wxpCalendarWeekDayHilite
+{
   color: #DF6C18;
 }
 
-.wxpCalendarWeekDayDisabled 
-{ 
+.wxpCalendarWeekDayDisabled
+{
   color: #a0a0a0;
 }
 
-.wxpCalendarWeekDayDisabled, 
-.wxpCalendarWeekDayHiliteDisabled 
-{ 
+.wxpCalendarWeekDayDisabled,
+.wxpCalendarWeekDayHiliteDisabled
+{
   color: #a0a0a0;
   border-bottom: 1px solid #a0a0a0;
 }
 
 .wxpCalendarDays
-{  
+{
   z-index: 200;
   color: #000000;
   position: relative;
@@ -707,41 +707,41 @@
   -moz-user-select: none;
 }
 
-.wxpCalendarNow 
-{  
+.wxpCalendarNow
+{
   font-weight: bold;
 }
 
-.wxpCalendarDay 
-{  
+.wxpCalendarDay
+{
 }
 
-.wxpCalendarNow_Focus 
-{  
+.wxpCalendarNow_Focus
+{
   font-weight: bold;
   text-decoration: underline;
 }
 
-.wxpCalendarDay_Focus 
+.wxpCalendarDay_Focus
 {
   text-decoration: underline;
 }
 
-.wxpCalendarNowSelected 
-{  
+.wxpCalendarNowSelected
+{
   font-weight: bold;
   background-color: #316AC5;
   color: #FFFFFF;
 }
 
 .wxpCalendarDaySelected
-{  
+{
   background-color: #316AC5;
   color: #FFFFFF;
 }
 
-.wxpCalendarNowSelected_Focus 
-{  
+.wxpCalendarNowSelected_Focus
+{
   font-weight: bold;
   background-color: #316AC5;
   color: #FFFFFF;
@@ -749,25 +749,25 @@
 }
 
 .wxpCalendarDaySelected_Focus
-{  
+{
   background-color: #316AC5;
   color: #FFFFFF;
   text-decoration: underline;
 }
 
-.wxpCalendarDayDisabled, 
+.wxpCalendarDayDisabled,
 .wxpCalendarDaySelectedDisabled,
-.wxpCalendarDayDisabled_Focus, 
-.wxpCalendarDaySelectedDisabled_Focus 
-{  
+.wxpCalendarDayDisabled_Focus,
+.wxpCalendarDaySelectedDisabled_Focus
+{
   color: #a0a0a0;
 }
 
-.wxpCalendarNowDisabled, 
-.wxpCalendarNowDisabled_Focus, 
+.wxpCalendarNowDisabled,
+.wxpCalendarNowDisabled_Focus,
 .wxpCalendarNowSelectedDisabled,
-.wxpCalendarNowSelectedDisabled_Focus 
-{  
+.wxpCalendarNowSelectedDisabled_Focus
+{
   font-weight: bold;
   color: #a0a0a0;
 }
@@ -868,7 +868,7 @@
   cursor: default;
 }
 
-.wxpMenuSeparator 
+.wxpMenuSeparator
 {
   border-top: 1px solid #ACA899;
   margin: 3px 0px 3px 0px;
@@ -878,10 +878,10 @@
 
 .wxpMenuSubMenu
 {
-  position:absolute; 
-  top: 0px; 
-  right: 0px; 
-  _right: 9px; 
+  position:absolute;
+  top: 0px;
+  right: 0px;
+  _right: 9px;
 }
 
 .wxpMenuSeparator HR
@@ -956,13 +956,13 @@
   cursor: default;
 }
 
-.wxpMenuBarButtonBtn_Focus .wxpMenuBarButtonText  
+.wxpMenuBarButtonBtn_Focus .wxpMenuBarButtonText
 {
   background-color: #316AC5;
   color: #FFFFFF;
 }
 
-.wxpMenuBarButtonBtnGrayed 
+.wxpMenuBarButtonBtnGrayed
 {
   color: #a0a0a0;
 }
@@ -972,20 +972,20 @@
   color: #a0a0a0;
 }
 
-.wxpMenuBarButtonBtnChecked 
+.wxpMenuBarButtonBtnChecked
 {
   background-color: #316AC5;
   color: #FFFFFF;
 }
 
 .wxpMenuBarButtonBtnChecked_Focus .wxpMenuBarButtonText
-{          
+{
   background-color: #316AC5;
   color: #FFFFFF;
 }
 
-.wxpMenuBarButtonBtnDisabled, 
-.wxpMenuBarButtonBtnDisabled_Focus 
+.wxpMenuBarButtonBtnDisabled,
+.wxpMenuBarButtonBtnDisabled_Focus
 {
   color: #a0a0a0;
 }
@@ -1002,12 +1002,12 @@
   margin-right: 10px;
 }
 
-.wxpSplitButtonBtn_Focus .wxpSplitButtonText  
+.wxpSplitButtonBtn_Focus .wxpSplitButtonText
 {
   text-decoration: underline;
 }
 
-.wxpSplitButtonBtnGrayed 
+.wxpSplitButtonBtnGrayed
 {
   color: #a0a0a0;
 }
@@ -1018,7 +1018,7 @@
   text-decoration: underline;
 }
 
-.wxpSplitButtonBtnChecked 
+.wxpSplitButtonBtnChecked
 {
 }
 
@@ -1027,8 +1027,8 @@
   text-decoration: underline;
 }
 
-.wxpSplitButtonBtnDisabled, 
-.wxpSplitButtonBtnDisabled_Focus 
+.wxpSplitButtonBtnDisabled,
+.wxpSplitButtonBtnDisabled_Focus
 {
   color: #a0a0a0;
 }
@@ -1095,7 +1095,7 @@
 
 /* wxpPageListPaging **********************************************************/
 
-.wxpPageListPaging 
+.wxpPageListPaging
 {
   margin-left: 4px;
   margin-right: 4px;
@@ -1124,12 +1124,12 @@
   background: transparent;
 }
 
-.wxpPgListPgNoInputDisabled, 
-.wxpPgListPgNoInputDisabled_Focus, 
+.wxpPgListPgNoInputDisabled,
+.wxpPgListPgNoInputDisabled_Focus,
 .wxpPgListPgNoInputHint,
 .wxpPgListPgNoInputHint_Focus,
-.wxpPgListPgNoInputHintDisabled, 
-.wxpPgListPgNoInputHintDisabled_Focus 
+.wxpPgListPgNoInputHintDisabled,
+.wxpPgListPgNoInputHintDisabled_Focus
 {
   padding: 1px 0px 0px 0px;
   margin-top: 2px;
@@ -1153,6 +1153,27 @@
 .wxpEditFieldErrorControlsPanel
 {
   background-color: #FFD0D0;
+}
+
+/* wxpColorPicker *******************************************************************/
+
+.wxpColorPickerSlider,
+.wxpColorPickerSatVal
+{
+ border: 1px solid #7f9db9;
+}
+
+.wxpColorPickerSatVal canvas,
+.wxpColorPickerSlider canvas
+{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
 /* wxpFileUploader ************************************************************/

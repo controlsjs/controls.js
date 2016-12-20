@@ -359,6 +359,77 @@ var WinXP_DesignInfo = {
       di.ControlCategory=false;
       return di;
     });
+
+    ngRegisterControlDesignInfo('stdColorPickerBox',function(d,c,ref) {
+      return {
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 200 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          'Data': {
+            'AutoHeight': ng_DIPropertyBool(true, { Level: 'basic' }),
+            'AsToolbar': ng_DIPropertyBool(true, { Level: 'basic' }),
+            'Vertical': ng_DIPropertyBool(true, { Level: 'basic' })
+          }
+        })
+      };
+    });
+
+    ngRegisterControlDesignInfo('stdColorButton',function(d,c,ref) {
+      return {
+        ControlCategory: 'Buttons',
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 100 }
+            }
+          }
+        }
+      };
+    });
+
+    ngRegisterControlDesignInfo('stdColorPickerDropDown',function(d,c,ref) {
+      return {
+        ControlCategory: 'Edits',
+        NewControl: {
+          _noMerge:true,
+          Default: {
+            Properties: {
+              'W': { Value: 200 }
+            }
+          }
+        },
+        Properties: ng_DIProperties({
+          'DropDown': ng_DIPropertyControl('weColorPickerBox', { Level: 'basic' }, 'weColorPickerBox', ng_DIProperties({
+            'Data': {
+              'MaxHeight': ng_DIProperty('integer',480,{ Level: 'basic' })
+            }
+          }))
+        })
+      };
+    });
+
+    ngRegisterControlDesignInfo('stdColorPickerHint',function(d,c,ref) {
+      return {
+        ControlCategory: 'Containers',
+        NewControl: {
+          _noMerge:true
+        },
+        Properties: ng_DIProperties({
+          'ModifyControls': {
+            'Picker': ng_DIPropertyControl('weColorPickerBox', { Level: 'basic' }, 'weColorPickerBox', ng_DIProperties({
+              'W': ng_DIProperty('bounds',196,{ Level: 'basic' })
+            }))
+          }
+        }, { "ModifyControls": { Level: 'basic' } })
+      };
+    });
   }
 };
 ngUserControls['winxp_designinfo'] = WinXP_DesignInfo;
