@@ -7,7 +7,7 @@ desktop or native applications. Your applications will run almost anywhere thank
 to the support of variety of browsers, ability to build native applications
 from JavaScript, and the propagation of web based Operating Systems.
 
-[On-line Documentation](http://controlsjs.com/docs/5.0.0/)
+[On-line Documentation](http://controlsjs.com/docs/latest/)
 
 For more details, see Controls.js website:
 http://controlsjs.com
@@ -15,7 +15,7 @@ http://controlsjs.com
 ### Downloads
 
 Latest stable release  (+ Build, Examples and Templates):
-[Download 5.0.0](http://controlsjs.com/#DOWNLOADS)
+[Download 5.0.0](http://controlsjs.com/downloads/)
 
 Development snapshot:
 [Download 5.0.x](https://github.com/controlsjs/controls.js/archive/master.zip)
@@ -34,7 +34,7 @@ and that you release source code of application to the general public.
 Please note that 3rd party libraries are licensed under its own licenses.
 
 The commercial license can be purchased at Controls.js website:
-http://controlsjs.com/#DOWNLOADS
+http://controlsjs.com/downloads/
 
 
 ### Building from sources
