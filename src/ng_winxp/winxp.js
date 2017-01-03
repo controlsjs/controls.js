@@ -369,11 +369,11 @@ var WinXPControls = {
       Background: { L: 0, T: 620, H: 21, Src: 1 }
     },
     ColorPicker: {
-//      HorizontalSliderCursor: { L: 283, T: 170, W: 16, H: 28 },
-//      VerticalSliderCursor: { L: 321, T: 170, W: 28, H: 16 },
+      HorizontalSliderCursor: { L: 391, T: 29, W: 9, H: 19 },
+      VerticalSliderCursor: { L: 381, T: 18, W: 19, H: 9 },
       AlphaSliderBackground: { L: 1, T: 621, H: 19, Src: 1 },
-      PreviewIcon: { L: 276, T: 23, W: 10, H: 20 }//,
-//      SatValCursor: { L: 355, T: 170, W: 10, H: 10}
+      PreviewIcon: { L: 276, T: 23, W: 10, H: 20 },
+      SatValCursor: { L: 380, T: 29, W: 10, H: 10}
     },
     ColorPickerDropDownButton: {
         Background: { L: 0, T: 622, H: 21, Src: 1 },
