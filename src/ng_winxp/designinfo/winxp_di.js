@@ -406,7 +406,7 @@ var WinXP_DesignInfo = {
           }
         },
         Properties: ng_DIProperties({
-          'DropDown': ng_DIPropertyControl('weColorPickerBox', { Level: 'basic' }, 'weColorPickerBox', ng_DIProperties({
+          'DropDown': ng_DIPropertyControl('stdColorPickerBox', { Level: 'basic' }, 'stdColorPickerBox', ng_DIProperties({
             'Data': {
               'MaxHeight': ng_DIProperty('integer',480,{ Level: 'basic' })
             }
@@ -423,7 +423,7 @@ var WinXP_DesignInfo = {
         },
         Properties: ng_DIProperties({
           'ModifyControls': {
-            'Picker': ng_DIPropertyControl('weColorPickerBox', { Level: 'basic' }, 'weColorPickerBox', ng_DIProperties({
+            'Picker': ng_DIPropertyControl('stdColorPickerBox', { Level: 'basic' }, 'stdColorPickerBox', ng_DIProperties({
               'W': ng_DIProperty('bounds',196,{ Level: 'basic' })
             }))
           }
