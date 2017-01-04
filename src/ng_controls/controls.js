@@ -4653,6 +4653,10 @@ function ngc_InitPointers()
 
   if(ngHammerJSVer()!==1) // HammerJS library v1.x is NOT present
   {
+    if(ngHammerJS()) {
+      ngDEBUGWARN('Incompatible version of Hammer.js - '+Hammer.VERSION+' (1.x required). Controls.js touch events base support is disabled.');
+    }
+
     function doc_mouse_down(e)
     {
       ngc_ptrstart(null, 'document', document.body, e, ['touch']);
