@@ -239,68 +239,27 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
         else {
           if((create)&&(list))
           {
+            nit=new ngListItem;
+            if(ngname)
+            {
+              nit.ngText=name;
+              nit.Text=ngTxt(name);
+            }
+            else nit.Text=name;
+            if(id!='') nit.ID=id;
+
+            if((oncreatefnc)&&(!ngVal(oncreatefnc(list, nit, userdata),false))) { ret=null; break; }
+
             if(list.CtrlType=='ngToolBar')
             {
-              var ld;
-              var btndef = (typeof list.ButtonDef === 'object' ? list.ButtonDef : null);
-
-              if(btndef) ld=ng_CopyVar(btndef);
-              else {
-                ld=new Object;
-                ld.Type = (typeof list.DefType !== 'undefined' ? list.DefType+'Button' : 'ngButton');
-              }
-              if(typeof ld.className === 'undefined') ld.className=list.BaseClassName+'Button';
-              if(typeof ld.Data === 'undefined') ld.Data = new Object;
-
-              if(ngname)
-              {
-                ld.Data.ngText=name;
-                ld.Data.Text=ngTxt(name);
-              }
-              else ld.Data.Text=name;
-              if(id!='') ld.Data.ID=id;
-
-              ld.Menu=ng_CopyVar(list.SubMenuDef);
-              if(typeof ld.Menu.Type === 'undefined') ld.Menu.Type='ngMenu';
-              if((typeof ld.Menu.Data !== 'object')||(!ld.Menu.Data)) ld.Menu.Data = new Object;
-              ld.Menu.Data.Items=new Array();
-
-              var ldefs={ MenuBtn: ld };
-              var lref=ngCreateControls(ldefs,undefined,list.ID);
-              if(lref.MenuBtn)
-              {
-                lref.MenuBtn.Owner=list;
-                if(typeof list.Menu === 'undefined') list.Menu = new Array();
-                if((pos<0)||(pos>=list.Menu.length)) list.Menu[list.Menu.length]=lref.MenuBtn;
-                else
-                {
-                  var cc=list.ChildControls;
-                  if((cc.length>0)&&(cc[cc.length-1]==lref.MenuBtn))
-                  {
-                    cc.splice(cc.length-1,1);
-                    cc.splice(pos,0,lref.MenuBtn);
-                  }
-                  list.Menu.splice(pos,0,lref.MenuBtn);
-                }
-
-                list.Update();
-                list=lref.MenuBtn.Menu;
+              var cit=list.InsertItem(pos, nit);
+              if(cit) {
+                list=cit.Menu;
                 nit=null;
               }
             }
             else
             {
-              nit=new ngListItem;
-              if(ngname)
-              {
-                nit.ngText=name;
-                nit.Text=ngTxt(name);
-              }
-              else nit.Text=name;
-              if(id!='') nit.ID=id;
-
-              if((oncreatefnc)&&(!ngVal(oncreatefnc(list, nit, userdata),false))) { ret=null; break; }
-
               if(item)
               {
                 var def=new Object;
@@ -1138,6 +1097,10 @@ function ngmn_DrawItemText(html, it, id, level)
 
 function ngmn_DoCreate(def, ref, elm, parent)
 {
+  if((typeof this.SubMenuDef !== 'object')||(!this.SubMenuDef)) {
+    this.SubMenuDef={ Type: def.Type };
+  }
+
   if((typeof def.Data !== 'undefined')&&(ngVal(def.Data.Visible,false))) return; // Visible menus are static
   // All menus are in document.body
   var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
@@ -1266,7 +1229,6 @@ function ngmn_CreateSubMenu(it,m)
       smc= p.OnSubMenuCreated;
     p=p.Owner;
   }
-
   var ld=ng_CopyVar(smd ? smd : this.SubMenuDef);
   var ldefs={ SubMenu: ld };
   if(typeof ld.Data === 'undefined')
@@ -1419,68 +1381,167 @@ function ngmn_ScanMenu(fnc, recursive, parent, userdata)
 
 function ngmb_DoCreate(def, ref, elm, parent)
 {
-  if(typeof def.Menu === 'object')
+  if(typeof def.Button === 'object') this.ButtonDef = ng_CopyVar(def.Button);
+  if(typeof def.Type !== 'undefined') this.DefType = def.Type;
+
+  var dm=def.Menu;
+  if(typeof dm === 'object')
   {
+    if((typeof this.SubMenuDef !== 'object')||(!this.SubMenuDef))
+    {
+      this.SubMenuDef={ Type: dm.Type };
+    }
+
     var it;
     this.Menu = new Array();
-    var dm=def.Menu;
     if((typeof dm.Data === 'object')&&(typeof dm.Data.Items === 'object'))
     {
-      var ld;
-      var items=dm.Data.Items;
-      if(typeof def.Button === 'object') this.ButtonDef = ng_CopyVar(def.Button);
-      if(typeof def.Type !== 'undefined') this.DefType = def.Type;
-      var btndef = (typeof def.Button === 'object' ? def.Button : null);
-      delete dm.Data.Items;
-      for(var i=0;i<items.length;i++)
-      {
-        it=items[i];
-        if(btndef) ld=ng_CopyVar(btndef);
-        else {
-          ld=new Object;
-          ld.Type = (typeof def.Type !== 'undefined' ? def.Type+'Button' : 'ngButton');
+      this.update_info.push(true);
+      try {
+        var items=dm.Data.Items;
+        for(var i=0;i<items.length;i++) {
+          this.AddItem(items[i]);
         }
-        if(typeof ld.className === 'undefined') ld.className=this.BaseClassName+'Button';
-        if(typeof ld.Data === 'undefined') ld.Data = new Object;
-
-        var bd=def.Menu.Data;
-        var bp=def.Menu.parent;
-        delete def.Menu.Data;
-        delete def.Menu.parent;
-        this.SubMenuDef=ng_CopyVar(def.Menu);
-        delete this.SubMenuDef.parent;
-        delete this.SubMenuDef.id;
-        delete this.SubMenuDef.L;
-        delete this.SubMenuDef.T;
-        delete this.SubMenuDef.R;
-        delete this.SubMenuDef.B;
-        delete this.SubMenuDef.W;
-        delete this.SubMenuDef.H;
-        this.SubMenuDef.AutoDef=true;
-        this.SubMenuDef._noMerge=true;
-        def.Menu.Data=bd;
-        def.Menu.parent=bp;
-
-        for(var j in it)
-          ld.Data[j]=it[j];
-
-        if(ld.Data.SubMenu)
-        {
-          ld.Menu=ng_CopyVar(dm);
-          if(typeof ld.Menu.Data === 'undefined') ld.Menu.Data=new Object;
-          ld.Menu.Data.Items=ld.Data.SubMenu;
-
-          delete ld.Data.SubMenu;
-          delete ld.Data.Menu;
-        }
-        var ldefs={ MenuBtn: ld };
-        var lref=ngCreateControls(ldefs,undefined,elm);
-        if(lref.MenuBtn)
-        {
-          lref.MenuBtn.Owner=this;
-          this.Menu[i]=lref.MenuBtn;
-        }
+      } finally {
+        this.update_info.pop();
       }
+    }
+  }
+}
+
+function ngmb_ClearItems()
+{
+  if((typeof this.Menu==='object')&&(this.Menu))
+  {
+    for(var i=this.Menu.length-1;i>=0;i--) this.Menu[i].Dispose();
+    if(!this.update_info.length) this.Update();
+  }
+}
+
+function ngmb_SetItems(items)
+{
+  this.update_info.push(true);
+  try {
+    this.ClearItems();
+    if((items)&&(typeof items==='object')) {
+      for(var i=0;i<items.length;i++) {
+        this.AddItem(items[i]);
+      }
+    }
+  } finally {
+    this.update_info.pop();
+    if(!this.update_info.length) this.Update();
+  }
+}
+
+function ngmb_AddItem(it)
+{
+  return this.InsertItem(-1, it);
+}
+
+function ngmb_MenuButtontClick()
+{
+  var m=this.Menu;
+  if((typeof m==='object')&&(m)&&(!m.Items.length)) return;
+  ngmn_DefaultClick.apply(this,arguments);
+}
+
+function ngmb_InsertItem(idx, it)
+{
+  var ld,undefined;
+  if(typeof this.ButtonDef === 'object') ld=ng_CopyVar(this.ButtonDef);
+  else {
+    ld={ Type: typeof this.DefType !== 'undefined' ? this.DefType+'Button' : 'ngButton' };
+  }
+  if(typeof ld.className === 'undefined') ld.className=this.BaseClassName+'Button';
+  if(typeof ld.Data === 'undefined') ld.Data = new Object;
+
+  if(typeof it!=='object') it={ Text:it };
+
+  for(var j in it)
+    ld.Data[j]=it[j];
+
+  ld.Menu=ng_CopyVar(this.SubMenuDef);
+  if(typeof ld.Menu.Type === 'undefined') ld.Menu.Type='ngMenu';
+  if((typeof ld.Menu.Data !== 'object')||(!ld.Menu.Data)) ld.Menu.Data = new Object;
+  ld.Menu.Data.Items=ld.Data.SubMenu ? ld.Data.SubMenu : new Array();
+  delete ld.Data.SubMenu;
+  delete ld.Data.Menu;
+
+  var ldefs={ MenuBtn: ld };
+  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  if(lref.MenuBtn)
+  {
+    lref.MenuBtn.AddEvent('DoDispose',ngmb_ButtonDispose);
+    if(lref.MenuBtn.OnClick===ngmn_DefaultClick) lref.MenuBtn.OnClick=ngmb_MenuButtontClick;
+    
+    lref.MenuBtn.Owner=this;
+    if(typeof this.Menu === 'undefined') this.Menu = new Array();
+    if((idx<0)||(idx>=this.Menu.length)) this.Menu.push(lref.MenuBtn);
+    else
+    {
+      var cc=this.ChildControls;
+      if((cc)&&(cc.length>0)&&(cc[cc.length-1]==lref.MenuBtn))
+      {
+        cc.splice(cc.length-1,1);
+        var pos=0;
+        if((idx>0)&&(idx<this.Menu.length)) {
+          var prevmenu=this.Menu[idx-1];
+          for(var i=0;i<cc.length;i++)
+            if(cc[i]===prevmenu) { pos=i+1; break; }
+        }
+        cc.splice(pos,0,lref.MenuBtn);
+      }
+      this.Menu.splice(idx,0,lref.MenuBtn);
+    }
+    if(!this.update_info.length) this.Update();
+  }
+  return lref.MenuBtn;
+}
+
+function ngmb_ButtonDispose()
+{
+  if((this.Owner)&&(this.Owner.Menu)&&(typeof this.Owner.Menu === 'object'))
+  {
+    for(var i=this.Owner.Menu.length-1;i>=0;i--)
+    {
+      if(this.Owner.Menu[i]===this) {
+        this.Owner.Menu.splice(i,1);
+        for(i++;i<this.Owner.Menu.length;i++) {
+          if(this.Owner.Menu[i].Menu) this.Owner.Menu[i].Menu.HideMenu();
+        }
+        break;
+      }
+    }
+  }
+  return true;
+}
+
+function ngmb_DeleteItem(idx)
+{
+  if((typeof this.Menu==='object')&&(this.Menu)&&(idx>=0)&&(idx<this.Menu.length))
+  {
+    var c=this.Menu[idx];
+    this.Menu.splice(idx,1);
+    for(var i=idx;i<this.Menu.length;i++)
+    {
+      m=this.Menu[i].Menu;
+      if(m) m.HideMenu();
+    }
+    if(c) c.Dispose();
+    if(!this.update_info.length) this.Update();
+  }
+}
+
+function ngmb_HideSubMenu()
+{
+  if((typeof this.Menu==='object')&&(this.Menu))
+  {
+    var m;
+    for(var i=0;i<this.Menu.length;i++)
+    {
+      m=this.Menu[i].Menu;
+      if(m) m.HideMenu();
     }
   }
 }
@@ -1489,13 +1550,15 @@ function ngmb_BeginUpdate(recursive)
 {
   recursive=ngVal(recursive,true);
   this.update_info.push(recursive);
-  var m;
-  for(var i=0;i<this.Menu.length;i++)
+  if((typeof this.Menu==='object')&&(this.Menu))
   {
-    m=this.Menu[i].Menu;
-    if(m) m.BeginUpdate(recursive);
+    var m;
+    for(var i=0;i<this.Menu.length;i++)
+    {
+      m=this.Menu[i].Menu;
+      if(m) m.BeginUpdate(recursive);
+    }
   }
-
 }
 
 function ngmb_EndUpdate()
@@ -1503,11 +1566,16 @@ function ngmb_EndUpdate()
   if(this.update_info.length>0)
   {
     var recursive=this.update_info.pop();
-    for(var i=0;i<this.Menu.length;i++)
+    if((typeof this.Menu==='object')&&(this.Menu))
     {
-      m=this.Menu[i].Menu;
-      if(m) m.EndUpdate();
+      var m;
+      for(var i=0;i<this.Menu.length;i++)
+      {
+        m=this.Menu[i].Menu;
+        if(m) m.EndUpdate();
+      }
     }
+    if(!this.update_info.length) this.Update();
   }
 }
 
@@ -1543,7 +1611,7 @@ function ngmbb_ButtonEnterMenu()
       p=p.Owner;
     }
 
-    if((!this.Menu.Visible)&&((mv)||(ngVal(this.AutoPopup,false)))) {
+    if((!this.Menu.Visible)&&((mv)||(ngVal(this.AutoPopup,false)))&&(this.Menu.Items.length)) {
       this.Menu.PopupCtrl(this);
     }
   }
@@ -2097,23 +2165,7 @@ function Create_ngMenu(def, ref, parent)
    *  Type: object
    *  Default value: *same as menu*
    */
-  var bd=def.Data;
-  var bp=def.parent;
-  delete def.Data;
-  delete def.parent;
-  c.SubMenuDef=ng_CopyVar(def);
-  delete c.SubMenuDef.parent;
-  delete c.SubMenuDef.id;
-  delete c.SubMenuDef.L;
-  delete c.SubMenuDef.T;
-  delete c.SubMenuDef.R;
-  delete c.SubMenuDef.B;
-  delete c.SubMenuDef.W;
-  delete c.SubMenuDef.H;
-  c.SubMenuDef.AutoDef=true;
-  c.SubMenuDef._noMerge=true;
-  def.Data=bd;
-  def.parent=bp;
+//  c.SubMenuDef={ Type: c.Type };
 
   /*  Variable: SubMenuOverlapX
    *  Specifies how much submenu overlaps menu in horizontal in pixels.
@@ -2263,10 +2315,10 @@ function Create_ngMenu(def, ref, parent)
    */
   c.CreateSubMenu = ngmn_CreateSubMenu;
   /*  Function: HideSubMenu
-   *  Hides item submenu.
+   *  Hides opened submenu.
    *
    *  Syntax:
-   *    void *HideSubMenu* (object item)
+   *    void *HideSubMenu* ()
    *
    *  Returns:
    *    -
@@ -2408,6 +2460,78 @@ function Create_ngMenuBar(def, ref, parent)
    *    -
    */
   c.EndUpdate = ngmb_EndUpdate;
+
+  /*  Function: AddItem
+   *  Adds new menu item at the end of the menu.
+   *
+   *  Syntax:
+   *    control *AddItem* (mixed item)
+   *
+   *  Returns:
+   *    Created control (ngButton).
+   */
+  c.AddItem = ngmb_AddItem;
+  /*  Function: InsertItem
+   *  Inserts new menu item at the position specified by index.
+   *
+   *  Syntax:
+   *    control *InsertItem* (int index, mixed item)
+   *
+   *  Returns:
+   *    Created control (ngButton).
+   */
+  c.InsertItem = ngmb_InsertItem;
+  /*  Function: DeleteItem
+   *  Removes item at specified index from menu bar.
+   *
+   *  Syntax:
+   *    void *DeleteItem* (int index)
+   *
+   *  Returns:
+   *    -
+   */
+  c.DeleteItem = ngmb_DeleteItem;
+  /*  Function: ClearItems
+   *  Deletes all items from the menu bar.
+   *
+   *  Syntax:
+   *    void *ClearItems* ()
+   *
+   *  Returns:
+   *    -
+   */
+  c.ClearItems = ngmb_ClearItems;
+  /*  Function: SetItems
+   *  Sets menu bar items.
+   *
+   *  Syntax:
+   *    void *SetItems* (array items)
+   *
+   *  Returns:
+   *    -
+   */
+  c.SetItems = ngmb_SetItems;
+  /*  Function: HideSubMenu
+   *  Hides opened submenu.
+   *
+   *  Syntax:
+   *    void *HideSubMenu* ()
+   *
+   *  Returns:
+   *    -
+   */
+  c.HideSubMenu = ngmb_HideSubMenu;
+  /*  Function: GetMenu
+   *  Gets (or creates) menu item.
+   *
+   *  Syntax:
+   *    void *GetMenu* (string path[, bool create=false, object parent=null, function oncreatefnc, mixed userdata])
+   *
+   *  Returns:
+   *    -
+   */
+  c.GetMenu = ngmn_GetMenu;
+
   c.update_info = new Array();
 
   c.AddEvent(ngmb_DoCreate, 'DoCreate');
