@@ -3459,7 +3459,12 @@ var WinEightControls = {
        */
       /*<>*/
       ngRegisterControlType('weMenuBar', function(def,ref,parent) {
-        if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weMenuBarLight we'+colorscheme(def)+'MenuBar' : 'weMenuBarDark'+(typeof def.ColorScheme === 'undefined' ? '': ' we'+def.ColorScheme));
+        ng_MergeDef(def, {
+          className: (theme(def) ? 'weMenuBarLight we'+colorscheme(def)+'MenuBar' : 'weMenuBarDark'+(typeof def.ColorScheme === 'undefined' ? '': ' we'+def.ColorScheme)),
+          Data: {
+            SubMenuDef: { Type: 'weMenu' }
+          }
+        });
         return ngCreateControlAsType(def, 'ngMenuBar', ref, parent);
       });
 

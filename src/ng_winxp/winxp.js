@@ -2848,7 +2848,12 @@ var WinXPControls = {
        */
       /*<>*/
       ngRegisterControlType('stdMenuBar', function(def,ref,parent) {
-        if(typeof def.className === 'undefined') def.className='wxpMenuBar';
+        ng_MergeDef(def, {
+          className: 'wxpMenuBar',
+          Data: {
+            SubMenuDef: { Type: 'stdMenu' }
+          }
+        });
         return ngCreateControlAsType(def, 'ngMenuBar', ref, parent);
       });
       /*  Class: stdMenuBarButton

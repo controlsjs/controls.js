@@ -1763,7 +1763,12 @@ var WireframeControls = {
        *  "Wireframe" skin menu bar control (based on <ngMenuBar>).
        */
       ngRegisterControlType('wfrMenuBar', function(def,ref,parent) {
-        if(typeof def.className === 'undefined'){def.className = 'wfrMenuBar';}
+        ng_MergeDef(def, {
+          className: 'wfrMenuBar',
+          Data: {
+            SubMenuDef: { Type: 'wfrMenu' }
+          }
+        });
         var c = ngCreateControlAsType(def, 'ngMenuBar', ref, parent);
         return c;
       });
