@@ -143,7 +143,7 @@ ngUserControls['menu_designinfo'] = {
                   Type: 'ngMenu',
                   InheritedFrom: 'ngMenu',
                   ObjectProperties: {
-                    "AutoDef": ng_DIPropertyBool(false,{ Level: 'basic' })
+                    "AutoDef": ng_DIPropertyBool(false,{ Level: 'optional' })
                   }
                 }
               }
@@ -214,7 +214,21 @@ ngUserControls['menu_designinfo'] = {
                 }
               }
             }
+          },
+          "Data": {
+            "SubMenuDef": { DefaultType: 'control',
+              Types: {
+                'control': {
+                  Type: 'ngMenu',
+                  InheritedFrom: 'ngMenu',
+                  ObjectProperties: {
+                    "AutoDef": ng_DIPropertyBool(false,{ Level: 'optional' })
+                  }
+                }
+              }
+            }
           }
+
         })
       }
     });
