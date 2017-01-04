@@ -1492,19 +1492,28 @@ var ngOnCreateControlsError = null;
 
 function ngCreateControls(defs,ref,parent,options)
 {
-  var uc,i,j,c,d,oc,celm,parentCtrl=null;
+  var uc,i,j,c,cc,d,oc,celm,parentCtrl=null;
   if(typeof ref === 'undefined') ref=new Object;
   if(typeof defs === 'undefined') return ref;
-  if(typeof options === 'undefined')
+  var oldoptions=ngCreateControlsOptions;
+  if(!options)
   {
-    if(ngCreateControlsOptions) options = ngCreateControlsOptions;
+    if(oldoptions) options = oldoptions;
     else options = new Object;
   }
-  var oldoptions=ngCreateControlsOptions;
+  else
+  {
+    if((oldoptions)&&(options!==oldoptions)) {
+      if(oldoptions.OnCreated) ngObjAddEvent.apply(options, ['OnCreated', oldoptions.OnCreated]);
+      if(oldoptions.OnCreating) ngObjAddEvent.apply(options, ['OnCreating', oldoptions.OnCreating]);
+    }
+  }
+  if((!ngCreateControlsLevel)||((!options.CreatedControls)&&((!oldoptions)||(!oldoptions.CreatedControls)))) ng_SetByRef(options,'CreatedControls',[]);
+  else if(options!==oldoptions) ng_SetByRef(options,'CreatedControls',oldoptions.CreatedControls);
+
   ngCreateControlsOptions=options;
   try
   {
-    if(!options.CreatedControls) ng_SetByRef(options,'CreatedControls',new Array());
     ngCreateControlsLevel++;
     try
     {
@@ -1551,11 +1560,13 @@ function ngCreateControls(defs,ref,parent,options)
         {
           ngAddChildControl(parentCtrl,c);
 
-          var cinfo=new Object;
-          cinfo.Control=c;
-          cinfo.Options=null;
-          cinfo.OnCreated=d.OnCreated;
-          cinfo.Ref=ref;
+          var cinfo={
+            Control: c,
+            Options: null,
+            OnCreated: d.OnCreated,
+            Ref: ref
+          };
+          if(options.OnCreated) ngObjAddEvent.apply(cinfo, ['OnCreated', options.OnCreated]);
           delete d.OnCreated;
           celm=c.Create(d, ref);
           d.OnCreated=cinfo.OnCreated;
@@ -1565,9 +1576,7 @@ function ngCreateControls(defs,ref,parent,options)
             ngDEBUGWARN('Reference "%s" was overwritten by %o. References: %o',i,c,ref);
           }
           ref[i]=c;
-
-          cinfo.OnCreated=d.OnCreated;
-          options.CreatedControls[options.CreatedControls.length]=cinfo;
+          options.CreatedControls.push(cinfo);
 
           var prefs=ngVal(d.ParentReferences,true);
           if(!prefs)
@@ -1594,7 +1603,7 @@ function ngCreateControls(defs,ref,parent,options)
                 ng_MergeDef(d.ModifyControls, options.ModifyControls, true);
                 options.ModifyControls=d.ModifyControls;
               }
-              ngCreateControls(d.Controls,(prefs ? ref : nref),celm,options);
+              ngCreateControls(d.Controls,(prefs ? ref : nref),celm);
             }
             finally
             {
@@ -1620,32 +1629,25 @@ function ngCreateControls(defs,ref,parent,options)
     ngCreateControlsLevel--;
     if(!ngCreateControlsLevel)
     {
-      ngCreateControlsLevel++;
-      try {
-        var cinfo,c;
-        for(var i=0;i<options.CreatedControls.length;i++)
-        {
-          cinfo=options.CreatedControls[i];
-          c=cinfo.Control;
-          if(typeof c.ChildHandling!=='undefined') {
-            // Update children
-            c.SetChildControlsEnabled(c.Enabled);
-          }
-          oc=cinfo.OnCreated;
-          cinfo.OnCreated=null;
-          if(oc)
-          {
-            ngCreateControlsOptions=cinfo.Options;
-            c.OnCreated=oc;
-            oc(c,cinfo.Ref,cinfo.Options);
-          }
-
-          if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,cinfo.Options);
-          if(options.OnCreated) options.OnCreated(c,cinfo.Ref,cinfo.Options);
+      var cinfo,c;
+      cc=options.CreatedControls
+      for(var i=0;i<cc.length;i++)
+      {
+        cinfo=cc[i];
+        c=cinfo.Control;
+        if(typeof c.ChildHandling!=='undefined') {
+          // Update children
+          c.SetChildControlsEnabled(c.Enabled);
         }
-      }
-      finally {
-        ngCreateControlsLevel--;
+        oc=cinfo.OnCreated;
+        if(oc)
+        {
+          ngCreateControlsOptions=cinfo.Options;
+          c.OnCreated=oc;
+          oc(c,cinfo.Ref,cinfo.Options);
+          ngCreateControlsOptions=options;
+        }
+        if(ngOnControlCreated) ngOnControlCreated(c,cinfo.Ref,options);
       }
     }
   }
