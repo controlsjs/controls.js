@@ -2699,17 +2699,43 @@ function ngObjAddEvent(ev, fce, once) {
         if((once)&&(fce===oldfnc)) return;
         
         evlist=[];
-        this[ev]=function() {
+        var self=this;
+        var handler=function() {
           var r,ret,undefined;
-          for(var i=0;i<evlist.length;i++)
-          {
-            r=evlist[i].apply(this,arguments);
-            if(!i) ret=r;
-            else if(r !== ret) ret=undefined;
+          var oldproc=handler.inprocess;
+          handler.inprocess=true;
+          try {
+            for(var i=0;i<evlist.length;i++)
+            {
+              if(!evlist[i]) continue;
+              r=evlist[i].apply(self,arguments);
+              if(!i) ret=r;
+              else if(r !== ret) ret=undefined;
+            }
+          }
+          finally {
+            if(handler.changed)
+            {
+              delete handler.changed;
+              for(var i=evlist.length-1;i>=0;i--)
+                if(!evlist[i]) evlist.splice(i,1);
+              if(!evlist.length)
+              {
+                if(self[ev]) self[ev]=null;
+                delete handler.events;
+              }
+              else if(evlist.length==1)
+              {
+                if(self[ev]) self[ev]=evlist[0];
+                delete handler.events;
+              }
+            }
+            handler.inprocess=oldproc;
           }
           return ret;
         }      
-        this[ev].events=evlist;
+        handler.events=evlist;
+        this[ev]=handler;
         evlist.push(oldfnc);
       }
       if(once)
@@ -2744,22 +2770,32 @@ function ngObjRemoveEvent(ev, fce)
   }
   if(typeof(fce)=='function') // only functions can be added to event handlers 
   { 
-    if(!this[ev]) return;
-    if(this[ev]===fce) { this[ev] = null; return; }
-    var evlist=this[ev].events;
-    if(typeof evlist !== 'undefined') 
+    var handler=this[ev];
+    if(!handler) return;
+    if(handler===fce) { this[ev] = null; return; }
+    var evlist=handler.events;
+    if(typeof evlist !== 'undefined')
     {
+      var inproc=handler.inprocess;
       for(var i=evlist.length-1;i>=0;i--) 
-        if(evlist[i]===fce) evlist.splice(i,1);
-      if(!evlist.length) 
-      {
-        this[ev]=null;
-        delete this[ev].events;
-      } 
-      else if(evlist.length==1)
-      {
-        this[ev]=evlist[0];
-        delete this[ev].events;
+        if(evlist[i]===fce) {
+          if(inproc) {
+            handler.changed=true;
+            evlist[i]=null;
+          }
+          else evlist.splice(i,1);
+        }
+      if(!inproc) {
+        if(!evlist.length)
+        {
+          this[ev]=null;
+          delete handler.events;
+        }
+        else if(evlist.length==1)
+        {
+          this[ev]=evlist[0];
+          delete handler.events;
+        }
       }
     } 
   }
