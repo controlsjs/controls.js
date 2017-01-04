@@ -1673,6 +1673,15 @@ ngUserControls['viewmodel_ui'] = {
             return true;
           },'OnSelectChanged');
           break;
+        case 'ngFileUploader':
+          c.AddEvent(function(c){
+            ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
+          }, 'OnFileAdded');
+
+          c.AddEvent(function(c){
+            ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
+          }, 'OnFileDeleted');
+          break;
       }
     };
 

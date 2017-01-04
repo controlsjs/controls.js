@@ -508,11 +508,6 @@ var FileUploaderControl = {
        */
       c.OnGetRequestParams = null;
 
-      if(typeof(ngRegisterBindingHandler) === 'function'){
-        c.OnDataBindingInit = ngfup_OnDataBindingInit;
-        //c.OnDataBindingUpdate = function (c, bindingKey, valueAccessor, allBindingsAccessor, viewModel) { return true; }
-      }
-
       return c;
     }
     ngRegisterControlType('ngFileUploader', Create_ngFileUploader);
@@ -1358,23 +1353,6 @@ function ngfup_RemoveDragBox(c){
   delete c._dragboxMarginRight;
   delete c._dragboxMarginBottom;
   delete c._dragboxBorder;
-}
-
-function ngfup_OnDataBindingInit(c, bindingKey, valueAccessor, allBindingsAccessor){
-  switch(bindingKey)
-  {
-    case 'Value':
-      c.AddEvent(function(c){
-        ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
-      }, 'OnFileAdded');
-
-      c.AddEvent(function(c){
-        ngCtrlBindingWrite(bindingKey, c.GetFiles(), c, valueAccessor, allBindingsAccessor);
-      }, 'OnFileDeleted');
-    break;
-  }
-
-  return true;
 }
 
 if (typeof(ngUserControls)==='undefined') ngUserControls = {};
