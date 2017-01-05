@@ -1215,7 +1215,24 @@ ngUserControls['viewmodel_ui'] = {
       return (typeof list.HideSubMenu==='function');
     }
 
-    function vmGetListItem(list,v,subitems) {
+    function prepareItemMapping(bindinfo,mapping)
+    {
+      if(!ng_typeObject(mapping)) return;
+      var map={}, revmap={}, p;
+
+      for(var i in mapping) {
+        p=mapping[i];
+        if((!p)||(p=='')) continue;
+        if(p===true) p=i;
+        map[i]=p;
+        revmap[p]=i;
+      }
+
+      bindinfo.ItemMapping = map;
+      bindinfo.RevItemMapping = revmap;
+    }
+
+    function vmGetListItem(list,v,bindinfo,subitems) {
       if((typeof v==='undefined')||(v===null)) return v;
       var c=v;
       v=ko.ng_unwrapobservable(c);
@@ -1226,6 +1243,15 @@ ngUserControls['viewmodel_ui'] = {
           return it;
         }
         return {Text: v};
+      }
+
+      if(bindinfo.ItemMapping) {
+        var p,nv={};
+        for(var i in v) {
+          p=bindinfo.ItemMapping[i];
+          if(p) nv[p]=v[i];
+        }
+        v=nv;
       }
 
       var ismenu=isMenu(list);
@@ -1255,7 +1281,7 @@ ngUserControls['viewmodel_ui'] = {
         if(ng_IsArrayVar(items)) {
           c.Items=[];
           for(var i in items)
-            c.Items[i]=vmGetListItem(list,items[i]);
+            c.Items[i]=vmGetListItem(list,items[i],bindinfo);
         }
         else delete c.Items;
 
@@ -1264,9 +1290,15 @@ ngUserControls['viewmodel_ui'] = {
           if(ng_IsArrayVar(submenu)) {
             c.SubMenu=[];
             for(var i in submenu)
-              c.SubMenu[i]=vmGetListItem(list,submenu[i]);
+              c.SubMenu[i]=vmGetListItem(list,submenu[i],bindinfo);
           }
           else delete c.SubMenu;
+        }
+      }
+      else {
+        if(v!==c) {
+          if(items) c.Items=items;
+          if(submenu) c.SubMenu=submenu;
         }
       }
       return c;
@@ -1298,8 +1330,22 @@ ngUserControls['viewmodel_ui'] = {
       }
 
       var ismenu=isMenu(list);
+      var pitems,psubmenu,p;
+      if(bindinfo.RevItemMapping)
+      {
+        pitems=bindinfo.RevItemMapping['Items'];
+        if(ismenu) psubmenu=bindinfo.RevItemMapping['SubMenu'];
+      }
+      else {
+        pitems='Items';
+        if(ismenu) psubmenu='SubMenu';
+      }
 
-      var ex={ Items: true }; // Don't touch original items
+      var ex={}; 
+      // Don't touch original Items/SubMenu
+      if(pitems) ex[pitems]=true;
+      if((ismenu)&&(psubmenu)) ex[psubmenu]=true;
+
       if((vmit!==vmval)&&(typeof vmit.valueWillMutate === 'function')) vmit.valueWillMutate();
       for(var i in it) {
         switch(i) {
@@ -1314,8 +1360,13 @@ ngUserControls['viewmodel_ui'] = {
           case 'SubMenu':
             if(ismenu) break;
           default:
-            ex[i]=true;
-            vmval[i]=ko.ng_setvalue(vmval[i],it[i]);
+            if(bindinfo.RevItemMapping) {
+              p=bindinfo.RevItemMapping[i];
+              if(!p) break;
+            }
+            else p=i;
+            ex[p]=true;
+            vmval[p]=ko.ng_setvalue(vmval[p],it[i]);
             break;
         }
       }
@@ -1333,7 +1384,7 @@ ngUserControls['viewmodel_ui'] = {
       for(var i in delkeys) delete vmval[i];
 
       var items=it.Items;
-      var vitems=vmval.Items;
+      var vitems=pitems ? vmval[pitems] : null;
 
       if(ng_IsArrayVar(items)) {
         if(ko.isObservable(vitems)) {
@@ -1350,7 +1401,7 @@ ngUserControls['viewmodel_ui'] = {
         else {
           if(!ng_IsArrayVar(vitems)) {
             vitems=[];
-            vmval.Items=vitems;
+            vmval[pitems]=vitems;
           }
           syncsubitems(vitems,items,list);
         }
@@ -1362,12 +1413,12 @@ ngUserControls['viewmodel_ui'] = {
             vitems(undefined);
           }
         }
-        else delete vmval.Items;
+        else delete vmval[pitems];
       }
 
       if(ismenu) {
         var submenu=(it.SubMenu && isMenu(it.SubMenu) ? it.SubMenu.Items : null);
-        var vsubmenu=vmval.SubMenu;
+        var vsubmenu=psubmenu ? vmval[psubmenu] : null;
 
         if(ng_IsArrayVar(submenu)) {
           if(ko.isObservable(vsubmenu)) {
@@ -1384,7 +1435,7 @@ ngUserControls['viewmodel_ui'] = {
           else {
             if(!ng_IsArrayVar(vsubmenu)) {
               vsubmenu=[];
-              vmval.SubMenu=vsubmenu;
+              vmval[psubmenu]=vsubmenu;
             }
             syncsubitems(vsubmenu,submenu,it.SubMenu);
           }
@@ -1396,8 +1447,22 @@ ngUserControls['viewmodel_ui'] = {
               vsubmenu(undefined);
             }
           }
-          else delete vmval.SubMenu;
+          else delete vmval[psubmenu];
         }
+      }
+
+      if(bindinfo.RevItemMapping) {
+        var p,nvmit={},keys={};
+        for(var i in vmit)
+        {
+          p=bindinfo.RevItemMapping[i];
+          if(p) {
+            nvmit[p]=vmit[i];
+            keys[i]=true;
+          }
+        }
+        for(var i in keys) delete vmit[i];
+        for(var i in nvmit) vmit[i]=nvmit[i];
       }
 
       if(vmit!==vmval) {
@@ -1505,6 +1570,7 @@ ngUserControls['viewmodel_ui'] = {
         var binding=allBindingsAccessor();
         bindinfo.DelayedUpdate = ngVal(binding["DelayedUpdate"],10);
         bindinfo.KeyField  = binding["KeyField"];
+        prepareItemMapping(bindinfo,binding["ItemMapping"]);
 
         function compareListItems_init(a,b) {
           return compareListItems(a,b,bindinfo);
@@ -1540,7 +1606,7 @@ ngUserControls['viewmodel_ui'] = {
         {
           var items=[];
           for(var i=0;i<arr.length;i++)
-            items[i]=vmGetListItem(owner,arr[i],false);
+            items[i]=vmGetListItem(owner,arr[i],bindinfo,false);
 
           var ismenu=isMenu(owner);
 
@@ -1810,7 +1876,7 @@ ngUserControls['viewmodel_ui'] = {
 
           var vitems=[];
           for(var i=0;i<arr.length;i++)
-            vitems[i]=vmGetListItem(list,arr[i]);
+            vitems[i]=vmGetListItem(list,arr[i],bindinfo);
 
           synclistupdateex(vitems, items, list, list);
         }
@@ -1934,7 +2000,8 @@ ngUserControls['viewmodel_ui'] = {
           if(e.ListItem) selval=vmGetFieldValueByID(e.ListItem,keyfield);
         }
         var binding=allBindingsAccessor();
-        bindinfo.KeyField  = binding["KeyField"];
+        bindinfo.KeyField = binding["KeyField"];
+        prepareItemMapping(bindinfo,binding["ItemMapping"]);
 
         ngCtrlBindingLock('Value',c,function() {
 

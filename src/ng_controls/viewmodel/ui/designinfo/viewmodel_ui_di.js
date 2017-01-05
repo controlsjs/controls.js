@@ -103,6 +103,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
           props["Selected"] = { DefaultType: 'databind_string', Level: 'optional' };
           props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+          props["ItemMapping"] = { DefaultType: 'databind_itemmapping', Level: 'basic' };
         }
         break;
       case 'ngList':
@@ -110,6 +111,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         props["Selected"] = { DefaultType: 'databind_string', Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' };
         props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["ItemMapping"] = { DefaultType: 'databind_itemmapping', Level: 'basic' };
         break;
       case 'ngButton':
       case 'ngSysAction':
@@ -161,6 +163,30 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
   }
 
   return {
+    OnFormEditorInit: function(FE) {
+      var databind_types = [
+        // databind_itemmapping
+        {
+          TypeID: 'databind_objitemmapping',
+          TypeBase: 'object',
+          Name: 'databind item mapping',
+          ShortName: 'obj',
+          Basic: false,
+          Options: {
+            ChildDesignInfo: {
+              DefaultType: 'databind_string',
+              Types: {
+                'databind_string': {},
+                'boolean': { InitValue: true }
+              }
+            }
+          }
+        }
+      ];
+      FormEditor.RegisterPropertyType(databind_types);
+      FE.RegisterPropertyTypesGroup('databind_itemmapping', ['databind_objitemmapping', 'databind_string']);
+    },
+
     OnControlDesignInfo: function(def, c, ref)
     {
       if((c)&&(!def.CtrlInheritanceDepth))
