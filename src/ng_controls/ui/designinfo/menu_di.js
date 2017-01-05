@@ -227,8 +227,10 @@ ngUserControls['menu_designinfo'] = {
                 }
               }
             }
+          },
+          "Events": {
+            "OnItemsChanged": ng_DIPropertyEvent('function(c, items) {}', { Level: 'basic' }),
           }
-
         })
       }
     });

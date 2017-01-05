@@ -1393,17 +1393,18 @@ function ngmb_DoCreate(def, ref, elm, parent)
     }
 
     var it;
-    this.Menu = new Array();
     if((typeof dm.Data === 'object')&&(typeof dm.Data.Items === 'object'))
     {
-      this.update_info.push(true);
+      this.update_cnt++;
       try {
         var items=dm.Data.Items;
         for(var i=0;i<items.length;i++) {
           this.AddItem(items[i]);
         }
       } finally {
-        this.update_info.pop();
+        this.update_cnt--;
+        this._items_changed = false;
+        this.need_update = false;
       }
     }
   }
@@ -1411,16 +1412,18 @@ function ngmb_DoCreate(def, ref, elm, parent)
 
 function ngmb_ClearItems()
 {
-  if((typeof this.Menu==='object')&&(this.Menu))
+  if((typeof this.Menu==='object')&&(this.Menu)&&(this.Menu.length>0))
   {
     for(var i=this.Menu.length-1;i>=0;i--) this.Menu[i].Dispose();
-    if(!this.update_info.length) this.Update();
+    this.Menu=new Array();
+    this.Items=new Array();
+    this.ItemsChanged();
   }
 }
 
 function ngmb_SetItems(items)
 {
-  this.update_info.push(true);
+  this.update_cnt++;
   try {
     this.ClearItems();
     if((items)&&(typeof items==='object')) {
@@ -1429,8 +1432,8 @@ function ngmb_SetItems(items)
       }
     }
   } finally {
-    this.update_info.pop();
-    if(!this.update_info.length) this.Update();
+    this.update_cnt--;
+    this.ItemsChanged();
   }
 }
 
@@ -1462,6 +1465,7 @@ function ngmb_InsertItem(idx, it)
     ld.Data[j]=it[j];
 
   ld.Menu=ng_CopyVar(this.SubMenuDef);
+  if((typeof ld.Menu!=='object')||(!ld.Menu)) ld.Menu={};
   if(typeof ld.Menu.Type === 'undefined') ld.Menu.Type='ngMenu';
   if((typeof ld.Menu.Data !== 'object')||(!ld.Menu.Data)) ld.Menu.Data = new Object;
   ld.Menu.Data.Items=ld.Data.SubMenu ? ld.Data.SubMenu : new Array();
@@ -1472,12 +1476,18 @@ function ngmb_InsertItem(idx, it)
   var lref=ngCreateControls(ldefs,undefined,this.ID);
   if(lref.MenuBtn)
   {
+    it.SubMenu=lref.MenuBtn.Menu;
+    lref.MenuBtn.MenuItem=it;
     lref.MenuBtn.AddEvent('DoDispose',ngmb_ButtonDispose);
     if(lref.MenuBtn.OnClick===ngmn_DefaultClick) lref.MenuBtn.OnClick=ngmb_MenuButtontClick;
     
     lref.MenuBtn.Owner=this;
     if(typeof this.Menu === 'undefined') this.Menu = new Array();
-    if((idx<0)||(idx>=this.Menu.length)) this.Menu.push(lref.MenuBtn);
+    if(typeof this.Items === 'undefined') this.Items = new Array();
+    if((idx<0)||(idx>=this.Items.length)) {
+      this.Menu.push(lref.MenuBtn);
+      this.Items.push(it);
+    }
     else
     {
       var cc=this.ChildControls;
@@ -1493,8 +1503,9 @@ function ngmb_InsertItem(idx, it)
         cc.splice(pos,0,lref.MenuBtn);
       }
       this.Menu.splice(idx,0,lref.MenuBtn);
+      this.Items.splice(idx,0,it);
     }
-    if(!this.update_info.length) this.Update();
+    this.ItemsChanged();
   }
   return lref.MenuBtn;
 }
@@ -1507,9 +1518,11 @@ function ngmb_ButtonDispose()
     {
       if(this.Owner.Menu[i]===this) {
         this.Owner.Menu.splice(i,1);
+        this.Owner.Items.splice(i,1);
         for(i++;i<this.Owner.Menu.length;i++) {
           if(this.Owner.Menu[i].Menu) this.Owner.Menu[i].Menu.HideMenu();
         }
+        this.Owner.ItemsChanged();
         break;
       }
     }
@@ -1523,13 +1536,14 @@ function ngmb_DeleteItem(idx)
   {
     var c=this.Menu[idx];
     this.Menu.splice(idx,1);
+    this.Items.splice(idx,1);
     for(var i=idx;i<this.Menu.length;i++)
     {
       m=this.Menu[i].Menu;
       if(m) m.HideMenu();
     }
     if(c) c.Dispose();
-    if(!this.update_info.length) this.Update();
+    this.ItemsChanged();
   }
 }
 
@@ -1546,12 +1560,37 @@ function ngmb_HideSubMenu()
   }
 }
 
+function ngmb_ItemsChanged()
+{
+  if(this.update_cnt>0) {
+    this._items_changed = true;
+    this.need_update = true;
+  }
+  else {
+    this.DoItemsChanged();
+    this.Update();
+  }
+}
+
+function ngmb_CheckUpdate(o)
+{
+  if((this.update_cnt>0)||(this.ID=='')) { this.need_update=true; return false; }
+  this.need_update=false;
+  return true;
+}
+
+function ngmb_DoItemsChanged()
+{
+  if(this.update_cnt > 0) this._items_changed = true;
+  else if(this.OnItemsChanged) this.OnItemsChanged(this,this.Items);
+}
+
 function ngmb_BeginUpdate(recursive)
 {
-  recursive=ngVal(recursive,true);
-  this.update_info.push(recursive);
+  this.update_cnt++;
   if((typeof this.Menu==='object')&&(this.Menu))
   {
+    recursive=ngVal(recursive,true);
     var m;
     for(var i=0;i<this.Menu.length;i++)
     {
@@ -1563,9 +1602,7 @@ function ngmb_BeginUpdate(recursive)
 
 function ngmb_EndUpdate()
 {
-  if(this.update_info.length>0)
-  {
-    var recursive=this.update_info.pop();
+  if(this.update_cnt>0) {
     if((typeof this.Menu==='object')&&(this.Menu))
     {
       var m;
@@ -1575,9 +1612,47 @@ function ngmb_EndUpdate()
         if(m) m.EndUpdate();
       }
     }
-    if(!this.update_info.length) this.Update();
+  }
+  this.update_cnt--;
+  if(this.update_cnt<=0) {
+    this.update_cnt=0;
+    if(this._items_changed){
+      this._items_changed = false;
+      this.DoItemsChanged();
+    }
+    if(this.need_update) this.Update();
   }
 }
+
+function ngmb_ScanMenu(fnc, recursive, parent, userdata)
+{
+  if(typeof fnc !== 'function') return false;
+  recursive=ngVal(recursive,true);
+
+  if((parent)&&(typeof parent==='object')) {
+    if(parent.MenuItem) parent=parent.MenuItem;
+    if(parent.SubMenu) {
+      if(!parent.SubMenu.ScanMenu(fnc, recursive, null, userdata)) return false;
+    }
+    return true;
+  }
+
+  if(typeof this.Items !== 'undefined') {
+    var it;
+    for(var i=0;i<this.Items.length;i++)
+    {
+      it=this.Items[i];
+      if(typeof it === 'undefined') continue;
+      if(!fnc(this, it, this, userdata)) return false;
+      if((it.SubMenu)&&(recursive))
+      {
+        if(!it.SubMenu.ScanMenu(fnc, true, null, userdata)) return false;
+      }
+    }
+  }
+  return true;
+}
+
 
 // --- ngMenuBar ngButton ------------------------------------------------------
 
@@ -2124,6 +2199,7 @@ function ng_SetControlPopup(c,m)
 function Create_ngMenu(def, ref, parent)
 {
   var c=ngCreateControlAsType(def, 'ngList', ref, parent);
+  if(!c) return c;
 
   /*
    *  Group: Properties
@@ -2437,6 +2513,7 @@ function Create_ngMenu(def, ref, parent)
 function Create_ngMenuBar(def, ref, parent)
 {
   var c=ngCreateControlAsType(def, 'ngToolBar', ref, parent);
+  if(!c) return c;
   /*
    *  Group: Methods
    */
@@ -2521,6 +2598,16 @@ function Create_ngMenuBar(def, ref, parent)
    *    -
    */
   c.HideSubMenu = ngmb_HideSubMenu;
+  /*  Function: ScanMenu
+   *  Recursive scan items in menu and its submenus.
+   *
+   *  Syntax:
+   *    int *ScanMenu* (function scanfnc [, recursive=true, object parent=null, mixed userdata])
+   *
+   *  Returns:
+   *    -
+   */
+  c.ScanMenu = ngmb_ScanMenu;
   /*  Function: GetMenu
    *  Gets (or creates) menu item.
    *
@@ -2532,7 +2619,12 @@ function Create_ngMenuBar(def, ref, parent)
    */
   c.GetMenu = ngmn_GetMenu;
 
-  c.update_info = new Array();
+  c.ItemsChanged = ngmb_ItemsChanged;
+  c.DoItemsChanged = ngmb_DoItemsChanged;
+
+  c.update_cnt=0;
+  c.need_update=false;
+  c.AddEvent(ngmb_CheckUpdate, 'OnUpdate');
 
   c.AddEvent(ngmb_DoCreate, 'DoCreate');
   /*
@@ -2550,7 +2642,21 @@ function Create_ngMenuBar(def, ref, parent)
    *  References to assigned <ngMenu> controls.
    *  Type: array
    */
-  if(typeof c.Menu === 'undefined') c.Menu = new Array();
+  c.Menu = new Array();
+
+  /*  Variable: Items
+   *  Menu items from which menu buttons were created.
+   *  Type: array
+   */
+  c.Items = new Array();
+
+  /*
+   *  Group: Events
+   */
+  /*
+   *  Event: OnItemsChanged
+   */
+  c.OnItemsChanged = null;
   return c;
 }
 
@@ -2561,6 +2667,7 @@ function Create_ngMenuBar(def, ref, parent)
 function Create_ngMenuBarButton(def, ref, parent)
 {
   var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
+  if(!c) return c;
 //  c.AddEvent('OnMouseLeave',ngmbb_ButtonLeaveMenu);
   c.AddEvent('OnMouseEnter',ngmbb_ButtonEnterMenu);
   /*
@@ -2593,6 +2700,7 @@ function Create_ngSplitButton(def, ref, parent)
   if(typeof def.Data === 'undefined') def.Data=new Object;
   def.Data.SplitButton=true;
   var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
+  if(!c) return c;
   c.AddEvent('DoUpdate',ngsbtn_DoUpdate);
   c.AddEvent('DoPtrClick',ngsbtn_DoPtrClick);
   c.AddEvent(ngsbtn_Click,'Click');
