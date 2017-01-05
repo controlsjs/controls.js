@@ -1211,6 +1211,9 @@ ngUserControls['viewmodel_ui'] = {
       }
     );
 
+    function isMenu(list) {
+      return (typeof list.HideSubMenu==='function');
+    }
 
     function vmGetListItem(list,v,subitems) {
       if((typeof v==='undefined')||(v===null)) return v;
@@ -1225,14 +1228,20 @@ ngUserControls['viewmodel_ui'] = {
         return {Text: v};
       }
 
-      var items;
+      var ismenu=isMenu(list);
+
+      var items,submenu;
       if(typeof v.Items!=='undefined') {
         items=v.Items;
         v.Items=null;
-        c=ko.ng_getvalue(v);
-        v.Items=items;
       }
-      else c=ko.ng_getvalue(v);
+      if((ismenu)&&(typeof v.SubMenu!=='undefined')) {
+        submenu=v.SubMenu;
+        v.SubMenu=null;
+      }
+      c=ko.ng_getvalue(v);
+      if(items) v.Items=items;
+      if(submenu) v.SubMenu=submenu;
 
       if(v===c) c=ng_CopyVar(v);
       else {
@@ -1249,6 +1258,16 @@ ngUserControls['viewmodel_ui'] = {
             c.Items[i]=vmGetListItem(list,items[i]);
         }
         else delete c.Items;
+
+        if(ismenu) {
+          if(ko.isObservable(submenu)) submenu=submenu();
+          if(ng_IsArrayVar(submenu)) {
+            c.SubMenu=[];
+            for(var i in submenu)
+              c.SubMenu[i]=vmGetListItem(list,submenu[i]);
+          }
+          else delete c.SubMenu;
+        }
       }
       return c;
     }
@@ -1278,6 +1297,8 @@ ngUserControls['viewmodel_ui'] = {
         }
       }
 
+      var ismenu=isMenu(list);
+
       var ex={ Items: true }; // Don't touch original items
       if((vmit!==vmval)&&(typeof vmit.valueWillMutate === 'function')) vmit.valueWillMutate();
       for(var i in it) {
@@ -1288,6 +1309,10 @@ ngUserControls['viewmodel_ui'] = {
           case '_vmChecked':
           case '_vmCollapsed':
             break;
+          case 'OnClick':
+            if((ismenu)&&(it.OnClick===ngmn_OnClick)) break;
+          case 'SubMenu':
+            if(ismenu) break;
           default:
             ex[i]=true;
             vmval[i]=ko.ng_setvalue(vmval[i],it[i]);
@@ -1317,7 +1342,7 @@ ngUserControls['viewmodel_ui'] = {
             var isarray=true;
             if(!ng_IsArrayVar(aitems)) { aitems=[]; isarray=false; }
             if(typeof vitems.valueWillMutate === 'function') vitems.valueWillMutate();
-            syncsubitems(aitems,it);
+            syncsubitems(aitems,items,list);
             if((isarray)&&(typeof vitems.valueHasMutated === 'function')) vitems.valueHasMutated();
             else vitems(aitems);
           }
@@ -1327,7 +1352,7 @@ ngUserControls['viewmodel_ui'] = {
             vitems=[];
             vmval.Items=vitems;
           }
-          syncsubitems(vitems,it);
+          syncsubitems(vitems,items,list);
         }
       }
       else {
@@ -1340,11 +1365,100 @@ ngUserControls['viewmodel_ui'] = {
         else delete vmval.Items;
       }
 
+      if(ismenu) {
+        var submenu=(it.SubMenu && isMenu(it.SubMenu) ? it.SubMenu.Items : null);
+        var vsubmenu=vmval.SubMenu;
+
+        if(ng_IsArrayVar(submenu)) {
+          if(ko.isObservable(vsubmenu)) {
+            if(ko.isWriteableObservable(vsubmenu)) {
+              var asubmenu=vsubmenu();
+              var isarray=true;
+              if(!ng_IsArrayVar(asubmenu)) { asubmenu=[]; isarray=false; }
+              if(typeof vsubmenu.valueWillMutate === 'function') vsubmenu.valueWillMutate();
+              syncsubitems(asubmenu,submenu,it.SubMenu);
+              if((isarray)&&(typeof vsubmenu.valueHasMutated === 'function')) vsubmenu.valueHasMutated();
+              else vsubmenu(asubmenu);
+            }
+          }
+          else {
+            if(!ng_IsArrayVar(vsubmenu)) {
+              vsubmenu=[];
+              vmval.SubMenu=vsubmenu;
+            }
+            syncsubitems(vsubmenu,submenu,it.SubMenu);
+          }
+        }
+        else {
+          if(ko.isObservable(vsubmenu)) {
+            if(ko.isWriteableObservable(vsubmenu)) {
+              var undefined;
+              vsubmenu(undefined);
+            }
+          }
+          else delete vmval.SubMenu;
+        }
+      }
+
       if(vmit!==vmval) {
         if(typeof vmit.valueHasMutated === 'function') vmit.valueHasMutated();
         else vmit(vmval);
       }
       return vmit;
+    }
+
+    function register_listchanges(c, list)
+    {
+      if(list._VMChangesRegistered) return;
+      list._VMChangesRegistered=true;
+
+      list.AddEvent(function() {
+        if((c.need_vmupdate)&&(c.update_cnt<=1)) {
+          var oldupcnt=c.update_cnt;
+          c.update_cnt=0; // force listupdate()
+          try {
+            c.UpdateVMValues();
+          } finally {
+            c.update_cnt=oldupcnt;
+          }
+        }
+      },'EndUpdate');
+      list.AddEvent(function(l,items) {
+        c.UpdateVMValues();
+      },'OnItemsChanged');
+
+      if((c!==list)||(!menubar)) {
+        list.AddEvent(function(l,it) {
+          if(c._vmdispose) return;
+          if(ko.isObservable(it._vmCollapsed)) {
+            if(!ko.isWriteableObservable(it._vmCollapsed)) return;
+              ngCtrlBindingLock('Value',c,function() {
+                it._vmCollapsed(true);
+              });
+          }
+          else c.UpdateVMValues();
+        },'OnCollapsed');
+        list.AddEvent(function(l,it) {
+          if(c._vmdispose) return;
+          if(ko.isObservable(it._vmCollapsed)) {
+            if(!ko.isWriteableObservable(it._vmCollapsed)) return;
+            ngCtrlBindingLock('Value',c,function() {
+              it._vmCollapsed(false);
+            });
+          }
+          else c.UpdateVMValues();
+        },'OnExpanded');
+        list.AddEvent(function(l,it) {
+          if(c._vmdispose) return;
+          if(ko.isObservable(it._vmChecked)) {
+            if(!ko.isWriteableObservable(it._vmChecked)) return;
+            ngCtrlBindingLock('Value',c,function() {
+              it._vmChecked(it.Checked);
+            });
+          }
+          else c.UpdateVMValues();
+        },'OnItemCheckChanged');
+      }
     }
 
     var ignoredListItemsProps = {
@@ -1357,6 +1471,7 @@ ngUserControls['viewmodel_ui'] = {
       _vmCollapsed: true
     };
 
+
     function compareListItems(a,b,bindinfo)
     {
       if(typeof bindinfo.KeyField !== 'undefined') {
@@ -1368,6 +1483,12 @@ ngUserControls['viewmodel_ui'] = {
       for(var i in a) if(!ignoredListItemsProps[i]) keys[i]=true;
       for(var i in b) if(!ignoredListItemsProps[i]) keys[i]=true;
 
+      if((bindinfo.CompareInfo)&&(bindinfo.CompareInfo.IsMenu)) {
+        delete keys.SubMenu;
+        if(((a.OnClick===ngmn_OnClick)&&(typeof b.OnClick === 'undefined'))||
+           ((b.OnClick===ngmn_OnClick)&&(typeof a.OnClick === 'undefined'))) delete keys.OnClick;
+      }
+
       var aref=a['_byRef'];
       var bref=b['_byRef'];
       for(var i in keys)
@@ -1377,7 +1498,8 @@ ngUserControls['viewmodel_ui'] = {
     }
 
     function value_init(c, valueAccessor, allBindingsAccessor, viewModel) {
-      if(c.CtrlType==='ngList')
+      var menubar=(c.CtrlType==='ngToolBar')&&(c.CtrlInheritsFrom('ngMenuBar'));
+      if((c.CtrlType==='ngList')||(menubar))
       {
         var bindinfo={},undefined;
         var binding=allBindingsAccessor();
@@ -1388,46 +1510,66 @@ ngUserControls['viewmodel_ui'] = {
           return compareListItems(a,b,bindinfo);
         }
 
-        function newlistitem(it) {
+        function newlistitem(it,list) {
           var ci = {
             NewItem: (bindinfo.SimpleArray ? undefined : {}),
             BindInfo: bindinfo,
-            List: c,
+            Owner: c,
+            List: list,
             ListItem: it
           };
           // List event: OnCreateViewModelItem
           if((c.OnCreateViewModelItem)&&(!ngVal(c.OnCreateViewModelItem(c,ci),false))) return ci.NewItem;
-          return vmSetListItem(c,ci.NewItem,ci.ListItem,bindinfo,newlistsubitems);
+          return vmSetListItem(list,ci.NewItem,ci.ListItem,bindinfo,newlistsubitems);
         }
 
-        function newlistsubitems(vitems,it) {
-          for(var i=0;i<it.Items.length;i++)
-            vitems[i]=newlistitem(it.Items[i]);
+        function newlistsubitems(vitems,it,owner) {
+          for(var i=0;i<it.length;i++)
+            vitems[i]=newlistitem(it[i],owner);
         }
 
-        function synclistinit(arr, parent)
+        function scan_newmenus(owner,item) {
+          if(item.SubMenu) register_listchanges(c, item.SubMenu);
+          owner.ScanMenu(function(list,it,parent,userdata) {
+            if(it.SubMenu) register_listchanges(c, it.SubMenu);
+            return true;
+          },true,item);
+        }
+
+        function synclistinit(arr, parent, owner)
         {
           var items=[];
           for(var i=0;i<arr.length;i++)
-            items[i]=vmGetListItem(c,arr[i],false);
+            items[i]=vmGetListItem(owner,arr[i],false);
 
-          var editScript=ng_GetArraysEditScript(items,parent.Items,compareListItems_init);
-          for (var i = 0, j = 0; i < editScript.length; i++) {
-            switch (editScript[i].status) {
-              case 0://"retained":
-                arr[j]=vmSetListItem(c,arr[j],parent.Items[j],bindinfo,synclistinit);
-                //console.log('init retained',arr[j]);
-                j++;
-                break;
-              case 2://"deleted":
-                //console.log('init deleted',j);
-                arr.splice(j,1);
-                break;
-              case 1://"added":
-                arr.splice(j,0,newlistitem(parent.Items[j]));
-                //console.log('init added',arr[j]);
-                j++;
-                break;
+          var ismenu=isMenu(owner);
+
+          bindinfo.CompareInfo={
+            List: owner,
+            IsMenu: ismenu
+          };
+          var editScript=ng_GetArraysEditScript(items,parent,compareListItems_init);
+          delete bindinfo.CompareInfo;
+          if(editScript) {
+            for (var i = 0, j = 0; i < editScript.length; i++) {
+              switch (editScript[i].status) {
+                case 0://"retained":
+                  arr[j]=vmSetListItem(owner,arr[j],parent[j],bindinfo,synclistinit);
+                  if(ismenu) scan_newmenus(owner,parent[j]);
+                  //console.log('init retained',arr[j]);
+                  j++;
+                  break;
+                case 2://"deleted":
+                  //console.log('init deleted',j);
+                  arr.splice(j,1);
+                  break;
+                case 1://"added":
+                  arr.splice(j,0,newlistitem(parent[j], owner));
+                  if(ismenu) scan_newmenus(owner,parent[j]);
+                  //console.log('init added',arr[j]);
+                  j++;
+                  break;
+              }
             }
           }
         }
@@ -1451,13 +1593,13 @@ ngUserControls['viewmodel_ui'] = {
               if(!ng_IsArrayVar(varr))
               {
                 var arr=[];
-                synclistinit(arr, c);
+                synclistinit(arr, c.Items, c);
                 v(arr);
               }
               else
               {
                 if(typeof v.valueWillMutate === 'function') v.valueWillMutate();
-                synclistinit(varr, c);
+                synclistinit(varr, c.Items, c);
                 if(typeof v.valueHasMutated === 'function') v.valueHasMutated();
                 else v(varr);
               }
@@ -1485,56 +1627,19 @@ ngUserControls['viewmodel_ui'] = {
           }
         }
 
-        c.AddEvent(function() {
-          if((c.need_vmupdate)&&(c.update_cnt<=1)) {
-            listupdated();
-          }
-        },'EndUpdate');
-
         c.need_vmupdate = false;
         c.binding_update_timer = null;
 
         c.OnCreateViewModelItem = c.OnCreateViewModelItem || null;
 
-        c.AddEvent(function(l,it,parent) {
-          c.UpdateVMValues();
-        },'OnItemsChanged');
+        register_listchanges(c,c);
+
         c.AddEvent(function() {
           if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
           c.binding_update_timer=null;
           c._vmdispose=true;
           return true;
         },'DoDispose');
-        c.AddEvent(function(l,it) {
-          if(c._vmdispose) return;
-          if(ko.isObservable(it._vmCollapsed)) {
-            if(!ko.isWriteableObservable(it._vmCollapsed)) return;
-              ngCtrlBindingLock('Value',c,function() {
-                it._vmCollapsed(true);
-              });
-          }
-          else c.UpdateVMValues();
-        },'OnCollapsed');
-        c.AddEvent(function(l,it) {
-          if(c._vmdispose) return;
-          if(ko.isObservable(it._vmCollapsed)) {
-            if(!ko.isWriteableObservable(it._vmCollapsed)) return;
-            ngCtrlBindingLock('Value',c,function() {
-              it._vmCollapsed(false);
-            });
-          }
-          else c.UpdateVMValues();
-        },'OnExpanded');
-        c.AddEvent(function(l,it) {
-          if(c._vmdispose) return;
-          if(ko.isObservable(it._vmChecked)) {
-            if(!ko.isWriteableObservable(it._vmChecked)) return;
-            ngCtrlBindingLock('Value',c,function() {
-              it._vmChecked(it.Checked);
-            });
-          }
-          else c.UpdateVMValues();
-        },'OnItemCheckChanged');
 
         return;
       }
@@ -1687,7 +1792,8 @@ ngUserControls['viewmodel_ui'] = {
 
     function value_update(c, valueAccessor, allBindingsAccessor) {
 
-      if(c.CtrlType==='ngList')
+      var menubar=(c.CtrlType==='ngToolBar')&&(c.CtrlInheritsFrom('ngMenuBar'));
+      if((c.CtrlType==='ngList')||(menubar))
       {
         if(c['binding_updatingValue']) {
           //console.log('updating ignore');
@@ -1699,71 +1805,128 @@ ngUserControls['viewmodel_ui'] = {
           return compareListItems(a,b,bindinfo);
         }
 
-        function synclistupdate(arr, parent) {
+        function synclistupdate(arr, items, list) {
           //console.log('vmupdated',c);
 
-          var items=[];
+          var vitems=[];
           for(var i=0;i<arr.length;i++)
-            items[i]=vmGetListItem(c,arr[i]);
+            vitems[i]=vmGetListItem(list,arr[i]);
 
-          synclistupdateex(items, parent);
+          synclistupdateex(vitems, items, list, list);
         }
 
-        function synclistupdateex(arr, parent)
+        function synclistupdateex(arr, items, parent, list)
         {
-          var editScript=ng_GetArraysEditScript(parent.Items,arr,compareListItems_update);
-          for (var i = 0, j = 0; i < editScript.length; i++) {
-            switch (editScript[i].status) {
-              case 0://"retained":
-                //console.log('update retained',arr[j]);
+          var ismenu=isMenu(list);
+          bindinfo.CompareInfo={
+            List: list,
+            IsMenu: ismenu
+          };
+          var editScript=ng_GetArraysEditScript(items,arr,compareListItems_update);
+          delete bindinfo.CompareInfo ;
+          if(editScript) {
+            for (var i = 0, j = 0; i < editScript.length; i++) {
+              switch (editScript[i].status) {
+                case 0://"retained":
+                  //console.log('update retained',arr[j]);
 
-                var it=parent.Items[j];
-                var vmit=arr[j];
+                  var it=items[j];
+                  var vmit=arr[j];
 
-                c.need_update=true;
+                  list.need_update=true;
 
-                if(it.Checked!==vmit.Checked) c.CheckItem(it,vmit.Checked);
-                if(it.Collapsed!==vmit.Collapsed) {
-                  if(vmit.Collapsed) c.Collapse(it);
-                  else c.Expand(it);
-                }
+                  if((c!==list)||(!menubar)) {
+                    if(it.Checked!==vmit.Checked) list.CheckItem(it,vmit.Checked);
+                    if(it.Collapsed!==vmit.Collapsed) {
+                      if(vmit.Collapsed) list.Collapse(it);
+                      else list.Expand(it);
+                    }
+                  }
 
-                var items=vmit.Items;
-                if(ng_IsArrayVar(items))
-                  synclistupdateex(items, it);
-                else
-                  c.Clear(it);
-                j++;
-                break;
-              case 2://"deleted":
-                //console.log('update deleted',j);
-                var it=editScript[i].value;
-                if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(it,keyfield),selval)))
-                {
-                  e.ListItem = { };
-                  vmSetFieldValueByID(e.ListItem,keyfield,selval);
-                  e.SetText('');
-                }
-                c.Delete(j,parent);
-                break;
-              case 1://"added":
-                var item=editScript[i].value;
-                if(!ng_typeObject(item)) item={};
+                  var vitems=vmit.Items;
+                  if(ng_IsArrayVar(vitems))
+                    synclistupdateex(vitems, it.Items, it, list);
+                  else {
+                    if((c!==list)||(!menubar)) list.Clear(it);
+                  }
 
-                //console.log('update added',item);
-                c.Insert(j,item,parent);
+                  if(ismenu) {
+                    var vsubmenu=vmit.SubMenu;
+                    if(ng_IsArrayVar(vsubmenu))
+                      if(!it.SubMenu) {
+                        if(typeof list.CreateSubMenu === 'function') {
+                          list.CreateSubMenu(it);
+                          if(it.SubMenu) register_listchanges(c, it.SubMenu);
+                        }
+                      }
+                      if(it.SubMenu) {
+                        if(isMenu(it.SubMenu)) {
+                          synclistupdateex(vsubmenu, it.SubMenu.Items, it.SubMenu, it.SubMenu);
+                        }
+                      }
+                    else {
+                      if((c!==list)||(!menubar)) {
+                        if((it.SubMenu)&&(typeof it.SubMenu.Dispose === 'function')) it.SubMenu.Dispose();
+                      }
+                    }
+                  }
+                  j++;
+                  break;
+                case 2://"deleted":
+                  //console.log('update deleted',j);
+                  if((c===list)&&(menubar)) {
+                    list.DeleteItem(j);
+                  }
+                  else {
+                    if(c===list) {
+                      // Handle dropdown edit value
+                      var it=editScript[i].value;
+                      if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(it,keyfield),selval)))
+                      {
+                        e.ListItem = { };
+                        vmSetFieldValueByID(e.ListItem,keyfield,selval);
+                        e.SetText('');
+                      }
+                    }
+                    list.Delete(j,parent);
+                  }
+                  break;
+                case 1://"added":
+                  var item=editScript[i].value;
+                  if(!ng_typeObject(item)) item={};
 
-                if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(item,keyfield),selval)))
-                  c.SelectDropDownItem(item);
+                  //console.log('update added',item);
+                  if((c===list)&&(menubar)) {
+                    list.InsertItem(j,item);
+                  }
+                  else {
+                    list.Insert(j,item,parent);
 
-                j++;
-                break;
+                    if(c===list) {
+                      // Handle dropdown edit value
+                      if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(item,keyfield),selval)))
+                        c.SelectDropDownItem(item);
+                    }
+                  }
+
+                  // Register notification of changes on all newly created submenus
+                  if(ismenu) {
+                    if(item.SubMenu) register_listchanges(c, item.SubMenu);
+                    list.ScanMenu(function(list,it,parent,userdata) {
+                      if(it.SubMenu) register_listchanges(c, it.SubMenu);
+                      return true;
+                    },true,item);
+                  }
+
+                  j++;
+                  break;
+              }
             }
           }
         }
 
         var bindinfo={};
-        var e=c.DropDownOwner;
+        var e=menubar ? null : c.DropDownOwner;
         if(e)
         {
           var selval;
@@ -1779,14 +1942,16 @@ ngUserControls['viewmodel_ui'] = {
           if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
           c.binding_update_timer=null;
 
-          var checkedacc,selectedacc;
-          if(c.DataBindings.Checked) {
-            checkedacc=c.DataBindings.Checked.ValueAccessor();
-            if((checkedacc)&&(typeof checkedacc.valueWillMutate === 'function')) checkedacc.valueWillMutate();
-          }
-          if(c.DataBindings.Selected) {
-            selectedacc=c.DataBindings.Selected.ValueAccessor();
-            if((selectedacc)&&(typeof selectedacc.valueWillMutate === 'function')) selectedacc.valueWillMutate();
+          if(!menubar) {
+            var checkedacc,selectedacc;
+            if(c.DataBindings.Checked) {
+              checkedacc=c.DataBindings.Checked.ValueAccessor();
+              if((checkedacc)&&(typeof checkedacc.valueWillMutate === 'function')) checkedacc.valueWillMutate();
+            }
+            if(c.DataBindings.Selected) {
+              selectedacc=c.DataBindings.Selected.ValueAccessor();
+              if((selectedacc)&&(typeof selectedacc.valueWillMutate === 'function')) selectedacc.valueWillMutate();
+            }
           }
 
           var val=ko.ng_unwrapobservable(valueAccessor());
@@ -1795,12 +1960,14 @@ ngUserControls['viewmodel_ui'] = {
           {
             if(ng_IsArrayVar(val))
             {
-              synclistupdate(val, c);
+              synclistupdate(val, c.Items, c);
             }
             else
             {
-              c.Clear();
-              if((keyfield)&&(typeof selval!=='undefined'))
+              if(menubar) c.ClearItems();
+              else c.Clear();
+              // Handle dropdown edit value
+              if((!menubar)&&(keyfield)&&(typeof selval!=='undefined'))
               {
                 e.ListItem = { };
                 vmSetFieldValueByID(e.ListItem,keyfield,selval);
@@ -1822,13 +1989,15 @@ ngUserControls['viewmodel_ui'] = {
             }
           }
 
-          if(checkedacc) {
-            if(typeof checkedacc.valueHasMutated === 'function') checkedacc.valueHasMutated();
-            else checkedacc(checkedacc());
-          }
-          if(selectedacc) {
-            if(typeof selectedacc.valueHasMutated === 'function') selectedacc.valueHasMutated();
-            else selectedacc(selectedacc());
+          if(!menubar) {
+            if(checkedacc) {
+              if(typeof checkedacc.valueHasMutated === 'function') checkedacc.valueHasMutated();
+              else checkedacc(checkedacc());
+            }
+            if(selectedacc) {
+              if(typeof selectedacc.valueHasMutated === 'function') selectedacc.valueHasMutated();
+              else selectedacc(selectedacc());
+            }
           }
         });
         return;

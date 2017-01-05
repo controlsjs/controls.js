@@ -83,8 +83,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       },
       Level: 'basic'
     };
-
-    switch (c.DefType)
+    switch (c.CtrlType)
     {
       case 'ngEdit':
         props["InstantUpdate"] = instantUpdateProperty;
@@ -99,10 +98,17 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["Focus"] = { Level: 'basic' };
         props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
+      case 'ngToolBar':
+        if(c.CtrlInheritsFrom('ngMenuBar')) {
+          props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+          props["Selected"] = { DefaultType: 'databind_string', Level: 'optional' };
+          props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+        }
+        break;
       case 'ngList':
         props["Focus"] = { Level: 'basic' };
         props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
-        props["Selected"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Selected"] = { DefaultType: 'databind_string', Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' };
         props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngButton':
