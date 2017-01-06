@@ -25,7 +25,7 @@ var WinXPControls = {
   ControlsGroup: 'WinXP Skin',
 
   ControlImages: [
-    'winxp_base.png?8',
+    'winxp_base.png?9',
     'winxp_hbox.png?6',
     'winxp_vbox.png?5'
   ],
