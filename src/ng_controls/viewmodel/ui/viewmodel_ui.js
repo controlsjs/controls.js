@@ -1245,10 +1245,10 @@ ngUserControls['viewmodel_ui'] = {
         return {Text: v};
       }
 
-      if(bindinfo.ItemMapping) {
+      if(bindinfo.RevItemMapping) {
         var p,nv={};
         for(var i in v) {
-          p=bindinfo.ItemMapping[i];
+          p=bindinfo.RevItemMapping[i];
           if(p) nv[p]=v[i];
         }
         v=nv;
@@ -1331,10 +1331,10 @@ ngUserControls['viewmodel_ui'] = {
 
       var ismenu=isMenu(list);
       var pitems,psubmenu,p;
-      if(bindinfo.RevItemMapping)
+      if(bindinfo.ItemMapping)
       {
-        pitems=bindinfo.RevItemMapping['Items'];
-        if(ismenu) psubmenu=bindinfo.RevItemMapping['SubMenu'];
+        pitems=bindinfo.ItemMapping['Items'];
+        if(ismenu) psubmenu=bindinfo.ItemMapping['SubMenu'];
       }
       else {
         pitems='Items';
@@ -1360,8 +1360,8 @@ ngUserControls['viewmodel_ui'] = {
           case 'SubMenu':
             if(ismenu) break;
           default:
-            if(bindinfo.RevItemMapping) {
-              p=bindinfo.RevItemMapping[i];
+            if(bindinfo.ItemMapping) {
+              p=bindinfo.ItemMapping[i];
               if(!p) break;
             }
             else p=i;
@@ -1451,11 +1451,11 @@ ngUserControls['viewmodel_ui'] = {
         }
       }
 
-      if(bindinfo.RevItemMapping) {
+      if(bindinfo.ItemMapping) {
         var p,nvmit={},keys={};
         for(var i in vmit)
         {
-          p=bindinfo.RevItemMapping[i];
+          p=bindinfo.ItemMapping[i];
           if(p) {
             nvmit[p]=vmit[i];
             keys[i]=true;
