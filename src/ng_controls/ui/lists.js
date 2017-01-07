@@ -1026,6 +1026,23 @@ function ngl_GetSelected()
   return items;
 }
 
+function ngl_SetSelected(items)
+{
+  this.last_selected='';
+  this.selected = {};
+  if((items)&&(typeof items==='object')) {
+    var it,id;
+    for(var i in items) {
+      it=items[i];
+      id=this.ItemId(it);
+      if(id=='') continue;
+      this.last_selected=id;
+      this.selected[id]=true;
+    }
+  }
+  this.SelectChanged();
+}
+
 function ngl_IsItemSelected(it)
 {
   var id=this.ItemId(it);
@@ -3741,6 +3758,18 @@ function ngList(id)
    *    Array of items.
    */
   this.GetSelected = ngl_GetSelected;
+
+  /*  Function: SetSelected
+   *  Sets what items are selected.
+   *  Previous selection is discarded.
+   *
+   *  Syntax:
+   *    void *SetSelected* (array items)
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetSelected = ngl_SetSelected;
 
   /*  Function: IsItemSelected
    *  Determines if given item is selected.
