@@ -1093,7 +1093,7 @@ var WinXP_DesignInfo = {
       var di = {
         Properties: ng_DIProperties({
           "Data": {
-            "HintX": ng_DIProperty('integer',0,{ Level: 'basic' }),
+            "HintX": ng_DIProperty('integer',0,{ Level: 'basic' })
           },
           "ErrorHint": ng_DIPropertyControl('stdTextHint', { Level: 'advanced' }, 'ngTextHint', ng_DIProperties({
             "className": ng_DIProperty('string', 'wxpEditFieldError', { Level: 'advanced' })
@@ -1103,7 +1103,6 @@ var WinXP_DesignInfo = {
       ng_MergeVar(di,stdEditDI(d,c,ref));
       return di;
     };
-    
     ngRegisterControlDesignInfo('stdEditField',stdEditFieldDI);
     ngRegisterControlDesignInfo('stdSearchBoxField',function(d,c,ref) {
       var di=stdSearchBoxDI(d,c,ref);
@@ -1151,11 +1150,8 @@ var WinXP_DesignInfo = {
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
       return di;
     });
-    ngRegisterControlDesignInfo('stdDataSet',function(d,c,ref) {
-      var di=stdPageListDI(d,c,ref);
-      ng_MergeVar(di,stdEditFieldDI(d,c,ref));
-      return di;
-    });
+    
+    ngRegisterControlDesignInfo('stdDataSet',stdPageListDI);
     
     /*ngRegisterControlDesignInfo('stdDBViewModelForm',function(d,c,ref) {
       return {
@@ -1185,7 +1181,7 @@ var WinXP_DesignInfo = {
     
 
     ngRegisterControlDesignInfo('stdDBDataSet',function(d,c,ref) {
-      return {
+      var di = {
         Properties: ng_DIProperties({
           "ModifyControls": {
             "NewRecord": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
@@ -1195,6 +1191,8 @@ var WinXP_DesignInfo = {
           }
         })
       };
+      ng_MergeVar(di,stdPageListDI(d,c,ref));
+      return di;
     });
   }
 };
