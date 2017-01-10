@@ -585,11 +585,7 @@ var WinXP_DesignInfo = {
       di.ControlCategory=false;
       return di;
     });
-    ngRegisterControlDesignInfo('stdTreeList',function(d,c,ref) {
-      var di=stdListDI(d,c,ref);
-      di.ControlCategory=false;
-      return di;
-    });
+    ngRegisterControlDesignInfo('stdTreeList',stdListDI);
 
     function stdPageListDI(d,c,ref) {
       return {
@@ -738,7 +734,10 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdTextHint',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpTextHint', { Level: 'advanced' })
+          "className": ng_DIProperty('string', 'wxpTextHint', { Level: 'advanced' }),
+          "ModifyControls": {
+            "Hint": ng_DIPropertyControl('stdText', { Level: 'advanced' }, 'ngText')
+          }
         })
       };
     });
@@ -1013,14 +1012,14 @@ var WinXP_DesignInfo = {
           }
         }, { "ModifyControls": { Level: 'basic' } })
       };
-    }); 
+    });
     
     ngRegisterControlDesignInfo('stdMenu',function(d,c,ref) {
       return {
         Properties: ng_DIProperties({
           "className": ng_DIProperty('string', 'wxpMenu', { Level: 'advanced' }),
           "ModifyControls": {
-            "SubMenuDef": ng_DIPropertyControl('stdNenu', { Level: 'advanced' }, 'ngMenu')
+            "SubMenuDef": ng_DIPropertyControl('stdMenu', { Level: 'advanced' }, 'ngMenu')
           },
           "Events": {
             "OnGetCheckImg": ng_DIPropertyEvent('function(c, l, i) { return true; }', { Level: 'basic' })
