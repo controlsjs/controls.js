@@ -590,7 +590,7 @@ var WinEight_DesignInfo = {
               Level: 'advanced',
               Types: {
                 'control': {
-                  ObjectProperties: ng_DIProperties({,
+                  ObjectProperties: ng_DIProperties({
                     "Data": {
                       "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.DropPanelButtonMiddleLight', { Level: 'advanced' }),
                       "Img": ng_DIProperty('image', 'WinEightControls.Images.DropPanelButtonLight', { Level: 'advanced' }),
