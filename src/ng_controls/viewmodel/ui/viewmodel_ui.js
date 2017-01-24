@@ -1472,7 +1472,7 @@ ngUserControls['viewmodel_ui'] = {
       return vmit;
     }
 
-    function register_listchanges(c, list)
+    function register_listchanges(c, list, menubar)
     {
       if(list._VMChangesRegistered) return;
       list._VMChangesRegistered=true;
@@ -1595,9 +1595,9 @@ ngUserControls['viewmodel_ui'] = {
         }
 
         function scan_newmenus(owner,item) {
-          if(item.SubMenu) register_listchanges(c, item.SubMenu);
+          if(item.SubMenu) register_listchanges(c, item.SubMenu, menubar);
           owner.ScanMenu(function(list,it,parent,userdata) {
-            if(it.SubMenu) register_listchanges(c, it.SubMenu);
+            if(it.SubMenu) register_listchanges(c, it.SubMenu, menubar);
             return true;
           },true,item);
         }
@@ -1698,7 +1698,7 @@ ngUserControls['viewmodel_ui'] = {
 
         c.OnCreateViewModelItem = c.OnCreateViewModelItem || null;
 
-        register_listchanges(c,c);
+        register_listchanges(c,c, menubar);
 
         c.AddEvent(function() {
           if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
@@ -1861,9 +1861,22 @@ ngUserControls['viewmodel_ui'] = {
       var menubar=(c.CtrlType==='ngToolBar')&&(c.CtrlInheritsFrom('ngMenuBar'));
       if((c.CtrlType==='ngList')||(menubar))
       {
+        if(c._vmdispose) return;
+
+        function readvmvalues(arr, list)
+        {
+          var ismenu=isMenu(list);
+          for(var i=0;i<arr.length;i++)
+          {
+            var vmit=vmGetListItem(list,arr[i],bindinfo);
+            if(ng_IsArrayVar(vmit.Items)) readvmvalues(vmit.Items, list);
+            if((ismenu)&&(ng_IsArrayVar(vmit.SubMenu))) readvmvalues(vmit.SubMenu, list);
+          }
+        }
+
         if(c['binding_updatingValue']) {
           //console.log('updating ignore');
-          var val=ko.ng_getvalue(valueAccessor()); // just read to subscribe observables
+          readvmvalues(ko.ng_unwrapobservable(valueAccessor()),c); // just read to subscribe observables
           return;
         }
 
@@ -1922,7 +1935,7 @@ ngUserControls['viewmodel_ui'] = {
                       if(!it.SubMenu) {
                         if(typeof list.CreateSubMenu === 'function') {
                           list.CreateSubMenu(it);
-                          if(it.SubMenu) register_listchanges(c, it.SubMenu);
+                          if(it.SubMenu) register_listchanges(c, it.SubMenu, menubar);
                         }
                       }
                       if(it.SubMenu) {
@@ -1977,9 +1990,9 @@ ngUserControls['viewmodel_ui'] = {
 
                   // Register notification of changes on all newly created submenus
                   if(ismenu) {
-                    if(item.SubMenu) register_listchanges(c, item.SubMenu);
+                    if(item.SubMenu) register_listchanges(c, item.SubMenu, menubar);
                     list.ScanMenu(function(list,it,parent,userdata) {
-                      if(it.SubMenu) register_listchanges(c, it.SubMenu);
+                      if(it.SubMenu) register_listchanges(c, it.SubMenu, menubar);
                       return true;
                     },true,item);
                   }
