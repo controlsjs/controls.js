@@ -1874,12 +1874,6 @@ ngUserControls['viewmodel_ui'] = {
           }
         }
 
-        if(c['binding_updatingValue']) {
-          //console.log('updating ignore');
-          readvmvalues(ko.ng_unwrapobservable(valueAccessor()),c); // just read to subscribe observables
-          return;
-        }
-
         function compareListItems_update(a,b) {
           return compareListItems(a,b,bindinfo);
         }
@@ -2005,6 +1999,16 @@ ngUserControls['viewmodel_ui'] = {
         }
 
         var bindinfo={};
+        var binding=allBindingsAccessor();
+        bindinfo.KeyField = binding["KeyField"];
+        prepareItemMapping(bindinfo,binding["ItemMapping"]);
+
+        if(c['binding_updatingValue']) {
+          //console.log('updating ignore');
+          readvmvalues(ko.ng_unwrapobservable(valueAccessor()),c); // just read to subscribe observables
+          return;
+        }
+
         var e=menubar ? null : c.DropDownOwner;
         if(e)
         {
@@ -2012,9 +2016,6 @@ ngUserControls['viewmodel_ui'] = {
           var keyfield=ngVal(e.LookupKeyField, 'Value');
           if(e.ListItem) selval=vmGetFieldValueByID(e.ListItem,keyfield);
         }
-        var binding=allBindingsAccessor();
-        bindinfo.KeyField = binding["KeyField"];
-        prepareItemMapping(bindinfo,binding["ItemMapping"]);
 
         ngCtrlBindingLock('Value',c,function() {
 
@@ -2501,4 +2502,4 @@ ngUserControls['viewmodel_ui'] = {
       error_binding(c,valueAccessor,true);
     });
   }
-}
+};
