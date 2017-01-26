@@ -74,7 +74,19 @@ if((!ngIExplorer)&&(ua.match(/trident/))) // IE>=11 detection
  *  TRUE if user is using the Internet Explorer version 6 or lower.
  */  
 var ngIExplorer6 = ngIExplorer && ( ngIExplorerVersion < 7 ); 
- 
+
+/**
+ *  Variable: ngEdge
+ *  TRUE if user is using the Microsoft Edge browser.
+ */
+var ngEdge = (ua.indexOf("edge") != -1);
+
+/**
+ *  Variable: ngEdgeVersion
+ *  Version of the Microsoft Edge browser.
+ */
+var ngEdgeVersion = (ngEdge ? parseInt( ua.match( /edge\/(.*)$/ )[1] ) : undefined);
+
 /** 
  *  Variable: ngFireFox
  *  TRUE if user is using the Firefox browser.
