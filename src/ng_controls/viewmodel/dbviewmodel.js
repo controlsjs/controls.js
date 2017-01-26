@@ -630,7 +630,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
     {
       if(sresults.DBError!=1)
       {
-        delete sresults.Values; // remove server response on any DB error
+        if(sresults.DBError!=DBVM_ERROR_DATACHANGED) delete sresults.Values; // remove server response on any DB error
         delete vm._deleteprimarykey;
         switch(cmd)
         {
