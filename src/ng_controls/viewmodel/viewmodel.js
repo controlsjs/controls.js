@@ -3338,7 +3338,7 @@ ngUserControls['viewmodel'] = {
      *  values of these properties are extracted/uwrapped.
      *
      *  Syntax:
-     *    function *ko.ng_getvalue* (mixed v [, bool needcopy=false, bool recursive=true])
+     *    function *ko.ng_getvalue* (mixed v [, bool needcopy=false, bool recursive=true, bool peek=false])
      *
      *  Parameters:
      *    v - input value
