@@ -2084,35 +2084,46 @@ ngUserControls['viewmodel_ui'] = {
         return;
       }
 
-      ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
-        switch(c.CtrlType)
-        {
-          case 'ngButton':
-          case 'ngSysAction':
+      switch(c.CtrlType)
+      {
+        case 'ngButton':
+        case 'ngSysAction':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             var v=ng_toNumber(val);
             if((isNaN(v))||((v!=0)&&(v!=1)&&(v!=2))) v=(ng_toBool(val) ? 1 : 0);
             c.Check(v);
-            break;
-          case 'ngPages':
+          });
+          break;
+        case 'ngPages':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             if((ng_IsArrayVar(val))&&(val.length==1)) val=val[0];
             c.SetPage(val);
-            break;
-          case 'ngWebBrowser':
+          });
+          break;
+        case 'ngWebBrowser':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             var txt=ngCtrlBindingFormatString(valueAccessor,val);
             c.SetURL(ng_formatWWW(txt,txt));
-            break;
-          case 'ngProgressBar':
+          });
+          break;
+        case 'ngProgressBar':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             c.SetPosition(ng_toInteger(val,0));
-            break;
-          case 'ngCalendar':
+          });
+          break;
+        case 'ngCalendar':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             c.SetSelected(ng_toDate(val));
-            break;
-          default:
-            if(typeof c.SetText === 'function')
+          });
+          break;
+        default:
+          if(typeof c.SetText === 'function') {
+            ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
               c.SetText(ngCtrlBindingFormatString(valueAccessor,val));
-            break;
-        }
-      });
+            });
+          }
+          break;
+      }
     };
     ngRegisterBindingHandler('Value',value_update,value_init);
 

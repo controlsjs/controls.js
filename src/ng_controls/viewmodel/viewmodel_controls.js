@@ -1116,31 +1116,37 @@ ngUserControls['viewmodel_controls'] = {
     };
 
     function value_update(c, valueAccessor, allBindingsAccessor) {
-      ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
-        switch(c.CtrlType)
-        {
-          case 'ngSysTimer':
+      switch(c.CtrlType)
+      {
+        case 'ngSysTimer':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             var v=ng_toInteger(val,null);
             if((c.Interval!==v)&&(v!==null)) {
               c.Interval=v;
               if(c.IsStarted()) c.Restart();
             }
-            break;
-          case 'ngSysRPC':
+          });
+          break;
+        case 'ngSysRPC':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             if(ng_typeObject(val)) {
               for(var i in val) {
                 c.SetParam(i,val[i]);
               }
             }
-            break;
-          case 'ngSysURLParams':
+          });
+          break;
+        case 'ngSysURLParams':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             if(ng_typeObject(val)) c.SetValues(val);
-            break;
-          case 'ngSysViewModelSettings':
+          });
+          break;
+        case 'ngSysViewModelSettings':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             c.SetValues(val);
-            break;
-        }
-      });
+          });
+          break;
+      }
     };
     ngRegisterBindingHandler('Value',value_update,value_init);
 
