@@ -2023,7 +2023,7 @@ function ngh_PopupCtrl(c,anchor)
   if(typeof c.Elm === 'function') o=c.Elm();
   else { o=c; c=null; }
    
-  if(!o) return;
+  if((!o)||(typeof o!=='object')||(typeof o.tagName==='undefined')) return;
   
   var p=this.Elm();
   if(p) p=p.parentNode;
