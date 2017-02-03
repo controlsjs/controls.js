@@ -3134,20 +3134,6 @@ function nge_SetFocus(state)
   }
 }
 
-function nge_SetInvalid(state, update)
-{
-  state  = ngVal(state, true);
-  update = ngVal(update, true);
-
-  if (this.Invalid==state) return true;
-  if ((this.OnSetInvalid) && (!ngVal(this.OnSetInvalid(this, state, update), false))) return false;
-
-  this.Invalid = state;
-  if (typeof(this.DoSetInvalid)==='function') this.DoSetInvalid(state, update);
-
-  return true;
-}
-
 function nge_SetReadOnly(ro)
 {
   ro=ngVal(ro,true);
@@ -3642,7 +3628,7 @@ function ngEdit(id, text)
    *  Returns:
    *    -
    */
-  this.SetInvalid = nge_SetInvalid;
+  this.SetInvalid = ngc_SetInvalid;
 
   /*
    *  Group: Events
@@ -4587,7 +4573,7 @@ function ngMemo(id, text)
    *  Returns:
    *    -
    */
-  this.SetInvalid = nge_SetInvalid;
+  this.SetInvalid = ngc_SetInvalid;
 
   /*
    *  Group: Events
@@ -4855,12 +4841,15 @@ function ngpg_GetPageObjById(id)
 
 function ngpg_GetPageByControl(ctrl)
 {
-  var i,p=ctrl.ParentControl;
-  while(p)
+  if(ctrl)
   {
-    for(i=0;i<this.Pages.length;i++)
-      if(p==this.Pages[i].ControlsPanel) return i;
-    p=p.ParentControl;
+    var i,p=ctrl.ParentControl;
+    while(p)
+    {
+      for(i=0;i<this.Pages.length;i++)
+        if(p==this.Pages[i].ControlsPanel) return i;
+      p=p.ParentControl;
+    }
   }
   return -1;
 }

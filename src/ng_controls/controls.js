@@ -2335,6 +2335,20 @@ function ngc_SetVisible(v)
   }
 }
 
+function ngc_SetInvalid(state, update)
+{
+  state  = ngVal(state, true);
+  update = ngVal(update, true);
+
+  if (this.Invalid==state) return true;
+  if ((this.OnSetInvalid) && (!ngVal(this.OnSetInvalid(this, state, update), false))) return false;
+
+  this.Invalid = state;
+  if (typeof(this.DoSetInvalid)==='function') this.DoSetInvalid(state, update);
+
+  return true;
+}
+
 function ngc_Align(o)
 {
   var r=0;
