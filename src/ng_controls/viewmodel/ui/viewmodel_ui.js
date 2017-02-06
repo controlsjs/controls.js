@@ -1099,14 +1099,14 @@ ngUserControls['viewmodel_ui'] = {
 
     function update_text(c,valueAccessor,ngtxt)
     {
-      ngCtrlBindingRead('Text',c,valueAccessor,function(val) {
-        if(typeof c.SetText === 'function')
-        {
+      if(typeof c.SetText === 'function')
+      {
+        ngCtrlBindingRead('Text',c,valueAccessor,function(val) {
           var txt=ngCtrlBindingFormatString(valueAccessor,val);
           if(ngtxt) txt=ngTxt(txt);
           c.SetText(txt);
-        }
-      });
+        });
+      }
     }
 
     function init_text(c,valueAccessor, allBindingsAccessor,viewModel)
@@ -1167,10 +1167,12 @@ ngUserControls['viewmodel_ui'] = {
 
     ngRegisterBindingHandler('Invalid',
       function (c, valueAccessor) {
-        ngCtrlBindingRead('Invalid',c,valueAccessor,function(val) {
-          if(typeof c.SetInvalid === 'function')
+        if(typeof c.SetInvalid === 'function')
+        {
+          ngCtrlBindingRead('Invalid',c,valueAccessor,function(val) {
             c.SetInvalid(ng_toBool(val));
-        });
+          });
+        }
       },
       function (c, valueAccessor, allBindingsAccessor,viewModel) {
         if(typeof c.SetInvalid === 'function')
@@ -1182,10 +1184,11 @@ ngUserControls['viewmodel_ui'] = {
 
     ngRegisterBindingHandler('Valid',
       function (c, valueAccessor) {
-        ngCtrlBindingRead('Invalid',c,valueAccessor,function(val) {
-          if(typeof c.SetInvalid === 'function')
+        if(typeof c.SetInvalid === 'function') {
+          ngCtrlBindingRead('Invalid',c,valueAccessor,function(val) {
             c.SetInvalid(ng_toBool(val));
-        });
+          });
+        }
       },
       function (c, valueAccessor, allBindingsAccessor,viewModel) {
         if(typeof c.SetInvalid === 'function')
@@ -1201,7 +1204,7 @@ ngUserControls['viewmodel_ui'] = {
           var handlerFunction = valueAccessor();
           if(ng_typeString(handlerFunction)) handlerFunction=viewModel[handlerFunction];
           if (!handlerFunction) return true;
-          var allBindings = allBindingsAccessor();
+          //var allBindings = allBindingsAccessor();
 
           var argsForHandler = ko.utils.makeArray(arguments);
           argsForHandler.unshift(viewModel);
@@ -2237,7 +2240,7 @@ ngUserControls['viewmodel_ui'] = {
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlType==='ngList')
         {
-          c.SelectKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
+          c.SelectKeyField = ngVal(allBindingsAccessor.get("KeyField"),'Value');
           c.AddEvent(function(list) {
             ngCtrlBindingLock('Selected',c,function() {
               var keyfield=ngVal(c.SelectKeyField, 'Value');
@@ -2260,16 +2263,18 @@ ngUserControls['viewmodel_ui'] = {
 
     ngRegisterBindingHandler('Checked',
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
-        ngCtrlBindingRead('Checked',c,valueAccessor,function(val) {
-          switch(c.CtrlType)
-          {
-            case 'ngButton':
-            case 'ngSysAction':
+        switch(c.CtrlType)
+        {
+          case 'ngButton':
+          case 'ngSysAction':
+            ngCtrlBindingRead('Checked',c,valueAccessor,function(val) {
               var v=ng_toNumber(val);
               if((isNaN(v))||((v!=0)&&(v!=1)&&(v!=2))) v=(ng_toBool(val) ? 1 : 0);
               c.Check(v);
-              break;
-            case 'ngList':
+            });
+            break;
+          case 'ngList':
+            ngCtrlBindingRead('Checked',c,valueAccessor,function(val) {
               var keyfield=ngVal(c.CheckedKeyField, 'Value');
               if(!ng_isEmpty(val)&&(!ng_typeArray(val)))
               {
@@ -2294,9 +2299,9 @@ ngUserControls['viewmodel_ui'] = {
               } finally {
                 c.EndUpdate();
               }
-              break;
-          }
-        });
+            });
+            break;
+        }
       },
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         switch(c.CtrlType)
@@ -2309,7 +2314,7 @@ ngUserControls['viewmodel_ui'] = {
             },'OnCheckChanged');
             break;
           case 'ngList':
-            c.CheckedKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
+            c.CheckedKeyField = ngVal(allBindingsAccessor.get("KeyField"),'Value');
             c.AddEvent(function(list) {
               ngCtrlBindingLock('Checked',c,function() {
                 var keyfield=ngVal(c.CheckedKeyField, 'Value');
@@ -2464,7 +2469,7 @@ ngUserControls['viewmodel_ui'] = {
 
     ngRegisterBindingHandler('Command',null,
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
-        var valuenames = allBindingsAccessor()["ValueNames"];
+        var valuenames = allBindingsAccessor.get("ValueNames");
         var cmd = ''+valueAccessor();
         if(cmd=='') return;
         switch(c.CtrlType)
@@ -2490,7 +2495,7 @@ ngUserControls['viewmodel_ui'] = {
       var f=c.ParentControl;
       while(f)
       {
-        if(f.CtrlInheritsFrom('ngViewModelForm'))
+        if(typeof f.ShowControlError === 'function')
         {
           f.ShowControlError(c,txt,focus);
           return;
