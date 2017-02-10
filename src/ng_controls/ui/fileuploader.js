@@ -596,7 +596,7 @@ function ngfup_FileUploaded(c,data){
   if((typeof data !== 'object') || (data === null)){return null;}
 
   if(data.Error){ return { Name: data.Name, Error: data.Error }; }
-  if(!c.CheckMaxFiles()){return { Name: data.Name, Error: 'ngfup_Error_MaxFiles' };}
+  if(!c.CheckMaxFiles()){return { Name: data.Name, Error: { Message: 'ngfup_Error_MaxFiles', Data: this.MaxFilesCount } };}
 
   c.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
   if(c.OnFileAdded){c.OnFileAdded(c, data.Name, data);}
@@ -895,7 +895,7 @@ function ngfup_Extension(fileName){
 
 function ngfup_CheckFiles(files) {
   if(!this.CheckMaxFiles(files.length)){
-    this.ShowError({ Error: 'ngfup_Error_MaxFiles' });
+    this.ShowError({ Error: { Message: 'ngfup_Error_MaxFiles', Data: this.MaxFilesCount } });
     return false;
   }
 
@@ -919,7 +919,7 @@ function ngfup_CheckFiles(files) {
           }
         }
         if(!found){
-          errorData.push({ Name: files[i].name, Error: 'ngfup_Error_Extension' });
+          errorData.push({ Name: files[i].name, Error: { Message: 'ngfup_Error_Extension', Data: this.AllowedExtensions.join(', ') } });
           continue;
         }
       }
@@ -927,7 +927,7 @@ function ngfup_CheckFiles(files) {
         s = parseInt(files[i].size,10);
         if(batchsize >= 0){batchsize += s;}
         if((maxsize > 0) && (s > maxsize)){
-          errorData.push({ Name: files[i].name, Error: 'ngfup_Error_Size' });
+          errorData.push({ Name: files[i].name, Error: { Message: 'ngfup_Error_Size', Data: this.MaxFileSize } });
           continue;
         }
       }
@@ -938,7 +938,7 @@ function ngfup_CheckFiles(files) {
       return false;
     }
     if((batchsize > 0) && (maxbatchsize > 0) && (batchsize > maxbatchsize)){
-      this.ShowError({ Error: 'ngfup_Error_MaxBatch' });
+      this.ShowError({ Error: { Message: 'ngfup_Error_MaxBatch', Data: this.MaxBatchSize } });
       return false;
     }
   }
@@ -1144,11 +1144,34 @@ function ngfup_SetUploadProgress(p){
   if(this.OnUploadProgress){this.OnUploadProgress(this,p);}
 }
 
+function ngfup_FormatBytes(bytes) {
+  if (bytes<=0) return '-'
+  var units = ['B', 'kB', 'MB', 'GB', 'TB'];
+  var i = parseInt(Math.log(bytes) / Math.log(1024));
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + units[i];
+}
+
 function ngfup_ErrorToMessage(data){
   var errmsg = '';
   if(!data || !data.Error){return errmsg;}
   if(ngVal(data.Name,'') != ''){errmsg += data.Name+': ';}
-  errmsg += ngTxt(data.Error);
+  var err=data.Error;
+  if(typeof err === 'object') {
+    if(!ng_EmptyVar(err.Data)) {
+      switch(err.Message) {
+        case 'ngfup_Error_Size':
+          return errmsg + ng_sprintf(ngTxt('ngfup_Error_Size_Num'),ngfup_FormatBytes(err.Data));
+        case 'ngfup_Error_Extension':
+          return errmsg + ng_sprintf(ngTxt('ngfup_Error_Extension_Info'),err.Data);
+        case 'ngfup_Error_MaxFiles':
+          return errmsg + ng_sprintf(ngTxt('ngfup_Error_MaxFiles_Num'),err.Data);
+        case 'ngfup_Error_MaxBatch':
+          return errmsg + ng_sprintf(ngTxt('ngfup_Error_MaxBatch_Num'),ngfup_FormatBytes(err.Data));
+      }
+    }
+    err=err.Message;
+  }
+  errmsg += ngTxt(err);
   return errmsg;
 }
 
@@ -1156,9 +1179,21 @@ function ngfup_ShowError(data){
   var errmsg = '';
 
   if(ng_IsArrayVar(data)){
+    var exterr,err;
+
     for(var i in data){
-      var msg = this.ErrorToMessage(data[i]);
+      err=data[i];
+      if((err)&&(typeof err.Error === 'object')&&(err.Error)&&(err.Error.Message==='ngfup_Error_Extension')) {
+        exterr=err.Error.Data;
+        delete err.Error.Data;
+      }
+      var msg = this.ErrorToMessage(err);
       if(msg != ''){errmsg += (errmsg == '') ? msg : "\n"+msg;}
+    }
+
+    if(!ng_EmptyVar(exterr)) {
+      if(errmsg != '') errmsg+="\n\n";
+      errmsg+=ng_sprintf(ngTxt('ngfup_Error_AllowedExtensions'),exterr);
     }
   }
   else{
