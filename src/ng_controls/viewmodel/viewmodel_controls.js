@@ -38,12 +38,16 @@ function ng_Bindings(bindings)
     if(ng_typeString(bindings)) return bindings;
     if(!ng_typeObject(bindings)) return '';
     var ret='',v;
+    var isarray=ng_IsArrayVar(bindings);
     for(var i in bindings)
     {
       if(ret!='') ret+=',';
-      ret+=i+':';
+      if(!isarray) ret+=i+':';
       v=bindings[i];
-      if(ng_typeObject(v)) ret+='{'+ng_Bindings(v)+'}';
+      if(ng_typeObject(v)) {
+        if(ng_IsArrayVar(v)) ret+='['+ng_Bindings(v)+']';
+        else ret+='{'+ng_Bindings(v)+'}';
+      }
       else ret+=ng_toString(v);
     }
     return ret;
@@ -76,6 +80,16 @@ function ng_Bindings(bindings)
     }
     return ret;
   }
+}
+
+function ngBindingDeferUpdates(type, allBindingsAccessor, setstate) {
+  var deferupdates=allBindingsAccessor.get("DeferUpdates");
+  if(!ng_typeObject(deferupdates)) deferupdates={};
+  if((typeof deferupdates[type]==='undefined')&&(typeof setstate!=='undefined')) {
+    deferupdates[type]=setstate;
+    allBindingsAccessor.set('DeferUpdates',deferupdates);
+  }
+  return !!ngVal(deferupdates[type],ko.options['deferUpdates']);
 }
 
 function ngApplyBindings(ctrl, viewModel, databind)
@@ -170,6 +184,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
   
 
   var oldhandler = ko['getBindingHandler'];
+  var olddefer = ko.options['deferUpdates'];
   try
   {  
     ko['getBindingHandler'] = function(bindingKey) {
@@ -238,7 +253,10 @@ function ngApplyBindings(ctrl, viewModel, databind)
         allBindings['has'] = function(key) {
             return key in bindings;
         };
-  
+        allBindings['set'] = function(key, val) {
+            bindings[key] = ko.observable(val);
+        };
+
         // First put the bindings into the right order
         var orderedBindings = topologicalSortBindings(bindings);
   
@@ -276,19 +294,27 @@ function ngApplyBindings(ctrl, viewModel, databind)
   
                 // Run update in its own computed wrapper
                 if ((typeof handlerUpdateFn === "function")||(ctrl.OnDataBindingUpdate)) {
-                    var dependentObservable = ko.dependentObservable(
-                        function() {
-                            if((ctrl.OnDataBindingUpdate)&&(!ngVal(ctrl.OnDataBindingUpdate(ctrl,bindingKey,getValueAccessor(bindingKey), allBindings, bindingContext['$data']),false))) return;
-                            if (typeof handlerUpdateFn === "function") handlerUpdateFn(ctrl, getValueAccessor(bindingKey), allBindings, bindingContext['$data'], bindingContext);
-                        },
-                        null,
-                        { disposeWhenNodeIsRemoved: false/*node*/ }
-                    );
-                                                        
-                    ctrl.AddEvent('DoDispose',function() {
-                      dependentObservable.dispose();
-                      return true;
-                    });
+                    var deferupdates=allBindings.get('DeferUpdates');
+                    if(!ng_typeObject(deferupdates)) deferupdates={};
+
+                    ko.options['deferUpdates']=!!ngVal(deferupdates[bindingKey],olddefer);
+                    try {
+                      var dependentObservable = ko.dependentObservable(
+                          function() {
+                              if((ctrl.OnDataBindingUpdate)&&(!ngVal(ctrl.OnDataBindingUpdate(ctrl,bindingKey,getValueAccessor(bindingKey), allBindings, bindingContext['$data']),false))) return;
+                              if (typeof handlerUpdateFn === "function") handlerUpdateFn(ctrl, getValueAccessor(bindingKey), allBindings, bindingContext['$data'], bindingContext);
+                          },
+                          null,
+                          { disposeWhenNodeIsRemoved: false/*node*/ }
+                      );
+                      ctrl.AddEvent('DoDispose',function() {
+                        dependentObservable.dispose();
+                        return true;
+                      });
+                    }
+                    finally {
+                      ko.options['deferUpdates']=olddefer;
+                    }
                 }
             } catch (ex) {
                 ex.message = "Unable to process binding \"" + bindingKey + ": " + bindings[bindingKey] + "\"\nMessage: " + ex.message;
@@ -300,6 +326,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
   }
   finally
   {
+    ko.options['deferUpdates']=olddefer;
     ko['getBindingHandler']=oldhandler;
   }
   
@@ -673,6 +700,12 @@ ngUserControls['viewmodel_controls'] = {
     }
 
     window.ngCtrlBindingLock = value_lock;
+
+    function is_value_locked(type, c) {
+      return (c['binding_updating'+ngVal(type,'')] ? true : false);
+    }
+
+    window.ngCtrlBindingIsLocked = is_value_locked;
 
     function value_write_ex(val,valueAccessor, allBindingsAccessor) {
       var modelValue = valueAccessor();
@@ -1083,6 +1116,8 @@ ngUserControls['viewmodel_controls'] = {
       switch(c.CtrlType)
       {
         case 'ngSysURLParams':
+          ngBindingDeferUpdates('Value',allBindingsAccessor,true);
+
           c.AddEvent('OnInitialized',function(c) {
             ngCtrlBindingWrite('Value',c.Params,c, valueAccessor, allBindingsAccessor);
           });
@@ -1091,6 +1126,8 @@ ngUserControls['viewmodel_controls'] = {
           });
           break;
         case 'ngSysViewModelSettings':
+          ngBindingDeferUpdates('Value',allBindingsAccessor,true);
+
           function loadvmsettings(settings) {
             ngCtrlBindingLock('Value',c,function() {
               var v=valueAccessor();
@@ -1172,10 +1209,7 @@ ngUserControls['viewmodel_controls'] = {
     ngRegisterBindingHandler('Controls',
       function (c, valueAccessor, allBindingsAccessor) {
         ngCtrlBindingRead('Controls',c,valueAccessor,function(val) {
-          var binding=allBindingsAccessor();
-          
-          var controlschecklo = ngVal(binding["ControlsCheckLengthOnly"],false);
-          var controlsdelayedupdate = ngVal(binding["ControlsDelayedUpdate"],10);
+          var controlsdelayedupdate = ngVal(allBindingsAccessor.get("ControlsDelayedUpdate"),10);
           if(c._vmcontrolsupdtimer) clearTimeout(c._vmcontrolsupdtimer);
           c._vmcontrolsupdtimer=null;
 
@@ -1184,20 +1218,18 @@ ngUserControls['viewmodel_controls'] = {
           if(!ng_typeArray(c.VMControls._oldval)) c.VMControls._oldval=[];
           var oldval=c.VMControls._oldval;
           var dfrom=0;
-          if(!controlschecklo) {
-            if((ng_typeArray(val))&&(ng_typeArray(oldval))) {
-              if(c.OnIsViewModelControlChanged)
-              {
-                for(var i=0;i<val.length && i<oldval.length;i++) {
-                  if(!ngVal(c.OnIsViewModelControlChanged(c,val[i],oldval[i]),true)) dfrom=i+1;
-                  else break;
-                }
+          if((ng_typeArray(val))&&(ng_typeArray(oldval))) {
+            if(c.OnIsViewModelControlChanged)
+            {
+              for(var i=0;i<val.length && i<oldval.length;i++) {
+                if(!ngVal(c.OnIsViewModelControlChanged(c,val[i],oldval[i]),true)) dfrom=i+1;
+                else break;
               }
-              else {
-                for(var i=0;i<val.length && i<oldval.length;i++) {
-                  if(ng_VarEquals(val[i],oldval[i])) dfrom=i+1;
-                  else break;
-                }
+            }
+            else {
+              for(var i=0;i<val.length && i<oldval.length;i++) {
+                if(ng_VarEquals(val[i],oldval[i])) dfrom=i+1;
+                else break;
               }
             }
             var l=oldval.length-dfrom;
@@ -1275,7 +1307,7 @@ ngUserControls['viewmodel_controls'] = {
               var cc;
               for(var i=dfrom;i<val.length;i++) {
                 changed=true;
-                if(!controlschecklo) oldval[i]=ng_CopyVar(val[i]);
+                oldval[i]=ng_CopyVar(val[i]);
                 c.VMControls[i]=null;
                 def=c.DoCreateViewModelControl(i, val[i], arrval[i], ci);
                 if(ng_typeArray(def)) {
@@ -1313,6 +1345,8 @@ ngUserControls['viewmodel_controls'] = {
 
       },
       function (c, valueAccessor, allBindingsAccessor,viewModel) {
+        ngBindingDeferUpdates('Controls',allBindingsAccessor,true);
+
         if(typeof c.VMControls === 'undefined') {
           c.VMControls=[];
           c.VMControls._oldval=[];
