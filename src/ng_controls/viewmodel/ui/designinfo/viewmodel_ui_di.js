@@ -90,6 +90,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["DelayedUpdate"] = delayedUpdateProperty;
         props["Focus"] = { Level: 'basic' };
         props["Lookup"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["KeyField"] = { DefaultType: 'databind_string', Level: 'basic' }; // ToDo: string in databind_string
         props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngMemo':
@@ -111,7 +112,36 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
         props["Selected"] = { DefaultType: 'databind_string', Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' };
         props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+
         props["ItemMapping"] = { DefaultType: 'databind_itemmapping', Level: 'basic' };
+
+        props["DelayedUpdate"] = {
+          DefaultType: 'integer',
+          Types: {
+            'integer': {
+              DefaultValue: 10,
+              EditorOptions: {
+                IgnoreDataModel: true
+              }
+            }
+          },
+          Level: 'basic'
+        };
+
+        props["ItemMatchingProps"] = {
+          DefaultType: 'array',
+          Types: {
+            'array': {
+              ChildDesignInfo: {
+                DefaultType: 'databind_string', // ToDo: string in databind_string
+                Level: 'basic'
+              }
+            }
+          }
+        };
+        
+        props["SimpleArrayItemColumnID"] = { DefaultType: 'databind_string', Level: 'advanced' }; // ToDo: string in databind_string
+        props["KeyField"] = { DefaultType: 'databind_string', Level: 'basic' }; // ToDo: string in databind_string
         break;
       case 'ngButton':
       case 'ngSysAction':
@@ -174,7 +204,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           Basic: false,
           Options: {
             ChildDesignInfo: {
-              DefaultType: 'databind_string',
+              DefaultType: 'databind_string', // ToDo: string in databind_string
               Types: {
                 'databind_string': {},
                 'boolean': { InitValue: true }
