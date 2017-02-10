@@ -244,6 +244,24 @@ var ViewModel_Controls_DesignInfo = (function()
     }
 
     ng_MergeVar(di, vm_di);
+
+    var deferbindings = {};
+    var databindprops=di.Properties['DataBind'].Types['databind'].ObjectProperties;
+    for(var i in window.ngBindingsHandlers) {
+      if(typeof databindprops[i]!=='undefined') deferbindings[i]=ng_DIPropertyBool(false);
+    }
+
+    ng_MergeVar(databindprops, {
+      "DeferUpdates": {
+        DefaultType: 'object',
+        Types: {
+          'object': {
+            ObjectProperties: deferbindings
+          }
+        }
+      }
+    });
+
   }
 
   return {
@@ -309,7 +327,7 @@ var ViewModel_Controls_DesignInfo = (function()
       if((c)&&(!def.CtrlInheritanceDepth))
       {
         // define Databind DesignInfo of all controls
-        add_databind_di(c.DesignInfo, def, c, ref);
+        add_databind_di(c.DesignInfo, def, c, ref); // TODO: determine how to make it last call ever
       }
     },
 
