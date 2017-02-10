@@ -242,9 +242,15 @@ function ngGetSupportedLangs()
   for(var k in ngc_SupportedLangs)
     res.push(k);
 
-  if(res.length==0 && typeof ngc_Lang==='object' && ngc_Lang)
-    for(var k in ngc_Lang)
-      res.push(k);
+  if(res.length==0 && typeof ngc_Lang==='object' && ngc_Lang) {
+    var i;
+    for(var k in ngc_Lang) {
+      if(k==='cz') k='cs';
+      k=ngNormalizeLang(k);
+      for(i=res.length-1;i>=0;i--) if(res[i]===k) break;
+      if(i<0) res.push(k);
+    }
+  }
 
   return res;
 }
