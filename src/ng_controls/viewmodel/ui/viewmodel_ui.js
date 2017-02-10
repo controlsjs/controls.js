@@ -1218,10 +1218,22 @@ ngUserControls['viewmodel_ui'] = {
       return (typeof list.HideSubMenu==='function');
     }
 
-    function prepareItemMapping(bindinfo,mapping)
+    function vmPrepareCompareKeys(props) {
+      if(typeof props!=='object') return;
+      var keys={};
+      for(var i in props) keys[props[i]]=true;
+      return keys;
+    }
+
+    function vmPrepareItemMapping(c, bindinfo, mapping, allBindingsAccessor)
     {
       if(!ng_typeObject(mapping)) return;
       var map={}, revmap={}, p;
+
+      if(typeof window.ngOnVMPrepareListItemMapping === 'function') {
+        mapping=ng_CopyVar(mapping);
+        window.ngOnVMPrepareListItemMapping(c, mapping, allBindingsAccessor);
+      }
 
       for(var i in mapping) {
         p=mapping[i];
@@ -1235,17 +1247,61 @@ ngUserControls['viewmodel_ui'] = {
       bindinfo.RevItemMapping = revmap;
     }
 
+    // add value to array if not exists
+    function arr_push_uniq(arr, val, copy) {
+      for(var i=arr.length-1;i>=0;i--) {
+        if(ng_VarEquals(arr[i], val)) return false;
+      }
+      if(copy) arr.push(ng_CopyVar(val));
+      else arr.push(val);
+      return true;
+    }
+
+    function arr_remove(arr, val, uniq) {
+      var ret=false;
+      for(var i=arr.length-1;i>=0;i--) {
+        if(ng_VarEquals(arr[i], val)) {
+          arr.splice(i,1);
+          ret=true;
+          if(uniq) return true;
+        }
+      }
+      return ret;
+    }
+
+    function arr_sync(arr1,arr2) {
+      var i,j,found;
+      var changed=false;
+      for(i=0;i<arr1.length;i++)
+      {
+        found=false;
+        for(j=arr2.length-1;j>=0;j--) {
+          if(ng_VarEquals(arr1[i],arr2[j])) {
+            arr2.splice(j,1);
+            found=true;
+          }
+        }
+        if(!found) { arr1.splice(i,1); i--; changed=true; }
+      }
+      for(j=0;j<arr2.length;j++) {
+        arr1.push(ng_CopyVar(arr2[j]));
+        changed=true;
+      }
+      return changed;
+    }
+
     function vmGetListItem(list,v,bindinfo,subitems) {
       if((typeof v==='undefined')||(v===null)) return v;
       var c=v;
       v=ko.ng_unwrapobservable(c);
+
       if((!ng_typeObject(v))||(ng_typeDate(v))) {
-        if(list.Columns.length>0) {
-          var it={ Text: {} };
-          it.Text[list.Columns[0]]=v;
+        if(typeof bindinfo.SimpleArrayItemColumnID!=='undefined') {
+          var it={ Text: {}, _vmSimpleArrayItem: true };
+          it.Text[bindinfo.SimpleArrayItemColumnID]=v;
           return it;
         }
-        return {Text: v};
+        return {Text: v, _vmSimpleArrayItem: true };
       }
 
       if(bindinfo.RevItemMapping) {
@@ -1258,6 +1314,7 @@ ngUserControls['viewmodel_ui'] = {
       }
 
       var ismenu=isMenu(list);
+      var iswriteable=ko.isWriteableObservable(c);
 
       var items,submenu;
       if(typeof v.Items!=='undefined') {
@@ -1274,8 +1331,10 @@ ngUserControls['viewmodel_ui'] = {
 
       if(v===c) c=ng_CopyVar(v);
       else {
-        if(ko.isObservable(v.Checked))   c._vmChecked=v.Checked;
-        if(ko.isObservable(v.Collapsed)) c._vmCollapsed=v.Collapsed;
+        if(iswriteable) {
+          if(ko.isObservable(v.Checked))   c._vmChecked=v.Checked;
+          if(ko.isObservable(v.Collapsed)) c._vmCollapsed=v.Collapsed;
+        }
       }
       //console.log(v);
 
@@ -1314,11 +1373,11 @@ ngUserControls['viewmodel_ui'] = {
 
       if(!ng_typeObject(vmval)) {
 
-        if(bindinfo.SimpleArray) {
-          if((typeof it.Items==='undefined')||(!it.Items.length)) {
-            if(ng_typeString(it.Text)) it=it.Text;
-            else if((list.Columns.length>0)&&(typeof it.Text==='object')) it=it.Text[list.Columns[0]];
+        if((bindinfo.SimpleArray)||(it._vmSimpleArrayItem)) {
+          if(typeof bindinfo.SimpleArrayItemColumnID!=='undefined') {
+            it=it.Text[bindinfo.SimpleArrayItemColumnID];
           }
+          else it=it.Text;
         }
 
         if(vmval!==vmit) {
@@ -1357,6 +1416,7 @@ ngUserControls['viewmodel_ui'] = {
           case '_byRef':
           case '_vmChecked':
           case '_vmCollapsed':
+          case '_vmSimpleArrayItem':
             break;
           case 'OnClick':
             if((ismenu)&&(it.OnClick===ngmn_OnClick)) break;
@@ -1497,7 +1557,7 @@ ngUserControls['viewmodel_ui'] = {
 
       if((c!==list)||(!menubar)) {
         list.AddEvent(function(l,it) {
-          if(c._vmdispose) return;
+          if((c._vmdispose)||(it._vmSimpleArrayItem)) return;
           if(ko.isObservable(it._vmCollapsed)) {
             if(!ko.isWriteableObservable(it._vmCollapsed)) return;
               ngCtrlBindingLock('Value',c,function() {
@@ -1507,7 +1567,7 @@ ngUserControls['viewmodel_ui'] = {
           else c.UpdateVMValues();
         },'OnCollapsed');
         list.AddEvent(function(l,it) {
-          if(c._vmdispose) return;
+          if((c._vmdispose)||(it._vmSimpleArrayItem)) return;
           if(ko.isObservable(it._vmCollapsed)) {
             if(!ko.isWriteableObservable(it._vmCollapsed)) return;
             ngCtrlBindingLock('Value',c,function() {
@@ -1517,7 +1577,28 @@ ngUserControls['viewmodel_ui'] = {
           else c.UpdateVMValues();
         },'OnExpanded');
         list.AddEvent(function(l,it) {
-          if(c._vmdispose) return;
+          if((ngCtrlBindingIsLocked('Value',c))||(ngCtrlBindingIsLocked('Checked',c))||(c._vmdispose)) {
+          //console.log('ItemCheckChanged IGNORED',it);
+            return;
+          }
+          //console.log('ItemCheckChanged',it);
+          if((c.DataBindings)&&(c.DataBindings.Checked))
+          {
+            var checkedacc=c.DataBindings.Checked.ValueAccessor();
+            if((c.CheckedKeyField!='')&&(checkedacc)) {
+              var checked=checkedacc();
+              if(ng_IsArrayVar(checked)) {
+                var sval=vmGetFieldValueByID(it,c.CheckedKeyField);
+                if((typeof sval!=='undefined')&&(it.Checked ? arr_push_uniq(checked,sval,true) : arr_remove(checked,sval))) {
+                  update_checked_items(c,checked); // check the other items with the same id, need to do it synchronously
+                  checkedacc(checked);
+                }
+              }
+            }
+          }
+
+          if(it._vmSimpleArrayItem) return;
+
           if(ko.isObservable(it._vmChecked)) {
             if(!ko.isWriteableObservable(it._vmChecked)) return;
             ngCtrlBindingLock('Value',c,function() {
@@ -1529,32 +1610,55 @@ ngUserControls['viewmodel_ui'] = {
       }
     }
 
-    var ignoredListItemsProps = {
-      _byRef: true,
-      Items: true,
-      Parent: true,
-      Checked: true,
-      Collapsed: true,
-      _vmChecked: true,
-      _vmCollapsed: true
-    };
-
+    if(typeof window.ngVMIgnoredPropsInCompareListItems === 'undefined') window.ngVMIgnoredPropsInCompareListItems = {};
+    var ignoredprops=window.ngVMIgnoredPropsInCompareListItems;
+    ignoredprops._byRef=true;
+    ignoredprops.Items=true;
+    ignoredprops.Parent=true;
+    ignoredprops.Checked=true;
+    ignoredprops.Collapsed=true;
+    ignoredprops._vmChecked=true;
+    ignoredprops._vmCollapsed=true;
 
     function compareListItems(a,b,bindinfo)
     {
-      if(typeof bindinfo.KeyField !== 'undefined') {
-        if((!a)||(!b)) return false;
-        return ng_VarEquals(vmGetFieldValueByID(a,bindinfo.KeyField),vmGetFieldValueByID(b,bindinfo.KeyField));
+      if(typeof window.ngOnVMCompareListItemProps === 'function') {
+        var ret=window.ngOnVMCompareListItemProps(a,b,bindinfo);
+        if(typeof ret!=='undefined') return ret;
       }
 
-      var keys={};
-      for(var i in a) if(!ignoredListItemsProps[i]) keys[i]=true;
-      for(var i in b) if(!ignoredListItemsProps[i]) keys[i]=true;
+      if((a._vmSimpleArrayItem)&&(b._vmSimpleArrayItem)) {
+         if(typeof bindinfo.SimpleArrayItemColumnID!=='undefined') {
+          if((typeof a.Text!=='object')||(typeof b.Text!=='object')) return false;
+          return (a.Text[bindinfo.SimpleArrayItemColumnID]==b.Text[bindinfo.SimpleArrayItemColumnID]);
+        }
+        return a.Text==b.Text;
+      }
+      if((a._vmSimpleArrayItem)||(b._vmSimpleArrayItem)) return false;
 
-      if((bindinfo.CompareInfo)&&(bindinfo.CompareInfo.IsMenu)) {
-        delete keys.SubMenu;
-        if(((a.OnClick===ngmn_OnClick)&&(typeof b.OnClick === 'undefined'))||
-           ((b.OnClick===ngmn_OnClick)&&(typeof a.OnClick === 'undefined'))) delete keys.OnClick;
+      if(typeof bindinfo.KeyField !== 'undefined') {
+        if((!a)||(!b)) return false;
+        var svala=vmGetFieldValueByID(a,bindinfo.KeyField);
+        var svalb=vmGetFieldValueByID(b,bindinfo.KeyField);
+        if((typeof svala!=='undefined')&&(typeof svalb!=='undefined')) return ng_VarEquals(svala,svalb);
+        if((typeof svala!=='undefined')||(typeof svalb!=='undefined')) return false;
+      }
+
+      var keys;
+      if(typeof bindinfo.CompareKeys !== 'undefined') keys=bindinfo.CompareKeys;
+      else {
+        keys={};
+        var ignoredprops=window.ngVMIgnoredPropsInCompareListItems;
+        if((typeof ignoredprops==='object')&&(ignoredprops)) {
+          for(var i in a) if(!ignoredprops[i]) keys[i]=true;
+          for(var i in b) if(!ignoredprops[i]) keys[i]=true;
+        }
+
+        if((bindinfo.CompareInfo)&&(bindinfo.CompareInfo.IsMenu)) {
+          delete keys.SubMenu;
+          if(((a.OnClick===ngmn_OnClick)&&(typeof b.OnClick === 'undefined'))||
+             ((b.OnClick===ngmn_OnClick)&&(typeof a.OnClick === 'undefined'))) delete keys.OnClick;
+        }
       }
 
       var aref=a['_byRef'];
@@ -1573,7 +1677,14 @@ ngUserControls['viewmodel_ui'] = {
         var binding=allBindingsAccessor();
         bindinfo.DelayedUpdate = ngVal(binding["DelayedUpdate"],10);
         bindinfo.KeyField  = binding["KeyField"];
-        prepareItemMapping(bindinfo,binding["ItemMapping"]);
+        bindinfo.CompareKeys = vmPrepareCompareKeys(binding["ItemMatchingProps"]);
+        if((ng_IsArrayVar(c.Columns))&&(c.Columns.length>0)) {
+          bindinfo.SimpleArrayItemColumnID = binding["SimpleArrayItemColumnID"];
+          if(typeof bindinfo.SimpleArrayItemColumnID === 'undefined') bindinfo.SimpleArrayItemColumnID=c.Columns[0].ID;
+        }
+        vmPrepareItemMapping(c, bindinfo, binding["ItemMapping"], allBindingsAccessor);
+
+        ngBindingDeferUpdates('Value',allBindingsAccessor,true);
 
         function compareListItems_init(a,b) {
           return compareListItems(a,b,bindinfo);
@@ -1690,7 +1801,10 @@ ngUserControls['viewmodel_ui'] = {
 
         if(typeof c.UpdateVMValues !== 'function') {
           c.UpdateVMValues = function() {
-            if((c['binding_updatingValue'])||(c._vmdispose)) return;
+            if((ngCtrlBindingIsLocked('Value',c))||(c._vmdispose)) {
+              //console.log('ignore UpdateVMValues');
+              return;
+            }
             if(c.update_cnt>0) c.need_vmupdate=true;
             else listupdated();
           }
@@ -1899,7 +2013,7 @@ ngUserControls['viewmodel_ui'] = {
             IsMenu: ismenu
           };
           var editScript=ng_GetArraysEditScript(items,arr,compareListItems_update);
-          delete bindinfo.CompareInfo ;
+          delete bindinfo.CompareInfo;
           if(editScript) {
             for (var i = 0, j = 0; i < editScript.length; i++) {
               switch (editScript[i].status) {
@@ -1912,8 +2026,12 @@ ngUserControls['viewmodel_ui'] = {
                   list.need_update=true;
 
                   if((c!==list)||(!menubar)) {
-                    if(it.Checked!==vmit.Checked) list.CheckItem(it,vmit.Checked);
-                    if(it.Collapsed!==vmit.Collapsed) {
+                    if((typeof vmit.Checked !== 'undefined')&&(it.Checked!==vmit.Checked)) list.CheckItem(it,vmit.Checked);
+                    if((bindinfo.Checked)&&(it.Checked)) {
+                      var sval=vmGetFieldValueByID(vmit,bindinfo.CheckedKeyField);
+                      if(typeof sval!=='undefined') bindinfo.Checked.push(sval);
+                    }
+                    if((typeof vmit.Collapsed !== 'undefined')&&(it.Collapsed!==vmit.Collapsed)) {
                       if(vmit.Collapsed) list.Collapse(it);
                       else list.Expand(it);
                     }
@@ -1978,6 +2096,11 @@ ngUserControls['viewmodel_ui'] = {
                   else {
                     list.Insert(j,item,parent);
 
+                    if((bindinfo.Checked)&&(item.Checked)) {
+                      var sval=vmGetFieldValueByID(item,bindinfo.CheckedKeyField);
+                      if(typeof sval!=='undefined') bindinfo.Checked.push(sval);
+                    }
+
                     if(c===list) {
                       // Handle dropdown edit value
                       if((keyfield)&&(typeof selval!=='undefined')&&(ng_VarEquals(vmGetFieldValueByID(item,keyfield),selval)))
@@ -2004,9 +2127,20 @@ ngUserControls['viewmodel_ui'] = {
         var bindinfo={};
         var binding=allBindingsAccessor();
         bindinfo.KeyField = binding["KeyField"];
-        prepareItemMapping(bindinfo,binding["ItemMapping"]);
+        bindinfo.CompareKeys = vmPrepareCompareKeys(binding["ItemMatchingProps"]);
+        if((ng_IsArrayVar(c.Columns))&&(c.Columns.length>0)) {
+          bindinfo.SimpleArrayItemColumnID = binding["SimpleArrayItemColumnID"];
+          if(typeof bindinfo.SimpleArrayItemColumnID === 'undefined') bindinfo.SimpleArrayItemColumnID=c.Columns[0].ID;
+        }
+        vmPrepareItemMapping(c, bindinfo, binding["ItemMapping"], allBindingsAccessor);
 
-        if(c['binding_updatingValue']) {
+        if(c.DataBindings.Checked) {
+          bindinfo.CheckedKeyField = ngVal(c.CheckedKeyField, bindinfo.KeyField);
+          if(typeof bindinfo.CheckedKeyField === 'undefined') bindinfo.CheckedKeyField='Value';
+          bindinfo.Checked=[];
+        }
+
+        if(ngCtrlBindingIsLocked('Value',c)) {
           //console.log('updating ignore');
           readvmvalues(ko.ng_unwrapobservable(valueAccessor()),c); // just read to subscribe observables
           return;
@@ -2027,11 +2161,7 @@ ngUserControls['viewmodel_ui'] = {
           c.binding_update_timer=null;
 
           if(!menubar) {
-            var checkedacc,selectedacc;
-            if(c.DataBindings.Checked) {
-              checkedacc=c.DataBindings.Checked.ValueAccessor();
-              if((checkedacc)&&(typeof checkedacc.valueWillMutate === 'function')) checkedacc.valueWillMutate();
-            }
+            var selectedacc;
             if(c.DataBindings.Selected) {
               selectedacc=c.DataBindings.Selected.ValueAccessor();
               if((selectedacc)&&(typeof selectedacc.valueWillMutate === 'function')) selectedacc.valueWillMutate();
@@ -2074,14 +2204,22 @@ ngUserControls['viewmodel_ui'] = {
           }
 
           if(!menubar) {
-            if(checkedacc) {
-              if(typeof checkedacc.valueHasMutated === 'function') checkedacc.valueHasMutated();
-              else checkedacc(checkedacc());
-            }
-            if(selectedacc) {
-              if(typeof selectedacc.valueHasMutated === 'function') selectedacc.valueHasMutated();
-              else selectedacc(selectedacc());
-            }
+            ko.dependencyDetection.ignore(function() {
+              if(c.DataBindings.Checked) {
+                var checkedacc=c.DataBindings.Checked.ValueAccessor();
+                if((bindinfo.Checked)&&(checkedacc)) {
+                  var checked=checkedacc();
+                  if(arr_sync(checked,bindinfo.Checked)) {
+                    //console.log('VMUpdate Checked',checked);
+                    checkedacc(checked);
+                  }
+                }
+              }
+              if(selectedacc) {
+                if(typeof selectedacc.valueHasMutated === 'function') selectedacc.valueHasMutated();
+                else selectedacc(selectedacc());
+              }
+            });
           }
         });
         return;
@@ -2240,26 +2378,69 @@ ngUserControls['viewmodel_ui'] = {
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlType==='ngList')
         {
+          ngBindingDeferUpdates('Selected',allBindingsAccessor,true);
+
           c.SelectKeyField = ngVal(allBindingsAccessor.get("KeyField"),'Value');
           c.AddEvent(function(list) {
-            ngCtrlBindingLock('Selected',c,function() {
+            ngCtrlBindingRead('Selected',c,valueAccessor,function(origsel) {
               var keyfield=ngVal(c.SelectKeyField, 'Value');
               var selected=list.GetSelected();
               var val=new Array();
-              var s,sval;
+              var sval;
               for(var i in selected)
               {
-                s=selected[i];
-                sval=vmGetFieldValueByID(s,keyfield);
-                if(typeof sval!=='undefined') val.push(ng_CopyVar(sval));
+                sval=vmGetFieldValueByID(selected[i],keyfield);
+                if(typeof sval!=='undefined') val.push(sval);
               }
-              ngCtrlBindingWriteEx(val, valueAccessor, allBindingsAccessor);
+              if(!ng_IsArrayVar(origsel)) origsel=[];
+              if(arr_sync(origsel,val)) {
+                ngCtrlBindingWriteEx(origsel, valueAccessor, allBindingsAccessor);
+              }
             });
             return true;
           },'OnSelectChanged');
         }
       }
     );
+
+    function update_checked_items(c,val) {
+      var keyfield=ngVal(c.CheckedKeyField, 'Value');
+      if(!ng_isEmpty(val)&&(!ng_typeArray(val)))
+      {
+        var a=new Array();
+        a.push(val);
+        val=a;
+      }
+      c.BeginUpdate();
+      var checkchanged=false;
+      var emptyval=ng_isEmpty(val);
+      try {
+        c.Scan(function(c,it,parent,userdata) {
+          var check;
+          var sval=vmGetFieldValueByID(it,keyfield);
+          if(typeof sval==='undefined') check=ngVal(it.Checked,0);
+          else {
+            check=0;
+            if(!emptyval) {
+              for(var j=0;j<val.length;j++)
+                if(ng_VarEquals(sval,val[j]))
+                {
+                  check=1;
+                  break;
+                }
+            }
+          }
+          if((ngVal(it.Checked,0)!=check)&&((!check)||(it.Checked!=2))) { // persist gray state
+            c.CheckItem(it,check);
+            checkchanged=true;
+          }
+          return true;
+        });
+      } finally {
+        c.EndUpdate();
+      }
+      return checkchanged;
+    }
 
     ngRegisterBindingHandler('Checked',
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
@@ -2275,29 +2456,9 @@ ngUserControls['viewmodel_ui'] = {
             break;
           case 'ngList':
             ngCtrlBindingRead('Checked',c,valueAccessor,function(val) {
-              var keyfield=ngVal(c.CheckedKeyField, 'Value');
-              if(!ng_isEmpty(val)&&(!ng_typeArray(val)))
-              {
-                var a=new Array();
-                a.push(val);
-                val=a;
-              }
-              c.BeginUpdate();
-              try {
-                c.Scan(function(c,it,parent,userdata) {
-                  var check=0;
-                  if(!ng_isEmpty(val))
-                    for(var j=0;j<val.length;j++)
-                      if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),val[j]))
-                      {
-                        check=1;
-                        break;
-                      }
-                  c.CheckItem(it,check);
-                  return true;
-                });
-              } finally {
-                c.EndUpdate();
+              //console.log('VM Check Changed',val);
+              if((update_checked_items(c,val))&&(typeof c.UpdateVMValues==='function')) {
+                if(!ngCtrlBindingIsLocked('Value',c)) c.UpdateVMValues();
               }
             });
             break;
@@ -2314,20 +2475,26 @@ ngUserControls['viewmodel_ui'] = {
             },'OnCheckChanged');
             break;
           case 'ngList':
+            ngBindingDeferUpdates('Checked',allBindingsAccessor,true);
+
             c.CheckedKeyField = ngVal(allBindingsAccessor.get("KeyField"),'Value');
             c.AddEvent(function(list) {
-              ngCtrlBindingLock('Checked',c,function() {
+              ngCtrlBindingRead('Checked',c,valueAccessor,function(origchecked) {
                 var keyfield=ngVal(c.CheckedKeyField, 'Value');
                 var val=new Array();
                 c.Scan(function(c,it,parent,userdata) {
                   if(ngVal(it.Checked,0))
                   {
                     var sval=vmGetFieldValueByID(it,keyfield);
-                    if(typeof sval!=='undefined') val.push(ng_CopyVar(sval));
+                    if(typeof sval!=='undefined') val.push(sval);
                   }
                   return true;
                 });
-                ngCtrlBindingWriteEx(val,valueAccessor, allBindingsAccessor);
+                if(!ng_IsArrayVar(origchecked)) origchecked=[];
+                if(arr_sync(origchecked,val)) {
+                  ngCtrlBindingWriteEx(origchecked,valueAccessor, allBindingsAccessor);
+                  //console.log('Check changed', origchecked);
+                }
               });
               return true;
             },'OnCheckChanged');
