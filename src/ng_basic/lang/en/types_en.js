@@ -29,4 +29,3 @@ ngc_Lang['en']['calendar_months']       = new Array('January','February','March'
 ngc_Lang['en']['calendar_months_short'] = new Array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
 ngc_Lang['en']['calendar_days']         = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
 ngc_Lang['en']['calendar_days_short']   = new Array('Su','Mo','Tu','We','Th','Fr','Sa');
-ngc_Lang['en']['calendar_days_letter']  = new Array('S','M','T','W','T','F','S');

@@ -29,4 +29,3 @@ ngc_Lang['cs']['calendar_months']       = new Array('Leden','Únor','Březen','D
 ngc_Lang['cs']['calendar_months_short'] = new Array('Led','Úno','Bře','Dub','Kvě','Čer','Čnc','Srp','Zář','Říj','Lis','Pro');
 ngc_Lang['cs']['calendar_days']         = new Array('Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota');
 ngc_Lang['cs']['calendar_days_short']   = new Array('Ne','Po','Út','St','Čt','Pá','So');
-ngc_Lang['cs']['calendar_days_letter']  = new Array('N','P','Ú','S','Č','P','S');

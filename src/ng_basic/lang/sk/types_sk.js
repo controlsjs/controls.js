@@ -29,4 +29,3 @@ ngc_Lang['sk']['calendar_months']       = new Array('Január','Február','Marec'
 ngc_Lang['sk']['calendar_months_short'] = new Array('Jan','Feb','Mar','Apr','Máj','Jún','Júl','Aug','Sep','Okt','Nov','Dec');
 ngc_Lang['sk']['calendar_days']         = new Array('Nedeľa','Pondelok','Utorok','Streda','Štvrtok','Piatok','Sobota');
 ngc_Lang['sk']['calendar_days_short']   = new Array('Ne','Po','Ut','St','Št','Pi','So');
-ngc_Lang['sk']['calendar_days_letter']  = new Array('N','P','Ú','S','Č','P','S');
