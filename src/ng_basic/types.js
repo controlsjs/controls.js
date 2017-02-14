@@ -2299,7 +2299,7 @@ function ng_inArray(value, arr, fromidx, toidx,cmpfnc,userdata) {
  *  
  *  Parameters: 
  *    parse - if TRUE, return date and time format for parsing purposes.
- *    shortfmt - if TRUE,  return date and time short format    
+ *    shortfmt - if TRUE,  return date and time short format, ignored if parse is TRUE
  *     
  *  Returns:
  *    Default date format.
@@ -2309,6 +2309,7 @@ function ng_inArray(value, arr, fromidx, toidx,cmpfnc,userdata) {
  */       
 function ng_DefaultDateFormat(parse,shortfmt)
 {
+  if(parse) shortfmt=false;
   var s=ngTypesTxt('date_'+(shortfmt ? 'short' : '')+'format'+(parse ? '_parse' : ''),'');
   if(s=='') s=ngTypesTxt('date_'+(shortfmt ? 'short' : '')+'format','');
   if((s=='')&&(shortfmt)) return ng_DefaultDateFormat(parse,false);
@@ -2324,7 +2325,7 @@ function ng_DefaultDateFormat(parse,shortfmt)
  *  
  *  Parameters: 
  *    parse - if TRUE, return date and time format for parsing purposes.
- *    shortfmt - if TRUE,  return date and time short format    
+ *    shortfmt - if TRUE,  return date and time short format, ignored if parse is TRUE
  *        
  *  Returns:
  *    Default time format.
@@ -2334,6 +2335,7 @@ function ng_DefaultDateFormat(parse,shortfmt)
  */       
 function ng_DefaultTimeFormat(parse,shortfmt)
 {
+  if(parse) shortfmt=false;
   var s=ngTypesTxt('time_'+(shortfmt ? 'short' : '')+'format'+(parse ? '_parse' : ''),'');
   if(s=='') s=ngTypesTxt('time_'+(shortfmt ? 'short' : '')+'format','');
   if((s=='')&&(shortfmt)) return ng_DefaultTimeFormat(parse,false);
@@ -2349,7 +2351,7 @@ function ng_DefaultTimeFormat(parse,shortfmt)
  *    
  *  Parameters:
  *    parse - if TRUE, return date and time format for parsing purposes.
- *    shortfmt - if TRUE,  return date and time short format    
+ *    shortfmt - if TRUE,  return date and time short format, ignored if parse is TRUE
  *  
  *  Returns:
  *    Default date and time format.
@@ -2359,6 +2361,7 @@ function ng_DefaultTimeFormat(parse,shortfmt)
  */       
 function ng_DefaultDateTimeFormat(parse,shortfmt)
 {
+  if(parse) shortfmt=false;
   var s=ngTypesTxt('datetime_'+(shortfmt ? 'short' : '')+'format'+(parse ? '_parse' : ''),'');
   if(s=='') s=ngTypesTxt('datetime_'+(shortfmt ? 'short' : '')+'format','');
   if((s=='')&&(shortfmt)) return ng_DefaultDateTimeFormat(parse,false);
