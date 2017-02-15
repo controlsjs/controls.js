@@ -1762,6 +1762,11 @@ ngUserControls['viewmodel_ui'] = {
           if(c.binding_update_timer) clearTimeout(c.binding_update_timer);
           c.binding_update_timer=null;
 
+          if(typeof bindinfo.KeyField === 'undefined') {
+            if(c.DataBindings.Checked) bindinfo.KeyField=ngVal(c.CheckedKeyField,'Value');
+            if(c.DataBindings.Selected) bindinfo.KeyField=ngVal(c.SelectKeyField,'Value');
+          }
+
           ngCtrlBindingLock('Value',c,function() {
             var v=valueAccessor();
             if((v)&&(ko.isWriteableObservable(v))) {
@@ -2022,6 +2027,10 @@ ngUserControls['viewmodel_ui'] = {
 
                   var it=items[j];
                   var vmit=arr[j];
+                  for(var p in vmit) {
+                    if(ignoredprops[p]) continue;
+                    it[p]=vmit[p];
+                  }
 
                   list.need_update=true;
 
@@ -2133,11 +2142,18 @@ ngUserControls['viewmodel_ui'] = {
           if(typeof bindinfo.SimpleArrayItemColumnID === 'undefined') bindinfo.SimpleArrayItemColumnID=c.Columns[0].ID;
         }
         vmPrepareItemMapping(c, bindinfo, binding["ItemMapping"], allBindingsAccessor);
+        var ignoredprops=window.ngVMIgnoredPropsInCompareListItems;
+        if(!ng_typeObject(ignoredprops)) ignoredprops={};
 
         if(c.DataBindings.Checked) {
           bindinfo.CheckedKeyField = ngVal(c.CheckedKeyField, bindinfo.KeyField);
           if(typeof bindinfo.CheckedKeyField === 'undefined') bindinfo.CheckedKeyField='Value';
           bindinfo.Checked=[];
+          if(typeof bindinfo.KeyField === 'undefined') bindinfo.KeyField=bindinfo.CheckedKeyField;
+        }
+
+        if(c.DataBindings.Selected) {
+          if(typeof bindinfo.KeyField === 'undefined') bindinfo.KeyField=ngVal(c.SelectKeyField,'Value');
         }
 
         if(ngCtrlBindingIsLocked('Value',c)) {
