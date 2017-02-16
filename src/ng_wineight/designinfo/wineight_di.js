@@ -224,7 +224,7 @@ var WinEight_DesignInfo = {
       di.ControlCategory=false;
       return di;
     });
-
+    
     function weEditDI(d,c,ref) {
       return {
         Properties: ng_DIProperties({
@@ -395,27 +395,12 @@ var WinEight_DesignInfo = {
     });
 
     ngRegisterControlDesignInfo('weDropDown',weEditDI);
-
-    function weDropDownListDI(d,c,ref) {
-      var di= {
-        NewControl: {
-          _noMerge:true,
-          Default: {
-            Properties: {
-              'W': { Value: 100 }
-            }
-          }
-        },
-        Properties: ng_DIProperties({
-          'DropDown': ng_DIPropertyControl('weList', { Level: 'basic' }, 'ngList')
-        })
-      };
-      ng_MergeVar(di,weEditDI(d,c,ref));
+    ngRegisterControlDesignInfo('weDropDownList',function(d,c,ref) {
+      var di=weEditDI(d,c,ref);
       di.ControlCategory=false;
       return di;
-    }
-    ngRegisterControlDesignInfo('weDropDownList', weDropDownListDI);
-
+    });
+    
     function weMemoDI(d,c,ref) {
       return {
         Properties: ng_DIProperties({
@@ -1095,8 +1080,9 @@ var WinEight_DesignInfo = {
       return di;
     });
     ngRegisterControlDesignInfo('weDropDownListField',function(d,c,ref) {
-      var di=weDropDownListDI(d,c,ref);
+      var di=weEditDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      di.ControlCategory=false;
       return di;
     });
     ngRegisterControlDesignInfo('weEditDateField',function(d,c,ref) {

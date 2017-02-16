@@ -1307,21 +1307,7 @@ var WinEightControls = {
      *  Returns:
      *    -
      */
-
-    /*  Class: weDropDownList
-     *  Standard edit date control (based on <ngDropDownList>).
-     */
-    /*<>*/
-    skinfnc.Create_weDropDownList=function(def,ref,parent,basetype) {
-      ng_MergeDef(def, {
-        DropDown: {
-          Type: 'weList'
-        }
-      });
-      return skinfnc.Create_weDropDown(def,ref,parent,ngVal(basetype,'ngDropDownList'),true);
-    };
-
-    ngRegisterControlType('weDropDownList', function(def,ref,parent) { return skinfnc.Create_weDropDownList(def,ref,parent); });
+    ngRegisterControlType('weDropDownList', function(def,ref,parent) { return skinfnc.Create_weDropDown(def,ref,parent,'ngDropDownList',true); });
 
     /*  Class: weMemo
      *  Standard memo control (based on <ngMemo>).
@@ -3723,7 +3709,8 @@ var WinEightControls = {
        *  Standard drop down list field control (based on <ngDropDownListField>).
        */
       ngRegisterControlType('weDropDownListField', function(def,ref,parent) {
-        return skinfnc.Create_weDropDownList(def,ref,parent,'ngDropDownListField');
+        skinfnc.Create_weEditFieldDef(def);
+        return skinfnc.Create_weDropDown(def,ref,parent,'ngDropDownListField',true);
       });
 
       if(ngUserControls['calendar'])
