@@ -10,22 +10,22 @@
  * The commercial license can be purchased at Controls.js website.
  */
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+// Default locale Czech (cs)
 if(typeof ngc_Lang['cs'] === 'undefined') ngc_Lang['cs']={};
-
-ngc_Lang['cs']['decimal_separator'] = ',';
-ngc_Lang['cs']['thousands_separator'] = ' ';
-
-ngc_Lang['cs']['date_format']           = 'd.M.yyyy';
-ngc_Lang['cs']['date_shortformat']     = 'd.M.yy';
-ngc_Lang['cs']['date_format_parse']     = 'd.M.y';
-ngc_Lang['cs']['time_format']           = 'HH:mm:ss';
-ngc_Lang['cs']['time_shortformat']      = 'HH:mm';
-ngc_Lang['cs']['time_format_parse']     = ngc_Lang['cs']['time_shortformat_parse'] = ['H:m:s','H:m'];
-ngc_Lang['cs']['datetime_format']       = 'd.M.yyyy HH:mm:ss';
-ngc_Lang['cs']['datetime_shortformat']  = 'd.M.yyyy HH:mm';
-ngc_Lang['cs']['datetime_format_parse'] = ngc_Lang['cs']['datetime_shortformat_parse'] = ['d.M.y H:m:s','d.M.y H:m'];
-
-ngc_Lang['cs']['calendar_months']       = new Array('Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec');
-ngc_Lang['cs']['calendar_months_short'] = new Array('Led','Úno','Bře','Dub','Kvě','Čer','Čnc','Srp','Zář','Říj','Lis','Pro');
-ngc_Lang['cs']['calendar_days']         = new Array('Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota');
-ngc_Lang['cs']['calendar_days_short']   = new Array('Ne','Po','Út','St','Čt','Pá','So');
+ngc_Lang['cs']['locale_language']           = "Czech";
+ngc_Lang['cs']['locale_language_native']    = "čeština";
+ngc_Lang['cs']['decimal_separator']         = ",";
+ngc_Lang['cs']['thousands_separator']       = " ";
+ngc_Lang['cs']['date_format']               = "d.M.yyyy";
+ngc_Lang['cs']['date_shortformat']          = "d.M.yy";
+ngc_Lang['cs']['date_format_parse']         = "d.M.y";
+ngc_Lang['cs']['time_format']               = "H:mm:ss";
+ngc_Lang['cs']['time_shortformat']          = "H:mm";
+ngc_Lang['cs']['time_format_parse']         = ["H:m:s","H:m"];
+ngc_Lang['cs']['datetime_format']           = "d.M.yyyy H:mm:ss";
+ngc_Lang['cs']['datetime_shortformat']      = "d.M.yyyy H:mm";
+ngc_Lang['cs']['datetime_format_parse']     = ["d.M.y H:m:s","d.M.y H:m"];
+ngc_Lang['cs']['calendar_months']           = ["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"];
+ngc_Lang['cs']['calendar_months_short']     = ["led","úno","bře","dub","kvě","čvn","čvc","srp","zář","říj","lis","pro"];
+ngc_Lang['cs']['calendar_days']             = ["neděle","pondělí","úterý","středa","čtvrtek","pátek","sobota"];
+ngc_Lang['cs']['calendar_days_short']       = ["ne","po","út","st","čt","pá","so"];
