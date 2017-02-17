@@ -10,6 +10,15 @@
  * The commercial license can be purchased at Controls.js website.
  */
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+// Locale English - Virgin Islands, U.S. (en-VI)
+// Locale English - United States (en-US)
+// Locale English - United States Minor Outlying Islands (en-UM)
+// Locale English - Puerto Rico (en-PR)
+// Locale English - Northern Mariana Islands (en-MP)
+// Locale English - Marshall Islands (en-MH)
+// Locale English - Guam (en-GU)
+// Locale English - Burundi (en-BI)
+// Locale English - American Samoa (en-AS)
 // Default locale English (en)
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 ngc_Lang['en']['locale_language']           = "English";
