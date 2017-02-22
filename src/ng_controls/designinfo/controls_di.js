@@ -177,6 +177,17 @@ function ng_DIProperties(props,data) {
           }
         });
         break;
+      case 'DataBind':
+      case 'DOMDataBind':
+        if(typeof di[i]==='undefined') di[i]={};
+        ng_MergeVar(di[i],{
+          Types: {
+            'databind': {
+              ObjectProperties: props[i]
+            }
+          }
+        });
+        break;
       default:
         di[i]=props[i];
         break;

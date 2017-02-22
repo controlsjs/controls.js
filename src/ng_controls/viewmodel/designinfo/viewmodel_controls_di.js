@@ -121,6 +121,20 @@ var ViewModel_Controls_DesignInfo = (function()
         "ViewModel": { DefaultType: 'viewmodel', Level: 'basic', Order: 0.21,
           PropertyGroup: 'DataBind'
         },
+        "Data": {
+          "ViewModelData": { Level: 'hidden' }
+        },
+        "Methods": {
+          "SetViewModelData": ng_DIProperty('function', 'function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' }),
+          "DoCreateViewModelControl": ng_DIProperty('function', 'function(idx, itval, itvm, ci) { return { Type: \'\' }; }', { Level: (di.IsContainer ? 'basic' : 'optional') })
+        },
+        "Events": {
+          "OnViewModelDataChanged": ng_DIPropertyEvent('function(c, oldval) { }', { Level: 'basic' }),
+          "OnDataBindingInit": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
+          "OnDataBindingUpdate": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
+          "OnIsViewModelControlChanged": ng_DIPropertyEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
+        }
+      },{
         "DataBind": { DefaultType: 'databind', Level: 'basic', Order: 0.5,
           Types: {
             'databind_string': {},
@@ -154,19 +168,6 @@ var ViewModel_Controls_DesignInfo = (function()
               DestroyIfEmpty: true
             }
           }
-        },
-        "Data": {
-          "ViewModelData": { Level: 'hidden' }
-        },
-        "Methods": {
-          "SetViewModelData": ng_DIProperty('function', 'function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' }),
-          "DoCreateViewModelControl": ng_DIProperty('function', 'function(idx, itval, itvm, ci) { return { Type: \'\' }; }', { Level: (di.IsContainer ? 'basic' : 'optional') })
-        },
-        "Events": {
-          "OnViewModelDataChanged": ng_DIPropertyEvent('function(c, oldval) { }', { Level: 'basic' }),
-          "OnDataBindingInit": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
-          "OnDataBindingUpdate": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
-          "OnIsViewModelControlChanged": ng_DIPropertyEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         }
       })
     };

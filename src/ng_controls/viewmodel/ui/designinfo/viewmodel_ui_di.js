@@ -181,13 +181,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
     ng_MergeVar(di,
     {
       Properties: ng_DIProperties({
-        "DataBind": { 
-          Types: {
-            'databind': {
-              ObjectProperties: props
-            }
-          }
-        }
+        "DataBind": props
       })
     });
   }
