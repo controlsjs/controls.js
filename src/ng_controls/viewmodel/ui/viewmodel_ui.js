@@ -2551,7 +2551,13 @@ ngUserControls['viewmodel_ui'] = {
           if(val.TotalCount.PagingChanging) return;
           var timer=setTimeout(function() {
             clearTimeout(timer);
-            if(ng_typeNumber(totalcount)) c.SetLength(totalcount);
+            if(ng_typeNumber(totalcount)) {
+              if(!totalcount) {
+                c.Reset(true);
+                return;
+              }
+              c.SetLength(totalcount);
+            }
             c.SetAsyncData(999999999, null);
           },1);
         });
@@ -2561,15 +2567,56 @@ ngUserControls['viewmodel_ui'] = {
     ngRegisterBindingHandler('Paging',
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlInheritsFrom('ngPageList')) {
-            var val=valueAccessor();
-            if(ko.isObservable(val)) val=val();
-            paging_subscribe(c,val);
+          var val=valueAccessor();
+          if(ko.isObservable(val)) val=val();
+          if(c.binding_reset_timer) clearTimeout(c.binding_reset_timer);
+          delete c.binding_reset_timer;
+          if(ng_IsArrayVar(val)) {
+            if(typeof c.BindingPagingVM === 'object') {
+              c.BindingPagingVM.Value=val;
+              c.binding_reset_timer=setTimeout(function() {
+                 if(c.binding_reset_timer) clearTimeout(c.binding_reset_timer);
+                 delete c.binding_reset_timer;
+                c.Reset(true);
+              },1);
+              return;
+            }
+            var paging={
+              Value: val,
+              Offset: ko.observable(),
+              Count: ko.observable(),
+              Records: ko.observableArray(),
+              GetRecords: function() {
+                var offset=paging.Offset();
+                var cnt=paging.Count();
+                var recs=[];
+
+                if(ng_IsArrayVar(paging.Value)) {
+                  var len=paging.Value.length;
+                  var pidx=offset;
+                  for(var i=0;(i<cnt)&&(pidx<len);i++,pidx++)
+                    recs.push(paging.Value[pidx]);
+                }
+                paging.Records(recs);
+              },
+              TotalCount: ko.observable(),
+              GetTotalCount: function() {
+                paging.TotalCount(ng_IsArrayVar(paging.Value) ? paging.Value.length : 0);
+              }
+            };
+            c.BindingPagingVM = paging;
+            c.Reset(true);
+            val=paging;
+          }
+          else delete c.BindingPagingVM;
+          paging_subscribe(c,val);
         }
       },
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlInheritsFrom('ngPageList')) {
           var undefined;
 
+          ngBindingDeferUpdates('Paging',allBindingsAccessor,true);
           var isdataset=c.CtrlInheritsFrom('ngDataSet');
 
           function loaddata(ds, list, idx, cnt)
@@ -2577,10 +2624,11 @@ ngUserControls['viewmodel_ui'] = {
             var val=valueAccessor();
             var recs;
             ngCtrlBindingLock('Paging',c,function() {
-              if(ko.isObservable(val)) val=val();
+              if(typeof c.BindingPagingVM === 'object') val=c.BindingPagingVM;
+              else if(ko.isObservable(val)) val=val();
               if(!ng_typeObject(val)) return;
               var totalcount=(idx==999999999)&&((ko.isObservable(val.TotalCount))||(typeof val.GetTotalCount === 'function'));
-              val.Records.PagingChanging=true;
+              if(val.Records) val.Records.PagingChanging=true;
               if(val.TotalCount) val.TotalCount.PagingChanging=true;
               try {
                 if(totalcount) {
@@ -2621,7 +2669,7 @@ ngUserControls['viewmodel_ui'] = {
               }
               finally {
                 if(val.TotalCount) delete val.TotalCount.PagingChanging;
-                delete val.Records.PagingChanging;
+                if(val.Records) delete val.Records.PagingChanging;
               }
               if(totalcount) {
                 var tc=ko.ng_getvalue(val.TotalCount);
