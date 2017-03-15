@@ -1430,8 +1430,9 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
         if(typeof val==='function') continue;
         if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val))) 
         {
-          d[i]={}; 
-          getvalues(val,d[i],valpath);
+          var dobj={};
+          getvalues(val,dobj,valpath);
+          if(!valuenames||ng_inArray(valpath,valuenames)||!ng_EmptyVar(dobj)) d[i]=dobj;
         }
         else 
         {
