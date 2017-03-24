@@ -3145,6 +3145,7 @@ function ngrpc_sendIFrameRequest(url, params)
   }
   catch(e)
   {
+    ngDEBUGERROR('ngRPC: Failed to create IFRAME form!',e);
     return false;
   }
   
@@ -3182,6 +3183,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   }
   catch(e)
   {
+    ngDEBUGERROR('ngRPC: Failed to create XMLHttpRequest!',e);
     return false;
   }
   if(!xmlhttp) return false;
@@ -3395,6 +3397,7 @@ function ngrpc_sendRequest(url, nocache)
             } 
             catch(e) 
             { 
+              ngDEBUGERROR('ngRPC: JSON parsing failed!',e);
               if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp);
               break;
             }
