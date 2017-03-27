@@ -475,7 +475,7 @@ var WinEight_DesignInfo = {
           "className": ng_DIProperty('string', 'weLabelLight', { Level: 'advanced' }),
           "Data": {
             "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-            "HTMLEncode": ng_DIPropertyBool(false),
+            "HTMLEncode": ng_DIPropertyBool(false)
           }/*,
           "Events": {
             "OnGetText": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' })
@@ -1010,7 +1010,7 @@ var WinEight_DesignInfo = {
           "Data": {
             "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.ButtonDark.LeftImg', { Level: 'advanced' }),
             "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.ButtonDark.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.ButtonDark.MenuRightBtnImg', { Level: 'advanced' }),
+            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.ButtonDark.MenuRightBtnImg', { Level: 'advanced' })
           }
         })
       };

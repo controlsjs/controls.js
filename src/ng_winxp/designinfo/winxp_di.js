@@ -557,7 +557,7 @@ var WinXP_DesignInfo = {
           "className": ng_DIProperty('string', 'wxpLabel', { Level: 'advanced' }),
           "Data": {
             "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-            "HTMLEncode": ng_DIPropertyBool(false),
+            "HTMLEncode": ng_DIPropertyBool(false)
           }
         })
       };
@@ -1051,7 +1051,7 @@ var WinXP_DesignInfo = {
           "Data": {
             "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.Button.LeftImg', { Level: 'advanced' }),
             "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Button.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.Button.MenuRightBtnImg', { Level: 'advanced' }),
+            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.Button.MenuRightBtnImg', { Level: 'advanced' })
           }
         })
       };
