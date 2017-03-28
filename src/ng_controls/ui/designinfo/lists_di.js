@@ -475,7 +475,7 @@ ngUserControls['list_designinfo'] = {
             "MinItemHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
             "MouseEvents": ng_DIPropertyBool(true, { Level: 'basic' }),
             "ReadOnly": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "SelectType": ng_DIPropertyIntConstants(0,['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt'],{ Level: 'basic' }),
+            "SelectType": ng_DIPropertyIntConstants(0,['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt','nglSelectCheck'],{ Level: 'basic' }),
             "SelCount": { DefaultType: 'integer', Level: 'hidden' },
             "SortColumn": { DefaultType: 'string', Level: 'basic' },
             "SortDir": ng_DIPropertyIntConstants(0,['nglSortAsc','nglSortDesc'],{ Level: 'basic' }),

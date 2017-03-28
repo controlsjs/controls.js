@@ -25,6 +25,7 @@ var nglSelectSingle = 1;
 var nglSelectMulti = 2;
 var nglSelectMultiExt = 3;
 var nglSelectSingleExt = 4;
+var nglSelectCheck = 5;
 
 var nglClickRow = 0;
 var nglClickText = 1;
@@ -1584,8 +1585,38 @@ function ngl_ClickItem(it, e)
   switch(e.listPart)
   {
     case 0:
-    {
-      if(e.listIgnoreSelect) break;
+    case 2:
+      if((e.listPart==0)&&(e.listIgnoreSelect)) break;
+      if((e.listPart==2)||(this.SelectType==5)){
+        if(action) break;
+        if((this.ShowCheckboxes)||(typeof it.Checked !== 'undefined'))
+        {
+          if((!this.RadioAllowUncheck)&&(!ngVal(it.RadioAllowUncheck, false))&&(typeof it.RadioGroup!=='undefined')) this.CheckItem(it,1);
+          else
+          {
+            var s=ngVal(it.Checked,0);
+            switch(s)
+            {
+              case 0:
+              case false:
+                if(ngVal(it.AllowGrayed,false)) s=2;
+                else s=1;
+                break;
+              case 1:
+              case true:
+                s=0;
+                break;
+              default:
+                s=1;
+                break;
+            }
+            this.CheckItem(it,s);
+          }
+          e.listIgnoreSelect=true;
+        }
+        break;
+      }
+
       if(this.DropDownOwner) this.SelectDropDownItemWithFocus(it); // Handle drop down
       else
       {
@@ -1644,35 +1675,6 @@ function ngl_ClickItem(it, e)
           this.SelectChanged();
         }
         else this.SelectItem(it,!ngVal(this.selected[this.ItemId(it)],false));
-      }
-      break;
-    }
-    case 2:
-      if(action) break;
-      if((this.ShowCheckboxes)||(typeof it.Checked !== 'undefined'))
-      {
-        if((!this.RadioAllowUncheck)&&(!ngVal(it.RadioAllowUncheck, false))&&(typeof it.RadioGroup!=='undefined')) this.CheckItem(it,1);
-        else
-        {
-          var s=ngVal(it.Checked,0);
-          switch(s)
-          {
-            case 0:
-            case false:
-              if(ngVal(it.AllowGrayed,false)) s=2;
-              else s=1;
-              break;
-            case 1:
-            case true:
-              s=0;
-              break;
-            default:
-              s=1;
-              break;
-          }
-          this.CheckItem(it,s);
-        }
-        e.listIgnoreSelect=true;
       }
       break;
     case 3:
@@ -3289,6 +3291,8 @@ function ngList(id)
    *    nglSelectSingle - ...
    *    nglSelectMulti - ...
    *    nglSelectMultiExt - ...
+   *    nglSelectSingleExt - ...
+   *    nglSelectCheck - ...
    *
    *  Default value: *nglSelectNone*
    */
