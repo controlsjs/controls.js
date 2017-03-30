@@ -1413,6 +1413,8 @@ ngUserControls['viewmodel_ui'] = {
         switch(i) {
           case 'Items':
           case 'Parent':
+          case 'Controls':
+          case 'ControlsHolder':
           case '_byRef':
           case '_vmChecked':
           case '_vmCollapsed':
@@ -1615,6 +1617,8 @@ ngUserControls['viewmodel_ui'] = {
     ignoredprops._byRef=true;
     ignoredprops.Items=true;
     ignoredprops.Parent=true;
+    ignoredprops.Controls=true;
+    ignoredprops.ControlsHolder=true;
     ignoredprops.Checked=true;
     ignoredprops.Collapsed=true;
     ignoredprops._vmChecked=true;
