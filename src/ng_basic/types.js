@@ -2540,6 +2540,7 @@ function ng_FormatDate(date, format, def)
  *   yyyy - year (4 digits)
  *   yy - year (2 digits)
  *   y - year (2 or 4 digits)
+ *   q - quarter (1 digit)
  *   MM - month (2 digits)
  *   M - month (1 or 2 digits)  
  *   MMM - full name of month
@@ -2613,6 +2614,7 @@ function ng_FormatDateTime(date, format,def)
       case 'y': 
       case 'yyyy': res+=y; break;
       case 'yy': 	 res+=(''+y).substring(2,4); break;
+      case 'q':    res+=Math.ceil(M/3); break;
       case 'M':    res+=M; break;
       case 'MM':   res+=LZ(M); break;
       case 'MMM':  res+=ngTypesTxt('calendar_months')[M-1]; break;
@@ -2803,6 +2805,12 @@ function ng_ParseDateTime(val, format, def)
             break;
           }  				
         }
+        break;
+      case 'q':
+        var quarter=getInt(val,i_val,1,1);
+        if((quarter==null)||(quarter<1)||(quarter>4)) return def;
+        month=((quarter-1)*3+1);
+        i_val+=1;
         break;
       case 'MM':
       case 'M':
