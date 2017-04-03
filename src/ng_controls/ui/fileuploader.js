@@ -1101,7 +1101,7 @@ function ngfup_UnregisterDropTarget(t){
 
   var o = null;
   if(typeof t==='string'){
-    o = document.getElementByID(t);
+    o = document.getElementById(t);
   }
   else{
     if(typeof t.Elm === 'function'){o = t.Elm(); t = t.ID;}
