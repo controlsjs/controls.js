@@ -1497,7 +1497,7 @@ function ng_toDECIMAL(v, digits, frac_digits, def)
           }
         }        
         if(v.length>digits) return ngVal(def,'');
-        if(sgn<0) v='-'+v;
+        if((sgn<0)&&(v!='0')) v='-'+v;
         return v;
       }
       v=ov;              
@@ -1507,6 +1507,7 @@ function ng_toDECIMAL(v, digits, frac_digits, def)
   v=ng_toNumber(v);
   if(isNaN(v)) return ngVal(def,'');
   v=''+v.toFixed(frac_digits);
+  if(v.indexOf('e')>=0) return ngVal(def,'');
 
   var sgn=0;
   if(v.length>0)
