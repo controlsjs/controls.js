@@ -526,7 +526,6 @@ function ngfd_TypedValue(v)
         if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
       case 'ARRAY':
-        typefnc=null;
         if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
   
         checkminmax=false;
@@ -558,8 +557,8 @@ function ngfd_TypedValue(v)
           if(ng_VarEquals(c,typefnc(this.Enum[i]))) break;
         if(i>=this.Enum.length) err|=FIELDDEF_ERR_ENUM;
       }
-      if(err) throw new ngFieldDefException(this, err);
     }
+    if(err) throw new ngFieldDefException(this, err);
   }
   finally
   {
