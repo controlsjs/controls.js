@@ -436,7 +436,12 @@ function ngfd_TypedValue(v)
       case 'USHORT':        r=cast_numberwithlimit(this,v,USHORT_MIN,USHORT_MAX); break;
       case 'LONG':          r=cast_numberwithlimit(this,v,LONG_MIN,LONG_MAX); break;
       case 'ULONG':         r=cast_numberwithlimit(this,v,ULONG_MIN,ULONG_MAX); break;
-      case 'DECIMAL':       r=ng_toDECIMAL(v,this.Size,this.Precision,null); break;
+      case 'DECIMAL':       r=ng_toDECIMAL(v,this.Size,this.Precision,null);
+                            if(r===null) {
+                              r=ng_toDECIMAL(v,1000,this.Precision,null);
+                              if(r!==null) throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
+                            }
+                            break;
       // string
       case 'STRING':        r=ng_toString(v,null); break;
       case 'NVARCHAR':      r=ng_toNVARCHAR(v,undefined,null); 
