@@ -687,7 +687,7 @@ function ngfd_CurrencyFormatString(v)
   if(unit!='') suffix+=' '+unit;
   
   v=ng_toDECIMAL(v,this.Size,this.Precision,null);
-  if(v===null) return '';
+  if(v===null) return null;
   var zeros=ngVal(this.Attrs['Zeros'],1);
   if((zeros==0)||(zeros==1))
   {
@@ -724,7 +724,7 @@ function ngfd_CurrencyParseString(v)
   if(suffix!='') v=ng_StripSuffix(v, suffix, true);
   if(prefix!='') v=ng_StripPrefix(v, prefix, true);
   
-  return ng_toDECIMAL(ng_Unformat3Num(v),this.Size,this.Precision,null);
+  return ng_Unformat3Num(v);
 }
 
 /*  Class: ngFieldDef_Currency
@@ -755,7 +755,7 @@ function ngFieldDef_Currency(id, units, attrs, fieldtype)
 }
 
 function ngfd_DistanceFormatString(v) {
-  return ng_formatDistance(v, '', ngVal(this.Precision,2));
+  return ng_formatDistance(v, null, ngVal(this.Precision,2));
 }
 
 function ngfd_DistanceParseString(v) {           
@@ -783,7 +783,7 @@ function ngFieldDef_Distance(id, attrs, fieldtype)
 }
 
 function ngfd_AreaFormatString(v) {
-  return ng_formatArea(v, '', ngVal(this.Precision,2));
+  return ng_formatArea(v, null, ngVal(this.Precision,2));
 }
 
 function ngfd_AreaParseString(v) {           
@@ -812,7 +812,7 @@ function ngFieldDef_Area(id, attrs, fieldtype)
 
 function ngfd_SIUnitsFormatString(v) {
   var units=ng_toString(this.Attrs['SIUnits']);
-  return ng_formatSIUnits(v, units, '', this.Attrs['SIAllowedPref'], ngVal(this.Precision,2));
+  return ng_formatSIUnits(v, units, null, this.Attrs['SIAllowedPref'], ngVal(this.Precision,2));
 }
 
 function ngfd_SIUnitsParseString(v) {           
@@ -846,7 +846,7 @@ function ngFieldDef_SIUnits(id, units, attrs, allowedpref, fieldtype)
 }
 
 function ngfd_MinutesFormatString(v) {
-  return ng_formatMinutes(v, '', ngVal(this.Precision,0)>0);
+  return ng_formatMinutes(v, null, ngVal(this.Precision,0)>0);
 }
 
 function ngfd_MinutesParseString(v) {           
@@ -874,7 +874,7 @@ function ngFieldDef_Minutes(id, attrs, fieldtype)
 }
 
 function ngfd_SecondsFormatString(v) {
-  return ng_formatSeconds(v, '', ngVal(this.Precision,0)>0);
+  return ng_formatSeconds(v, null, ngVal(this.Precision,0)>0);
 }
 
 function ngfd_SecondsParseString(v) {           
@@ -902,7 +902,7 @@ function ngFieldDef_Seconds(id, attrs, fieldtype)
 }
 
 function ngfd_BytesFormatString(v) {
-  return ng_formatBytes(v, '', ngVal(this.Precision,0)>0);
+  return ng_formatBytes(v, null, ngVal(this.Precision,0)>0);
 }
 
 function ngfd_BytesParseString(v) {           
@@ -934,7 +934,7 @@ function ngfd_IsPhone(v) {
 }
 
 function ngfd_PhoneFormatString(v) {   
-  return(this.IsPhone(v) ? ng_FormatPhone(v, v, ngVal(this.Attrs['PhoneZeros'],false),ngVal(this.Attrs['PhoneSeparator'],' ')) : v);
+  return(this.IsPhone(v) ? ng_FormatPhone(v, null, ngVal(this.Attrs['PhoneZeros'],false),ngVal(this.Attrs['PhoneSeparator'],' ')) : v);
 }
 
 function ngfd_PhoneEditString(v) {
@@ -1053,4 +1053,39 @@ function ngFieldDef_RegExp(id, attrs)
 {
   ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
   this.DoTypedValue = ngfd_RegExpDoTypedValue;
+}
+
+function ngfd_PercentFormatString(v)
+{
+  v=ng_toDECIMAL(v,this.Size,this.Precision,null);
+  if(v===null) return null;
+  return ng_AddSuffix(v, ' %');
+}
+
+function ngfd_PercentParseString(v)
+{
+  return ng_Trim(ng_StripSuffix(v,'%'));
+}
+
+/*  Class: ngFieldDef_Percent
+ *  <ngViewModel> Percent field (based on <ngFieldDef> DECIMAL).
+ *
+ *  Syntax:
+ *    new *ngFieldDef_Percent* ([string id ='', object attrs={}])
+ *
+ *  Parameters:
+ *    id - field id
+ *    attrs - field attributes
+ */
+function ngFieldDef_Percent(id, attrs)
+{
+  attrs=ngVal(attrs,{});
+  attrs['Size'] = ngVal(attrs['Size'],3);
+  attrs['Precision'] = ngVal(attrs['Precision'],0);
+  attrs['MinValue'] = ngVal(attrs['MinValue'],0);
+  attrs['MaxValue'] = ngVal(attrs['MaxValue'],100);
+  ngFieldDefCreateAs(this,id,'DECIMAL',attrs);
+
+  this.DoFormatString = ngfd_PercentFormatString;
+  this.DoParseString = ngfd_PercentParseString;
 }
