@@ -543,6 +543,10 @@ function ngfup_ServerData(data){
   finally{
     this.Controls.ListFiles.EndUpdate();
   }
+
+  if(this.Controls.BtnAddFile){
+    this.Controls.BtnAddFile.SetEnabled(this.CheckMaxFiles(+1));
+  }
   return true;
 }
 
@@ -618,6 +622,12 @@ function ngfup_OnCreated(c){
     }
   }
 
+  if((c.Controls.BtnAddFile)&&(c.Controls.ListFiles)){
+    c.Controls.BtnAddFile.AddEvent(
+      'OnSetEnabled',ngfup_OnSetAddBtnEnabled
+    );
+  }
+
   if((c.Controls.BtnRemoveFiles)&&(c.Controls.ListFiles)){
     c.Controls.BtnRemoveFiles.AddEvent(
       'OnSetEnabled',ngfup_OnSetRemoveBtnEnabled
@@ -627,6 +637,12 @@ function ngfup_OnCreated(c){
   if(c.DropTarget){
     c.RegisterDropTarget(c,ngfup_OnDragOver,ngfup_OnDragLeave);
   }
+}
+
+function ngfup_OnSetAddBtnEnabled(o,v){
+  if(!v){return true;}
+  var uploader = this.ParentControl.ParentControl;
+  return uploader.CheckMaxFiles(+1);
 }
 
 function ngfup_OnSetRemoveBtnEnabled(o,v){
@@ -998,6 +1014,10 @@ function ngfup_RemoveFiles(){
   finally{
     this.Controls.ListFiles.EndUpdate();
   }
+
+  if(this.Controls.BtnAddFile){
+    this.Controls.BtnAddFile.SetEnabled(this.CheckMaxFiles(+1));
+  }
   return true;
 }
 
@@ -1016,6 +1036,10 @@ function ngfup_ClearFiles(){
   }
   finally{
     list.EndUpdate();
+  }
+  
+  if(this.Controls.BtnAddFile){
+    this.Controls.BtnAddFile.SetEnabled(this.CheckMaxFiles(+1));
   }
 }
 
@@ -1145,7 +1169,7 @@ function ngfup_SetUploadProgress(p){
 }
 
 function ngfup_FormatBytes(bytes) {
-  if (bytes<=0) return '-'
+  if (bytes<=0) return '-';
   var units = ['B', 'kB', 'MB', 'GB', 'TB'];
   var i = parseInt(Math.log(bytes) / Math.log(1024));
   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + units[i];
