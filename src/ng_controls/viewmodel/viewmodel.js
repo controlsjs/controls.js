@@ -643,6 +643,20 @@ function ngfd_FormatString(v)
     var r=null;
     switch(this.DataType)
     {
+      case 'SHORT':
+      case 'USHORT':
+      case 'LONG':
+      case 'ULONG':
+      case 'INTEGER':
+        if(this.Attrs['FormatNumber']) r=ng_Format3Num(v,this.Attrs['ThousandsSeparator']);
+        break;
+      case 'FLOAT':
+      case 'DECIMAL':
+        if(this.Attrs['FormatNumber']) {
+          r=ng_Format3Num(''+v,this.Attrs['ThousandsSeparator'],'.');
+          r=r.replace('.',ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()));
+        }
+        break;
       case 'TIMESTAMP':
       case 'DATETIME':
         r=ng_FormatDateTime(ng_toDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
@@ -714,6 +728,22 @@ function ngfd_ParseString(v)
         var r;
         switch(this.DataType)
         {
+          case 'SHORT':
+          case 'USHORT':
+          case 'LONG':
+          case 'ULONG':
+          case 'INTEGER':
+            if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
+              v=ng_Unformat3Num(v,this.Attrs['ThousandsSeparator']);
+            }
+            break;
+          case 'FLOAT':
+          case 'DECIMAL':
+            if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
+              v=ng_Unformat3Num(''+v,this.Attrs['ThousandsSeparator'],'.');
+              v=v.replace(ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()),'.');
+            }
+            break;
           case 'TIMESTAMP':
           case 'DATETIME':
           case 'UTCTIMESTAMP':
