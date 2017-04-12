@@ -349,7 +349,7 @@ function ngPtrStartEvents()
 function ngPtrHTMLStartEvents(html,ev)
 {
   var evs=ngPtrStartEvents();
-  if(typeof html==='object')
+  if(ng_IsObjVar(html))
   {
     if((html)&&(html.append))
       for(var i=0;i<evs.length;i++)
@@ -469,12 +469,11 @@ function ngNullVal(v, defv)
 function ngLibPath(lib,file)
 {
   if(lib=='') return ngVal(file,'');
-  if(typeof ngLib === 'undefined') return '';
   lib=lib.toLowerCase();
-  var l=ngLib[lib];
+  var l=(ng_IsObjVar(ngLib) ? ngLib[lib] : null);
 
   var path;
-  if((l)&&(typeof l==='object')) {
+  if(ng_IsObjVar(l)) {
     path=ngVal(l.path,'');
     if(path.charAt(0)==='/') {
       if(typeof l.URL !== 'undefined') {
@@ -503,7 +502,7 @@ function ngLibVersion(lib)
   if((lib=='')||(typeof ngLib === 'undefined')) return false;
   lib=lib.toLowerCase();
   var l=ngLib[lib];
-  if((!l)||(typeof l!=='object')) return false;
+  if(!ng_IsObjVar(l)) return false;
   return ngVal(l.version,false);                                 
 } 
  
@@ -1254,7 +1253,7 @@ function ng_UTF8ParamDecode(str)
  */  
 function ng_inDOM(e)
 {
-  if(typeof e==='object')
+  if(ng_IsObjVar(e))
     while(e)
     {
       if(e.tagName == 'BODY') return true;
@@ -2610,6 +2609,23 @@ if (!Array.isArray) {
 }
 
 /**
+ *  Function: ng_IsObjVar
+ *  Detects if variable is a valid object.
+ *
+ *  Syntax:
+ *    bool *ng_IsObjVar* (mixed var)
+ *
+ *  Parameters:
+ *    var - variable to be checked
+ *
+ *  Returns:
+ *    TRUE if variable is a valid object.
+ */
+function ng_IsObjVar(v) {
+  return ((typeof v==='object')&&(v));
+}
+
+/**
  *  Function: ng_IsArrayVar
  *  Detects if variable is indexed array.
  *   
@@ -3121,7 +3137,7 @@ function ngrpc_sendIFrameRequest(url, params)
     doc.open();
     doc.write('<html><body><form action="'+ng_URL(url)+'" method="'+(ng_EmptyVar(this.HTTPMethod) ? "POST" : this.HTTPMethod)+'" id="'+this.id+'">');
     var v;
-    if(typeof params==='object')
+    if(ng_IsObjVar(params))
     {
       // In URL_ESCAPING_UTF8 iframe encodes values itself, so no standard encoding is required
       if(ngURLDefaultEscaping==0) /* URL_ESCAPING_UTF8 */ ngURLDefaultEscaping=-1; // None
