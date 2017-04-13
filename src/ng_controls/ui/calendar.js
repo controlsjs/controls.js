@@ -300,7 +300,11 @@ function ngcal_SetSelected(dates)
     dates=a;
   }
   dates=ngVal(dates,null);
-  if(!dates) return;
+  if(!dates){
+    this.ClearSelected();
+    return;
+  }
+
   this.BeginUpdate();
   this.ClearSelected()
   var d,f=0,rs=0;
