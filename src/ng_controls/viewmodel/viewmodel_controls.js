@@ -1232,8 +1232,6 @@ ngUserControls['viewmodel_controls'] = {
                 else break;
               }
             }
-            var l=oldval.length-dfrom;
-            if(l>0) oldval.splice(dfrom, l);
           }
           else {
             if((val!==null)&&(ng_typeArray(c.VMControls))) {
@@ -1242,7 +1240,10 @@ ngUserControls['viewmodel_controls'] = {
           }
           var changed=false;
 
-          var dispcnt=c.VMControls.length-dfrom;
+          var dispcnt=oldval.length-dfrom;
+          if(dispcnt>0) oldval.splice(dfrom, dispcnt);
+
+          dispcnt=c.VMControls.length-dfrom;
           if(dispcnt>0) {
             if(controlsdelayedupdate>0) {
               if(typeof c._vmdisposecontrols==='undefined') c._vmdisposecontrols=[];
