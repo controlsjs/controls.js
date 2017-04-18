@@ -784,17 +784,24 @@ function ng_GetScrollBars(o)
   return sb;
 }
 
-function ng_IsAbsPath(path)
+function ng_IsFullURL(path)
 {
   if((typeof path !== 'string')||(path=='')) return false;
-  path = path.replace(/\\/g, '/');
-  if((path.charAt(0)=='/')||(path.charAt(0)=='~')) return true;
+  if(path.substr(0,2)==='//') return true;
+
   var pos=path.indexOf('?');
   if(pos>=0) path=path.substr(0,pos);
   pos=path.indexOf('#');
   if(pos>=0) path=path.substr(0,pos);
-  if(path.indexOf(":/")>0) return true;
-  return false;
+  return (path.indexOf("://")>0);
+}
+
+function ng_IsAbsPath(path)
+{
+  if((typeof path !== 'string')||(path=='')) return false;
+  var c=path.charAt(0);
+  if((c=='/')||(c=="\\")||(c=='~')) return true;
+  return ng_IsFullURL(path);
 }
 
 function ng_ToAbsPath(path,lib)
