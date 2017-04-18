@@ -470,7 +470,7 @@ function ngLibPath(lib,file)
 {
   if(lib=='') return ngVal(file,'');
   lib=lib.toLowerCase();
-  var l=(ng_IsObjVar(ngLib) ? ngLib[lib] : null);
+  var l=(ng_IsObjVar(window.ngLib) ? window.ngLib[lib] : null);
 
   var path;
   if(ng_IsObjVar(l)) {
