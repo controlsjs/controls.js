@@ -326,7 +326,7 @@ function ngLoadApplication(elm, callback, files)
     }
 
     if(!async) {
-      var filedata={ URL: url, LoadURL: loadurl, Data: data, Async: asyncloader, LoadCallback: loadcallback };
+      var filedata={ URL: url, LoadURL: loadurl, Data: data, Async: asyncloader, LoadCallback: loadcallback, LoadFailCallback: loadfailcallback };
       queue.push(filedata);
       if((!asyncloader)&&(queue.length>1)) {return;}
     }
@@ -335,6 +335,7 @@ function ngLoadApplication(elm, callback, files)
     {
       function fileerror(isasync)
       {
+        isasync=(isasync===true);
         var c=(typeof console!=='undefined' ? console : null);
         if(c){
           switch(data.Type){
@@ -343,9 +344,18 @@ function ngLoadApplication(elm, callback, files)
           }
         }
 
-        if(typeof loadfailcallback==='function'){
-          loadfailcallback(data.Type,url,data);
-          loadcallback=null;
+        if(async){
+          if(typeof loadfailcallback==='function'){
+            loadfailcallback(data.Type,url,data);
+            loadcallback=null;
+          }
+        }
+        else {
+          var li=queue[0];
+          if(!li.Async) {
+            if(typeof li.LoadFailCallback === 'function') li.LoadFailCallback(li.Data.Type,li.URL,li.Data);
+            li.LoadCallback=null;
+          }
         }
         fileloaded(isasync);
       }
@@ -381,7 +391,7 @@ function ngLoadApplication(elm, callback, files)
         {
           li=queue[0];
           if(!li.Async){
-            loadfile(li.LoadURL, li.Data, li.LoadCallback,false);
+            loadfile(li.LoadURL, li.Data, li.LoadCallback,false, li.LoadFailCallback);
             break;
           }
           code=li.code;
