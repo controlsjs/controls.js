@@ -1249,4 +1249,4 @@ ngUserControls['uicore'] = {
       }
     });
  }
-}
+};
