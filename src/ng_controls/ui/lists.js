@@ -5146,16 +5146,14 @@ function npgl_DoLoadData(idx,cnt,retry)
   if(this.OnLoadData) data=this.OnLoadData(this,list,idx,cnt);
   else
   {
-    if(!this.async_rpc)
-    {
-      this.async_rpc=new ngRPC(this.ID);
-      this.async_rpc.nocache=true;
+    var rpc=this.GetRPC();
+    if(rpc){
+      var url=this.AsyncDataURL;
+      url=ng_AddURLParam(url,'id='+ng_URLEncode(this.ID)+'&i='+idx+'&c='+cnt);
+      if((typeof ngApp==='object')&&(ngApp)) url=ng_AddURLParam(url,'lang='+ngApp.Lang);
+      if(this.OnAsyncURLRequest) url=this.OnAsyncURLRequest(this,url,idx,cnt);
+      if(url!='') rpc.sendRequest(url);
     }
-    var url=this.AsyncDataURL;
-    url=ng_AddURLParam(url,'id='+ng_URLEncode(this.ID)+'&i='+idx+'&c='+cnt);
-    if((typeof ngApp==='object')&&(ngApp)) url=ng_AddURLParam(url,'lang='+ngApp.Lang);
-    if(this.OnAsyncURLRequest) url=this.OnAsyncURLRequest(this,url,idx,cnt);
-    if((url!='')&&(this.async_rpc)) this.async_rpc.sendRequest(url);
   }
   if((typeof data==='object')&&(data))
   {
