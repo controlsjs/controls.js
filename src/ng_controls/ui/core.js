@@ -5206,8 +5206,8 @@ function ngpg_DoUpdate(o)
         else html.append('style="cursor:default;" ');
         html.append('onmouseover="ngpg_EnterPg(event,this);" onmouseout="ngpg_LeavePg(event,this);">');
         image=tab.LeftImg;
-        if(image) { ngc_Img(html,image,"position:absolute; left: "+tx+"px;",ngVal(image.Attrs,'')); tx+=image.W; tl=tx; }
-        else tl=0;
+        if(image) { ngc_Img(html,image,"position:absolute; left: "+tx+"px;",ngVal(image.Attrs,'')); tx+=image.W; }
+        tl=tx;
         image=tab.MiddleImg;
         if(image) { ngc_ImgSW(html,image,tx,tab.tw,"",ngVal(image.Attrs,'')); tx+=tab.tw; }
         image=tab.RightImg;
