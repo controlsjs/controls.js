@@ -2756,7 +2756,15 @@ function nge_OnDropDownSetVisible(l,v)
 function nge_HideDropDown()
 {
   var l=this.DropDownControl;
-  if(l) l.SetVisible(false);
+  if(l){
+    l.SetVisible(false);
+
+    if(this._origDDWidth!==null){
+      var o=l.Elm();
+      if(o) o.style.width=this._origDDWidth;
+      this._origDDWidth=null;
+    }
+  }
 }
 
 function nge_IsInsidePopup(t,intype,e)
@@ -2811,6 +2819,7 @@ function nge_DropDown()
 
     var op=o.parentNode;
     var pos=ng_ParentPosition(po,op,true);
+    this._origDDWidth=o.style.width;
 
     if(typeof this.DropDownWidth !== 'undefined')
     {
