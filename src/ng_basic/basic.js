@@ -435,7 +435,7 @@ function ScreenPt(posx, posy) {
  */               
 function ngVal(v, defv)
 {
-  return (typeof v === 'undefined' ? defv : v);
+  return (v === void 0 ? defv : v);
 }
 
 /**
@@ -454,7 +454,7 @@ function ngVal(v, defv)
  */               
 function ngNullVal(v, defv)
 {
-  return ((typeof v === 'undefined') || (v === null) ? defv : v);
+  return ((v === void 0) || (v === null) ? defv : v);
 }
 
 /**
