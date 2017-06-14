@@ -182,7 +182,7 @@ function ng_DIProperties(props,data) {
         if(typeof di[i]==='undefined') di[i]={};
         ng_MergeVar(di[i],{
           Types: {
-            'databind': {
+            'bindings': {
               ObjectProperties: props[i]
             }
           }

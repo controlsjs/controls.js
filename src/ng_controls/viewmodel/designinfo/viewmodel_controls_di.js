@@ -18,21 +18,21 @@ var ViewModel_Controls_DesignInfo = (function()
     var props = {
       "Calls": { DefaultType: 'object',
         Types: {
-          'databind_string': {}
+          'databind_expression': {}
         }
       },
-      "Data": { DefaultType: 'databind_string' },
-      "Link": { DefaultType: 'databind_string', Level: 'basic' },
-      "Controls": { DefaultType: 'databind_string', Level: (di.IsContainer ? 'basic' : 'optional') }
+      "Data": { DefaultType: 'databind_expression' },
+      "Link": { DefaultType: 'databind_expression', Level: 'basic' },
+      "Controls": { DefaultType: 'databind_expression', Level: (di.IsContainer ? 'basic' : 'optional') }
     };
 
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
         "MouseOver": {
-          DefaultType: 'databind_string',
+          DefaultType: 'databind_expression',
           Types: {
-            'databind_string': {
+            'databind_expression': {
               EditorOptions: {
                 DatabindFunction: true
               }
@@ -46,7 +46,7 @@ var ViewModel_Controls_DesignInfo = (function()
         props["Bounds"] = {
           DefaultType: 'object',
           Types: {
-            'databind_string': {}
+            'databind_expression': {}
           },
           Level: 'basic'
         };
@@ -57,48 +57,48 @@ var ViewModel_Controls_DesignInfo = (function()
         props["style"] = {
           DefaultType: 'object',
           Types: {
-            'databind_string': {}
+            'databind_expression': {}
           }
         };
-        props["className"] = { DefaultType: 'databind_string' };
-        props["SubClassName"] = { DefaultType: 'databind_string' };
-        props["BaseClassName"] = { DefaultType: 'databind_string' };
+        props["className"] = { DefaultType: 'databind_expression' };
+        props["SubClassName"] = { DefaultType: 'databind_expression' };
+        props["BaseClassName"] = { DefaultType: 'databind_expression' };
       }
 
       if (typeof c.SetFocus === 'function')
       {
-        props["Focus"] = { DefaultType: 'databind_string', Level: 'optional' };
+        props["Focus"] = { DefaultType: 'databind_expression', Level: 'optional' };
       }
 
       if (typeof c.SetOpacity === 'function')
       {
-        props["Opacity"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Opacity"] = { DefaultType: 'databind_expression', Level: 'basic' };
       }
 
       if (typeof c.SetVisible === 'function')
       {
-        props["Visible"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Visible"] = { DefaultType: 'databind_expression', Level: 'basic' };
       }
     }
 
     if (typeof c.SetEnabled === 'function')
     {
-      props["Enabled"] = { DefaultType: 'databind_string', Level: 'basic' };
-      props["Disabled"] = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Enabled"] = { DefaultType: 'databind_expression', Level: 'basic' };
+      props["Disabled"] = { DefaultType: 'databind_expression', Level: 'basic' };
     }
 
 
     switch (c.DefType)
     {
       case 'ngSysTimer':
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
-        props["Command"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Command"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
 
       case 'ngSysURLParams':
       case 'ngSysViewModelSettings':
       case 'ngSysRPC':
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
     }
 
@@ -109,7 +109,7 @@ var ViewModel_Controls_DesignInfo = (function()
       {
         if (props[i].ignoreDataModel) continue;
         props[i].Types = {
-          'databind_string': {
+          'databind_expression': {
             Editor: 'ngfeEditor_DataBindDropDown'
           }
         };
@@ -135,9 +135,9 @@ var ViewModel_Controls_DesignInfo = (function()
           "OnIsViewModelControlChanged": ng_DIPropertyEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         }
       },{
-        "DataBind": { DefaultType: 'databind', Level: 'basic', Order: 0.5,
+        "DataBind": { DefaultType: 'bindings', Level: 'basic', Order: 0.5,
           Types: {
-            'databind_string': {},
+            'bindings_string': {},
             'object': {
               DestroyIfEmpty: true,
               ObjectProperties: {
@@ -146,16 +146,16 @@ var ViewModel_Controls_DesignInfo = (function()
                 }
               }
             },
-            'databind': {
+            'bindings': {
               DestroyIfEmpty: true,
               ObjectProperties: props
             }
           }
         },
-        "DOMDataBind": { DefaultType: 'databind', Level: 'optional', Order: 0.5,
+        "DOMDataBind": { DefaultType: 'bindings', Level: 'optional', Order: 0.5,
           PropertyGroup: 'DataBind',
           Types: {
-            'databind_string': {},
+            'bindings_string': {},
             'object': {
               DestroyIfEmpty: true,
               ObjectProperties: {
@@ -164,7 +164,7 @@ var ViewModel_Controls_DesignInfo = (function()
                 }
               }
             },
-            'databind': {
+            'bindings': {
               DestroyIfEmpty: true
             }
           }
@@ -182,16 +182,16 @@ var ViewModel_Controls_DesignInfo = (function()
       for (var i in props)
       {
         o[i] = {
-          DefaultType: 'databind_string',
+          DefaultType: 'databind_expression',
           Types: {
-            'databind_string': {
+            'databind_expression': {
               EditorOptions: {
                 DatabindFunction: true
               }
             }
           }
         };
-        if (netbeans) o[i].Types['databind_string'].Editor = 'ngfeEditor_DataBindDropDown';
+        if (netbeans) o[i].Types['databind_expression'].Editor = 'ngfeEditor_DataBindDropDown';
 
         if (typeof props[i].Level !== undefined) o[i].Level = props[i].Level;
         else o[i].Level = 'advanced';
@@ -200,7 +200,7 @@ var ViewModel_Controls_DesignInfo = (function()
       var eventprop1 = {
         DefaultType: 'object',
         Types: {
-          'databind_string': {},
+          'bindings_string': {},
           'object': {
             DestroyIfEmpty: true,
             ObjectProperties: o
@@ -211,7 +211,7 @@ var ViewModel_Controls_DesignInfo = (function()
       var eventprop2 = {
         DefaultType: 'object',
         Types: {
-          'databind_string': {},
+          'bindings_string': {},
           'object': {
             DestroyIfEmpty: true,
             ObjectProperties: {}
@@ -229,7 +229,7 @@ var ViewModel_Controls_DesignInfo = (function()
         Properties: {
           "DataBind": {
             Types: {
-              'databind': {
+              'bindings': {
                 ObjectProperties: {
                   "Events": eventprop1,
                   "AfterEvents": eventprop2,
@@ -247,7 +247,7 @@ var ViewModel_Controls_DesignInfo = (function()
     ng_MergeVar(di, vm_di);
 
     var deferbindings = {};
-    var databindprops=di.Properties['DataBind'].Types['databind'].ObjectProperties;
+    var databindprops=di.Properties['DataBind'].Types['bindings'].ObjectProperties;
     for(var i in window.ngBindingsHandlers) {
       if(typeof databindprops[i]!=='undefined') deferbindings[i]=ng_DIPropertyBool(false);
     }

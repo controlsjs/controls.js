@@ -16,18 +16,18 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      "ReadOnly": { DefaultType: 'databind_string', Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' },
-      "Error": { DefaultType: 'databind_string' },
-      "ShowError": { DefaultType: 'databind_string' }
+      "ReadOnly": { DefaultType: 'databind_expression', Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' },
+      "Error": { DefaultType: 'databind_expression' },
+      "ShowError": { DefaultType: 'databind_expression' }
     };
 
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
         "OnClick": {
-          DefaultType: 'databind_string',
+          DefaultType: 'databind_expression',
           Types: {
-            'databind_string': {
+            'databind_expression': {
               EditorOptions: {
                 DatabindFunction: true
               }
@@ -40,22 +40,22 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
     if (typeof c.SetText === 'function')
     {
-      props["Text"] = { DefaultType: 'databind_string', Level: 'basic' };
-      props["ngText"] = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Text"] = { DefaultType: 'databind_expression', Level: 'basic' };
+      props["ngText"] = { DefaultType: 'databind_expression', Level: 'basic' };
     }
 
     var has_alt=(typeof c.Alt!=='undefined');
-    props["Alt"] = { DefaultType: 'databind_string', Level: has_alt ? 'basic' : 'optional' };
-    props["ngAlt"] = { DefaultType: 'databind_string', Level: has_alt ? 'basic' : 'optional' };
+    props["Alt"] = { DefaultType: 'databind_expression', Level: has_alt ? 'basic' : 'optional' };
+    props["ngAlt"] = { DefaultType: 'databind_expression', Level: has_alt ? 'basic' : 'optional' };
 
     var has_hint=(typeof c.Hint!=='undefined');
-    props["Hint"] = { DefaultType: 'databind_string', Level: has_hint ? 'basic' : 'optional' };
-    props["ngHint"] = { DefaultType: 'databind_string', Level: has_hint ? 'basic' : 'optional' };
+    props["Hint"] = { DefaultType: 'databind_expression', Level: has_hint ? 'basic' : 'optional' };
+    props["ngHint"] = { DefaultType: 'databind_expression', Level: has_hint ? 'basic' : 'optional' };
 
     if (typeof c.SetInvalid === 'function')
     {
-      props["Invalid"] = { DefaultType: 'databind_string', Level: 'basic' };
-      props["Valid"] = { DefaultType: 'databind_string', Level: 'basic' };
+      props["Invalid"] = { DefaultType: 'databind_expression', Level: 'basic' };
+      props["Valid"] = { DefaultType: 'databind_expression', Level: 'basic' };
     }
 
     var instantUpdateProperty = {
@@ -89,29 +89,29 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["InstantUpdate"] = instantUpdateProperty;
         props["DelayedUpdate"] = delayedUpdateProperty;
         props["Focus"] = { Level: 'basic' };
-        props["Lookup"] = { DefaultType: 'databind_string', Level: 'basic' };
-        props["KeyField"] = { DefaultType: 'databind_string', Level: 'basic' }; // ToDo: string in databind_string
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Lookup"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["KeyField"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
       case 'ngMemo':
         props["InstantUpdate"] = instantUpdateProperty;
         props["DelayedUpdate"] = delayedUpdateProperty;
         props["Focus"] = { Level: 'basic' };
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
       case 'ngToolBar':
         if(c.CtrlInheritsFrom('ngMenuBar')) {
-          props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
-          props["Selected"] = { DefaultType: 'databind_string', Level: 'optional' };
-          props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+          props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
+          props["Selected"] = { DefaultType: 'databind_expression', Level: 'optional' };
+          props["Checked"] = { DefaultType: 'databind_expression', Level: 'basic' };
           props["ItemMapping"] = { DefaultType: 'databind_itemmapping', Level: 'basic' };
         }
         break;
       case 'ngList':
         props["Focus"] = { Level: 'basic' };
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
-        props["Selected"] = { DefaultType: 'databind_string', Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' };
-        props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Selected"] = { DefaultType: 'databind_expression', Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' };
+        props["Checked"] = { DefaultType: 'databind_expression', Level: 'basic' };
 
         props["ItemMapping"] = { DefaultType: 'databind_itemmapping', Level: 'basic' };
 
@@ -133,34 +133,34 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           Types: {
             'array': {
               ChildDesignInfo: {
-                DefaultType: 'databind_string', // ToDo: string in databind_string
+                DefaultType: 'databind_string',
                 Level: 'basic'
               }
             }
           }
         };
         
-        props["SimpleArrayItemColumnID"] = { DefaultType: 'databind_string', Level: 'advanced' }; // ToDo: string in databind_string
-        props["KeyField"] = { DefaultType: 'databind_string', Level: 'basic' }; // ToDo: string in databind_string
+        props["SimpleArrayItemColumnID"] = { DefaultType: 'databind_string', Level: 'advanced' };
+        props["KeyField"] = { DefaultType: 'databind_string', Level: 'basic' };
         break;
       case 'ngButton':
       case 'ngSysAction':
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
-        props["Checked"] = { DefaultType: 'databind_string', Level: 'basic' };
-        props["Command"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Checked"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Command"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
 
       case 'ngPages':
       case 'ngWebBrowser':
       case 'ngProgressBar':
       case 'ngCalendar':
-        props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
 
       default:
         if (typeof c.SetText === 'function')
         {
-          props["Value"] = { DefaultType: 'databind_string', Level: 'basic' };
+          props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
         }
         break;
     }
@@ -172,7 +172,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       {
         if (props[i].ignoreDataModel) continue;
         props[i].Types = {
-          'databind_string': {
+          'databind_expression': {
             Editor: 'ngfeEditor_DataBindDropDown'
           }
         };
@@ -198,7 +198,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           Basic: false,
           Options: {
             ChildDesignInfo: {
-              DefaultType: 'databind_string', // ToDo: string in databind_string
+              DefaultType: 'databind_string',
               Types: {
                 'databind_string': {},
                 'boolean': { InitValue: true }
