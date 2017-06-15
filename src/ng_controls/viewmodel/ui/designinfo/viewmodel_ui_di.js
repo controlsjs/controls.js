@@ -25,14 +25,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
     if(!di.NonVisual) {
       ng_MergeVar(props, {
         "OnClick": {
-          DefaultType: 'databind_expression',
-          Types: {
-            'databind_expression': {
-              EditorOptions: {
-                DatabindFunction: true
-              }
-            }
-          },
+          DefaultType: 'databind_function_name',
           Level: 'optional'
         }
       });
@@ -62,7 +55,9 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       DefaultType: 'boolean',
       Types: {
         'boolean': {
-          DefaultValue: false,
+          DefaultValue: false
+        },
+        'databind_expression': {
           EditorOptions: {
             IgnoreDataModel: true
           }
@@ -75,7 +70,9 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       DefaultType: 'integer',
       Types: {
         'integer': {
-          DefaultValue: 500,
+          DefaultValue: 500
+        },
+        'databind_expression': {
           EditorOptions: {
             IgnoreDataModel: true
           }
@@ -119,7 +116,9 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           DefaultType: 'integer',
           Types: {
             'integer': {
-              DefaultValue: 10,
+              DefaultValue: 10
+            },
+            'databind_expression': {
               EditorOptions: {
                 IgnoreDataModel: true
               }
@@ -165,19 +164,6 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         break;
     }
 
-    var netbeans = ((typeof CodeMirrorIntegration !== 'undefined')&&(typeof CodeMirrorIntegration.RunningInNetBeans === 'function')&&(CodeMirrorIntegration.RunningInNetBeans()));
-    if (netbeans)
-    {
-      for (var i in props)
-      {
-        if (props[i].ignoreDataModel) continue;
-        props[i].Types = {
-          'databind_expression': {
-            Editor: 'ngfeEditor_DataBindDropDown'
-          }
-        };
-      }
-    }
     ng_MergeVar(di,
     {
       Properties: ng_DIProperties({
@@ -208,7 +194,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         }
       ];
       FormEditor.RegisterPropertyType(databind_types);
-      FE.RegisterPropertyTypesGroup('databind_itemmapping', ['databind_objitemmapping', 'databind_string']);
+      FE.RegisterPropertyTypesGroup('databind_itemmapping', ['databind_objitemmapping', 'databind_expression']);
     },
 
     OnControlDesignInfo: function(def, c, ref)

@@ -18,7 +18,7 @@ var ViewModel_Controls_DesignInfo = (function()
     var props = {
       "Calls": { DefaultType: 'object',
         Types: {
-          'databind_expression': {}
+          'databind_function_name': {}
         }
       },
       "Data": { DefaultType: 'databind_expression' },
@@ -30,14 +30,7 @@ var ViewModel_Controls_DesignInfo = (function()
     if(!di.NonVisual) {
       ng_MergeVar(props, {
         "MouseOver": {
-          DefaultType: 'databind_expression',
-          Types: {
-            'databind_expression': {
-              EditorOptions: {
-                DatabindFunction: true
-              }
-            }
-          }
+          DefaultType: 'databind_function_name'
         }
       });
 
@@ -67,7 +60,7 @@ var ViewModel_Controls_DesignInfo = (function()
 
       if (typeof c.SetFocus === 'function')
       {
-        props["Focus"] = { DefaultType: 'databind_expression', Level: 'optional' };
+        props["Focus"] = { DefaultType: 'databind_function_name', Level: 'optional' };
       }
 
       if (typeof c.SetOpacity === 'function')
@@ -100,20 +93,6 @@ var ViewModel_Controls_DesignInfo = (function()
       case 'ngSysRPC':
         props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
         break;
-    }
-
-    var netbeans = ((typeof CodeMirrorIntegration !== 'undefined')&&(typeof CodeMirrorIntegration.RunningInNetBeans === 'function')&&(CodeMirrorIntegration.RunningInNetBeans()));
-    if (netbeans)
-    {
-      for (var i in props)
-      {
-        if (props[i].ignoreDataModel) continue;
-        props[i].Types = {
-          'databind_expression': {
-            Editor: 'ngfeEditor_DataBindDropDown'
-          }
-        };
-      }
     }
 
     var vm_di = {
@@ -182,16 +161,8 @@ var ViewModel_Controls_DesignInfo = (function()
       for (var i in props)
       {
         o[i] = {
-          DefaultType: 'databind_expression',
-          Types: {
-            'databind_expression': {
-              EditorOptions: {
-                DatabindFunction: true
-              }
-            }
-          }
+          DefaultType: 'databind_function_name'
         };
-        if (netbeans) o[i].Types['databind_expression'].Editor = 'ngfeEditor_DataBindDropDown';
 
         if (typeof props[i].Level !== undefined) o[i].Level = props[i].Level;
         else o[i].Level = 'advanced';
