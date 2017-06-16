@@ -3735,10 +3735,13 @@ function ngcob_AddHTMLContent(button)
       buttonNode.children[0].style.zIndex = '3';
     }
 
+    var cn = (this.BaseClassName ? this.BaseClassName : '');
+
     if(!backgroundNode){
       ng_AppendInnerHTML(
           buttonNode,
-          '<div id="'+this.ID+'_BCK" style="display:block; position:absolute; overflow:hidden;'
+          '<div id="'+this.ID+'_BCK" class="'+cn+'Back"'
+            + ' style="display:block; position:absolute; overflow:hidden;'
             + ' z-index:1; left:0px; right:0px; top:0px; bottom:0px;"/>'
       );
 
@@ -3754,7 +3757,8 @@ function ngcob_AddHTMLContent(button)
     if(!colorNode){
       ng_AppendInnerHTML(
           buttonNode,
-          '<div id="'+this.ID+'_CO" style="display:block; position:absolute; overflow:hidden;'
+          '<div id="'+this.ID+'_CO" class="'+cn+'Color"'
+            + 'style="display:block; position:absolute; overflow:hidden;'
             + ' z-index:2; left:0px; right:0px; top:0px; bottom:0px;"/>'
       );
     }
@@ -3848,11 +3852,14 @@ function ngcob_ShowButtonColor()
   var colorNode = document.getElementById(this.ID+'_CO');
   var color = this.GetColor();
 
-  if(colorNode && (typeof color === 'object') && (color !== null)){
-    colorNode.style.backgroundColor = 'rgb('+color.R+','+color.G+','+color.B+')';
-    colorNode.style.opacity = color.A;
-    colorNode.style.mozOpacity = color.A;
-    colorNode.style.filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity='+Math.floor(color.A*100)+')';
+  if(colorNode){
+    if((typeof color === 'object') && (color !== null)){
+      colorNode.style.backgroundColor = 'rgb('+color.R+','+color.G+','+color.B+')';
+      colorNode.style.opacity = color.A;
+      colorNode.style.mozOpacity = color.A;
+      colorNode.style.filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity='+Math.floor(color.A*100)+')';
+    }
+    colorNode.style.display = (this.Enabled ? 'block' : 'none');
   }
 }
 
