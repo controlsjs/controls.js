@@ -899,7 +899,6 @@ ngUserControls['controls_designinfo'] = {
   OnFormEditorInit: function(FE)
   {
     FE.RegisterPropertyTypesGroup('events', ['function', 'identifier', 'null', 'undefined']);
-    FE.AddPropertyTypeToGroup('object', 'images');
   },
 
   OnControlDesignInfo: function(def, c, ref)
