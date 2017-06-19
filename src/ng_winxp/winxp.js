@@ -2281,7 +2281,63 @@ var WinXPControls = {
       /**  Class: stdColorPickerBox
        *  Standard color picker box control (based on <ngColorPickerBox>).
        */
+      this.colorpicker_doUpdateSlider = function(o){
+        var cn = o.className;
+        var idx = cn.indexOf(' ');
+        if(this.Enabled) {
+          if(idx >= 0){o.className = cn.substring(0,idx);}
+        }
+        else {
+          if(idx < 0){o.className = cn+' '+cn+'Disabled';}
+        }
+        return true;
+      };
+
       ngRegisterControlType('stdColorPickerBox', function(def,ref,parent) {
+
+        var barButtonDef = function(def){
+          if(!def){def = {};}
+          ng_MergeDef(def, {
+            L:0, T:0, R:0,
+            Type: 'stdButton',
+            Events: {
+              OnClick: function(){this.Check(true);return true;}
+            }
+          });
+          return def;
+        };
+
+        var sliderDef = function(def){
+          if(!def){def = {};}
+          ng_MergeDef(def, {
+            L:5,T:18,R:5,H:19,
+            className: 'wxpColorPickerSlider',
+            Data: {
+              WithEditBounds: { R:60 },
+              WithoutEditBounds: { R:5 }
+            },
+            Events: {
+              DoUpdate: winxp.colorpicker_doUpdateSlider
+            }
+          });
+          return def;
+        };
+
+        var editDef = function(){
+          return {
+            Type: 'stdEdit',
+            R:5,W:50,T:18
+          };
+        };
+
+        var labelDef = function(){
+          return {
+            Type: 'stdLabel',
+            L:5,R:5,T:2,
+            Data: { TextAlign: 'left' }
+          };
+        };
+
         ng_MergeDef(def, {
           className: 'wxpColorPicker',
           Data: {
@@ -2299,31 +2355,19 @@ var WinXPControls = {
                     Env_H_SV: {
                       L:0, T:0, W:'33%', B:0,
                       Controls: {
-                        H_SV: {
-                          L:0, T:0, R:0,
-                          Type: 'stdButton',
-                          Events: { OnClick: function(){this.Check(true);return true;}}
-                        }
+                        H_SV: barButtonDef()
                       }
                     },
                     Env_HSV: {
                       L:'33%', R:'33%', T:0, B:0,
                       Controls: {
-                        HSV: {
-                          L:0, R:0, T:0,
-                          Type: 'stdButton',
-                          Events: { OnClick: function(){this.Check(true);return true;}}
-                        }
+                        HSV: barButtonDef()
                       }
                     },
                     Env_RGB: {
                       R:0,T:0, W:'33%', B:0,
                       Controls: {
-                        RGB: {
-                          R:0,T:0, L:0,
-                          Type: 'stdButton',
-                          Events: { OnClick: function(){this.Check(true);return true;}}
-                        }
+                        RGB: barButtonDef()
                       }
                     }
                   }
@@ -2359,160 +2403,63 @@ var WinXPControls = {
             Hue_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Hue: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  }
-                },
-                HueEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                HueLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                Hue: sliderDef(),
+                HueEdit: editDef(),
+                HueLabel: labelDef()
               }
             },
             Saturation_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Saturation: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  }
-                },
-                SaturationEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                SaturationLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                Saturation: sliderDef(),
+                SaturationEdit: editDef(),
+                SaturationLabel: labelDef()
               }
             },
             Value_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Value: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  }
-                },
-                ValueEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                ValueLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                Value: sliderDef(),
+                ValueEdit: editDef(),
+                ValueLabel: labelDef()
               }
             },
             Red_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Red: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  }
-                },
-                RedEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                RedLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                Red: sliderDef(),
+                RedEdit: editDef(),
+                RedLabel: labelDef()
               }
             },
             Green_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Green: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  }
-                },
-                GreenEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                GreenLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                Green: sliderDef(),
+                GreenEdit: editDef(),
+                GreenLabel: labelDef()
               }
             },
             Blue_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Blue: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  }
-                },
-                BlueEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                BlueLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                Blue: sliderDef(),
+                BlueEdit: editDef(),
+                BlueLabel: labelDef()
               }
             },
             Alpha_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Alpha: {
-                  L:5,T:18,R:5,H:19,
-                  className: 'wxpColorPickerSlider',
-                  Data: {
-                    WithEditBounds: { R:60 },
-                    WithoutEditBounds: { R:5 }
-                  },
+                Alpha: sliderDef({
                   Controls: {
                     Plane: {
                       Data: { Img: winimages.ColorPicker.AlphaSliderBackground }
                     }
                   }
-                },
-                AlphaEdit: {
-                  Type: 'stdEdit',
-                  R:5,W:50,T:18
-                },
-                AlphaLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                }),
+                AlphaEdit: editDef(),
+                AlphaLabel: labelDef()
               }
             },
             SatVal_Panel: {
@@ -2526,13 +2473,12 @@ var WinXPControls = {
                       Type: 'ngImage',
                       Data: { Img: winimages.ColorPicker.SatValCursor }
                     }
+                  },
+                  Events: {
+                    DoUpdate: winxp.colorpicker_doUpdateSlider
                   }
                 },
-                SatValLabel: {
-                  Type: 'stdLabel',
-                  L:5,R:5,T:2,
-                  Data: { TextAlign: 'left' }
-                }
+                SatValLabel: labelDef()
               }
             },
             Hex_Panel: {

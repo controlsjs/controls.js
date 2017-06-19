@@ -1160,7 +1160,13 @@
 .wxpColorPickerSlider,
 .wxpColorPickerSatVal
 {
- border: 1px solid #7f9db9;
+ border: 1px solid #7F9DB9;
+}
+
+.wxpColorPickerSliderDisabled,
+.wxpColorPickerSatValDisabled
+{
+ border: 1px solid #C9C7BA;
 }
 
 .wxpColorPickerSatVal canvas,
