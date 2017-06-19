@@ -287,11 +287,14 @@ function ngColorPicker(def,ref,parent)
        *  Default value: 1000
        */
       EditsUpdate_timeout: 1000,
-      EditsUpdate_timer: null
+      EditsUpdate_timer: null,
+
+      ChildHandling: ngChildEnabledParentAware
     },
     Controls: {
       Hue_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Hue: ngcopch_GetSliderLayout(),
           HueEdit: ngcopch_GetEditLayout(),
@@ -303,6 +306,7 @@ function ngColorPicker(def,ref,parent)
       },
       Saturation_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Saturation: ngcopch_GetSliderLayout(),
           SaturationEdit: ngcopch_GetEditLayout(),
@@ -314,6 +318,7 @@ function ngColorPicker(def,ref,parent)
       },
       Value_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Value: ngcopch_GetSliderLayout(),
           ValueEdit: ngcopch_GetEditLayout(),
@@ -325,6 +330,7 @@ function ngColorPicker(def,ref,parent)
       },
       Red_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Red: ngcopch_GetSliderLayout(),
           RedEdit: ngcopch_GetEditLayout(),
@@ -336,6 +342,7 @@ function ngColorPicker(def,ref,parent)
       },
       Green_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Green: ngcopch_GetSliderLayout(),
           GreenEdit: ngcopch_GetEditLayout(),
@@ -347,6 +354,7 @@ function ngColorPicker(def,ref,parent)
       },
       Blue_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Blue: ngcopch_GetSliderLayout(),
           BlueEdit: ngcopch_GetEditLayout(),
@@ -358,6 +366,7 @@ function ngColorPicker(def,ref,parent)
       },
       Alpha_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Alpha: ngcopch_GetSliderLayout(),
           AlphaEdit: ngcopch_GetEditLayout(),
@@ -369,10 +378,12 @@ function ngColorPicker(def,ref,parent)
       },
       SatVal_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           SatVal: {
             Type: 'ngPanel',
             ParentReferences: false,
+            Data: { ChildHandling: ngChildEnabledParentAware },
             Controls: {
               Plane: {
                 Type: 'ngPanel',
@@ -411,6 +422,7 @@ function ngColorPicker(def,ref,parent)
       },
       Hex_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           HexEdit: {
             Type: 'ngEdit',
@@ -444,6 +456,7 @@ function ngColorPicker(def,ref,parent)
       },
       Preview_Panel: {
         Type: 'ngPanel',
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           From: { Type: 'ngColorButton' },
           FromLabel: {
@@ -640,7 +653,8 @@ function ngcopch_GetSliderLayout()
       PaddingH: 0, PaddingV: 0,
       MinValue: 0, MaxValue: 0,
       WithEditBounds: null,
-      WithoutEditBounds: null
+      WithoutEditBounds: null,
+      ChildHandling: ngChildEnabledParentAware
     },
     Controls: {
       Plane: {
@@ -3306,12 +3320,15 @@ function ngColorPickerBox(def,ref,parent)
       ModeBar: {
         Type: 'ngPanel',
         ParentReferences: false,
+        Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           Bar: {
             Type: 'ngPanel',
+            Data: { ChildHandling: ngChildEnabledParentAware },
             Controls: {
               Env_H_SV: {
                 Type: 'ngPanel',
+                Data: { ChildHandling: ngChildEnabledParentAware },
                 Controls: {
                   H_SV: {
                     Type: 'ngRadioButton',
@@ -3326,6 +3343,7 @@ function ngColorPickerBox(def,ref,parent)
               },
               Env_HSV: {
                 Type: 'ngPanel',
+                Data: { ChildHandling: ngChildEnabledParentAware },
                 Controls: {
                   HSV: {
                     Type: 'ngRadioButton',
@@ -3339,6 +3357,7 @@ function ngColorPickerBox(def,ref,parent)
               },
               Env_RGB: {
                 Type: 'ngPanel',
+                Data: { ChildHandling: ngChildEnabledParentAware },
                 Controls: {
                   RGB: {
                     Type: 'ngRadioButton',
