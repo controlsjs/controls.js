@@ -1,15 +1,3 @@
-/*!
- * Controls.js
- * http://controlsjs.com/
- *
- * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
- *
- * This version of Controls.js is licensed under the terms of GNU General Public License v3.
- * http://www.gnu.org/licenses/gpl-3.0.html
- *
- * The commercial license can be purchased at Controls.js website.
- */
-
 .ngApplication {
   position:absolute;
   left:0%;
@@ -1346,7 +1334,9 @@ TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
 .weSplitButtonDarkBtnChecked, .weSplitButtonDarkBtnChecked_Focus { color:#1F1F1F; }
 .weSplitButtonDarkBtnDisabled, .weSplitButtonDarkBtnDisabled_Focus { color:#BABABA; }
 .weColorPickerSliderLight, .weColorPickerSatValLight { border:2px solid #bababa; }
+.weColorPickerSliderLightDisabled, .weColorPickerSatValLightDisabled { border:2px solid #cccccc; }
 .weColorPickerSliderDark, .weColorPickerSatValDark { border:2px solid #ffffff; }
+.weColorPickerSliderDarkDisabled, .weColorPickerSatValDarkDisabled { border:2px solid #eaeaea; }
 .weColorPickerSatValLight canvas, .weColorPickerSatValDark canvas, .weColorPickerSliderLight canvas, .weColorPickerSliderDark canvas {
   -webkit-touch-callout:none;
   -webkit-user-select:none;

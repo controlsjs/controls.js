@@ -2806,9 +2806,67 @@ var WinEightControls = {
       /**  Class: weColorPickerBox
        *  Standard color picker box control (based on <ngColorPickerBox>).
        */
+      this.colorpicker_doUpdateSlider = function(o){
+        var cn = o.className;
+        var idx = cn.indexOf(' ');
+        if(this.Enabled) {
+          if(idx >= 0){o.className = cn.substring(0,idx);}
+        }
+        else {
+          if(idx < 0){o.className = cn+' '+cn+'Disabled';}
+        }
+        return true;
+      };
+
       ngRegisterControlType('weColorPickerBox', function(def,ref,parent) {
         var th = theme(def);
         var images = (th) ? winimages.ColorPickerLight : winimages.ColorPickerDark;
+
+        var barButtonDef = function(def){
+          if(!def){def = {};}
+          ng_MergeDef(def, {
+            L:0, T:0, R:0,
+            Type: 'weButton',
+            Theme: th,
+            Events: {
+              OnClick: function(){this.Check(true);return true;}
+            }
+          });
+          return def;
+        };
+
+        var sliderDef = function(def){
+          if(!def){def = {};}
+          ng_MergeDef(def, {
+            L:10,T:32,R:10,H:28,
+            className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
+            Data: {
+              WithEditBounds: { R:92 },
+              WithoutEditBounds: { R:10 }
+            },
+            Events: {
+              DoUpdate: wineight.colorpicker_doUpdateSlider
+            }
+          });
+          return def;
+        };
+
+        var editDef = function(){
+          return {
+            Type: 'weEdit',
+            R:10,W:80,T:32,
+            Theme: th
+          };
+        };
+
+        var labelDef = function(){
+          return {
+            Type: 'weLabel',
+            L:10,R:10,T:0,
+            Theme: th,
+            Data: { TextAlign: 'left' }
+          };
+        };
 
         ng_MergeDef(def, {
           className: (th) ? 'weColorPickerLight' : 'weColorPickerDark',
@@ -2827,31 +2885,19 @@ var WinEightControls = {
                     Env_H_SV: {
                       L:0, T:0, W:'33%', B:0,
                       Controls: {
-                        H_SV: {
-                          L:0, T:0, R:1,
-                          Type: 'weButton', Theme: th,
-                          Events: { OnClick: function(){this.Check(true);return true;}}
-                        }
+                        H_SV: barButtonDef({ R:1 })
                       }
                     },
                     Env_HSV: {
                       L:'33%', R:'33%', T:0, B:0,
                       Controls: {
-                        HSV: {
-                          L:1, R:1, T:0,
-                          Type: 'weButton', Theme: th,
-                          Events: { OnClick: function(){this.Check(true);return true;}}
-                        }
+                        HSV: barButtonDef({ L:1, R:1 })
                       }
                     },
                     Env_RGB: {
                       R:0,T:0, W:'33%', B:0,
                       Controls: {
-                        RGB: {
-                          R:0,T:0, L:1,
-                          Type: 'weButton', Theme: th,
-                          Events: { OnClick: function(){this.Check(true);return true;}}
-                        }
+                        RGB: barButtonDef({ L:1 })
                       }
                     }
                   }
@@ -2887,174 +2933,63 @@ var WinEightControls = {
             Hue_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Hue: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  }
-                },
-                HueEdit: {
-                  Type: 'weEdit',
-                  R:10,W:80,T:32,
-                  Theme: th
-                },
-                HueLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                Hue: sliderDef(),
+                HueEdit: editDef(),
+                HueLabel: labelDef()
               }
             },
             Saturation_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Saturation: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  }
-                },
-                SaturationEdit: {
-                  Type: 'weEdit',
-                  R:10, W:80, T:32,
-                  Theme: th
-                },
-                SaturationLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                Saturation: sliderDef(),
+                SaturationEdit: editDef(),
+                SaturationLabel: labelDef()
               }
             },
             Value_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Value: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  }
-                },
-                ValueEdit: {
-                  Type: 'weEdit',
-                  R:10, W:80, T:32,
-                  Theme: th
-                },
-                ValueLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                Value: sliderDef(),
+                ValueEdit: editDef(),
+                ValueLabel: labelDef()
               }
             },
             Red_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Red: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  }
-                },
-                RedEdit: {
-                  Type: 'weEdit',
-                  R:10, W:80, T:32,
-                  Theme: th
-                },
-                RedLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                Red: sliderDef(),
+                RedEdit: editDef(),
+                RedLabel: labelDef()
               }
             },
             Green_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Green: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  }
-                },
-                GreenEdit: {
-                  Type: 'weEdit',
-                  R:10, W:80, T:32,
-                  Theme: th
-                },
-                GreenLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                Green: sliderDef(),
+                GreenEdit: editDef(),
+                GreenLabel: labelDef()
               }
             },
             Blue_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Blue: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  }
-                },
-                BlueEdit: {
-                  Type: 'weEdit',
-                  R:10, W:80, T:32,
-                  Theme: th
-                },
-                BlueLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                Blue: sliderDef(),
+                BlueEdit: editDef(),
+                BlueLabel: labelDef()
               }
             },
             Alpha_Panel: {
               L:0,R:0,H:64,
               Controls: {
-                Alpha: {
-                  L:10,T:32,R:10,H:28,
-                  className: (th) ? 'weColorPickerSliderLight' : 'weColorPickerSliderDark',
-                  Data: {
-                    WithEditBounds: { R:92 },
-                    WithoutEditBounds: { R:10 }
-                  },
+                Alpha: sliderDef({
                   Controls: {
                     Plane: {
                       Data: { Img: images.AlphaSliderBackground }
                     }
                   }
-                },
-                AlphaEdit: {
-                  Type: 'weEdit',
-                  R:10, W:80, T:32,
-                  Theme: th
-                },
-                AlphaLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                }),
+                AlphaEdit: editDef(),
+                AlphaLabel: labelDef()
               }
             },
             SatVal_Panel: {
@@ -3068,14 +3003,12 @@ var WinEightControls = {
                       Type: 'ngImage',
                       Data: { Img: images.SatValCursor }
                     }
+                  },
+                  Events: {
+                    DoUpdate: wineight.colorpicker_doUpdateSlider
                   }
                 },
-                SatValLabel: {
-                  Type: 'weLabel',
-                  L:10,R:10,T:0,
-                  Theme: th,
-                  Data: { TextAlign: 'left' }
-                }
+                SatValLabel: labelDef()
               }
             },
             Hex_Panel: {
