@@ -2293,51 +2293,67 @@ var WinXPControls = {
         return true;
       };
 
+      this.colorpicker_barButtonDef = function(def){
+        if(!def){def = {};}
+        ng_MergeDef(def,{
+          L:0, T:0, R:0,
+          Type: 'stdButton',
+          Events: {
+            OnClick: function(){this.Check(true);return true;}
+          }
+        });
+        return def;
+      };
+
+      this.colorpicker_sliderDef = function(def){
+        if(!def){def = {};}
+        ng_MergeDef(def,{
+          L:5,T:18,R:5,H:19,
+          className: 'wxpColorPickerSlider',
+          Data: {
+            WithEditBounds: { R:60 },
+            WithoutEditBounds: { R:5 }
+          },
+          Events: {
+            DoUpdate: winxp.colorpicker_doUpdateSlider
+          }
+        });
+        return def;
+      };
+
+      this.colorpicker_editDef = function(def){
+        if(!def){def = {};}
+        ng_MergeDef(def,{
+          Type: 'stdEdit',
+          R:5,W:50,T:18
+        });
+        return def;
+      };
+
+      this.colorpicker_labelDef = function(def){
+        if(!def){def = {};}
+        ng_MergeDef(def,{
+          Type: 'stdLabel',
+          L:5,R:5,T:2,
+          Data: { TextAlign: 'left' }
+        });
+        return def;
+      };
+
+      this.colorpicker_addSliderCursor = function(slider,horizontal,vertical){
+        ng_MergeDef(slider,{
+          Controls: {
+            Cursor: {
+              Type: 'ngImage',
+              Data: {
+                Img: (slider.Data.Vertical)? vertical : horizontal
+              }
+            }
+          }
+        });
+      };
+
       ngRegisterControlType('stdColorPickerBox', function(def,ref,parent) {
-
-        var barButtonDef = function(def){
-          if(!def){def = {};}
-          ng_MergeDef(def, {
-            L:0, T:0, R:0,
-            Type: 'stdButton',
-            Events: {
-              OnClick: function(){this.Check(true);return true;}
-            }
-          });
-          return def;
-        };
-
-        var sliderDef = function(def){
-          if(!def){def = {};}
-          ng_MergeDef(def, {
-            L:5,T:18,R:5,H:19,
-            className: 'wxpColorPickerSlider',
-            Data: {
-              WithEditBounds: { R:60 },
-              WithoutEditBounds: { R:5 }
-            },
-            Events: {
-              DoUpdate: winxp.colorpicker_doUpdateSlider
-            }
-          });
-          return def;
-        };
-
-        var editDef = function(){
-          return {
-            Type: 'stdEdit',
-            R:5,W:50,T:18
-          };
-        };
-
-        var labelDef = function(){
-          return {
-            Type: 'stdLabel',
-            L:5,R:5,T:2,
-            Data: { TextAlign: 'left' }
-          };
-        };
-
         ng_MergeDef(def, {
           className: 'wxpColorPicker',
           Data: {
@@ -2355,19 +2371,19 @@ var WinXPControls = {
                     Env_H_SV: {
                       L:0, T:0, W:'33%', B:0,
                       Controls: {
-                        H_SV: barButtonDef()
+                        H_SV: winxp.colorpicker_barButtonDef()
                       }
                     },
                     Env_HSV: {
                       L:'33%', R:'33%', T:0, B:0,
                       Controls: {
-                        HSV: barButtonDef()
+                        HSV: winxp.colorpicker_barButtonDef()
                       }
                     },
                     Env_RGB: {
                       R:0,T:0, W:'33%', B:0,
                       Controls: {
-                        RGB: barButtonDef()
+                        RGB: winxp.colorpicker_barButtonDef()
                       }
                     }
                   }
@@ -2403,63 +2419,63 @@ var WinXPControls = {
             Hue_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Hue: sliderDef(),
-                HueEdit: editDef(),
-                HueLabel: labelDef()
+                Hue: winxp.colorpicker_sliderDef(),
+                HueEdit: winxp.colorpicker_editDef(),
+                HueLabel: winxp.colorpicker_labelDef()
               }
             },
             Saturation_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Saturation: sliderDef(),
-                SaturationEdit: editDef(),
-                SaturationLabel: labelDef()
+                Saturation: winxp.colorpicker_sliderDef(),
+                SaturationEdit: winxp.colorpicker_editDef(),
+                SaturationLabel: winxp.colorpicker_labelDef()
               }
             },
             Value_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Value: sliderDef(),
-                ValueEdit: editDef(),
-                ValueLabel: labelDef()
+                Value: winxp.colorpicker_sliderDef(),
+                ValueEdit: winxp.colorpicker_editDef(),
+                ValueLabel: winxp.colorpicker_labelDef()
               }
             },
             Red_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Red: sliderDef(),
-                RedEdit: editDef(),
-                RedLabel: labelDef()
+                Red: winxp.colorpicker_sliderDef(),
+                RedEdit: winxp.colorpicker_editDef(),
+                RedLabel: winxp.colorpicker_labelDef()
               }
             },
             Green_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Green: sliderDef(),
-                GreenEdit: editDef(),
-                GreenLabel: labelDef()
+                Green: winxp.colorpicker_sliderDef(),
+                GreenEdit: winxp.colorpicker_editDef(),
+                GreenLabel: winxp.colorpicker_labelDef()
               }
             },
             Blue_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Blue: sliderDef(),
-                BlueEdit: editDef(),
-                BlueLabel: labelDef()
+                Blue: winxp.colorpicker_sliderDef(),
+                BlueEdit: winxp.colorpicker_editDef(),
+                BlueLabel: winxp.colorpicker_labelDef()
               }
             },
             Alpha_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Alpha: sliderDef({
+                Alpha: winxp.colorpicker_sliderDef({
                   Controls: {
                     Plane: {
                       Data: { Img: winimages.ColorPicker.AlphaSliderBackground }
                     }
                   }
                 }),
-                AlphaEdit: editDef(),
-                AlphaLabel: labelDef()
+                AlphaEdit: winxp.colorpicker_editDef(),
+                AlphaLabel: winxp.colorpicker_labelDef()
               }
             },
             SatVal_Panel: {
@@ -2478,7 +2494,7 @@ var WinXPControls = {
                     DoUpdate: winxp.colorpicker_doUpdateSlider
                   }
                 },
-                SatValLabel: labelDef()
+                SatValLabel: winxp.colorpicker_labelDef()
               }
             },
             Hex_Panel: {
@@ -2541,56 +2557,18 @@ var WinXPControls = {
         var hs = winimages.ColorPicker.HorizontalSliderCursor;
         var vs = winimages.ColorPicker.VerticalSliderCursor;
 
-        ng_MergeDef(def, {
-          Controls: {
-            Hue_Panel: {Controls: {Hue: {Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Hue_Panel.Controls.Hue.Data.Vertical)? vs : hs
-              }
-            }}}}},
-            Saturation_Panel: {Controls: {Saturation: {Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Saturation_Panel.Controls.Saturation.Data.Vertical)? vs : hs
-              }
-            }}}}},
-            Value_Panel: {Controls: {Value :{Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Value_Panel.Controls.Value.Data.Vertical)? vs : hs
-              }
-            }}}}},
-            Red_Panel: {Controls: {Red: {Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Red_Panel.Controls.Red.Data.Vertical)? vs : hs
-              }
-            }}}}},
-            Green_Panel: {Controls: {Green: {Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Green_Panel.Controls.Green.Data.Vertical)? vs : hs
-              }
-            }}}}},
-            Blue_Panel: {Controls: {Blue: {Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Blue_Panel.Controls.Blue.Data.Vertical)? vs : hs
-              }
-            }}}}},
-            Alpha_Panel: {Controls: {Alpha: {Controls: {Cursor: {
-              Type: 'ngImage',
-              Data: {
-                Img: (def.Controls.Alpha_Panel.Controls.Alpha.Data.Vertical)? vs : hs
-              }
-            }}}}}
-          }
-        });
+        winxp.colorpicker_addSliderCursor(def.Controls.Hue_Panel.Controls.Hue,hs,vs);
+        winxp.colorpicker_addSliderCursor(def.Controls.Saturation_Panel.Controls.Saturation,hs,vs);
+        winxp.colorpicker_addSliderCursor(def.Controls.Value_Panel.Controls.Value,hs,vs);
+        winxp.colorpicker_addSliderCursor(def.Controls.Red_Panel.Controls.Red,hs,vs);
+        winxp.colorpicker_addSliderCursor(def.Controls.Green_Panel.Controls.Green,hs,vs);
+        winxp.colorpicker_addSliderCursor(def.Controls.Blue_Panel.Controls.Blue,hs,vs);
+        winxp.colorpicker_addSliderCursor(def.Controls.Alpha_Panel.Controls.Alpha,hs,vs);
 
         var c = ngCreateControlAsType(def, 'ngColorPickerBox', ref, parent);
-        if(!c){return c;}
-        c.DoAutoHeight = function(height){return height+5;};
+        if(c){
+          c.DoAutoHeight = function(height){return height+5;};
+        }
         return c;
       });
 
