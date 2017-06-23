@@ -183,7 +183,15 @@ function ng_DIProperties(props,data) {
         ng_MergeVar(di[i],{
           Types: {
             'bindings': {
-              ObjectProperties: props[i]
+              ObjectProperties: {
+                "0": {
+                  Types: {
+                    'object': {
+                      ObjectProperties: props[i]
+                    }
+                  }
+                }
+              }
             }
           }
         });

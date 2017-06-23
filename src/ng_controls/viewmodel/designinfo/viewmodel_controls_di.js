@@ -126,8 +126,15 @@ var ViewModel_Controls_DesignInfo = (function()
               }
             },
             'bindings': {
-              DestroyIfEmpty: true,
-              ObjectProperties: props
+              ObjectProperties: {
+                "0": {
+                  Types: {
+                    'object': {
+                      ObjectProperties: props
+                    }
+                  }
+                }
+              }
             }
           }
         },
@@ -143,9 +150,7 @@ var ViewModel_Controls_DesignInfo = (function()
                 }
               }
             },
-            'bindings': {
-              DestroyIfEmpty: true
-            }
+            'bindings': {}
           }
         }
       })
@@ -202,10 +207,18 @@ var ViewModel_Controls_DesignInfo = (function()
             Types: {
               'bindings': {
                 ObjectProperties: {
-                  "Events": eventprop1,
-                  "AfterEvents": eventprop2,
-                  "BeforeEvents": eventprop2,
-                  "OverrideEvents": eventprop2
+                  "0": {
+                    Types: {
+                      'object': {
+                        ObjectProperties: {
+                          "Events": eventprop1,
+                          "AfterEvents": eventprop2,
+                          "BeforeEvents": eventprop2,
+                          "OverrideEvents": eventprop2
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -218,7 +231,7 @@ var ViewModel_Controls_DesignInfo = (function()
     ng_MergeVar(di, vm_di);
 
     var deferbindings = {};
-    var databindprops=di.Properties['DataBind'].Types['bindings'].ObjectProperties;
+    var databindprops=di.Properties['DataBind'].Types['bindings'].ObjectProperties['0'].Types['object'].ObjectProperties;
     for(var i in window.ngBindingsHandlers) {
       if(typeof databindprops[i]!=='undefined') deferbindings[i]=ng_DIPropertyBool(false);
     }
@@ -276,13 +289,53 @@ var ViewModel_Controls_DesignInfo = (function()
         },
         // ngFieldDef
         {
-          // TODO: add detect, method arguments as virtual properties
           TypeID: 'ngFieldDef',
-          TypeBase: 'code',
+          TypeBase: 'callee',
           Name: 'ngFieldDef',
           ShortName: 'fd',
           Options: {
-            DefaultValue: 'new ngFieldDef("name","type",{})'
+            Callee: 'ngFieldDef',
+            NewExpression: true,
+            Add: false,
+            DefaultCode: "new ngFieldDef()",
+            DefaultValue: "new ngFieldDef()",
+            InitValue: "new ngFieldDef('vmfield1','integer')",
+            ObjectProperties: {
+              0: { DefaultType: 'string', Level: 'basic',
+                   DisplayName: 'ID',
+                   Required: true,
+                   Types: {
+                     'string': {
+                       InitValue: 'vmfield1'
+                     }
+                   }
+                 },
+              1: { DefaultType: 'string', Level: 'basic',
+                   DisplayName: 'Type',
+                   Required: true,
+                   Types: {
+                     'string': {
+                       DefaultValue: 'INTEGER',
+                       Editor: 'ngfeEditor_DropDownList',
+                       EditorOptions: {
+                         Items: ['INTEGER', 'STRING', 'CURRENCY']
+                         // TODO - define all types
+                       }
+                     }
+                   }
+                 },
+              2: { DefaultType: 'object', Level: 'basic',
+                   DisplayName: 'Attrs',
+                   Types: {
+                     'object': {
+                       ObjectProperties: {
+                         "Required": { DefaultType: 'boolean', Level: 'basic' }
+                         // TODO - define attrs
+                       }
+                     }
+                   }
+                 }
+            }
           }
         }
 
