@@ -14,6 +14,61 @@ if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['list_designinfo'] = {
   OnFormEditorInit: function(FE) {
     var list_types = [
+      // ngListColClass
+      {
+        TypeID: 'ngListColClass',
+        TypeBase: 'callee',
+        Name: 'ngListCol class',
+        ShortName: 'col',
+        Basic: false,
+        Options: {
+          Callee: 'ngListCol',
+          NewExpression: true,
+          DefaultCode: "new ngListCol()",
+          DefaultValue: "new ngListCol()",
+          InitValue: "new ngListCol('colid')",
+          ObjectProperties: {
+            0: { DefaultType: 'string', Level: 'basic',
+                 DisplayName: 'ID',
+                 Required: true,
+                 Types: {
+                   'string': {
+                     InitValue: 'colid'
+                   }
+                 }
+               },
+            1: { DefaultType: 'string', Level: 'basic',
+                 DisplayName: 'Caption',
+                 Types: {
+                   'string': {
+                     InitValue: 'Column name'
+                   }
+                 }
+               },
+            2: { DefaultType: 'string', Level: 'basic',
+                 DisplayName: 'Align',
+                 Types: {
+                   'string': {
+                     DefaultValue: 'left',
+                     Editor: 'ngfeEditor_DropDownList',
+                     EditorOptions: {
+                       Items: ['left', 'center', 'right']
+                     }
+                   }
+                 }
+               },
+            3: { DefaultType: 'undefined', InitType: 'integer', Level: 'basic',
+                 DisplayName: 'Width',
+                 Types: {
+                   'integer': {
+                     InitValue: 100
+                   }
+                 }
+               }
+          }
+        }
+      },
+
       // ngListCol
       {
         TypeID: 'ngListCol',
@@ -187,6 +242,9 @@ ngUserControls['list_designinfo'] = {
           ChildDesignInfo: {
             DefaultType: 'ngListCol', Level: 'basic',
             Collapsed: true,
+            Types: {
+              'ngListColClass': { Level: 'hidden' }
+            },
             OnPropertyInit: function(ch)
             {
               if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
