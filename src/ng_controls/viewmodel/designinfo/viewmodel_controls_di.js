@@ -287,19 +287,32 @@ var ViewModel_Controls_DesignInfo = (function()
             DefaultValue: 'function(vm) {}'
           }
         },
+        // ngFieldDefAttrs
+        {
+          TypeID: 'ngFieldDefAttrs',
+          TypeBase: 'object',
+          Name: 'ngFieldDef Attrs',
+          ShortName: 'attrs',
+          Options: {
+            ObjectProperties: {
+              "Required": { DefaultType: 'boolean', Level: 'basic' }
+            }
+          }
+        },
+
         // ngFieldDef
         {
           TypeID: 'ngFieldDef',
           TypeBase: 'callee',
           Name: 'ngFieldDef',
-          ShortName: 'fd',
+          ShortName: 'FD',
           Options: {
             Callee: 'ngFieldDef',
             NewExpression: true,
-            Add: false,
+            Level: 'hidden',
             DefaultCode: "new ngFieldDef()",
             DefaultValue: "new ngFieldDef()",
-            InitValue: "new ngFieldDef('vmfield1','integer')",
+            InitValue: "new ngFieldDef('vmfield1','STRING')",
             ObjectProperties: {
               0: { DefaultType: 'string', Level: 'basic',
                    DisplayName: 'ID',
@@ -315,36 +328,97 @@ var ViewModel_Controls_DesignInfo = (function()
                    Required: true,
                    Types: {
                      'string': {
-                       DefaultValue: 'INTEGER',
+                       DefaultValue: 'STRING',
                        Editor: 'ngfeEditor_DropDownList',
                        EditorOptions: {
-                         Items: ['INTEGER', 'STRING', 'CURRENCY']
-                         // TODO - define all types
+                         Items: [
+                           'BOOL','INTEGER','FLOAT',
+                           'SBYTE','BYTE','SHORT','USHORT','LONG','ULONG',
+                           'DECIMAL','STRING','NVARCHAR',
+                           'TIMESTAMP','DATETIME','DATE', 'TIME',
+                           'UTCTIMESTAMP','UTCDATETIME','UTCDATE','UTCTIME',
+                           'ARRAY','OBJECT'
+                         ]
                        }
                      }
                    }
                  },
-              2: { DefaultType: 'object', Level: 'basic',
-                   DisplayName: 'Attrs',
+              2: { DefaultType: 'ngFieldDefAttrs', Level: 'basic',
+                   DisplayName: 'Attrs'
+                 }
+            }
+          }
+        },
+
+        // ngFieldDef_Bool
+        {
+          TypeID: 'ngFieldDef_Bool',
+          TypeBase: 'callee',
+          Name: 'ngFieldDef_Bool',
+          ShortName: 'BOOL',
+          Options: {
+            Callee: 'ngFieldDef_Bool',
+            NewExpression: true,
+            DefaultCode: "new ngFieldDef_Bool()",
+            DefaultValue: "new ngFieldDef_Bool()",
+            InitValue: "new ngFieldDef_Bool('vmfield1')",
+            ObjectProperties: {
+              0: { DefaultType: 'string', Level: 'basic',
+                   DisplayName: 'ID',
+                   Required: true,
                    Types: {
-                     'object': {
-                       ObjectProperties: {
-                         "Required": { DefaultType: 'boolean', Level: 'basic' }
-                         // TODO - define attrs
-                       }
+                     'string': {
+                       InitValue: 'vmfield1'
                      }
                    }
+                 },
+              1: { DefaultType: 'ngFieldDefAttrs', Level: 'basic',
+                   DisplayName: 'Attrs'
+                 }
+            }
+          }
+        },
+
+        // ngFieldDef_Integer
+        {
+          TypeID: 'ngFieldDef_Integer',
+          TypeBase: 'callee',
+          Name: 'ngFieldDef_Integer',
+          ShortName: 'INT',
+          Options: {
+            Callee: 'ngFieldDef_Integer',
+            NewExpression: true,
+            DefaultCode: "new ngFieldDef_Integer()",
+            DefaultValue: "new ngFieldDef_Integer()",
+            InitValue: "new ngFieldDef_Integer('vmfield1')",
+            ObjectProperties: {
+              0: { DefaultType: 'string', Level: 'basic',
+                   DisplayName: 'ID',
+                   Required: true,
+                   Types: {
+                     'string': {
+                       InitValue: 'vmfield1'
+                     }
+                   }
+                 },
+              1: { DefaultType: 'ngFieldDefAttrs', Level: 'basic',
+                   DisplayName: 'Attrs'
                  }
             }
           }
         }
+
 
       ];
       FormEditor.RegisterPropertyType(vm_types);
 
       FE.RegisterPropertyTypesGroup('viewmodel',     ['vmid','vmobject']);
       FE.RegisterPropertyTypesGroup('viewmodel_def', ['vmobject', 'vmconstructor']);
-      FE.RegisterPropertyTypesGroup('vmfielddef',    ['ngFieldDef']); // TODO: Implement more ngFieldDef_*
+      FE.RegisterPropertyTypesGroup('vmfielddef',    ['ngFieldDef',
+                                                      'ngFieldDef_Bool',
+                                                      'ngFieldDef_Integer'
+                                                       // TODO: Implement more ngFieldDef_*
+                                                     ]); 
 
     },
     OnControlDesignInfo: function(def, c, ref)
@@ -378,7 +452,26 @@ var ViewModel_Controls_DesignInfo = (function()
               Types: {
                 'array': {
                   ChildDesignInfo: {
-                    DefaultType: 'vmfielddef'
+                    DefaultType: 'ngFieldDef_Integer',
+                    Types: {
+                      'vmfielddef': {}
+                    },
+                    OnPropertyInit: function(ch)
+                    {
+                      if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'callee'))
+                      {
+                        var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
+                        if (pname)
+                        {
+                          var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
+                          var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
+
+                          if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
+                          ch.Value[0] = "'Field" + (itemscnt + 1) + "'"; // TODO: It doesn't work :(
+                        }
+                      }
+                      return true;
+                    }
                   }
                 }
               }
