@@ -310,9 +310,10 @@ var ViewModel_Controls_DesignInfo = (function()
             Callee: 'ngFieldDef',
             NewExpression: true,
             Level: 'hidden',
+            Add: false,
             DefaultCode: "new ngFieldDef()",
-            DefaultValue: "new ngFieldDef()",
-            InitValue: "new ngFieldDef('vmfield1','STRING')",
+            DefaultValue: [],
+            InitValue: ["'vmfield1'", "'STRING'"],
             ObjectProperties: {
               0: { DefaultType: 'string', Level: 'basic',
                    DisplayName: 'ID',
@@ -360,8 +361,9 @@ var ViewModel_Controls_DesignInfo = (function()
             Callee: 'ngFieldDef_Bool',
             NewExpression: true,
             DefaultCode: "new ngFieldDef_Bool()",
-            DefaultValue: "new ngFieldDef_Bool()",
-            InitValue: "new ngFieldDef_Bool('vmfield1')",
+            DefaultValue: [],
+            InitValue: ["'vmfield1'"],
+            Add: false,
             ObjectProperties: {
               0: { DefaultType: 'string', Level: 'basic',
                    DisplayName: 'ID',
@@ -389,8 +391,9 @@ var ViewModel_Controls_DesignInfo = (function()
             Callee: 'ngFieldDef_Integer',
             NewExpression: true,
             DefaultCode: "new ngFieldDef_Integer()",
-            DefaultValue: "new ngFieldDef_Integer()",
-            InitValue: "new ngFieldDef_Integer('vmfield1')",
+            DefaultValue: [],
+            InitValue: ["'vmfield1'"],
+            Add: false,
             ObjectProperties: {
               0: { DefaultType: 'string', Level: 'basic',
                    DisplayName: 'ID',
@@ -466,8 +469,8 @@ var ViewModel_Controls_DesignInfo = (function()
                           var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
                           var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
 
-                          if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
-                          ch.Value[0] = "'Field" + (itemscnt + 1) + "'"; // TODO: It doesn't work :(
+                          if (!ng_IsArrayVar(ch.Value)) ch.Value = [];
+                          ch.Value[0] = "'Field" + (itemscnt + 1) + "'";
                         }
                       }
                       return true;

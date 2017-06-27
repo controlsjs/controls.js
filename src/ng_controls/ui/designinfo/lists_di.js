@@ -25,8 +25,9 @@ ngUserControls['list_designinfo'] = {
           Callee: 'ngListCol',
           NewExpression: true,
           DefaultCode: "new ngListCol()",
-          DefaultValue: "new ngListCol()",
-          InitValue: "new ngListCol('colid')",
+          DefaultValue: [],
+          InitValue: ["'colid'"],
+          Add: false,
           ObjectProperties: {
             0: { DefaultType: 'string', Level: 'basic',
                  DisplayName: 'ID',
