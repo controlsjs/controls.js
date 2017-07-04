@@ -10,12 +10,12 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-/**
+/** 
  *  Variable: ngLibsURL
- *  Default main URL location of the libraries.
- *  If not specified the URL is automaticaly detected based on location of ng_basic
+ *  Default main URL location of the libraries. 
+ *  If not specified the URL is automaticaly detected based on location of ng_basic 
  *  library or controls.js script.
- */
+ */  
 //var ngLibsURL;
 
 /**
@@ -26,36 +26,36 @@ var ngHTTPProtocol='http://';
 
 /**
  *  Variable: ngEmptyURL
- *  URL to non-existent content.
- *
+ *  URL to non-existent content. 
+ *   
  *  Usually used for reseting image URL.
- *
+ *   
  *  Default value: ngLibPath('ng_basic', 'empty.gif?nop');
- */
+ */ 
 
 var ua=navigator.userAgent.toLowerCase();
 
-/**
+/** 
  *  Variable: ngOpera
  *  TRUE if user is using the Opera browser.
- */
+ */  
 var ngOpera = (ua.indexOf("opera") != -1);
 
-/**
+/** 
  *  Variable: ngOperaVersion
  *  Float number identifying Opera browser version
  */
 var ngOperaVersion = (ngOpera ? parseFloat(window.opera.version()) : undefined);
 
-/**
+/** 
  *  Variable: ngIExplorer
  *  TRUE if user is using the Internet Explorer browser.
- */
-var ngIExplorer = eval("/*@cc_on!@*/false");
-/**
+ */  
+var ngIExplorer = eval("/*@cc_on!@*/false"); 
+/** 
  *  Variable: ngIExplorerVersion
  *  Version of the Internet Explorer browser.
- */
+ */  
 var ngIExplorerVersion = (ngIExplorer ? parseInt( ua.match( /msie (\d+)/ )[1] ) : undefined);
 
 if((!ngIExplorer)&&(ua.match(/trident/))) // IE>=11 detection
@@ -63,17 +63,17 @@ if((!ngIExplorer)&&(ua.match(/trident/))) // IE>=11 detection
   var v=ua.match( /rv\:(\d+)/ );
   if(!v) v=ua.match( /msie (\d+)/ );
   if(v)
-  {
+  {  
     ngIExplorer = true;
     ngIExplorerVersion = parseInt(v[1]);
   }
 }
 
-/**
+/** 
  *  Variable: ngIExplorer6
  *  TRUE if user is using the Internet Explorer version 6 or lower.
- */
-var ngIExplorer6 = ngIExplorer && ( ngIExplorerVersion < 7 );
+ */  
+var ngIExplorer6 = ngIExplorer && ( ngIExplorerVersion < 7 ); 
 
 /**
  *  Variable: ngEdge
@@ -87,136 +87,136 @@ var ngEdge = (ua.indexOf("edge") != -1);
  */
 var ngEdgeVersion = (ngEdge ? parseInt( ua.match( /edge\/(.*)$/ )[1] ) : undefined);
 
-/**
+/** 
  *  Variable: ngFireFox
  *  TRUE if user is using the Firefox browser.
- */
+ */  
 var ngFireFox = (ua.indexOf("firefox") != -1);
-/**
+/** 
  *  Variable: ngFireFoxVersion
  *  Version of the Firefox browser.
- */
+ */  
 var ngFireFoxVersion = (ngFireFox ? parseInt( ua.match( /firefox\/(.*)$/ )[1] ) : undefined);
 
-/**
+/** 
  *  Variable: ngFireFox1x
  *  TRUE if user is using the Firefox browser version 1.x.
- */
+ */  
 var ngFireFox1x = ((ngFireFox)&&(ua.indexOf("firefox/1.")!=-1));
-/**
+/** 
  *  Variable: ngFireFox2x
  *  TRUE if user is using the Firefox browser version 2.x.
- */
+ */  
 var ngFireFox2x = ((ngFireFox)&&(ua.indexOf("firefox/2.")!=-1));
-/**
+/** 
  *  Variable: ngChrome
  *  TRUE if user is using the Chrome browser.
- */
+ */  
 var ngChrome = (ua.indexOf("chrome") != -1);
-/**
+/** 
  *  Variable: ngSafari
  *  TRUE if user is using the Safari browser.
- */
+ */  
 var ngSafari = (ua.indexOf("safari") != -1);
-/**
+/** 
  *  Variable: ngAndroid
  *  TRUE if device uses Android OS.
- */
+ */  
 var ngAndroid = (ua.indexOf("android") != -1);
-/**
+/** 
  *  Variable: ngiOS
  *  TRUE if device uses Apple iOS.
- */
+ */  
 var ngiOS = ( ua.match(/(ipad|iphone|ipod)/g) ? true : false );
-/**
+/** 
  *  Variable: ngWindowsPhone
  *  TRUE if device uses Windows Phone OS.
- */
+ */  
 var ngWindowsPhone = (ua.indexOf("windows phone") != -1);
-/**
+/** 
  *  Variable: ngFireFoxOS
  *  TRUE if device uses FireFox OS.
- */
+ */  
 var ngFireFoxOS = ngFireFox && (ua.indexOf("mobile") != -1);
-/**
+/** 
  *  Variable: ngCordova
  *  TRUE if running inside Apache Cordova (PhoneGap)
- */
+ */  
 var ngCordova = (typeof window.cordova !== 'undefined');
-/**
+/** 
  *  Variable: ngWinStoreApp
  *  TRUE if running as Windows Store App
- */
+ */  
 var ngWinStoreApp = (typeof Windows !== 'undefined');
-/**
+/** 
  *  Variable: ngSupportsTouch
  *  TRUE if browser supports touch.
- */
+ */  
 var ngSupportsTouch = ('ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch) || navigator.msMaxTouchPoints ? true : false);
-/**
+/** 
  *  Variable: ngUsingTouch
  *  TRUE if user uses touch as a primary input.
- */
+ */  
 var ngUsingTouch = (ngSupportsTouch)&&(ngAndroid || ngiOS || ngWindowsPhone || (ua.indexOf("mobile") != -1) || (ua.indexOf("tablet") != -1));
-/**
+/** 
  *  Variable: ngFirebug
  *  TRUE if Firebug present (useful for debug informations).
- */
+ */  
 var ngFirebug = !!(window.console && (window.console.firebug || window.console.exception));
 
-/**
- *  Section: Debug Functions
+/** 
+ *  Section: Debug Functions  
  */
 var ngDEBUG = (typeof ngDEBUG === 'undefined' ? 0 : ngDEBUG);
 
-/**
+/** 
  *  Function: ngASSERT
  *  Checks the given assertion and displays description if assertion is FALSE and debug is enabled.
- *
+ *  
  *  Syntax:
  *    void *ngASSERT* (boolean assertion [, mixed description])
- *
+ *  
  *  Parameters:
- *    assertion - if FALSE the description is displayed
+ *    assertion - if FALSE the description is displayed  
  *    description - description to be displayed
- *
- *  Returns:
+ *        
+ *  Returns: 
  *    -
- */
+ */  
 var ngASSERT;
 
-/**
+/** 
  *  Function: ngDEBUGLOG
  *  Displays log message in console if debug is enabled.
- *
+ *  
  *  Syntax:
  *    void *ngDEBUGLOG* (args)
- *
+ *    
  *  Returns:
- *    -
- */
+ *    -   
+ */ 
 var ngDEBUGLOG;
-/**
+/** 
  *  Function: ngDEBUGWARN
  *  Displays warning message in console if debug is enabled.
- *
+ *  
  *  Syntax:
  *    void *ngDEBUGWARN* (args)
- *
+ *    
  *  Returns:
- *    -
- */
+ *    -   
+ */ 
 var ngDEBUGWARN;
-/**
+/** 
  *  Function: ngDEBUGERROR
  *  Displays error message in console if debug is enabled.
- *
+ *  
  *  Syntax:
  *    void *ngDEBUGERROR* (args)
- *
+ *    
  *  Returns:
- *    -
- */
+ *    -   
+ */ 
 var ngDEBUGERROR;
 
 (function() {
@@ -224,9 +224,9 @@ var ngDEBUGERROR;
     var c=console;
     function bind(f, thisArg) {
       if ((typeof f.bind === 'undefined') || (typeof f.bind === 'unknown')) { // IE < 10
-        if(typeof Function.prototype.bind === 'function')
+        if(typeof Function.prototype.bind === 'function') 
           return Function.prototype.bind.call(f, thisArg);
-        else
+        else 
           return f;
       }
       else
@@ -235,9 +235,9 @@ var ngDEBUGERROR;
     ngDEBUGLOG=bind(c.log, c);
     ngDEBUGWARN=bind(c.warn, c);
     ngDEBUGERROR=bind(c.error, c);
-
+  
     if(c.assert) ngASSERT=bind(c.assert,c);
-    else
+    else 
     {
       ngASSERT=function(cond,msg) {
         if(!cond) ngDEBUGERROR('Assertion failed' + (typeof msg==='undefined' ? '' : ': '+msg));
@@ -248,7 +248,7 @@ var ngDEBUGERROR;
   {
     ngDEBUG=0;
     function nop() { };
-
+    
     ngASSERT=nop;
     ngDEBUGLOG=nop;
     ngDEBUGLOGEX=nop;
@@ -258,34 +258,34 @@ var ngDEBUGERROR;
   if(typeof window.cl === 'undefined') window.cl = ngDEBUGLOG;  //Alias for console.log();
 })();
 
-/**
+/** 
  *  Function: ngHASDEBUG
- *  Tests if debug is enabled.
- *
+ *  Tests if debug is enabled.   
+ *  
  *  Syntax:
  *    mixed *ngHASDEBUG* ()
- *
- *  Returns:
+ *  
+ *  Returns: 
  *    Debug state (0=disabled).
- */
+ */  
 function ngHASDEBUG() {
   return ngDEBUG;
 }
 
-/**
- *  Section: Helper Functions
+/** 
+ *  Section: Helper Functions  
  */
 
-/**
+/** 
  *  Function: ngHammerJS
- *  Checks if HammerJS library is present.
- *
+ *  Checks if HammerJS library is present.  
+ *  
  *  Syntax:
  *    bool *ngHammerJS* ()
- *
- *  Returns:
+ *  
+ *  Returns: 
  *    TRUE if HammerJS library is present.
- */
+ */  
 function ngHammerJS()
 {
   return (typeof Hammer === 'function')&&((typeof ngHammerJSDisabled === 'undefined')||(!ngHammerJSDisabled))&&((!ngIExplorer)||(ngIExplorerVersion>=9))&&((!ngOpera)||(ngOperaVersion>=10.5));
@@ -308,22 +308,22 @@ function ngHammerJSVer()
 
 var ngPointerStartEvents;
 
-/**
+/** 
  *  Function: ngPtrStartEvents
- *  Gets input pointer start events (mousedown, touchstart, ...).
- *
+ *  Gets input pointer start events (mousedown, touchstart, ...).   
+ *  
  *  Syntax:
  *    array *ngPtrStartEvents* ()
- *
- *  Returns:
+ *  
+ *  Returns: 
  *    List of supported events.
- */
+ */  
 function ngPtrStartEvents()
 {
   if(typeof ngPointerStartEvents === 'undefined')
   {
     if(ngHammerJSVer()===1) // HammerJS library v1.x is present
-    {
+    {  
       if(!Hammer.READY) Hammer.event.determineEventTypes();
       ngPointerStartEvents=Hammer.EVENT_TYPES[Hammer.EVENT_START].split(' ');
     }
@@ -332,20 +332,20 @@ function ngPtrStartEvents()
   return ngPointerStartEvents;
 }
 
-/**
+/** 
  *  Function: ngPtrHTMLStartEvents
- *  Renders supported pointer start events as HTML (onmousedown, ontouchstart, ...).
- *
+ *  Renders supported pointer start events as HTML (onmousedown, ontouchstart, ...).   
+ *  
  *  Syntax:
  *    mixed *ngPtrHTMLStartEvents* (mixed html, string event)
- *
+ *  
  *  Parameters:
  *    html - string or ngStringBuilder object
  *    event - event code as text
- *
- *  Returns:
+ *        
+ *  Returns: 
  *    Rendered html.
- */
+ */  
 function ngPtrHTMLStartEvents(html,ev)
 {
   var evs=ngPtrStartEvents();
@@ -363,20 +363,20 @@ function ngPtrHTMLStartEvents(html,ev)
 
 /**
  *  Variable: ngURLParams
- *  Parsed URL parameters.
+ *  Parsed URL parameters. 
  *  Use function <ng_GET> to get values of parameters.
- */
+ */    
 var ngURLParams = {};
 var ngURLParamsParsed=false;
 
-/**
+/** 
  *  Variable: ngURLDefaultEscaping
  *  Defines default URL escaping scheme.
- *
+ *  
  *  Constants:
  *    URL_ESCAPING_UTF8 - standard UTF-8 URL escaping (default)
  *    URL_ESCAPING_UNICODE - UNICODE URL escaping (uses %uXXXX)
- */
+ */ 
 var ngURLDefaultEscaping = (typeof ngURLDefaultEscaping !== 'undefined' ? ngURLDefaultEscaping : 0);
 
 var URL_ESCAPING_UTF8    = 0;
@@ -395,18 +395,18 @@ var ngURLSafeChars = { 45:1,46:1,95:1,126:1 };
  * These characters aren't encoded in function <ng_HashEncode>.
  */
 var ngHashSafeChars = { 33: 1, 36: 1, 95: 1, 39: 1, 40: 1, 41: 1, 42: 1, 44: 1, 45: 1, 46: 1,
-                        38: 1, 47: 1, 58: 1, 59: 1, 126:1 };
-
+                        38: 1, 47: 1, 58: 1, 59: 1, 126:1 };                     
+    
 /**
  *  Class: ScreenPt
- *  This class represents screen point.
- *
+ *  This class represents screen point.  
+ *  
  *  Syntax:
  *    new *ScreenPt* (int posx, int posy);
  */
 /*
  *  Group: Properties
- */
+ */  
 /*  Variable: x
  *  Screen X coordinate.
  */
@@ -421,18 +421,18 @@ function ScreenPt(posx, posy) {
 
 /**
  *  Function: ngVal
- *  Substitutes undefined values with defaults.
- *
+ *  Substitutes undefined values with defaults.   
+ *  
  *  Syntax:
  *    mixed *ngVal* (mixed val, mixed defval)
- *
- *  Parameters:
+ *     
+ *  Parameters: 
  *    val - value to be checked
  *    defval -  default value if val is undefined
- *
+ *    
  *  Returns:
- *    Function returns defval if type of val is undefined.
- */
+ *    Function returns defval if type of val is undefined.  
+ */               
 function ngVal(v, defv)
 {
   return (v === void 0 ? defv : v);
@@ -440,18 +440,18 @@ function ngVal(v, defv)
 
 /**
  *  Function: ngNullVal
- *  Substitutes undefined or null values with defaults.
- *
+ *  Substitutes undefined or null values with defaults.   
+ *  
  *  Syntax:
  *    mixed *ngNullVal* (mixed val, mixed defval)
- *
- *  Parameters:
+ *     
+ *  Parameters: 
  *    val - value to be checked
  *    defval -  default value if val is undefined
- *
+ *    
  *  Returns:
- *    Function returns defval if type of val is undefined or if val is null
- */
+ *    Function returns defval if type of val is undefined or if val is null  
+ */               
 function ngNullVal(v, defv)
 {
   return ((v === void 0) || (v === null) ? defv : v);
@@ -460,11 +460,11 @@ function ngNullVal(v, defv)
 /**
  *  Function: ngLibPath
  *  Gets client library path.
- *
+ *  
  *  Syntax: string *ngLibPath* (string lib [, string file])
- *
- *  Returns:
- *    Client library path.
+ *  
+ *  Returns: 
+ *    Client library path.         
  */
 function ngLibPath(lib,file)
 {
@@ -503,11 +503,11 @@ function ngLibPath(lib,file)
 /**
  *  Function: ngLibVersion
  *  Gets client library version.
- *
+ *  
  *  Syntax: mixed *ngLibVersion* (string id)
- *
- *  Returns:
- *    Used library version or FALSE if library is not found.
+ *  
+ *  Returns: 
+ *    Used library version or FALSE if library is not found.         
  */
 function ngLibVersion(lib)
 {
@@ -515,11 +515,11 @@ function ngLibVersion(lib)
   lib=lib.toLowerCase();
   var l=ngLib[lib];
   if(!ng_IsObjVar(l)) return false;
-  return ngVal(l.version,false);
-}
-
+  return ngVal(l.version,false);                                 
+} 
+ 
 function ng_SetLibsURL(path)
-{
+{ 
   if(path!='')
   {
     if(path.charAt(path.length-1)=='/') path=path.substring(0,path.length-1);
@@ -535,7 +535,7 @@ function ng_DetectLibsURL(type,scripts)
   if(typeof ngLibsURL !== 'undefined') return;
   try
   {
-    type=ngVal(type,0);
+    type=ngVal(type,0); 
     if(typeof scripts==='undefined') scripts=document.getElementsByTagName("script");
     var idx,s;
     for (var i=0; i<scripts.length; i++)
@@ -564,12 +564,12 @@ function ng_DetectLibsURL(type,scripts)
             }
             break;
         }
-        if(idx>=0)
+        if(idx>=0) 
         {
           ngLibsURL=s.substring(0,idx);
           var protocolsep = "://";
           idx=ngLibsURL.indexOf(protocolsep);
-
+          
           if (idx<0)
           {
             var loc = location.href;
@@ -603,43 +603,43 @@ var ngPreloadImgCallback=null;
 
 /**
  *  Function: ng_PreloadImage
- *  Pre-loads image into browser's memory.
- *
- *  If image was already pre-loaded the function simply returns existing
- *  reference to the image class.
- *
+ *  Pre-loads image into browser's memory.  
+ *  
+ *  If image was already pre-loaded the function simply returns existing 
+ *  reference to the image class.  
+ *    
  *  Syntax:
  *    image *ng_PreloadImage* (string url)
- *
- *  Parameters:
+ *     
+ *  Parameters: 
  *    url - image URL
- *
+ *    
  *  Returns:
- *    The image class (created by *new Image*) of the pre-loaded image.
- */
-function ng_PreloadImage(url)
-{
+ *    The image class (created by *new Image*) of the pre-loaded image.  
+ */               
+function ng_PreloadImage(url) 
+{ 
   var i=ngPreloadedImages[url];
   if(typeof i === 'undefined')
   {
-    i=new Image;
+    i=new Image; 
     i.onload=ng_PreloadImgDone;
     i.onfailure=ng_PreloadImgDone
     i.onerror=ng_PreloadImgDone;
-    ngPreloadImgCnt++;
+    ngPreloadImgCnt++; 
     ngPreloadedImages[url]=i;
-    i.src=ng_URL(url);
-  }
+    i.src=ng_URL(url); 
+  } 
   return i;
 }
 
 function ng_PreloadImgDone()
 {
   ngPreloadImgCnt--;
-  if((ngPreloadImgCnt<=0)&&(typeof ngPreloadImgCallback === 'function'))
-  {
+  if((ngPreloadImgCnt<=0)&&(typeof ngPreloadImgCallback === 'function')) 
+  { 
     ngPreloadImgCnt=0;
-    var f=ngPreloadImgCallback;
+    var f=ngPreloadImgCallback; 
     ngPreloadImgCallback=null;
     f();
   }
@@ -647,17 +647,17 @@ function ng_PreloadImgDone()
 
 /**
  *  Function: ng_PreloadImagesBegin
- *  Starts preloading images block.
- *
+ *  Starts preloading images block.    
+ *  
  *  Syntax:
  *    void *ng_PreloadImagesBegin* ()
- *
+ *     
  *  Returns:
- *    -
- *
+ *    -  
+ *    
  *  See also:
  *    <ng_PreloadImagesEnd>, <ng_PreloadImage>
- */
+ */               
 function ng_PreloadImagesBegin()
 {
   ngPreloadImgCnt++;
@@ -665,20 +665,20 @@ function ng_PreloadImagesBegin()
 
 /**
  *  Function: ng_PreloadImagesEnd
- *  Ends preloading images block and call callback function after all images are loaded.
- *
+ *  Ends preloading images block and call callback function after all images are loaded.    
+ *  
  *  Syntax:
  *    void *ng_PreloadImagesEnd* ([function callback])
- *
+ *     
  *  Parameters:
  *    callback - callback function called after all images loaded via <ng_PreloadImage> are loaded into browser
- *
+ *       
  *  Returns:
- *    -
- *
+ *    -  
+ *    
  *  See also:
- *    <ng_PreloadImagesBegin>, <ng_PreloadImage>
- */
+ *    <ng_PreloadImagesBegin>, <ng_PreloadImage>   
+ */               
 function ng_PreloadImagesEnd(callback)
 {
   ngPreloadImgCallback=ngAddEvent(ngPreloadImgCallback,callback);
@@ -687,41 +687,41 @@ function ng_PreloadImagesEnd(callback)
 
 /**
  *  Function: ng_ReloadImage
- *  Re-loads image in browser's memory.
- *
+ *  Re-loads image in browser's memory.  
+ *  
  *  Instead of <ng_PreloadImage> this function always creates new image class.
- *
+ *    
  *  Syntax:
  *    image *ng_ReloadImage* (string url)
- *
- *  Parameters:
+ *     
+ *  Parameters: 
  *    url - image URL
- *
+ *    
  *  Returns:
- *    The image class (created by *new Image*) of the loaded image.
- */
-function ng_ReloadImage(url)
+ *    The image class (created by *new Image*) of the loaded image.  
+ */               
+function ng_ReloadImage(url) 
 {
   delete ngPreloadedImages[url];
-  return ng_PreloadImage(url);
+  return ng_PreloadImage(url); 
 }
 
 /**
  *  Function: ng_AddURLParam
  *  Adds new parameter(s) to URL.
- *
- *  This function properly handles parameter separators (? or &).
- *
+ *   
+ *  This function properly handles parameter separators (? or &).  
+ *  
  *  Syntax:
  *    string *ng_AddURLParam* (string url, string param)
- *
+ *    
  *  Parameters:
  *    url - original URL
  *    param - parameter(s) to be added to original URL
- *
+ *        
  *  Returns:
  *    URL with parameters.
- */
+ */          
 function ng_AddURLParam(url, param)
 {
   if(url.indexOf('?')!=-1) url=url+'&';
@@ -733,16 +733,16 @@ function ng_AddURLParam(url, param)
 /**
  *  Function: ng_StripURLParams
  *  Strip parameters from URL.
- *
+ *  
  *  Syntax:
  *    string *ng_StripURLParams* (string url)
- *
+ *    
  *  Parameters:
  *    url - original URL
- *
+ *        
  *  Returns:
  *    URL without parameters.
- */
+ */          
 function ng_StripURLParams(url)
 {
   var i=url.indexOf('?');
@@ -762,32 +762,32 @@ function ng_URLStd(url) { return url; }
 /**
  *  Function: ng_URL
  *  Handles platform specific URL.
- *
+ *  
  *  Syntax:
  *    string *ng_URL* (string url)
- *
+ *    
  *  Parameters:
  *    url - original URL
- *
+ *        
  *  Returns:
  *    Platform compatible URL.
- */
+ */          
 var ng_URL = (ngCordova && ngWindowsPhone ? ng_URLCWP : ng_URLStd);
 
 /**
  *  Function: ng_unescape
- *  JavaScript unescape with proper handling of plus (+) character.
- *
+ *  JavaScript unescape with proper handling of plus (+) character.   
+ *  
  *  Syntax:
  *    string *ng_unescape* (string str [, int escscheme])
- *
+ *    
  *  Parameters:
  *    str - string to be unescaped
- *    escscheme - escaping scheme (uses ngURLDefaultEscaping if not specified)
- *
+ *    escscheme - escaping scheme (uses ngURLDefaultEscaping if not specified)   
+ *    
  *  Returns:
- *    Unescaped string.
- */
+ *    Unescaped string.      
+ */ 
 function ng_unescape(str,escscheme)
 {
   if(typeof escscheme === 'undefined')
@@ -809,24 +809,24 @@ function ng_unescape(str,escscheme)
     	}
     	return unescape(str);
   }
-  return str;
+  return str;	
 }
 
 /**
  *  Function: ng_htmlEncode
  *  Encodes special HTML characters (&, <, >, ") to its HTML form.
- *
+ *  
  *  Syntax:
  *    string *ng_htmlEncode* (string text [,bool replacecrlf=false])
- *
+ *    
  *  Parameters:
  *    text - text with special characters
- *    replacecrlf - if TRUE, function replaces CRLF (or CR or LF) with <br /> HTML tag
- *
+ *    replacecrlf - if TRUE, function replaces CRLF (or CR or LF) with <br /> HTML tag 
+ *    
  *  Returns:
  *    Text with encoded special HTML characters.
- */
-function ng_htmlEncode(s, replacecrlf)
+ */           
+function ng_htmlEncode(s, replacecrlf) 
 {
   var str = ''+s;
   if(str=='') return str;
@@ -838,23 +838,23 @@ function ng_htmlEncode(s, replacecrlf)
   if(ngVal(replacecrlf,false))
     str = str.replace(/\r\n|[\r\n]/g,"\<br /\>");
   return str;
-}
+} 
 
 /**
  *  Function: ng_htmlDecode
  *  Decode special HTML characters and remove HTML tags (&amp;, &lt;, &gt;, &quot;) to its native form.
- *
+ *  
  *  Syntax:
  *    string *ng_htmlDecode* (string text [,bool replacecrlf=false, bool replacespaces=false])
- *
+ *    
  *  Parameters:
  *    text - text with HTML encoded characters
- *    replacecrlf - if TRUE replaces CRLF with spaces
- *
+ *    replacecrlf - if TRUE replaces CRLF with spaces 
+ *    
  *  Returns:
  *    Text with decoded characters.
- */
-function ng_htmlDecode(s, replacecrlf, replacespaces)
+ */           
+function ng_htmlDecode(s, replacecrlf, replacespaces) 
 {
   var str = ''+s;
   if(str=='') return str;
@@ -867,7 +867,7 @@ function ng_htmlDecode(s, replacecrlf, replacespaces)
   str = str.replace(/\<p.*?\>/g, "\n"); // <p>
   str = str.replace(/\<\/p\>/g, "\n\n"); // </p>
   str = str.replace(/\<.*?\>/g, ""); // remove all tags
-  if(replacespaces)
+  if(replacespaces) 
   {
     str = str.replace(/[ \t]*([\r\n])/g, "$1"); // srip lineend whitespace
     str = str.replace(/[ \t]+/g, " "); // replace multiple spaces
@@ -878,26 +878,26 @@ function ng_htmlDecode(s, replacecrlf, replacespaces)
   str = str.replace(/&quot;/g, "\"");
   str = str.replace(/&nbsp;/g, " ");
   return str;
-}
+} 
 
 /**
  *  Function: ng_sprintf
  *  Formats string (PHP like sprintf function).
- *
+ *  
  *  Syntax:
  *    string *ng_sprintf* (string format [, mixed arg1, mixed arg2, ...])
- *
+ *    
  *  Parameters:
  *    format - text with format characters
- *    arg1..N - arguments
- *
+ *    arg1..N - arguments 
+ *    
  *  Returns:
  *    Formated text.
- */
+ */           
 function ng_sprintf()
 {
   if(!arguments || arguments.length < 1) return;
-
+  
   var str = arguments[0];
   str=str.replace(/\n/g, '\\n');
   str=str.replace(/\r/g, '\\r');
@@ -908,7 +908,7 @@ function ng_sprintf()
   {
     var leftpart = a[1], pPad = a[2], pJustify = a[3], pMinLength = a[4];
     var pPrecision = a[5], pType = a[6], rightPart = a[7];
-
+  
     numMatches++;
     if(pType == '%') { subst = '_'; percent[percent.length]=leftpart.length; padding=''; }
     else
@@ -978,24 +978,24 @@ function ng_sprintf()
 /**
  *  Function: ng_URLEncode
  *  Encodes special characters in URL.
- *
+ *  
  *  Function also properly handles UTF-8 characters (>255).
- *
+ * 
  *  Syntax:
  *    string *ng_URLEncode* (string url [, bool allasunicode=false, array safechars, int escscheme ])
- *
+ *    
  *  Parameters:
  *    url - url to be encoded
  *    allasunicode - encode all characters as UNICODE (applicable only if escscheme is URL_ESCAPING_UNICODE)
  *    safechars - list of characters which are not encoded
- *    escscheme - escaping scheme (uses ngURLDefaultEscaping if not specified)
- *
+ *    escscheme - escaping scheme (uses ngURLDefaultEscaping if not specified)   
+ *    
  *  Returns:
  *    URL with encoded characters.
- */
-function ng_URLEncode(str,allasunicode,safechars,escscheme)
-{
-  var res='';
+ */            
+function ng_URLEncode(str,allasunicode,safechars,escscheme) 
+{ 
+  var res=''; 
   str=''+str;
   switch(ngVal(escscheme,ngURLDefaultEscaping))
   {
@@ -1003,77 +1003,77 @@ function ng_URLEncode(str,allasunicode,safechars,escscheme)
       res=ng_UTF8Encode(str,safechars);
       break;
     case 1: // URL_ESCAPING_UNICODE
-      var len = str.length;
+      var len = str.length; 
       var charOrd;
       var hexValStr;
-
+      
       if(typeof safechars === 'undefined')
         safechars = ngURLSafeChars;
-
+       
       allasunicode=ngVal(allasunicode,false);
-
-      for(var i = 0; i < len; i++)
-      {
+        
+      for(var i = 0; i < len; i++) 
+      { 
         charOrd = str.charCodeAt(i);
-        if ((charOrd >= 65 && charOrd <= 90) || (charOrd >= 97 && charOrd <= 122) || (charOrd >= 48 && charOrd <= 57) || (safechars[charOrd]))
+        if ((charOrd >= 65 && charOrd <= 90) || (charOrd >= 97 && charOrd <= 122) || (charOrd >= 48 && charOrd <= 57) || (safechars[charOrd])) 
         {
-          res += str.charAt(i);
-        }
-        else
-        {
+          res += str.charAt(i); 
+        } 
+        else 
+        { 
           if (charOrd==37) { res +='%u0025'; continue; } // %
           if(allasunicode)
           {
             res += '%u';
-            if (charOrd <= 255) res+='00';
+            if (charOrd <= 255) res+='00'; 
           }
           else
           {
-            res += '%';
+            res += '%'; 
             if (charOrd > 255) res += 'u';
-          }
-          hexValStr = charOrd.toString(16);
-          if ((hexValStr.length) % 2 == 1) hexValStr = '0' + hexValStr;
-          res += hexValStr;
-        }
+          } 
+          hexValStr = charOrd.toString(16); 
+          if ((hexValStr.length) % 2 == 1) hexValStr = '0' + hexValStr; 
+          res += hexValStr; 
+        } 
       }
       break;
     default:
       res=str;
       break;
-  }
+  } 
   return res;
 }
 
 /**
  *  Function: ng_HashEncode
  *  Encodes special characters in hash(fragment) part of URL.
- *
+ * 
  *  Syntax:
  *    string *ng_HashEncode* (string s [, array safechars, int escscheme ])
- *
+ *    
  *  Parameters:
  *    s - string to be encoded
  *    safechars - list of characters which are not encoded
- *    escscheme - escaping scheme (uses ngURLDefaultEscaping if not specified)
- *
+ *    escscheme - escaping scheme (uses ngURLDefaultEscaping if not specified)   
+ *    
  *  Returns:
  *    Encoded string.
- */
+ */            
 function ng_HashEncode(s,safechars,escscheme)
 {
   return ng_URLEncode(s,true,ngVal(safechars,ngHashSafeChars),escscheme);
 }
 
 /*
- * hex/dec encoding helpers
- */
+ * hex/dec encoding helpers 
+ */ 
 var utf8_decToHexChar=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
 var utf8_charCodeToDec={48:0,49:1,50:2,51:3,52:4,53:5,54:6,55:7,56:8,57:9,65:10,66:11,67:12,68:13,69:14,70:15,97:10,98:11,99:12,100:13,101:14,102:15};
 
-function utf8_decToStrHex(dec) {
-  return utf8_decToHexChar[dec >> 4] + utf8_decToHexChar[dec & 0xF];
-}
+function utf8_decToStrHex(dec) { 
+  return utf8_decToHexChar[dec >> 4] + utf8_decToHexChar[dec & 0xF]; 
+} 
 
 function utf8_strHexToDec(s, i) {
   if (s.charCodeAt(i)==37) { // percent encoded char
@@ -1089,18 +1089,18 @@ function utf8_strHexToDec(s, i) {
 /**
  *  Function: ng_UTF8Encode
  *  Encodes characters in url to utf-8 representation.
- *
+ *  
  *  Syntax:
  *    string *ng_UTF8Encode* (string url)
- *
+ *    
  *  Returns:
  *    URL with encoded characters.
- */
+ */            
 function ng_UTF8Encode(str,safechars) {
-  var len = str.length;
+  var len = str.length; 
   var res = new String();
   var chEn = new String();
-  var charOrd = new Number();
+  var charOrd = new Number(); 
   var pos = 0;
 
   if(typeof safechars === 'undefined')
@@ -1108,24 +1108,24 @@ function ng_UTF8Encode(str,safechars) {
 
   for(i=0; i<len; i++) {
     charOrd = str.charCodeAt(i);
-    if ((charOrd >= 65 && charOrd <= 90) || (charOrd >= 97 && charOrd <= 122) || (charOrd >= 48 && charOrd <= 57) || (safechars[charOrd]))
+    if ((charOrd >= 65 && charOrd <= 90) || (charOrd >= 97 && charOrd <= 122) || (charOrd >= 48 && charOrd <= 57) || (safechars[charOrd])) 
       continue;
 
-    if(charOrd<128) chEn = '%'+ utf8_decToStrHex(charOrd); //reserved chars, percent encoded
+    if(charOrd<128) chEn = '%'+ utf8_decToStrHex(charOrd); //reserved chars, percent encoded 
     else if(charOrd<2048) { //128 .. 2047 - 11 bit number, 2 byte UTF-8 starting with %C
       chEn = '%'+utf8_decToStrHex((charOrd >> 6) | 0xC0); //First byte: 110x.xxx (C and first 5bits in charOrd)
-      chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Second byte: 10xx.xxxx ("10" signature and rest 6 bits in charOrd)
+      chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Second byte: 10xx.xxxx ("10" signature and rest 6 bits in charOrd) 
     }
       else if(charOrd<65536) { //2048 .. 65535 - 16 bit number, 3 byte UTF-8 starting with %E
         chEn = '%'+utf8_decToStrHex((charOrd >> 12) | 0xE0); //First byte: 1110.xxxx (E and first 4bits in charOrd)
-        chEn +='%'+utf8_decToStrHex(((charOrd >> 6) & 0x3F) | 0x80); //Second byte: 10xx.xxxx (following 6 bits)
-        chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Third byte: 10xxxxxx (last 6 bits)
+        chEn +='%'+utf8_decToStrHex(((charOrd >> 6) & 0x3F) | 0x80); //Second byte: 10xx.xxxx (following 6 bits) 
+        chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Third byte: 10xxxxxx (last 6 bits) 
       }
         else { // 65536 .. 4194303 - 22 bit number, 4 byte UTF-8 starting with %F
           chEn = '%'+utf8_decToStrHex((charOrd >> 18) | 0xF0); //First byte: 1110.xxxx (F and first 4bits in charOrd)
-          chEn +='%'+utf8_decToStrHex(((charOrd >> 12) & 0x3F) | 0x80); //Second byte: 10xx.xxxx (following 6 bits)
-          chEn +='%'+utf8_decToStrHex(((charOrd >> 6) & 0x3F) | 0x80); //Third byte: 10xx.xxxx (following 6 bits)
-          chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Fourth byte: 10xxxxxx (last 6 bits)
+          chEn +='%'+utf8_decToStrHex(((charOrd >> 12) & 0x3F) | 0x80); //Second byte: 10xx.xxxx (following 6 bits) 
+          chEn +='%'+utf8_decToStrHex(((charOrd >> 6) & 0x3F) | 0x80); //Third byte: 10xx.xxxx (following 6 bits) 
+          chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Fourth byte: 10xxxxxx (last 6 bits) 
         }
 
     if(pos<i) res+=str.substring(pos, i);
@@ -1136,29 +1136,29 @@ function ng_UTF8Encode(str,safechars) {
   if (pos) {
     if (pos<len) res+=str.substring(pos, len);
     return res;
-  }
-  return str;
+  }  
+  return str; 
 }
 
 /**
  *  Function: ng_UTF8Decode
  *  JavaScript decode URI with characters in utf-8 representation.
- *
+ *  
  *  Syntax:
  *    string *ng_UTF8Decode* (string str)
- *
+ *    
  *  Parameters:
  *    str - string to be decoded
- *
+ *    
  *  Returns:
- *    Decoded string.
- */
+ *    Decoded string.      
+ */ 
 function ng_UTF8Decode(str) {
-  var len = str.length;
-  var res = new String();
+  var len = str.length; 
+  var res = new String(); 
   var charOrd=0,charCnt=0;
   var B1=0,B2=0,B3=0,B4=0;
-
+  
   var i=0,pos=0;
   while (i<len) {
     B1=utf8_strHexToDec(str, i);
@@ -1181,7 +1181,7 @@ function ng_UTF8Decode(str) {
             }
           }
             else { //F0 ... - 4 byte UTF-8
-              charCnt=12;
+              charCnt=12;              
               B2 = utf8_strHexToDec(str, i+3);
               if ((B2>127) && (B2<192)) {
                 B3 = utf8_strHexToDec(str, i+6);
@@ -1202,25 +1202,25 @@ function ng_UTF8Decode(str) {
     }
     else i++;
   }
-
+  
   if (pos) {
     if (pos<len) res+=str.substring(pos, len);
     return res;
   }
-
+  
   return str;
 }
 
 /**
  *  Function: ng_UTF8ParamEncode
  *  Encodes characters in URI parameter to utf-8 representation.
- *
+ *  
  *  Syntax:
  *    string *ng_UTF8ParamEncode* (string url)
- *
+ *    
  *  Returns:
  *    URL with encoded characters.
- */
+ */            
 function ng_UTF8ParamEncode(str) {
   return ng_UTF8Encode(str);
 }
@@ -1228,16 +1228,16 @@ function ng_UTF8ParamEncode(str) {
 /**
  *  Function: ng_UTF8ParamDecode
  *  JavaScript decode URI parameter in utf-8 representation.
- *
+ *  
  *  Syntax:
  *    string *ng_UTF8ParamDecode* (string str)
- *
+ *    
  *  Parameters:
  *    str - string to be decoded
- *
+ *    
  *  Returns:
- *    Decoded string.
- */
+ *    Decoded string.      
+ */ 
 function ng_UTF8ParamDecode(str)
 {
 	str=''+str;
@@ -1247,22 +1247,22 @@ function ng_UTF8ParamDecode(str)
 		str=str.substring(0,i)+'%20'+str.substring(i+1, str.length);
 		i=str.indexOf('+');
 	}
-  return ng_UTF8Decode(str);
+  return ng_UTF8Decode(str); 
 }
 
 /**
  *  Function: ng_inDOM
  *  Determines if element is present in browser's document object model (DOM).
- *
+ *  
  *  Syntax:
  *    bool *ng_inDOM* (object elm)
- *
+ *  
  *  Parameters:
  *    elm - element object
- *
+ *       
  *  Returns:
- *    TRUE if object is in DOM, FALSE if not.
- */
+ *    TRUE if object is in DOM, FALSE if not.        
+ */  
 function ng_inDOM(e)
 {
   if(ng_IsObjVar(e))
@@ -1271,10 +1271,10 @@ function ng_inDOM(e)
       if(e.tagName == 'BODY') return true;
       e = e.parentNode;
     }
-  return false;
+  return false;  
 }
 
-function ng_containsDOM(container, containee)
+function ng_containsDOM(container, containee) 
 {
   var isParent = false;
   do {
@@ -1289,13 +1289,13 @@ function ng_containsDOM(container, containee)
 /**
  *  Function: ng_WindowWidth
  *  Returns window width.
- *
+ *  
  *  Syntax:
  *    int *ng_WindowWidth* ()
- *
+ *  
  *  Returns:
- *    Width of browser's window.
- */
+ *    Width of browser's window.        
+ */  
 function ng_WindowWidth()
 {
   var width=0;
@@ -1309,13 +1309,13 @@ function ng_WindowWidth()
 /**
  *  Function: ng_WindowHeight
  *  Returns window height.
- *
+ *  
  *  Syntax:
  *    int *ng_WindowHeight* ()
- *
+ *  
  *  Returns:
- *    Height of browser's window.
- */
+ *    Height of browser's window.        
+ */  
 function ng_WindowHeight()
 {
   var height=0;
@@ -1364,9 +1364,9 @@ function ng_DocumentClientHeight()
   return height;
 }
 
-function ng_SetInnerHTML_Std(o, t, append)
+function ng_SetInnerHTML_Std(o, t, append) 
 {
-  if(append)
+  if(append) 
   {
     if(t==='') return;
     t=o.innerHTML+t;
@@ -1374,10 +1374,10 @@ function ng_SetInnerHTML_Std(o, t, append)
   o.innerHTML = t;
 }
 
-function ng_SetInnerHTML_WinStore(o, t, append)
+function ng_SetInnerHTML_WinStore(o, t, append) 
 {
   MSApp.execUnsafeLocalFunction(function () {
-    if(append)
+    if(append) 
     {
       if(t==='') return;
       t=o.innerHTML+t;
@@ -1390,50 +1390,50 @@ function ng_SetInnerHTML_WinStore(o, t, append)
 /**
  *  Function: ng_SetInnerHTML
  *  Handles platform specific setting of element's innerHTML.
- *
+ *  
  *  Syntax:
  *    void *ng_SetInnerHTML* (element o, string content [, bool append=false])
- *
+ *    
  *  Parameters:
  *    o - DOM element which innerHTML should be updated
- *    content - text
- *    append - if TRUE, the content is added to existing innerHTML
- *
+ *    content - text 
+ *    append - if TRUE, the content is added to existing innerHTML     
+ *    
  *  Returns:
- *    -
- */
-var ng_SetInnerHTML = (ngWinStoreApp ? ng_SetInnerHTML_WinStore : ng_SetInnerHTML_Std);
+ *    - 
+ */      
+var ng_SetInnerHTML = (ngWinStoreApp ? ng_SetInnerHTML_WinStore : ng_SetInnerHTML_Std); 
 
 /**
  *  Function: ng_AppendInnerHTML
- *  Appends text to element's innerHTML.
+ *  Appends text to element's innerHTML. 
  *  The innerHTML is modified only if text is not empty.
- *
+ *  
  *  Syntax:
  *    void *ng_AppendInnerHTML* (element o, string content)
- *
+ *    
  *  Parameters:
  *    o - DOM element which innerHTML should be updated
- *    content - text
- *
+ *    content - text 
+ *    
  *  Returns:
- *    -
- */
+ *    - 
+ */      
 function ng_AppendInnerHTML(o, t)
 {
   ng_SetInnerHTML(o, t, true);
-}
+} 
 
 /**
  *  Function: ng_DocumentDeselect
  *  Removes document selection.
- *
+ *  
  *  Syntax:
  *    void *ng_DocumentDeselect* ()
- *
+ *    
  *  Returns:
- *    -
- */
+ *    - 
+ */      
 function ng_DocumentDeselect()
 {
   if(document.selection && document.selection.empty) {
@@ -1443,17 +1443,17 @@ function ng_DocumentDeselect()
     sel.removeAllRanges();
   }
 }
-
+  
 /**
  *  Function: ng_DocumentScrollX
  *  Gets actual document horizontal scroll offset.
- *
+ *  
  *  Syntax:
  *    int *ng_DocumentScrollX* ()
- *
+ *    
  *  Returns:
- *    Horizontal scroll offset in pixels.
- */
+ *    Horizontal scroll offset in pixels. 
+ */      
 function ng_DocumentScrollX()
 {
   var scrOfX = 0;
@@ -1470,13 +1470,13 @@ function ng_DocumentScrollX()
 /**
  *  Function: ng_DocumentScrollY
  *  Gets actual document vertical scroll offset.
- *
+ *  
  *  Syntax:
  *    int *ng_DocumentScrollY* ()
- *
+ *    
  *  Returns:
- *    Vertical scroll offset in pixels.
- */
+ *    Vertical scroll offset in pixels. 
+ */      
 function ng_DocumentScrollY()
 {
   var scrOfY = 0;
@@ -1532,21 +1532,21 @@ function ng_ScrollY(elm)
 
 /**
  *  Function: ng_ParentPosition
- *  Determines absolute position to parent object or document.
- *
+ *  Determines absolute position to parent object or document.  
+ *  
  *  Syntax:
  *    int *ng_ParentPosition* (object obj[, object parent=document.body, bool docrelative=false])
- *
+ *    
  *  Parameters:
  *    obj - element object
- *    parent - element object
+ *    parent - element object 
  *    docrelative - controls origin when  parent is document.body,
  *                  if TRUE the position is relative to document,
  *                  if FALSE (default) the position is relative to screen
- *
+ *    
  *  Returns:
- *    Object with properties x and y.
- */
+ *    Object with properties x and y. 
+ */         
 function ng_ParentPosition(o, parent, docrelative)
 {
   var n=o,pn;
@@ -1589,17 +1589,17 @@ function ng_ParentPosition(o, parent, docrelative)
 
 /**
  *  Function: ng_nullAttr
- *  Determines if element attribute is not defined.
- *
+ *  Determines if element attribute is not defined.  
+ *  
  *  Syntax:
  *    bool *ng_nullAttr* (object attr)
- *
+ *    
  *  Parameters:
  *    attr - element attribute
- *
+ *    
  *  Returns:
- *    TRUE if attribute is not set.
- */
+ *    TRUE if attribute is not set. 
+ */         
 function ng_nullAttr(v)
 {
   if(typeof v === 'number') return false;
@@ -1611,7 +1611,7 @@ function ng_nullAttr(v)
 function ng_GetStylePx2(p)
 {
   p=ngVal(p,'');
-  if(p=='') return;
+  if(p=='') return;  
   if((p.length>2)&&(p.substring(p.length-2)=='px')) p=ng_GetStylePx(p.substring(0,p.length-2));
   return p;
 }
@@ -1619,7 +1619,7 @@ function ng_GetStylePx2(p)
 function ng_GetStylePx(v)
 {
   var tv=typeof v;
-  if(tv==='number') return v;
+  if(tv==='number') return v; 
   if((v=='')||(tv==='undefined')) return 0;
   v=parseInt(v,10);
   return (isNaN(v) ? 0 : v);
@@ -1634,27 +1634,27 @@ function ng_IE7RedrawFix(e)
 /**
  *  Function: ng_GetCurrentStyle
  *  Gets current (computed) style of element.
- *
+ *  
  *  Syntax:
  *    string *ng_GetCurrentStyle* (object elm, string style)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    style - name of the style, for example 'margin-right'
- *
+ *    style - name of the style, for example 'margin-right' 
+ *    
  *  Returns:
  *    Value of requested style.
- *
+ *              
  */
 function ng_GetCurrentStyle(o,s)
 {
   var val;
   if(document.defaultView && document.defaultView.getComputedStyle)
-  {
+  { 
     var cstyle=document.defaultView.getComputedStyle(o, '');
     if(cstyle) val = cstyle.getPropertyValue(s);
   }
-  else if(o.currentStyle)
+  else if(o.currentStyle) 
   {
     s = s.replace(/\-(\w)/g, function (s, p){ return p.toUpperCase(); });
     val = o.currentStyle[s];
@@ -1665,26 +1665,26 @@ function ng_GetCurrentStyle(o,s)
 /**
  *  Function: ng_BeginMeasureElement
  *  Prepares element for dimension measurement.
- *  Makes sure all parent object have proper display style.
- *
+ *  Makes sure all parent object have proper display style. 
+ *  
  *  Syntax:
  *    array *ng_BeginMeasureElement* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
  *    List of modified objects.
- *
- *  See also:
- *  <ng_EndMeasureElement>
+ *    
+ *  See also:  
+ *  <ng_EndMeasureElement>              
  */
 function ng_BeginMeasureElement(o)
 {
   if((o)&&(o!==document.body)&&((!o.offsetHeight)||(!o.offsetWidth)))
   {
     if(typeof o.measure_info !== 'undefined') return o.measure_info;
-
+    
     var arr = new Array();
     var p = o;
     var displaystyle=(ngIExplorer ? '' : 'inherit');
@@ -1706,7 +1706,7 @@ function ng_BeginMeasureElement(o)
     {
       o.measure_info = arr;
       return arr;
-    }
+    }    
   }
   return undefined;
 }
@@ -1714,23 +1714,23 @@ function ng_BeginMeasureElement(o)
 /**
  *  Function: ng_EndMeasureElement
  *  Finishes element dimension measurement.
- *  Restores display states of parent object if modified.
- *
+ *  Restores display states of parent object if modified. 
+ *  
  *  Syntax:
  *    void *ng_EndMeasureElement* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
  *    -
- *
- *  See also:
- *  <ng_BeginMeasureElement>
+ *    
+ *  See also:  
+ *  <ng_BeginMeasureElement>              
  */
 function ng_EndMeasureElement(o)
 {
-  if((o)&&(typeof o.measure_info !== 'undefined'))
+  if((o)&&(typeof o.measure_info !== 'undefined')) 
   {
     var undefined;
     var arr=o.measure_info;
@@ -1742,23 +1742,23 @@ function ng_EndMeasureElement(o)
       p=arr[i];
       if((p)&&(p.style)) p.style.display = 'none';
     }
-  }
+  }  
 }
 
 /**
  *  Function: ng_GetCurrentStylePx
  *  Extracts pixels value from current (computed) style of element.
- *
+ *  
  *  Syntax:
  *    int *ng_GetCurrentStylePx* (object elm, string style)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    style - name of the style, for example 'margin-right'
- *
+ *    style - name of the style, for example 'margin-right' 
+ *    
  *  Returns:
  *    Pixels value of requested style.
- *
+ *              
  */
 function ng_GetCurrentStylePx(o,s)
 {
@@ -1768,33 +1768,33 @@ function ng_GetCurrentStylePx(o,s)
 /**
  *  Function: ng_StyleWidth
  *  Gets element width defined by style property.
- *
+ *  
  *  Syntax:
  *    int *ng_StyleWidth* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
- *    Width in pixels.
+ *    Width in pixels.          
  */
-function ng_StyleWidth(o)
-{
-  return (typeof o.style.pixelWidth !== 'undefined' ? ng_GetStylePx(o.style.pixelWidth) : ng_GetStylePx(o.style.width));
+function ng_StyleWidth(o) 
+{ 
+  return (typeof o.style.pixelWidth !== 'undefined' ? ng_GetStylePx(o.style.pixelWidth) : ng_GetStylePx(o.style.width)); 
 }
 
 /**
  *  Function: ng_StyleHeight
  *  Gets element height defined by style property.
- *
+ *  
  *  Syntax:
  *    int *ng_StyleHeight* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
- *    Height in pixels.
+ *    Height in pixels.          
  */
 function ng_StyleHeight(o)
 {
@@ -1804,16 +1804,16 @@ function ng_StyleHeight(o)
 /**
  *  Function: ng_SetStyleWidth
  *  Sets element width defined by style property.
- *
+ *  
  *  Syntax:
  *    void *ng_SetStyleWidth* (object elm, int v)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    v - width in pixels
- *
+ *    v - width in pixels 
+ *    
  *  Returns:
- *    -
+ *    -          
  */
 function ng_SetStyleWidth(o,v)
 {
@@ -1824,16 +1824,16 @@ function ng_SetStyleWidth(o,v)
 /**
  *  Function: ng_SetStyleHeight
  *  Sets element height defined by style property.
- *
+ *  
  *  Syntax:
  *    void *ng_SetStyleHeight* (object elm, int v)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    v - height in pixels
- *
+ *    v - height in pixels 
+ *    
  *  Returns:
- *    -
+ *    -          
  */
 function ng_SetStyleHeight(o,v)
 {
@@ -1844,15 +1844,15 @@ function ng_SetStyleHeight(o,v)
 /**
  *  Function: ng_OuterWidth
  *  Gets element outer width.
- *
+ *  
  *  Syntax:
  *    int *ng_OuterWidth* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
- *    Width in pixels.
+ *    Width in pixels.          
  */
 function ng_OuterWidth(o)
 {
@@ -1870,15 +1870,15 @@ function ng_OuterWidth(o)
 /**
  *  Function: ng_OuterHeight
  *  Gets element outer height.
- *
+ *  
  *  Syntax:
  *    int *ng_OuterHeight* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
- *    Height in pixels.
+ *    Height in pixels.          
  */
 function ng_OuterHeight(o)
 {
@@ -1896,16 +1896,16 @@ function ng_OuterHeight(o)
 /**
  *  Function: ng_SetOuterWidth
  *  Sets element outer width.
- *
+ *  
  *  Syntax:
  *    void *ng_SetOuterWidth* (object elm, int v)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    v - width in pixels
- *
+ *    v - width in pixels 
+ *    
  *  Returns:
- *    -
+ *    -          
  */
 function ng_SetOuterWidth(o,v)
 {
@@ -1918,16 +1918,16 @@ function ng_SetOuterWidth(o,v)
 /**
  *  Function: ng_SetOuterHeight
  *  Sets element outer height.
- *
+ *  
  *  Syntax:
  *    void *ng_SetOuterHeight* (object elm, int v)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    v - height in pixels
- *
+ *    v - height in pixels 
+ *    
  *  Returns:
- *    -
+ *    -          
  */
 function ng_SetOuterHeight(o,v)
 {
@@ -1940,22 +1940,22 @@ function ng_SetOuterHeight(o,v)
 /**
  *  Function: ng_ClientWidth
  *  Gets element client width.
- *
+ *  
  *  Syntax:
  *    int *ng_ClientWidth* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
- *    Width in pixels.
+ *    Width in pixels.          
  */
 function ng_ClientWidth(o)
 {
   if(!o) return 0;
   ng_IE7RedrawFix(o);
   var w=ng_GetStylePx(o.clientWidth);
-  if(!w)
+  if(!w) 
   {
     ng_BeginMeasureElement(o);
     w=ng_GetStylePx(o.clientWidth);
@@ -1993,22 +1993,22 @@ function ng_ClientWidthEx(o)
 /**
  *  Function: ng_ClientHeight
  *  Gets element client height.
- *
+ *  
  *  Syntax:
  *    int *ng_ClientHeight* (object elm)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *
+ *    
  *  Returns:
- *    Height in pixels.
+ *    Height in pixels.          
  */
 function ng_ClientHeight(o)
 {
-  if(!o) return 0;
+  if(!o) return 0;  
   ng_IE7RedrawFix(o);
   var h=ng_GetStylePx(o.clientHeight);
-  if(!h)
+  if(!h) 
   {
     ng_BeginMeasureElement(o);
     h=ng_GetStylePx(o.clientHeight);
@@ -2046,16 +2046,16 @@ function ng_ClientHeightEx(o)
 /**
  *  Function: ng_SetClientWidth
  *  Sets element client width.
- *
+ *  
  *  Syntax:
  *    void *ng_SetClientWidth* (object elm, int v)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    v - width in pixels
- *
+ *    v - width in pixels 
+ *    
  *  Returns:
- *    -
+ *    -          
  */
 function ng_SetClientWidth(o,v)
 {
@@ -2066,16 +2066,16 @@ function ng_SetClientWidth(o,v)
 /**
  *  Function: ng_SetClientHeight
  *  Sets element client height.
- *
+ *  
  *  Syntax:
  *    void *ng_SetClientHeight* (object elm, int v)
- *
+ *    
  *  Parameters:
  *    elm - object element
- *    v - height in pixels
- *
+ *    v - height in pixels 
+ *    
  *  Returns:
- *    -
+ *    -          
  */
 function ng_SetClientHeight(o,v)
 {
@@ -2086,17 +2086,17 @@ function ng_SetClientHeight(o,v)
 /**
  *  Function: ng_setLeftTop
  *  Sets element left, top. Optimized for IE if used.
- *
+ *  
  *  Syntax:
  *    void *ng_setLeftTop* (object obj, int left, int top)
- *
+ *    
  *  Parameters:
  *    obj - object element
  *    left - left position in pixels
  *    top - top position in pixels
- *
+ *    
  *  Returns:
- *    -
+ *    -         
  */
 function ng_setLeftTopNotIE(o, l, t)
 {
@@ -2115,19 +2115,19 @@ var ng_setLeftTop = ngIExplorer ? ng_setLeftTopIE : ng_setLeftTopNotIE;
 /**
  *  Function: ng_setBounds
  *  Sets element left, top, width and height. Optimized for IE if used.
- *
+ *  
  *  Syntax:
  *    void *ng_setBounds* (object obj, int left, int top, int width, int height)
- *
+ *    
  *  Parameters:
  *    obj - object element
  *    left - left position in pixels
  *    top - top position in pixels
  *    width - width of element in pixels
- *    height - height of element in pixels
- *
+ *    height - height of element in pixels       
+ *    
  *  Returns:
- *    -
+ *    -         
  */
 function ng_setBoundsNotIE(o, l, t, w, h)
 {
@@ -2167,10 +2167,10 @@ function ng_ProcessURLParams(url)
   var i2=url.indexOf('#');
   var url1='';
   var url2='';
-  if(i2>=0)
+  if(i2>=0) 
   {
     url2=url.substr(i2+1);
-    url=url.substr(0,i2);
+    url=url.substr(0,i2);  
   }
   if(i1>=0) url1=url.substr(i1+1);
   ng_ProcessURLParams2(url1,'&');
@@ -2181,22 +2181,22 @@ function ng_ProcessURLParams(url)
 
 /**
  *  Function: ng_GET
- *  Gets value of page URL parameter.
- *
+ *  Gets value of page URL parameter. 
+ *   
  *  Syntax:
  *    string *ng_GET* (string paramname)
- *
+ *    
  *  Parameters:
  *    paramname - parameter name
- *
+ *    
  *  Returns:
  *    Value of the parameter.
- *
+ *    
  *  Example:
  *    > http://server/?P1=a&P2=b&amp;P3=c#P4=d@P5=e
- *
- *    > var p1=ng_GET('P1');
- */
+ *    
+ *    > var p1=ng_GET('P1');   
+ */       
 function ng_GET(p)
 {
   if(!ngURLParamsParsed) ng_ProcessURLParams();
@@ -2205,13 +2205,13 @@ function ng_GET(p)
 
 /**
  *  Function: ng_GetURLSafeCharsEncoded
- *  Gets array, where keys are url encoded URL safe chars (RFC1738) and values are just URL safe chars
- *
+ *  Gets array, where keys are url encoded URL safe chars (RFC1738) and values are just URL safe chars  
+ *  
  *  Syntax:
  *    array *ng_GetURLSafeCharsEncoded* ()
- *
+ *   
  *  Returns:
- *    Value of global variable ngURLSafeCharsEncoded
+ *    Value of global variable ngURLSafeCharsEncoded      
  */
 function ng_GetURLSafeCharsEncoded()
 {
@@ -2227,17 +2227,17 @@ function ng_GetURLSafeCharsEncoded()
 /**
  *  Function: ng_Redirect
  *  Redirects user to specified URL.
- *
+ *   
  *  Syntax:
  *    void *ng_Redirect* (string url, bool topframe = true)
- *
+ *    
  *  Parameters:
  *    url - target url
- *    topframe - redirect
- *
+ *    topframe - redirect  
+ *    
  *  Returns:
  *    TRUE if location was set.
- */
+ */       
 function ng_Redirect(url, topframe)
 {
   url=ng_URL(url);
@@ -2254,7 +2254,7 @@ function ng_Redirect(url, topframe)
       p.location.href=url;
     }
     else document.location.href=url;
-    return true;
+    return true;  
   }
   catch(e) {
     return false;
@@ -2264,16 +2264,16 @@ function ng_Redirect(url, topframe)
 /**
  *  Function: ng_InIFRAME
  *  Tests if page is opened in IFRAME.
- *
+ *   
  *  Syntax:
  *    bool *ng_InIFRAME* (void)
- *
+ *    
  *  Parameters:
- *    -
- *
+ *    - 
+ *    
  *  Returns:
  *    TRUE if page is in IFRAME.
- */
+ */       
 function ng_InIFRAME()
 {
   return (parent!=window);
@@ -2282,73 +2282,73 @@ function ng_InIFRAME()
 /**
  *  Function: ng_SetByRef
  *  Sets value as reference into object property.
- *
+ *   
  *  Syntax:
  *    void *ng_SetByRef* (object obj, string prop [, mixed value])
- *
+ *    
  *  Parameters:
  *    obj - object where property will be set
  *    prop - property name
- *    value - value of property
- *
+ *    value - value of property     
+ *    
  *  Returns:
- *    -
- */
+ *    - 
+ */       
 function ng_SetByRef(obj,prop,val)
 {
   if((!obj)||(!prop)||(prop=='')) return;
   if(typeof obj['_byRef'] === 'undefined') obj['_byRef']=new Object;
   obj['_byRef'][prop]=true;
-  if(arguments.length>2)
+  if(arguments.length>2) 
     obj[prop]=val;
 }
 
 /**
  *  Function: ng_SetByVal
  *  Sets copy of given value into object property.
- *
+ *   
  *  Syntax:
  *    void *ng_SetByVal* (object obj, string prop [, mixed value])
- *
+ *    
  *  Parameters:
  *    obj - object where property will be set
  *    prop - property name
- *    value - value of property
- *
+ *    value - value of property     
+ *    
  *  Returns:
- *    -
- */
+ *    - 
+ */       
 function ng_SetByVal(obj,prop,val)
 {
   if((!obj)||(!prop)||(prop=='')) return;
   if(obj['_byRef']) delete obj['_byRef'][prop];
-  if(arguments.length>2)
+  if(arguments.length>2) 
     obj[prop]=ng_CopyVar(val);
 }
 
 /**
  *  Function: ng_CopyVar
  *  Creates true copy of variable.
- *
+ *   
  *  Syntax:
  *    mixed *ng_CopyVar* (mixed var)
- *
+ *    
  *  Parameters:
- *    var - variable to be copied
- *
+ *    var - variable to be copied 
+ *    
  *  Returns:
- *    New variable.
- */
+ *    New variable. 
+ */       
 function ng_CopyVar(o)
-{
+{                                    
   var ri={ cnt: 0, src: [], dst: [] };
   var r=ng_copyvar_int(o,ri);
   if((ri.cnt!=0)&&(ri.src.length))
     ng_copyvar_fixref(r,ri);
-  return r;
+  return r; 
 }
 
-function ng_type_date(d) {
+function ng_type_date(d) { 
   return Object.prototype.toString.call(d) === '[object Date]';
 }
 
@@ -2371,15 +2371,15 @@ function ng_copyvar_int(o, ri)
     var oref=o['_byRef'];
     if(oref)
     {
-      for(var i in o)
+      for(var i in o) 
         if(!oref[i]) r[i]=ng_copyvar_int(o[i],ri);
         else { r[i]=o[i]; ri.cnt++; }
     }
     else for(var i in o) r[i]=ng_copyvar_int(o[i],ri);
-
+    
     if(typeof r.__clone === 'function') r.__clone(o);
     return r;
-  }
+  }    
   return o;
 }
 
@@ -2387,11 +2387,11 @@ function ng_copyvar_fixref(o, ri)
 {
   if((!o)||(typeof o !== 'object')||(ng_type_date(o))) return;
 
-  if(typeof o.length === 'number') // array
-  {
+  if(typeof o.length === 'number') // array 
+  { 
     var ix;
-    var arr=true;
-    for(var i in o)
+    var arr=true; 
+    for(var i in o) 
     {
       if(!o.hasOwnProperty(i)) continue;
       ix=(typeof i!=='number' ? parseInt(i) : i);
@@ -2399,7 +2399,7 @@ function ng_copyvar_fixref(o, ri)
       {
         arr=false;
         break;
-      }
+      }  
       ng_copyvar_fixref(o[i],ri);
     }
     if(arr) return;
@@ -2408,22 +2408,22 @@ function ng_copyvar_fixref(o, ri)
   if(oref)
   {
     for(var i in o)
-    {
+    { 
       if(!oref[i]) ng_copyvar_fixref(o[i],ri);
-      else
+      else 
       {
         for(var j=0;j<ri.src.length;j++)
           if(o[i]==ri.src[j]) {
             o[i]=ri.dst[j];
             break;
-          }
-        ri.cnt--;
+          } 
+        ri.cnt--; 
       }
       if(!ri.cnt) break;
     }
   }
-  else
-    for(var i in o)
+  else 
+    for(var i in o) 
     {
       ng_copyvar_fixref(o[i],ri);
       if(!ri.cnt) break;
@@ -2435,29 +2435,29 @@ var merge_undefined;
 /**
  *  Function: ng_MergeVar
  *  Merges two objects.
- *
+ *   
  *  Syntax:
  *    void *ng_MergeVar* (object dst, object var [, bool allowundefined=false, function callback])
- *
+ *    
  *  Parameters:
  *    dst - destination object
  *    var - object to be merged
  *    allowundefined - if FALSE (default), undefined values in parameter var are ignored
- *    callback - optional callback function
- *
+ *    callback - optional callback function 
+ *    
  *  Returns:
- *    -
- */
+ *    - 
+ */       
 function ng_MergeVar(d,o,allowundefined,callback)
-{
+{  
   if((!d)||(typeof d !== 'object')||(ng_type_date(d))||(typeof o!=='object')||(ng_type_date(o))) return;
   if(!ngVal(allowundefined,false)) o=ng_CleanUndefined(ng_CopyVar(o));
-
+  
   if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return;
   if((typeof d.__merge === 'function')&&(!ngVal(d.__merge(o),true))) return;
-
+  
   var dref=d['_byRef'];
-
+  
   var ex={};
   for(var i in d) ex[i]=true;
   if((o)&&((dref)||o['_byRef']))
@@ -2470,7 +2470,7 @@ function ng_MergeVar(d,o,allowundefined,callback)
         else d[i]=o[i];
       }
       else
-      {
+      { 
         if(((!oref)||(!oref[i]))
            &&((!dref)||(!dref[i]))&&(!ng_IsArrayVar(d[i]))) ng_MergeVar(d[i],o[i],true,callback);
       }
@@ -2478,10 +2478,10 @@ function ng_MergeVar(d,o,allowundefined,callback)
   }
   else
   {
-    for(var i in o)
+    for(var i in o) 
     {
       if(ex[i]!==true) d[i]=ng_CopyVar(o[i]);
-      else
+      else 
       {
         if(!ng_IsArrayVar(d[i])) ng_MergeVar(d[i],o[i],true,callback);
       }
@@ -2540,22 +2540,22 @@ function ng_MergeVarReplace(d,o,allowundefined,callback)
 /**
  *  Function: ng_CleanUndefined
  *  Removes all undefined properties in object.
- *
+ *   
  *  Syntax:
  *    mixed *ng_CleanUndefined* (mixed obj)
- *
+ *    
  *  Parameters:
  *    obj - object to be cleaned
- *
+ *     
  *  Returns:
- *    Input obj parameter.
- */
+ *    Input obj parameter.      
+ */  
 function ng_CleanUndefined(d)
 {
   if((!d)||(typeof d !== 'object')||(ng_type_date(d))) return d;
   var dref=d['_byRef'];
   var del=[];
-  for(var i in d)
+  for(var i in d) 
   {
     if(typeof d[i]==='undefined') del.push(i); // don't delete in foreach
     else if(((!dref)||(!dref[i]))&&(!ng_IsArrayVar(d[i]))) ng_CleanUndefined(d[i]);
@@ -2568,25 +2568,25 @@ function ng_CleanUndefined(d)
 /**
  *  Function: ng_VarEquals
  *  Tests if value of one variable equals to value of second variable.
- *  Function handles date types and objects.
- *
+ *  Function handles date types and objects. 
+ *   
  *  Syntax:
  *    bool *ng_VarEquals* (mixed a, mixed b [, bool noobj=false])
- *
+ *    
  *  Parameters:
- *    a - first variable
+ *    a - first variable 
  *    b - second variable
- *    noobj - if TRUE don't compare objects
- *
+ *    noobj - if TRUE don't compare objects  
+ *    
  *  Returns:
- *    TRUE if values of variables are equal.
- *
- */
+ *    TRUE if values of variables are equal.    
+ *  
+ */       
 function ng_VarEquals(a,b,noobj)
 {
-  if(a===b) return true;
+  if(a===b) return true;  
   if(typeof a !== typeof b) return (a==b);
-  if(typeof a !=='object') return false;
+  if(typeof a !=='object') return false;   
 
   var adate=ng_type_date(a);
   var bdate=ng_type_date(b);
@@ -2601,8 +2601,8 @@ function ng_VarEquals(a,b,noobj)
     if(typeof b.__equals === 'function') return ngVal(b.__equals(a),false);
 
     var keys={};
-    for(var i in a) keys[i]=true;
-    for(var i in b) keys[i]=true;
+    for(var i in a) keys[i]=true;      
+    for(var i in b) keys[i]=true;      
     delete keys._byRef;
 
     var aref=a['_byRef'];
@@ -2640,31 +2640,31 @@ function ng_IsObjVar(v) {
 /**
  *  Function: ng_IsArrayVar
  *  Detects if variable is indexed array.
- *
+ *   
  *  Syntax:
  *    bool *ng_IsArrayVar* (mixed var)
- *
+ *    
  *  Parameters:
- *    var - variable to be checked
- *
+ *    var - variable to be checked 
+ *    
  *  Returns:
- *    TRUE if variable is indexed array.
+ *    TRUE if variable is indexed array. 
  */
 window.ng_IsArrayVar=Array.isArray;
 
 /**
  *  Function: ng_EmptyVar
  *  Detects if variable is empty (not set).
- *
+ *   
  *  Syntax:
  *    bool *ng_EmptyVar* (mixed var)
- *
+ *    
  *  Parameters:
- *    var - variable to be checked
- *
+ *    var - variable to be checked 
+ *    
  *  Returns:
- *    TRUE if variable is empty.
- */
+ *    TRUE if variable is empty. 
+ */       
 function ng_EmptyVar(o)
 {
   switch(typeof o)
@@ -2685,22 +2685,22 @@ function ng_EmptyVar(o)
 
 /**
  *  Function: ngAddEvent
- *  Adds new function to existing event handler (callback).
- *
+ *  Adds new function to existing event handler (callback).  
+ * 
  *  Syntax:
  *    function *ngAddEvent* (function oldevent, function appendevent)
- *
+ *    
  *  Parameters:
  *    oldevent - old event handler
  *    appendevent - function to be added to existing event handler
- *
+ *    
  *  Returns:
- *    New event handler function that calls both event handlers (oldevent
- *    function and than appendevent function).
+ *    New event handler function that calls both event handlers (oldevent 
+ *    function and than appendevent function).               
  */
 function ngAddEvent(ev, fce) {
-  if(typeof(fce)=='function') // only functions can be added to event handlers
-  {
+  if(typeof(fce)=='function') // only functions can be added to event handlers 
+  {              
     if(typeof(ev)=='function') return function() { var r1=ev.apply(this,arguments); var r2=fce.apply(this,arguments); return ((typeof r1 === typeof r2) && (r1 == r2) ? r1 : undefined); } // add new function to functions chain
     return fce; // event handler not set, return added function
   }
@@ -2729,15 +2729,15 @@ function ngObjAddEvent(ev, fce, once) {
     }
     return;
   }
-  if(typeof fce === 'function') // only functions can be added to event handlers
-  {
-    if(typeof this[ev] === 'function')
-    {
+  if(typeof fce === 'function') // only functions can be added to event handlers 
+  { 
+    if(typeof this[ev] === 'function') 
+    { 
       var evlist=this[ev].events;
       if(typeof evlist === 'undefined') {
         var oldfnc=this[ev];
         if((once)&&(fce===oldfnc)) return;
-
+        
         evlist=[];
         var self=this;
         var handler=function() {
@@ -2773,7 +2773,7 @@ function ngObjAddEvent(ev, fce, once) {
             handler.inprocess=oldproc;
           }
           return ret;
-        }
+        }      
         handler.events=evlist;
         this[ev]=handler;
         evlist.push(oldfnc);
@@ -2794,7 +2794,7 @@ function ngObjAddEvent(ev, fce, once) {
   }
 }
 
-function ngObjRemoveEvent(ev, fce)
+function ngObjRemoveEvent(ev, fce) 
 {
   if(typeof fce === 'string')
   {
@@ -2808,8 +2808,8 @@ function ngObjRemoveEvent(ev, fce)
       ngObjRemoveEvent.apply(this,[ev,fce[i]]);
     return;
   }
-  if(typeof(fce)=='function') // only functions can be added to event handlers
-  {
+  if(typeof(fce)=='function') // only functions can be added to event handlers 
+  { 
     var handler=this[ev];
     if(!handler) return;
     if(handler===fce) { this[ev] = null; return; }
@@ -2817,7 +2817,7 @@ function ngObjRemoveEvent(ev, fce)
     if(typeof evlist !== 'undefined')
     {
       var inproc=handler.inprocess;
-      for(var i=evlist.length-1;i>=0;i--)
+      for(var i=evlist.length-1;i>=0;i--) 
         if(evlist[i]===fce) {
           if(inproc) {
             handler.changed=true;
@@ -2837,7 +2837,7 @@ function ngObjRemoveEvent(ev, fce)
           delete handler.events;
         }
       }
-    }
+    } 
   }
 }
 
@@ -3016,7 +3016,7 @@ function ngSetCookie(name, value, expires, path, domain, secure, escapevalue)
   if (typeof expires !== 'undefined') cookie_string+='; expires='+expires.toGMTString();
   if(path) cookie_string += '; path='+escape(path);
   if(domain) cookie_string += '; domain='+escape(domain);
-  if(secure) cookie_string += '; secure';
+  if(secure) cookie_string += '; secure';  
   document.cookie = cookie_string;
 }
 
@@ -3033,7 +3033,7 @@ function ngDeleteCookie(cookie_name, path, domain, secure)
 }
 
 function ngGetCookie(cookie_name)
-{
+{ 
   var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
   return( results ? ng_unescape(results[2]) : undefined);
 }
@@ -3042,7 +3042,7 @@ function ngSetCookieByURL(name, value, expires, url, escapevalue)
 {
   var secure=false,domain,path;
   var idx=url.indexOf("://");
-  if(idx>=0)
+  if(idx>=0) 
   {
     if(url.substring(0,idx) == 'https') secure=true;
     url=url.substring(idx+3,url.length);
@@ -3117,13 +3117,13 @@ function ngrpc_sendScriptRequest(url)
   {
     rpcHeadElement = document.getElementsByTagName("head").item(0);
     if(!rpcHeadElement) return false;
-  }
+  } 
   var sid=this.id+'S';
   var o = document.getElementById(sid);
-  if(o) rpcHeadElement.removeChild(o);
-  o = document.createElement("script");
-  o.setAttribute("src",ng_URL(url));
-  o.setAttribute("id",sid);
+  if(o) rpcHeadElement.removeChild(o); 
+  o = document.createElement("script");  
+  o.setAttribute("src",ng_URL(url)); 
+  o.setAttribute("id",sid); 
   rpcHeadElement.appendChild(o);
   if(this.OnRequestSent) this.OnRequestSent(this, url, null);
   return true;
@@ -3156,9 +3156,9 @@ function ngrpc_sendIFrameRequest(url, params)
       try
       {
         for(var i in params)
-        {
+        {                                        
           v=this.EncodeParam(i,params[i]);
-          if(typeof v === 'undefined') continue;
+          if(typeof v === 'undefined') continue;          
           doc.write('<input type="hidden" name="'+ng_htmlEncode(i)+'" value="'+ng_htmlEncode(v)+'" />');
         }
       }
@@ -3176,17 +3176,17 @@ function ngrpc_sendIFrameRequest(url, params)
     ngDEBUGERROR('ngRPC: Failed to create IFRAME form!',e);
     return false;
   }
-
+  
   if((this.OnSendRequest)&&(!ngVal(this.OnSendRequest(this, url, doc),false))) return true;
 
   var frm=doc.getElementById(this.id);
-  if(frm)
-  {
-    frm.submit();
+  if(frm) 
+  { 
+    frm.submit(); 
     if(this.OnRequestSent) this.OnRequestSent(this, url, doc);
-    return true;
+    return true; 
   }
-  return false;
+  return false;          
 }
 
 function ngrpc_sendHttpRequest(url, callback, reqinfo)
@@ -3201,8 +3201,8 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? (typeof reqinfo.PostParams === 'string' ? 'POST' : 'GET') : this.HttpMethod));
   var xmlhttp=null;
   try {
-    if (window.XMLHttpRequest) xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
-    else
+    if (window.XMLHttpRequest) xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari      
+    else 
     {
       try { xmlhttp=new ActiveXObject('Msxml2.XMLHTTP'); }   // code for IE6, IE5
       catch (e) { xmlhttp=new ActiveXObject('Microsoft.XMLHTTP'); }
@@ -3222,11 +3222,11 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
     xmlhttp.onreadystatechange=function()
     {
       if((rpc.OnHTTPReadyStateChanged)&&(!ngVal(rpc.OnHTTPReadyStateChanged(rpc,xmlhttp,reqinfo),false))) return;
-      if(xmlhttp.readyState==4)
+      if(xmlhttp.readyState==4) 
       {
         if((xmlhttp.status==200)||(xmlhttp.status==304)||(xmlhttp.status==0)) callback(rpc, xmlhttp.responseText, xmlhttp, reqinfo);
-        else if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
-      }
+        else if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);                   
+      }      
     }
   }
   if(typeof reqinfo.PostParams === 'string')
@@ -3239,7 +3239,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
     if(typeof reqinfo.ReqHeaders['Connection'] === 'undefined')
       reqinfo.ReqHeaders['Connection'] = 'close';
   }
-
+  
   if((this.OnHTTPRequest)&&(!ngVal(this.OnHTTPRequest(this,reqinfo),false))) return false;
   xmlhttp.open(reqinfo.Method,ng_URL(reqinfo.URL),(callback ? true : false));
   if(reqinfo.ReqHeaders)
@@ -3256,7 +3256,7 @@ function ngrpc_EncodeParam(n,v)
 {
   if(typeof v === 'undefined') return v;
   if(this.OnEncodeParam) v=this.OnEncodeParam(this,n,v);
-  else
+  else 
   {
     if((typeof v === 'object')&&(v))
     {
@@ -3274,7 +3274,7 @@ function ngrpc_GetURLParams()
   for(var i in this.Params)
   {
     v=this.EncodeParam(i,this.Params[i]);
-    if(typeof v === 'undefined') continue;
+    if(typeof v === 'undefined') continue; 
     if(urlparams!='') urlparams+='&'
     urlparams+=i+'='+v;
   }
@@ -3311,7 +3311,7 @@ function ngrpc_sendRequest(url, nocache)
     url=reqinfo.URL;
     nocache=reqinfo.nocache;
   }
-  if(nocache) url=ng_AddURLParam(url,'_t='+new Date().getTime());
+  if(nocache) url=ng_AddURLParam(url,'_t='+new Date().getTime()); 
 
   var v,params='';
   var type=this.Type;
@@ -3329,8 +3329,8 @@ function ngrpc_sendRequest(url, nocache)
     case rpcDataPOST:
     case rpcDataGET:
       params=this.GetURLParams();
-      if((type===rpcAuto)||(type===rpcHttpRequest)||(type===rpcJSON)||(type===rpcData)) // determine req. type by params length
-      {
+      if((type===rpcAuto)||(type===rpcHttpRequest)||(type===rpcJSON)||(type===rpcData)) // determine req. type by params length 
+      {        
         if((type===rpcAuto)&&(!ngCordova)&&(ngrpc_domain(url)!=window.location.hostname))
         {
           type=rpcScript;
@@ -3339,13 +3339,13 @@ function ngrpc_sendRequest(url, nocache)
         {
           type=rpcHttpRequest;
           var i=url.indexOf('?');
-          if(i>=0)
+          if(i>=0) 
           {
             params=ng_AddURLParam(url.substr(i,url.length),params);
             if((params.length)&&(params.charAt(0)=='?')) params=params.substr(1,params.length);
             url=url.substr(0,i);
           }
-          if(params.length>rpcMaxGetLength)
+          if(params.length>rpcMaxGetLength) 
           {
             switch(this.Type)
             {
@@ -3390,8 +3390,8 @@ function ngrpc_sendRequest(url, nocache)
     case rpcIFrame:
       return this.sendIFrameRequest(url,this.Params);
 
-    case rpcHttpRequestPOST:
-    case rpcHttpRequestGET:
+    case rpcHttpRequestPOST:    
+    case rpcHttpRequestGET:    
     case rpcJSONPOST:
     case rpcJSONGET:
     case rpcDataPOST:
@@ -3403,13 +3403,13 @@ function ngrpc_sendRequest(url, nocache)
       }
       else ri.PostParams=params;
       return this.sendHttpRequest(url, function(rpc, response, xmlhttp, reqinfo) {
-        if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false)))
+        if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false))) 
           return;
 
         switch(type)
         {
           case rpcHttpRequestGET:
-          case rpcHttpRequestPOST:
+          case rpcHttpRequestPOST:    
             if(ngWinStoreApp) {
               MSApp.execUnsafeLocalFunction(function () {
                   window["eval"].call(window, '(function() {'+response+'})();');
@@ -3422,21 +3422,21 @@ function ngrpc_sendRequest(url, nocache)
           case rpcJSONPOST:
             try {
               var data=JSON.parse(response);
-            }
-            catch(e)
-            {
+            } 
+            catch(e) 
+            { 
               ngDEBUGERROR('ngRPC: JSON parsing failed!',e);
               if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp);
               break;
             }
-            if(rpc.OnReceivedJSON) rpc.OnReceivedJSON(rpc, data, xmlhttp);
+            if(rpc.OnReceivedJSON) rpc.OnReceivedJSON(rpc, data, xmlhttp); 
             break;
           case rpcDataGET:
           case rpcDataPOST:
             break;
         }
       }, ri);
-
+      
     case rpcUser:
       if(!this.OnSendRequest) return false;
       if(!ngVal(this.OnSendRequest(this, url),false)) return false;
@@ -3444,7 +3444,7 @@ function ngrpc_sendRequest(url, nocache)
       return  true;
   }
   return false;
-}
+} 
 
 function ngrpc_clearParams()
 {
@@ -3465,17 +3465,17 @@ function ngrpc_GetParam(n)
 /**
  *  Class: ngRPC
  *  Remote Procedure Call.
- *
+ *   
  *  This class is used for asynchronous communication with server.
- *
+ *  
  *  Syntax:
  *    new *ngRPC* ([string id='', string url='', bool nocache=false])
- *
+ *    
  *  Parameters:
- *    id - unique ID of RPC class
- *    url - request URL
- *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results
- */
+ *    id - unique ID of RPC class  
+ *    url - request URL      
+ *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results  
+ */   
 function ngRPC(id,url,nocache)
 {
   if(ngVal(id,'')=='')
@@ -3485,7 +3485,7 @@ function ngRPC(id,url,nocache)
   }
   this.id=id+'_RPC';
   ngRPCByID[id]=this;
-
+  
   this.sendScriptRequest = ngrpc_sendScriptRequest;
   this.sendIFrameRequest = ngrpc_sendIFrameRequest;
   this.sendHttpRequest = ngrpc_sendHttpRequest;
@@ -3498,181 +3498,181 @@ function ngRPC(id,url,nocache)
   /*  Variable: nocache
    *  If TRUE, unique timestamp is added to every request to prevent caching
    *  of results.
-   *
-   *  Default value: *false*
-   */
+   *  
+   *  Default value: *false*  
+   */ 
   this.nocache=ngVal(nocache,false);
   /*  Variable: Type
    *  Type of RPC call.
-   *
+   *  
    *  Type: integer
-   *  Default value: *rpcAuto*
-   */
+   *  Default value: *rpcAuto*  
+   */ 
   this.Type=rpcAuto;
   /*  Variable: HTTPMethod
    *  Used http method (if http request). If empty, autodetect.
-   *
+   *  
    *  Type: string
-   *  Default value: *''* (autodetect)
-   */
+   *  Default value: *''* (autodetect)  
+   */ 
   this.HTTPMethod='';
   /*  Variable: URL
    *  Default RPC URL.
-   *
+   *  
    *  Type: string
-   *  Default value: *''*
-   */
+   *  Default value: *''*  
+   */ 
   this.URL=ngVal(url,'');
   /*  Variable: Params
    *  RPC Parameters.
-   *
+   *  
    *  Type: object
-   *  Default value: *{ }*
-   */
+   *  Default value: *{ }*  
+   */ 
   this.Params=new Object;
-
+    
   /*
    *  Group: Methods
    */
   /*  Function: SetParam
    *  Sets request parameter.
-   *
+   *  
    *  Syntax:
    *    void *SetParam* (string name, mixed value)
-   *
+   *    
    *  Parameters:
    *    name - parameter name
    *    value - parameter value
-   *
+   *    
    *  Returns:
    *    -
-   */
+   */          
   this.SetParam = ngrpc_SetParam;
   /*  Function: GetParam
    *  Gets value of request parameter.
-   *
+   *  
    *  Syntax:
    *    mixed *GetParam* (string name)
-   *
+   *    
    *  Parameters:
    *    name - parameter name
-   *
+   *    
    *  Returns:
    *    Value of parameter.
-   */
+   */          
   this.GetParam = ngrpc_GetParam;
   /*  Function: sendRequest
    *  Sends request to the server.
-   *
+   *  
    *  Syntax:
    *    void *sendRequest* (string url)
-   *
+   *    
    *  Parameters:
    *    url - URL with parameters
-   *
+   *    
    *  Returns:
    *    -
-   */
+   */          
   this.sendRequest = ngrpc_sendRequest;
   /*  Function: clearParams
    *  Clears RPC parameters.
-   *
+   *  
    *  Syntax:
    *    void *clearParams* ()
-   *
+   *    
    *  Returns:
    *    -
-   */
+   */          
   this.clearParams = ngrpc_clearParams;
-
+  
   /*
    *  Group: Events
    */
   /*  Function: AddEvent
-   *  Adds new function to the event handler (callback).
-   *
+   *  Adds new function to the event handler (callback).   
+   *   
    *  Syntax:
    *    void *AddEvent* (string event, function handler)
-   *
+   *    
    *    void *AddEvent* (function handler, string event)
-   *
+   *     
    *  Parameters:
-   *
+   *   
    *  Returns:
-   *    -
+   *    -     
    */
   this.AddEvent = ngObjAddEvent;
   /*  Function: RemoveEvent
-   *  Removes function from the event handler (callback).
-   *
+   *  Removes function from the event handler (callback).   
+   *   
    *  Syntax:
    *    void *RemoveEvent* (string event, function handler)
-   *
+   *     
    *  Parameters:
-   *
+   *   
    *  Returns:
-   *    -
+   *    -     
    */
   this.RemoveEvent = ngObjRemoveEvent;
   /*
    *  Event: OnEncodeParam
-   */
+   */     
   this.OnEncodeParam = null;
   /*
    *  Event: OnRequest
-   */
+   */     
   this.OnRequest = null;
   /*
    *  Event: OnSendRequest
-   */
+   */     
   this.OnSendRequest = null;
   /*
    *  Event: OnRequestSent
-   */
+   */       
   this.OnRequestSent = null;
   /*
    *  Event: OnIFrameRequest
-   */
+   */     
   this.OnIFrameRequest = null;
   /*
    *  Event: OnHTTPRequest
-   */
+   */     
   this.OnHTTPRequest = null;
   /*
    *  Event: OnHTTPReadyStateChanged
-   */
+   */     
   this.OnHTTPReadyStateChanged = null;
   /*
    *  Event: OnHTTPRequestFailed
-   */
+   */     
   this.OnHTTPRequestFailed = null;
   /*
    *  Event: OnReceivedJSON
-   */
+   */     
   this.OnReceivedJSON = null;
   /*
    *  Event: OnReceivedData
-   */
+   */     
   this.OnReceivedData = null;
-
+  
   if(ngOnRPCCreated) ngOnRPCCreated(this);
 }
 
 /**
  *  Class: ngRDS
  *  Remote Data Service based on <ngRPC> class.
- *
+ *   
  *  This class is used for getting asynchronous data from server.
- *
+ *  
  *  Syntax:
  *    new *ngRDS* ([string id='', string url='', function callback = null, bool nocache=false])
- *
+ *    
  *  Parameters:
- *    id - unique ID of RPC class
+ *    id - unique ID of RPC class  
  *    url - request URL
- *    callback - function which is called after data was received
- *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results
- */
+ *    callback - function which is called after data was received       
+ *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results  
+ */   
 function ngRDS(id,url,callback,nocache)
 {
   this.__rpc=ngRPC;
@@ -3684,7 +3684,7 @@ function ngRDS(id,url,callback,nocache)
   {
     this.OnReceivedJSON = function(rpc, response, xmlhttp) {
       callback(rpc, response, xmlhttp);
-    };
+    }; 
     this.OnReceivedData = function(rpc, response, xmlhttp) {
       if((rpc.Type===rpcJSON)||(rpc.Type===rpcJSONGET)||(rpc.Type===rpcJSONPOST)) return true;
       callback(rpc, response, xmlhttp);
@@ -3697,47 +3697,47 @@ function ngRDS(id,url,callback,nocache)
 /**
  *  Class: ngStringBuilder
  *  This class realizes fast concatenation of strings.
- *
+ *  
  *  Standard JavaScript string concatenation is quite slow. This class utilizes
- *  the fact that array joining is much faster than standard string
- *  concatenation.
- *
+ *  the fact that array joining is much faster than standard string 
+ *  concatenation.    
+ *    
  *  Syntax:
  *    new *ngStringBuilder* (mixed value)
- *
- *  The statement:
+ *   
+ *  The statement:  
  *    > s = s1 + s2 + s3;
- *
+ *     
  *  can be replaced with:
  *    > var sb = new ngStringBuilder(s1);
  *    > sb.append(s2);
  *    > sb.append(s3);
  *    > s = sb.toString();
- *
- */
+ *  
+ */ 
 // Initializes a new instance of the StringBuilder class
 // and appends the given value if supplied
 function ngStringBuilder(value)
 {
   this.strings = new Array("");
 
-  /**
-   *  Function: append
+  /** 
+   *  Function: append 
    *  Appends the given value to the end of this instance.
-   *
+   *  
    *  Syntax:
    *    <ngStringBuilder> *append* (mixed value)
-   *
+   *    
    *  Parameters:
    *    value - string, array or other ngStringBuilder class
-   *
-   *  Returns:
-   *    This instance of ngStringBuilder.
+   *             
+   *  Returns: 
+   *    This instance of ngStringBuilder. 
    *    Helps function chaining - sb.append('a').append('b').append('c').
-   */
+   */                     
   this.append = function (value)
   {
-    if(value)
+    if(value) 
     {
       if(typeof value === 'string') this.strings.push(value);
       else
@@ -3748,50 +3748,50 @@ function ngStringBuilder(value)
     }
     return this;
   }
-
+  
   /**
    *  Function: clear
    *  Clears the string buffer.
-   *
+   *  
    *  Syntax:
    *    void *clear* ()
-   *
+   *  
    *  Returns:
    *    -
-   */
+   */                     
   this.clear = function ()
   {
     this.strings.length = 1;
   }
-
+  
   /**
    *  Function: empty
    *  Tests if string buffer is empty.
-   *
+   *  
    *  Syntax:
    *    bool *empty* ()
-   *
+   *    
    *  Returns:
    *    TRUE if string buffer is empty.
-   */
+   */                     
   this.empty = function ()
   {
     return (this.strings.length <= 1);
   }
-
+  
   /**
    *  Function: toString
    *  Converts this instance to a String.
-   *
+   *  
    *  Syntax:
    *    string *toString* ()
-   *
+   *    
    *  Returns:
    *    String with concatenated values.
-   *
+   *    
    *  See also:
-   *    <append>
-   */
+   *    <append>         
+   */                     
   this.toString = function ()
   {
     return this.strings.join("");
@@ -3803,11 +3803,11 @@ function ngStringBuilder(value)
 (function() {
   var url=document.location.href;
   var idx=url.indexOf("://");
-  if(idx>=0)
+  if(idx>=0) 
   {
     ngHTTPProtocol=url.substring(0,idx+3);
     if(ngHTTPProtocol=='file://') ngHTTPProtocol='http://';
-  }
+  }    
 })();
 
 ng_DetectLibsURL();
