@@ -11,5 +11,25 @@
  */
 
 // Libs
-var ngLibsURL=(typeof ngLibsURL !== 'undefined' ? ngLibsURL : 'controls/libs/');
-if(typeof ngLib === 'undefined') ngLib=[];
+var ngLibsURL=(typeof ngLibsURL !== 'undefined' ? ngLibsURL : 'libs/');
+if(typeof ngLib === 'undefined') ngLib={};
+(function() {
+  var path,url;
+  var clib=ngLib['controls.js'];
+  if((typeof clib === 'object')&&(clib)) {
+    path=clib.path;
+    url=clib.URL;
+  }
+  if(typeof path==='undefined') path='Controls.js/';
+  path+=(ngDEBUG ? 'debug/' : 'release/');
+  function lib(l) {
+   if(typeof ngLib[l] !== 'undefined') return;
+   var lb={ path: path+'libs/'+l+'/' }; if(typeof url!=='undefined') lb.URL=url;
+   ngLib[l]=lb;
+  }
+  lib('ng_basic');
+  lib('ng_controls');
+  lib('ng_wineight');
+  lib('ng_winxp');
+  lib('ng_wireframe');
+})();
