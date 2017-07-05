@@ -493,7 +493,7 @@ function ngLibPath(lib,file)
     path=lib+'/';
   }
 
-  if(url && (url.charAt(url.length)!=='/')){
+  if((url)&&(url.length>0)&&(url.charAt(url.length-1)!=='/')) {
     url+='/';
   }
 
