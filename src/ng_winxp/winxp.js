@@ -1107,8 +1107,8 @@ var WinXPControls = {
       if(c)
       {
         c.AddEvent(function (b) {
-          var txt=ngTxt(b.Text,'');
-          if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+txt+'</span>';
+          var txt=ngVal(b.Text,'');
+          if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+ng_htmlEncode(txt)+'</span>';
           return '<img src="'+libpath+'loading.gif" align="top" />'+txt;
         }, 'OnGetText');
       }
