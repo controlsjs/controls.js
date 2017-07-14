@@ -530,71 +530,99 @@ function ng_SetLibsURL(path)
   }
 }
 
-function ng_DetectLibsURL(type,scripts)
+function ng_DetectLibsURL()
 {
-  if(typeof ngLibsURL !== 'undefined') return;
-  try
+  if((typeof ngLib!=='object')||(!ngLib)) ngLib={};
+
+  if((typeof ngLib['controls.js'] === 'undefined')
+    &&(typeof ngLib['ng_basic'] === 'undefined'))
   {
-    type=ngVal(type,0); 
-    if(typeof scripts==='undefined') scripts=document.getElementsByTagName("script");
-    var idx,s;
-    for (var i=0; i<scripts.length; i++)
+    // no paths, try detect library paths from loaded scripts
+    var scripts=document.getElementsByTagName("script");
+    function setlibpath(lib,path)
     {
-      if(typeof scripts[i].src !== 'undefined')
+      if(typeof ngLib[lib] !== 'undefined') return;
+      var l={};
+      if(path.indexOf('//')>=0) { l.URL=path; l.path=''; }
+      else { l.path=path; l.URL=''; }
+      ngLib[lib]=l;
+    }
+
+    function detect(type)
+    {
+      var idx=-1,s;
+      for(var i=0;i<scripts.length;i++)
       {
         s=scripts[i].src;
-
+        if(ngVal(s,'') == '') continue;
         switch(type)
         {
-          case 0: idx=s.indexOf("ng_basic"); break;
-          case 1: idx=s.indexOf("controls.js"); break;
-          case 2: idx=s.indexOf("basic.js"); break;
-          case 3:
-            idx=s.indexOf("controls");
-            if(idx>=0) {
-              var jidx=s.indexOf(".js",idx);
-              if((jidx<0) || ((jidx>s.indexOf("?",idx))||(jidx>s.indexOf("/",idx))||(jidx>s.indexOf("#",idx)))) idx=-1;
+          case 0:
+          case 3: 
+            // Check if standalone libraries are used
+            idx=s.indexOf(type===0 ? "/ng_controls/" : "/ng_basic/");
+            if(idx>=0)
+            {
+              if(typeof ngLibsURL === 'undefined') ngLibsURL=s.substring(0,idx+1);
+              return true;
             }
             break;
           case 4:
+          case 5:
+            // Check ng_basic library files
+            idx=s.indexOf(type===4 ? "basic.js" : "empty.js");
+            if(idx>=0) {
+              setlibpath('ng_basic', s.substr(0,idx));
+              return true;
+            }
+            break;
+          case 1:
+            // Check controls*.js file usage
+            idx=s.lastIndexOf('#');
+            if(idx>=0) s=s.substr(0,idx);
+            idx=s.lastIndexOf('?');
+            if(idx>=0) s=s.substr(0,idx);
+
+            idx=s.lastIndexOf("controls");
+            if(idx>=0) {
+              var jidx=s.indexOf(".js",idx);
+              if(jidx<0) break;
+              if(s.substr(idx,jidx).indexOf('/')>=0) break;
+              s=s.substr(0,idx);
+              if(s.substr(s.length-7,7)==='/debug/') s=s.substr(0,s.length-7);
+              if(s.substr(s.length-9,9)==='/release/') s=s.substr(0,s.length-9);
+              setlibpath('controls.js', s.substr(0,idx));
+              return true;
+            }
+            break;
+          case 2:
+            // Check if apploader is used (Position specific)
             idx=s.indexOf("apploader=");
             if(idx>=0) {
-              idx=s.lastIndexOf("/",idx);
-              if(idx>0) { s=s.substring(0,idx+1)+'libs/'; idx+=6; }
+              if(typeof ngLibsURL === 'undefined') {
+                idx=s.lastIndexOf("/",idx);
+                if(idx>0) ngLibsURL=s.substring(0,idx+1)+'libs/';
+              }
+              return true;
             }
             break;
         }
-        if(idx>=0) 
-        {
-          ngLibsURL=s.substring(0,idx);
-          var protocolsep = "://";
-          idx=ngLibsURL.indexOf(protocolsep);
-          
-          if (idx<0)
-          {
-            var loc = location.href;
-            idx = loc.indexOf(protocolsep);
-            if(ngLibsURL.charAt(0)=='/')
-            {
-              idx = loc.indexOf("/",idx+protocolsep.length);
-              if (idx>0) loc = loc.substr(0,idx);
-            }
-            else
-            {
-               var idx2 = loc.lastIndexOf("/");
-               if((idx+protocolsep.length)<idx2) loc = loc.substr(0,idx2+1);
-            }
-            ngLibsURL = loc + ngLibsURL;
-          }
-          return;
-        }
       }
+      return false;
     }
+    for(var i=0;i<6;i++)
+      if(detect(i)) break;
   }
-  catch(e) { }
 
-  if(type!=5) ng_DetectLibsURL(++type,scripts); // ng_basic not found, detect cotrols
-  else ngLibsURL='libs/'; // not found :(, use default path
+  // Set path if running as part of Controls.js library
+  var lib=ngLib['controls.js'];
+  if((typeof lib==='object')&&(lib)) {
+    var l={ path: lib.path+(ngDEBUG ? 'debug' : 'release')+'/libs/ng_basic/' };
+    if(typeof lib.URL!=='undefined') l.URL=lib.URL;
+    ngLib['ng_basic']=l;
+  }
+
+  if(typeof ngLibsURL === 'undefined') ngLibsURL='libs/'; // not found :(, use default path
 }
 
 var ngPreloadedImages={};
@@ -754,7 +782,7 @@ function ng_StripURLParams(url)
 
 function ng_URLCWP(url)
 {
-  return ((url.indexOf('://')<0) || (url.indexOf('file://')>=0) ? ng_StripURLParams(url) : url); // WindowsPhone local file system URL's don't support URL parameters
+  return ((url.indexOf('//')<0) || (url.indexOf('file://')>=0) ? ng_StripURLParams(url) : url); // WindowsPhone local file system URL's don't support URL parameters
 }
 
 function ng_URLStd(url) { return url; }
@@ -3041,11 +3069,11 @@ function ngGetCookie(cookie_name)
 function ngSetCookieByURL(name, value, expires, url, escapevalue)
 {
   var secure=false,domain,path;
-  var idx=url.indexOf("://");
+  var idx=url.indexOf("//");
   if(idx>=0) 
   {
-    if(url.substring(0,idx) == 'https') secure=true;
-    url=url.substring(idx+3,url.length);
+    if(url.substring(0,idx) == 'https:') secure=true;
+    url=url.substring(idx+2,url.length);
 
     idx=url.indexOf('/');
     if(idx>=0)
@@ -3283,9 +3311,9 @@ function ngrpc_GetURLParams()
 
 function ngrpc_domain(url)
 {
-  var idx=url.indexOf('://');
+  var idx=url.indexOf('//');
   if(idx<0) return window.location.hostname;
-  url=url.substring(idx+3,url.length);
+  url=url.substring(idx+2,url.length);
   idx=url.indexOf('/');
   if(idx>=0) url=url.substring(0,idx);
   idx=url.indexOf(':');
