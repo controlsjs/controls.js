@@ -29,9 +29,9 @@ function ngCreateHTMLFragment(htmlStr) {
 }
 
 function ngURLExtractDomain(url){
-  var idx=url.indexOf('://');
+  var idx=url.indexOf('//');
   if(idx>=0) {
-    idx=url.indexOf('/',idx+3);
+    idx=url.indexOf('/',idx+2);
     if(idx>=0) {
       return url.substring(0,idx);
     }
@@ -134,9 +134,9 @@ function ngLoadApplication(elm, callback, files)
 
   function url_domain(url)
   {
-    var idx=url.indexOf('://');
+    var idx=url.indexOf('//');
     if(idx<0) return window.location.hostname;
-    url=url.substring(idx+3,url.length);
+    url=url.substring(idx+2,url.length);
     idx=url.indexOf('/');
     if(idx>=0) url=url.substring(0,idx);
     idx=url.indexOf(':');
@@ -159,7 +159,7 @@ function ngLoadApplication(elm, callback, files)
 
   function platform_url(url)
   {
-    return (cordova && winphone && ((url.indexOf('://')<0) || (url.indexOf('file://')>=0)) ? url_stripparams(url) : url);
+    return (cordova && winphone && ((url.indexOf('//')<0) || (url.indexOf('file://')>=0)) ? url_stripparams(url) : url);
   }
 
   function exec_script(code)
@@ -272,7 +272,7 @@ function ngLoadApplication(elm, callback, files)
 
   window.ngAppURL = function(url)
   {
-    var idx=url.indexOf("://");
+    var idx=url.indexOf("//");
     if((idx<0)&&(url!=''))
     {
       if(url.charAt(0)=='/') url=appdomain+url;
