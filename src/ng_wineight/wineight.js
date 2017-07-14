@@ -1463,8 +1463,8 @@ var WinEightControls = {
       if(c)
       {
         c.AddEvent(function (b) {
-          var txt=ngTxt(b.Text,'');
-          if(txt!='') txt='&nbsp;<span style="line-height: '+h+'px">'+txt+'</span>';
+          var txt=ngVal(b.Text,'');
+          if(txt!='') txt='&nbsp;<span style="line-height: '+h+'px">'+ng_htmlEncode(txt)+'</span>';
           return '<img src="'+img+'" align="top" />'+txt;
         }, 'OnGetText');
       }
