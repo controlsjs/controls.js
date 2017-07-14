@@ -453,6 +453,14 @@ var WireframeControls = {
 
   OnInit: function()
   {
+    // Set path if running as part of Controls.js library
+    var cjs=(typeof ngLib==='object' && ngLib ? ngLib['controls.js'] : null);
+    if((typeof cjs==='object')&&(cjs)) {
+      var l={ path: cjs.path+(ngDEBUG ? 'debug' : 'release')+'/libs/ng_wireframe/' };
+      if(typeof cjs.URL!=='undefined') l.URL=cjs.URL;
+      ngLib['ng_wireframe']=l;
+    }
+
     var libpath = ngLibPath('ng_wireframe');
     var WFRImages = this.Images;
     var WFR = this;

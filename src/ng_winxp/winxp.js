@@ -458,6 +458,15 @@ var WinXPControls = {
   },
 
   OnInit: function() {
+
+    // Set path if running as part of Controls.js library
+    var cjs=(typeof ngLib==='object' && ngLib ? ngLib['controls.js'] : null);
+    if((typeof cjs==='object')&&(cjs)) {
+      var l={ path: cjs.path+(ngDEBUG ? 'debug' : 'release')+'/libs/ng_winxp/' };
+      if(typeof cjs.URL!=='undefined') l.URL=cjs.URL;
+      ngLib['ng_winxp']=l;
+    }
+
     var libpath=ngLibPath('ng_winxp');
     var winimages=this.Images;
     var winxp=this;
