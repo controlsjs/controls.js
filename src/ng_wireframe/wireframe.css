@@ -57,6 +57,7 @@
 {
   font-family: Comic Sans MS, TSCu_Comic, sans-serif; /*[win 95+], [Debian,Ubuntu,?Fedora], others */
   font-size:11px;
+  color: #000000;
 }
 
 /* wfrText ********************************************************************/

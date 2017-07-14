@@ -2237,9 +2237,9 @@ var WireframeControls = {
       if(c){
         c.AddEvent(
           function (b){
-            var txt = ngTxt(b.Text, '');
+            var txt = ngVal(b.Text, '');
             if(txt !== ''){
-              txt = '&nbsp;<span style="line-height: 22px">' + txt + '</span>';
+              txt = '&nbsp;<span style="line-height: 22px">' + ng_htmlEncode(txt) + '</span>';
             }
             return '<img src="' + WireframeControls.ControlImages[3] + '" align="top" />' + txt;
           },
