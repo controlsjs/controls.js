@@ -407,6 +407,21 @@ function ngdsc_SetViewModel(vm)
 /*<>*/
 function Create_ngDataSet(def, ref, parent,basetype)
 {
+  ng_MergeDef(def,{
+    Controls: {
+      List: {
+        Events: {
+          OnDrawItem: ngdsc_DrawItem,
+          OnCaptionClick: ngdsc_CaptionClick
+        },
+        OverrideEvents: {
+          OnGetColumnCaption: ngdsc_ColumnCaption,
+          OnGetText: ngdsc_ColumnText
+        }
+      }
+    }
+  });
+
   var c=ngCreateControlAsType(def, ngVal(basetype,'ngPageList'), ref, parent);
   if(!c) return c;
 
@@ -415,14 +430,7 @@ function Create_ngDataSet(def, ref, parent,basetype)
     if(ng_typeObject(vm)) c.SetViewModel(vm);
 
     var list=c.Controls.List;
-    if(list) {
-      c.AutoDataSetColumns=(list.Columns.length==0);
-
-      list.AddEvent('OnGetColumnCaption', ngdsc_ColumnCaption);
-      list.AddEvent('OnGetText', ngdsc_ColumnText);
-      list.AddEvent('OnDrawItem', ngdsc_DrawItem);
-      list.AddEvent('OnCaptionClick', ngdsc_CaptionClick);
-    }
+    if(list) c.AutoDataSetColumns=(list.Columns.length==0);
 
     c.UpdateDataSetColumns();
   });
