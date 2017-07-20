@@ -1,0 +1,75 @@
+{
+  "Lib": "controls.js",
+  "Version": "dev",
+  "Name": "Controls.js",
+  "Copyright": "Position s.r.o.",
+  "Packages": {
+    "Controls.js": {
+      "Group": "controlsjs",
+      "FormEditor": false,
+      "ReleaseFiles": [
+        "release/controls.js"
+      ],
+      "DebugFiles": [
+        "debug/controls.js"
+      ],
+      "DesignInfoFiles": [
+        "debug/libs/ng_controls/designinfo/controls_di.js"
+      ]
+    },
+    "Controls.js+ViewModels": {},
+    "Controls.js UI": {},
+    "Controls.js UI+ViewModels": {
+      "Group": "controlsjs",
+      "FormEditor": false,
+      "ReleaseFiles": [
+        "release/controls-vm.js"
+      ],
+      "DebugFiles": [
+        "debug/controls-vm.js"
+      ],
+      "DesignInfoFiles": [
+        "debug/libs/ng_controls/designinfo/controls_di.js"
+      ]
+    },
+    "WinEight Skin": {
+      "ReleaseFiles": [
+        "release/libs/ng_wineight/wineight.css",
+        "release/libs/ng_wineight/wineight.js"
+      ],
+      "DebugFiles": [
+        "debug/libs/ng_wineight/wineight.css",
+        "debug/libs/ng_wineight/wineight.js"
+      ],
+      "DesignInfoFiles": [
+        "debug/libs/ng_wineight/designinfo/wineight_di.js"
+      ]
+    },
+    "WinXP Skin": {
+      "ReleaseFiles": [
+        "release/libs/ng_winxp/winxp.css",
+        "release/libs/ng_winxp/winxp.js"
+      ],
+      "DebugFiles": [
+        "debug/libs/ng_winxp/winxp.css",
+        "debug/libs/ng_winxp/winxp.js"
+      ],
+      "DesignInfoFiles": [
+        "debug/libs/ng_winxp/designinfo/winxp_di.js"
+      ]
+    },
+    "Wireframe Skin": {
+      "ReleaseFiles": [
+        "release/libs/ng_wireframe/wireframe.css",
+        "release/libs/ng_wireframe/wireframe.js"
+      ],
+      "DebugFiles": [
+        "debug/libs/ng_wireframe/wireframe.css",
+        "debug/libs/ng_wireframe/wireframe.js"
+      ],
+      "DesignInfoFiles": [
+        "debug/libs/ng_wireframe/designinfo/wireframe_di.js"
+      ]
+    }
+  }
+}
