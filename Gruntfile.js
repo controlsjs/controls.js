@@ -19,8 +19,18 @@ module.exports = function(grunt) {
   // ---------------------------------------------------------------------------
 
   var packageJSON = grunt.file.readJSON('package.json');
+  var libJSON = grunt.file.readJSON('controls.json');
+  var ngUsedPackages={};
 
+  libJSON.Version=packageJSON.version;
+  var verlc=(''+libJSON.Version).toLowerCase();
+  if((verlc.indexOf('snapshot')>=0)||(verlc.indexOf('dev')>=0)) libJSON.Name+=' '+grunt.template.today('yyyymmdd-HHMM');
   grunt.file.write('VERSION',packageJSON.version); // Update VERSION file
+
+  // Create packages based on Controls.js package
+  libJSON.Packages['Controls.js+ViewModels']=libJSON.Packages['Controls.js'];
+  libJSON.Packages['Controls.js UI']=libJSON.Packages['Controls.js'];
+  if(defaultBuild != 'controls+vm') libJSON.Packages['Controls.js UI+ViewModels']=libJSON.Packages['Controls.js'];
 
   var config = {
     pkg: packageJSON,
@@ -29,9 +39,7 @@ module.exports = function(grunt) {
     allow_debug: '\n// Debug ENABLED\nvar ngDEBUG=1;\n\n'
   };
 
-  var files = {
-    libs: [ 'src/loader/libs.js' ]
-  };
+  var files = {};
 
   function getFiles(t)
   {
@@ -230,6 +238,9 @@ module.exports = function(grunt) {
     copy: {
       src:   debugBuild('controls-raw.js'),
       dest:  debugBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js": true
     }
   });
 
@@ -240,6 +251,9 @@ module.exports = function(grunt) {
                debugBuild('libs/lib_hammerjs/hammer.js')
              ],
       dest:  debugBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js UI": true
     }
   });
 
@@ -250,6 +264,9 @@ module.exports = function(grunt) {
                debugBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  debugBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js+ViewModels": true
     }
   });
 
@@ -261,21 +278,18 @@ module.exports = function(grunt) {
                debugBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  debugBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js UI+ViewModels": true
     }
   });
 
   registerTask('controls-prepare-debug', {
-    clean: [ debugBuild('libs.js'),
-             debugBuild('libs/ng_basic/'),
+    clean: [ debugBuild('libs/ng_basic/'),
              debugBuild('libs/ng_controls/'),
              debugBuild('controls-raw.js'),
              debugBuild('controls.js')
            ],
-    copy: {
-      src:   getFiles('libs'),
-      dest:  debugBuild('libs.js')
-    },
-    usebanner: debugBanner('libs.js','banner'),
     'copy:ng_basic-img-debug': true,
     'copy:ng_controls-img-debug': true
   });
@@ -408,6 +422,9 @@ module.exports = function(grunt) {
     copy: {
       src:   releaseBuild('controls-raw.js'),
       dest:  releaseBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js": true
     }
   });
 
@@ -418,6 +435,9 @@ module.exports = function(grunt) {
                releaseBuild('libs/lib_hammerjs/hammer.js')
              ],
       dest:  releaseBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js UI": true
     }
   });
 
@@ -428,6 +448,9 @@ module.exports = function(grunt) {
                releaseBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  releaseBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js+ViewModels": true
     }
   });
 
@@ -439,23 +462,18 @@ module.exports = function(grunt) {
                releaseBuild('libs/lib_knockout/knockout.js')
              ],
       dest:  releaseBuild('controls.js')
+    },
+    controlspkg: {
+      "Controls.js UI+ViewModels": true
     }
   });
 
   registerTask('controls-prepare-release', {
-    clean: [ releaseBuild('libs.js'),
-             releaseBuild('libs/ng_basic/'),
+    clean: [ releaseBuild('libs/ng_basic/'),
              releaseBuild('libs/ng_controls/'),
              releaseBuild('controls-raw.js'),
              releaseBuild('controls.js')
            ],
-    closurecompiler: {
-      files: compilerfiles('libs.js','libs'),
-      options: {
-        compilation_level: 'SIMPLE_OPTIMIZATIONS'
-      }
-    },
-    usebanner: releaseBanner('libs.js','banner'),
     'copy:ng_basic-img-release': true,
     'copy:ng_controls-img-release': true
   });
@@ -471,7 +489,7 @@ module.exports = function(grunt) {
     'controls-prepare-release',
     'controls-ui-raw-release',
     'controls-lib-ui-release',
-    'controls-finalize-release'
+    'controls-finalize-release',
   ]);
 
   grunt.registerTask('controls-vm-release', [
@@ -614,7 +632,6 @@ module.exports = function(grunt) {
   // == Loaders ================================================================
 
   files['loader'] = [
-    'src/loader/libs.js',
     'src/loader/loader.js',
     'src/loader/devices.js'
   ];
@@ -776,7 +793,10 @@ module.exports = function(grunt) {
       dest: debugBuild('libs/ng_wineight/')
     },
     usebanner: debugBanner('libs/ng_wineight/*.{js,css}','banner'),
-    'ng_wineight-di': true
+    'ng_wineight-di': true,
+    controlspkg: {
+      "WinEight Skin": true
+    }
   });
 
   registerTask('ng_wineight-release', {
@@ -804,7 +824,10 @@ module.exports = function(grunt) {
         dest: releaseBuild('libs/ng_wineight/')
       }]
     },
-    usebanner: releaseBanner('libs/ng_wineight/*.{js,css}','banner')
+    usebanner: releaseBanner('libs/ng_wineight/*.{js,css}','banner'),
+    controlspkg: {
+      "WinEight Skin": true
+    }
   });
 
   // == WinXP Skin =============================================================
@@ -839,7 +862,10 @@ module.exports = function(grunt) {
       dest: debugBuild('libs/ng_winxp/')
     },
     usebanner: debugBanner('libs/ng_winxp/*.{js,css}','banner'),
-    'ng_winxp-di': true
+    'ng_winxp-di': true,
+    controlspkg: {
+      "WinXP Skin": true
+    }
   });
 
   registerTask('ng_winxp-release', {
@@ -867,7 +893,10 @@ module.exports = function(grunt) {
         dest: releaseBuild('libs/ng_winxp/')
       }]
     },
-    usebanner: releaseBanner('libs/ng_winxp/*.{js,css}','banner')
+    usebanner: releaseBanner('libs/ng_winxp/*.{js,css}','banner'),
+    controlspkg: {
+      "WinXP Skin": true
+    }
   });
 
   // == Wireframe Skin =========================================================
@@ -902,7 +931,10 @@ module.exports = function(grunt) {
       dest: debugBuild('libs/ng_wireframe/')
     },
     usebanner: debugBanner('libs/ng_wireframe/*.{js,css}','banner'),
-    'ng_wireframe-di': true
+    'ng_wireframe-di': true,
+    controlspkg: {
+      "Wireframe Skin": true
+    }
   });
 
   registerTask('ng_wireframe-release', {
@@ -930,7 +962,10 @@ module.exports = function(grunt) {
         dest: releaseBuild('libs/ng_wireframe/')
       }]
     },
-    usebanner: releaseBanner('libs/ng_wireframe/*.{js,css}','banner')
+    usebanner: releaseBanner('libs/ng_wireframe/*.{js,css}','banner'),
+    controlspkg: {
+      "Wireframe Skin": true
+    }
   });
 
   // == Skins ==================================================================
@@ -993,9 +1028,16 @@ module.exports = function(grunt) {
     'skins-release'
   ]);
 
-  grunt.registerTask('default', ['debug','release']);
+  grunt.registerTask('default', ['debug','release','controlsjson']);
 
   // ---------------------------------------------------------------------------
+
+  grunt.task.registerMultiTask('controlspkg', 'Controls.js packages.', function() {
+    for(var i in this.data) {
+      grunt.log.writeln('Using package: '+i);
+      ngUsedPackages[i]=this.data[i];
+    }
+  });
 
   grunt.initConfig(config);
 
@@ -1007,5 +1049,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+
+  grunt.task.registerTask('controlsjson', 'Writes controls.json file', function() {
+    grunt.log.writeln('Used packages: '+JSON.stringify(ngUsedPackages, null, 2));
+    for(var i in libJSON.Packages) {
+      if(!ngUsedPackages[i]) delete libJSON.Packages[i];
+    }
+    grunt.file.write('build/controls.json',JSON.stringify(libJSON, null, 2));
+  });
 
 };
