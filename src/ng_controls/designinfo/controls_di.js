@@ -904,6 +904,10 @@ function ng_DIPropertyIntConstants(defvalue, consts, data) {
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['controls_designinfo'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'FormEditor Controls',
+  FormEditorIgnoreControls: true,
+
   OnFormEditorInit: function(FE)
   {
     FE.RegisterPropertyTypesGroup('events', ['function', 'identifier', 'null', 'undefined']);
