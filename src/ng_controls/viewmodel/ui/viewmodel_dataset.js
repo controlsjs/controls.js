@@ -411,7 +411,6 @@ function Create_ngDataSet(def, ref, parent,basetype)
     Controls: {
       List: {
         Events: {
-          OnDrawItem: ngdsc_DrawItem,
           OnCaptionClick: ngdsc_CaptionClick
         },
         OverrideEvents: {
@@ -430,7 +429,10 @@ function Create_ngDataSet(def, ref, parent,basetype)
     if(ng_typeObject(vm)) c.SetViewModel(vm);
 
     var list=c.Controls.List;
-    if(list) c.AutoDataSetColumns=(list.Columns.length==0);
+    if(list) {
+      c.AutoDataSetColumns=(list.Columns.length==0);
+      list.AddEvent('OnDrawItem', ngdsc_DrawItem);
+    }
 
     c.UpdateDataSetColumns();
   });
