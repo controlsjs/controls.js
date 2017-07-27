@@ -22,6 +22,17 @@ var ngcalSelectMulti = 2;
 var ngcalSelectMultiExt = 3;
 var ngcalSelectRange = 4;
 
+function ngcal_DateStrKey(d) {
+  return d ? ''+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate() : '';
+}
+
+function ngcal_SetMonth(date) {
+  var changed=(this.CurrentDate.getMonth()!=date.getMonth());
+  this.CurrentDate=date;
+  if(changed) this.UpdateCalendar();
+  return changed;
+}
+
 function ngcal_NextMonth(changeyear)
 {
   var y,m,s;
@@ -74,6 +85,7 @@ function ngcal_IsDayEnabled(date)
   if((this.MinDate)&&(date<this.MinDate)) enabled=false;
   if((enabled)&&(this.MaxDate)&&(date>this.MaxDate)) enabled=false;
   if((enabled)&&(ngVal(this.BlockedDates[date],false))) enabled=false;
+  if((enabled)&&(ngVal(this.BlockedDates[ngcal_DateStrKey(date)],false))) enabled=false;
   if((enabled)&&(ngVal(this.BlockedWeekDays[date.getDay()],false))) enabled=false;
   if(this.OnIsDayEnabled) enabled=this.OnIsDayEnabled(this, date, enabled);
   return enabled;
@@ -165,43 +177,49 @@ function ngcal_MD(e,elm)
     c.SelectedDates = new Array();
 
   if((c.CurrentDate.getMonth()!=date.getMonth())||(!c.IsDayEnabled(date))) return; // Select only enabled
-  c.BeginUpdate();                                                    
-  var s=(c.SelectType==ngcalSelectRange ? true : !(typeof c.SelectedDates[date]!=='undefined'));
-  if(((c.SelectType==2)||(c.SelectType==3))&&(shift)&&(c.last_selected!=null))
-  {
-    if(c.SelectType==3) s=true;
-    var changed=false;
-    var d=date;
-    if(d<=c.last_selected)
+  var changed=false;
+  c.BeginUpdate();
+  try {
+    var s=(c.SelectType==ngcalSelectRange ? true : !(typeof c.SelectedDates[ngcal_DateStrKey(date)]!=='undefined'));
+    if(((c.SelectType==2)||(c.SelectType==3))&&(shift)&&(c.last_selected!=null))
     {
-      for(;d<=c.last_selected;)
+      if(c.SelectType==3) s=true;
+      var d=date,dk;
+      if(d<=c.last_selected)
       {
-        if((changed)||((typeof c.SelectedDates[d]!=='undefined')!=s))
-        { 
-          changed=true;
-          if(s) c.SelectedDates[d]=d;
-          else delete c.SelectedDates[d]; 
+        for(;d<=c.last_selected;)
+        {
+          dk=ngcal_DateStrKey(d);
+          if((changed)||((typeof c.SelectedDates[dk]!=='undefined')!=s))
+          {
+            changed=true;
+            if(s) c.SelectedDates[dk]=d;
+            else delete c.SelectedDates[dk];
+          }
+          d.setDate(d.getDate()+1);
         }
-        d.setDate(d.getDate()+1);        
-      }  
-    }
-    else
-    {
-      for(;d>=c.last_selected;)
+      }
+      else
       {
-        if((changed)||((typeof c.SelectedDates[d]!=='undefined')!=s))
-        { 
-          changed=true;
-          if(s) c.SelectedDates[d]=d;
-          else delete c.SelectedDates[d]; 
+        for(;d>=c.last_selected;)
+        {
+          dk=ngcal_DateStrKey(d);
+          if((changed)||((typeof c.SelectedDates[dk]!=='undefined')!=s))
+          {
+            changed=true;
+            if(s) c.SelectedDates[dk]=d;
+            else delete c.SelectedDates[dk];
+          }
+          d.setDate(d.getDate()-1);
         }
-        d.setDate(d.getDate()-1);        
-      }  
+      }
     }
-    if(changed) c.SelectChanged();
+    else c.SelectDate(date,s,ctrl);
   }
-  else c.SelectDate(date,s,ctrl);
-  c.EndUpdate();
+  finally {
+    if(changed) c.SelectChanged();
+    c.EndUpdate();
+  }
 }
 
 function ngcal_SelectChanged()
@@ -249,11 +267,12 @@ function ngcal_SelectDate(date, state, ctrl)
   if((state)&&((this.SelectType==1)||((this.SelectType==3)&&(!ngVal(ctrl,false)))))
     this.SelectedDates = new Array();
 
-  if((typeof this.SelectedDates[date]!=='undefined')!=state)
+  var dk=ngcal_DateStrKey(date);
+  if((typeof this.SelectedDates[dk]!=='undefined')!=state)
   { 
     if(state) this.last_selected=date;
-    if(state) this.SelectedDates[date]=date;
-    else delete this.SelectedDates[date];
+    if(state) this.SelectedDates[dk]=date;
+    else delete this.SelectedDates[dk];
     this.SelectChanged();
   }  
   
@@ -276,15 +295,14 @@ function ngcal_GetSelected()
   var items=new Array();
   if(this.SelectType==ngcalSelectRange)
   {
-    items[items.length]=this.SelectFrom;
-    items[items.length]=this.SelectTo;
+    items.push(this.SelectFrom);
+    items.push(this.SelectTo);
   }
   else
   {
     for(var d in this.SelectedDates)
     {
-      if(typeof this.SelectedDates[d]==='undefined') continue;    
-      items[items.length]=this.SelectedDates[d];
+      if(typeof this.SelectedDates[d]!=='undefined') items.push(this.SelectedDates[d]);
     }
   }
   return items;
@@ -306,29 +324,35 @@ function ngcal_SetSelected(dates)
   }
 
   this.BeginUpdate();
-  this.ClearSelected()
-  var d,f=0,rs=0;
-  for(var i=0;i<dates.length;i++)
-  {
-    d=dates[i];
-    if(typeof d==='string') d=this.ParseDate(d);
-    if(typeof d!=='undefined')
+  try {
+    this.ClearSelected()
+    var d,f=0,rs=0;
+    for(var i=0;i<dates.length;i++)
     {
-      d=ng_ExtractDate(d);
-      if(this.SelectType==ngcalSelectRange)
+      d=dates[i];
+      if(typeof d==='string') d=this.ParseDate(d);
+      if(typeof d!=='undefined')
       {
-        if(!rs) this.SelectFrom=d;
-        else if(rs==1) this.SelectTo=d;
-        else if(rs>1) break;
-        rs++;
+        d=ng_ExtractDate(d);
+        if(this.SelectType==ngcalSelectRange)
+        {
+          if(!rs) this.SelectFrom=d;
+          else if(rs==1) this.SelectTo=d;
+          else if(rs>1) break;
+          rs++;
+        }
+        else this.SelectedDates[ngcal_DateStrKey(d)]=d;
+
+        if(!f) { this.CurrentDate=d; f=1; }
       }
-      else this.SelectedDates[d]=d;
-      if(!f) { this.CurrentDate=d; f=1; } 
     }
+    if(rs==1) this.SelectTo=this.SelectFrom;
   }
-  if(rs==1) this.SelectTo=this.SelectFrom;
-  this.SelectChanged();
-  this.EndUpdate();
+  finally
+  {
+    this.SelectChanged();
+    this.EndUpdate();
+  }
 }
 
 function ngcal_BeginUpdate()
@@ -504,7 +528,7 @@ function ngcal_UpdateCalendar()
       if(this.SelectType==ngcalSelectRange)
         selected=(display_date>=this.SelectFrom)&&(display_date<=this.SelectTo);
       else 
-        selected=(typeof this.SelectedDates[display_date]!=='undefined');
+        selected=(typeof this.SelectedDates[ngcal_DateStrKey(display_date)]!=='undefined');
       if((!this.Enabled)||(display_month != cur_month)) enabled=false;
       else enabled=this.IsDayEnabled(display_date);
       now=((display_date-now_date)==0);
@@ -1053,6 +1077,19 @@ function ngCalendar(id)
    *    Format strings in <ng_FormatDateTime>.   
    */
   this.ParseDate = ngcal_ParseDate;
+
+  /*  Function: SetMonth
+   *  Moves calendar page to month by given date.
+   *
+   *  Syntax:
+   *    void *SetMonth* (date monthdate)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    TRUE if page changed.
+   */
+  this.SetMonth = ngcal_SetMonth;
 
   /*  Function: NextMonth
    *  Moves calendar page to next month.     
