@@ -441,6 +441,7 @@ var ViewModel_Controls_DesignInfo = (function()
         return {
           ControlCategory: 'System',
           BaseControl: 'ngSysViewModel',
+          IsViewModel: true,
           NewControl: {
             Default: {
               Properties: {
@@ -519,6 +520,7 @@ var ViewModel_Controls_DesignInfo = (function()
         return {
           ControlCategory: 'System',
           BaseControl: 'ngSysViewModelSettings',
+          IsViewModel: true,
           Properties: ng_DIProperties({
             "Events": {
               "OnSettingsLoaded": ng_DIPropertyEvent('function(c, settings) {}',{ Level: 'basic' }),

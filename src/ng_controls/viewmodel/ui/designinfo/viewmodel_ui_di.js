@@ -215,6 +215,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           ControlCategory: 'Containers',
           IsContainer: true,
           BaseControl: 'ngViewModelForm',
+          IsViewModel: true,
           Properties: ng_DIProperties({
             "ErrorHint": ng_DIPropertyControl('ngTextHint',{ Level: 'basic' }, 'ngHint'),
             "Data": {
@@ -272,6 +273,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       function EditField(d,c,ref) {
         return {
           ControlCategory: 'Edits',
+          IsViewModel: true,
           Properties: ng_DIProperties({
             "ErrorHint": ng_DIPropertyControl('ngTextHint',{ Level: 'basic' }, 'ngHint'),
             "Data": {

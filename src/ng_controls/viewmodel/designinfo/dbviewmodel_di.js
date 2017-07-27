@@ -20,6 +20,7 @@ var DBViewModel_DesignInfo = {
       return {
         ControlCategory: 'System',
         BaseControl: 'ngSysDBViewModel',
+        IsViewModel: true,
         Properties: ng_DIProperties({
           "Data": {
             "ResetRecordOnLoad": ng_DIPropertyBool(false, { Level: 'basic' }),

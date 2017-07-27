@@ -20,6 +20,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
       return {
         ControlCategory: 'System',
         BaseControl: 'ngDBViewModelForm',
+        IsViewModel: true,
         Properties: ng_DIProperties({
           "Data": {
             "DeleteCommands": ng_DIProperty('array_strings', ["'delete'"], { Level: 'basic' }),
@@ -43,6 +44,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBDataSet',function(d,c,ref) {
       return {
+        IsViewModel: true,
         Properties: ng_DIProperties({
           "DBViewModel": { DefaultType: 'string', Level: 'basic',
             Types: {
@@ -91,6 +93,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
     ngRegisterControlDesignInfo('ngDBToolBar',function(d,c,ref) {
       return {
         BaseControl: 'ngDBToolBar',
+        IsViewModel: true,
         NewControl: {
           Default: {
             Properties: {

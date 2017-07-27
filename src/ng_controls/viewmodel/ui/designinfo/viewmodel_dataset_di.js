@@ -18,6 +18,7 @@ var ViewModel_Dataset_DesignInfo = {
 
     ngRegisterControlDesignInfo('ngDataSet',function(d,c,ref) {
       return {
+        IsViewModel: true,
         NewControl: {
           Default: {
             Properties: {
