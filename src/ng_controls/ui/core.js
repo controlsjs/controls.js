@@ -3206,7 +3206,7 @@ function nge_DoMouseLeave(e, mi)
 
 function nge_DoCreate(d, ref, elm, parent)
 {
-  if((typeof d.DropDown !== 'undefined')&&(typeof this.SetDropDownControl === 'function'))
+  if((typeof d.DropDown !== 'undefined')&&(typeof this.SetDropDownControl === 'function')&&(!this.InDesignMode))
   {
     ng_MergeDef(d.DropDown, {
       L: 0, T: 0,
