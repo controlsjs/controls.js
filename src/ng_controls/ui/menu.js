@@ -2721,6 +2721,9 @@ ngUserControls['menu'] = {
   ControlsGroup: 'Core',
 
   OnControlCreated: function(def,c) {
+
+    if(c.InDesignMode) return;
+
     /*
      *  Class: ngControl
      *  Extensions of ngControl definition.
