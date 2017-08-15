@@ -784,26 +784,6 @@ function ng_GetScrollBars(o)
   return sb;
 }
 
-function ng_IsFullURL(path)
-{
-  if((typeof path !== 'string')||(path=='')) return false;
-  if(path.substr(0,2)==='//') return true;
-
-  var pos=path.indexOf('?');
-  if(pos>=0) path=path.substr(0,pos);
-  pos=path.indexOf('#');
-  if(pos>=0) path=path.substr(0,pos);
-  return (path.indexOf("://")>0);
-}
-
-function ng_IsAbsPath(path)
-{
-  if((typeof path !== 'string')||(path=='')) return false;
-  var c=path.charAt(0);
-  if((c=='/')||(c=="\\")||(c=='~')) return true;
-  return ng_IsFullURL(path);
-}
-
 function ng_ToAbsPath(path,lib)
 {
   if((typeof path !== 'string')||(path=='')) return path;
@@ -6030,29 +6010,14 @@ function ngApplication(startparams, elm, autorun)
   this.AppPath='';
   try
   {
-    var path=''+window.location.href;
-    var i=path.lastIndexOf('#'); // strip parameters
-    if(i>=0) path=path.substring(0,i);
-    var i=path.lastIndexOf('?');
-    if(i>=0) path=path.substring(0,i);
-    i=path.lastIndexOf('.php');
-    if(i<0) i=path.lastIndexOf('.html');
-    if(i<0) i=path.lastIndexOf('.asp');
-    if(i<0) i=path.lastIndexOf('.jsp');
-    if(i>0) {
-      i=path.lastIndexOf('/'); // strip script name
+    var path=ng_StripURLParams(''+window.location.href);
+    if((path.length>0)&&(path.charAt(path.length-1)==='/')) this.AppPath=path;
+    {
+      var i=path.lastIndexOf('/'); // strip script name
       if(i>0)
       {
         if(path.charAt(i-1)=='/') path+='/';
         else path=path.substring(0,i+1);
-        this.AppPath=path;
-      }
-    }
-    else
-    {
-      if(path.length>0)
-      {
-        if(path.charAt(path.length-1)!='/') path+='/';
         this.AppPath=path;
       }
     }
