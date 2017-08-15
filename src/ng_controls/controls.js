@@ -4790,9 +4790,15 @@ function nga_SetLang(language, country, variant)
       country=undefined;
       variant=undefined;
     }
+    var oldlang = {
+      Lang: this.Lang,
+      LangCountry: this.LangCountry,
+      LangVariant: this.LangVariant
+    };
     this.Lang = typeof language === 'string' ? language.toLowerCase() : undefined;
     this.LangCountry = typeof country === 'string' ? country.toLowerCase() : undefined;
     this.LangVariant = typeof variant === 'string' ? variant.toLowerCase() : undefined;
+    if(this.OnLangChanged) this.OnLangChanged(this, oldlang);
   }
   return changed;
 }
@@ -6605,9 +6611,13 @@ function ngApplication(startparams, elm, autorun)
   //this.OnMapParamsChanged = null; - defined in controls_map.js
 
   /*
+   *  Event: OnLangChanged
+   */
+  this.OnLangChanged = null;
+  /*
    *  Event: OnDeviceChanged
    */
-  this.OnDeviceChanged = null
+  this.OnDeviceChanged = null;
 
   window.onresize = ngAddEvent(window.onresize, nga_OnResize);
 
