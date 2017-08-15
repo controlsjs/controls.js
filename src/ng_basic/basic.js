@@ -174,7 +174,7 @@ var ngDEBUG = (typeof ngDEBUG === 'undefined' ? 0 : ngDEBUG);
  *  Checks the given assertion and displays description if assertion is FALSE and debug is enabled.
  *  
  *  Syntax:
- *    void *ngASSERT* (boolean assertion [, mixed description])
+ *    void *ngASSERT* (bool assertion [, mixed description])
  *  
  *  Parameters:
  *    assertion - if FALSE the description is displayed  
@@ -469,6 +469,10 @@ function ngNullVal(v, defv)
 function ngLibPath(lib,file)
 {
   if(lib=='') return ngVal(file,'');
+  if(ng_IsFullURL(file)) return file;
+  file=ngVal(file,'');
+  if(file.charAt(0)==='/') file=file.substr(1);
+
   lib=lib.toLowerCase();
   var l=(ng_IsObjVar(window.ngLib) ? window.ngLib[lib] : null);
 
@@ -476,16 +480,22 @@ function ngLibPath(lib,file)
   var url='';
 
   if(ng_IsObjVar(l)) {
-    path=ngVal(l.path,'');
-
-    if(path.charAt(0)==='/') {
-      if(typeof l.URL !== 'undefined') {
-        url = l.URL;
-        path=path.substr(1);
-      }
+    if(ng_IsFullURL(l.path))
+    {
+      url=l.path;
+      path='';
     }
     else {
-      url=ngVal(l.URL,ngLibsURL);
+      path=ngVal(l.path,'');
+      if(path.charAt(0)==='/') {
+        if(typeof l.URL !== 'undefined') {
+          url = l.URL;
+          path=path.substr(1);
+        }
+      }
+      else {
+        url=ngVal(l.URL,ngLibsURL);
+      }
     }
   }
   else {
@@ -497,7 +507,7 @@ function ngLibPath(lib,file)
     url+='/';
   }
 
-  return ng_URL(url+path+ngVal(file,''));
+  return ng_URL(url+path+file);
 }
 
 /**
@@ -522,7 +532,7 @@ function ng_SetLibsURL(path)
 { 
   if(path!='')
   {
-    if(path.charAt(path.length-1)=='/') path=path.substring(0,path.length-1);
+    if(path.charAt(path.length-1)==='/') path=path.substring(0,path.length-1);
     if(ngEmptyURL.substring(0,ngLibsURL.length)==ngLibsURL) {
       ngEmptyURL=ng_URL(path+ngEmptyURL.substring(ngLibsURL.length,ngEmptyURL.length));
     }
@@ -543,7 +553,7 @@ function ng_DetectLibsURL()
     {
       if(typeof ngLib[lib] !== 'undefined') return;
       var l={};
-      if(path.indexOf('//')>=0) { l.URL=path; l.path=''; }
+      if(ng_IsFullURL(path)) { l.URL=path; l.path=''; }
       else { l.path=path; l.URL=''; }
       ngLib[lib]=l;
     }
@@ -780,9 +790,51 @@ function ng_StripURLParams(url)
   return url;
 }
 
+/**
+ *  Function: ng_IsFullURL
+ *  Tests if given URL is full-length URL.
+ *
+ *  Syntax:
+ *    bool *ng_IsFullURL* (string url)
+ *
+ *  Parameters:
+ *    url - test URL
+ *
+ *  Returns:
+ *    TRUE if URL is full-length URL.
+ */
+function ng_IsFullURL(url)
+{
+  if((typeof url !== 'string')||(url=='')) return false;
+  if(url.substr(0,2)==='//') return true;
+
+  url=ng_StripURLParams(url);
+  return (url.indexOf("://")>0);
+}
+
+/**
+ *  Function: ng_IsAbsPath
+ *  Tests if given URL path is an absolute path (full-length URL or starts with a slash).
+ *
+ *  Syntax:
+ *    bool *ng_IsAbsPath* (string path)
+ *
+ *  Parameters:
+ *    path - test path
+ *
+ *  Returns:
+ *    TRUE if path is URL is full-length URL.
+ */
+function ng_IsAbsPath(path)
+{
+  if((typeof path !== 'string')||(path=='')) return false;
+  var c=path.charAt(0);
+  return ((c==='/')||(c==="\\")||(ng_IsFullURL(path)));
+}
+
 function ng_URLCWP(url)
 {
-  return ((url.indexOf('//')<0) || (url.indexOf('file://')>=0) ? ng_StripURLParams(url) : url); // WindowsPhone local file system URL's don't support URL parameters
+  return ((url.substr(0,7)==='file://') || (!ng_IsFullURL(url)) ? ng_StripURLParams(url) : url); // WindowsPhone local file system URL's don't support URL parameters
 }
 
 function ng_URLStd(url) { return url; }
@@ -3069,6 +3121,7 @@ function ngGetCookie(cookie_name)
 function ngSetCookieByURL(name, value, expires, url, escapevalue)
 {
   var secure=false,domain,path;
+  url=ng_StripURLParams(url);
   var idx=url.indexOf("//");
   if(idx>=0) 
   {
@@ -3080,8 +3133,6 @@ function ngSetCookieByURL(name, value, expires, url, escapevalue)
     {
       domain=url.substring(0,idx);
       url=url.substring(idx,url.length);
-      idx=url.indexOf('?');
-      if(idx>=0) url=url.substring(0,idx);
       path=url;
     }
     else domain=url;
@@ -3095,8 +3146,6 @@ function ngSetCookieByURL(name, value, expires, url, escapevalue)
   }
   else
   {
-    idx=url.indexOf('?');
-    if(idx>=0) url=url.substring(0,idx);
     path=url;
   }
 
@@ -3311,6 +3360,7 @@ function ngrpc_GetURLParams()
 
 function ngrpc_domain(url)
 {
+  url=ng_StripURLParams(url);
   var idx=url.indexOf('//');
   if(idx<0) return window.location.hostname;
   url=url.substring(idx+2,url.length);
@@ -3370,7 +3420,7 @@ function ngrpc_sendRequest(url, nocache)
           if(i>=0) 
           {
             params=ng_AddURLParam(url.substr(i,url.length),params);
-            if((params.length)&&(params.charAt(0)=='?')) params=params.substr(1,params.length);
+            if((params.length)&&(params.charAt(0)==='?')) params=params.substr(1,params.length);
             url=url.substr(0,i);
           }
           if(params.length>rpcMaxGetLength) 
