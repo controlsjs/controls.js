@@ -1868,7 +1868,7 @@ function ngmn_DoPopupAttach(elm)
   if(elm.ngAddEvent) return;
   elm.ngAddEvent = ngObjAddEvent;
 
-  if(ngHammerJS()) // HammerJS library is present
+  if(ngHammerJSVer()===1) // HammerJS library v1.x is present
   {
     Hammer.event.bindDom(elm, Hammer.EVENT_TYPES[Hammer.EVENT_START], ngmn_PopupMouseMenu);
   }
@@ -2087,7 +2087,7 @@ function nga_SetPopupMenu(m)
 
     if(!nga_popup_initialized)
     {
-      if(ngHammerJS()) // HammerJS library is present
+      if(ngHammerJSVer()===1) // HammerJS library v1.x is present
       {
         Hammer.event.bindDom(document, Hammer.EVENT_TYPES[Hammer.EVENT_START], nga_DoPopupMenuStart);
         Hammer.event.bindDom(document, Hammer.EVENT_TYPES[Hammer.EVENT_END], nga_DoPopupMenu);
