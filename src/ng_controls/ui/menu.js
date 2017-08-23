@@ -1868,10 +1868,17 @@ function ngmn_DoPopupAttach(elm)
   if(elm.ngAddEvent) return;
   elm.ngAddEvent = ngObjAddEvent;
 
-  if (window.navigator.msPointerEnabled)
-    elm.addEventListener("MSPointerDown", ngmn_PopupMouseMenu, false);
+  if(ngHammerJS()) // HammerJS library is present
+  {
+    Hammer.event.bindDom(elm, Hammer.EVENT_TYPES[Hammer.EVENT_START], ngmn_PopupMouseMenu);
+  }
   else
-    elm.ngAddEvent('onmousedown',ngmn_PopupMouseMenu);
+  {
+    if (window.navigator.msPointerEnabled)
+      elm.addEventListener("MSPointerDown", ngmn_PopupMouseMenu, false);
+    else
+      elm.ngAddEvent('onmousedown',ngmn_PopupMouseMenu);
+  }
 }
 
 function ngmn_DoAcceptGestures(o,gestures)
@@ -2080,19 +2087,25 @@ function nga_SetPopupMenu(m)
 
     if(!nga_popup_initialized)
     {
-      if (window.navigator.msPointerEnabled) {
-        document.addEventListener("MSPointerDown", nga_DoPopupMenuStart, false);
-        document.addEventListener("MSPointerUp", nga_DoPopupMenu, false);
+      if(ngHammerJS()) // HammerJS library is present
+      {
+        Hammer.event.bindDom(document, Hammer.EVENT_TYPES[Hammer.EVENT_START], nga_DoPopupMenuStart);
+        Hammer.event.bindDom(document, Hammer.EVENT_TYPES[Hammer.EVENT_END], nga_DoPopupMenu);
+
+        nga_popup_hammer=Hammer(document, { prevent_mouseevents: true, hold_threshold: 10 });
+        nga_popup_hammer.on("hold touch", nga_DoPopupMenuTouch);
       }
       else
       {
-        document.onmousedown = ngAddEvent(nga_DoPopupMenuStart, document.onmousedown);
-        document.onmouseup = ngAddEvent(nga_DoPopupMenu, document.onmouseup);
-      }
-      if(ngHammerJS()) // HammerJS library is present
-      {
-        nga_popup_hammer=Hammer(document, { prevent_mouseevents: true, hold_threshold: 10 });
-        nga_popup_hammer.on("hold touch", nga_DoPopupMenuTouch);
+        if (window.navigator.msPointerEnabled) {
+          document.addEventListener("MSPointerDown", nga_DoPopupMenuStart, false);
+          document.addEventListener("MSPointerUp", nga_DoPopupMenu, false);
+        }
+        else
+        {
+          document.onmousedown = ngAddEvent(nga_DoPopupMenuStart, document.onmousedown);
+          document.onmouseup = ngAddEvent(nga_DoPopupMenu, document.onmouseup);
+        }
       }
       nga_popup_initialized = true;
     }
