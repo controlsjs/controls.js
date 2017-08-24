@@ -579,8 +579,8 @@ ngUserControls['list_designinfo'] = {
             "OnDrawItemText": ng_DIPropertyEvent('function(c, html, it, id, level) { return true; }', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnGetText": ng_DIPropertyEvent('function(c, it, colid) { return ""; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c, it, colid) { return ""; }', { Level: 'basic' }),
+            "OnGetText": ng_DIPropertyEvent('function(c, it, col) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_DIPropertyEvent('function(c, it, col) { return ""; }', { Level: 'basic' }),
             "OnCompareItem": ng_DIPropertyEvent('function(c, a, b) { return 0; }', { Level: 'basic' }),
             "OnGetRowClassName": ng_DIPropertyEvent('function(c, it, id) { return ""; }', { Level: 'basic' }),
             "OnMeasureItem": ng_DIPropertyEvent('function(c, it, id, level) { return it.H; }', { Level: 'basic' }),
