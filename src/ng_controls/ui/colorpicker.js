@@ -4288,7 +4288,7 @@ function ngcopdd_ShowDropDownColor()
   var text = (this.AllowAlpha) ? color.HEXA : color.HEX;
   this.SetText(text.toUpperCase());
 
-  if(this.DropDownControl.Visible){
+  if(this.DropDownControl && this.DropDownControl.Visible){
     ngcopch_SetPickerColor(
       this.DropDownControl,
       color
