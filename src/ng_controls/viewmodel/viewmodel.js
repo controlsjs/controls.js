@@ -657,8 +657,8 @@ function ngfd_FormatString(v)
       case 'FLOAT':
       case 'DECIMAL':
         if(this.Attrs['FormatNumber']) {
-          r=ng_Format3Num(''+v,this.Attrs['ThousandsSeparator'],'.');
-          r=r.replace('.',ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()));
+          r=ng_Format3Num(v,this.Attrs['ThousandsSeparator'],'.');
+          if(ng_typeString(r)) r=r.replace('.',ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()));
         }
         break;
       case 'TIMESTAMP':
