@@ -3206,7 +3206,7 @@ function nge_DoMouseLeave(e, mi)
 
 function nge_DoCreate(d, ref, elm, parent)
 {
-  if((typeof d.DropDown !== 'undefined')&&(typeof this.SetDropDownControl === 'function')&&(!this.InDesignMode))
+  if((typeof d.DropDown !== 'undefined')&&(typeof this.SetDropDownControl === 'function'))
   {
     ng_MergeDef(d.DropDown, {
       L: 0, T: 0,
@@ -3215,6 +3215,7 @@ function nge_DoCreate(d, ref, elm, parent)
         Visible: false
       }
     });
+    if(this.InDesignMode) d.DropDown.Data.Visible=false; // DropDowns are always invisible in FormEditor
     var lref=ngCreateControls({ Control: d.DropDown },undefined,(typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
     if(typeof lref.Control !== 'undefined') // dropdown successfuly created
     {
