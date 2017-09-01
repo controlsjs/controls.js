@@ -419,23 +419,19 @@ function ngTxt(t, defval)
     if(mainlang) {
       txt=gettxt2(def,mainlang,t,lang ? lang : sublang);
       if(typeof txt!=='undefined') return txt;
+      switch(mainlang)
+      {
+        case 'cs':
+          txt=gettxt2(def,'cz',t,(sublang ? sublang : mainlang));
+          if(typeof txt!=='undefined') return txt;
+          break;
+        case 'cz':
+          txt=gettxt2(def,'cs',t,(sublang ? sublang : mainlang));
+          if(typeof txt!=='undefined') return txt;
+          break;
+      }
     }
-    switch(mainlang)
-    {
-      case 'cs':
-        txt=gettxt2(def,'cz',t,(sublang ? sublang : mainlang));
-        if(typeof txt!=='undefined') return txt;
-        break;
-      case 'cz':
-        txt=gettxt2(def,'cs',t,(sublang ? sublang : mainlang));
-        if(typeof txt!=='undefined') return txt;
-        break;
-      case 'en':
-        break;
-      default:
-        txt=gettxt2(def,'en',t,mainlang);
-        break;
-    }
+    if(mainlang!=='en') txt=gettxt2(def,'en',t,mainlang);
     return txt;
   }
 
