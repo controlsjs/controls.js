@@ -2230,7 +2230,7 @@ var ng_setBounds = ngIExplorer ? ng_setBoundsIE : ng_setBoundsNotIE;
 function ng_ProcessURLParams2(url, septag)
 {
   if(url=='') return;
-  var vars = url.split(septag);
+  var s, vars = url.split(septag);
   for(var i=0;i<vars.length;i++)
   {
     s=vars[i].split('=');
