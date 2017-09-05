@@ -239,7 +239,7 @@ ngUserControls['uicore'] = {
           }
         },
         Properties: ng_DIProperties({
-          "H": { Level: 'optional' },
+          "H": null,
           "style": {
             "color": { Level: 'basic' },
             "fontFamily": { Level: 'basic' },
@@ -387,6 +387,7 @@ ngUserControls['uicore'] = {
           }
         },
         Properties: ng_DIProperties({
+          "H": null,
           "Buttons": { DefaultType: 'controls_array', Level: 'basic',
             Collapsed: false,
             PropertyGroup: 'Controls',
