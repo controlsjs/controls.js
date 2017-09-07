@@ -73,6 +73,8 @@ ngUserControls['window_designinfo'] = {
           "CH": { DefaultType: 'integer', Order: 0.142,
             Exclude: ['H']
           },
+          "R": null,
+          "B": null,
           "ControlsPanel": { DefaultType: 'control',
             IsContainer: false,
             Types: {
