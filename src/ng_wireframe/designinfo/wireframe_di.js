@@ -542,51 +542,39 @@ var WireframeControls_DesignInfo = {
         ControlCategory: 'Containers',
         IsContainer: true,
         Properties: ng_DIProperties({
+          "CloseBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+          "MaxBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+          "MinBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
           "Data": {
+            "BackgroundColor": null,
             "FormID": { Level: 'advanced' },
-            "LeftTop": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.LeftTop' }
-              }
+            "Frame": { Level: 'advanced',
+                       Types: {
+                         'img_frame': {
+                           ObjectProperties: {
+                             "LeftTop": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.LeftTop', { Level: 'advanced' }),
+                             "Top": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Top', { Level: 'advanced' }),
+                             "RightTop": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.RightTop', { Level: 'advanced' }),
+                             "Left": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Left', { Level: 'advanced' }),
+                             "Right": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Right', { Level: 'advanced' }),
+                             "LeftBottom": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.LeftBottom', { Level: 'advanced' }),
+                             "Bottom": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Bottom', { Level: 'advanced' }),
+                             "RightBottom": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.RightBottom', { Level: 'advanced' })
+                           }
+                         }
+                       }
             },
-            "Top": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.Top' }
-              }
-            },
-            "RightTop": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.RightTop' }
-              }
-            },
-            "Left": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.Left' }
-              }
-            },
-            "Right": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.Right' }
-              }
-            },
-            "LeftBottom": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.LeftBottom' }
-              }
-            },
-            "Bottom": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.Bottom' }
-              }
-            },
-            "RightBottom": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Window.RightBottom' }
-              }
+            "CaptionImg": { DefaultType: 'object', Level: 'advanced',
+                            Types: {
+                              'object': {
+                                ObjectProperties: {
+                                  "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.Window.Caption.LeftImg', { Level: 'advanced' }),
+                                  "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Window.Caption.MiddleImg', { Level: 'advanced' }),
+                                  "RightImg": ng_DIProperty('image', 'WireframeControls.Images.Window.Caption.RightImg', { Level: 'advanced' })
+                                }
+                              }
+                            }
             }
-          },
-          "Events": {
-            "OnDblClick": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -605,10 +593,13 @@ var WireframeControls_DesignInfo = {
       var di={
         Properties: ng_DIProperties({
           "className": ng_DIProperty('string', 'wfrDialog', { Level: 'advanced' }),
-          "Modal": ng_DIPropertyBool(true),
-          "Visible": ng_DIPropertyBool(false),
-          "Sizeable": ng_DIPropertyBool(false),
-          "Centered": ng_DIPropertyBool(true)
+          "CloseBtn": ng_DIPropertyBool(true),
+          "Data": {
+            "Modal": ng_DIPropertyBool(true),
+            "Visible": ng_DIPropertyBool(false),
+            "Sizeable": ng_DIPropertyBool(false),
+            "Centered": ng_DIPropertyBool(true)
+          }
         })
       };
       ng_MergeVar(di,wfrWindowDI(d,c,ref));

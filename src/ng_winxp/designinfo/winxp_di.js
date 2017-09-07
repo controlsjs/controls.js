@@ -651,51 +651,40 @@ var WinXP_DesignInfo = {
         ControlCategory: 'Containers',
         IsContainer: true,
         Properties: ng_DIProperties({
+          "CloseBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+          "HelpBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+          "MaxBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+          "MinBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
           "Data": {
+            "BackgroundColor": null,
             "FormID": { Level: 'advanced' },
-            "LeftTop": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.LeftTop' }
-              }
+            "Frame": { Level: 'advanced',
+                       Types: {
+                         'img_frame': {
+                           ObjectProperties: {
+                             "LeftTop": ng_DIProperty('image', 'WinXPControls.Images.Window.LeftTop', { Level: 'advanced' }),
+                             "Top": ng_DIProperty('image', 'WinXPControls.Images.Window.Top', { Level: 'advanced' }),
+                             "RightTop": ng_DIProperty('image', 'WinXPControls.Images.Window.RightTop', { Level: 'advanced' }),
+                             "Left": ng_DIProperty('image', 'WinXPControls.Images.Window.Left', { Level: 'advanced' }),
+                             "Right": ng_DIProperty('image', 'WinXPControls.Images.Window.Right', { Level: 'advanced' }),
+                             "LeftBottom": ng_DIProperty('image', 'WinXPControls.Images.Window.LeftBottom', { Level: 'advanced' }),
+                             "Bottom": ng_DIProperty('image', 'WinXPControls.Images.Window.Bottom', { Level: 'advanced' }),
+                             "RightBottom": ng_DIProperty('image', 'WinXPControls.Images.Window.RightBottom', { Level: 'advanced' })
+                           }
+                         }
+                       }
             },
-            "Top": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.Top' }
-              }
-            },
-            "RightTop": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.RightTop' }
-              }
-            },
-            "Left": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.Left' }
-              }
-            },
-            "Right": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.Right' }
-              }
-            },
-            "LeftBottom": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.LeftBottom' }
-              }
-            },
-            "Bottom": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.Bottom' }
-              }
-            },
-            "RightBottom": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.Window.RightBottom' }
-              }
+            "CaptionImg": { DefaultType: 'object', Level: 'advanced',
+                            Types: {
+                              'object': {
+                                ObjectProperties: {
+                                  "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.WindowCaption.LeftImg', { Level: 'advanced' }),
+                                  "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.WindowCaption.MiddleImg', { Level: 'advanced' }),
+                                  "RightImg": ng_DIProperty('image', 'WinXPControls.Images.WindowCaption.RightImg', { Level: 'advanced' })
+                                }
+                              }
+                            }
             }
-          },
-          "Events": {
-            "OnDblClick": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -713,10 +702,13 @@ var WinXP_DesignInfo = {
       var di={
         Properties: ng_DIProperties({
           "className": ng_DIProperty('string', 'wxpDialog', { Level: 'advanced' }),
-          "Modal": ng_DIPropertyBool(true),
-          "Visible": ng_DIPropertyBool(false),
-          "Sizeable": ng_DIPropertyBool(false),
-          "Centered": ng_DIPropertyBool(true)
+          "CloseBtn": ng_DIPropertyBool(true),
+          "Data": {
+            "Modal": ng_DIPropertyBool(true),
+            "Visible": ng_DIPropertyBool(false),
+            "Sizeable": ng_DIPropertyBool(false),
+            "Centered": ng_DIPropertyBool(true)
+          }
         })
       };
       ng_MergeVar(di,stdWindowDI(d,c,ref));
