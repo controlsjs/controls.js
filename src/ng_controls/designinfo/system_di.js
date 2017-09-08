@@ -15,15 +15,15 @@ ngUserControls['system_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
-
     var undefined;
+
     ngRegisterControlDesignInfo('ngSysContainer',function(d,c,ref) {
       return {
         ControlCategory: 'System',
         BaseControl: 'ngSysContainer',
         IsContainer: true,
         Properties: {
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' })
+          "ParentReferences": ng_diBoolean(false, { Level: 'optional' })
         }
       };
     });
@@ -32,20 +32,18 @@ ngUserControls['system_designinfo'] = {
       return {
         ControlCategory: 'System',
         BaseControl: 'ngSysTimer',
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "Interval": ng_DIProperty('integer',0,{Level:'basic'}),
-            "Repeat": { DefaultType: 'boolean', Level:'basic',
-              Types: {
-                'boolean': { DefaultValue: true },
-                'integer': { InitValue: 1 }
-              }
-            }
+            "Interval": ng_diInteger(0,{Level:'basic'}),
+            "Repeat": ng_diMixed([
+              ng_diBoolean(true),
+              ng_diInteger(0, undefined, { InitValue: 1 })
+            ], { Level:'basic' })
           },
           "Events": {
-            "OnTimer": ng_DIPropertyEvent('function(c, tickcnt) { return true; }',{Level:'basic'}),
-            "OnStart": ng_DIPropertyEvent('function(c) {}',{Level:'basic'}),
-            "OnStop": ng_DIPropertyEvent('function(c, tickcnt) {}',{Level:'basic'})
+            "OnTimer": ng_diEvent('function(c, tickcnt) { return true; }',{Level:'basic'}),
+            "OnStart": ng_diEvent('function(c) {}',{Level:'basic'}),
+            "OnStop": ng_diEvent('function(c, tickcnt) {}',{Level:'basic'})
           }
         })
       }
@@ -69,47 +67,35 @@ ngUserControls['system_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "nocache": ng_DIPropertyBool(false, {Level: 'basic' }),
-            "Type": ng_DIPropertyIntConstants('rpcAuto',[
+            "nocache": ng_diBoolean(false, { Level: 'basic' }),
+            "Type": ng_diIntegerIdentifiers('rpcAuto',[
               'rpcNone','rpcAuto','rpcScript','rpcIFrame',
               'rpcHttpRequest','rpcHttpRequestPOST','rpcHttpRequestGET',
               'rpcJSON','rpcJSONPOST','rpcJSONGET',
               'rpcData','rpcDataPOST','rpcDataGET',
               {Value:99,Text:'rpcUser'}
             ],{ Level: 'basic' }),
-            "HTTPMethod": ng_DIPropertyStrings('',['GET','POST','PUT','DELETE','OPTIONS','HEAD','CONNECT'], {
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_DropDown'
-                }
-              }
-            }),
-            "URL": { DefaultType: 'url', Level: 'basic' },
-            "Params": { DefaultType: 'object', Level: 'basic',
-              Types: {
-                'object': {
-                  ChildDesignInfo: {
-                    DefaultType: 'string'
-                  }
-                }
-              }
-            }
+            "HTTPMethod": ng_diStringValues('',['GET','POST','PUT','DELETE','OPTIONS','HEAD','CONNECT'], undefined, { Editor: 'ngfeEditor_DropDown' }),
+            "URL": ng_diType('url', { Level: 'basic' }),
+            "Params": ng_diObject(undefined, { Level: 'basic' }, {
+              ChildDesignInfo: ng_diString()
+            })
           },
           "Events": {
-            "OnRequest": ng_DIPropertyEvent('function(c, reqinfo) { return true; }',{ Level: 'basic' }),
-            "OnSendRequest": ng_DIPropertyEvent('function(c, url, reqinfo) { return true; }',{ Level: 'basic' }),
-            "OnRequestSent": ng_DIPropertyEvent('function(c, url, reqinfo) {}',{ Level: 'basic' }),
-            "OnIFrameRequest": ng_DIPropertyEvent('function(c) { return true; }'),
-            "OnHTTPRequest": ng_DIPropertyEvent('function(c, reqinfo) { return true; }'),
-            "OnHTTPReadyStateChanged": ng_DIPropertyEvent('function(c, xmlhttp, reqinfo) { return true; }'),
-            "OnHTTPRequestFailed": ng_DIPropertyEvent('function(c, xmlhttp, reqinfo) {}'),
-            "OnReceivedJSON": ng_DIPropertyEvent('function(c, data, xmlhttp) {}',{ Level: 'basic' }),
-            "OnReceivedData": ng_DIPropertyEvent('function(c, response, xmlhttp, reqinfo) { return true; }',{ Level: 'basic' })
+            "OnRequest": ng_diEvent('function(c, reqinfo) { return true; }',{ Level: 'basic' }),
+            "OnSendRequest": ng_diEvent('function(c, url, reqinfo) { return true; }',{ Level: 'basic' }),
+            "OnRequestSent": ng_diEvent('function(c, url, reqinfo) {}',{ Level: 'basic' }),
+            "OnIFrameRequest": ng_diEvent('function(c) { return true; }'),
+            "OnHTTPRequest": ng_diEvent('function(c, reqinfo) { return true; }'),
+            "OnHTTPReadyStateChanged": ng_diEvent('function(c, xmlhttp, reqinfo) { return true; }'),
+            "OnHTTPRequestFailed": ng_diEvent('function(c, xmlhttp, reqinfo) {}'),
+            "OnReceivedJSON": ng_diEvent('function(c, data, xmlhttp) {}',{ Level: 'basic' }),
+            "OnReceivedData": ng_diEvent('function(c, response, xmlhttp, reqinfo) { return true; }',{ Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnEncodeParam": ng_DIPropertyEvent('function(c, name, value) { return value; }',{ Level: 'basic' })
+            "OnEncodeParam": ng_diEvent('function(c, name, value) { return value; }',{ Level: 'basic' })
           }
         })
       }
@@ -119,36 +105,24 @@ ngUserControls['system_designinfo'] = {
       return {
         ControlCategory: 'System',
         BaseControl: 'ngSysURLParams',
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "Params": { DefaultType: 'object', Level: 'basic',
-              Types: {
-                'object': {
-                  ChildDesignInfo: {
-                    DefaultType: 'string'
-                  }
-                }
-              }
-            },
-            "DefaultValues": { DefaultType: 'object', Level: 'basic',
-              Types: {
-                'object': {
-                  ChildDesignInfo: {
-                    DefaultType: 'string'
-                  }
-                }
-              }
-            }
+            "Params": ng_diObject(undefined, { Level: 'basic' }, {
+              ChildDesignInfo: ng_diString()
+            }),
+            "DefaultValues": ng_diObject(undefined, { Level: 'basic' }, {
+              ChildDesignInfo: ng_diString()
+            })
           },
           "Events": {
-            "OnInit": ng_DIPropertyEvent('function(c, name, val) { return true; }',{ Level: 'basic' }),
-            "OnUpdate": ng_DIPropertyEvent('function(c, name, val) { return text; }',{ Level: 'basic' }),
-            "OnInitialized": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
-            "OnParamsChanged": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' })
+            "OnInit": ng_diEvent('function(c, name, val) { return true; }',{ Level: 'basic' }),
+            "OnUpdate": ng_diEvent('function(c, name, val) { return text; }',{ Level: 'basic' }),
+            "OnInitialized": ng_diEvent('function(c) {}',{ Level: 'basic' }),
+            "OnParamsChanged": ng_diEvent('function(c) {}',{ Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnGetParam": ng_DIPropertyEvent('function(c, name, val) { return val; }',{ Level: 'basic' }),
-            "OnSetParam": ng_DIPropertyEvent('function(c, name, val) { return val; }',{ Level: 'basic' })
+            "OnGetParam": ng_diEvent('function(c, name, val) { return val; }',{ Level: 'basic' }),
+            "OnSetParam": ng_diEvent('function(c, name, val) { return val; }',{ Level: 'basic' })
           }
         })
       }

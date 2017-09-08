@@ -32,24 +32,24 @@ var MaskEdit_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "HAlign": { Level: 'optional' },
             "HPadding": { Level: 'optional' },
             "VAlign": { Level: 'optional' },
-            "Vertical": ng_DIPropertyBool(true, { Level: 'optional' }),
+            "Vertical": ng_diBoolean(true, { Level: 'optional' }),
             "VPadding": { Level: 'optional' },
             "Wrapable": { Level: 'optional' },
 
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "LeftDef": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "EditDef": ng_DIPropertyControl('ngEdit', { Level: 'basic' }, 'ngEdit'),
-            "StaticDef": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "RightDef": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "LeftDef": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "EditDef": ng_diControl('ngEdit', null, { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
+            "StaticDef": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "RightDef": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
 
-            "Mask": ng_DIPropertyStrings('',[
+            "Mask": ng_diStringValues('',[
               '00:00:00',
               '00:00',
               '0000-00-09',
@@ -57,55 +57,33 @@ var MaskEdit_DesignInfo = {
               '999999999990.99',
               '990.990.990.990',
               '990°00\'00"Z'
-            ], { Level: 'basic',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_DropDown'
-                }
-              }
-            }),
-            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
-            "AutoSize": ng_DIPropertyBool(true),
-            "CharWidth": ng_DIProperty('integer', 10, { Level: 'basic' }),
-            "PartWidths": { DefaultType: 'array', 
-              Types: {
-                'array': {
-                  ChildDesignInfo: {
-                    DefaultType: 'integer'
-                  }
-                }
-              }
-            },
-            "PartDefaultValues": { DefaultType: 'array', 
-              Types: {
-                'array': {
-                  ChildDesignInfo: {
-                    DefaultType: 'string'
-                  }
-                }
-              }
-            },
-            "PartInitValues": { DefaultType: 'array_strings' },
-            "DefaultValuesAsHint": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "PartDefs": { DefaultType: 'controls_array' },
-            "Invalid": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "LockHintCaretPos": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "Text": { DefaultType: 'string', Level: 'basic' }
+            ], { Level: 'basic' }, { Editor: 'ngfeEditor_DropDown' }),
+            "TextAlign": ng_diStringValues('left', ['left','right','center'], { Level: 'basic' }),
+            "AutoSize": ng_diBoolean(true),
+            "CharWidth": ng_diInteger(10, { Level: 'basic' }),
+            "PartWidths": ng_diArrayOf('integer'),
+            "PartDefaultValues": ng_diArrayOf('string'),
+            "PartInitValues": ng_diType('array_strings'),
+            "DefaultValuesAsHint": ng_diBoolean(true, { Level: 'basic' }),
+            "PartDefs": ng_diArrayOfControls(),
+            "Invalid": ng_diBoolean(false, { Level: 'basic' }),
+            "LockHintCaretPos": ng_diBoolean(false, { Level: 'basic' }),
+            "Text": ng_diString('', { Level: 'basic' })
           },
           "Events": {
-            "OnTextChanged": ng_DIPropertyEvent('function(c, cp) {}', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnValidate": ng_DIPropertyEvent('function(c, part, text, re) { return true; }', { Level: 'basic' }),
-            "OnSetInvalid": ng_DIPropertyEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
-            "OnSetInvalidPart": ng_DIPropertyEvent('function(c, part, state, update) { return true; }', { Level: 'basic' }),
-            "OnCreatePart": ng_DIPropertyEvent('function(c, partInfo, def, parts) {}'),
-            "OnCreateLeftHolder": ng_DIPropertyEvent('function(c, def) {}'),
-            "OnCreateRightHolder": ng_DIPropertyEvent('function(c, def) {}')
+            "OnTextChanged": ng_diEvent('function(c, cp) {}', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnValidate": ng_diEvent('function(c, part, text, re) { return true; }', { Level: 'basic' }),
+            "OnSetInvalid": ng_diEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
+            "OnSetInvalidPart": ng_diEvent('function(c, part, state, update) { return true; }', { Level: 'basic' }),
+            "OnCreatePart": ng_diEvent('function(c, partInfo, def, parts) {}'),
+            "OnCreateLeftHolder": ng_diEvent('function(c, def) {}'),
+            "OnCreateRightHolder": ng_diEvent('function(c, def) {}')
           },
           "OverrideEvents": {
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }'),
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnSetMask": ng_DIPropertyEvent('function(mask, c) { return mask; }')
+            "OnGetText": ng_diEvent('function(c) { return ""; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetMask": ng_diEvent('function(mask, c) { return mask; }')
           }
         })
       };

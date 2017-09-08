@@ -13,6 +13,7 @@
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['menu_designinfo'] = {
   OnFormEditorInit: function(FE) {
+    var undefined;
     var menu_types = [
       // ngMenuItem
       {
@@ -23,8 +24,8 @@ ngUserControls['menu_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "SubMenu": { DefaultType: 'ngMenuItems', Level: 'basic', Collapsed: true },
-            "OnMenuClick": ng_DIPropertyEvent('function(e, m, it) { return true; }', { Order: 0.9, Level: 'basic' }),
+            "SubMenu": ng_diType('ngMenuItems', { Level: 'basic', Collapsed: true }),
+            "OnMenuClick": ng_diEvent('function(e, m, it) { return true; }', { Order: 0.9, Level: 'basic' }),
             // change defaults
             "Items": { Level: 'optional' },
             "Collapsed": { Level: 'optional' },
@@ -41,9 +42,7 @@ ngUserControls['menu_designinfo'] = {
         Basic: false,
         Options: {
           Priority: 0.53,
-          ChildDesignInfo: {
-            DefaultType: 'ngMenuItem', Level: 'basic'
-          }
+          ChildDesignInfo: ng_diType('ngMenuItem', { Level: 'basic' })
         }
       }
     ];
@@ -60,34 +59,13 @@ ngUserControls['menu_designinfo'] = {
 
       ng_MergeVar(di, {
         Properties: {
-          "Menu": {
-            Level: hasonclick ? 'basic' : 'optional',
-            PropertyGroup: 'Controls',
-            DefaultType: 'control',
-            Types: {
-              'control': {
-                Type: 'ngMenu',
-                InheritedFrom: 'ngMenu',
-                ObjectProperties: {
-                  "Type": { Required: true }
-                }
-              }
-            }
-          },
-          "PopupMenu": {
-            Level: 'basic',
-            PropertyGroup: 'Controls',
-            DefaultType: 'control',
-            Types: {
-              'control': {
-                Type: 'ngMenu',
-                InheritedFrom: 'ngMenu',
-                ObjectProperties: {
-                  "Type": { Required: true }
-                }
-              }
-            }
-          }
+          "Menu": ng_diControl('ngMenu', {
+            "Type": { Required: true }
+          }, { Level: hasonclick ? 'basic' : 'optional', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngMenu' }),
+
+          "PopupMenu": ng_diControl('ngMenu', {
+            "Type": { Required: true }
+          }, { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngMenu' })
         }
       });
     }
@@ -123,45 +101,37 @@ ngUserControls['menu_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "Items": { DefaultType: 'ngMenuItems', Level: 'basic',
-              Types: {
-                'ngMenuItems': {},
-                'ngListItems': { Level: 'hidden' },
-                'ngListStringItems': { Level: 'hidden' }
-              }
-            },
-            "MenuHAlign": ng_DIPropertyStrings('left', ['left','center','right'],{ Level: 'basic' }),
-            "MenuVAlign": ng_DIPropertyStrings('top', ['top','center','bottom'],{ Level: 'basic' }),
-            "MaxHeight": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "MinWidth": ng_DIProperty('integer',100,{ Level: 'basic' }),
-            "MinScreenIndent": ng_DIProperty('integer',5,{ Level: 'basic' }),
-            "SubMenuDef": { DefaultType: 'control', 
-              Types: {
-                'control': {
-                  Type: 'ngMenu',
-                  InheritedFrom: 'ngMenu',
-                  ObjectProperties: {
-                    "AutoDef": ng_DIPropertyBool(false,{ Level: 'optional' })
-                  }
-                }
-              }
-            },
-            "SubMenuOverlapX": ng_DIProperty('integer',5,{ Level: 'basic' }),
-            "SubMenuOverlapY": ng_DIProperty('integer',0,{ Level: 'basic' }),
-            "AutoPopup": ng_DIProperty(['undefined','boolean'],[undefined,true],{ InitType: 'boolean', Level: 'advanced' }),
-
-            "ActiveSubMenu": { DefaultType: 'object', Level: 'hidden' },
-            "PopupX": { DefaultType: 'integer', Level: 'hidden' },
-            "PopupY": { DefaultType: 'integer', Level: 'hidden' },
-            "PopupElm": { DefaultType: 'object', Level: 'hidden' },
+            "Items": ng_diMixed([
+              ng_diType('ngMenuItems'),
+              ng_diType('ngListItems', { Level: 'hidden' }),
+              ng_diType('ngListStringItems', { Level: 'hidden' })
+            ], { Level: 'basic' }),
+            "MenuHAlign": ng_diStringValues('left', ['left','center','right'],{ Level: 'basic' }),
+            "MenuVAlign": ng_diStringValues('top', ['top','center','bottom'],{ Level: 'basic' }),
+            "MaxHeight": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "MinWidth": ng_diInteger(100,{ Level: 'basic' }),
+            "MinScreenIndent": ng_diInteger(5,{ Level: 'basic' }),
+            "SubMenuDef": ng_diControl('ngMenu', {
+              "AutoDef": ng_diBoolean(false,{ Level: 'optional' })
+            }, { Level: 'advanced' }, { InheritedFrom: 'ngMenu' }),
+            "SubMenuOverlapX": ng_diInteger(5,{ Level: 'basic' }),
+            "SubMenuOverlapY": ng_diInteger(0,{ Level: 'basic' }),
+            "AutoPopup": ng_diMixed([
+              ng_diUndefined(),
+              ng_diBoolean(true)
+            ],{ InitType: 'boolean', Level: 'advanced' }),
+            "ActiveSubMenu": ng_diObject(undefined, { Level: 'hidden' }),
+            "PopupX": ng_diInteger(undefined, { Level: 'hidden' }),
+            "PopupY": ng_diInteger(undefined, { Level: 'hidden' }),
+            "PopupElm": ng_diObject(undefined, { Level: 'hidden' }),
 
             // change defaults
-            "Visible": ng_DIPropertyBool(false),
-            "PopupGroup": ng_DIProperty('string','menu', { Level: 'optional' }),
-            "ShowCheckboxes": ng_DIPropertyBool(true, { Level: 'advanced' }),
-            "ShowHeader": ng_DIPropertyBool(false, { Level: 'advanced' }),
+            "Visible": ng_diBoolean(false),
+            "PopupGroup": ng_diString('menu', { Level: 'optional' }),
+            "ShowCheckboxes": ng_diBoolean(true, { Level: 'advanced' }),
+            "ShowHeader": ng_diBoolean(false, { Level: 'advanced' }),
             "Columns": { Level: 'advanced' },
             "SelectType": { Level: 'advanced' },
             "SortCaseSensitive": { Level: 'advanced' },
@@ -169,14 +139,14 @@ ngUserControls['menu_designinfo'] = {
             "SortDir": { Level: 'advanced' }
           },
           "Events": {
-            "OnPopup": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            //"OnPopupMenu": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnDrawSeparator": ng_DIPropertyEvent('function(html, it, id, level, c) {}', { Level: 'basic' }),
-            "OnHideSubMenu": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnMenuClick": ng_DIPropertyEvent('function(e, c, it) { return true; }', { Level: 'basic' }),
+            "OnPopup": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            //"OnPopupMenu": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnDrawSeparator": ng_diEvent('function(html, it, id, level, c) {}', { Level: 'basic' }),
+            "OnHideSubMenu": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnMenuClick": ng_diEvent('function(e, c, it) { return true; }', { Level: 'basic' }),
             "OnClickOutside": { Level: 'basic' },
-            "OnSubMenuCreated": ng_DIPropertyEvent('function(c, def, m) {}', { Level: 'basic' }),
-            "OnGetScreenRect": ng_DIPropertyEvent('function(c, rect) {}', { Level: 'basic' })
+            "OnSubMenuCreated": ng_diEvent('function(c, def, m) {}', { Level: 'basic' }),
+            "OnGetScreenRect": ng_diEvent('function(c, rect) {}', { Level: 'basic' })
           }
         })
       }
@@ -200,36 +170,18 @@ ngUserControls['menu_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Menu": { Level: 'basic' },
-          "Button": {
-            Level: 'basic',
-            DefaultType: 'control',
-            Types: {
-              'control': {
-                Type: 'ngMenuBarButton',
-                InheritedFrom: 'ngMenuBarButton',
-                ObjectProperties: {
-                  "Type": { Required: true }
-                }
-              }
-            }
-          },
+          "Button": ng_diControl('ngMenuBarButton', {
+            "Type": { Required: true }
+          }, { Level: 'basic' }, { InheritedFrom: 'ngMenuBarButton' }),
           "Data": {
-            "SubMenuDef": { DefaultType: 'control',
-              Types: {
-                'control': {
-                  Type: 'ngMenu',
-                  InheritedFrom: 'ngMenu',
-                  ObjectProperties: {
-                    "AutoDef": ng_DIPropertyBool(false,{ Level: 'optional' })
-                  }
-                }
-              }
-            }
+            "SubMenuDef": ng_diControl('ngMenu', {
+              "AutoDef": ng_diBoolean(false,{ Level: 'optional' })
+            }, undefined, { InheritedFrom: 'ngMenu' })
           },
           "Events": {
-            "OnItemsChanged": ng_DIPropertyEvent('function(c, items) {}', { Level: 'basic' })
+            "OnItemsChanged": ng_diEvent('function(c, items) {}', { Level: 'basic' })
           }
         })
       }
@@ -238,9 +190,9 @@ ngUserControls['menu_designinfo'] = {
     ngRegisterControlDesignInfo('ngMenuBarButton',function(d,c,ref) {
       return {
         ControlCategory: false,
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "AutoPopup": ng_DIPropertyBool(false, { Level: 'basic' })
+            "AutoPopup": ng_diBoolean(false, { Level: 'basic' })
           }
         })
       }

@@ -16,11 +16,12 @@ var WireframeControls_DesignInfo = {
   {
     if(!ngDESIGNINFO) return;
 
+    var undefined;
     ngRegisterControlDesignInfo('wfrPanel',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -31,7 +32,7 @@ var WireframeControls_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -43,28 +44,16 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrToolBar'
-              }
-            }
-          }
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrToolBar', { Level: 'advanced' })
         })
       };
     });
     ngRegisterControlDesignInfo('wfrText',function(d,c,ref) {
       return {
         ControlCategory: 'Labels',
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrText'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrText', { Level: 'advanced' }),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
@@ -75,34 +64,16 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrButton',function(d,c,ref) {
       return {
         ControlCategory: 'Buttons',
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrButton'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrButton', { Level: 'advanced' }),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "LeftImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.DefButton.LeftImg' }
-              }
-            },
-            "MiddleImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.DefButton.MiddleImg' }
-              }
-            },
-            "RightImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.DefButton.RightImg' }
-              }
-            }
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.DefButton.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.DefButton.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.DefButton.RightImg', { Level: 'advanced' })
            }
         })
        };
@@ -110,30 +81,16 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrCheckBox',function(d,c,ref) {
       return {
         ControlCategory: 'Buttons',
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrCheckBox'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrCheckBox', { Level: 'advanced' }),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "LeftImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.CheckBoxLeft'}
-              }
-            },
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.CheckBoxLeft', { Level: 'advanced' }),
             "MiddleImg": { Level: 'advanced' },
-            "RightImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.CheckBoxRight' }
-              }
-            }
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.CheckBoxRight', { Level: 'advanced' })
            }
         })
        };
@@ -141,45 +98,25 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrRadioButton',function(d,c,ref) {
       return {
         ControlCategory: 'Buttons',
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrRadio'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrRadio', { Level: 'advanced' }),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "LeftImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.RadioLeft'}
-              }
-            },
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.RadioLeft', { Level: 'advanced' }),
             "MiddleImg": { Level: 'advanced' },
-            "RightImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.RadioRight' }
-              }
-            }
-           }
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.RadioRight', { Level: 'advanced' })
+          }
         })
        };
     });
     ngRegisterControlDesignInfo('wfrLabel',function(d,c,ref) {
       return {
         ControlCategory: 'Labels',
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrLabel'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrLabel', { Level: 'advanced' }),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
@@ -195,17 +132,11 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrLink',function(d,c,ref) {
       return {
         ControlCategory: 'Buttons',
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrLink', { Level: 'advanced' }),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
-          },
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wfrLink'
-              }
-            }
           },
           "Data": {
             "LeftImg": { Level: 'advanced' },
@@ -219,21 +150,15 @@ var WireframeControls_DesignInfo = {
     function wfrEditDI(d,c,ref) {
       return {
         ControlCategory: 'Edits',
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrEdit'),
-          "DropDown": {
-            Types: {
-              'control': {
-                ObjectProperties: ng_DIProperties({
-                  "className": ng_DIProperty('string', 'wfrDropDown', { Level: 'advanced' })
-                })
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrEdit'),
+          "DropDown": ng_diControl(undefined, {
+            "className": ng_diString('wfrDropDown', { Level: 'advanced' })
+          }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.RightImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.RightImg', { Level: 'advanced' })
           }
         })
       };
@@ -247,10 +172,10 @@ var WireframeControls_DesignInfo = {
 
     function wfrEditBoxBtnDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Events": {
-            "OnElipsis": ng_DIPropertyEvent('function(c, text) {}', { Level: 'basic' })
+            "OnElipsis": ng_diEvent('function(c, text) {}', { Level: 'basic' })
           }
         })
       };
@@ -268,12 +193,12 @@ var WireframeControls_DesignInfo = {
 
     function wfrColorEditDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' })
+            "TextAlign": ng_diString('center', { Level: 'advanced' })
           },
           "Methods": {
-            "GetColor": ng_DIProperty('function','function() { ng_CallParent(this, "GetColor", arguments); }')
+            "GetColor": ng_diFunction('function() { ng_CallParent(this, "GetColor", arguments); }')
           }
         })
       };
@@ -292,51 +217,39 @@ var WireframeControls_DesignInfo = {
 
     function wfrMaskEditDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "H": ng_DIProperty('integer', 'WireframeControls.Images.Edit.MiddleImg.H', { Level: 'advanced' }),
-            "LeftDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: {
-                    "W": ng_DIProperty('integer', 'WireframeControls.Images.LeftImg.W', { Level: 'advanced' }),
-                    "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.LeftImg', { Level: 'advanced' }),
-                    "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            "H": ng_diInteger(WireframeControls.Images.Edit.MiddleImg.H, { Level: 'advanced' }),
+            "LeftDef": ng_diControl(undefined, ng_diProperties({
+              "W": ng_diInteger(WireframeControls.Images.LeftImg.W, { Level: 'advanced' }),
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.LeftImg', { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "EditDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'wfrEdit',
-                  ObjectProperties: {
-                    "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "EditDef": ng_diControl('wfrEdit', ng_diProperties({
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "StaticDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'wfrLabel',
-                  ObjectProperties: {
-                    "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "StaticDef": ng_diControl('wfrLabel', ng_diProperties({
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
+               }
+            }), { Level: 'advanced' }),
+            "RightDef": ng_diControl(undefined, ng_diProperties({
+              "W": ng_diInteger(WireframeControls.Images.Edit.RightImg.W, { Level: 'advanced' }),
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.RightImg', { Level: 'advanced' })
               }
-            },
-            "RightDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: {
-                    "W": ng_DIProperty('integer', 'WireframeControls.Images.Edit.RightImg.W', { Level: 'advanced' }),
-                    "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
-                    "RightImg": ng_DIProperty('image', 'WireframeControls.Images.Edit.RightImg', { Level: 'advanced' })
-                  }
-                }
-              }
-            }
+            }), { Level: 'advanced' })
           }
         })
       };
@@ -353,13 +266,13 @@ var WireframeControls_DesignInfo = {
 
     function wfrSearchBoxDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Methods": {
-            "Search": ng_DIProperty('function','function(text) { ng_CallParent(this, "Search", arguments); }')
+            "Search": ng_diFunction('function(text) { ng_CallParent(this, "Search", arguments); }')
           },
           "Events": {
-            "OnSearch": ng_DIPropertyEvent('function(c, text) {}', { Level: 'basic' })
+            "OnSearch": ng_diEvent('function(c, text) {}', { Level: 'basic' })
           }
         })
       };
@@ -370,13 +283,13 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrProgressBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrProgressBar', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrProgressBar', { Level: 'advanced' }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.ProgressBar.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.ProgressBar.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WireframeControls.Images.ProgressBar.RightImg', { Level: 'advanced' }),
-            "BarImg": ng_DIProperty('image', 'WireframeControls.Images.ProgressBar.BarImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.ProgressBar.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.ProgressBar.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.ProgressBar.RightImg', { Level: 'advanced' }),
+            "BarImg": ng_diTypeVal('image', 'WireframeControls.Images.ProgressBar.BarImg', { Level: 'advanced' })
           }
         })
       };
@@ -384,11 +297,11 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrProgressDot',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrLabel', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrLabel', { Level: 'advanced' }),
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-            "HTMLEncode": ng_DIPropertyBool(false)
+            "TextAlign": ng_diString('center', { Level: 'advanced' }),
+            "HTMLEncode": ng_diBoolean(false)
           }
         })
       };
@@ -396,17 +309,17 @@ var WireframeControls_DesignInfo = {
 
     function wfrListDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrListBox', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrListBox', { Level: 'advanced' }),
           "Data": {
-            "TreeImg": ng_DIProperty('image', 'WireframeControls.Images.TreeImgTriangle', { Level: 'advanced' })
+            "TreeImg": ng_diTypeVal('image', 'WireframeControls.Images.TreeImgTriangle', { Level: 'advanced' })
           },
           "Methods": {
-            "DoUpdate": ng_DIProperty('function','function() { ng_CallParent(this, "DoUpdate", arguments); }')
+            "DoUpdate": ng_diFunction('function() { ng_CallParent(this, "DoUpdate", arguments); }')
           },
           "Events": {
-            "OnGetCheckImg": ng_DIPropertyEvent('function(c,item) { return true; }', { Level: 'basic' }),
-            "OnUpdated": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' })
+            "OnGetCheckImg": ng_diEvent('function(c,item) { return true; }', { Level: 'basic' }),
+            "OnUpdated": ng_diEvent('function(c) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -425,91 +338,82 @@ var WireframeControls_DesignInfo = {
 
     function wfrPageListDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrListBox', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrListBox', { Level: 'advanced' }),
           "Data": {
-            "AverageItemHeight" : ng_DIProperty('integer', 20, { Level: 'advanced' })
+            "AverageItemHeight" : ng_diInteger(20, { Level: 'advanced' })
           },
           "Methods": {
-            "DoUpdate": ng_DIProperty('function','function() { ng_CallParent(this, "DoUpdate", arguments); }')
+            "DoUpdate": ng_diFunction('function() { ng_CallParent(this, "DoUpdate", arguments); }')
           },
           "ModifyControls": {
-            DefaultType: 'controls',
-            Level: 'advanced',
-            "List": ng_DIPropertyControl('wfrList', { Level: 'basic' }, 'ngList'),
-            "Loading": ng_DIPropertyControl('wfrProgressDot', { Level: 'advanced' }),
-            "Paging": {
-              Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "className": ng_DIProperty('string', 'wxpPageListPaging', { Level: 'advanced' })
-                  })
-                }
-              }
-            },
+            "List": ng_diControl('wfrList', undefined, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
+            "Loading": ng_diControl('wfrProgressDot', undefined, { Level: 'advanced' }),
+            "Paging": ng_diControl(undefined, undefined, {
+              "className": ng_diString('wxpPageListPaging', { Level: 'advanced' })
+            }, { Level: 'advanced' }),
             'FirstPage': ng_DIPropertyControl(
               'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_DIProperties({
-                "className": ng_DIProperty('string', 'wfrPgListPagingButton', { Level: 'advanced' }),
+              ng_diProperties({
+                "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
-                  "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "Img": ng_DIProperty('image', 'WireframeControls.Images.PagingFirst', { Level: 'advanced' })
+                  "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingFirst', { Level: 'advanced' })
                 }
               })
             ),
             'PrevPage': ng_DIPropertyControl(
               'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_DIProperties({
-                "className": ng_DIProperty('string', 'wfrPgListPagingButton', { Level: 'advanced' }),
+              ng_diProperties({
+                "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
-                  "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "Img": ng_DIProperty('image', 'WireframeControls.Images.PagingPrev', { Level: 'advanced' })
+                  "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingPrev', { Level: 'advanced' })
                 }
               })
             ),
             'PageNo': ng_DIPropertyControl(
               'wfrEdit', { Level: 'advanced' }, 'wfrEdit',
-              ng_DIProperties({
+              ng_diProperties({
                 "Data": {
-                  "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "Text": ng_DIProperty('string', '1', { Level: 'advanced' }),
-                  "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' })
+                  "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "Text": ng_diString('1', { Level: 'advanced' }),
+                  "TextAlign": ng_diString('center', { Level: 'advanced' })
                 }
               })
             ),
             'Page0': ng_DIPropertyControl(
               'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_DIProperties({
-                "className": ng_DIProperty('string', 'wfrPgListPagingButton', { Level: 'advanced' }),
+              ng_diProperties({
+                "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
-                  "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "MinWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.PagingPage', { Level: 'advanced' }),
-                  "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-                  "Text": ng_DIProperty('string', '1', { Level: 'advanced' })
+                  "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.PagingPage', { Level: 'advanced' }),
+                  "TextAlign": ng_diString('center', { Level: 'advanced' }),
+                  "Text": ng_diString('1', { Level: 'advanced' })
                 }
               })
             ),
             'NextPage': ng_DIPropertyControl(
               'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_DIProperties({
-                "className": ng_DIProperty('string', 'wfrPgListPagingButton', { Level: 'advanced' }),
+              ng_diProperties({
+                "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
-                  "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "ImgAlign": ng_DIProperty('string', 'right', { Level: 'advanced' }),
-                  "Img": ng_DIProperty('image', 'WireframeControls.Images.PagingNext', { Level: 'advanced' })
+                  "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "ImgAlign": ng_diString('right', { Level: 'advanced' }),
+                  "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingNext', { Level: 'advanced' })
                 }
               })
             ),
             'LastPage': ng_DIPropertyControl(
               'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_DIProperties({
-                "className": ng_DIProperty('string', 'wfrPgListPagingButton', { Level: 'advanced' }),
+              ng_diProperties({
+                "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
-                  "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'advanced', Order: 0.8 },
-                  "ImgAlign": ng_DIProperty('string', 'right', { Level: 'advanced' }),
-                  "Img": ng_DIProperty('image', 'WireframeControls.Images.PagingLast', { Level: 'advanced' })
+                  "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
+                  "ImgAlign": ng_diString('right', { Level: 'advanced' }),
+                  "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingLast', { Level: 'advanced' })
                 }
               })
             )
@@ -522,16 +426,16 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrGroup',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrGroupBox', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrGroupBox', { Level: 'advanced' })
         })
       };
     });
 
     ngRegisterControlDesignInfo('wfrGroupBox',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrGroupBox', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrGroupBox', { Level: 'advanced' })
         }),
         ControlCategory: false
       };
@@ -541,48 +445,38 @@ var WireframeControls_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "CloseBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "MaxBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "MinBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+        Properties: ng_diProperties({
+          "CloseBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "MaxBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "MinBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
           "Data": {
             "BackgroundColor": null,
             "FormID": { Level: 'advanced' },
-            "Frame": { Level: 'advanced',
-                       Types: {
-                         'img_frame': {
-                           ObjectProperties: {
-                             "LeftTop": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.LeftTop', { Level: 'advanced' }),
-                             "Top": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Top', { Level: 'advanced' }),
-                             "RightTop": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.RightTop', { Level: 'advanced' }),
-                             "Left": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Left', { Level: 'advanced' }),
-                             "Right": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Right', { Level: 'advanced' }),
-                             "LeftBottom": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.LeftBottom', { Level: 'advanced' }),
-                             "Bottom": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.Bottom', { Level: 'advanced' }),
-                             "RightBottom": ng_DIProperty('image', 'WireframeControls.Images.Window.Frame.RightBottom', { Level: 'advanced' })
-                           }
-                         }
-                       }
-            },
-            "CaptionImg": { DefaultType: 'object', Level: 'advanced',
-                            Types: {
-                              'object': {
-                                ObjectProperties: {
-                                  "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.Window.Caption.LeftImg', { Level: 'advanced' }),
-                                  "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Window.Caption.MiddleImg', { Level: 'advanced' }),
-                                  "RightImg": ng_DIProperty('image', 'WireframeControls.Images.Window.Caption.RightImg', { Level: 'advanced' })
-                                }
-                              }
-                            }
-            }
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }, {
+              ObjectProperties: {
+                "LeftTop": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.LeftTop', { Level: 'advanced' }),
+                "Top": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.Top', { Level: 'advanced' }),
+                "RightTop": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.RightTop', { Level: 'advanced' }),
+                "Left": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.Left', { Level: 'advanced' }),
+                "Right": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.Right', { Level: 'advanced' }),
+                "LeftBottom": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.LeftBottom', { Level: 'advanced' }),
+                "Bottom": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.Bottom', { Level: 'advanced' }),
+                "RightBottom": ng_diTypeVal('image', 'WireframeControls.Images.Window.Frame.RightBottom', { Level: 'advanced' })
+              }
+            }),
+            "CaptionImg": ng_diObject({
+              "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Window.Caption.LeftImg', { Level: 'advanced' }),
+              "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Window.Caption.MiddleImg', { Level: 'advanced' }),
+              "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.Window.Caption.RightImg', { Level: 'advanced' })
+            }, { Level: 'advanced' })
           }
         })
       };
     }
     ngRegisterControlDesignInfo('wfrWindow',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrWindow', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrWindow', { Level: 'advanced' })
         })
       };
       ng_MergeVar(di,wfrWindowDI(d,c,ref));
@@ -591,14 +485,14 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDialog',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrDialog', { Level: 'advanced' }),
-          "CloseBtn": ng_DIPropertyBool(true),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrDialog', { Level: 'advanced' }),
+          "CloseBtn": ng_diBoolean(true),
           "Data": {
-            "Modal": ng_DIPropertyBool(true),
-            "Visible": ng_DIPropertyBool(false),
-            "Sizeable": ng_DIPropertyBool(false),
-            "Centered": ng_DIPropertyBool(true)
+            "Modal": ng_diBoolean(true),
+            "Visible": ng_diBoolean(false),
+            "Sizeable": ng_diBoolean(false),
+            "Centered": ng_diBoolean(true)
           }
         })
       };
@@ -608,26 +502,26 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrHint',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrHint', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrHint', { Level: 'advanced' })
         })
       };
     });
 
     ngRegisterControlDesignInfo('wfrTextHint',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrTextHint', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrTextHint', { Level: 'advanced' })
         })
       };
     });
 
     ngRegisterControlDesignInfo('wfrCalendar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrCalendar', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrCalendar', { Level: 'advanced' }),
           "Events": {
-            "OnUpdated": ng_DIPropertyEvent('function(calendar) { return true; }', { Level: 'advanced' })
+            "OnUpdated": ng_diEvent('function(calendar) { return true; }', { Level: 'advanced' })
           }
         })
       };
@@ -635,20 +529,12 @@ var WireframeControls_DesignInfo = {
 
     function wfrEditDateDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrEdit', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrEdit', { Level: 'advanced' }),
           "ModifyControls": {
-            "DropDown": { DefaultType: 'control', Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'wfrCalendar',
-                  InheritedFrom: 'ngCalendar',
-                  ObjectProperties: ng_DIProperties({
-                    "padding": { DefaultType: 'string', Level: 'optional' }
-                  })
-                }
-              }
-            }
+            "DropDown": ng_diControl('wfrCalendar', ng_diProperties({
+              "padding": ng_diString('', { Level: 'optional' })
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngCalendar' })
           }
         })
       };
@@ -659,11 +545,11 @@ var WireframeControls_DesignInfo = {
 
     function wfrEditTimeDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrEdit', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrEdit', { Level: 'advanced' }),
           "Events": {
-            "OnDropDown": ng_DIPropertyEvent('function(c, l) { return true; }', { Level: 'basic' }),
-            "OnListItemChanged": ng_DIPropertyEvent('function(c, l, it, oit) { return false; }', { Level: 'basic' })
+            "OnDropDown": ng_diEvent('function(c, l) { return true; }', { Level: 'basic' }),
+            "OnListItemChanged": ng_diEvent('function(c, l, it, oit) { return false; }', { Level: 'basic' })
           }
         })
       };
@@ -674,13 +560,13 @@ var WireframeControls_DesignInfo = {
 
     function wfrMemoDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrMemo', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrMemo', { Level: 'advanced' }),
           "Data": {
-            "Frame": ng_DIProperty('img_frame', 'WireframeControls.Images.Memo', { Level: 'advanced' })
+            "Frame": ng_diTypeVal('img_frame', 'WireframeControls.Images.Memo', { Level: 'advanced' })
           },
           "Methods": {
-            "DoMouseLeave": ng_DIProperty('function','function(e, mi, elm) { ng_CallParent(this, "DoMouseLeave", arguments); }', { Level: 'advanced'} )
+            "DoMouseLeave": ng_diFunction('function(e, mi, elm) { ng_CallParent(this, "DoMouseLeave", arguments); }', { Level: 'advanced'} )
           }
         })
       };
@@ -689,55 +575,37 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrSplitPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrSplitPanel', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrSplitPanel', { Level: 'advanced' })
         })
       };
     });
 
     ngRegisterControlDesignInfo('wfrDropPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrDropPanel', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrDropPanel', { Level: 'advanced' })
         })
       };
     });
 
     ngRegisterControlDesignInfo('wfrMenu',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrMenu', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrMenu', { Level: 'advanced' }),
           "Data": {
-            "SubMenuDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'wfrMenu'
-                }
-              }
-            },
-            "SubMenuImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Menu.SubMenu' }
-              }
-            },
-            "Frame": { Level: 'advanced',
-              Types: {
-                'img_frame': { DefaultValue: 'WireframeControls.Images.Menu.Frame' }
-              }
-            },
-            "SeparatorImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WireframeControls.Images.Menu.Separator' }
-              }
-            }
+            "SubMenuDef": ng_diControl('wfrMenu', undefined, { Level: 'advanced' }),
+            "SubMenuImg": ng_diTypeVal('image', 'WireframeControls.Images.Menu.SubMenu', { Level: 'advanced' }),
+            "Frame": ng_diTypeVal('img_frame', 'WireframeControls.Images.Menu.Frame', { Level: 'advanced' }),
+            "SeparatorImg": ng_diTypeVal('image', 'WireframeControls.Images.Menu.Separator', { Level: 'advanced' })
           },
           "Methods": {
-            "DoUpdate": ng_DIProperty('function','function(c) { ng_CallParent(this, "DoUpdate", arguments); }'),
-            "DrawItemText": ng_DIProperty('function','function(html, it, id, level) { ng_CallParent(this, "DrawItemText", arguments); }', { Level: 'advanced' })
+            "DoUpdate": ng_diFunction('function(c) { ng_CallParent(this, "DoUpdate", arguments); }'),
+            "DrawItemText": ng_diFunction('function(html, it, id, level) { ng_CallParent(this, "DrawItemText", arguments); }', { Level: 'advanced' })
           },
           "Events": {
-            "OnGetCheckImg": ng_DIPropertyEvent('function(c,item) { return true; }', { Level: 'basic' }),
-            "OnUpdated": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' })
+            "OnGetCheckImg": ng_diEvent('function(c,item) { return true; }', { Level: 'basic' }),
+            "OnUpdated": ng_diEvent('function(c) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -745,16 +613,10 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrMenuBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrMenuBar', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrMenuBar', { Level: 'advanced' }),
           "Data": {
-            "SubMenuDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'wfrMenu'
-                }
-              }
-            }
+            "SubMenuDef": ng_diControl('wfrMenu', undefined, { Level: 'advanced' })
           }
         })
       };
@@ -762,12 +624,12 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrMenuBarButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrMenuBarButton', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrMenuBarButton', { Level: 'advanced' }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.MenuBar.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.MenuBar.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WireframeControls.Images.MenuBar.RightImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.MenuBar.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.MenuBar.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.MenuBar.RightImg', { Level: 'advanced' })
           }
         })
       };
@@ -775,12 +637,12 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrSplitButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wfrSplitButton', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrSplitButton', { Level: 'advanced' }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WireframeControls.Images.Button.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WireframeControls.Images.Button.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WireframeControls.Images.Menu.SplitButton', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Button.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Button.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.Menu.SplitButton', { Level: 'advanced' })
           }
         })
       };
@@ -790,15 +652,15 @@ var WireframeControls_DesignInfo = {
       return {
         ControlCategory: 'Dialogs',
         IsContainer: false,
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','wfrDialog',{Level: 'advanced'}),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('wfrDialog',{Level: 'advanced'}),
           "ModifyControls": {
-            "Message": ng_DIPropertyControl('wfrText', { Level: 'advanced' }, 'ngText'),
-            "OK": ng_DIPropertyControl('wfrButton', { Level: 'advanced' }, 'ngButton'),
-            "Yes": ng_DIPropertyControl('wfrButton', { Level: 'advanced' }, 'ngButton'),
-            "No": ng_DIPropertyControl('wfrButton', { Level: 'advanced' }, 'ngButton'),
-            "Cancel": ng_DIPropertyControl('wfrButton', { Level: 'advanced' }, 'ngButton'),
-            "CheckBox": ng_DIPropertyControl('wfrCheckBox', { Level: 'advanced' }, 'ngCheckBox')
+            "Message": ng_diControl('wfrText', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' }),
+            "OK": ng_diControl('wfrButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Yes": ng_diControl('wfrButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "No": ng_diControl('wfrButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('wfrButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "CheckBox": ng_diControl('wfrCheckBox', null, { Level: 'advanced' }, { InheritedFrom: 'ngCheckBox' })
           }
         })
       };
@@ -806,9 +668,9 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrMessageDlg',wfrMessageDlgDI);
     ngRegisterControlDesignInfo('wfrMessageBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Icon": ng_DIPropertyControl('ngImage', { Level: 'advanced' }, 'ngText')
+            "Icon": ng_diControl('ngImage', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' })
           }
         })
       };
@@ -818,8 +680,8 @@ var WireframeControls_DesignInfo = {
     });
     function wfrDlgInputBoxDI(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','wfrMessageDlg',{Level: 'advanced'})
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('wfrMessageDlg',{Level: 'advanced'})
         })
       };
       ng_MergeVar(di,wfrMessageDlgDI(d,c,ref));
@@ -827,12 +689,12 @@ var WireframeControls_DesignInfo = {
     };
     ngRegisterControlDesignInfo('wfrDlgInputBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('wfrEdit', { Level: 'advanced' }, 'ngEdit')
+            "Edit": ng_diControl('wfrEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -841,12 +703,12 @@ var WireframeControls_DesignInfo = {
     });
     ngRegisterControlDesignInfo('wfrDlgDropDownBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('wfrDropDown', { Level: 'advanced' }, 'ngDropDown')
+            "Edit": ng_diControl('wfrDropDown', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDown' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -855,9 +717,9 @@ var WireframeControls_DesignInfo = {
     });
     ngRegisterControlDesignInfo('wfrDlgDropDownListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('wfrDropDownList', { Level: 'advanced' }, 'ngDropDownList')
+            "Edit": ng_diControl('wfrDropDownList', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDownList' })
           }
         })
       };
@@ -866,9 +728,9 @@ var WireframeControls_DesignInfo = {
     });
     ngRegisterControlDesignInfo('wfrDlgDropDownTreeListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('wfrDropDownList', { Level: 'advanced' }, 'ngDropDownList')
+            "Edit": ng_diControl('wfrDropDownList', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDownList' })
           }
         })
       };
@@ -877,12 +739,12 @@ var WireframeControls_DesignInfo = {
     });
     ngRegisterControlDesignInfo('wfrDlgMemoBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('wfrMemo', { Level: 'advanced' }, 'ngMemo')
+            "Edit": ng_diControl('wfrMemo', null, { Level: 'advanced' }, { InheritedFrom: 'ngMemo' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -892,13 +754,13 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDlgListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','wfrMessageDlg',{Level: 'advanced'}),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('wfrMessageDlg',{Level: 'advanced'}),
           "ModifyControls": {
-            "List": ng_DIPropertyControl('wfrList', { Level: 'advanced' }, 'ngList')
+            "List": ng_diControl('wfrList', null, { Level: 'advanced' }, { InheritedFrom: 'ngList' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -909,9 +771,9 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDlgProgressBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Progress": ng_DIPropertyControl('wfrProgressBar', { Level: 'advanced' }, 'ngProgressBar')
+            "Progress": ng_diControl('wfrProgressBar', null, { Level: 'advanced' }, { InheritedFrom: 'ngProgressBar' })
           }
         })
       };
@@ -922,9 +784,9 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDlgWaitBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Progress": ng_DIPropertyControl('wfrProgressDot', { Level: 'advanced' }, 'ngProgressDot')
+            "Progress": ng_diControl('wfrProgressDot', null, { Level: 'advanced' }, { InheritedFrom: 'ngProgressDot' })
           }
         })
       };
@@ -935,20 +797,14 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDlgAbout',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','wfrDlgMessageBox',{Level: 'advanced'}),
-          "DlgIcon": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('wfrDlgMessageBox',{Level: 'advanced'}),
+          "DlgIcon": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "ModifyControls": {
-            "Message": { DefaultType: 'control', Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "className": ng_DIProperty('string', 'wfrAboutMessage', { Level: 'advanced' })
-                  })
-                }
-              }
-            },
-            "AppInfo": ng_DIPropertyControl('wfrTreeList', { Level: 'advanced' }, 'ngTreeList')
+            "Message": ng_diControl(undefined, ng_diProperties({
+              "className": ng_diString('wfrAboutMessage', { Level: 'advanced' })
+            }), { Level: 'advanced' }),
+            "AppInfo": ng_diControl('wfrTreeList', undefined, { Level: 'advanced' }, { InheritedFrom: 'ngTreeList' })
           }
         })
       };
@@ -956,11 +812,11 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrViewModelForm',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "ErrorHint": ng_DIPropertyControl('wfrTextHint', { Level: 'advanced' }, 'ngTextHint', ng_DIProperties({
-              "className": ng_DIProperty('string', 'wfrEditFieldError', { Level: 'advanced' })
-            }))
+            "ErrorHint": ng_diControl('wfrTextHint', ng_diProperties({
+              "className": ng_diString('wfrEditFieldError', { Level: 'advanced' })
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngTextHint' })
           }
         })
       };
@@ -968,17 +824,17 @@ var WireframeControls_DesignInfo = {
 
     function wfrEditFieldDI (d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "HintX": ng_DIProperty('integer',10,{ Level: 'basic' }),
-            "HintXY": ng_DIProperty('integer',17,{ Level: 'basic' })
+            "HintX": ng_diInteger(10,{ Level: 'basic' }),
+            "HintXY": ng_diInteger(17,{ Level: 'basic' })
           },
-          "ErrorHint": ng_DIPropertyControl('wfrTextHint', { Level: 'advanced' }, 'ngTextHint', ng_DIProperties({
-            "className": ng_DIProperty('string', 'wfrEditFieldError', { Level: 'advanced' }),
+          "ErrorHint": ng_diControl('wfrTextHint', ng_diProperties({
+            "className": ng_diString('wfrEditFieldError', { Level: 'advanced' }),
             "Data": {
-              "Anchor": ng_DIProperty('string', 'topleft|bottomleft|left', { Level: 'advanced' })
+              "Anchor": ng_diString('topleft|bottomleft|left', { Level: 'advanced' })
             }
-          }))
+          }), { Level: 'advanced' }, { InheritedFrom: 'ngTextHint' })
         })
       };
       ng_MergeVar(di,wfrEditDI(d,c,ref));

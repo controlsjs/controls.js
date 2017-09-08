@@ -40,63 +40,48 @@ ngUserControls['dialogs_designinfo'] = {
           }
         },
 
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','ngWindow',{Level: 'optional'}),
-          "DlgButtons": { DefaultType: 'bitmask', Level: 'basic',
-            Types: {
-              'bitmask': {
-                DefaultValue: {
-                  value: mbOK
-                },
-                EditorOptions: {
-                  BitMaskIdentifiers: [
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('ngWindow',{Level: 'optional'}),
+          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }, { Level: 'basic' }, {
+            EditorOptions: {
+              BitMaskIdentifiers: [
 //                    {value: mbNone,       id: 'mbNone'},
-                    {value: mbCancel,     id: 'mbCancel'},
-                    {value: mbOK,         id: 'mbOK'},
-                    {value: mbYes,        id: 'mbYes'},
-                    {value: mbNo,         id: 'mbNo'},
+                {value: mbCancel,     id: 'mbCancel'},
+                {value: mbOK,         id: 'mbOK'},
+                {value: mbYes,        id: 'mbYes'},
+                {value: mbNo,         id: 'mbNo'},
 
-                    {value: mbDefButton1, id: 'mbDefButton1'},
-                    {value: mbDefButton2, id: 'mbDefButton2'},
-                    {value: mbDefButton3, id: 'mbDefButton3'},
-                    {value: mbDefButton4, id: 'mbDefButton4'}
-                  ]
-                }
-              }
+                {value: mbDefButton1, id: 'mbDefButton1'},
+                {value: mbDefButton2, id: 'mbDefButton2'},
+                {value: mbDefButton3, id: 'mbDefButton3'},
+                {value: mbDefButton4, id: 'mbDefButton4'}
+              ]
             }
-          },
-          "CloseBtn": ng_DIPropertyBool(false, { Level: 'optional' }), // CloseBtn has no implementation in ngMessageDlg
+          }),
+          "CloseBtn": ng_diBoolean(false, { Level: 'optional' }), // CloseBtn has no implementation in ngMessageDlg
           "Data": {
-            "DialogResult": ng_DIPropertyIntConstants(0,[{Value:0,Text:'mbNone'},{Value:1,Text:'mbCancel'},{Value:2,Text:'mbOK'},{Value:4,Text:'mbYes'},{Value:8,Text:'mbNo'}],{ Level: 'basic' }),
+            "DialogResult": ng_diIntegerIdentifiers(0,[{Value:0,Text:'mbNone'},{Value:1,Text:'mbCancel'},{Value:2,Text:'mbOK'},{Value:4,Text:'mbYes'},{Value:8,Text:'mbNo'}],{ Level: 'basic' }),
 
             // changed ngWindow defaults
             "AutoSize": { Level: 'optional' },
-            "Centered": ng_DIPropertyBool(true),
-            "Visible": ng_DIPropertyBool(false),
-            "Sizeable": ng_DIPropertyBool(false),
-            "Modal": ng_DIPropertyBool(true),
-            "DisposeOnClose": ng_DIPropertyBool(true)
+            "Centered": ng_diBoolean(true),
+            "Visible": ng_diBoolean(false),
+            "Sizeable": ng_diBoolean(false),
+            "Modal": ng_diBoolean(true),
+            "DisposeOnClose": ng_diBoolean(true)
           },
           "ModifyControls": {
-            "Message": ng_DIPropertyControl('ngText', { Level: 'basic' }, 'ngText'),
-            "Content": ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel'),
-            "Buttons": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngToolBar',
-                  InheritedFrom: 'ngToolBar',
-                  ObjectProperties: ng_DIProperties({
-                    "Data": {
-                      "CenterButtons": ng_DIPropertyBool(true, { Level: 'basic' })
-                    }
-                  })
-                }
-              }
-            },
-            "OK": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "Yes": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "No": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "Cancel": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
+            "Message": ng_diControl('ngText', null, { Level: 'basic' }, { InheritedFrom: 'ngText' }),
+            "Content": ng_diControl('ngPanel', null, { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),
+            "Buttons": ng_diControl('ngToolBar', ng_diProperties({
+                         "Data": {
+                           "CenterButtons": ng_diBoolean(true, { Level: 'basic' })
+                         }
+                       }), { Level: 'basic' }, { InheritedFrom: 'ngToolBar' }),
+            "OK": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Yes": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "No": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' })
           }
         },{
           "ModifyControls": { Level: 'basic' }
@@ -107,20 +92,20 @@ ngUserControls['dialogs_designinfo'] = {
     ngRegisterControlDesignInfo('ngAboutDlg',function(d,c,ref) {
       return {
         ControlCategory: 'Dialogs',
-        Properties: ng_DIProperties({
-          "AboutSystemInfo": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
-          "AboutComponents": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
-          "AboutLibraries": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
-          "AboutTrademarks": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
-          "AboutReleaseNotes": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+        Properties: ng_diProperties({
+          "AboutSystemInfo": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutComponents": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutLibraries": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutTrademarks": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
+          "AboutReleaseNotes": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "Data": {
-            "AppName": ng_DIProperty('string',ngTxt('ngAppName',document.title),{ Level: 'basic' }),
-            "AppVersion": ng_DIProperty('string','Version 1.0.0',{ Level: 'basic' }),
-            "AppCopyright": ng_DIProperty('string',ngTxt('ngAppCopyright',''),{ Level: 'basic' }),
-            "AppText": ng_DIProperty('string','',{ Level: 'basic' })
+            "AppName": ng_diString(ngTxt('ngAppName',document.title),{ Level: 'basic' }),
+            "AppVersion": ng_diString('Version 1.0.0',{ Level: 'basic' }),
+            "AppCopyright": ng_diString(ngTxt('ngAppCopyright',''),{ Level: 'basic' }),
+            "AppText": ng_diString('',{ Level: 'basic' })
           },
           "ModifyControls": {
-            "AppInfo": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList')
+            "AppInfo": ng_diControl('ngList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' })
           }
         })
       };

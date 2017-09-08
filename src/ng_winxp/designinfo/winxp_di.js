@@ -15,11 +15,12 @@ var WinXP_DesignInfo = {
   OnInit: function() {
     if(!ngDESIGNINFO) return;
 
+    var undefined;
     ngRegisterControlDesignInfo('stdPanel',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -30,7 +31,7 @@ var WinXP_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -47,14 +48,8 @@ var WinXP_DesignInfo = {
     });*/
     ngRegisterControlDesignInfo('stdText',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpText'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('stdText'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
@@ -64,47 +59,22 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdImage',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpImage'
-              }
-            }
-          }
+        Properties: ng_diProperties({
+          "className": ng_diString('stdImage')
         })
       };
     });
     ngRegisterControlDesignInfo('stdCheckBox',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpCheckBox'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('stdCheckBox'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "TextAlign": {
-              Types: {
-                'string': {
-                  DefaultValue: 'right',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
-            "LeftImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.CheckBoxLeft' }
-              }
-            },
+            "TextAlign": ng_diStringValues('right', ['left','right']),
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.CheckBoxLeft', { Level: 'advanced' }),
             "MiddleImg": { Level: 'advanced' },
             "RightImg": { Level: 'advanced' }
           }
@@ -113,34 +83,15 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdRadioButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpRadio'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('stdRadio'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "TextAlign": {
-              Types: {
-                'string': {
-                  DefaultValue: 'right',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
-            "LeftImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.RadioLeft' }
-              }
-            },
+            "TextAlign": ng_diStringValues('right', ['left','right']),
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.RadioLeft', { Level: 'advanced' }),
             "MiddleImg": { Level: 'advanced' },
             "RightImg": { Level: 'advanced' }
           }
@@ -149,52 +100,28 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpButton'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('stdButton'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "LeftImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.DefButton.LeftImg' }
-              }
-            },
-            "MiddleImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.DefButton.MiddleImg' }
-              }
-            },
-            "RightImg": { Level: 'advanced',
-              Types: {
-                'image': { DefaultValue: 'WinXPControls.Images.DefButton.RightImg' }
-              }
-            }
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.DefButton.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.DefButton.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.DefButton.RightImg', { Level: 'advanced' })
           }
         })
       };
     });
     ngRegisterControlDesignInfo('stdFlatButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('stdFlatButton'),
           "style": {
             "color": { Level: 'advanced' },
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
-          },
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpFlatButton'
-              }
-            }
           },
           "Data": {
             "LeftImg": { Level: 'advanced' },
@@ -206,17 +133,11 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdLabel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('stdLabel'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
-          },
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpLabel'
-              }
-            }
           },
           "Data": {
             "LeftImg": { Level: 'advanced' },
@@ -228,17 +149,11 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdLink',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('stdLink'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
-          },
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpLink'
-              }
-            }
           },
           "Data": {
             "LeftImg": { Level: 'advanced' },
@@ -251,67 +166,25 @@ var WinXP_DesignInfo = {
 
     function stdGroupDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('stdGroupBox'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
           },
-          "className": { Level: 'advanced',
-            Types: {
-              'string': {
-                DefaultValue: 'wxpGroupBox'
-              }
-            }
-          },
           "Data": {
-            "Frame": { Level: 'advanced',
-              Types: {
-                'img_frame': {
-                  ObjectProperties: {
-                    "LeftTop": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.LeftTop' }
-                      }
-                    },
-                    "Top": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Top' }
-                      }
-                    },
-                    "RightTop": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightTop' }
-                      }
-                    },
-                    "Left": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Left' }
-                      }
-                    },
-                    "Right": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Right' }
-                      }
-                    },
-                    "LeftBottom": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.LeftBottom' }
-                      }
-                    },
-                    "Bottom": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.Bottom' }
-                      }
-                    },
-                    "RightBottom": {
-                      Types: {
-                        'image': { DefaultValue: 'WinXPControls.Images.GroupBox.RightBottom' }
-                      }
-                    }
-                  }
-                }
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }, {
+              ObjectProperties: {
+                "LeftTop": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.LeftTop'),
+                "Top": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.Top'),
+                "RightTop": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.RightTop'),
+                "Left": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.Left'),
+                "Right": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.Right'),
+                "LeftBottom": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.LeftBottom'),
+                "Bottom": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.Bottom'),
+                "RightBottom": ng_diTypeVal('image', 'WinXPControls.Images.GroupBox.RightBottom')
               }
-            }
+            })
           }
         })
       };
@@ -325,21 +198,15 @@ var WinXP_DesignInfo = {
 
     function stdEditDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpEdit'),
-          "DropDown": {
-            Types: {
-              'control': {
-                ObjectProperties: ng_DIProperties({
-                  "className": ng_DIProperty('string', 'wxpDropDown', { Level: 'advanced' })
-                })
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "className": ng_diString('stdEdit'),
+          "DropDown": ng_diControl(undefined, {
+            "className": ng_diString('stdDropDown', { Level: 'advanced' })
+          }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.RightImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.RightImg', { Level: 'advanced' })
           }
         })
       };
@@ -353,10 +220,10 @@ var WinXP_DesignInfo = {
     
     function stdEditBoxBtnDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Events": {
-            "OnElipsis": ng_DIPropertyEvent('function(c, text) {}', { Level: 'basic' })
+            "OnElipsis": ng_diEvent('function(c, text) {}', { Level: 'basic' })
           }
         })
       };
@@ -370,13 +237,13 @@ var WinXP_DesignInfo = {
     
     function stdSearchBoxDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Methods": {
-            "Search": ng_DIProperty('function','function(text) { ng_CallParent(this, "Search", arguments); }')
+            "Search": ng_diFunction('function(text) { ng_CallParent(this, "Search", arguments); }')
           },
           "Events": {
-            "OnSearch": ng_DIPropertyEvent('function(c, text) {}', { Level: 'basic' })
+            "OnSearch": ng_diEvent('function(c, text) {}', { Level: 'basic' })
           }
         })
       };
@@ -410,12 +277,12 @@ var WinXP_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' })
+            "TextAlign": ng_diString('center', { Level: 'advanced' })
           },
           "Methods": {
-            "GetColor": ng_DIProperty('function','function() { return ng_CallParent(this, "GetColor", arguments); }')
+            "GetColor": ng_diFunction('function() { return ng_CallParent(this, "GetColor", arguments); }')
           }
         })
       };
@@ -434,51 +301,39 @@ var WinXP_DesignInfo = {
 
     function stdMaskEditDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "H": ng_DIProperty('integer', 'WinXPControls.Images.Edit.MiddleImg.H', { Level: 'advanced' }),
-            "LeftDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: {
-                    "W": ng_DIProperty('integer', 'WinXPControls.Images.Edit.LeftImg.W', { Level: 'advanced' }),
-                    "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.LeftImg', { Level: 'advanced' }),
-                    "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            "H": ng_diInteger(WinXPControls.Images.Edit.MiddleImg.H, { Level: 'advanced' }),
+            "LeftDef": ng_diCotnrol(undefined, ng_diProperties({
+              "W": ng_diInteger(WinXPControls.Images.Edit.LeftImg.W, { Level: 'advanced' }),
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.LeftImg', { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "EditDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'stdEdit',
-                  ObjectProperties: {
-                    "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "EditDef": ng_diControl('stdEdit', ng_diProperties({
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "StaticDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'stdLabel',
-                  ObjectProperties: {
-                    "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "StaticDef": ng_diControl('stdLabel', ng_diProperties({
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "RightDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: {
-                    "W": ng_DIProperty('integer', 'WinXPControls.Images.Edit.RightImg.W', { Level: 'advanced' }),
-                    "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
-                    "RightImg": ng_DIProperty('image', 'WinXPControls.Images.Edit.RightImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "RightDef": ng_diControl(undefined, ng_diProperties({
+              "W": ng_diInteger(WinXPControls.Images.Edit.RightImg.W, { Level: 'advanced' }),
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.RightImg', { Level: 'advanced' })
               }
-            }
+            }), { Level: 'advanced' })
           }
         })
       };
@@ -499,10 +354,10 @@ var WinXP_DesignInfo = {
     
     function stdMemoDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpMemo', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdMemo', { Level: 'advanced' }),
           "Data": {
-            "Frame": ng_DIProperty('img_frame', 'WinXPControls.Images.Memo', { Level: 'advanced' })
+            "Frame": ng_diTypeVal('img_frame', 'WinXPControls.Images.Memo', { Level: 'advanced' })
           }
         })
       };
@@ -511,16 +366,16 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdPages',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpPages', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdPages', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('stdToolBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpToolBar', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdToolBar', { Level: 'advanced' })
         })
       };
     });
@@ -532,13 +387,13 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdProgressBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpProgressBar', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdProgressBar', { Level: 'advanced' }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.ProgressBar.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.ProgressBar.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.ProgressBar.RightImg', { Level: 'advanced' }),
-            "BarImg": ng_DIProperty('image', 'WinXPControls.Images.ProgressBar.BarImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.ProgressBar.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.ProgressBar.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.ProgressBar.RightImg', { Level: 'advanced' }),
+            "BarImg": ng_diTypeVal('image', 'WinXPControls.Images.ProgressBar.BarImg', { Level: 'advanced' })
           }
         })
       };
@@ -553,11 +408,11 @@ var WinXP_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpLabel', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdLabel', { Level: 'advanced' }),
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-            "HTMLEncode": ng_DIPropertyBool(false)
+            "TextAlign": ng_diString('center', { Level: 'advanced' }),
+            "HTMLEncode": ng_diBoolean(false)
           }
         })
       };
@@ -565,16 +420,16 @@ var WinXP_DesignInfo = {
 
     function stdListDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpListBox', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdListBox', { Level: 'advanced' }),
           Data: {
-            "TreeImg": ng_DIProperty('image', 'WinXPControls.Images.TreeImgTriangle', { Level: 'advanced' })
+            "TreeImg": ng_diTypeVal('image', 'WinXPControls.Images.TreeImgTriangle', { Level: 'advanced' })
           },
           "Methods": {
-            "DoUpdate": ng_DIProperty('function','function() { ng_CallParent(this, "DoUpdate", arguments); }')
+            "DoUpdate": ng_diFunction('function() { ng_CallParent(this, "DoUpdate", arguments); }')
           },
           "Events": {
-            "OnGetCheckImg": ng_DIPropertyEvent('function(c,item) { return true; }', { Level: 'basic' })
+            "OnGetCheckImg": ng_diEvent('function(c,item) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -589,30 +444,23 @@ var WinXP_DesignInfo = {
 
     function stdPageListDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpListBox', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdListBox', { Level: 'advanced' }),
           Data: {
-            "AverageItemHeight" : ng_DIProperty('integer', 20, { Level: 'advanced' })
+            "AverageItemHeight" : ng_diInteger(20, { Level: 'advanced' })
           },
           "ModifyControls": {
-            "List": ng_DIPropertyControl('stdList', { Level: 'basic' }, 'ngList'),
-            "Loading": ng_DIPropertyControl('stdProgressDot', { Level: 'advanced' }),
-            "Paging": {
-              Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "className": ng_DIProperty('string', 'wxpPageListPaging', { Level: 'advanced' })
-                  })
-                }
-              }
-            },
-            "FirstPage": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "PrevPage": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "PageNo": ng_DIPropertyControl('stdEdit', { Level: 'advanced' }, 'ngEdit'),
-            "Page0": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "NextPage": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "LastPage": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton')
+            "List": ng_diControl('stdList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
+            "Loading": ng_diControl('stdProgressDot', null, { Level: 'advanced' }),
+            "Paging": ng_diControl(undefined, {
+              "className": ng_diString('stdPageListPaging', { Level: 'advanced' })
+            }, { Level: 'advanced' }),
+            "FirstPage": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "PrevPage": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "PageNo": ng_diControl('stdEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' }),
+            "Page0": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "NextPage": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "LastPage": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -620,9 +468,9 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdPageList',stdPageListDI);
     ngRegisterControlDesignInfo('stdPageTreeList',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "List": ng_DIPropertyControl('stdTreeList', { Level: 'basic' }, 'ngList')
+            "List": ng_diControl('stdTreeList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' })
           }
         })
       };
@@ -632,16 +480,16 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdSplitPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpSplitPanel', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdSplitPanel', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('stdDropPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpDropPanel', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdDropPanel', { Level: 'advanced' })
         })
       };
     });
@@ -650,49 +498,39 @@ var WinXP_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "CloseBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "HelpBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "MaxBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "MinBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+        Properties: ng_diProperties({
+          "CloseBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "HelpBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "MaxBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "MinBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
           "Data": {
             "BackgroundColor": null,
             "FormID": { Level: 'advanced' },
-            "Frame": { Level: 'advanced',
-                       Types: {
-                         'img_frame': {
-                           ObjectProperties: {
-                             "LeftTop": ng_DIProperty('image', 'WinXPControls.Images.Window.LeftTop', { Level: 'advanced' }),
-                             "Top": ng_DIProperty('image', 'WinXPControls.Images.Window.Top', { Level: 'advanced' }),
-                             "RightTop": ng_DIProperty('image', 'WinXPControls.Images.Window.RightTop', { Level: 'advanced' }),
-                             "Left": ng_DIProperty('image', 'WinXPControls.Images.Window.Left', { Level: 'advanced' }),
-                             "Right": ng_DIProperty('image', 'WinXPControls.Images.Window.Right', { Level: 'advanced' }),
-                             "LeftBottom": ng_DIProperty('image', 'WinXPControls.Images.Window.LeftBottom', { Level: 'advanced' }),
-                             "Bottom": ng_DIProperty('image', 'WinXPControls.Images.Window.Bottom', { Level: 'advanced' }),
-                             "RightBottom": ng_DIProperty('image', 'WinXPControls.Images.Window.RightBottom', { Level: 'advanced' })
-                           }
-                         }
-                       }
-            },
-            "CaptionImg": { DefaultType: 'object', Level: 'advanced',
-                            Types: {
-                              'object': {
-                                ObjectProperties: {
-                                  "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.WindowCaption.LeftImg', { Level: 'advanced' }),
-                                  "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.WindowCaption.MiddleImg', { Level: 'advanced' }),
-                                  "RightImg": ng_DIProperty('image', 'WinXPControls.Images.WindowCaption.RightImg', { Level: 'advanced' })
-                                }
-                              }
-                            }
-            }
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }, {
+              ObjectProperties: {
+                "LeftTop": ng_diTypeVal('image', 'WinXPControls.Images.Window.LeftTop', { Level: 'advanced' }),
+                "Top": ng_diTypeVal('image', 'WinXPControls.Images.Window.Top', { Level: 'advanced' }),
+                "RightTop": ng_diTypeVal('image', 'WinXPControls.Images.Window.RightTop', { Level: 'advanced' }),
+                "Left": ng_diTypeVal('image', 'WinXPControls.Images.Window.Left', { Level: 'advanced' }),
+                "Right": ng_diTypeVal('image', 'WinXPControls.Images.Window.Right', { Level: 'advanced' }),
+                "LeftBottom": ng_diTypeVal('image', 'WinXPControls.Images.Window.LeftBottom', { Level: 'advanced' }),
+                "Bottom": ng_diTypeVal('image', 'WinXPControls.Images.Window.Bottom', { Level: 'advanced' }),
+                "RightBottom": ng_diTypeVal('image', 'WinXPControls.Images.Window.RightBottom', { Level: 'advanced' })
+              }
+            }),
+            "CaptionImg": ng_diObject({
+              "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.WindowCaption.LeftImg', { Level: 'advanced' }),
+              "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.WindowCaption.MiddleImg', { Level: 'advanced' }),
+              "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.WindowCaption.RightImg', { Level: 'advanced' })
+            }, { Level: 'advanced' })
           }
         })
       };
     }
     ngRegisterControlDesignInfo('stdWindow',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpWindow', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdWindow', { Level: 'advanced' })
         })
       };
       ng_MergeVar(di,stdWindowDI(d,c,ref));
@@ -700,14 +538,14 @@ var WinXP_DesignInfo = {
     });    
     ngRegisterControlDesignInfo('stdDialog',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpDialog', { Level: 'advanced' }),
-          "CloseBtn": ng_DIPropertyBool(true),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdDialog', { Level: 'advanced' }),
+          "CloseBtn": ng_diBoolean(true),
           "Data": {
-            "Modal": ng_DIPropertyBool(true),
-            "Visible": ng_DIPropertyBool(false),
-            "Sizeable": ng_DIPropertyBool(false),
-            "Centered": ng_DIPropertyBool(true)
+            "Modal": ng_diBoolean(true),
+            "Visible": ng_diBoolean(false),
+            "Sizeable": ng_diBoolean(false),
+            "Centered": ng_diBoolean(true)
           }
         })
       };
@@ -717,18 +555,18 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdHint',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpHint', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdHint', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('stdTextHint',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpTextHint', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdTextHint', { Level: 'advanced' }),
           "ModifyControls": {
-            "Hint": ng_DIPropertyControl('stdText', { Level: 'advanced' }, 'ngText')
+            "Hint": ng_diControl('stdText', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' })
           }
         })
       };
@@ -738,15 +576,15 @@ var WinXP_DesignInfo = {
       return {
         ControlCategory: 'Dialogs',
         IsContainer: false,
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','stdDialog',{Level: 'advanced'}),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('stdDialog',{Level: 'advanced'}),
           "ModifyControls": {
-            "Message": ng_DIPropertyControl('stdText', { Level: 'advanced' }, 'ngText'),
-            "OK": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "Yes": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "No": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "Cancel": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "CheckBox": ng_DIPropertyControl('stdCheckBox', { Level: 'advanced' }, 'ngCheckBox')
+            "Message": ng_diControl('stdText', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' }),
+            "OK": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Yes": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "No": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "CheckBox": ng_diControl('stdCheckBox', null, { Level: 'advanced' }, { InheritedFrom: 'ngCheckBox' })
           }
         })
       };
@@ -754,9 +592,9 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdMessageDlg',stdMessageDlgDI);
     ngRegisterControlDesignInfo('dlgMessageBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Icon": ng_DIPropertyControl('stdImage', { Level: 'advanced' }, 'ngText')
+            "Icon": ng_diControl('stdImage', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' })
           }
         })
       };
@@ -766,8 +604,8 @@ var WinXP_DesignInfo = {
     
     function dlgInputBoxDI(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','stdMessageDlg',{Level: 'advanced'})
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('stdMessageDlg',{Level: 'advanced'})
         })
       };
       ng_MergeVar(di,stdMessageDlgDI(d,c,ref));
@@ -775,12 +613,12 @@ var WinXP_DesignInfo = {
     };
     ngRegisterControlDesignInfo('dlgInputBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('stdEdit', { Level: 'advanced' }, 'ngEdit')
+            "Edit": ng_diControl('stdEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -789,12 +627,12 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('dlgDropDownBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('stdDropDown', { Level: 'advanced' }, 'ngDropDown')
+            "Edit": ng_diControl('stdDropDown', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDown' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -803,9 +641,9 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('dlgDropDownListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('stdDropDownList', { Level: 'advanced' }, 'ngDropDownList')
+            "Edit": ng_diControl('stdDropDownList', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDownList' })
           }
         })
       };
@@ -814,12 +652,12 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('dlgMemoBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('stdMemo', { Level: 'advanced' }, 'ngMemo')
+            "Edit": ng_diControl('stdMemo', null, { Level: 'advanced' }, { InheritedFrom: 'ngMemo' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -829,13 +667,13 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('dlgListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','stdMessageDlg',{Level: 'advanced'}),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('stdMessageDlg',{Level: 'advanced'}),
           "ModifyControls": {
-            "List": ng_DIPropertyControl('stdList', { Level: 'advanced' }, 'ngList')
+            "List": ng_diControl('stdList', null, { Level: 'advanced' }, { InheritedFrom: 'ngList' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -846,9 +684,9 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('dlgProgressBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Progress": ng_DIPropertyControl('stdProgressBar', { Level: 'advanced' }, 'ngProgressBar')
+            "Progress": ng_diControl('stdProgressBar', null, { Level: 'advanced' }, { InheritedFrom: 'ngProgressBar' })
           }
         })
       };
@@ -859,9 +697,9 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('dlgWaitBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Progress": ng_DIPropertyControl('stdProgressDot', { Level: 'advanced' }, 'ngProgressDot')
+            "Progress": ng_diControl('stdProgressDot', null, { Level: 'advanced' }, { InheritedFrom: 'ngProgressDot' })
           }
         })
       };
@@ -872,20 +710,14 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('dlgAbout',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','dlgMessageBox',{Level: 'advanced'}),
-          "DlgIcon": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('dlgMessageBox',{Level: 'advanced'}),
+          "DlgIcon": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "ModifyControls": {
-            "Message": { DefaultType: 'control', Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "className": ng_DIProperty('string', 'wxpAboutMessage', { Level: 'advanced' })
-                  })
-                }
-              }
-            },
-            "AppInfo": ng_DIPropertyControl('stdTreeList', { Level: 'advanced' }, 'ngTreeList')
+            "Message": ng_diControl(undefined, ng_diProperties({
+              "className": ng_diString('stdAboutMessage', { Level: 'advanced' })
+            }), { Level: 'advanced' }),
+            "AppInfo": ng_diControl('stdTreeList', undefined, { Level: 'advanced' }, { InheritedFrom: 'ngTreeList' })
           }
         })
       };
@@ -893,21 +725,21 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdCalendar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpCalendar', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdCalendar', { Level: 'advanced' })
         })
       };
     });
     
     function stdEditDateDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpEdit', { Level: 'advanced' }),
-          "DropDown": ng_DIPropertyControl('stdCalendar', { Level: 'basic' }, 'ngCalendar', ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('stdEdit', { Level: 'advanced' }),
+          "DropDown": ng_diControl('stdCalendar', ng_diProperties({
             "Data": {
-              "className": ng_DIProperty('string', 'wxpCalendar', { Level: 'advanced' })
+              "className": ng_diString('stdCalendar', { Level: 'advanced' })
             }
-          }))
+          }), { Level: 'basic' },  { InheritedFrom: 'stdCalendar' })
         })
       };
       ng_MergeVar(di,stdEditDI(d,c,ref));
@@ -917,16 +749,16 @@ var WinXP_DesignInfo = {
     
     function stdEditTimeDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpEdit', { Level: 'advanced' }),
-          "DropDown": ng_DIPropertyControl('stdList', { Level: 'basic' }, 'ngList', ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('stdEdit', { Level: 'advanced' }),
+          "DropDown": ng_diControl('stdList', ng_diProperties({
             "Data": {
-              "className": ng_DIProperty('string', 'wxpDropDown', { Level: 'advanced' })
+              "className": ng_diString('stdDropDown', { Level: 'advanced' })
             }
-          })),
+          }), { Level: 'basic' }, { InheritedFrom: 'ngList' }),
           "Events": {
-            "OnDropDown": ng_DIPropertyEvent('function(c, l) { return true; }', { Level: 'basic' }),
-            "OnListItemChanged": ng_DIPropertyEvent('function(c, l, it, oit) { return false; }', { Level: 'basic' })
+            "OnDropDown": ng_diEvent('function(c, l) { return true; }', { Level: 'basic' }),
+            "OnListItemChanged": ng_diEvent('function(c, l, it, oit) { return false; }', { Level: 'basic' })
           }
         })
       };
@@ -945,11 +777,11 @@ var WinXP_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           'Data': {
-            'AutoHeight': ng_DIPropertyBool(true, { Level: 'basic' }),
-            'AsToolbar': ng_DIPropertyBool(true, { Level: 'basic' }),
-            'Vertical': ng_DIPropertyBool(true, { Level: 'basic' })
+            'AutoHeight': ng_diBoolean(true, { Level: 'basic' }),
+            'AsToolbar': ng_diBoolean(true, { Level: 'basic' }),
+            'Vertical': ng_diBoolean(true, { Level: 'basic' })
           }
         })
       };
@@ -980,12 +812,12 @@ var WinXP_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          'DropDown': ng_DIPropertyControl('stdColorPickerBox', { Level: 'basic' }, 'stdColorPickerBox', ng_DIProperties({
+        Properties: ng_diProperties({
+          'DropDown': ng_diControl('stdColorPickerBox', ng_diProperties({
             'Data': {
-              'MaxHeight': ng_DIProperty('integer',480,{ Level: 'basic' })
+              'MaxHeight': ng_diInteger(480,{ Level: 'basic' })
             }
-          }))
+          }), { Level: 'basic' }, { InheritedFrom: 'stdColorPickerBox' })
         })
       };
     });
@@ -996,11 +828,11 @@ var WinXP_DesignInfo = {
         NewControl: {
           _noMerge:true
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           'ModifyControls': {
-            'Picker': ng_DIPropertyControl('stdColorPickerBox', { Level: 'basic' }, 'stdColorPickerBox', ng_DIProperties({
-              'W': ng_DIProperty('bounds',196,{ Level: 'basic' })
-            }))
+            'Picker': ng_diControl('stdColorPickerBox', ng_diProperties({
+              'W': ng_diTypeVal('bounds',196,{ Level: 'basic' })
+            }), { Level: 'basic' }, { InheritedFrom: 'stdColorPickerBox' })
           }
         }, { "ModifyControls": { Level: 'basic' } })
       };
@@ -1008,13 +840,13 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdMenu',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpMenu', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdMenu', { Level: 'advanced' }),
           "ModifyControls": {
-            "SubMenuDef": ng_DIPropertyControl('stdMenu', { Level: 'advanced' }, 'ngMenu')
+            "SubMenuDef": ng_diControl('stdMenu', null, { Level: 'advanced' }, { InheritedFrom: 'ngMenu' })
           },
           "Events": {
-            "OnGetCheckImg": ng_DIPropertyEvent('function(c, l, i) { return true; }', { Level: 'basic' })
+            "OnGetCheckImg": ng_diEvent('function(c, l, i) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -1022,28 +854,28 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdMenuBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpMenuBar', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdMenuBar', { Level: 'advanced' })
         })
       };
     });
     
     /*ngRegisterControlDesignInfo('stdMenuBarButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpMenuBarButton', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('stdMenuBarButton', { Level: 'advanced' })
         })
       };
     });*/
     
     ngRegisterControlDesignInfo('stdSplitButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpSplitButton', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdSplitButton', { Level: 'advanced' }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WinXPControls.Images.Button.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WinXPControls.Images.Button.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinXPControls.Images.Button.MenuRightBtnImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.MenuRightBtnImg', { Level: 'advanced' })
           }
         })
       };
@@ -1051,19 +883,19 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdFileUploader',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpFileUploader', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdFileUploader', { Level: 'advanced' }),
           /*"Events": {
-            "OnError": ng_DIPropertyEvent('function(c, error, data) {}', { Level: 'basic' }),
-            "OnUploadProgress": ng_DIPropertyEvent('function(c, p) { return true; }', { Level: 'basic' }),
-            "OnShowWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnHideWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnError": ng_diEvent('function(c, error, data) {}', { Level: 'basic' }),
+            "OnUploadProgress": ng_diEvent('function(c, p) { return true; }', { Level: 'basic' }),
+            "OnShowWaiting": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnHideWaiting": ng_diEvent('function(c) {}', { Level: 'basic' })
           },*/
           "ModifyControls": {
-            "ListFiles": ng_DIPropertyControl('stdList', { Level: 'advanced' }, 'ngList'),
-            "DragAndDropInfo": ng_DIPropertyControl('stdText', { Level: 'advanced' }),
-            "BtnAddFile": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "BtnRemoveFiles": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton')
+            "ListFiles": ng_diControl('stdList', null, { Level: 'advanced' }, { InheritedFrom: 'ngList' }),
+            "DragAndDropInfo": ng_diControl('stdText', null, { Level: 'advanced' }),
+            "BtnAddFile": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "BtnRemoveFiles": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -1071,11 +903,11 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdViewModelForm',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "ErrorHint": ng_DIPropertyControl('stdTextHint', { Level: 'advanced' }, 'ngTextHint', ng_DIProperties({
-              "className": ng_DIProperty('string', 'wxpEditFieldError', { Level: 'advanced' })
-            }))
+            "ErrorHint": ng_diControl('stdTextHint', ng_diProperties({
+              "className": ng_diString('stdEditFieldError', { Level: 'advanced' })
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngTextHint' })
           }
         })
       };
@@ -1083,13 +915,13 @@ var WinXP_DesignInfo = {
     
     function stdEditFieldDI (d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "HintX": ng_DIProperty('integer',0,{ Level: 'basic' })
+            "HintX": ng_diInteger(0,{ Level: 'basic' })
           },
-          "ErrorHint": ng_DIPropertyControl('stdTextHint', { Level: 'advanced' }, 'ngTextHint', ng_DIProperties({
-            "className": ng_DIProperty('string', 'wxpEditFieldError', { Level: 'advanced' })
-          }))
+          "ErrorHint": ng_diControl('stdTextHint', ng_diProperties({
+            "className": ng_diString('stdEditFieldError', { Level: 'advanced' })
+          }), { Level: 'advanced' }, { InheritedFrom: 'ngTextHint' })
         })
       };
       ng_MergeVar(di,stdEditDI(d,c,ref));
@@ -1147,10 +979,10 @@ var WinXP_DesignInfo = {
     
     /*ngRegisterControlDesignInfo('stdDBViewModelForm',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Events": {
-            "OnDeleteQuery": ng_DIPropertyEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' }),
-            "OnChangedQuery": ng_DIPropertyEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' })
+            "OnDeleteQuery": ng_diEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' }),
+            "OnChangedQuery": ng_diEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' })
           }
         })
       };
@@ -1158,14 +990,14 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdDBToolBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wxpToolBar', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('stdToolBar', { Level: 'advanced' }),
           "ModifyControls": {
-            "New": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "Delete": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "Insert": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "Update": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton'),
-            "Cancel": ng_DIPropertyControl('stdButton', { Level: 'advanced' }, 'ngButton')
+            "New": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Delete": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Insert": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Update": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('stdButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -1174,12 +1006,12 @@ var WinXP_DesignInfo = {
 
     ngRegisterControlDesignInfo('stdDBDataSet',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "NewRecord": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "LoadRecord": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "DeleteRecord": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "Refresh": ng_DIPropertyControl('stdFlatButton', { Level: 'advanced' }, 'ngButton')
+            "NewRecord": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "LoadRecord": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "DeleteRecord": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Refresh": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };

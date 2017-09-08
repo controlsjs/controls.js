@@ -20,105 +20,58 @@ ngUserControls['calendar_designinfo'] = {
     ngRegisterControlDesignInfo('ngCalendar',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "CurrentDate": { DefaultType: 'computed', // TODO: Date selection editor
-              Types: {
-                'computed': {
-                  DefaultValue: 'function() { return new Date(); }'
-                }
-              }
-            },
-            "WeekStartDay": ng_DIProperty('integer', 1, { Level: 'basic' }),
-            "HiliteWeekDays": { DefaultType: 'object',
-              Types: {
-                'object': {
-                  Add: false,
-                  ObjectProperties: {
-                    0: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    1: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    2: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    3: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    4: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    5: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    6: ng_DIPropertyBool(false,{ Level: 'basic' })
-                  }
-                }
-              }
-            },
-            "DateFormat": { DefaultType: 'string', Level: 'basic' },
-            "ImgWeekDay": { DefaultType: 'image', Level: 'basic' },
-            "ImgDay": { DefaultType: 'image', Level: 'basic' },
-            "ImgNow": { DefaultType: 'image', Level: 'basic' },
-            "Navigation": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "YearNavigation": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "FastNavigation": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "DisplayedDates": { DefaultType: 'array', Level: 'hidden' },
-            "SelectedDates": { DefaultType: 'array', Level: 'hidden' },
-            "SelectType": ng_DIPropertyIntConstants(1,['ngcalSelectNone','ngcalSelectSingle','ngcalSelectMulti','ngcalSelectMultiExt','ngcalSelectRange'],{ Level: 'basic' }),
-            "SelectFrom": { DefaultType: 'computed', // TODO: Date selection editor
-              Types: {
-                'computed': {
-                  DefaultValue: 'function() { return new Date(); }'
-                }
-              }
-            },
-            "SelectTo": { DefaultType: 'computed', // TODO: Date selection editor
-              Types: {
-                'computed': {
-                  DefaultValue: 'function() { return new Date(); }'
-                }
-              }
-            },
-            "BlockedDates": { DefaultType: 'array', Level: 'advanced' },
-            "BlockedWeekDays": { DefaultType: 'object',
-              Types: {
-                'object': {
-                  Add: false,
-                  ObjectProperties: {
-                    0: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    1: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    2: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    3: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    4: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    5: ng_DIPropertyBool(false,{ Level: 'basic' }),
-                    6: ng_DIPropertyBool(false,{ Level: 'basic' })
-                  }
-                }
-              }
-            },
-            "MinDate": { DefaultType: 'computed', // TODO: Date selection editor
-              Types: {
-                'computed': {
-                  DefaultValue: 'function() { return new Date(); }'
-                }
-              }
-            },
-            "MaxDate": { DefaultType: 'computed', // TODO: Date selection editor
-              Types: {
-                'computed': {
-                  DefaultValue: 'function() { return new Date(); }'
-                }
-              }
-            },
-            "Frame": { DefaultType: 'img_frame', Level: 'basic',
-              Collapsed: true
-            }
+            "CurrentDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+            "WeekStartDay": ng_diInteger(1, { Level: 'basic' }),
+            "HiliteWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday', Level: 'basic' }),
+                                            1: ng_diBoolean(false, { DisplayName: 'Monday', Level: 'basic' }),
+                                            2: ng_diBoolean(false, { DisplayName: 'Tuesday', Level: 'basic' }),
+                                            3: ng_diBoolean(false, { DisplayName: 'Wednesday', Level: 'basic' }),
+                                            4: ng_diBoolean(false, { DisplayName: 'Thursday', Level: 'basic' }),
+                                            5: ng_diBoolean(false, { DisplayName: 'Friday', Level: 'basic' }),
+                                            6: ng_diBoolean(false, { DisplayName: 'Saturday', Level: 'basic' })
+                                         },
+                                         undefined,{ Add: false }),
+            "DateFormat": ng_diString('', { Level: 'basic' }),
+            "ImgWeekDay": ng_diType('image', { Level: 'basic' }),
+            "ImgDay": ng_diType('image', { Level: 'basic' }),
+            "ImgNow": ng_diType('image', { Level: 'basic' }),
+            "Navigation": ng_diBoolean(true, { Level: 'basic' }),
+            "YearNavigation": ng_diBoolean(false, { Level: 'basic' }),
+            "FastNavigation": ng_diBoolean(true, { Level: 'basic' }),
+            "DisplayedDates": ng_diArray({ Level: 'hidden' }),
+            "SelectedDates": ng_diArray({ Level: 'hidden' }),
+            "SelectType": ng_diIntegerIdentifiers(1,['ngcalSelectNone','ngcalSelectSingle','ngcalSelectMulti','ngcalSelectMultiExt','ngcalSelectRange'], { Level: 'basic' }),
+            "SelectFrom": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+            "SelectTo": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+            "BlockedDates": ng_diArray(),
+            "BlockedWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday', Level: 'basic' }),
+                                             1: ng_diBoolean(false, { DisplayName: 'Monday', Level: 'basic' }),
+                                             2: ng_diBoolean(false, { DisplayName: 'Tuesday', Level: 'basic' }),
+                                             3: ng_diBoolean(false, { DisplayName: 'Wednesday', Level: 'basic' }),
+                                             4: ng_diBoolean(false, { DisplayName: 'Thursday', Level: 'basic' }),
+                                             5: ng_diBoolean(false, { DisplayName: 'Friday', Level: 'basic' }),
+                                             6: ng_diBoolean(false, { DisplayName: 'Saturday', Level: 'basic' })
+                                           }, undefined, { Add: false }),
+            "MinDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+            "MaxDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+            "Frame": ng_diType('img_frame', { Collapsed: true, Level: 'basic' })
           },
           "Events": {
-            "OnDayClick": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' }),
-            "OnSelectChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnDayClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnSelectChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnFormatDate": ng_DIPropertyEvent('function(c, d) { return ng_FormatDate(d); }', { Level: 'basic' }),
-            "OnParseDate": ng_DIPropertyEvent('function(c, d) { return ng_ParseDate(d); }', { Level: 'basic' }),
-            "OnIsDayEnabled": ng_DIPropertyEvent('function(c, date, enabled) { return enabled; }', { Level: 'basic' }),
-            "OnGetWeekDayImg": ng_DIPropertyEvent('function(c, wday) { return null; }', { Level: 'basic' }),
-            "OnGetWeekDayText": ng_DIPropertyEvent('function(c, wday) { return ""; }', { Level: 'basic' }),
-            "OnGetWeekDayAlt": ng_DIPropertyEvent('function(c, wday) { return ""; }', { Level: 'basic' }),
-            "OnGetDayImg": ng_DIPropertyEvent('function(c, display_date, col, row) { return null; }', { Level: 'basic' }),
-            "OnGetDayText": ng_DIPropertyEvent('function(c, display_date, col, row) { return ""; }', { Level: 'basic' }),
-            "OnGetDayAlt": ng_DIPropertyEvent('function(c, display_date, col, row) { return ""; }', { Level: 'basic' })
+            "OnFormatDate": ng_diEvent('function(c, d) { return ng_FormatDate(d); }', { Level: 'basic' }),
+            "OnParseDate": ng_diEvent('function(c, d) { return ng_ParseDate(d); }', { Level: 'basic' }),
+            "OnIsDayEnabled": ng_diEvent('function(c, date, enabled) { return enabled; }', { Level: 'basic' }),
+            "OnGetWeekDayImg": ng_diEvent('function(c, wday) { return null; }', { Level: 'basic' }),
+            "OnGetWeekDayText": ng_diEvent('function(c, wday) { return ""; }', { Level: 'basic' }),
+            "OnGetWeekDayAlt": ng_diEvent('function(c, wday) { return ""; }', { Level: 'basic' }),
+            "OnGetDayImg": ng_diEvent('function(c, display_date, col, row) { return null; }', { Level: 'basic' }),
+            "OnGetDayText": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'basic' }),
+            "OnGetDayAlt": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'basic' })
           }
         })
       };
@@ -127,20 +80,20 @@ ngUserControls['calendar_designinfo'] = {
     ngRegisterControlDesignInfo('ngEditDate',function(d,c,ref) {
       return {
         NewControl: {
-          Default: {
+          "Default": {
             Properties: {
               "W": { Value: 100 }
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "DateFormat": { DefaultType: 'string', Level: 'basic' },
+            "DateFormat": ng_diString('', { Level: 'basic' }),
             "Text": { OnPropertyInit: null }
           },
           "OverrideEvents": {
-            "OnFormatDate": ng_DIPropertyEvent('function(c, d) { return ng_FormatDate(d); }', { Level: 'basic' }),
-            "OnParseDate": ng_DIPropertyEvent('function(c, d) { return ng_ParseDate(d); }', { Level: 'basic' })
+            "OnFormatDate": ng_diEvent('function(c, d) { return ng_FormatDate(d); }', { Level: 'basic' }),
+            "OnParseDate": ng_diEvent('function(c, d) { return ng_ParseDate(d); }', { Level: 'basic' })
           }
         })
       };
@@ -149,20 +102,20 @@ ngUserControls['calendar_designinfo'] = {
     ngRegisterControlDesignInfo('ngEditTime',function(d,c,ref) {
       return {
         NewControl: {
-          Default: {
+          "Default": {
             Properties: {
               "W": { Value: 100 }
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "TimeFormat": { DefaultType: 'string', Level: 'basic' },
+            "TimeFormat": ng_diString('', { Level: 'basic' }),
             "Text": { OnPropertyInit: null }
           },
           "OverrideEvents": {
-            "OnFormatTime": ng_DIPropertyEvent('function(c, t) { return ng_FormatTime(t); }', { Level: 'basic' }),
-            "OnParseTime": ng_DIPropertyEvent('function(c, t) { return ng_ParseTime(t); }', { Level: 'basic' })
+            "OnFormatTime": ng_diEvent('function(c, t) { return ng_FormatTime(t); }', { Level: 'basic' }),
+            "OnParseTime": ng_diEvent('function(c, t) { return ng_ParseTime(t); }', { Level: 'basic' })
           }
         })
       };

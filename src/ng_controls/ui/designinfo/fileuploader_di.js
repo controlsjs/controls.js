@@ -27,46 +27,49 @@ var FileUploaderControl_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
-          "FileUploaderID": ng_DIProperty('string', 'Main', { Level: 'basic' }),
-          "ButtonsAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
-          "ListFiles": ng_DIPropertyBool(true, { Level: 'basic' }),
-          "AllowedExtensions": ng_DIProperty(['undefined','boolean'],undefined,{ InitType: 'boolean', Level: 'basic' }),
-          "SelectFileType":ng_DIPropertyIntConstants('ngFupSelect_CheckItem',['ngFupSelect_None','ngFupSelect_Select','ngFupSelect_CheckBox','ngFupSelect_CheckItem'],{ Level: 'optional' }),
+        Properties: ng_diProperties({
+          "ParentReferences": ng_diBoolean(false, { Level: 'optional' }),
+          "FileUploaderID": ng_diString('Main', { Level: 'basic' }),
+          "ButtonsAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
+          "ListFiles": ng_diBoolean(true, { Level: 'basic' }),
+          "AllowedExtensions": ng_diMixed([
+            ng_diUndefined(),
+            ng_diBoolean()
+          ], { InitType: 'boolean', Level: 'basic' }),
+          "SelectFileType":ng_diIntegerIdentifiers('ngFupSelect_CheckItem',['ngFupSelect_None','ngFupSelect_Select','ngFupSelect_CheckBox','ngFupSelect_CheckItem'],{ Level: 'optional' }),
           "Data": {
-            "MaxFilesCount": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "MaxFileSize": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "MaxBatchSize": ng_DIProperty(['undefined','integer'],undefined,{ InitType: 'integer', Level: 'basic' }),
-            "AllowedExtensions": ng_DIProperty(['undefined','array_strings'],undefined,{ InitType: 'array_strings', Level: 'basic' }),
-            "Accept": { DefaultType: 'string', Level: 'basic' },
-            "UploadURL": { DefaultType: 'url', Level: 'basic' }
+            "MaxFilesCount": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "MaxFileSize": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "MaxBatchSize": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "AllowedExtensions": ng_diMixed(['undefined','array_strings'], { InitType: 'array_strings', Level: 'basic' }),
+            "Accept": ng_diString('', { Level: 'basic' }),
+            "UploadURL": ng_diType('url', { Level: 'basic' })
           },
           "Events": {
-            "OnError": ng_DIPropertyEvent('function(c, errmsg, data) {}', { Level: 'basic' }),
-            "OnFileAdding": ng_DIPropertyEvent('function(c, fname) { return true; }', { Level: 'basic' }),
-            "OnFileAdded ": ng_DIPropertyEvent('function(c, fname, data) {}', { Level: 'basic' }),
-            "OnFileChanging": ng_DIPropertyEvent('function(c, fname, files) { return true; }', { Level: 'basic' }),
-            "OnFileChanged ": ng_DIPropertyEvent('function(c, fname, files) {}', { Level: 'basic' }),
-            "OnFileDeleting": ng_DIPropertyEvent('function(c, it, chidx) { return true; }', { Level: 'basic' }),
-            "OnFileDeleted": ng_DIPropertyEvent('function(c, it, chidx) {}', { Level: 'basic' }),
-            "OnUploadProgress": ng_DIPropertyEvent('function(c, p) { return true; }', { Level: 'basic' }),
-            "OnShowWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnHideWaiting": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnGetRequestParams": ng_DIPropertyEvent('function(params) {}', { Level: 'basic' })
+            "OnError": ng_diEvent('function(c, errmsg, data) {}', { Level: 'basic' }),
+            "OnFileAdding": ng_diEvent('function(c, fname) { return true; }', { Level: 'basic' }),
+            "OnFileAdded ": ng_diEvent('function(c, fname, data) {}', { Level: 'basic' }),
+            "OnFileChanging": ng_diEvent('function(c, fname, files) { return true; }', { Level: 'basic' }),
+            "OnFileChanged ": ng_diEvent('function(c, fname, files) {}', { Level: 'basic' }),
+            "OnFileDeleting": ng_diEvent('function(c, it, chidx) { return true; }', { Level: 'basic' }),
+            "OnFileDeleted": ng_diEvent('function(c, it, chidx) {}', { Level: 'basic' }),
+            "OnUploadProgress": ng_diEvent('function(c, p) { return true; }', { Level: 'basic' }),
+            "OnShowWaiting": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnHideWaiting": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnGetRequestParams": ng_diEvent('function(params) {}', { Level: 'basic' })
           },
           "ModifyControls": {
-            "ListFiles": ng_DIPropertyControl('ngList', { Level: 'basic' }, 'ngList'),
-            "DragAndDropPanel": ng_DIPropertyControl('ngPanel', { Level: 'basic' }, 'ngPanel', ng_DIProperties({
+            "ListFiles": ng_diControl('ngList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
+            "DragAndDropPanel": ng_diControl('ngPanel', ng_diProperties({
               "Events": {
-                "OnFilesDragOver": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' }),
-                "OnFilesDragLeave": ng_DIPropertyEvent('function(c, o) {}', { Level: 'basic' })
+                "OnFilesDragOver": ng_diEvent('function(c, o) {}', { Level: 'basic' }),
+                "OnFilesDragLeave": ng_diEvent('function(c, o) {}', { Level: 'basic' })
               }
-            })),
-            "DragAndDropInfo": ng_DIPropertyControl('ngText', { Level: 'basic' }),
-            "Buttons": ng_DIPropertyControl('ngToolBar', { Level: 'basic' }, 'ngToolBar'),
-            "BtnAddFile": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton'),
-            "BtnRemoveFiles": ng_DIPropertyControl('ngButton', { Level: 'basic' }, 'ngButton')
+            }), { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),
+            "DragAndDropInfo": ng_diControl('ngText', null, { Level: 'basic' }),
+            "Buttons": ng_diControl('ngToolBar', null, { Level: 'basic' }, { InheritedFrom: 'ngToolBar' }),
+            "BtnAddFile": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "BtnRemoveFiles": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' })
           }
         },{
           "ModifyControls": { Level: 'basic' }

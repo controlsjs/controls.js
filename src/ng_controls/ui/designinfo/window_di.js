@@ -23,13 +23,13 @@ ngUserControls['window_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "L": { DefaultType: 'integer', Level: 'basic', Order: 0.11 },
-            "T": { DefaultType: 'integer', Level: 'basic', Order: 0.12 },
-            "R": { DefaultType: 'integer', Level: 'basic', Order: 0.13 },
-            "B": { DefaultType: 'integer', Level: 'basic', Order: 0.14 },
-            "HX": { DefaultType: 'integer', Level: 'basic', Order: 0.15 },
-            "HY": { DefaultType: 'integer', Level: 'basic', Order: 0.16 },
-            "Img": { DefaultType: 'image', Level: 'basic', Order: 0.17 }
+            "L": ng_diInteger(0, { Level: 'basic', Order: 0.11 }),
+            "T": ng_diInteger(0, { Level: 'basic', Order: 0.12 }),
+            "R": ng_diInteger(0, { Level: 'basic', Order: 0.13 }),
+            "B": ng_diInteger(0, { Level: 'basic', Order: 0.14 }),
+            "HX": ng_diInteger(0, { Level: 'basic', Order: 0.15 }),
+            "HY": ng_diInteger(0, { Level: 'basic', Order: 0.16 }),
+            "Img": ng_diType('image', { Level: 'basic', Order: 0.17 })
           }
         }
       }
@@ -59,119 +59,81 @@ ngUserControls['window_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
-          "W": {
-            Exclude: ['CW']
-          },
-          "H": {
-            Exclude: ['CH']
-          },
-          "CW": { DefaultType: 'integer', Order: 0.141,
-            Exclude: ['W']
-          },
-          "CH": { DefaultType: 'integer', Order: 0.142,
-            Exclude: ['H']
-          },
+        Properties: ng_diProperties({
+          "ParentReferences": ng_diBoolean(false, { Level: 'optional' }),
+          "W": { Exclude: ['CW'] },
+          "H": { Exclude: ['CH'] },
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
           "R": null,
           "B": null,
-          "ControlsPanel": { DefaultType: 'control',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false }),
           "style": {
             "zIndex": { Level: 'hidden' }
           },
-          "Buttons": { DefaultType: 'controls_array', 
-            Collapsed: false,
-            PropertyGroup: 'Controls',
-            Types: {
-              'controls_array': {
-                DestroyIfEmpty: true,
-                ChildDesignInfo: {
-                  PropertyGroup: 'Controls',
-                  Types: {
-                    'control': {
-                      InheritedFrom: 'ngButton',
-                      ObjectProperties: ng_DIProperties({
-                        "Data": {
-                          "ButtonAlign": ng_DIPropertyStrings('right', ['left','right'], { Level: 'basic', Order: 0.8 })
-                        }
-                      })
-                    }
-                  }
-                }
+          "Buttons": ng_diArrayOfControls(
+            ng_diControl(undefined, ng_diProperties({
+              "Data": {
+                "ButtonAlign": ng_diStringValues('right', ['left','right'], { Level: 'basic', Order: 0.8 })
               }
-            }
-          },
+            }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+            { Level: 'basic', Collapsed: false, PropertyGroup: 'Controls' }, { DestroyIfEmpty: true }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "BackgroundColor": { DefaultType: 'css_colors', Level: 'basic' },
-            "Sizeable": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "Moveable": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "Modal": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "DisposeOnClose": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "AutoSize": ng_DIPropertyBool(true),
-            "Centered": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "MinimizedBounds": { DefaultType: 'undefined', InitType: 'object', Level: 'optional',
-              Types: {
-                'object': {
-                  ObjectProperties: {
-                    "L": { DefaultType: 'bounds', Level: 'basic', Order: 0.11 },
-                    "T": { DefaultType: 'bounds', Level: 'basic', Order: 0.12 },
-                    "W": { DefaultType: 'bounds', Level: 'basic', Order: 0.13 },
-                    "H": { DefaultType: 'bounds', Level: 'basic', Order: 0.14 },
-                    "R": { DefaultType: 'bounds', Level: 'basic', Order: 0.15 },
-                    "B": { DefaultType: 'bounds', Level: 'basic', Order: 0.16 }
-                  }
+            "Text": ng_diStringRefName({ Level: 'basic' }),
+            "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
+            "BackgroundColor": ng_diType('css_colors', { Level: 'basic' }),
+            "Sizeable": ng_diBoolean(true, { Level: 'basic' }),
+            "Moveable": ng_diBoolean(true, { Level: 'basic' }),
+            "Modal": ng_diBoolean(false, { Level: 'basic' }),
+            "DisposeOnClose": ng_diBoolean(false, { Level: 'basic' }),
+            "AutoSize": ng_diBoolean(true),
+            "Centered": ng_diBoolean(false, { Level: 'basic' }),
+            "MinimizedBounds": ng_diMixed([
+              ng_diUndefined(),
+              ng_diObject({
+                "L": ng_diType('bounds', { Level: 'basic', Order: 0.11 }),
+                "T": ng_diType('bounds', { Level: 'basic', Order: 0.12 }),
+                "W": ng_diType('bounds', { Level: 'basic', Order: 0.13 }),
+                "H": ng_diType('bounds', { Level: 'basic', Order: 0.14 }),
+                "R": ng_diType('bounds', { Level: 'basic', Order: 0.15 }),
+                "B": ng_diType('bounds', { Level: 'basic', Order: 0.16 })
+              })
+            ], { InitType: 'object', Level: 'optional' }),
+            "MinWidth": ng_diInteger(100, { Level: 'basic' }),
+            "MinHeight": ng_diInteger(50, { Level: 'basic' }),
+            "MaxWidth": ng_diInteger(0, { Level: 'basic' }),
+            "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
+            "Buttons": ng_diObject(undefined, { Level: 'hidden' }),
+            "Img": ng_diType('image', { Level: 'basic' }),
+            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true } ),
+            "CaptionImg": ng_diObject({
+              "LeftImg": ng_diType('image', { Level: 'basic' }),
+              "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+                EditorOptions: {
+                  HorizontalImages: true
                 }
-              }
-            },
-            "MinWidth": ng_DIProperty('integer',100, { Level: 'basic' }),
-            "MinHeight": ng_DIProperty('integer',50, { Level: 'basic' }),
-            "MaxWidth": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "MaxHeight": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "Buttons": { DefaultType: 'object', Level: 'hidden' },
-            "Img": { DefaultType: 'image', Level: 'basic' },
-            "Frame": { DefaultType: 'img_frame', Level: 'basic',
-              Collapsed: true
-            },
-            "CaptionImg": { DefaultType: 'object', Level: 'basic',
-              Types: {
-                'object': {
-                  Add: false,
-                  ObjectProperties: {
-                    "LeftImg": { DefaultType: 'image', Level: 'basic' },
-                    "MiddleImg": { DefaultType: 'image', Level: 'basic' },
-                    "RightImg": { DefaultType: 'image', Level: 'basic' }
-                  }
-                }
-              }
-            }
+              }),
+              "RightImg": ng_diType('image', { Level: 'basic' })
+            }, { Level: 'basic' }, { Add: false })
           },
           "Events": {
-            "OnClick": ng_DIPropertyEvent('function(e) {}', { Level: 'basic' }),
-            "OnDblClick": ng_DIPropertyEvent('function(e) {}', { Level: 'basic' }),
-            "OnMinimize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnMaximize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnRestore": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnClose": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnMouseMoving": ng_DIPropertyEvent('function(c, pos) {}', { Level: 'basic' }),
-            "OnMouseMove": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnMouseResizing": ng_DIPropertyEvent('function(c, rect) {}', { Level: 'basic' }),
-            "OnMouseResize": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnClick": ng_diEvent('function(e) {}', { Level: 'basic' }),
+            "OnDblClick": ng_diEvent('function(e) {}', { Level: 'basic' }),
+            "OnMinimize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnMaximize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnRestore": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnClose": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnMouseMoving": ng_diEvent('function(c, pos) {}', { Level: 'basic' }),
+            "OnMouseMove": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnMouseResizing": ng_diEvent('function(c, rect) {}', { Level: 'basic' }),
+            "OnMouseResize": ng_diEvent('function(c) {}', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' }),
-            "OnGetImg": ng_DIPropertyEvent('function(c) { return null; }', { Level: 'basic' })
+            "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
+            "OnGetImg": ng_diEvent('function(c) { return null; }', { Level: 'basic' })
           }
         })
       };
@@ -195,59 +157,38 @@ ngUserControls['window_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "ParentReferences": ng_DIPropertyBool(true),
-          "W": {
-            Exclude: ['CW']
-          },
-          "H": {
-            Exclude: ['CH']
-          },
-          "CW": { DefaultType: 'integer', Order: 0.141,
-            Exclude: ['W']
-          },
-          "CH": { DefaultType: 'integer', Order: 0.142,
-            Exclude: ['H']
-          },
-          "ControlsPanel": { DefaultType: 'control',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
+        Properties: ng_diProperties({
+          "ParentReferences": ng_diBoolean(true),
+          "W": { Exclude: ['CW'] },
+          "H": { Exclude: ['CH'] },
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
-            "AutoSize": ng_DIPropertyBool(true),
-            "MinWidth": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "MinHeight": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "MaxWidth": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "MaxHeight": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "Anchor": ng_DIProperty('string','auto', { Level: 'basic' }),
-            "Anchors": { DefaultType: 'null', InitType: 'object', Level: 'basic',
-              Types: {
-                'null': {},
-                'object': {
-                  ChildDesignInfo: {
-                    DefaultType: 'ngHintAnchor'
-                  }
-                }
-              }
-            },
-            "PreferredAnchors": { DefaultType: 'array_strings', Level: 'basic' },
-            "Frame": { DefaultType: 'img_frame', Level: 'basic',
-              Collapsed: true
-            },
-            "ControlsInside": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "AutoHideTimeout": ng_DIProperty('integer',0, { Level: 'basic' }),
-            "DisposeOnHide": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "PopupX": { DefaultType: 'integer', Level: 'hidden' },
-            "PopupY": { DefaultType: 'integer', Level: 'hidden' }
+            "AutoSize": ng_diBoolean(true),
+            "MinWidth": ng_diInteger(0, { Level: 'basic' }),
+            "MinHeight": ng_diInteger(0, { Level: 'basic' }),
+            "MaxWidth": ng_diInteger(0, { Level: 'basic' }),
+            "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
+            "Anchor": ng_diString('auto', { Level: 'basic' }),
+            "Anchors": ng_diMixed([
+              ng_diNull(),
+              ng_diObject(undefined, undefined, {
+                ChildDesignInfo: ng_diType('ngHintAnchor')
+              })
+            ], { InitType: 'object', Level: 'basic' }),
+            "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }),
+            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true }),
+            "ControlsInside": ng_diBoolean(true, { Level: 'basic' }),
+            "AutoHideTimeout": ng_diInteger(0, { Level: 'basic' }),
+            "DisposeOnHide": ng_diBoolean(false, { Level: 'basic' }),
+            "PopupX": ng_diInteger(undefined, { Level: 'hidden' }),
+            "PopupY": ng_diInteger(undefined, { Level: 'hidden' })
           },
           "Events": {
-            "OnCheckPlacement": ng_DIPropertyEvent('function(c, p) {}', { Level: 'basic' }),
-            "OnPopup": ng_DIPropertyEvent('function(c, info) { return true; }', { Level: 'basic' })
+            "OnCheckPlacement": ng_diEvent('function(c, p) {}', { Level: 'basic' }),
+            "OnPopup": ng_diEvent('function(c, info) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -269,36 +210,28 @@ ngUserControls['window_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
+        Properties: ng_diProperties({
+          "ParentReferences": ng_diBoolean(false, { Level: 'optional' }),
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' })
+            "Text": ng_diStringRefName({ Level: 'basic' })
           },
           "Events": {
-            "OnClick": ng_DIPropertyEvent('function(e) {}')
+            "OnClick": ng_diEvent('function(e) {}')
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' })
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' })
           },
           "ModifyControls": {
-            "Hint": { DefaultType: 'control', Level: 'basic',
-              Types: {
-                'control': {
-                  Type: 'ngText',
-                  InheritedFrom: 'ngText',
-                  ObjectProperties: ng_DIProperties({
-                    "Data": {
-                      "Text": { Level: 'hidden' },
-                      "ngText": { Level: 'hidden' },
-                      "ngTextD": { Level: 'hidden' }
-                    }
-                  })
-                }
+            "Hint": ng_diControl('ngText', ng_diProperties({
+              "Data": {
+                "Text": { Level: 'hidden' },
+                "ngText": { Level: 'hidden' },
+                "ngTextD": { Level: 'hidden' }
               }
-            }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngText' })
           }
         },{
           "ModifyControls": { Level: 'basic' }

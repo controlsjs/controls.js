@@ -15,6 +15,7 @@ ngUserControls['panels_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
+    var undefined;
 
     var alignpanel_DI={
       ControlCategory: 'Containers',
@@ -28,31 +29,21 @@ ngUserControls['panels_designinfo'] = {
           }
         }
       },
-      Properties: ng_DIProperties({
+      Properties: ng_diProperties({
         "Data": {
           "ChildHandling": { Level: 'advanced' },
-          "AutoSize": ng_DIPropertyBool(false, { Level: 'basic' })
+          "AutoSize": ng_diBoolean(false, { Level: 'basic' })
         }
       },
       {
-        "Controls": {
-          Types: {
-            'controls': {
-              ChildDesignInfo: {
-                Types: {
-                  'control': {
-                    ObjectProperties: ng_DIProperties({
-                      "Data": {
-                        "ControlAlign": ng_DIPropertyIntConstants('alNone',['alNone','alClient', 'alLeft','alRight', 'alTop', 'alBottom'],{ Level: 'basic',  Order: 0.8 }),
-                        "AlignAutoUpdate": ng_DIPropertyBool(true, { Level: 'basic',  Order: 0.8 })
-                      }
-                    })
-                  }
-                }
-              }
+        "Controls": ng_diControls(undefined, undefined, {
+          ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+            "Data": {
+              "ControlAlign": ng_diIntegerIdentifiers('alNone',['alNone','alClient', 'alLeft','alRight', 'alTop', 'alBottom'],{ Level: 'basic',  Order: 0.8 }),
+              "AlignAutoUpdate": ng_diBoolean(true, { Level: 'basic',  Order: 0.8 })
             }
-          }
-        }
+          }))
+        })
       })
     };
     ngRegisterControlDesignInfo('ngAlignPanel',function(d,c,ref) {
@@ -68,7 +59,7 @@ ngUserControls['panels_designinfo'] = {
       var di={
         BaseControl: 'ngAlignFrame',
         Properties: {
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' })
+          "ParentReferences": ng_diBoolean(false, { Level: 'optional' })
         }
       };
       ng_MergeVar(di,alignpanel_DI);
@@ -88,39 +79,17 @@ ngUserControls['panels_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ParentReferences": { Level: 'advanced' },
-          "W": {
-            Exclude: ['CW']
-          },
-          "H": {
-            Exclude: ['CH']
-          },
-          "CW": { DefaultType: 'integer', Order: 0.141,
-            Exclude: ['W']
-          },
-          "CH": { DefaultType: 'integer', Order: 0.142,
-            Exclude: ['H']
-          },
-          "DroppedDown": ng_DIPropertyBool(false, { Level: 'basic' }),
-          "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
-          "Button": { DefaultType: 'control', Level: 'basic',
-            Types: {
-              'control': {
-                Type: 'ngButton',
-                InheritedFrom: 'ngButton'
-              }
-            }
-          },
+          "W": { Exclude: ['CW'] },
+          "H": { Exclude: ['CH'] },
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
+          "DroppedDown": ng_diBoolean(false, { Level: 'basic' }),
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
+          "Button": ng_diControl('ngButton', undefined, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
           "Events": {
-            "OnDropDown": ng_DIPropertyEvent('function(c, state) { return true; }', { Level: 'basic' })
+            "OnDropDown": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -149,98 +118,63 @@ ngUserControls['panels_designinfo'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ParentReferences": { Level: 'advanced' },
-          "Controls1": { DefaultType: 'controls', Level: 'basic', Order: 0.65,
-            ContainerProperty: true,
-            Types: {
-              'controls': {
-                ChildDesignInfo: {
-                  PropertyGroup: 'Controls'
-                }
-              }
+          "Controls1": ng_diControls(undefined, { Level: 'basic', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls' }, {
+            ChildDesignInfo: {
+              PropertyGroup: 'Controls'
             }
-          },
-          "Controls2": { DefaultType: 'controls', Level: 'basic', Order: 0.65,
-            ContainerProperty: true,
-            Types: {
-              'controls': {
-                ChildDesignInfo: {
-                  PropertyGroup: 'Controls'
-                }
-              }
+          }),
+          "Controls2": ng_diControls(undefined, { Level: 'basic', Order: 0.66, ContainerProperty: true, PropertyGroup: 'Controls' }, {
+            ChildDesignInfo: {
+              PropertyGroup: 'Controls'
             }
-          },
-          "ControlsPanel1": { DefaultType: 'control', Level: 'advanced',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
-          "ControlsPanel2": { DefaultType: 'control', Level: 'advanced',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
+          }),
+          "ControlsPanel1": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
+          "ControlsPanel2": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
-            "PanelAlign": ng_DIPropertyStrings('left', ['left','right','top','bottom'], { Level: 'basic' }),
-            "ResizeMode": { DefaultType: 'bitmask', Level: 'basic',
-              Types: {
-                'bitmask': {
-                  DefaultValue: {
-                    value: ngspResizeNone
-                  },
-                  EditorOptions: {
-                    BitMaskIdentifiers: [
-//                      {value: ngspResizeNone,        id: 'ngspResizeNone'},
-                      {value: ngspResizeSize,        id: 'ngspResizeSize'},
-                      {value: ngspResizeMinSize,     id: 'ngspResizeMinSize'},
-                      {value: ngspResizeMaxSize,     id: 'ngspResizeMaxSize'},
-                      {value: ngspResizeAutoMinimize,id: 'ngspResizeAutoMinimize'},
-                      {value: ngspResizeAutoMaximize,id: 'ngspResizeAutoMaximize'}
-                    ]
-                  }
-                }
+            "PanelAlign": ng_diStringValues('left', ['left','right','top','bottom'], { Level: 'basic' }),
+            "ResizeMode": ng_diTypeVal('bitmask', { value: ngspResizeNone }, { Level: 'basic' }, {
+              EditorOptions: {
+                BitMaskIdentifiers: [
+//                  {value: ngspResizeNone,        id: 'ngspResizeNone'},
+                  {value: ngspResizeSize,        id: 'ngspResizeSize'},
+                  {value: ngspResizeMinSize,     id: 'ngspResizeMinSize'},
+                  {value: ngspResizeMaxSize,     id: 'ngspResizeMaxSize'},
+                  {value: ngspResizeAutoMinimize,id: 'ngspResizeAutoMinimize'},
+                  {value: ngspResizeAutoMaximize,id: 'ngspResizeAutoMaximize'}
+                ]
               }
-            },
-            "Size": ng_DIProperty('integer',200, { Level: 'basic' }),
-            "MinSize": { DefaultType: 'integer', Level: 'basic' },
-            "MaxSize": { DefaultType: 'integer', Level: 'basic' },
-            "AutoMinimize": { DefaultType: 'integer', Level: 'basic' },
-            "AutoMaximize": { DefaultType: 'integer', Level: 'basic' },
-            "HandleVisible": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "MoverStartImg": { DefaultType: 'image', Level: 'basic' },
-            "MoverMiddleImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: true
-                   }
-                 }
+            }),
+            "Size": ng_diInteger(200, { Level: 'basic' }),
+            "MinSize": ng_diInteger(0, { Level: 'basic' }),
+            "MaxSize": ng_diInteger(0, { Level: 'basic' }),
+            "AutoMinimize": ng_diInteger(0, { Level: 'basic' }),
+            "AutoMaximize": ng_diInteger(0, { Level: 'basic' }),
+            "HandleVisible": ng_diBoolean(true, { Level: 'basic' }),
+            "MoverStartImg": ng_diType('image', { Level: 'basic' }),
+            "MoverMiddleImg": ng_diType('image', { Level: 'basic' }, {
+              EditorOptions: {
+                HorizontalImages: true
               }
-            },
-            "MoverEndImg": { DefaultType: 'image', Level: 'basic' },
-            "HandleImg": { DefaultType: 'image', Level: 'basic' }
+            }),
+            "MoverEndImg": ng_diType('image', { Level: 'basic' }),
+            "HandleImg": ng_diType('image', { Level: 'basic' })
           },
           "Events": {
-            "OnResize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnHandleClick": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnHandleEnter": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnHandleLeave": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnSizeChanging": ng_DIPropertyEvent('function(c, cursize) { return true; }', { Level: 'basic' }),
-            "OnSizeChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnMinimize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnMaximize": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnRestore": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' })
+            "OnResize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnHandleClick": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnHandleEnter": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnHandleLeave": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnSizeChanging": ng_diEvent('function(c, cursize) { return true; }', { Level: 'basic' }),
+            "OnSizeChanged": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnMinimize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnMaximize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnRestore": ng_diEvent('function(c) { return true; }', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnGetImg": ng_DIPropertyEvent('function(c, imgidx) { return null; }', { Level: 'basic' })
+            "OnGetImg": ng_diEvent('function(c, imgidx) { return null; }', { Level: 'basic' })
           }
         })
       };

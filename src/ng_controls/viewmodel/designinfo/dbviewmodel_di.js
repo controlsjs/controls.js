@@ -21,44 +21,36 @@ var DBViewModel_DesignInfo = {
         ControlCategory: 'System',
         BaseControl: 'ngSysDBViewModel',
         IsViewModel: true,
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "ResetRecordOnLoad": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "RecordStateEditMode": { DefaultType: 'object', Level: 'basic',
-              Collapsed: false,
-              Types: {
-                'object': {
-                  ChildDesignInfo: { DefaultType: 'boolean' },
-                  ObjectProperties: {
-                    "recStateNewRecord": ng_DIPropertyBool(true, { Level: 'basic' }),
-                    "recStateLoaded": ng_DIPropertyBool(true, { Level: 'basic' }),
-                    "recStateNone": ng_DIPropertyBool(false, { Level: 'basic' }),
-                    "recStateDeleted": ng_DIPropertyBool(false, { Level: 'basic' })
-                  }
-                }
-              }
-            }
+            "ResetRecordOnLoad": ng_diBoolean(false, { Level: 'basic' }),
+            "RecordStateEditMode": ng_diObject({
+              "recStateNewRecord": ng_diBoolean(true, { Level: 'basic' }),
+              "recStateLoaded": ng_diBoolean(true, { Level: 'basic' }),
+              "recStateNone": ng_diBoolean(false, { Level: 'basic' }),
+              "recStateDeleted": ng_diBoolean(false, { Level: 'basic' })
+            }, { Level: 'basic', Collapsed: false }, { ChildDesignInfo: ng_diBoolean() })
           },
           "Events": {
-            "OnNewRecord": ng_DIPropertyEvent('function(c, options) {}',{ Level: 'basic' }),
-            "OnInsertRecord": ng_DIPropertyEvent('function(c, options) {}',{ Level: 'basic' }),
-            "OnLoadRecord": ng_DIPropertyEvent('function(c, options) {}',{ Level: 'basic' }),
-            "OnUpdateRecord": ng_DIPropertyEvent('function(c, options) {}',{ Level: 'basic' }),
-            "OnDeleteRecord": ng_DIPropertyEvent('function(c, options) {}',{ Level: 'basic' }),
-            "OnCancelEdits": ng_DIPropertyEvent('function(c, options) {}',{ Level: 'basic' }),
+            "OnNewRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
+            "OnInsertRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
+            "OnLoadRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
+            "OnUpdateRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
+            "OnDeleteRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
+            "OnCancelEdits": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
 
-            "OnInsertFailed": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
-            "OnLoadFailed": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
-            "OnUpdateFailed": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
-            "OnDeleteFailed": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnInsertFailed": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnLoadFailed": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnUpdateFailed": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnDeleteFailed": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
 
-            "OnRecordInserted": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
-            "OnRecordLoaded": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
-            "OnRecordUpdated": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
-            "OnRecordDeleted": ng_DIPropertyEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnRecordInserted": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnRecordLoaded": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnRecordUpdated": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
+            "OnRecordDeleted": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
 
-            "OnDBSuccess": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
-            "OnDBError": ng_DIPropertyEvent('function(c, cmd,sresults) {}',{ Level: 'basic' })
+            "OnDBSuccess": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+            "OnDBError": ng_diEvent('function(c, cmd,sresults) {}',{ Level: 'basic' })
           }
         })
       };

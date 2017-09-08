@@ -16,143 +16,99 @@ var ViewModel_Controls_DesignInfo = (function()
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      "Calls": { DefaultType: 'object',
-        Types: {
-          'databind_function_name': {}
-        }
-      },
-      "Data": { DefaultType: 'databind_expression' },
-      "Link": { DefaultType: 'databind_expression', Level: 'basic' },
-      "Controls": { DefaultType: 'databind_expression', Level: (di.IsContainer ? 'basic' : 'optional') }
+      "Calls": ng_diMixed(['object','databind_function_name']),
+      "Data": ng_diType('databind_expression'),
+      "Link": ng_diType('databind_expression', { Level: 'basic' }),
+      "Controls": ng_diType('databind_expression', { Level: (di.IsContainer ? 'basic' : 'optional') })
     };
 
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
-        "MouseOver": {
-          DefaultType: 'databind_function_name'
-        }
+        "MouseOver": ng_diType('databind_function_name')
       });
 
       if (typeof c.SetBounds === 'function')
       {
-        props["Bounds"] = {
-          DefaultType: 'object',
-          Types: {
-            'databind_expression': {}
-          },
-          Level: 'basic'
-        };
+        props["Bounds"] = ng_diMixed(['object','databind_expression'], { Level: 'basic' });
       }
 
       if (typeof c.Elm === 'function')
       {
-        props["style"] = {
-          DefaultType: 'object',
-          Types: {
-            'databind_expression': {}
-          }
-        };
-        props["className"] = { DefaultType: 'databind_expression' };
-        props["SubClassName"] = { DefaultType: 'databind_expression' };
-        props["BaseClassName"] = { DefaultType: 'databind_expression' };
+        props["style"] = ng_diMixed(['object','databind_expression']);
+        props["className"] = ng_diType('databind_expression');
+        props["SubClassName"] = ng_diType('databind_expression');
+        props["BaseClassName"] = ng_diType('databind_expression');
       }
 
       if (typeof c.SetFocus === 'function')
       {
-        props["Focus"] = { DefaultType: 'databind_function_name', Level: 'optional' };
+        props["Focus"] = ng_diType('databind_function_name', { Level: 'optional' });
       }
 
       if (typeof c.SetOpacity === 'function')
       {
-        props["Opacity"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Opacity"] = ng_diType('databind_expression', { Level: 'basic' });
       }
 
       if (typeof c.SetVisible === 'function')
       {
-        props["Visible"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Visible"] = ng_diType('databind_expression', { Level: 'basic' });
       }
     }
 
     if (typeof c.SetEnabled === 'function')
     {
-      props["Enabled"] = { DefaultType: 'databind_expression', Level: 'basic' };
-      props["Disabled"] = { DefaultType: 'databind_expression', Level: 'basic' };
+      props["Enabled"] = ng_diType('databind_expression', { Level: 'basic' });
+      props["Disabled"] = ng_diType('databind_expression', { Level: 'basic' });
     }
 
 
     switch (c.DefType)
     {
       case 'ngSysTimer':
-        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
-        props["Command"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Command"] = ng_diType('databind_expression', { Level: 'basic' });
         break;
 
       case 'ngSysURLParams':
       case 'ngSysViewModelSettings':
       case 'ngSysRPC':
-        props["Value"] = { DefaultType: 'databind_expression', Level: 'basic' };
+        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
         break;
     }
 
     var vm_di = {
-      Properties: ng_DIProperties({
-        "ViewModel": { DefaultType: 'viewmodel', Level: 'basic', Order: 0.21,
-          PropertyGroup: 'DataBind'
-        },
+      Properties: ng_diProperties({
+        "ViewModel": ng_diType('viewmodel', { Level: 'basic', Order: 0.21, PropertyGroup: 'DataBind' }),
         "Data": {
           "ViewModelData": { Level: 'hidden' }
         },
         "Methods": {
-          "SetViewModelData": ng_DIProperty('function', 'function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' }),
-          "DoCreateViewModelControl": ng_DIProperty('function', 'function(idx, itval, itvm, ci) { return { Type: \'\' }; }', { Level: (di.IsContainer ? 'basic' : 'optional') })
+          "SetViewModelData": ng_diFunction('function(val) { ng_CallParent(this,"SetViewModelData",arguments); }', { Level: 'advanced' }),
+          "DoCreateViewModelControl": ng_diFunction('function(idx, itval, itvm, ci) { return { Type: \'\' }; }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         },
         "Events": {
-          "OnViewModelDataChanged": ng_DIPropertyEvent('function(c, oldval) { }', { Level: 'basic' }),
-          "OnDataBindingInit": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
-          "OnDataBindingUpdate": ng_DIPropertyEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
-          "OnIsViewModelControlChanged": ng_DIPropertyEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
+          "OnViewModelDataChanged": ng_diEvent('function(c, oldval) { }', { Level: 'basic' }),
+          "OnDataBindingInit": ng_diEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
+          "OnDataBindingUpdate": ng_diEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
+          "OnIsViewModelControlChanged": ng_diEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         }
       },{
-        "DataBind": { DefaultType: 'bindings', Level: 'basic', Order: 0.5,
-          Types: {
-            'bindings_string': {},
-            'object': {
-              DestroyIfEmpty: true,
-              ObjectProperties: {
-                Default: {
-                  DefaultType: 'object'
-                }
-              }
-            },
-            'bindings': {
-              ObjectProperties: {
-                "0": {
-                  Types: {
-                    'object': {
-                      ObjectProperties: props
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "DOMDataBind": { DefaultType: 'bindings', Level: 'optional', Order: 0.5,
-          PropertyGroup: 'DataBind',
-          Types: {
-            'bindings_string': {},
-            'object': {
-              DestroyIfEmpty: true,
-              ObjectProperties: {
-                Default: {
-                  DefaultType: 'object'
-                }
-              }
-            },
-            'bindings': {}
-          }
-        }
+        "DataBind": ng_diMixed([
+          ng_diBindings(props),
+          ng_diObject({
+            "Default": ng_diObject()
+          }, undefined, { DestroyIfEmpty: true }),
+          ng_diType('bindings_string')
+        ], { Level: 'basic', Order: 0.5 }),
+        "DOMDataBind": ng_diMixed([
+          ng_diBindings(),
+          ng_diObject({
+            "Default": ng_diObject()
+          }, undefined, { DestroyIfEmpty: true }),
+          ng_diType('bindings_string')
+        ], { Level: 'optional', Order: 0.5 })
       })
     };
 
@@ -165,35 +121,21 @@ var ViewModel_Controls_DesignInfo = (function()
           props = di.Properties.Events.Types['object'].ObjectProperties;
       for (var i in props)
       {
-        o[i] = {
-          DefaultType: 'databind_function_name'
-        };
+        o[i] = ng_diType('databind_function_name');
 
         if (typeof props[i].Level !== undefined) o[i].Level = props[i].Level;
         else o[i].Level = 'advanced';
       }
 
-      var eventprop1 = {
-        DefaultType: 'object',
-        Types: {
-          'bindings_string': {},
-          'object': {
-            DestroyIfEmpty: true,
-            ObjectProperties: o
-          }
-        },
-        Order: undefined
-      };
-      var eventprop2 = {
-        DefaultType: 'object',
-        Types: {
-          'bindings_string': {},
-          'object': {
-            DestroyIfEmpty: true,
-            ObjectProperties: {}
-          }
-        }
-      };
+      var eventprop1 = ng_diMixed([
+        ng_diObject(o, undefined, { DestroyIfEmpty: true }),
+        ng_diType('bindings_string')
+      ], { Order: undefined });
+
+      var eventprop2 = ng_diMixed([
+        ng_diObject({}, undefined, { DestroyIfEmpty: true }),
+        ng_diType('bindings_string')
+      ]);
       for (var i in o)
       {
         eventprop2.Types['object'].ObjectProperties[i] = ng_CopyVar(o[i]);
@@ -203,26 +145,12 @@ var ViewModel_Controls_DesignInfo = (function()
 
       var vm_events_di = {
         Properties: {
-          "DataBind": {
-            Types: {
-              'bindings': {
-                ObjectProperties: {
-                  "0": {
-                    Types: {
-                      'object': {
-                        ObjectProperties: {
-                          "Events": eventprop1,
-                          "AfterEvents": eventprop2,
-                          "BeforeEvents": eventprop2,
-                          "OverrideEvents": eventprop2
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "DataBind": ng_diBindings({
+            "Events": eventprop1,
+            "AfterEvents": eventprop2,
+            "BeforeEvents": eventprop2,
+            "OverrideEvents": eventprop2
+          })
         }
       };
       ng_MergeVar(di, vm_events_di);
@@ -233,18 +161,11 @@ var ViewModel_Controls_DesignInfo = (function()
     var deferbindings = {};
     var databindprops=di.Properties['DataBind'].Types['bindings'].ObjectProperties['0'].Types['object'].ObjectProperties;
     for(var i in window.ngBindingsHandlers) {
-      if(typeof databindprops[i]!=='undefined') deferbindings[i]=ng_DIPropertyBool(false);
+      if(typeof databindprops[i]!=='undefined') deferbindings[i]=ng_diBoolean(false);
     }
 
     ng_MergeVar(databindprops, {
-      "DeferUpdates": {
-        DefaultType: 'object',
-        Types: {
-          'object': {
-            ObjectProperties: deferbindings
-          }
-        }
-      }
+      "DeferUpdates": ng_diObject(deferbindings)
     });
 
   }
@@ -268,12 +189,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Name: 'viewmodel object',
           ShortName: 'vm',
           Options: {
-            ChildDesignInfo: {
-              DefaultType: 'undefined',
-              Types: {
-                'jstypes': {}
-              }
-            }
+            ChildDesignInfo: ng_diMixed(['undefined','jstypes'])
           }
         },
         // ViewModel Constructor
@@ -295,7 +211,7 @@ var ViewModel_Controls_DesignInfo = (function()
           ShortName: 'attrs',
           Options: {
             ObjectProperties: {
-              "Required": { DefaultType: 'boolean', Level: 'basic' }
+              "Required": ng_diBoolean(false, { Level: 'basic' })
             }
           }
         },
@@ -315,38 +231,16 @@ var ViewModel_Controls_DesignInfo = (function()
             DefaultValue: [],
             InitValue: ["'vmfield1'", "'STRING'"],
             ObjectProperties: {
-              0: { DefaultType: 'string', Level: 'basic',
-                   DisplayName: 'ID',
-                   Required: true,
-                   Types: {
-                     'string': {
-                       InitValue: 'vmfield1'
-                     }
-                   }
-                 },
-              1: { DefaultType: 'string', Level: 'basic',
-                   DisplayName: 'Type',
-                   Required: true,
-                   Types: {
-                     'string': {
-                       DefaultValue: 'STRING',
-                       Editor: 'ngfeEditor_DropDownList',
-                       EditorOptions: {
-                         Items: [
-                           'BOOL','INTEGER','FLOAT',
-                           'SBYTE','BYTE','SHORT','USHORT','LONG','ULONG',
-                           'DECIMAL','STRING','NVARCHAR',
-                           'TIMESTAMP','DATETIME','DATE', 'TIME',
-                           'UTCTIMESTAMP','UTCDATETIME','UTCDATE','UTCTIME',
-                           'ARRAY','OBJECT'
-                         ]
-                       }
-                     }
-                   }
-                 },
-              2: { DefaultType: 'ngFieldDefAttrs', Level: 'basic',
-                   DisplayName: 'Attrs'
-                 }
+              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'vmfield1' }),
+              1: ng_diStringValues('STRING', [
+                   'BOOL','INTEGER','FLOAT',
+                   'SBYTE','BYTE','SHORT','USHORT','LONG','ULONG',
+                   'DECIMAL','STRING','NVARCHAR',
+                   'TIMESTAMP','DATETIME','DATE', 'TIME',
+                   'UTCTIMESTAMP','UTCDATETIME','UTCDATE','UTCTIME',
+                   'ARRAY','OBJECT'
+                 ], { DisplayName: 'Type', Required: true, Level: 'basic' }),
+              2: ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' })
             }
           }
         },
@@ -365,18 +259,8 @@ var ViewModel_Controls_DesignInfo = (function()
             InitValue: ["'vmfield1'"],
             Add: false,
             ObjectProperties: {
-              0: { DefaultType: 'string', Level: 'basic',
-                   DisplayName: 'ID',
-                   Required: true,
-                   Types: {
-                     'string': {
-                       InitValue: 'vmfield1'
-                     }
-                   }
-                 },
-              1: { DefaultType: 'ngFieldDefAttrs', Level: 'basic',
-                   DisplayName: 'Attrs'
-                 }
+              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'vmfield1' }),
+              1: ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' })
             }
           }
         },
@@ -395,18 +279,8 @@ var ViewModel_Controls_DesignInfo = (function()
             InitValue: ["'vmfield1'"],
             Add: false,
             ObjectProperties: {
-              0: { DefaultType: 'string', Level: 'basic',
-                   DisplayName: 'ID',
-                   Required: true,
-                   Types: {
-                     'string': {
-                       InitValue: 'vmfield1'
-                     }
-                   }
-                 },
-              1: { DefaultType: 'ngFieldDefAttrs', Level: 'basic',
-                   DisplayName: 'Attrs'
-                 }
+              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'vmfield1' }),
+              1: ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' })
             }
           }
         }
@@ -449,67 +323,57 @@ var ViewModel_Controls_DesignInfo = (function()
               }
             }
           },
-          Properties: ng_DIProperties({
+          Properties: ng_diProperties({
             "ID": { Level: 'basic' },
-            "Namespace": { DefaultType: 'string', Level: 'basic', Order: 0.05 },
-            "FieldDefs": { DefaultType: 'array', Level: 'basic', Order: 0.051,
-              Types: {
-                'array': {
-                  ChildDesignInfo: {
-                    DefaultType: 'ngFieldDef_Integer',
-                    Types: {
-                      'vmfielddef': {}
-                    },
-                    OnPropertyInit: function(ch)
+            "Namespace": ng_diString('', { Level: 'basic', Order: 0.05 }),
+            "FieldDefs": ng_diArrayOf(
+              ng_diType('vmfielddef', {
+                DefaultType: 'ngFieldDef_Integer',
+                OnPropertyInit: function(ch)
+                {
+                  if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'callee'))
+                  {
+                    var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
+                    if (pname)
                     {
-                      if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'callee'))
-                      {
-                        var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
-                        if (pname)
-                        {
-                          var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
-                          var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
+                      var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
+                      var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
 
-                          if (!ng_IsArrayVar(ch.Value)) ch.Value = [];
-                          ch.Value[0] = "'Field" + (itemscnt + 1) + "'";
-                        }
-                      }
-                      return true;
+                      if (!ng_IsArrayVar(ch.Value)) ch.Value = [];
+                      ch.Value[0] = "'Field" + (itemscnt + 1) + "'";
                     }
                   }
+                  return true;
                 }
-              }
-            },
-            "ViewModel": { DefaultType: 'viewmodel_def', Level: 'basic', Order: 0.052,
-              PropertyGroup: 'Definition'
-            },
-            "RefViewModel": { DefaultType: 'vmid', Level: 'basic', Order: 0.053 },
+              }), { Level: 'basic', Order: 0.051 }),
+            "ViewModel": ng_diType('viewmodel_def', { Level: 'basic', Order: 0.052, PropertyGroup: 'Definition' }),
+            "RefViewModel": ng_diType('vmid', { Level: 'basic', Order: 0.053 }),
             "Data": {
-              "ViewModel": { DefaultType: 'vmobject', Level: 'basic' },
-              "DefaultValues": { DefaultType: 'jsobject', Level: 'basic' },
-              "ServerURL": { DefaultType: 'url', Level: 'basic' }
+              "ViewModel": ng_diType('vmobject', { Level: 'basic' }),
+              "DefaultValues": ng_diType('jsobject', { Level: 'basic' }),
+              "ServerURL": ng_diType('url', {Level: 'basic' })
             },
             "Events": {
-              "OnSetValues": ng_DIPropertyEvent('function(c, values, deserialize) { return true; }',{ Level: 'basic' }),
-              "OnGetValues": ng_DIPropertyEvent('function(c, ret, writableonly, valuenames, errors, convtimestamps, serialize) {}',{ Level: 'basic' }),
-              "OnCommand": ng_DIPropertyEvent('function(c, cmd, options) { return true; }',{ Level: 'basic' }),
-              "OnDoCommand": ng_DIPropertyEvent('function(c, cmd, options, vals, err) { return true; }',{ Level: 'basic' }),
-              "OnCommandRequest": ng_DIPropertyEvent('function(c, rpc) { return true; }',{ Level: 'basic' }),
-              "OnCommandResults": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
-              "OnCommandFinished": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
-              "OnCommandCancel": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
-              "OnCommandData": ng_DIPropertyEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
-              "OnViewModelChanged": ng_DIPropertyEvent('function(c) {}',{ Level: 'basic' }),
-              "OnErrors": ng_DIPropertyEvent('function(c, errors) { return true; }',{ Level: 'basic' }),
-              "OnShowErrors": ng_DIPropertyEvent('function(c, errmsg, errors) { if(errmsg!="") alert(errmsg); }',{ Level: 'basic' }),
-              "OnAssign": ng_DIPropertyEvent('function(c, src) {}',{ Level: 'basic' })
+              "OnSetValues": ng_diEvent('function(c, values, deserialize) { return true; }',{ Level: 'basic' }),
+              "OnGetValues": ng_diEvent('function(c, ret, writableonly, valuenames, errors, convtimestamps, serialize) {}',{ Level: 'basic' }),
+              "OnCommand": ng_diEvent('function(c, cmd, options) { return true; }',{ Level: 'basic' }),
+              "OnDoCommand": ng_diEvent('function(c, cmd, options, vals, err) { return true; }',{ Level: 'basic' }),
+              "OnCommandRequest": ng_diEvent('function(c, rpc) { return true; }',{ Level: 'basic' }),
+              "OnCommandResults": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnCommandFinished": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnCommandCancel": ng_diEvent('function(c) {}',{ Level: 'basic' }),
+              "OnCommandData": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+              "OnViewModelChanged": ng_diEvent('function(c) {}',{ Level: 'basic' }),
+              "OnErrors": ng_diEvent('function(c, errors) { return true; }',{ Level: 'basic' }),
+              "OnShowErrors": ng_diEvent('function(c, errmsg, errors) { if(errmsg!="") alert(errmsg); }',{ Level: 'basic' }),
+              "OnAssign": ng_diEvent('function(c, src) {}',{ Level: 'basic' })
             },
             "OverrideEvents": {
-              "OnSetValue": ng_DIPropertyEvent('function(c, setval, instance, valpath) { return setval; }',{ Level: 'basic' }),
-              "OnGetValue": ng_DIPropertyEvent('function(c, val,instance, valpath, errors) { return val; }',{ Level: 'basic' }),
-              "OnGetCommandValueNames": ng_DIPropertyEvent('function(c, cmd, options) { return []; }',{ Level: 'basic' }),
-              "OnSetViewModel": ng_DIPropertyEvent('function(c, vmodel) { return vmodel; }',{ Level: 'basic' }),
-              "OnResults": ng_DIPropertyEvent('function(c, results) { return results; }',{ Level: 'basic' })
+              "OnSetValue": ng_diEvent('function(c, setval, instance, valpath) { return setval; }',{ Level: 'basic' }),
+              "OnGetValue": ng_diEvent('function(c, val,instance, valpath, errors) { return val; }',{ Level: 'basic' }),
+              "OnGetCommandValueNames": ng_diEvent('function(c, cmd, options) { return []; }',{ Level: 'basic' }),
+              "OnSetViewModel": ng_diEvent('function(c, vmodel) { return vmodel; }',{ Level: 'basic' }),
+              "OnResults": ng_diEvent('function(c, results) { return results; }',{ Level: 'basic' })
             }
           },{
             "DataBind": { Level: 'optional' }
@@ -521,10 +385,10 @@ var ViewModel_Controls_DesignInfo = (function()
           ControlCategory: 'System',
           BaseControl: 'ngSysViewModelSettings',
           IsViewModel: true,
-          Properties: ng_DIProperties({
+          Properties: ng_diProperties({
             "Events": {
-              "OnSettingsLoaded": ng_DIPropertyEvent('function(c, settings) {}',{ Level: 'basic' }),
-              "OnInitialized": ng_DIPropertyEvent('function(c, settings) {}',{ Level: 'basic' })
+              "OnSettingsLoaded": ng_diEvent('function(c, settings) {}',{ Level: 'basic' }),
+              "OnInitialized": ng_diEvent('function(c, settings) {}',{ Level: 'basic' })
             }
           })
         };

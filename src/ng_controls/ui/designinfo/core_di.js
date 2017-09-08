@@ -14,6 +14,7 @@ if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['uicore'] = {
   OnFormEditorInit: function(FE)
   {
+    var undefined;
     var types = [
       // ngImageShape
       {
@@ -25,10 +26,10 @@ ngUserControls['uicore'] = {
         Options: {
           Add: false,
           ObjectProperties: {
-            "Shape": ng_DIPropertyStrings('rect', ['rect','circle','poly'], { Level: 'basic', Order: 0.4 }),
-            "Coords": { DefaultType: 'string', Level: 'basic', Order: 0.41 },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "OnClick": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' })
+            "Shape": ng_diStringValues('rect', ['rect','circle','poly'], { Level: 'basic', Order: 0.4 }),
+            "Coords": ng_diString('', { Level: 'basic', Order: 0.41 }),
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' })
           }
         }
       },
@@ -41,26 +42,21 @@ ngUserControls['uicore'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "id":   { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
-            "Text": { DefaultType: 'undefined', InitType: 'string', Level: 'basic', Order: 0.4 },
-            "Alt":  { DefaultType: 'undefined', InitType: 'string', Level: 'basic' },
-            "Visible": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "Enabled": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "ControlsPanel": ng_DIPropertyControl('ngPanel', { Level: 'advanced', IsContainer: false }),
-            "W": ng_DIProperty(['undefined','bounds'],undefined, { InitType: 'bounds_integer', Level: 'basic' }),
-            "H": ng_DIProperty(['undefined','bounds'],undefined, { InitType: 'bounds_integer', Level: 'basic' }),
-            "MinWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic' },
-            "Controls": { DefaultType: 'controls', Level: 'basic',
-              ContainerProperty: true,
-              Types: {
-                'controls': {
-                  DestroyIfEmpty: true,
-                  ChildDesignInfo: {
-                    PropertyGroup: 'Controls'
-                  }
-                }
+            "id": ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'basic' }),
+            "Text": ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'basic', Order: 0.4 }),
+            "Alt":  ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'basic' }),
+            "Visible": ng_diBoolean(true, { Level: 'basic' }),
+            "Enabled": ng_diBoolean(true, { Level: 'basic' }),
+            "ControlsPanel": ng_diControl('ngPanel', null, { Level: 'advanced', IsContainer: false }),
+            "W": ng_diMixed(['undefined','bounds'], { InitType: 'bounds_integer', Level: 'basic' }),
+            "H": ng_diMixed(['undefined','bounds'], { InitType: 'bounds_integer', Level: 'basic' }),
+            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "Controls": ng_diControls(undefined, { Level: 'basic', ContainerProperty: true }, {
+              DestroyIfEmpty: true,
+              ChildDesignInfo: {
+                PropertyGroup: 'Controls'
               }
-            }
+            })
           }
         }
       }
@@ -70,6 +66,7 @@ ngUserControls['uicore'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
+    var undefined;
 
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
       var di={
@@ -85,16 +82,10 @@ ngUserControls['uicore'] = {
           "ParentReferences": { Level: 'advanced' },
           "ScrollBars": { Level: 'basic' },
           "Controls": { Level: 'basic' },
-          "Data": {
-            Types: {
-              'object': {
-                ObjectProperties: {
-                  "ChildHandling": { Level: 'optional' },
-                  "FormID": { DefaultType: 'string', Level: 'optional' }
-                }
-              }
-            }
-          }
+          "Data": ng_diObject({
+            "ChildHandling": { Level: 'optional' },
+            "FormID": ng_diString('', { Level: 'optional' })
+          })
         }
       };
       if(!d.CtrlInheritanceDepth) {
@@ -122,7 +113,7 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "style": {
             "color": { Level: 'basic' },
             "fontFamily": { Level: 'basic' },
@@ -135,31 +126,25 @@ ngUserControls['uicore'] = {
           },
 
           "Data": {
-            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center','justify'], { Level: 'basic' }),
-            "AutoSize": ng_DIPropertyBool(false),
-            "AutoSizeMode": ng_DIPropertyStrings('auto', ['auto','horizontal','vertical']),
-            "MinWidth":  { DefaultType: 'undefined', InitType: 'integer' },
-            "MinHeight": { DefaultType: 'undefined', InitType: 'integer' },
+            "TextAlign": ng_diStringValues('left', ['left','right','center','justify'], { Level: 'basic' }),
+            "AutoSize": ng_diBoolean(false),
+            "AutoSizeMode": ng_diStringValues('auto', ['auto','horizontal','vertical']),
+            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
+            "MinHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
 
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Text'
-                }
-              }
-            }),
+            "Text": ng_diStringRefName({ Level: 'basic' }, { Editor: 'ngfeEditor_Text' }),
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "CanSelect": ng_DIPropertyBool(true, { Level: 'basic' })
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
+            "CanSelect": ng_diBoolean(true, { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' })
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' })
           }
         })
       };
@@ -169,17 +154,17 @@ ngUserControls['uicore'] = {
       return {
         ControlCategory: 'Misc',
         BaseControl: 'ngImage',
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "AutoSize": ng_DIPropertyBool(true),
-            "Img": { DefaultType: 'image', Level: 'basic' }
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "AutoSize": ng_diBoolean(true),
+            "Img": ng_diType('image', { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnGetImg": ng_DIPropertyEvent('function(c) { return null; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' })
+            "OnGetImg": ng_diEvent('function(c) { return null; }', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' })
           }
         })
       };
@@ -189,35 +174,27 @@ ngUserControls['uicore'] = {
       return {
         ControlCategory: 'Misc',
         BaseControl: 'ngImageMap',
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "AutoSize": ng_DIPropertyBool(true),
-            "Img": { DefaultType: 'image', Level: 'basic' },
-            "Cursor": { DefaultType: 'css_cursor', Level: 'basic' },
-            "Shapes": { DefaultType: 'array', Level: 'basic',
-              Types: {
-                'array': {
-                  ChildDesignInfo: {
-                    DefaultType: 'ngImageShape'
-                  }
-                }
-              }
-            }
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "AutoSize": ng_diBoolean(true),
+            "Img": ng_diType('image', { Level: 'basic' }),
+            "Cursor": ng_diType('css_cursor', { Level: 'basic' }),
+            "Shapes": ng_diArrayOf('ngImageShape', { Level: 'basic' })
           },
           "Events": {
-            "OnShapeClick": ng_DIPropertyEvent('function(e) { }', { Level: 'basic' }),
+            "OnShapeClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
             "OnMouseEnter":  { },
             "OnMouseLeave":  { },
-            "OnMouseShapeEnter": ng_DIPropertyEvent('function(c, shapeidx) { }'),
-            "OnMouseShapeLeave": ng_DIPropertyEvent('function(c, shapeidx) { }')
+            "OnMouseShapeEnter": ng_diEvent('function(c, shapeidx) { }'),
+            "OnMouseShapeLeave": ng_diEvent('function(c, shapeidx) { }')
           },
           "OverrideEvents": {
-            "OnGetImg": ng_DIPropertyEvent('function(c) { return null; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetShapeAlt": ng_DIPropertyEvent('function(c, shapeidx) { return ""; }', { Level: 'basic' })
+            "OnGetImg": ng_diEvent('function(c) { return null; }', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetShapeAlt": ng_diEvent('function(c, shapeidx) { return ""; }', { Level: 'basic' })
           }
         })
       }
@@ -238,7 +215,7 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "H": null,
           "style": {
             "color": { Level: 'basic' },
@@ -249,61 +226,47 @@ ngUserControls['uicore'] = {
             "textTransform": { Level: 'basic' }
           },
           "Data": {
-            "Action": { DefaultType: 'string', Level: 'basic'
-              // TODO: browse from existing actions
-            },
-            "TextAlign": ng_DIPropertyStrings('center', ['left','right','center'], { Level: 'basic' }),
+            "Action": ng_diString('', { Level: 'basic' }), // TODO: browse from existing actions
+            "TextAlign": ng_diStringValues('center', ['left','right','center'], { Level: 'basic' }),
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
+            "Text": ng_diStringRefName({ Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "AutoSize": ng_DIPropertyBool(true),
-            "MinWidth": { DefaultType: 'undefined', InitType: 'integer' },
-            "Checked": ng_DIPropertyValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic',
-              Types: {
-                'integer': {
-                   InitValue: 1
-                 }
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
+            "AutoSize": ng_diBoolean(true),
+            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
+            "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
+            "RadioGroup": ng_diMixed(['undefined', 'string'], { InitType: 'string' }), // TODO: browse from existing radio groups
+            "Cursor": ng_diTypeVal('css_cursor', 'pointer', { Level: 'basic' }),
+            "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
+            "Img": ng_diType('image', { Level: 'basic' }),
+            "ImgAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
+            "ImgIndent": ng_diInteger(0, { Level: 'basic' }),
+            "LeftImg": ng_diType('image', { Level: 'basic' }),
+            "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+              EditorOptions: {
+                HorizontalImages: true
               }
             }),
-            "RadioGroup": { DefaultType: 'undefined', InitType: 'string'
-              // TODO: browse from existing radio groups
-            },
-            "Cursor": ng_DIProperty('css_cursor', 'pointer', { Level: 'basic' }),
-            "ReadOnly": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "Img": { DefaultType: 'image', Level: 'basic' },
-            "ImgAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
-            "ImgIndent": { DefaultType: 'integer', Level: 'basic' },
-            "LeftImg": { DefaultType: 'image', Level: 'basic' },
-            "MiddleImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: true
-                   }
-                 }
-              }
-            },
-            "RightImg": { DefaultType: 'image', Level: 'basic' },
-            "Default": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "Cancel": ng_DIPropertyBool(false, { Level: 'basic' })
+            "RightImg": ng_diType('image', { Level: 'basic' }),
+            "Default": ng_diBoolean(false, { Level: 'basic' }),
+            "Cancel": ng_diBoolean(false, { Level: 'basic' })
           },
           "Events": {
-            "OnCheckChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnDblClick": ng_DIPropertyEvent('function(e) { }', { Level: 'basic' }),
-            "OnClick": ng_DIPropertyEvent('function(e) { }', { Level: 'basic' }),
+            "OnCheckChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnDblClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
+            "OnClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
             "OnMouseEnter": { },
             "OnMouseLeave": { }
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetImg": ng_DIPropertyEvent('function(c, idx) { return null; }', { Level: 'basic' }),
-            "OnGetClassName": ng_DIPropertyEvent('function(c, cls, text) { return cls; }', { Level: 'basic' })
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'basic' }),
+            "OnGetClassName": ng_diEvent('function(c, cls, text) { return cls; }', { Level: 'basic' })
           }
         })
       };
@@ -327,42 +290,25 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ParentReferences": { Level: 'advanced' },
-          "W": {
-            Exclude: ['CW']
-          },
-          "H": {
-            Exclude: ['CH']
-          },
-          "CW": { DefaultType: 'integer', Order: 0.141,
-            Exclude: ['W']
-          },
-          "CH": { DefaultType: 'integer', Order: 0.142,
-            Exclude: ['H']
-          },
-          "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
+          "W": { Exclude: ['CW'] },
+          "H": { Exclude: ['CH'] },
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "Frame": { DefaultType: 'img_frame', Level: 'basic',
-              Collapsed: true
-            },
-            "ControlsInside": ng_DIPropertyBool(true, { Level: 'basic' })
+            "Text": ng_diStringRefName({ Level: 'basic' }),
+            "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
+            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true }),
+            "ControlsInside": ng_diBoolean(true, { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' })
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' })
           }
         },
         {
@@ -386,140 +332,95 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "H": null,
-          "Buttons": { DefaultType: 'controls_array', Level: 'basic',
-            Collapsed: false,
-            PropertyGroup: 'Controls',
-            Types: {
-              'controls_array': {
-                DestroyIfEmpty: true,
-                ChildDesignInfo: {
-                  PropertyGroup: 'Controls',
-                  Types: {
-                    'control': {
-                      InheritedFrom: 'ngButton',
-                      ObjectProperties: ng_DIProperties({
-                        "Data": {
-                          "ButtonAlign": ng_DIPropertyStrings('right', ['left','right'], { Level: 'basic', Order: 0.8 })
-                        }
-                      })
-                    }
-                  }
-                }
+          "Buttons": ng_diArrayOfControls(
+            ng_diControl(undefined, ng_diProperties({
+              "Data": {
+                "ButtonAlign": ng_diStringValues('right', ['left','right'], { Level: 'basic', Order: 0.8 })
               }
-            }
-          },
-          "DropDown": { DefaultType: 'control',
-            PropertyGroup: 'Controls'
-          },
+            }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+            { Level: 'basic', Collapsed: false, PropertyGroup: 'Controls' }, { DestroyIfEmpty: true }),
+          "DropDown": ng_diControl(undefined, undefined, { PropertyGroup: 'Controls' }),
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'optional' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "DefaultText": { DefaultType: 'string', Level: 'basic' },
-            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
+            "Text": ng_diStringRefName({ Level: 'basic' }),
+            "DefaultText": ng_diString('', { Level: 'basic' }),
+            "TextAlign": ng_diStringValues('left', ['left','right','center'], { Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
+            "Alt": ng_diString('', { Level: 'basic' }),
             "ngHint":  { Level: 'advanced' },
             "ngHintD": { Level: 'basic' },
-            "Hint": { DefaultType: 'string', Level: 'basic' },
-            "HintStyle": ng_DIPropertyIntConstants(ngVal(ngDefaultHintStyle,1),['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
-            "ReadOnly": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "Password": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "MaxLength": { DefaultType: 'integer', Level: 'basic' },
-            "LeftImg": { DefaultType: 'image', Level: 'basic' },
-            "MiddleImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: true
-                   }
-                 }
-              }
-            },
-            "RightImg": { DefaultType: 'image', Level: 'basic' },
-            "OffsetTop": { DefaultType: 'integer', Level: 'basic' },
-            "SelectOnFocus": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "DropDownType": ng_DIPropertyIntConstants(0,['ngeDropDownEdit','ngeDropDownList']),
-            "DropDownWidth": { DefaultType: 'undefined', InitType: 'integer' },
-            "DropDownAlign": ng_DIPropertyStrings('left', ['left','right']),
-            "LockHintCaretPos": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "Invalid": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "Suggestion": ng_DIPropertyBool(false),
-            "SuggestionDelay": ng_DIProperty('integer',200),
-            "SuggestionSearchColumn": { DefaultType: 'string' },
-            "SuggestionIgnoreCase": ng_DIPropertyBool(true),
-            "SuggestionPartial": ng_DIPropertyValues('integer',2,[{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}]),
-            "SuggestionURL": { DefaultType: 'url' },
-            "SuggestionType": { DefaultType: 'string' }
+            "Hint": ng_diString('', { Level: 'basic' }),
+            "HintStyle": ng_diIntegerIdentifiers(ngVal(ngDefaultHintStyle,1),['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
+            "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
+            "Password": ng_diBoolean(false, { Level: 'basic' }),
+            "MaxLength": ng_diInteger(0, { Level: 'basic' }),
+            "LeftImg": ng_diType('image', { Level: 'basic' }),
+            "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+               EditorOptions: {
+                 HorizontalImages: true
+               }
+            }),
+            "RightImg": ng_diType('image', { Level: 'basic' }),
+            "OffsetTop": ng_diInteger(0, { Level: 'basic' }),
+            "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
+            "DropDownType": ng_diIntegerIdentifiers(0,['ngeDropDownEdit','ngeDropDownList']),
+            "DropDownWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
+            "DropDownAlign": ng_diStringValues('left', ['left','right']),
+            "LockHintCaretPos": ng_diBoolean(true, { Level: 'basic' }),
+            "Invalid": ng_diBoolean(false, { Level: 'basic' }),
+            "Suggestion": ng_diBoolean(false),
+            "SuggestionDelay": ng_diInteger(200),
+            "SuggestionSearchColumn": ng_diString(),
+            "SuggestionIgnoreCase": ng_diBoolean(true),
+            "SuggestionPartial": ng_diTypeValues('integer',2,[{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}]),
+            "SuggestionURL": ng_diType('url'),
+            "SuggestionType": ng_diString()
           },
           "Methods": {
-            "DoFocus": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }'
-                }
-              }
-            },
-            "DoBlur": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }'
-                }
-              }
-            },
-            "DoUpdateImages": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function() { ng_CallParent(this, "DoUpdateImages", arguments); }'
-                }
-              }
-            },
-            "DoSetInvalid": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }'
-                }
-              }
-            }
+            "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }'),
+            "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }'),
+            "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }'),
+            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }')
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetHint": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetClassName": ng_DIPropertyEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' }),
-            "OnGetImg": ng_DIPropertyEvent('function(c, idx) { return null; }', { Level: 'basic' }),
-            "OnSuggestionSetText": ng_DIPropertyEvent('function(text, it) { return text; }'),
-            "OnSuggestionURL": ng_DIPropertyEvent('function(c, url) { return url; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetHint": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetClassName": ng_diEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' }),
+            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'basic' }),
+            "OnSuggestionSetText": ng_diEvent('function(text, it) { return text; }'),
+            "OnSuggestionURL": ng_diEvent('function(c, url) { return url; }'),
 
             // ngList DropDown Events
-            "OnListItemGetText":  ng_DIPropertyEvent('function(c, list, it, t) { return t; }',{ Level: 'optional' })
+            "OnListItemGetText":  ng_diEvent('function(c, list, it, t) { return t; }',{ Level: 'optional' })
           },
           "Events": {
-            "OnTextChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnDropDown": ng_DIPropertyEvent('function(c, dd) { return true; }'),
-            "OnHideDropDown": ng_DIPropertyEvent('function(c, dd) { return true; }'),
+            "OnTextChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnDropDown": ng_diEvent('function(c, dd) { return true; }'),
+            "OnHideDropDown": ng_diEvent('function(c, dd) { return true; }'),
             "OnClickOutside": { },
-            "OnKeyDown": ng_DIPropertyEvent('function(e, elm) { return true; }', { Level: 'basic' }),
-            "OnKeyUp": ng_DIPropertyEvent('function(e, elm) { return true; }', { Level: 'basic' }),
-            "OnKeyPress": ng_DIPropertyEvent('function(e, elm) { return true; }', { Level: 'basic' }),
+            "OnKeyDown": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
+            "OnKeyUp": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
+            "OnKeyPress": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
             "OnMouseEnter": { },
             "OnMouseLeave": { },
-            "OnFocus": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnBlur": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnSetInvalid": ng_DIPropertyEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
-            "OnSetReadOnly": ng_DIPropertyEvent('function(c, state) { return true; }', { Level: 'basic' }),
-            "OnReadOnlyChanged": ng_DIPropertyEvent('function(c, state) { }', { Level: 'basic' }),
-            "OnSuggestionSearch": ng_DIPropertyEvent('function(c, txt, res) { return true; }'),
-            "OnSuggestionCompareItem": ng_DIPropertyEvent('function(c, txt, itemtxt, list, it, parent) { return (txt==itemtxt); }'),
-            "OnSuggestionResults": ng_DIPropertyEvent('function(c, txt, data, res) { return true; }'),
-            "OnSuggestionData": ng_DIPropertyEvent('function(c, txt, data) { return true; }'),
+            "OnFocus": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnBlur": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnSetInvalid": ng_diEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
+            "OnSetReadOnly": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' }),
+            "OnReadOnlyChanged": ng_diEvent('function(c, state) { }', { Level: 'basic' }),
+            "OnSuggestionSearch": ng_diEvent('function(c, txt, res) { return true; }'),
+            "OnSuggestionCompareItem": ng_diEvent('function(c, txt, itemtxt, list, it, parent) { return (txt==itemtxt); }'),
+            "OnSuggestionResults": ng_diEvent('function(c, txt, data, res) { return true; }'),
+            "OnSuggestionData": ng_diEvent('function(c, txt, data) { return true; }'),
 
             // ngList DropDown Events
-            "OnListItemChanged": ng_DIPropertyEvent('function(c, list, it, ddoli) { return true; }',{ Level: 'optional' })
+            "OnListItemChanged": ng_diEvent('function(c, list, it, ddoli) { return true; }',{ Level: 'optional' })
           }
         })
       };
@@ -540,75 +441,51 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'optional' },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "DefaultText": { DefaultType: 'string', Level: 'basic' },
-            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center'], { Level: 'basic' }),
+            "Text": ng_diStringRefName({ Level: 'basic' }),
+            "DefaultText": ng_diString('', { Level: 'basic' }),
+            "TextAlign": ng_diStringValues('left', ['left','right','center'], { Level: 'basic' }),
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
-            "Alt": { DefaultType: 'string', Level: 'basic' },
+            "Alt": ng_diString('', { Level: 'basic' }),
             "ngHint": { Level: 'advanced' },
             "ngHintD": { Level: 'basic' },
-            "Hint": { DefaultType: 'string', Level: 'basic' },
-            "HintStyle": ng_DIPropertyIntConstants(ngVal(ngDefaultHintStyle,1),['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
-            "ReadOnly": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "Frame": { DefaultType: 'img_frame', Level: 'basic' },
-            "SelectOnFocus": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "LockHintCaretPos": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "Invalid": ng_DIPropertyBool(false, { Level: 'basic' })
+            "Hint": ng_diString('', { Level: 'basic' }),
+            "HintStyle": ng_diIntegerIdentifiers(ngVal(ngDefaultHintStyle,1),['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
+            "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
+            "Frame": ng_diType('img_frame', { Level: 'basic' }),
+            "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
+            "LockHintCaretPos": ng_diBoolean(true, { Level: 'basic' }),
+            "Invalid": ng_diBoolean(false, { Level: 'basic' })
           },
           "Methods": {
-            "DoFocus": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }'
-                }
-              }
-            },
-            "DoBlur": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }'
-                }
-              }
-            },
-            "DoUpdateImages": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function() { ng_CallParent(this, "DoUpdateImages", arguments); }'
-                }
-              }
-            },
-            "DoSetInvalid": { DefaultType: 'function',
-              Types: {
-                'function': {
-                  DefaultValue: 'function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }'
-                }
-              }
-            }
+            "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }'),
+            "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }'),
+            "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }'),
+            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }')
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetHint": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetClassName": ng_DIPropertyEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' })
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetHint": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetClassName": ng_diEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' })
           },
           "Events": {
-            "OnTextChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnKeyDown": ng_DIPropertyEvent('function(e, elm) { return true; }', { Level: 'basic' }),
-            "OnKeyUp": ng_DIPropertyEvent('function(e, elm) { return true; }', { Level: 'basic' }),
-            "OnKeyPress": ng_DIPropertyEvent('function(e, elm) { return true; }', { Level: 'basic' }),
+            "OnTextChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnKeyDown": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
+            "OnKeyUp": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
+            "OnKeyPress": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
             "OnMouseEnter": { },
             "OnMouseLeave": { },
-            "OnFocus": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnBlur": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnSetInvalid": ng_DIPropertyEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
-            "OnSetReadOnly": ng_DIPropertyEvent('function(c, state) { return true; }', { Level: 'basic' }),
-            "OnReadOnlyChanged": ng_DIPropertyEvent('function(c, state) { }', { Level: 'basic' })
+            "OnFocus": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnBlur": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnSetInvalid": ng_diEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
+            "OnSetReadOnly": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' }),
+            "OnReadOnlyChanged": ng_diEvent('function(c, state) { }', { Level: 'basic' })
           }
         })
       };
@@ -646,66 +523,50 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "Pages": { DefaultType: 'array', Level: 'basic',
-            Collapsed: false,
-            Types: {
-              'array': {
-                ChildDesignInfo: {
-                  DefaultType: 'ngPage',
-                  Collapsed: false,
-                  OnPropertyInit: function(ch)
+        Properties: ng_diProperties({
+          "Pages": ng_diArrayOf(
+            ng_diType('ngPage', {
+              Collapsed: false,
+              OnPropertyInit: function(ch)
+              {
+                if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'ngPage'))
+                {
+                  var pageid = ng_toInteger(ch.Name.substring(ch.Name.lastIndexOf('.') + 1));
+                  if (!isNaN(pageid))
                   {
-                    if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'ngPage'))
-                    {
-                      var pageid = ng_toInteger(ch.Name.substring(ch.Name.lastIndexOf('.') + 1));
-                      if (!isNaN(pageid))
-                      {
-                        if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
-                        ch.Value.Text = "'Page " + (pageid + 1) + "'";
-                      }
-                    }
-
-                    return true;
+                    if (!ch.Value || typeof ch.Value !== 'object') ch.Value = {};
+                    ch.Value.Text = "'Page " + (pageid + 1) + "'";
                   }
                 }
+
+                return true;
               }
-            }
-          },
-          "ControlsPanel": { DefaultType: 'control', Level: 'advanced',
-            IsContainer: false,
-            Types: {
-              'control': {
-                Type: 'ngPanel'
-              }
-            }
-          },
+            }), { Level: 'basic', Collapsed: false }),
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
-            "Page": { DefaultType: 'integer', Level: 'basic' },
-            "PagesVisible": ng_DIPropertyBool(true, { Level: 'basic' }),
-            "PagesIndent": { DefaultType: 'integer', Level: 'basic' },
-            "PagesSize": { DefaultType: 'integer', Level: 'basic' },
-            "MaxRows": { DefaultType: 'integer', Level: 'basic' },
-            "PagesAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
-            "PagesVAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
-            "TextAlign": ng_DIPropertyStrings('left', ['left','right','center','justify'], { Level: 'basic' }),
-            "HTMLEncode": ng_DIPropertyBool(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "RowOverlap": { DefaultType: 'integer', Level: 'basic' },
-            "PageImages": { DefaultType: 'array', Level: 'basic' },
-            "Frame": { DefaultType: 'img_frame', Level: 'basic',
-              Collapsed: true
-            }
+            "Page": ng_diInteger(0, { Level: 'basic' }),
+            "PagesVisible": ng_diBoolean(true, { Level: 'basic' }),
+            "PagesIndent": ng_diInteger(0, { Level: 'basic' }),
+            "PagesSize": ng_diInteger(0, { Level: 'basic' }),
+            "MaxRows": ng_diInteger(0, { Level: 'basic' }),
+            "PagesAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
+            "PagesVAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
+            "TextAlign": ng_diStringValues('left', ['left','right','center','justify'], { Level: 'basic' }),
+            "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
+            "RowOverlap": ng_diInteger(0, { Level: 'basic' }),
+            "PageImages": ng_diArrayOf('image', { Level: 'basic' }),
+            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true })
           },
           "OverrideEvents": {
-            "OnGetText": ng_DIPropertyEvent('function(c, pg) { return ""; }', { Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c, pg) { return ""; }', { Level: 'basic' })
+            "OnGetText": ng_diEvent('function(c, pg) { return ""; }', { Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c, pg) { return ""; }', { Level: 'basic' })
           },
           "Events": {
-            "OnPageChanging": ng_DIPropertyEvent('function(c, page) { return true; }', { Level: 'basic' }),
-            "OnPageChanged": ng_DIPropertyEvent('function(c, oldpage) { return true; }', { Level: 'basic' }),
-            "OnClick": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' }),
-            "OnDblClick": ng_DIPropertyEvent('function(e) { return true; }', { Level: 'basic' })
+            "OnPageChanging": ng_diEvent('function(c, page) { return true; }', { Level: 'basic' }),
+            "OnPageChanged": ng_diEvent('function(c, oldpage) { return true; }', { Level: 'basic' }),
+            "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' })
           }
         }),
 
@@ -902,45 +763,34 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
             "ChildHandling": { Level: 'advanced' },
-            "AutoSize": ng_DIPropertyBool(false),
-            "Vertical": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "VPadding": { DefaultType: 'integer', Level: 'basic' },
-            "HPadding": { DefaultType: 'integer', Level: 'basic' },
-            "VAlign": ng_DIPropertyStrings('top', ['top','bottom'], { Level: 'basic' }),
-            "HAlign": ng_DIPropertyStrings('left', ['left','right'], { Level: 'basic' }),
-            "Wrapable": ng_DIPropertyBool(true, { Level: 'basic' })
+            "AutoSize": ng_diBoolean(false),
+            "Vertical": ng_diBoolean(false, { Level: 'basic' }),
+            "VPadding": ng_diInteger(0, { Level: 'basic' }),
+            "HPadding": ng_diInteger(0, { Level: 'basic' }),
+            "VAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
+            "HAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
+            "Wrapable": ng_diBoolean(true, { Level: 'basic' })
           }
         },
         {
-          "Controls": {
-            Level: 'basic',
-            Types: {
-              'controls': {
-                ChildDesignInfo: {
-                  Types: {
-                    'control': {
-                      ObjectProperties: ng_DIProperties({
-                        "Data": {
-                          "ToolBarIgnore": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.8 }),
-                          "ToolBarAutoUpdate": ng_DIPropertyBool(true, { Level: 'basic', Order: 0.8 }),
-                          "ToolBarIndent": { DefaultType: 'integer', Level: 'basic', Order: 0.8 },
-                          "ToolBarHPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
-                          "ToolBarVPadding": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
-                          "ToolBarWidth": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
-                          "ToolBarHeight": { DefaultType: 'undefined', InitType: 'integer', Level: 'basic', Order: 0.8 },
-                          "ToolBarBreak": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.8 }),
-                          "ToolBarNoWrap": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.8 })
-                        }
-                      })
-                    }
-                  }
-                }
+          "Controls": ng_diControls(undefined, { Level: 'basic' }, {
+            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+              "Data": {
+                "ToolBarIgnore": ng_diBoolean(false, { Level: 'basic', Order: 0.8 }),
+                "ToolBarAutoUpdate": ng_diBoolean(true, { Level: 'basic', Order: 0.8 }),
+                "ToolBarIndent": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.8 }),
+                "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.8 }),
+                "ToolBarVPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.8 }),
+                "ToolBarWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.8 }),
+                "ToolBarHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.8 }),
+                "ToolBarBreak": ng_diBoolean(false, { Level: 'basic', Order: 0.8 }),
+                "ToolBarNoWrap": ng_diBoolean(false, { Level: 'basic', Order: 0.8 })
               }
-            }
-          }
+            }))
+          })
         })
       };
     });
@@ -955,30 +805,22 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "Position": { DefaultType: 'integer', Level: 'basic' },
-            "Smooth": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "LeftImg": { DefaultType: 'image', Level: 'basic' },
-            "MiddleImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: true
-                   }
-                 }
+            "Position": ng_diInteger(0, { Level: 'basic' }),
+            "Smooth": ng_diBoolean(false, { Level: 'basic' }),
+            "LeftImg": ng_diType('image', { Level: 'basic' }),
+            "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+              EditorOptions: {
+                HorizontalImages: true
               }
-            },
-            "RightImg": { DefaultType: 'image', Level: 'basic' },
-            "BarImg": { DefaultType: 'image', Level: 'basic',
-              Types: {
-                'image': {
-                   EditorOptions: {
-                     HorizontalImages: true
-                   }
-                 }
+            }),
+            "RightImg": ng_diType('image', { Level: 'basic' }),
+            "BarImg": ng_diType('image', { Level: 'basic' }, {
+              EditorOptions: {
+                HorizontalImages: true
               }
-            }
+            })
           }
         })
       };
@@ -996,17 +838,17 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "URL": { DefaultType: 'url', Level: 'basic' },
-            "DesignLive": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.95 })
+            "URL": ng_diType('url', { Level: 'basic' }),
+            "DesignLive": ng_diBoolean(false, { Level: 'basic', Order: 0.95 })
           },
           "OverrideEvents": {
-            "OnGetURL": ng_DIPropertyEvent('function(c, url) { return url; }', { Level: 'basic' }),
-            "OnSetHTML": ng_DIPropertyEvent('function(c, html) { return html; }', { Level: 'basic' })
+            "OnGetURL": ng_diEvent('function(c, url) { return url; }', { Level: 'basic' }),
+            "OnSetHTML": ng_diEvent('function(c, html) { return html; }', { Level: 'basic' })
           },
           "Events": {
-            "OnSetURL": ng_DIPropertyEvent('function(c, url) { return true; }', { Level: 'basic' })
+            "OnSetURL": ng_diEvent('function(c, url) { return true; }', { Level: 'basic' })
           }
 
         })
@@ -1018,17 +860,11 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
       var di={
         Properties: {
-          "ParentReferences": ng_DIPropertyBool(false, { Level: 'optional' }),
-          "Data": {
-            Types: {
-              'object': {
-                ObjectProperties: {
-                  "ChildHandling": { Level: 'optional' },
-                  "FormID": { DefaultType: 'string', Level: 'optional' }
-                }
-              }
-            }
-          }
+          "ParentReferences": ng_diBoolean(false, { Level: 'optional' }),
+          "Data": ng_diObject({
+            "ChildHandling": { Level: 'optional' },
+            "FormID": ng_diString('', { Level: 'optional' })
+          })
         }
       };
       if(d.CtrlInheritanceDepth<2) {
@@ -1043,11 +879,11 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "RadioGroup": ng_DIProperty('string','default', { Level: 'basic' }),
-            "AllowGrayed": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "RadioAllowUncheck": ng_DIPropertyBool(false, { Level: 'basic' })
+            "RadioGroup": ng_diString('default', { Level: 'basic' }),
+            "AllowGrayed": ng_diBoolean(false, { Level: 'basic' }),
+            "RadioAllowUncheck": ng_diBoolean(false, { Level: 'basic' })
           }
         })
       };
@@ -1055,9 +891,9 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngCheckBox',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "AllowGrayed": ng_DIPropertyBool(false, { Level: 'basic' })
+            "AllowGrayed": ng_diBoolean(false, { Level: 'basic' })
           }
         })
       };
@@ -1073,7 +909,7 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "DropDown":         { Level: 'basic' },
           "Data": {
             "DropDownWidth":  { Level: 'basic' },
@@ -1108,17 +944,11 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "DropDownType": {
-            Types: {
-              'identifier': {
-                DefaultValue: 'ngeDropDownList'
-              },
-              'integer': {
-                DefaultValue: 1
-              }
-            }
-          }
+        Properties: ng_diProperties({
+          "DropDownType": ng_diMixed([
+            ng_diIdentifier('ngeDropDownList'),
+            ng_diInteger(1)
+          ])
         })
       };
       ng_MergeDI(di,DropDownDI(d,c,ref));
@@ -1148,27 +978,27 @@ ngUserControls['uicore'] = {
     });
     ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "ArrowsAlign": ng_DIPropertyStrings('right', ['left','right','both'], { Level: 'basic' }),
-          "Arrows": ng_DIPropertyStrings('leftright', ['none','leftright','updown'], { Level: 'basic' }),
+        Properties: ng_diProperties({
+          "ArrowsAlign": ng_diStringValues('right', ['left','right','both'], { Level: 'basic' }),
+          "Arrows": ng_diStringValues('leftright', ['none','leftright','updown'], { Level: 'basic' }),
           "Data": {
-            "Step": ng_DIProperty('integer', 1, { Level: 'basic' }),
-            "StepRound": ng_DIPropertyBool(false, { Level: 'basic' }),
-            "MinNum": { DefaultType: 'integer', Level: 'basic' },
-            "MaxNum": { DefaultType: 'integer', Level: 'basic' },
-            "DefaultNum": { DefaultType: 'integer', Level: 'basic' }
+            "Step": ng_diInteger(1, { Level: 'basic' }),
+            "StepRound": ng_diBoolean(false, { Level: 'basic' }),
+            "MinNum": ng_diInteger(0, { Level: 'basic' }),
+            "MaxNum": ng_diInteger(0, { Level: 'basic' }),
+            "DefaultNum": ng_diInteger(0, { Level: 'basic' })
           },
           "Methods": {
-            "DoDown": ng_DIProperty('function','function() { ng_CallParent(this, "DoDown", arguments); }'),
-            "DoUp": ng_DIProperty('function','function() { ng_CallParent(this, "DoUp", arguments); }')
+            "DoDown": ng_diFunction('function() { ng_CallParent(this, "DoDown", arguments); }'),
+            "DoUp": ng_diFunction('function() { ng_CallParent(this, "DoUp", arguments); }')
           },
           "OverrideEvents": {
-            "OnGetNum": ng_DIPropertyEvent('function(c) { return 0; }')
+            "OnGetNum": ng_diEvent('function(c) { return 0; }')
           },
           "Events": {
-            "OnSetNum": ng_DIPropertyEvent('function(c, num) {  }'),
-            "OnUp": ng_DIPropertyEvent('function(e, num) { return true; }', { Level: 'basic' }),
-            "OnDown": ng_DIPropertyEvent('function(e, num) { return true; }', { Level: 'basic' })
+            "OnSetNum": ng_diEvent('function(c, num) {  }'),
+            "OnUp": ng_diEvent('function(e, num) { return true; }', { Level: 'basic' }),
+            "OnDown": ng_diEvent('function(e, num) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -1187,64 +1017,32 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ID": { Level: 'basic' },
           "Data": {
-            "ngText": { DefaultType: 'string', Level: 'advanced',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "ngTextD": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "ngAlt": { DefaultType: 'string', Level: 'advanced',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "ngAltD": { DefaultType: 'string', Level: 'basic',
-              Types: {
-                'string': {
-                  Editor: 'ngfeEditor_Lang'
-                }
-              }
-            },
-            "Text": ng_DIPropertyRefName({ Level: 'basic' }),
-            "Alt": { DefaultType: 'string', Level: 'basic' },
-            "Checked": ng_DIPropertyValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic',
-              Types: {
-                'integer': {
-                   InitValue: 1
-                 }
-              }
-            }),
-            "RadioGroup": { DefaultType: 'undefined', InitType: 'string', Level: 'basic'
-              // TODO: browse from existing radio groups
-            },
-            "Img": { DefaultType: 'image', Level: 'basic' },
-            "Visible": ng_DIPropertyBool(true, { Level: 'basic' })
+            "ngText": ng_diString('', { Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngTextD": ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngAlt": ng_diString('', { Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngAltD": ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
+            "Text": ng_diStringRefName({ Level: 'basic' }),
+            "Alt": ng_diString('', { Level: 'basic' }),
+            "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
+            "RadioGroup": ng_diMixed(['undefined', 'string'], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
+            "Img": ng_diType('image', { Level: 'basic' }),
+            "Visible": ng_diBoolean(true, { Level: 'basic' })
           },
           "Events": {
-            "OnClick": ng_DIPropertyEvent('function(e) { }', { Level: 'basic' }),
-            "OnCheckChanged": ng_DIPropertyEvent('function(c) { }', { Level: 'basic' }),
-            "OnSetVisible": ng_DIPropertyEvent('function(c, v) { return true; }'),
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' }),
-            "OnUpdate": ng_DIPropertyEvent('function(c) { return true; }')
+            "OnClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
+            "OnCheckChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
+            "OnSetVisible": ng_diEvent('function(c, v) { return true; }'),
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnUpdate": ng_diEvent('function(c) { return true; }')
           },
           "OverrideEvents": {
-            "OnSetText": ng_DIPropertyEvent('function(text, c) { return text; }'),
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }',{ Level: 'basic' }),
-            "OnGetAlt": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetImg": ng_DIPropertyEvent('function(c, idx) { return null; }', { Level: 'basic' })
+            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
+            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'basic' })
           }
         })
       }

@@ -15,12 +15,13 @@ var WinEight_DesignInfo = {
   OnInit: function() {
     if(!ngDESIGNINFO) return;
 
+    var undefined;
     ngRegisterControlDesignInfo('wePanel',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wePanel'),
+        Properties: ng_diProperties({
+          "className": ng_diString('wePanel'),
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -31,8 +32,8 @@ var WinEight_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wePanel'),
+        Properties: ng_diProperties({
+          "className": ng_diString('wePanel'),
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -44,8 +45,8 @@ var WinEight_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weGreen'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weGreen'),
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -56,8 +57,8 @@ var WinEight_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weGreen'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weGreen'),
           "Data": {
             "FormID": { Level: 'advanced' }
           }
@@ -67,8 +68,8 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weText',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weTextLight'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weTextLight'),
           "style": {
             "fontFamily": { Level: 'advanced' },
             "fontSize": { Level: 'advanced' }
@@ -79,52 +80,43 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weSmallText',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weSmallTextLight')
+        Properties: ng_diProperties({
+          "className": ng_diString('weSmallTextLight')
         })
       };
     });
     
     ngRegisterControlDesignInfo('weCaption',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weCaptionLight')
+        Properties: ng_diProperties({
+          "className": ng_diString('weCaptionLight')
         })
       };
     });
     
     ngRegisterControlDesignInfo('weTitle',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weTitleLight')
+        Properties: ng_diProperties({
+          "className": ng_diString('weTitleLight')
         })
       };
     });
     
     ngRegisterControlDesignInfo('weImage',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weImage')
+        Properties: ng_diProperties({
+          "className": ng_diString('weImage')
         })
       };
     });
     
     function weCheckBoxDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weCheckBoxLight'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weCheckBoxLight'),
           "Data": {
-            "TextAlign": {
-              Types: {
-                'string': {
-                  DefaultValue: 'right',
-                  EditorOptions: {
-                    Items: ['left','right']
-                  }
-                }
-              }
-            },
-            "LeftImg": ng_DIProperty('image', 'WinEightControls.Images.CheckBoxLeftLight', { Level: 'advanced' }),
+            "TextAlign": ng_diStringValues('right', ['left','right']),
+            "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.CheckBoxLeftLight', { Level: 'advanced' }),
             "MiddleImg": { Level: 'advanced' },
             "RightImg": { Level: 'advanced' }
           }
@@ -135,8 +127,8 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weRadioButton',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weRadioLight')
+        Properties: ng_diProperties({
+          "className": ng_diString('weRadioLight')
         })
       };
       ng_MergeVar(di,weCheckBoxDI(d,c,ref));
@@ -145,12 +137,12 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weToggleSwitch',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weToggleSwitchLight'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weToggleSwitchLight'),
           "Events": {
-            "OnGetText": ng_DIPropertyEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "DoAcceptGestures": ng_DIPropertyEvent('function(c, g) {}', { Level: 'basic' }),
-            "DoGesture": ng_DIPropertyEvent('function(c) { return false; }', { Level: 'basic' })
+            "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
+            "DoAcceptGestures": ng_diEvent('function(c, g) {}', { Level: 'basic' }),
+            "DoGesture": ng_diEvent('function(c) { return false; }', { Level: 'basic' })
           }
         })
       };
@@ -160,12 +152,12 @@ var WinEight_DesignInfo = {
     
     function weButtonDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weButtonLight'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weButtonLight'),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WinEightControls.Images.ButtonDark.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.ButtonDark.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinEightControls.Images.ButtonDark.RightImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.ButtonDark.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.ButtonDark.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinEightControls.Images.ButtonDark.RightImg', { Level: 'advanced' })
           }
         })
       };
@@ -174,16 +166,16 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weAppButton',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weAppButtonLight'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weAppButtonLight'),
           "Data": {
-            "MenuVAlign": ng_DIProperty('string', 'bottom', { Level: 'advanced' }),
-            "MenuHAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-            "MenuOverlapY": ng_DIProperty('integer',10,{ Level: 'basic' }),
-            "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.AppButtonLight', { Level: 'advanced' })
+            "MenuVAlign": ng_diString('bottom', { Level: 'advanced' }),
+            "MenuHAlign": ng_diString('center', { Level: 'advanced' }),
+            "MenuOverlapY": ng_diInteger(10,{ Level: 'basic' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.AppButtonLight', { Level: 'advanced' })
           },
           "Events": {
-            "OnGetImg": ng_DIPropertyEvent('function(c, b, idx) { return ""; }', { Level: 'basic' })
+            "OnGetImg": ng_diEvent('function(c, b, idx) { return ""; }', { Level: 'basic' })
           }
         })
       };
@@ -193,8 +185,8 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weLabel',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weLabelLight')
+        Properties: ng_diProperties({
+          "className": ng_diString('weLabelLight')
         })
       };
       ng_MergeVar(di,weButtonDI(d,c,ref));
@@ -203,8 +195,8 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weLink',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weLink')
+        Properties: ng_diProperties({
+          "className": ng_diString('weLink')
         })
       };
       ng_MergeVar(di,weButtonDI(d,c,ref));
@@ -213,8 +205,8 @@ var WinEight_DesignInfo = {
     
     function weGroupDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weGroupBoxLight')
+        Properties: ng_diProperties({
+          "className": ng_diString('weGroupBoxLight')
         })
       };
     }
@@ -227,12 +219,12 @@ var WinEight_DesignInfo = {
     
     function weEditDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weEditLight'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weEditLight'),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.RightImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.RightImg', { Level: 'advanced' })
           }
         })
       };
@@ -246,13 +238,13 @@ var WinEight_DesignInfo = {
     
     function weEditBoxBtnDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Methods": {
-            "Elipsis": ng_DIProperty('function','function(text) { ng_CallParent(this, "Elipsis", arguments); }')
+            "Elipsis": ng_diFunction('function(text) { ng_CallParent(this, "Elipsis", arguments); }')
           },
           "Events": {
-            "OnElipsis": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnElipsis": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -266,10 +258,10 @@ var WinEight_DesignInfo = {
     
     function weSearchBoxDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Methods": {
-            "Search": ng_DIProperty('function','function(text) { ng_CallParent(this, "Search", arguments); }')
+            "Search": ng_diFunction('function(text) { ng_CallParent(this, "Search", arguments); }')
           }
         })
       };
@@ -283,9 +275,9 @@ var WinEight_DesignInfo = {
     
     function weEditNumDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' })
+            "TextAlign": ng_diString('center', { Level: 'advanced' })
           }
         })
       };
@@ -314,12 +306,12 @@ var WinEight_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' })
+            "TextAlign": ng_diString('center', { Level: 'advanced' })
           },
           "Methods": {
-            "GetColor": ng_DIProperty('function','function() { return ng_CallParent(this, "GetColor", arguments); }')
+            "GetColor": ng_diFunction('function() { return ng_CallParent(this, "GetColor", arguments); }')
           }
         })
       };
@@ -338,51 +330,39 @@ var WinEight_DesignInfo = {
 
     function weMaskEditDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "H": ng_DIProperty('integer', 'WinEightControls.Images.EditLight.MiddleImg.H', { Level: 'advanced' }),
-            "LeftDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: {
-                    "W": ng_DIProperty('integer', 'WinEightControls.Images.EditLight.LeftImg.W', { Level: 'advanced' }),
-                    "LeftImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.LeftImg', { Level: 'advanced' }),
-                    "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            "H": ng_diInteger(WinEightControls.Images.EditLight.MiddleImg.H, { Level: 'advanced' }),
+            "LeftDef": ng_diControl(undefined, ng_diProperties({
+              "W": ng_diInteger(WinEightControls.Images.EditLight.LeftImg.W, { Level: 'advanced' }),
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.LeftImg', { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "EditDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'weEdit',
-                  ObjectProperties: {
-                    "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "EditDef": ng_diControl('weEdit', ng_diProperties({
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "StaticDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  Type: 'weLabel',
-                  ObjectProperties: {
-                    "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "StaticDef": ng_diControl('weLabel', ng_diProperties({
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', null, { Level: 'advanced' })
               }
-            },
-            "RightDef": { Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: {
-                    "W": ng_DIProperty('integer', 'WinEightControls.Images.EditLight.RightImg.W', { Level: 'advanced' }),
-                    "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
-                    "RightImg": ng_DIProperty('image', 'WinEightControls.Images.EditLight.RightImg', { Level: 'advanced' })
-                  }
-                }
+            }), { Level: 'advanced' }),
+            "RightDef": ng_diControl(undefined, ng_diProperties({
+              "W": ng_diInteger(WinEightControls.Images.EditLight.RightImg.W, { Level: 'advanced' }),
+              "Data": {
+                "LeftImg": ng_diTypeVal('image', null, { Level: 'advanced' }),
+                "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.MiddleImg', { Level: 'advanced' }),
+                "RightImg": ng_diTypeVal('image', 'WinEightControls.Images.EditLight.RightImg', { Level: 'advanced' })
               }
-            }
+            }), { Level: 'advanced' })
           }
         })
       };
@@ -403,15 +383,15 @@ var WinEight_DesignInfo = {
     
     function weMemoDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weMemoLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weMemoLight', { Level: 'advanced' }),
           "Data": {
-            "Frame": ng_DIProperty('img_frame', 'WinEightControls.Images.MemoLight', { Level: 'advanced' })
+            "Frame": ng_diTypeVal('img_frame', 'WinEightControls.Images.MemoLight', { Level: 'advanced' })
           },
           "Events": {
-            "OnFocus": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "OnBlur": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' }),
-            "DoMouseLeave": ng_DIPropertyEvent('function(c, e, mi) { return true; }', { Level: 'basic' })
+            "OnFocus": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "OnBlur": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
+            "DoMouseLeave": ng_diEvent('function(c, e, mi) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -420,10 +400,10 @@ var WinEight_DesignInfo = {
     
     function wePagesDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wePagesLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('wePagesLight', { Level: 'advanced' }),
           "Data": {
-            "PagesIndent": ng_DIProperty('integer', 20, { Level: 'advanced' })
+            "PagesIndent": ng_diInteger(20, { Level: 'advanced' })
           }
         })
       };
@@ -431,10 +411,10 @@ var WinEight_DesignInfo = {
     ngRegisterControlDesignInfo('wePages', wePagesDI);
     ngRegisterControlDesignInfo('weSections',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weSectionsLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weSectionsLight', { Level: 'advanced' }),
           "Data": {
-            "PageImages": ng_DIProperty('image', 'WinEightControls.Images.Sections', { Level: 'advanced' })
+            "PageImages": ng_diTypeVal('image', 'WinEightControls.Images.Sections', { Level: 'advanced' })
           }
         })
       };
@@ -442,20 +422,20 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weToolBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weToolBarLight', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('weToolBarLight', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('weProgressBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weProgressBar', { Level: 'advanced' }),
-          "Smooth": ng_DIPropertyBool(true),
+        Properties: ng_diProperties({
+          "className": ng_diString('weProgressBar', { Level: 'advanced' }),
+          "Smooth": ng_diBoolean(true),
           "Data": {
-            "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.ProgressBar.MiddleImg', { Level: 'advanced' }),
-            "BarImg": ng_DIProperty('image', 'WinEightControls.Images.ProgressBar.BarImg', { Level: 'advanced' })
+            "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.ProgressBar.MiddleImg', { Level: 'advanced' }),
+            "BarImg": ng_diTypeVal('image', 'WinEightControls.Images.ProgressBar.BarImg', { Level: 'advanced' })
           }
         })
       };
@@ -471,14 +451,14 @@ var WinEight_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weLabelLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weLabelLight', { Level: 'advanced' }),
           "Data": {
-            "TextAlign": ng_DIProperty('string', 'center', { Level: 'advanced' }),
-            "HTMLEncode": ng_DIPropertyBool(false)
+            "TextAlign": ng_diString('center', { Level: 'advanced' }),
+            "HTMLEncode": ng_diBoolean(false)
           }/*,
           "Events": {
-            "OnGetText": ng_DIPropertyEvent('function(c) { return true; }', { Level: 'basic' })
+            "OnGetText": ng_diEvent('function(c) { return true; }', { Level: 'basic' })
           }*/
         })
       };
@@ -489,16 +469,16 @@ var WinEight_DesignInfo = {
 
     function weListDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weListBoxLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weListBoxLight', { Level: 'advanced' }),
           Data: {
-            "TreeImg": ng_DIProperty('image', 'WinEightControls.Images.TreeImgTriangle', { Level: 'advanced' })
+            "TreeImg": ng_diTypeVal('image', 'WinEightControls.Images.TreeImgTriangle', { Level: 'advanced' })
           },
           "Methods": {
-            "DoUpdate": ng_DIProperty('function','function() { ng_CallParent(this, "DoUpdate", arguments); }')
+            "DoUpdate": ng_diFunction('function() { ng_CallParent(this, "DoUpdate", arguments); }')
           },
           "Events": {
-            "OnGetCheckImg": ng_DIPropertyEvent('function(c,item) { return true; }', { Level: 'basic' })
+            "OnGetCheckImg": ng_diEvent('function(c,item) { return true; }', { Level: 'basic' })
           }
         })
       };
@@ -513,30 +493,23 @@ var WinEight_DesignInfo = {
 
     function wePageListDI(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weListBoxLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weListBoxLight', { Level: 'advanced' }),
           Data: {
-            "AverageItemHeight" : ng_DIProperty('integer', 38, { Level: 'advanced' })
+            "AverageItemHeight" : ng_diInteger(38, { Level: 'advanced' })
           },
           "ModifyControls": {
-            "List": ng_DIPropertyControl('weList', { Level: 'basic' }, 'ngList'),
-            "Loading": ng_DIPropertyControl('weProgressDot', { Level: 'advanced' }),
-            "Paging": {
-              Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "className": ng_DIProperty('string', 'wePageListPagingLight', { Level: 'advanced' })
-                  })
-                }
-              }
-            },
-            "FirstPage": ng_DIPropertyControl('weFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "PrevPage": ng_DIPropertyControl('weFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "PageNo": ng_DIPropertyControl('weEdit', { Level: 'advanced' }, 'ngEdit'),
-            "Page0": ng_DIPropertyControl('weFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "NextPage": ng_DIPropertyControl('weFlatButton', { Level: 'advanced' }, 'ngButton'),
-            "LastPage": ng_DIPropertyControl('weFlatButton', { Level: 'advanced' }, 'ngButton')
+            "List": ng_diControl('weList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
+            "Loading": ng_diControl('weProgressDot', null, { Level: 'advanced' }),
+            "Paging": ng_diControl(undefined, {
+              "className": ng_diString('wePageListPagingLight', { Level: 'advanced' })
+            }, { Level: 'advanced' }),
+            "FirstPage": ng_diControl('weFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "PrevPage": ng_diControl('weFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "PageNo": ng_diControl('weEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' }),
+            "Page0": ng_diControl('weFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "NextPage": ng_diControl('weFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "LastPage": ng_diControl('weFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -544,9 +517,9 @@ var WinEight_DesignInfo = {
     ngRegisterControlDesignInfo('wePageList',wePageListDI);
     ngRegisterControlDesignInfo('wePageTreeList',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "List": ng_DIPropertyControl('weTreeList', { Level: 'basic' }, 'ngList')
+            "List": ng_diControl('weTreeList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' })
           }
         })
       };
@@ -556,26 +529,26 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weAlignPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wePanel', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wePanel', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('weAlignFrame',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'wePanel', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('wePanel', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('weSplitPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weSplitPanelLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weSplitPanelLight', { Level: 'advanced' }),
           "Data": {
-            "HandleImg": ng_DIProperty('image', 'WinEightControls.Images.VSplitLight', { Level: 'advanced' })
+            "HandleImg": ng_diTypeVal('image', 'WinEightControls.Images.VSplitLight', { Level: 'advanced' })
           }
         })
       };
@@ -583,24 +556,17 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDropPanel',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weDropPanelLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weDropPanelLight', { Level: 'advanced' }),
           "ModifyControls": {
-            "Button": {
-              Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "Data": {
-                      "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.DropPanelButtonMiddleLight', { Level: 'advanced' }),
-                      "Img": ng_DIProperty('image', 'WinEightControls.Images.DropPanelButtonLight', { Level: 'advanced' }),
-                      "TextAlign": ng_DIProperty('string', 'right', { Level: 'advanced' }),
-                      "ImgIndent": ng_DIProperty('integer', 20, { Level: 'advanced' })
-                    }
-                  })
-                }
+            "Button": ng_diControl(undefined, ng_diProperties({
+              "Data": {
+                "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.DropPanelButtonMiddleLight', { Level: 'advanced' }),
+                "Img": ng_diTypeVal('image', 'WinEightControls.Images.DropPanelButtonLight', { Level: 'advanced' }),
+                "TextAlign": ng_diString('right', { Level: 'advanced' }),
+                "ImgIndent": ng_diInteger(20, { Level: 'advanced' })
               }
-            }
+            }), { Level: 'advanced' })
           }
         })
       };
@@ -614,48 +580,38 @@ var WinEight_DesignInfo = {
       return {
         ControlCategory: 'Containers',
         IsContainer: true,
-        Properties: ng_DIProperties({
-          "CloseBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "MaxBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
-          "MinBtn": ng_DIPropertyBool(false, { Level: 'basic', Order: 0.31 }),
+        Properties: ng_diProperties({
+          "CloseBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "MaxBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
+          "MinBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
           "Data": {
             "BackgroundColor": null,
             "FormID": { Level: 'advanced' },
-            "Frame": { Level: 'advanced',
-                       Types: {
-                         'img_frame': {
-                           ObjectProperties: {
-                             "LeftTop": ng_DIProperty('image', frameimg+'.LeftTop', { Level: 'advanced' }),
-                             "Top": ng_DIProperty('image', frameimg+'.Top', { Level: 'advanced' }),
-                             "RightTop": ng_DIProperty('image', frameimg+'.RightTop', { Level: 'advanced' }),
-                             "Left": ng_DIProperty('image', frameimg+'.Left', { Level: 'advanced' }),
-                             "Right": ng_DIProperty('image', frameimg+'.Right', { Level: 'advanced' }),
-                             "LeftBottom": ng_DIProperty('image', frameimg+'.LeftBottom', { Level: 'advanced' }),
-                             "Bottom": ng_DIProperty('image', frameimg+'.Bottom', { Level: 'advanced' }),
-                             "RightBottom": ng_DIProperty('image', frameimg+'.RightBottom', { Level: 'advanced' })
-                           }
-                         }
-                       }
-            },
-            "CaptionImg": { DefaultType: 'object', Level: 'advanced',
-                            Types: {
-                              'object': {
-                                ObjectProperties: {
-                                  "LeftImg": ng_DIProperty('image', capimg+'.LeftImg', { Level: 'advanced' }),
-                                  "MiddleImg": ng_DIProperty('image', capimg+'.MiddleImg', { Level: 'advanced' }),
-                                  "RightImg": ng_DIProperty('image', capimg+'.RightImg', { Level: 'advanced' })
-                                }
-                              }
-                            }
-            }
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }, {
+              ObjectProperties: {
+                "LeftTop": ng_diTypeVal('image', frameimg+'.LeftTop', { Level: 'advanced' }),
+                "Top": ng_diTypeVal('image', frameimg+'.Top', { Level: 'advanced' }),
+                "RightTop": ng_diTypeVal('image', frameimg+'.RightTop', { Level: 'advanced' }),
+                "Left": ng_diTypeVal('image', frameimg+'.Left', { Level: 'advanced' }),
+                "Right": ng_diTypeVal('image', frameimg+'.Right', { Level: 'advanced' }),
+                "LeftBottom": ng_diTypeVal('image', frameimg+'.LeftBottom', { Level: 'advanced' }),
+                "Bottom": ng_diTypeVal('image', frameimg+'.Bottom', { Level: 'advanced' }),
+                "RightBottom": ng_diTypeVal('image', frameimg+'.RightBottom', { Level: 'advanced' })
+              }
+            }),
+            "CaptionImg": ng_diObject({
+              "LeftImg": ng_diTypeVal('image', capimg+'.LeftImg', { Level: 'advanced' }),
+              "MiddleImg": ng_diTypeVal('image', capimg+'.MiddleImg', { Level: 'advanced' }),
+              "RightImg": ng_diTypeVal('image', capimg+'.RightImg', { Level: 'advanced' })
+            }, { Level: 'advanced' })
           }
         })
       };
     }
     ngRegisterControlDesignInfo('weWindow',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weWindow', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('weWindow', { Level: 'advanced' })
         })
       };
       ng_MergeVar(di,weWindowDI(d,c,ref));
@@ -663,14 +619,14 @@ var WinEight_DesignInfo = {
     });    
     ngRegisterControlDesignInfo('weDialog',function(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weDialog', { Level: 'advanced' }),
-          "CloseBtn": ng_DIPropertyBool(true),
+        Properties: ng_diProperties({
+          "className": ng_diString('weDialog', { Level: 'advanced' }),
+          "CloseBtn": ng_diBoolean(true),
           "Data": {
-            "Modal": ng_DIPropertyBool(true),
-            "Visible": ng_DIPropertyBool(false),
-            "Sizeable": ng_DIPropertyBool(false),
-            "Centered": ng_DIPropertyBool(true)
+            "Modal": ng_diBoolean(true),
+            "Visible": ng_diBoolean(false),
+            "Sizeable": ng_diBoolean(false),
+            "Centered": ng_diBoolean(true)
           }
         })
       };
@@ -680,18 +636,18 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weHint',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weHint', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('weHint', { Level: 'advanced' })
         })
       };
     });
     
     ngRegisterControlDesignInfo('weTextHint',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weTextHint', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weTextHint', { Level: 'advanced' }),
           "ModifyControls": {
-            "Hint": ng_DIPropertyControl('weText', { Level: 'advanced' }, 'ngText')
+            "Hint": ng_diControl('weText', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' })
           }
         })
       };
@@ -701,16 +657,16 @@ var WinEight_DesignInfo = {
       return {
         ControlCategory: 'Dialogs',
         IsContainer: false,
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','weDialog',{Level: 'advanced'}),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('weDialog',{Level: 'advanced'}),
           "ModifyControls": {
-            "Title": ng_DIPropertyControl('weCaption', { Level: 'advanced' }, 'ngText'),
-            "Message": ng_DIPropertyControl('weText', { Level: 'advanced' }, 'ngText'),
-            "OK": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Yes": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "No": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Cancel": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "CheckBox": ng_DIPropertyControl('weCheckBox', { Level: 'advanced' }, 'ngCheckBox')
+            "Title": ng_diControl('weCaption', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' }),
+            "Message": ng_diControl('weText', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' }),
+            "OK": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Yes": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "No": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "CheckBox": ng_diControl('weCheckBox', null, { Level: 'advanced' }, { InheritedFrom: 'ngCheckBox' })
           }
         })
       };
@@ -724,8 +680,8 @@ var WinEight_DesignInfo = {
     
     function dlgInputBoxDI(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','weMessageDlg',{Level: 'advanced'})
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('weMessageDlg',{Level: 'advanced'})
         })
       };
       ng_MergeVar(di,weMessageDlgDI(d,c,ref));
@@ -733,12 +689,12 @@ var WinEight_DesignInfo = {
     };
     ngRegisterControlDesignInfo('weDlgInputBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('weEdit', { Level: 'advanced' }, 'ngEdit')
+            "Edit": ng_diControl('weEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -747,12 +703,12 @@ var WinEight_DesignInfo = {
     });
     ngRegisterControlDesignInfo('weDlgDropDownBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('weDropDown', { Level: 'advanced' }, 'ngDropDown')
+            "Edit": ng_diControl('weDropDown', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDown' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -761,9 +717,9 @@ var WinEight_DesignInfo = {
     });
     ngRegisterControlDesignInfo('weDlgDropDownListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('weDropDownList', { Level: 'advanced' }, 'ngDropDownList')
+            "Edit": ng_diControl('weDropDownList', null, { Level: 'advanced' }, { InheritedFrom: 'ngDropDownList' })
           }
         })
       };
@@ -772,12 +728,12 @@ var WinEight_DesignInfo = {
     });
     ngRegisterControlDesignInfo('weDlgMemoBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Edit": ng_DIPropertyControl('weMemo', { Level: 'advanced' }, 'ngMemo')
+            "Edit": ng_diControl('weMemo', null, { Level: 'advanced' }, { InheritedFrom: 'ngMemo' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -787,13 +743,13 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDlgListBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','weMessageDlg',{Level: 'advanced'}),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('weMessageDlg',{Level: 'advanced'}),
           "ModifyControls": {
-            "List": ng_DIPropertyControl('weList', { Level: 'advanced' }, 'ngList')
+            "List": ng_diControl('weList', null, { Level: 'advanced' }, { InheritedFrom: 'ngList' })
           },
           "Events": {
-            "OnVisibleChanged": ng_DIPropertyEvent('function(c) {}', { Level: 'basic' })
+            "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
           }
         })
       };
@@ -804,9 +760,9 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDlgProgressBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Progress": ng_DIPropertyControl('weProgressBar', { Level: 'advanced' }, 'ngProgressBar')
+            "Progress": ng_diControl('weProgressBar', null, { Level: 'advanced' }, { InheritedFrom: 'ngProgressBar' })
           }
         })
       };
@@ -817,9 +773,9 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDlgWaitBox',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "Progress": ng_DIPropertyControl('weProgressLine', { Level: 'advanced' }, 'ngText')
+            "Progress": ng_diControl('weProgressLine', null, { Level: 'advanced' }, { InheritedFrom: 'ngText' })
           }
         })
       };
@@ -830,22 +786,16 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDlgAbout',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "DialogType": ng_DIProperty('string','weDlgMessageBox',{Level: 'advanced'}),
-          "DlgIcon": ng_DIProperty(['null','ngListStringItems'],undefined, { InitType: 'ngListItems', Level: 'basic' }),
+        Properties: ng_diProperties({
+          "DialogType": ng_diString('weDlgMessageBox',{Level: 'advanced'}),
+          "DlgIcon": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "ModifyControls": {
-            "Message": { DefaultType: 'control', Level: 'advanced',
-              Types: {
-                'control': {
-                  ObjectProperties: ng_DIProperties({
-                    "className": ng_DIProperty('string', 'weAboutMessageLight', { Level: 'advanced' })
-                  })
-                }
-              }
-            },
-            "AppInfo": ng_DIPropertyControl('weListBox', { Level: 'advanced' }, 'ngList', ng_DIProperties({
-              "className": ng_DIProperty('string', 'weTextListBoxLight', { Level: 'advanced' })
-            }))
+            "Message": ng_diControl(undefined, ng_diProperties({
+              "className": ng_diString('weAboutMessageLight', { Level: 'advanced' })
+            }), { Level: 'advanced' }),
+            "AppInfo": ng_diControl('weListBox', ng_diProperties({
+              "className": ng_diString('weTextListBoxLight', { Level: 'advanced' })
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngList' })
           }
         })
       };
@@ -853,21 +803,21 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weCalendar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weCalendarLight', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('weCalendarLight', { Level: 'advanced' })
         })
       };
     });
     
     function weEditDateDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weEditLight', { Level: 'advanced' }),
-          "DropDown": ng_DIPropertyControl('weCalendar', { Level: 'basic' }, 'ngCalendar', ng_DIProperties({
+        Properties: ng_diProperties({
+          "className": ng_diString('weEditLight', { Level: 'advanced' }),
+          "DropDown": ng_diControl('weCalendar', ng_diProperties({
             "Data": {
-              "className": ng_DIProperty('string', 'weCalendarLight', { Level: 'advanced' })
+              "className": ng_diString('weCalendarLight', { Level: 'advanced' })
             }
-          }))
+          }), { Level: 'basic' }, { InheritedFrom: 'ngCalendar' })
         })
       };
       ng_MergeVar(di,weEditDI(d,c,ref));
@@ -877,12 +827,12 @@ var WinEight_DesignInfo = {
     
     function weEditTimeDI(d,c,ref) {
       var di={
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weEditLight', { Level: 'advanced' }),
-          "DropDown": ng_DIPropertyControl('weList', { Level: 'basic' }, 'ngList'),
+        Properties: ng_diProperties({
+          "className": ng_diString('weEditLight', { Level: 'advanced' }),
+          "DropDown": ng_diControl('weList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
           "Events": {
-            "OnDropDown": ng_DIPropertyEvent('function(c, l) { return true; }', { Level: 'basic' }),
-            "OnListItemChanged": ng_DIPropertyEvent('function(c, l, it, oit) { return false; }', { Level: 'basic' })
+            "OnDropDown": ng_diEvent('function(c, l) { return true; }', { Level: 'basic' }),
+            "OnListItemChanged": ng_diEvent('function(c, l, it, oit) { return false; }', { Level: 'basic' })
           }
         })
       };
@@ -901,11 +851,11 @@ var WinEight_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           'Data': {
-            'AutoHeight': ng_DIPropertyBool(true, { Level: 'basic' }),
-            'AsToolbar': ng_DIPropertyBool(true, { Level: 'basic' }),
-            'Vertical': ng_DIPropertyBool(true, { Level: 'basic' })
+            'AutoHeight': ng_diBoolean(true, { Level: 'basic' }),
+            'AsToolbar': ng_diBoolean(true, { Level: 'basic' }),
+            'Vertical': ng_diBoolean(true, { Level: 'basic' })
           }
         })
       };
@@ -936,12 +886,12 @@ var WinEight_DesignInfo = {
             }
           }
         },
-        Properties: ng_DIProperties({
-          'DropDown': ng_DIPropertyControl('weColorPickerBox', { Level: 'basic' }, 'weColorPickerBox', ng_DIProperties({
+        Properties: ng_diProperties({
+          'DropDown': ng_diControl('weColorPickerBox', ng_diProperties({
             'Data': {
-              'MaxHeight': ng_DIProperty('integer',600,{ Level: 'basic' })
+              'MaxHeight': ng_diInteger(600,{ Level: 'basic' })
             }
-          }))
+          }), { Level: 'basic' }, { InheritedFrom: 'weColorPickerBox' })
         })
       };
     });
@@ -952,11 +902,11 @@ var WinEight_DesignInfo = {
         NewControl: {
           _noMerge:true
         },
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           'ModifyControls': {
-            'Picker': ng_DIPropertyControl('weColorPickerBox', { Level: 'basic' }, 'weColorPickerBox', ng_DIProperties({
-              'W': ng_DIProperty('bounds',296,{ Level: 'basic' })
-            }))
+            'Picker': ng_diControl('weColorPickerBox', ng_diProperties({
+              'W': ng_diTypeVal('bounds',296,{ Level: 'basic' })
+            }), { Level: 'basic' }, { InheritedFrom: 'weColorPickerBox' })
           }
         }, { "ModifyControls": { Level: 'basic' } })
       };
@@ -966,14 +916,14 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weMenu',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weMenuLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weMenuLight', { Level: 'advanced' }),
           "ModifyControls": {
-            "SubMenuDef": ng_DIPropertyControl('weMenu', { Level: 'advanced' }, 'ngMenu')
+            "SubMenuDef": ng_diControl('weMenu', null, { Level: 'advanced' }, { InheritedFrom: 'ngMenu' })
           },
           "Events": {
-            "OnGetCheckImg": ng_DIPropertyEvent('function(c, l, i) { return true; }', { Level: 'basic' }),
-            "OnGetItemImg": ng_DIPropertyEvent('function(c, l, it, id, level) { return ""; }', { Level: 'basic' })
+            "OnGetCheckImg": ng_diEvent('function(c, l, i) { return true; }', { Level: 'basic' }),
+            "OnGetItemImg": ng_diEvent('function(c, l, it, id, level) { return ""; }', { Level: 'basic' })
           }
         })
       };
@@ -981,10 +931,10 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weMenuBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weMenuBarLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weMenuBarLight', { Level: 'advanced' }),
           "ModifyControls": {
-            "SubMenuDef": ng_DIPropertyControl('weMenu', { Level: 'advanced' }, 'ngMenu')
+            "SubMenuDef": ng_diControl('weMenu', null, { Level: 'advanced' }, { InheritedFrom: 'ngMenu' })
           }
         })
       };
@@ -992,20 +942,20 @@ var WinEight_DesignInfo = {
     
     /*ngRegisterControlDesignInfo('weMenuBarButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weMenuBarButton', { Level: 'advanced' })
+        Properties: ng_diProperties({
+          "className": ng_diString('weMenuBarButton', { Level: 'advanced' })
         })
       };
     });*/
     
     ngRegisterControlDesignInfo('weSplitButton',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weSplitButtonLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weSplitButtonLight', { Level: 'advanced' }),
           "Data": {
-            "LeftImg": ng_DIProperty('image', 'WinEightControls.Images.ButtonDark.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_DIProperty('image', 'WinEightControls.Images.ButtonDark.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_DIProperty('image', 'WinEightControls.Images.ButtonDark.MenuRightBtnImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.ButtonDark.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.ButtonDark.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinEightControls.Images.ButtonDark.MenuRightBtnImg', { Level: 'advanced' })
           }
         })
       };
@@ -1013,13 +963,13 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weFileUploader',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weFileUploaderLight', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weFileUploaderLight', { Level: 'advanced' }),
           "ModifyControls": {
-            "ListFiles": ng_DIPropertyControl('weList', { Level: 'advanced' }, 'ngList'),
-            "DragAndDropInfo": ng_DIPropertyControl('weSmallText', { Level: 'advanced' }),
-            "BtnAddFile": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "BtnRemoveFiles": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton')
+            "ListFiles": ng_diControl('weList', null, { Level: 'advanced' }, { InheritedFrom: 'ngList' }),
+            "DragAndDropInfo": ng_diControl('weSmallText', null, { Level: 'advanced' }),
+            "BtnAddFile": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "BtnRemoveFiles": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -1027,9 +977,9 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weViewModelForm',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "ErrorHint": ng_DIPropertyControl('weTextHint', { Level: 'advanced' }, 'ngTextHint')
+            "ErrorHint": ng_diControl('weTextHint', null, { Level: 'advanced' }, { InheritedFrom: 'ngTextHint' })
           }
         })
       };
@@ -1037,12 +987,12 @@ var WinEight_DesignInfo = {
     
     function weEditFieldDI (d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Data": {
-            "HintX": ng_DIProperty('integer',19,{ Level: 'basic' }),
-            "HintY": ng_DIProperty('integer',27,{ Level: 'basic' })
+            "HintX": ng_diInteger(19,{ Level: 'basic' }),
+            "HintY": ng_diInteger(27,{ Level: 'basic' })
           },
-          "ErrorHint": ng_DIPropertyControl('weTextHint', { Level: 'advanced' }, 'ngTextHint')
+          "ErrorHint": ng_diControl('weTextHint', null, { Level: 'advanced' }, { InheritedFrom: 'ngTextHint' })
         })
       };
       ng_MergeVar(di,weEditDI(d,c,ref));
@@ -1098,10 +1048,10 @@ var WinEight_DesignInfo = {
     
     /*ngRegisterControlDesignInfo('weDBViewModelForm',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "Events": {
-            "OnDeleteQuery": ng_DIPropertyEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' }),
-            "OnChangedQuery": ng_DIPropertyEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' })
+            "OnDeleteQuery": ng_diEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' }),
+            "OnChangedQuery": ng_diEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' })
           }
         })
       };
@@ -1109,14 +1059,14 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDBToolBar',function(d,c,ref) {
       return {
-        Properties: ng_DIProperties({
-          "className": ng_DIProperty('string', 'weToolBar', { Level: 'advanced' }),
+        Properties: ng_diProperties({
+          "className": ng_diString('weToolBar', { Level: 'advanced' }),
           "ModifyControls": {
-            "New": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Delete": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Insert": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Update": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Cancel": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton')
+            "New": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Delete": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Insert": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Update": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -1126,12 +1076,12 @@ var WinEight_DesignInfo = {
 
     ngRegisterControlDesignInfo('weDBDataSet',function(d,c,ref) {
       var di = {
-        Properties: ng_DIProperties({
+        Properties: ng_diProperties({
           "ModifyControls": {
-            "NewRecord": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "LoadRecord": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "DeleteRecord": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton'),
-            "Refresh": ng_DIPropertyControl('weButton', { Level: 'advanced' }, 'ngButton')
+            "NewRecord": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "LoadRecord": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "DeleteRecord": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "Refresh": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
