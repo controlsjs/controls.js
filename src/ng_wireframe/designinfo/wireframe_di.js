@@ -297,6 +297,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrProgressDot',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc',
         Properties: ng_diProperties({
           "className": ng_diString('wfrLabel', { Level: 'advanced' }),
           "Data": {

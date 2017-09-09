@@ -18,7 +18,6 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBViewModelForm',function(d,c,ref) {
       return {
-        ControlCategory: 'System',
         BaseControl: 'ngDBViewModelForm',
         IsViewModel: true,
         Properties: ng_diProperties({

@@ -80,6 +80,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weSmallText',function(d,c,ref) {
       return {
+        ControlCategory: 'Labels',
         Properties: ng_diProperties({
           "className": ng_diString('weSmallTextLight')
         })
@@ -88,6 +89,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weCaption',function(d,c,ref) {
       return {
+        ControlCategory: 'Labels',
         Properties: ng_diProperties({
           "className": ng_diString('weCaptionLight')
         })
@@ -96,6 +98,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weTitle',function(d,c,ref) {
       return {
+        ControlCategory: 'Labels',
         Properties: ng_diProperties({
           "className": ng_diString('weTitleLight')
         })
@@ -185,6 +188,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weLabel',function(d,c,ref) {
       var di = {
+        ControlCategory: 'Labels',
         Properties: ng_diProperties({
           "className": ng_diString('weLabelLight')
         })
@@ -444,6 +448,7 @@ var WinEight_DesignInfo = {
     // TODO: newControl?
     function weProgressImgDI(d,c,ref) {
       return {
+        ControlCategory: 'Misc',
         NewControl: {
           _noMerge: true,
           Default: {

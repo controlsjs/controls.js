@@ -133,6 +133,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdLabel',function(d,c,ref) {
       return {
+        ControlCategory: 'Labels',
         Properties: ng_diProperties({
           "className": ng_diString('stdLabel'),
           "style": {
@@ -401,6 +402,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdProgressDot',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc',
         NewControl: {
           _noMerge: true,
           Default: {
