@@ -221,7 +221,7 @@ var WireframeControls_DesignInfo = {
           "Data": {
             "H": ng_diInteger(WireframeControls.Images.Edit.MiddleImg.H, { Level: 'advanced' }),
             "LeftDef": ng_diControl(undefined, ng_diProperties({
-              "W": ng_diInteger(WireframeControls.Images.LeftImg.W, { Level: 'advanced' }),
+              "W": ng_diInteger(WireframeControls.Images.Edit.LeftImg.W, { Level: 'advanced' }),
               "Data": {
                 "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.LeftImg', { Level: 'advanced' }),
                 "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg', { Level: 'advanced' }),
@@ -352,39 +352,28 @@ var WireframeControls_DesignInfo = {
             "Paging": ng_diControl(undefined, undefined, {
               "className": ng_diString('wxpPageListPaging', { Level: 'advanced' })
             }, { Level: 'advanced' }),
-            'FirstPage': ng_DIPropertyControl(
-              'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_diProperties({
+            'FirstPage': ng_diControl('ngButton', ng_diProperties({
                 "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
                   "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
                   "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingFirst', { Level: 'advanced' })
                 }
-              })
-            ),
-            'PrevPage': ng_DIPropertyControl(
-              'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_diProperties({
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            'PrevPage': ng_diControl('ngButton', ng_diProperties({
                 "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
                   "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
                   "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingPrev', { Level: 'advanced' })
                 }
-              })
-            ),
-            'PageNo': ng_DIPropertyControl(
-              'wfrEdit', { Level: 'advanced' }, 'wfrEdit',
-              ng_diProperties({
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            'PageNo': ng_diControl('wfrEdit', ng_diProperties({
                 "Data": {
                   "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
                   "Text": ng_diString('1', { Level: 'advanced' }),
                   "TextAlign": ng_diString('center', { Level: 'advanced' })
                 }
-              })
-            ),
-            'Page0': ng_DIPropertyControl(
-              'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_diProperties({
+            }),  { Level: 'advanced' }, { InheritedFrom: 'wfrEdit' }),
+            'Page0': ng_diControl('ngButton', ng_diProperties({
                 "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
                   "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
@@ -393,30 +382,23 @@ var WireframeControls_DesignInfo = {
                   "TextAlign": ng_diString('center', { Level: 'advanced' }),
                   "Text": ng_diString('1', { Level: 'advanced' })
                 }
-              })
-            ),
-            'NextPage': ng_DIPropertyControl(
-              'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_diProperties({
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            'NextPage': ng_diControl('ngButton', ng_diProperties({
                 "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
                   "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
                   "ImgAlign": ng_diString('right', { Level: 'advanced' }),
                   "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingNext', { Level: 'advanced' })
                 }
-              })
-            ),
-            'LastPage': ng_DIPropertyControl(
-              'ngButton', { Level: 'advanced' }, 'ngButton',
-              ng_diProperties({
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            'LastPage': ng_diControl('ngButton', ng_diProperties({
                 "className": ng_diString('wfrPgListPagingButton', { Level: 'advanced' }),
                 "Data": {
                   "ToolBarHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'advanced', Order: 0.8 }),
                   "ImgAlign": ng_diString('right', { Level: 'advanced' }),
                   "Img": ng_diTypeVal('image', 'WireframeControls.Images.PagingLast', { Level: 'advanced' })
                 }
-              })
-            )
+            }), { Level: 'advanced' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
