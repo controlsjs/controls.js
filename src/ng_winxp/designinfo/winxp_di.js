@@ -304,7 +304,7 @@ var WinXP_DesignInfo = {
         Properties: ng_diProperties({
           "Data": {
             "H": ng_diInteger(WinXPControls.Images.Edit.MiddleImg.H, { Level: 'advanced' }),
-            "LeftDef": ng_diCotnrol(undefined, ng_diProperties({
+            "LeftDef": ng_diControl(undefined, ng_diProperties({
               "W": ng_diInteger(WinXPControls.Images.Edit.LeftImg.W, { Level: 'advanced' }),
               "Data": {
                 "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.LeftImg', { Level: 'advanced' }),
