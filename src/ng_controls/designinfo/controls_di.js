@@ -825,11 +825,11 @@ function ng_diProperties(props,data) {
         "R": ng_diType('bounds', { DisplayName: "Right (R)", Level: 'basic', Order: 0.15 }),
         "B": ng_diType('bounds', { DisplayName: "Bottom (B)", Level: 'basic', Order: 0.16 }),
         "ParentReferences": ng_diBoolean(true, { Level: 'optional', Order: 0.302 }),
-        "OnCreating": ng_diEvent('function(def, ref, parent, options) { return true; }', { Order: 0.306 }),
-        "OnCreated": ng_diEvent('function(c, refs, options) {}', { Order: 0.307 }),
+        "OnCreating": ng_diEvent('function(def, ref, parent, options) { return true; }', { Level: 'advanced', Order: 0.306 }),
+        "OnCreated": ng_diEvent('function(c, refs, options) {}', { Level: 'advanced', Order: 0.307 }),
         "Data": ng_diObject({
           "Enabled": ng_diBoolean(true, { Level: 'basic' }),
-          "ChildHandling": ng_diIntegerIdentifiers(0,['ngChildEnabledAsParent','ngChildEnabledParentAware','ngChildEnabledIndependent'],{ Level: 'optional' }) // TODO: change to bitmask when bitmask editor will be better
+          "ChildHandling": ng_diIntegerIdentifiers(0,['ngChildEnabledAsParent','ngChildEnabledParentAware','ngChildEnabledIndependent'], { Level: 'optional' }) // TODO: change to bitmask when bitmask editor will be better
           /*"ChildHandling": ng_diTypeVal('bitmask', { value: ngChildEnabledAsParent }, { Level: 'optional' }, {
             EditorOptions: {
               BitMaskIdentifiers: [
@@ -852,27 +852,26 @@ function ng_diProperties(props,data) {
           }
         }),
         "Events": ng_diObject({
-          "OnSetEnabled": ng_diEvent('function(c, v, p) { return true; }'),
+          "OnSetEnabled": ng_diEvent('function(c, v, p) { return true; }', { Level: 'advanced' }),
           "OnEnabledChanged": ng_diEvent('function(c, p) {}', { Level: 'basic' })
-        }, { Order: 0.92 }, { DestroyIfEmpty: true }),
+        }, { Level: 'basic', Order: 0.92 }, { DestroyIfEmpty: true }),
         "Methods": ng_diObject({
-           // TODO: return values??
-          "DoDispose": ng_diFunction('function() { return ng_CallParent(this, "DoDispose", arguments, true); }'),
-          "DoCreate": ng_diFunction('function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }'),
-          "DoSetEnabled": ng_diFunction('function(v) { ng_CallParent(this, "DoSetEnabled", arguments); }'),
-          "DoSetChildEnabled": ng_diFunction('function(c, v, p) { ng_CallParent(this, "DoSetChildEnabled", arguments); }'),
+          "DoDispose": ng_diFunction('function() { return ng_CallParent(this, "DoDispose", arguments, true); }', { Level: 'advanced' }),
+          "DoCreate": ng_diFunction('function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }', { Level: 'advanced' }),
+          "DoSetEnabled": ng_diFunction('function(v) { ng_CallParent(this, "DoSetEnabled", arguments); }', { Level: 'advanced' }),
+          "DoSetChildEnabled": ng_diFunction('function(c, v, p) { ng_CallParent(this, "DoSetChildEnabled", arguments); }', { Level: 'advanced' }),
 
           "Enable": ng_diFunction('function() { ng_CallParent(this, "Enable", arguments); }',{ Level: 'optional' }),
           "Disable": ng_diFunction('function() { ng_CallParent(this, "Disable, arguments); }',{ Level: 'optional' }),
           "SetEnabled": ng_diFunction('function(v, p) { ng_CallParent(this, "SetEnabled", arguments); }',{ Level: 'optional' }),
           "SetChildControlsEnabled": ng_diFunction('function(v, p) { ng_CallParent(this, "SetChildControlsEnabled", arguments); }', { Level: 'optional' }),
           "Elm": ng_diFunction('function() { return ng_CallParent(this, "Elm", arguments, null); }',{ Level: 'optional' }),
-          "CtrlInheritsFrom": ng_diFunction('function(type) { ng_CallParent(this, "CtrlInheritsFrom", arguments); }',{ Level: 'optional' }),
-          "Create": ng_diFunction('function(props, ref) { ng_CallParent(this, "Create", arguments); }',{ Level: 'optional' }),
+          "CtrlInheritsFrom": ng_diFunction('function(type) { return ng_CallParent(this, "CtrlInheritsFrom", arguments, false); }',{ Level: 'optional' }),
+          "Create": ng_diFunction('function(props, ref) { return ng_CallParent(this, "Create", arguments, null); }',{ Level: 'optional' }),
           "Dispose": ng_diFunction('function() { ng_CallParent(this, "Dispose", arguments); }',{ Level: 'optional' }),
           "AddEvent": ng_diFunction('function(ev, fce, once) { ng_CallParent(this, "AddEvent", arguments); }',{ Level: 'optional' }),
           "RemoveEvent": ng_diFunction('function(ev, fce) { ng_CallParent(this, "RemoveEvent", arguments); }',{ Level: 'optional' })
-        }, { Order: 0.8 }, { DestroyIfEmpty: true })
+        }, { Level: 'advanced', Order: 0.8 }, { DestroyIfEmpty: true })
       }
     };
 
@@ -928,15 +927,15 @@ function ng_diProperties(props,data) {
           "paddingLeft": ng_diType('css_dim_px', { Level: 'optional' }),
           "paddingRight": ng_diType('css_dim_px', { Level: 'optional' }),
           "paddingTop": ng_diType('css_dim_px', { Level: 'optional' }),
-          "textAlign": ng_diStringValues('left', ['left','center','right','justify','initial','inherit'],{ Level: 'optional' }),
+          "textAlign": ng_diStringValues('left', ['left','center','right','justify','initial','inherit'], { Level: 'optional' }),
           "verticalAlign": ng_diStringValues('baseline', ['baseline','sub','super','top','text-top','middle','bottom','text-bottom','initial','inherit'], { Level: 'optional' }),
           "textDecoration": ng_diStringValues('none', ['none','underline','overline','line-through','initial','inherit'], { Level: 'optional' }),
           "textTransform": ng_diStringValues('none', ['none','uppercase','lowercase','capitalize','initial','inherit'], { Level: 'optional' }),
           "whiteSpace": ng_diStringValues('normal', ['normal','nowrap','pre','pre-line','pre-wrap','initial','inherit'], { Level: 'optional' }),
           "zIndex": ng_diInteger()
-        }, { Order: 0.252 }, { DestroyIfEmpty: true }),
+        }, { Level: 'advanced', Order: 0.252 }, { DestroyIfEmpty: true }),
         "Opacity": ng_diFloat(1.0, { Level: 'basic', Order: 0.253 }),
-        "className": ng_diString('', { Order: 0.251 }),
+        "className": ng_diString('', { Level: 'advanced', Order: 0.251 }),
         "innerHTML": ng_diString('', { Level: 'hidden', Order: 0.303 }),
         "id": ng_diString('', { Level: 'optional', Order: 0.05 }),
         "parent": ng_diMixed(['string','object'], { Level: 'optional', Order: 0.07 }),
@@ -944,24 +943,24 @@ function ng_diProperties(props,data) {
         "OnCreateHTMLElement": ng_diEvent('function(props, ref, c) {}', { Level: 'optional', Order: 0.305 }),
         "Data": ng_diObject({
           "Visible": ng_diBoolean(true, { Level: 'basic' }),
-          "IsPopup": ng_diBoolean(false),
+          "IsPopup": ng_diBoolean(false, { Level: 'advanced' }),
           "PopupGroup": ng_diString('default', { Level: 'optional' }),
           "Gestures": ng_diObject({
-            "drag":       ng_diBoolean(false),
+            "drag":       ng_diBoolean(false, { Level: 'advanced' }),
             "dragleft":   ng_diBoolean(false, { Level: 'optional' }),
             "dragright":  ng_diBoolean(false, { Level: 'optional' }),
             "dragup":     ng_diBoolean(false, { Level: 'optional' }),
             "dragdown":   ng_diBoolean(false, { Level: 'optional' }),
-            "hold":       ng_diBoolean(false),
-            "release":    ng_diBoolean(false),
-            "swipe":      ng_diBoolean(false),
+            "hold":       ng_diBoolean(false, { Level: 'advanced' }),
+            "release":    ng_diBoolean(false, { Level: 'advanced' }),
+            "swipe":      ng_diBoolean(false, { Level: 'advanced' }),
             "swipeleft":  ng_diBoolean(false, { Level: 'optional' }),
             "swiperight": ng_diBoolean(false, { Level: 'optional' }),
             "swipeup":    ng_diBoolean(false, { Level: 'optional' }),
             "swipedown":  ng_diBoolean(false, { Level: 'optional' }),
-            "tap":        ng_diBoolean(false),
-            "doubletap":  ng_diBoolean(false),
-            "touch":      ng_diBoolean(false),
+            "tap":        ng_diBoolean(false, { Level: 'advanced' }),
+            "doubletap":  ng_diBoolean(false, { Level: 'advanced' }),
+            "touch":      ng_diBoolean(false, { Level: 'advanced' }),
             "transform":  ng_diBoolean(false, { Level: 'optional' }),
             "pinch":      ng_diBoolean(false, { Level: 'optional' }),
             "pinchin":    ng_diBoolean(false, { Level: 'optional' }),
@@ -976,61 +975,59 @@ function ng_diProperties(props,data) {
           "ngHintD": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' })
         }),
         "Events": ng_diObject({
-          "OnSetVisible": ng_diEvent('function(c, v) { return true; }'),
-          "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' }),
-          "OnUpdate": ng_diEvent('function(c) { return true; }'),
-          "OnUpdated": ng_diEvent('function(c, elm) {}'),
-          "OnUpdateLater": ng_diEvent('function(c, s) {}'),
-          "OnMouseEnter": ng_diEvent('function(c) {}'),
-          "OnMouseLeave": ng_diEvent('function(c) {}'),
-          "OnIsInsidePopup": ng_diEvent('function(c, target, intype, e) { return true; }'),
-          "OnClickOutside": ng_diEvent('function(c, pi) { return true; }'),
-          "OnPointerDown": ng_diEvent('function(c, pi) { return true; }'),
-          "OnPointerUp": ng_diEvent('function(c, pi) { return true; }'),
-          "OnPtrStart": ng_diEvent('function(c, pi) {}'),
-          "OnPtrEnd": ng_diEvent('function(c, pi) {}'),
-          "OnGesture": ng_diEvent('function(c, pi) { return true; }'),
-          "OnPtrDrag": ng_diEvent('function(c, pi) { return true; }')
-        }, undefined, { DestroyIfEmpty: true }),
+          "OnSetVisible": ng_diEvent('function(c, v) { return true; }', { Level: 'advanced' }),
+          "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' }, { Level: 'advanced' }),
+          "OnUpdate": ng_diEvent('function(c) { return true; }', { Level: 'advanced' }),
+          "OnUpdated": ng_diEvent('function(c, elm) {}', { Level: 'advanced' }),
+          "OnUpdateLater": ng_diEvent('function(c, s) {}', { Level: 'advanced' }),
+          "OnMouseEnter": ng_diEvent('function(c) {}', { Level: 'advanced' }),
+          "OnMouseLeave": ng_diEvent('function(c) {}', { Level: 'advanced' }),
+          "OnIsInsidePopup": ng_diEvent('function(c, target, intype, e) { return false; }', { Level: 'advanced' }),
+          "OnClickOutside": ng_diEvent('function(c, pi) { return false; }', { Level: 'advanced' }),
+          "OnPointerDown": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
+          "OnPointerUp": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
+          "OnPtrStart": ng_diEvent('function(c, pi) {}', { Level: 'advanced' }),
+          "OnPtrEnd": ng_diEvent('function(c, pi) {}', { Level: 'advanced' }),
+          "OnGesture": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
+          "OnPtrDrag": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' })
+        }),
 
         "Methods": ng_diObject({
-          // TODO: return values??
           "DoMouseEnter": ng_diFunction('function(e, mi, elm) { ng_CallParent(this, "DoMouseEnter", arguments); }', { Level: 'optional' }),
           "DoMouseLeave": ng_diFunction('function(e, mi, elm) { ng_CallParent(this, "DoMouseLeave", arguments); }', { Level: 'optional' }),
-          "DoClickOutside": ng_diFunction('function(pi) { ng_CallParent(this, "DoClickOutside", arguments); }', { Level: 'optional' }),
-          "IsInsidePopup": ng_diFunction('function(target, intype, e) { ng_CallParent(this, "IsInsidePopup", arguments); }', { Level: 'optional' }),
+          "DoClickOutside": ng_diFunction('function(pi) { return ng_CallParent(this, "DoClickOutside", arguments, false); }', { Level: 'optional' }),
+          "IsInsidePopup": ng_diFunction('function(target, intype, e) { return ng_CallParent(this, "IsInsidePopup", arguments, false); }', { Level: 'optional' }),
 
-          "DoAcceptGestures": ng_diFunction('function(elm, gestures) { ng_CallParent(this, "DoAcceptGestures", arguments); }'),
+          "DoAcceptGestures": ng_diFunction('function(elm, gestures) { ng_CallParent(this, "DoAcceptGestures", arguments); }', { Level: 'advanced' }),
 
           "DoAcceptPtrGestures": ng_diFunction('function(elm, eid, gestures, ev) { ng_CallParent(this, "DoAcceptPtrGestures", arguments); }', { Level: 'optional' }),
           "DoGetPtrOptions": ng_diFunction('function(eid, opts) { ng_CallParent(this, "DoGetPtrOptions", arguments); }', { Level: 'optional' }),
 
-          "DoUpdate": ng_diFunction('function(elm) { ng_CallParent(this, "DoUpdate", arguments); }'),
-          "DoAttach": ng_diFunction('function(elm, elmid) { ng_CallParent(this, "DoAttach", arguments); }'),
-          "DoRelease": ng_diFunction('function(elm) { ng_CallParent(this, "DoRelease", arguments); }'),
-          "DoSetVisible": ng_diFunction('function(elm, v) { ng_CallParent(this, "DoSetVisible", arguments); }'),
-          "DoResize": ng_diFunction('function(elm) { ng_CallParent(this, "DoResize", arguments); }'),
+          "DoUpdate": ng_diFunction('function(elm) { return ng_CallParent(this, "DoUpdate", arguments, false); }', { Level: 'advanced' }),
+          "DoAttach": ng_diFunction('function(elm, elmid) { ng_CallParent(this, "DoAttach", arguments); }', { Level: 'advanced' }),
+          "DoRelease": ng_diFunction('function(elm) { ng_CallParent(this, "DoRelease", arguments); }', { Level: 'advanced' }),
+          "DoSetVisible": ng_diFunction('function(elm, v) { ng_CallParent(this, "DoSetVisible", arguments); }', { Level: 'advanced' }),
+          "DoResize": ng_diFunction('function(elm) { return ng_CallParent(this, "DoResize", arguments, 0); }', { Level: 'advanced' }),
 
           "SetVisible": ng_diFunction('function(v) { ng_CallParent(this, "SetVisible", arguments); }', { Level: 'optional' }),
           "SetFocus": ng_diFunction('function(state) { ng_CallParent(this, "SetFocus", arguments); }', { Level: 'optional' }),
-          "SetBounds": ng_diFunction('function(props) { ng_CallParent(this, "SetBounds", arguments); }', { Level: 'optional' }),
+          "SetBounds": ng_diFunction('function(props) { return ng_CallParent(this, "SetBounds", arguments, false); }', { Level: 'optional' }),
           "SetScrollBars": ng_diFunction('function(v) { ng_CallParent(this, "SetScrollBars", arguments); }', { Level: 'optional' }),
           "SetPopup": ng_diFunction('function(p) { ng_CallParent(this, "SetPopup", arguments); }', { Level: 'optional' }),
           "SetOpacity": ng_diFunction('function(v) { ng_CallParent(this, "SetOpacity", arguments); }', { Level: 'optional' }),
-          "Align": ng_diFunction('function(o) { ng_CallParent(this, "Align", arguments); }', { Level: 'optional' }),
+          "Align": ng_diFunction('function(o) { return ng_CallParent(this, "Align", arguments, 0); }', { Level: 'optional' }),
           "Attach": ng_diFunction('function(o) { ng_CallParent(this, "Attach", arguments); }', { Level: 'optional' }),
           "Release": ng_diFunction('function() { ng_CallParent(this, "Release", arguments); }', { Level: 'optional' }),
           "Update": ng_diFunction('function(recursive) { ng_CallParent(this, "Update", arguments); }', { Level: 'optional' }),
           "UpdateLater": ng_diFunction('function(s) { ng_CallParent(this, "UpdateLater", arguments); }', { Level: 'optional' }),
 
-          "DoPointerDown": ng_diFunction('function(pi) { ng_CallParent(this, "DoPointerDown", arguments); }'),
-          "DoPointerUp": ng_diFunction('function(pi) { ng_CallParent(this, "DoPointerUp", arguments); }'),
-          "DoPtrStart": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrStart", arguments); }'),
-          "DoPtrEnd": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrEnd", arguments); }'),
-          "DoPtrDrag": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrDrag", arguments); }'),
-          "DoPtrClick": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrClick", arguments); }'),
-          "DoPtrDblClick": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrDblClick", arguments); }')
-        }, undefined, { DestroyIfEmpty: true })
+          "DoPointerDown": ng_diFunction('function(pi) { return ng_CallParent(this, "DoPointerDown", arguments, true); }', { Level: 'advanced' }),
+          "DoPtrStart": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrStart", arguments); }', { Level: 'advanced' }),
+          "DoPtrEnd": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrEnd", arguments); }', { Level: 'advanced' }),
+          "DoPtrDrag": ng_diFunction('function(pi) { return ng_CallParent(this, "DoPtrDrag", arguments, false); }', { Level: 'advanced' }),
+          "DoPtrClick": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrClick", arguments); }', { Level: 'advanced' }),
+          "DoPtrDblClick": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrDblClick", arguments); }', { Level: 'advanced' })
+        })
       }
     };
 
