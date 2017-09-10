@@ -820,10 +820,10 @@ function ng_diProperties(props,data) {
       Properties: {
         "ID": ng_diStringRefName({ Level: 'optional', Order: 0.001 }),
         "Type": ng_diString('', { Level: 'basic', Order: 0.01 }, { Editor: 'ngfeEditor_ControlType' }),
-        "L": ng_diType('bounds', { Level: 'basic', Order: 0.11 }),
-        "T": ng_diType('bounds', { Level: 'basic', Order: 0.12 }),
-        "R": ng_diType('bounds', { Level: 'basic', Order: 0.15 }),
-        "B": ng_diType('bounds', { Level: 'basic', Order: 0.16 }),
+        "L": ng_diType('bounds', { DisplayName: "Left (L)", Level: 'basic', Order: 0.11 }),
+        "T": ng_diType('bounds', { DisplayName: "Top (T)", Level: 'basic', Order: 0.12 }),
+        "R": ng_diType('bounds', { DisplayName: "Right (R)", Level: 'basic', Order: 0.15 }),
+        "B": ng_diType('bounds', { DisplayName: "Bottom (B)", Level: 'basic', Order: 0.16 }),
         "ParentReferences": ng_diBoolean(true, { Level: 'optional', Order: 0.302 }),
         "OnCreating": ng_diEvent('function(def, ref, parent, options) { return true; }', { Order: 0.306 }),
         "OnCreated": ng_diEvent('function(c, refs, options) {}', { Order: 0.307 }),
@@ -885,8 +885,8 @@ function ng_diProperties(props,data) {
 
     obj.DesignInfo = {
       Properties: {
-        "W": ng_diType('bounds', { Level: 'basic', Order: 0.13 }),
-        "H": ng_diType('bounds', { Level: 'basic', Order: 0.14 }),
+        "W": ng_diType('bounds', { DisplayName: "Width (W)", Level: 'basic', Order: 0.13 }),
+        "H": ng_diType('bounds', { DisplayName: "Height (H)", Level: 'basic', Order: 0.14 }),
         "ScrollBars": ng_diIntegerIdentifiers('ssNone',['ssNone','ssDefault','ssAuto','ssBoth','ssHorizontal','ssVertical'],{ Level: 'optional', Order: 0.301 }),
         "style": ng_diObject({
           "background": ng_diString('', { Level: 'optional' }),

@@ -24,13 +24,13 @@ ngUserControls['calendar_designinfo'] = {
           "Data": {
             "CurrentDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
             "WeekStartDay": ng_diInteger(1, { Level: 'basic' }),
-            "HiliteWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday', Level: 'basic' }),
-                                            1: ng_diBoolean(false, { DisplayName: 'Monday', Level: 'basic' }),
-                                            2: ng_diBoolean(false, { DisplayName: 'Tuesday', Level: 'basic' }),
-                                            3: ng_diBoolean(false, { DisplayName: 'Wednesday', Level: 'basic' }),
-                                            4: ng_diBoolean(false, { DisplayName: 'Thursday', Level: 'basic' }),
-                                            5: ng_diBoolean(false, { DisplayName: 'Friday', Level: 'basic' }),
-                                            6: ng_diBoolean(false, { DisplayName: 'Saturday', Level: 'basic' })
+            "HiliteWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday (0)', Level: 'basic' }),
+                                            1: ng_diBoolean(false, { DisplayName: 'Monday (1)', Level: 'basic' }),
+                                            2: ng_diBoolean(false, { DisplayName: 'Tuesday (2)', Level: 'basic' }),
+                                            3: ng_diBoolean(false, { DisplayName: 'Wednesday (3)', Level: 'basic' }),
+                                            4: ng_diBoolean(false, { DisplayName: 'Thursday (4)', Level: 'basic' }),
+                                            5: ng_diBoolean(false, { DisplayName: 'Friday (5)', Level: 'basic' }),
+                                            6: ng_diBoolean(false, { DisplayName: 'Saturday (6)', Level: 'basic' })
                                          },
                                          undefined,{ Add: false }),
             "DateFormat": ng_diString('', { Level: 'basic' }),
@@ -46,13 +46,13 @@ ngUserControls['calendar_designinfo'] = {
             "SelectFrom": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
             "SelectTo": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
             "BlockedDates": ng_diArray(),
-            "BlockedWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday', Level: 'basic' }),
-                                             1: ng_diBoolean(false, { DisplayName: 'Monday', Level: 'basic' }),
-                                             2: ng_diBoolean(false, { DisplayName: 'Tuesday', Level: 'basic' }),
-                                             3: ng_diBoolean(false, { DisplayName: 'Wednesday', Level: 'basic' }),
-                                             4: ng_diBoolean(false, { DisplayName: 'Thursday', Level: 'basic' }),
-                                             5: ng_diBoolean(false, { DisplayName: 'Friday', Level: 'basic' }),
-                                             6: ng_diBoolean(false, { DisplayName: 'Saturday', Level: 'basic' })
+            "BlockedWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday (0)', Level: 'basic' }),
+                                             1: ng_diBoolean(false, { DisplayName: 'Monday (1)', Level: 'basic' }),
+                                             2: ng_diBoolean(false, { DisplayName: 'Tuesday (2)', Level: 'basic' }),
+                                             3: ng_diBoolean(false, { DisplayName: 'Wednesday (3)', Level: 'basic' }),
+                                             4: ng_diBoolean(false, { DisplayName: 'Thursday (4)', Level: 'basic' }),
+                                             5: ng_diBoolean(false, { DisplayName: 'Friday (5)', Level: 'basic' }),
+                                             6: ng_diBoolean(false, { DisplayName: 'Saturday (6)', Level: 'basic' })
                                            }, undefined, { Add: false }),
             "MinDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
             "MaxDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
