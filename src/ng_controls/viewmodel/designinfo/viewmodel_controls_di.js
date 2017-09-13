@@ -108,7 +108,7 @@ var ViewModel_Controls_DesignInfo = (function()
             "Default": ng_diObject()
           }, undefined, { DestroyIfEmpty: true }),
           ng_diType('bindings_string')
-        ], { Level: 'optional', Order: 0.5 })
+        ], { Level: 'optional', Order: 0.5, PropertyGroup: 'DataBind' })
       })
     };
 
