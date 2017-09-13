@@ -107,9 +107,9 @@ var WinXP_DesignInfo = {
             "fontSize": { Level: 'advanced' }
           },
           "Data": {
-            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.DefButton.LeftImg', { Level: 'advanced' }),
-            "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.DefButton.MiddleImg', { Level: 'advanced' }),
-            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.DefButton.RightImg', { Level: 'advanced' })
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.LeftImg', { Level: 'advanced' }),
+            "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.MiddleImg', { Level: 'advanced' }),
+            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.RightImg', { Level: 'advanced' })
           }
         })
       };
