@@ -42,11 +42,8 @@ var ngApp = null;
  */
 var ngDESIGNINFO = (typeof ngDESIGNINFO === 'undefined' ? 0 : ngDESIGNINFO);
 var ngDESIGNINFOCnt=0;
-/**
- *  Variable: ngc_Lang
- *  Application languages resource strings/objects.
- */
-/*<>*/
+
+var ngDesignInfoNotInheritedProps = [ 'MissingDI', 'ControlCategory', 'Image', 'IsContainer' ];
 
 /**
  *  Function: ngHASDESIGNINFO
@@ -70,6 +67,12 @@ function ngDesignInfoEnd() {
   ngDESIGNINFOCnt--;
   if (ngDESIGNINFOCnt<0) ngDESIGNINFOCnt=0;
 }
+
+/**
+ *  Variable: ngc_Lang
+ *  Application languages resource strings/objects.
+ */
+/*<>*/
 
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
@@ -1027,6 +1030,7 @@ function ngRegisterControlType(type, def)
       });
       break;
     case 'string':
+      if(type==def) return;
       ngRegisterControlType(type, function(cdef,ref,parent) {
         return ngCreateControlAsType(cdef, def, ref, parent);
       });
@@ -1050,16 +1054,35 @@ function ngRegisterControlType(type, def)
  */
 function ngRegisterControlDesignInfo(type, di)
 {
-  if((!ngHASDEBUG())||(!ngDESIGNINFO)||(typeof di!=='function')||(typeof type!=='string')) return;
+  if((!ngHASDEBUG())||(!ngDESIGNINFO)||(typeof type!=='string')) return;
   if ((ngOnRegisterControlDesignInfo)&&(!ngVal(ngOnRegisterControlDesignInfo(type,di),false))) return;
 
-  if(typeof ngRegisteredControlDesignInfos[type] === 'function') {
-    ngDEBUGWARN('Duplicated registration of design info "%s".',ngVal(type,''),di);
+  switch(typeof di)
+  {
+    case 'function':
+      if(typeof ngRegisteredControlDesignInfos[type] === 'function') {
+        ngDEBUGWARN('Duplicated registration of design info "%s".',ngVal(type,''),di);
+      }
+      if((ngCurrentLib!='')&&(typeof di.Lib === 'undefined')) di.Lib = ngCurrentLib;
+      if((ngCurrentControlsGroup!='')&&(typeof di.ControlsGroup === 'undefined')) di.ControlsGroup = ngCurrentControlsGroup;
+      if((ngCurrentUserControls!='')&&(typeof di.UserControls === 'undefined')) di.UserControls = ngCurrentUserControls;
+      ngRegisteredControlDesignInfos[type]=di;
+      break;
+    case 'object':
+      if(!di) return;
+
+      di=ng_CopyVar(di);
+      ngRegisterControlDesignInfo(type,function(d, c, ref) {
+        return di;
+      });
+      break;
+    case 'string':
+      if(type==di) return;
+      ngRegisterControlDesignInfo(type,function(d, c, ref) {
+        return ngRegisteredControlDesignInfos[di];
+      });
+      break;
   }
-  if((ngCurrentLib!='')&&(typeof di.Lib === 'undefined')) di.Lib = ngCurrentLib;
-  if((ngCurrentControlsGroup!='')&&(typeof di.ControlsGroup === 'undefined')) di.ControlsGroup = ngCurrentControlsGroup;
-  if((ngCurrentUserControls!='')&&(typeof di.UserControls === 'undefined')) di.UserControls = ngCurrentUserControls;
-  ngRegisteredControlDesignInfos[type]=di;
 }
 
 // --- Control creation --------------------------------------------------------
@@ -1409,34 +1432,32 @@ function ngCreateControl(d,ref,parent)
 
   var hasdi=ngHASDESIGNINFO();
   if(hasdi) {
-    if(d.DesignInfo!==null) {
-      if(typeof c.DesignInfo!=='object') c.DesignInfo={};
+    if((typeof c.DesignInfo!=='object')||(!c.DesignInfo)) c.DesignInfo={};
+    else delete c.DesignInfo['IsBasic']; // IsBasis is always not inherited
 
-      var createdifnc=ngRegisteredControlDesignInfos[d.Type];
-      if(typeof createdifnc === 'function') {
-        var di=createdifnc(d, c, ref);
+    var createdifnc=ngRegisteredControlDesignInfos[d.Type];
+    if(typeof createdifnc === 'function') {
+      for(var i=0;i<ngDesignInfoNotInheritedProps.length;i++) {
+        delete c.DesignInfo[ngDesignInfoNotInheritedProps[i]];
+      }
+      var di=createdifnc(d, c, ref);
+      if((di)&&(typeof di === 'object')) {
+        ng_MergeDI(c.DesignInfo,di);
+      }
+    }
+    else c.DesignInfo['MissingDI'] = true;
+
+    for(j in ngUserControls)
+    {
+      uc=ngUserControls[j];
+      if(typeof uc.OnControlDesignInfo === 'function')
+      {
+        var di = uc.OnControlDesignInfo(d,c,ref);
         if((di)&&(typeof di === 'object')) {
           ng_MergeDI(c.DesignInfo,di);
         }
       }
-
-      for(j in ngUserControls)
-      {
-        uc=ngUserControls[j];
-        if(typeof uc.OnControlDesignInfo === 'function')
-        {
-          var di = uc.OnControlDesignInfo(d,c,ref);
-          if((di)&&(typeof di === 'object')) {
-            ng_MergeDI(c.DesignInfo,di);
-          }
-        }
-      }
-
-      if(typeof d.DesignInfo==='object') {
-        ng_MergeDI(c.DesignInfo,d.DesignInfo);
-      }
     }
-    else hasdi=false;
   }
   for(j in ngUserControls)
   {
