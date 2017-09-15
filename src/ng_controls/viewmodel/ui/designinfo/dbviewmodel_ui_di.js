@@ -19,6 +19,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
     ngRegisterControlDesignInfo('ngDBViewModelForm',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
+        IsContainer: true,
         IsBasic: true,
         IsViewModel: true,
         Properties: ng_diProperties({
@@ -79,6 +80,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
     ngRegisterControlDesignInfo('ngDBToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
+        IsContainer: true,
         IsBasic: true,
         IsViewModel: true,
         NewControl: {
