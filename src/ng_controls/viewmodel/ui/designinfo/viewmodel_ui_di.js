@@ -180,7 +180,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
       ngRegisterControlDesignInfo('ngViewModelForm',function(d,c,ref) {
         return {
-          ControlCategory: 'Containers',
+          ControlCategory: 'Container',
           IsBasic: true,
           IsContainer: true,
           IsViewModel: true,
@@ -229,7 +229,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
       function EditField(d,c,ref) {
         return {
-          ControlCategory: 'Edits',
+          ControlCategory: 'Edit Field',
           IsViewModel: true,
           Properties: ng_diProperties({
             "ErrorHint": ng_diControl('ngTextHint', null, { Level: 'basic' }, { InheritedFrom: 'ngHint' }),
@@ -244,12 +244,19 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           })
         };
       }
+
+      function DropDownField(d,c,ref) {
+        var di=EditField(d,c,ref);
+        di.ControlCategory='Dropdown Field';
+        return di;
+      }
+
       ngRegisterControlDesignInfo('ngEditField',EditField);
       ngRegisterControlDesignInfo('ngEditNumField',EditField);
       ngRegisterControlDesignInfo('ngEditDateField',EditField);
       ngRegisterControlDesignInfo('ngEditTimeField',EditField);
-      ngRegisterControlDesignInfo('ngDropDownField',EditField);
-      ngRegisterControlDesignInfo('ngDropDownListField',EditField);
+      ngRegisterControlDesignInfo('ngDropDownField',DropDownField);
+      ngRegisterControlDesignInfo('ngDropDownListField',DropDownField);
       ngRegisterControlDesignInfo('ngMemoField',EditField);
     }
   };

@@ -19,7 +19,7 @@ var MaskEdit_DesignInfo = {
     var undefined;
     ngRegisterControlDesignInfo('ngMaskEdit',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         IsContainer: false,
         NewControl: {
           Default: {

@@ -18,7 +18,7 @@ ngUserControls['panels_designinfo'] = {
     var undefined;
 
     var alignpanel_DI={
-      ControlCategory: 'Containers',
+      ControlCategory: 'Container',
       IsContainer: true,
 
       NewControl: {
@@ -68,7 +68,7 @@ ngUserControls['panels_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDropPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
 
         NewControl: {
@@ -97,7 +97,7 @@ ngUserControls['panels_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngSplitPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         TargetContainer: function(control, target_control, control_elm, target_elm)
         {

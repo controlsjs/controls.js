@@ -18,7 +18,7 @@ var WinXP_DesignInfo = {
     var undefined;
     ngRegisterControlDesignInfo('stdPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "Data": {
@@ -29,7 +29,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdFrame',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "Data": {
@@ -38,17 +38,14 @@ var WinXP_DesignInfo = {
         })
       };
     });
-/*    ngRegisterControlDesignInfo('stdAlignPanel',function(d,c,ref) {
-      return {
-      };
-    });
-    ngRegisterControlDesignInfo('stdAlignFrame',function(d,c,ref) {
-      return {
-      };
-    });*/
+
+    ngRegisterControlDesignInfo('stdAlignPanel','ngAlignPanel');
+
+    ngRegisterControlDesignInfo('stdAlignFrame','ngAlignFrame');
+
     ngRegisterControlDesignInfo('stdText',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('stdText'),
           "style": {
@@ -68,7 +65,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdCheckBox',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Checkbox & Radio',
         Properties: ng_diProperties({
           "className": ng_diString('stdCheckBox'),
           "style": {
@@ -86,7 +83,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdRadioButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Checkbox & Radio',
         Properties: ng_diProperties({
           "className": ng_diString('stdRadio'),
           "style": {
@@ -104,7 +101,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           "className": ng_diString('stdButton'),
           "style": {
@@ -121,7 +118,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdFlatButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           "className": ng_diString('stdFlatButton'),
           "style": {
@@ -139,7 +136,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdLabel',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('stdLabel'),
           "style": {
@@ -156,7 +153,7 @@ var WinXP_DesignInfo = {
     });
     ngRegisterControlDesignInfo('stdLink',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           "className": ng_diString('stdLink'),
           "style": {
@@ -174,7 +171,7 @@ var WinXP_DesignInfo = {
 
     function stdGroupDI(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdGroupBox'),
@@ -208,7 +205,7 @@ var WinXP_DesignInfo = {
 
     function stdEditDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('stdEdit'),
           "DropDown": ng_diControl(undefined, {
@@ -312,7 +309,7 @@ var WinXP_DesignInfo = {
 
     function stdMaskEditDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "Data": {
             "H": ng_diInteger(WinXPControls.Images.Edit.MiddleImg.H, { Level: 'advanced' }),
@@ -357,7 +354,12 @@ var WinXP_DesignInfo = {
       return di;
     });
 
-    ngRegisterControlDesignInfo('stdDropDown',stdEditDI);
+    ngRegisterControlDesignInfo('stdDropDown',function(d,c,ref) {
+      var di=stdEditDI(d,c,ref);
+      di.ControlCategory='Dropdown';
+      return di;
+    });
+
     ngRegisterControlDesignInfo('stdDropDownList',function(d,c,ref) {
       var di=stdEditDI(d,c,ref);
       di.ControlCategory=false;
@@ -366,7 +368,7 @@ var WinXP_DesignInfo = {
     
     function stdMemoDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('stdMemo', { Level: 'advanced' }),
           "Data": {
@@ -379,7 +381,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdPages',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdPages', { Level: 'advanced' })
@@ -389,7 +391,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdToolBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdToolBar', { Level: 'advanced' })
@@ -397,14 +399,11 @@ var WinXP_DesignInfo = {
       };
     });
     
-    /*ngRegisterControlDesignInfo('stdWebBrowser',function(d,c,ref) {
-      return {
-      };
-    });*/
+    ngRegisterControlDesignInfo('stdWebBrowser', 'ngWebBrowser');
     
     ngRegisterControlDesignInfo('stdProgressBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc',
+        ControlCategory: 'Progress',
         Properties: ng_diProperties({
           "className": ng_diString('stdProgressBar', { Level: 'advanced' }),
           "Data": {
@@ -419,7 +418,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdProgressDot',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc',
+        ControlCategory: 'Progress',
         NewControl: {
           _noMerge: true,
           Default: {
@@ -439,7 +438,7 @@ var WinXP_DesignInfo = {
 
     function stdListDI(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'List',
         Properties: ng_diProperties({
           "className": ng_diString('stdListBox', { Level: 'advanced' }),
           Data: {
@@ -464,7 +463,7 @@ var WinXP_DesignInfo = {
 
     function stdPageListDI(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'List',
         Properties: ng_diProperties({
           "className": ng_diString('stdListBox', { Level: 'advanced' }),
           Data: {
@@ -501,7 +500,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdSplitPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdSplitPanel', { Level: 'advanced' })
@@ -511,7 +510,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdDropPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdDropPanel', { Level: 'advanced' })
@@ -521,7 +520,7 @@ var WinXP_DesignInfo = {
     
     function stdWindowDI(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Window',
         IsContainer: true,
         Properties: ng_diProperties({
           "CloseBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
@@ -580,7 +579,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Hint',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdHint', { Level: 'advanced' })
@@ -590,7 +589,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdTextHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Hint',
         Properties: ng_diProperties({
           "className": ng_diString('stdTextHint', { Level: 'advanced' }),
           "ModifyControls": {
@@ -602,7 +601,7 @@ var WinXP_DesignInfo = {
     
     function stdMessageDlgDI(d,c,ref) {
       return {
-        ControlCategory: 'Dialogs',
+        ControlCategory: 'Dialog',
         IsContainer: false,
         Properties: ng_diProperties({
           "DialogType": ng_diString('stdDialog',{Level: 'advanced'}),
@@ -738,7 +737,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('dlgAbout',function(d,c,ref) {
       return {
-        ControlCategory: 'Dialogs',
+        ControlCategory: 'Dialog',
         Properties: ng_diProperties({
           "DialogType": ng_diString('dlgMessageBox',{Level: 'advanced'}),
           "DlgIcon": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
@@ -820,7 +819,7 @@ var WinXP_DesignInfo = {
 
     ngRegisterControlDesignInfo('stdColorButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -834,7 +833,7 @@ var WinXP_DesignInfo = {
 
     ngRegisterControlDesignInfo('stdColorPickerDropDown',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Dropdown',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -855,7 +854,7 @@ var WinXP_DesignInfo = {
 
     ngRegisterControlDesignInfo('stdColorPickerHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Hint',
         NewControl: {
           _noMerge:true
         },
@@ -871,7 +870,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdMenu',function(d,c,ref) {
       return {
-        ControlCategory: 'Menus',
+        ControlCategory: 'Menu',
         Properties: ng_diProperties({
           "className": ng_diString('stdMenu', { Level: 'advanced' }),
           "ModifyControls": {
@@ -886,7 +885,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdMenuBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Menus',
+        ControlCategory: 'Menu',
         Properties: ng_diProperties({
           "className": ng_diString('stdMenuBar', { Level: 'advanced' })
         })
@@ -903,7 +902,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdSplitButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           "className": ng_diString('stdSplitButton', { Level: 'advanced' }),
           "Data": {
@@ -938,7 +937,7 @@ var WinXP_DesignInfo = {
     
     ngRegisterControlDesignInfo('stdViewModelForm',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "ModifyControls": {
@@ -952,6 +951,7 @@ var WinXP_DesignInfo = {
     
     function stdEditFieldDI (d,c,ref) {
       var di = {
+        ControlCategory: 'Edit Field',
         Properties: ng_diProperties({
           "Data": {
             "HintX": ng_diInteger(0,{ Level: 'basic' })
@@ -978,6 +978,7 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdEditNumField',function(d,c,ref) {
       var di=stdEditDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     ngRegisterControlDesignInfo('stdColorEditField',function(d,c,ref) {
@@ -988,46 +989,47 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdDropDownField',function(d,c,ref) {
       var di=stdEditDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      di.ControlCategory='Dropdown Field';
       return di;
     });
     ngRegisterControlDesignInfo('stdDropDownListField',function(d,c,ref) {
       var di=stdEditDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
-      di.ControlCategory=false;
+      di.ControlCategory='Dropdown Field';
       return di;
     });
     ngRegisterControlDesignInfo('stdEditDateField',function(d,c,ref) {
       var di=stdEditDateDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     ngRegisterControlDesignInfo('stdEditTimeField',function(d,c,ref) {
       var di=stdEditTimeDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     ngRegisterControlDesignInfo('stdMemoField',function(d,c,ref) {
       var di=stdMemoDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
+      return di;
+    });
+
+    ngRegisterControlDesignInfo('stdDataSet',function(d,c,ref) {
+      var di = {
+        ControlCategory: 'Dataset'
+      };
+      ng_MergeVar(di,stdPageListDI(d,c,ref));
       return di;
     });
     
-    ngRegisterControlDesignInfo('stdDataSet',stdPageListDI);
-    
-    /*ngRegisterControlDesignInfo('stdDBViewModelForm',function(d,c,ref) {
-      return {
-        Properties: ng_diProperties({
-          "Events": {
-            "OnDeleteQuery": ng_diEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' }),
-            "OnChangedQuery": ng_diEvent('function(c,querytxt,successfnc,failfnc) {}', { Level: 'basic' })
-          }
-        })
-      };
-    });*/
+    ngRegisterControlDesignInfo('stdDBViewModelForm','ngDBViewModelForm');
     
     ngRegisterControlDesignInfo('stdDBToolBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('stdToolBar', { Level: 'advanced' }),
@@ -1045,6 +1047,7 @@ var WinXP_DesignInfo = {
 
     ngRegisterControlDesignInfo('stdDBDataSet',function(d,c,ref) {
       var di = {
+        ControlCategory: 'Dataset',
         Properties: ng_diProperties({
           "ModifyControls": {
             "NewRecord": ng_diControl('stdFlatButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),

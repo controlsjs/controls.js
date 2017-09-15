@@ -70,7 +70,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
         NewControl: {
@@ -95,7 +95,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngText',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         NewControl: {
           Default: {
             Properties: {
@@ -197,7 +197,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         NewControl: {
           Default: {
             Properties: {
@@ -269,7 +269,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngGroup',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         NewControl: {
           Default: {
@@ -314,7 +314,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngEdit',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         NewControl: {
           Default: {
             Properties: {
@@ -422,7 +422,7 @@ ngUserControls['uicore'] = {
     });
     ngRegisterControlDesignInfo('ngMemo',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         NewControl: {
           Default: {
             Properties: {
@@ -488,7 +488,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngPages',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
         TargetContainer: function(control, target_control, control_elm, target_elm)
@@ -747,7 +747,7 @@ ngUserControls['uicore'] = {
     });
     ngRegisterControlDesignInfo('ngToolBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
         NewControl: {
@@ -792,7 +792,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngProgressBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc',
+        ControlCategory: 'Progress',
         NewControl: {
           Default: {
             Properties: {
@@ -854,7 +854,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
         Properties: {
@@ -869,7 +869,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Checkbox & Radio',
         Properties: ng_diProperties({
           "Data": {
             "RadioGroup": ng_diString('default', { Level: 'basic' }),
@@ -882,7 +882,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngCheckBox',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Checkbox & Radio',
         Properties: ng_diProperties({
           "Data": {
             "AllowGrayed": ng_diBoolean(false, { Level: 'basic' })
@@ -893,7 +893,7 @@ ngUserControls['uicore'] = {
 
     function DropDownDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Dropdown',
         NewControl: {
           Default: {
             Properties: {
@@ -971,7 +971,7 @@ ngUserControls['uicore'] = {
     });
     ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "ArrowsAlign": ng_diStringValues('right', ['left','right','both'], { Level: 'basic' }),
           "Arrows": ng_diStringValues('leftright', ['none','leftright','updown'], { Level: 'basic' }),

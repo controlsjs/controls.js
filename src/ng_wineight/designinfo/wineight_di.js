@@ -18,7 +18,7 @@ var WinEight_DesignInfo = {
     var undefined;
     ngRegisterControlDesignInfo('wePanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wePanel'),
@@ -30,7 +30,7 @@ var WinEight_DesignInfo = {
     });
     ngRegisterControlDesignInfo('weFrame',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wePanel'),
@@ -43,7 +43,7 @@ var WinEight_DesignInfo = {
 
     ngRegisterControlDesignInfo('weColorPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weGreen'),
@@ -55,7 +55,7 @@ var WinEight_DesignInfo = {
     });
     ngRegisterControlDesignInfo('weColorFrame',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weGreen'),
@@ -68,7 +68,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weText',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('weTextLight'),
           "style": {
@@ -81,7 +81,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weSmallText',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('weSmallTextLight')
         })
@@ -90,7 +90,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weCaption',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('weCaptionLight')
         })
@@ -99,7 +99,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weTitle',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('weTitleLight')
         })
@@ -117,7 +117,7 @@ var WinEight_DesignInfo = {
     
     function weCheckBoxDI(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Checkbox & Radio',
         Properties: ng_diProperties({
           "className": ng_diString('weCheckBoxLight'),
           "Data": {
@@ -133,7 +133,6 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weRadioButton',function(d,c,ref) {
       var di = {
-        ControlCategory: 'Buttons',
         Properties: ng_diProperties({
           "className": ng_diString('weRadioLight')
         })
@@ -144,7 +143,6 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weToggleSwitch',function(d,c,ref) {
       var di = {
-        ControlCategory: 'Buttons',
         Properties: ng_diProperties({
           "className": ng_diString('weToggleSwitchLight'),
           "Events": {
@@ -160,7 +158,7 @@ var WinEight_DesignInfo = {
     
     function weButtonDI(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           "className": ng_diString('weButtonLight'),
           "Data": {
@@ -194,7 +192,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weLabel',function(d,c,ref) {
       var di = {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Label',
         Properties: ng_diProperties({
           "className": ng_diString('weLabelLight')
         })
@@ -215,7 +213,7 @@ var WinEight_DesignInfo = {
     
     function weGroupDI(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weGroupBoxLight')
@@ -231,7 +229,7 @@ var WinEight_DesignInfo = {
     
     function weEditDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('weEditLight'),
           "Data": {
@@ -288,7 +286,7 @@ var WinEight_DesignInfo = {
     
     function weEditNumDI(d,c,ref) {
       var di={
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "Data": {
             "TextAlign": ng_diString('center', { Level: 'advanced' })
@@ -344,7 +342,7 @@ var WinEight_DesignInfo = {
 
     function weMaskEditDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "Data": {
             "H": ng_diInteger(WinEightControls.Images.EditLight.MiddleImg.H, { Level: 'advanced' }),
@@ -389,7 +387,11 @@ var WinEight_DesignInfo = {
       return di;
     });
 
-    ngRegisterControlDesignInfo('weDropDown',weEditDI);
+    ngRegisterControlDesignInfo('weDropDown',function(d,c,ref) {
+      var di=weEditDI(d,c,ref);
+      di.ControlCategory='Dropdown';
+      return di;
+    });
     ngRegisterControlDesignInfo('weDropDownList',function(d,c,ref) {
       var di=weEditDI(d,c,ref);
       di.ControlCategory=false;
@@ -398,7 +400,7 @@ var WinEight_DesignInfo = {
     
     function weMemoDI(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('weMemoLight', { Level: 'advanced' }),
           "Data": {
@@ -416,7 +418,7 @@ var WinEight_DesignInfo = {
     
     function wePagesDI(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wePagesLight', { Level: 'advanced' }),
@@ -429,7 +431,7 @@ var WinEight_DesignInfo = {
     ngRegisterControlDesignInfo('wePages', wePagesDI);
     ngRegisterControlDesignInfo('weSections',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weSectionsLight', { Level: 'advanced' }),
@@ -442,7 +444,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weToolBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weToolBarLight', { Level: 'advanced' })
@@ -452,7 +454,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weProgressBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Misc',
+        ControlCategory: 'Progress',
         Properties: ng_diProperties({
           "className": ng_diString('weProgressBar', { Level: 'advanced' }),
           "Smooth": ng_diBoolean(true),
@@ -467,7 +469,7 @@ var WinEight_DesignInfo = {
     // TODO: newControl?
     function weProgressImgDI(d,c,ref) {
       return {
-        ControlCategory: 'Misc',
+        ControlCategory: 'Progress',
         NewControl: {
           _noMerge: true,
           Default: {
@@ -493,7 +495,7 @@ var WinEight_DesignInfo = {
 
     function weListDI(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'List',
         Properties: ng_diProperties({
           "className": ng_diString('weListBoxLight', { Level: 'advanced' }),
           Data: {
@@ -518,7 +520,7 @@ var WinEight_DesignInfo = {
 
     function wePageListDI(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'List',
         Properties: ng_diProperties({
           "className": ng_diString('weListBoxLight', { Level: 'advanced' }),
           Data: {
@@ -543,7 +545,7 @@ var WinEight_DesignInfo = {
     ngRegisterControlDesignInfo('wePageList',wePageListDI);
     ngRegisterControlDesignInfo('wePageTreeList',function(d,c,ref) {
       var di={
-        ControlCategory: 'Containers',
+        ControlCategory: 'List',
         IsContainer: true,
         Properties: ng_diProperties({
           "ModifyControls": {
@@ -557,7 +559,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weAlignPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wePanel', { Level: 'advanced' })
@@ -567,7 +569,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weAlignFrame',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wePanel', { Level: 'advanced' })
@@ -577,7 +579,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weSplitPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weSplitPanelLight', { Level: 'advanced' }),
@@ -590,7 +592,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDropPanel',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weDropPanelLight', { Level: 'advanced' }),
@@ -614,7 +616,7 @@ var WinEight_DesignInfo = {
           frameimg = 'WinEightControls.Images.Window'+themestr,
           capimg= 'WinEightControls.Images.WindowCaption'+themestr;
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Window',
         IsContainer: true,
         Properties: ng_diProperties({
           "CloseBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
@@ -672,7 +674,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Hint',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weHint', { Level: 'advanced' })
@@ -682,7 +684,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weTextHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Hint',
         Properties: ng_diProperties({
           "className": ng_diString('weTextHint', { Level: 'advanced' }),
           "ModifyControls": {
@@ -694,7 +696,7 @@ var WinEight_DesignInfo = {
     
     function weMessageDlgDI(d,c,ref) {
       return {
-        ControlCategory: 'Dialogs',
+        ControlCategory: 'Dialog',
         IsContainer: false,
         Properties: ng_diProperties({
           "DialogType": ng_diString('weDialog',{Level: 'advanced'}),
@@ -825,7 +827,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDlgAbout',function(d,c,ref) {
       return {
-        ControlCategory: 'Dialogs',
+        ControlCategory: 'Dialog',
         Properties: ng_diProperties({
           "DialogType": ng_diString('weDlgMessageBox',{Level: 'advanced'}),
           "DlgIcon": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
@@ -852,7 +854,7 @@ var WinEight_DesignInfo = {
     
     function weEditDateDI(d,c,ref) {
       var di={
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('weEditLight', { Level: 'advanced' }),
           "DropDown": ng_diControl('weCalendar', ng_diProperties({
@@ -869,7 +871,7 @@ var WinEight_DesignInfo = {
     
     function weEditTimeDI(d,c,ref) {
       var di={
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('weEditLight', { Level: 'advanced' }),
           "DropDown": ng_diControl('weList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
@@ -907,7 +909,7 @@ var WinEight_DesignInfo = {
 
     ngRegisterControlDesignInfo('weColorButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -921,7 +923,7 @@ var WinEight_DesignInfo = {
 
     ngRegisterControlDesignInfo('weColorPickerDropDown',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Dropdown',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -942,7 +944,7 @@ var WinEight_DesignInfo = {
 
     ngRegisterControlDesignInfo('weColorPickerHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Hint',
         NewControl: {
           _noMerge:true
         },
@@ -960,7 +962,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weMenu',function(d,c,ref) {
       return {
-        ControlCategory: 'Menus',
+        ControlCategory: 'Menu',
         Properties: ng_diProperties({
           "className": ng_diString('weMenuLight', { Level: 'advanced' }),
           "ModifyControls": {
@@ -976,7 +978,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weMenuBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Menus',
+        ControlCategory: 'Menu',
         Properties: ng_diProperties({
           "className": ng_diString('weMenuBarLight', { Level: 'advanced' }),
           "ModifyControls": {
@@ -996,7 +998,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weSplitButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           "className": ng_diString('weSplitButtonLight', { Level: 'advanced' }),
           "Data": {
@@ -1025,7 +1027,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weViewModelForm',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "ModifyControls": {
@@ -1037,6 +1039,7 @@ var WinEight_DesignInfo = {
     
     function weEditFieldDI (d,c,ref) {
       var di = {
+       ControlCategory: 'Edit Field',
         Properties: ng_diProperties({
           "Data": {
             "HintX": ng_diInteger(19,{ Level: 'basic' }),
@@ -1062,6 +1065,7 @@ var WinEight_DesignInfo = {
     ngRegisterControlDesignInfo('weEditNumField',function(d,c,ref) {
       var di=weEditDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     ngRegisterControlDesignInfo('weColorEditField',function(d,c,ref) {
@@ -1072,33 +1076,37 @@ var WinEight_DesignInfo = {
     ngRegisterControlDesignInfo('weDropDownField',function(d,c,ref) {
       var di=weEditDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      di.ControlCategory='Dropdown Field';
       return di;
     });
     ngRegisterControlDesignInfo('weDropDownListField',function(d,c,ref) {
       var di=weEditDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
-      di.ControlCategory=false;
+      di.ControlCategory='Dropdown Field';
       return di;
     });
     ngRegisterControlDesignInfo('weEditDateField',function(d,c,ref) {
       var di=weEditDateDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     ngRegisterControlDesignInfo('weEditTimeField',function(d,c,ref) {
       var di=weEditTimeDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     ngRegisterControlDesignInfo('weMemoField',function(d,c,ref) {
       var di=weMemoDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
       return di;
     });
     
     ngRegisterControlDesignInfo('weDBViewModelForm',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "Events": {
@@ -1111,7 +1119,7 @@ var WinEight_DesignInfo = {
     
     ngRegisterControlDesignInfo('weDBToolBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('weToolBar', { Level: 'advanced' }),
@@ -1126,10 +1134,17 @@ var WinEight_DesignInfo = {
       };
     });
     
-    ngRegisterControlDesignInfo('weDataSet',wePageListDI);
+    ngRegisterControlDesignInfo('weDataSet', function(d,c,ref) {
+      var di = {
+        ControlCategory: 'Dataset'
+      };
+      ng_MergeVar(di,wePageListDI(d,c,ref));
+      return di;
+    });
 
     ngRegisterControlDesignInfo('weDBDataSet',function(d,c,ref) {
       var di = {
+        ControlCategory: 'Dataset',
         Properties: ng_diProperties({
           "ModifyControls": {
             "NewRecord": ng_diControl('weButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),

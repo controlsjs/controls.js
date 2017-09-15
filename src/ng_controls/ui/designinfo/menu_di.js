@@ -77,7 +77,7 @@ ngUserControls['menu_designinfo'] = {
     var undefined;
     ngRegisterControlDesignInfo('ngMenu',function(d,c,ref) {
       return {
-        ControlCategory: 'Menus',
+        ControlCategory: 'Menu',
         NewControl: {
           Default: {
             Properties: {
@@ -154,7 +154,7 @@ ngUserControls['menu_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngMenuBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Menus',
+        ControlCategory: 'Menu',
         IsContainer: false,
         NewControl: {
           Default: {
@@ -200,7 +200,7 @@ ngUserControls['menu_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngSplitButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         NewControl: {
           Default: {
             Properties: {

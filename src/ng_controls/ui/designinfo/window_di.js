@@ -42,7 +42,7 @@ ngUserControls['window_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngWindow',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Window',
         IsContainer: true,
 
         NewControl: {
@@ -141,7 +141,7 @@ ngUserControls['window_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Hint',
         IsContainer: true,
 
         NewControl: {
@@ -196,7 +196,7 @@ ngUserControls['window_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngTextHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Labels',
+        ControlCategory: 'Hint',
         IsContainer: false,
         NewControl: {
           Default: {

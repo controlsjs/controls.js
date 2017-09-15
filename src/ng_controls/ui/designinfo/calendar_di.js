@@ -79,7 +79,7 @@ ngUserControls['calendar_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngEditDate',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         NewControl: {
           "Default": {
             Properties: {
@@ -102,7 +102,7 @@ ngUserControls['calendar_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngEditTime',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Edit',
         NewControl: {
           "Default": {
             Properties: {

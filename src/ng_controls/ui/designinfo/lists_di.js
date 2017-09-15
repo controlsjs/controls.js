@@ -396,7 +396,7 @@ ngUserControls['list_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngList',function(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'List',
         NewControl: {
           Default: {
             Properties: {
@@ -541,7 +541,7 @@ ngUserControls['list_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngPageList',function(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'List',
         IsContainer: false,
         NewControl: {
           Default: {

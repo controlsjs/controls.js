@@ -375,7 +375,7 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -401,7 +401,7 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorPickerDropDown',function(d,c,ref) {
       return {
-        ControlCategory: 'Edits',
+        ControlCategory: 'Dropdown',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -436,7 +436,7 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorPickerHint',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Hint',
         NewControl: {
           _noMerge:true,
           Default: {
@@ -465,7 +465,7 @@ ngUserControls['ngColorControls_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngColorPickerButton',function(d,c,ref) {
       return {
-        ControlCategory: 'Buttons',
+        ControlCategory: 'Button',
         Properties: ng_diProperties({
           'Data': {
             'PickerLayout': ng_diMixed(['null','ngcop_layout'], { InitType: 'ngcop_layout', Level: 'basic' }),

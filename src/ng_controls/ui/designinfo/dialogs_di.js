@@ -18,7 +18,7 @@ ngUserControls['dialogs_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngMessageDlg',function(d,c,ref) {
       return {
-        ControlCategory: 'Dialogs',
+        ControlCategory: 'Dialog',
         IsContainer: false,
         NewControl: {
           Default: {
@@ -91,7 +91,7 @@ ngUserControls['dialogs_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngAboutDlg',function(d,c,ref) {
       return {
-        ControlCategory: 'Dialogs',
+        ControlCategory: 'Dialog',
         Properties: ng_diProperties({
           "AboutSystemInfo": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "AboutComponents": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),

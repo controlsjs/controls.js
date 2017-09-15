@@ -18,7 +18,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBViewModelForm',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         IsBasic: true,
         IsViewModel: true,
@@ -45,7 +45,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBDataSet',function(d,c,ref) {
       return {
-        ControlCategory: 'Lists',
+        ControlCategory: 'Dataset',
         IsViewModel: true,
         Properties: ng_diProperties({
           "DBViewModel": ng_diMixed(['string', 'identifier'], { Level: 'basic' }),
@@ -79,7 +79,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBToolBar',function(d,c,ref) {
       return {
-        ControlCategory: 'Containers',
+        ControlCategory: 'Container',
         IsContainer: true,
         IsBasic: true,
         IsViewModel: true,
