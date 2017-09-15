@@ -19,7 +19,7 @@ var DBViewModel_DesignInfo = {
     ngRegisterControlDesignInfo('ngSysDBViewModel',function(d,c,ref) {
       return {
         ControlCategory: 'System',
-        BaseControl: 'ngSysDBViewModel',
+        IsBasic: true,
         IsViewModel: true,
         Properties: ng_diProperties({
           "Data": {

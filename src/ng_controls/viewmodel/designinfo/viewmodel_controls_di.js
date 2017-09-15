@@ -314,7 +314,7 @@ var ViewModel_Controls_DesignInfo = (function()
       ngRegisterControlDesignInfo('ngSysViewModel',function(d,c,ref) {
         return {
           ControlCategory: 'System',
-          BaseControl: 'ngSysViewModel',
+          IsBasic: true,
           IsViewModel: true,
           NewControl: {
             Default: {
@@ -383,7 +383,7 @@ var ViewModel_Controls_DesignInfo = (function()
       ngRegisterControlDesignInfo('ngSysViewModelSettings',function(d,c,ref) {
         return {
           ControlCategory: 'System',
-          BaseControl: 'ngSysViewModelSettings',
+          IsBasic: true,
           IsViewModel: true,
           Properties: ng_diProperties({
             "Events": {

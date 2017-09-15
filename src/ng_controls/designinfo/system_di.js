@@ -20,7 +20,7 @@ ngUserControls['system_designinfo'] = {
     ngRegisterControlDesignInfo('ngSysContainer',function(d,c,ref) {
       return {
         ControlCategory: 'System',
-        BaseControl: 'ngSysContainer',
+        IsBasic: true,
         IsContainer: true,
         Properties: {
           "ParentReferences": ng_diBoolean(false, { Level: 'optional' })
@@ -31,7 +31,7 @@ ngUserControls['system_designinfo'] = {
     ngRegisterControlDesignInfo('ngSysTimer',function(d,c,ref) {
       return {
         ControlCategory: 'System',
-        BaseControl: 'ngSysTimer',
+        IsBasic: true,
         Properties: ng_diProperties({
           "Data": {
             "Interval": ng_diInteger(0,{Level:'basic'}),
@@ -52,7 +52,7 @@ ngUserControls['system_designinfo'] = {
     ngRegisterControlDesignInfo('ngSysRPC',function(d,c,ref) {
       return {
         ControlCategory: 'System',
-        BaseControl: 'ngSysRPC',
+        IsBasic: true,
         NewControl: {
           Default: {
             Properties: {
@@ -104,7 +104,7 @@ ngUserControls['system_designinfo'] = {
     ngRegisterControlDesignInfo('ngSysURLParams',function(d,c,ref) {
       return {
         ControlCategory: 'System',
-        BaseControl: 'ngSysURLParams',
+        IsBasic: true,
         Properties: ng_diProperties({
           "Data": {
             "Params": ng_diObject(undefined, { Level: 'basic' }, {

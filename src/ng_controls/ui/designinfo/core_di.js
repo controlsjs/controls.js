@@ -69,7 +69,10 @@ ngUserControls['uicore'] = {
     var undefined;
 
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
-      var di={
+      return {
+        ControlCategory: 'Containers',
+        IsBasic: true,
+        IsContainer: true,
         NewControl: {
           Default: {
             Properties: {
@@ -83,19 +86,11 @@ ngUserControls['uicore'] = {
           "ScrollBars": { Level: 'basic' },
           "Controls": { Level: 'basic' },
           "Data": ng_diObject({
-            "ChildHandling": { Level: 'optional' },
-            "FormID": ng_diString('', { Level: 'optional' })
+            "ChildHandling": { Level: 'basic' },
+            "FormID": ng_diString('', { Level: 'basic' })
           })
         }
       };
-      if(!d.CtrlInheritanceDepth) {
-        di.ControlCategory='Containers';
-        di.IsContainer=true;
-        di.BaseControl='ngPanel';
-        di.Properties["Data"].Types.object.ObjectProperties["FormID"].Level='advanced';
-        di.Properties["Data"].Types.object.ObjectProperties["ChildHandling"].Level='advanced';
-      }
-      return di;
     });
 
     ngRegisterControlDesignInfo('ngText',function(d,c,ref) {
@@ -153,7 +148,7 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngImage',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
-        BaseControl: 'ngImage',
+        IsBasic: true,
         Properties: ng_diProperties({
           "Data": {
             "ngAlt":  { Level: 'advanced' },
@@ -173,7 +168,7 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngImageMap',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
-        BaseControl: 'ngImageMap',
+        IsBasic: true,
         Properties: ng_diProperties({
           "Data": {
             "ngAlt":  { Level: 'advanced' },
@@ -494,13 +489,13 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngPages',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
+        IsBasic: true,
         IsContainer: true,
         TargetContainer: function(control, target_control, control_elm, target_elm)
         {
           if (!control) return 'Pages.0.Controls';
           return 'Pages.' + ngVal(control.Page, 0) + '.Controls';
         },
-        BaseControl: 'ngPages',
         NewControl: {
           Default: {
             Properties: {
@@ -753,8 +748,8 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
+        IsBasic: true,
         IsContainer: true,
-        BaseControl: 'ngToolBar',
         NewControl: {
           Default: {
             Properties: {
@@ -829,7 +824,7 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngWebBrowser',function(d,c,ref) {
       return {
         ControlCategory: 'Misc',
-        BaseControl: 'ngWebBrowser',
+        IsBasic: true,
         NewControl: {
           Default: {
             Properties: {
@@ -858,7 +853,10 @@ ngUserControls['uicore'] = {
     // Derived controls
 
     ngRegisterControlDesignInfo('ngFrame',function(d,c,ref) {
-      var di={
+      return {
+        ControlCategory: 'Containers',
+        IsBasic: true,
+        IsContainer: true,
         Properties: {
           "ParentReferences": ng_diBoolean(false, { Level: 'optional' }),
           "Data": ng_diObject({
@@ -867,14 +865,6 @@ ngUserControls['uicore'] = {
           })
         }
       };
-      if(d.CtrlInheritanceDepth<2) {
-        di.ControlCategory='Containers';
-        di.IsContainer=true;
-        di.BaseControl='ngFrame';
-        di.Properties["Data"].Types.object.ObjectProperties["FormID"].Level='advanced';
-        di.Properties["Data"].Types.object.ObjectProperties["ChildHandling"].Level='advanced';
-      }
-      return di;
     });
 
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
@@ -1007,7 +997,7 @@ ngUserControls['uicore'] = {
     ngRegisterControlDesignInfo('ngSysAction',function(d,c,ref) {
       return {
         ControlCategory: 'System',
-        BaseControl: 'ngSysAction',
+        IsBasic: true,
         NewControl: {
           Default: {
             Properties: {

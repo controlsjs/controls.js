@@ -48,7 +48,7 @@ ngUserControls['panels_designinfo'] = {
     };
     ngRegisterControlDesignInfo('ngAlignPanel',function(d,c,ref) {
       var di={
-        BaseControl: 'ngAlignPanel'
+        IsBasic: true
       };
       ng_MergeVar(di,alignpanel_DI);
       return di;
@@ -57,7 +57,7 @@ ngUserControls['panels_designinfo'] = {
     ngRegisterControlDesignInfo('ngAlignFrame',function(d,c,ref) {
 
       var di={
-        BaseControl: 'ngAlignFrame',
+        IsBasic: true,
         Properties: {
           "ParentReferences": ng_diBoolean(false, { Level: 'optional' })
         }

@@ -181,8 +181,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       ngRegisterControlDesignInfo('ngViewModelForm',function(d,c,ref) {
         return {
           ControlCategory: 'Containers',
+          IsBasic: true,
           IsContainer: true,
-          BaseControl: 'ngViewModelForm',
           IsViewModel: true,
           Properties: ng_diProperties({
             "ErrorHint": ng_diControl('ngTextHint', null, { Level: 'basic' }, { InheritedFrom: 'ngHint' }),

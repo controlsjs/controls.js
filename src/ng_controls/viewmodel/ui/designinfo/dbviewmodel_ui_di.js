@@ -18,7 +18,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBViewModelForm',function(d,c,ref) {
       return {
-        BaseControl: 'ngDBViewModelForm',
+        IsBasic: true,
         IsViewModel: true,
         Properties: ng_diProperties({
           "Data": {
@@ -76,7 +76,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
 
     ngRegisterControlDesignInfo('ngDBToolBar',function(d,c,ref) {
       return {
-        BaseControl: 'ngDBToolBar',
+        IsBasic: true,
         IsViewModel: true,
         NewControl: {
           Default: {
