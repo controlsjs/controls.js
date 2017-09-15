@@ -19,7 +19,8 @@
 /*
   {
     ControlCategory: 'category',
-    BaseControl: 'basetype',
+    IsBasic: false,
+    IsViewModel: false,
     NonVisual: false,
     Image: {...},
 
@@ -28,7 +29,10 @@
         Properties: {
           "prop1": {
             Value: val,
-            ValueByRefName: false
+            ValueByRefName: false,
+
+            // W and H  dimenstion properties are rounded to nearest non-zero possitive grid by default
+            Grid: true
           },
           "prop2": { // object
             ObjectProperties: {
