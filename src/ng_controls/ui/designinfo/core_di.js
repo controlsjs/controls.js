@@ -869,6 +869,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngRadioButton',function(d,c,ref) {
       return {
+        ControlCategory: 'Buttons',
         Properties: ng_diProperties({
           "Data": {
             "RadioGroup": ng_diString('default', { Level: 'basic' }),
@@ -881,6 +882,7 @@ ngUserControls['uicore'] = {
 
     ngRegisterControlDesignInfo('ngCheckBox',function(d,c,ref) {
       return {
+        ControlCategory: 'Buttons',
         Properties: ng_diProperties({
           "Data": {
             "AllowGrayed": ng_diBoolean(false, { Level: 'basic' })
@@ -891,6 +893,7 @@ ngUserControls['uicore'] = {
 
     function DropDownDI(d,c,ref) {
       return {
+        ControlCategory: 'Edits',
         NewControl: {
           Default: {
             Properties: {
@@ -968,6 +971,7 @@ ngUserControls['uicore'] = {
     });
     ngRegisterControlDesignInfo('ngEditNum',function(d,c,ref) {
       return {
+        ControlCategory: 'Edits',
         Properties: ng_diProperties({
           "ArrowsAlign": ng_diStringValues('right', ['left','right','both'], { Level: 'basic' }),
           "Arrows": ng_diStringValues('leftright', ['none','leftright','updown'], { Level: 'basic' }),

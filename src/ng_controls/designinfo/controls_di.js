@@ -1070,16 +1070,18 @@ ngUserControls['controls_designinfo'] = {
   OnControlDesignInfo: function(def, c, ref)
   {
     if(!def.CtrlInheritanceDepth) {
+      var cdi=c.DesignInfo;
       var di = {};
+
       // define common DesignInfo
-      var events = (c.DesignInfo && c.DesignInfo.Properties && c.DesignInfo.Properties.Events) ? c.DesignInfo.Properties.Events : {},
+      var events = (cdi && cdi.Properties && cdi.Properties.Events) ? cdi.Properties.Events : {},
           eventstype = [{ id: 'Before', order: 0.91 }, { id: 'After', order: 0.93 }, { id: 'Override', order: 0.94 }],
           id;
       di.Properties = ngNullVal(di.Properties, {});
       for (var i = 0; i < eventstype.length; i++)
       {
         id = eventstype[i].id + 'Events';
-        di.Properties[id] = ngNullVal(c.DesignInfo.Properties[id], {});
+        di.Properties[id] = ngNullVal(cdi.Properties[id], {});
         ng_MergeDI(di.Properties[id], events);
         di.Properties[id].Order = eventstype[i].order;
       }

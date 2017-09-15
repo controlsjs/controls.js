@@ -44,6 +44,7 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Containers',
+        IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wfrToolBar', { Level: 'advanced' })
         })
@@ -217,6 +218,7 @@ var WireframeControls_DesignInfo = {
 
     function wfrMaskEditDI(d,c,ref) {
       return {
+        ControlCategory: 'Edits',
         Properties: ng_diProperties({
           "Data": {
             "H": ng_diInteger(WireframeControls.Images.Edit.MiddleImg.H, { Level: 'advanced' }),
@@ -283,6 +285,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrProgressBar',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc',
         Properties: ng_diProperties({
           "className": ng_diString('wfrProgressBar', { Level: 'advanced' }),
           "Data": {
@@ -310,6 +313,7 @@ var WireframeControls_DesignInfo = {
 
     function wfrListDI(d,c,ref) {
       return {
+        ControlCategory: 'Lists',
         Properties: ng_diProperties({
           "className": ng_diString('wfrListBox', { Level: 'advanced' }),
           "Data": {
@@ -339,6 +343,7 @@ var WireframeControls_DesignInfo = {
 
     function wfrPageListDI(d,c,ref) {
       return {
+        ControlCategory: 'Lists',
         Properties: ng_diProperties({
           "className": ng_diString('wfrListBox', { Level: 'advanced' }),
           "Data": {
@@ -409,6 +414,8 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrGroup',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wfrGroupBox', { Level: 'advanced' })
         })
@@ -485,6 +492,8 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrHint',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wfrHint', { Level: 'advanced' })
         })
@@ -493,6 +502,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrTextHint',function(d,c,ref) {
       return {
+        ControlCategory: 'Labels',
         Properties: ng_diProperties({
           "className": ng_diString('wfrTextHint', { Level: 'advanced' })
         })
@@ -501,6 +511,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrCalendar',function(d,c,ref) {
       return {
+        ControlCategory: 'Misc',
         Properties: ng_diProperties({
           "className": ng_diString('wfrCalendar', { Level: 'advanced' }),
           "Events": {
@@ -543,6 +554,7 @@ var WireframeControls_DesignInfo = {
 
     function wfrMemoDI(d,c,ref) {
       return {
+        ControlCategory: 'Edits',
         Properties: ng_diProperties({
           "className": ng_diString('wfrMemo', { Level: 'advanced' }),
           "Data": {
@@ -558,6 +570,8 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrSplitPanel',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wfrSplitPanel', { Level: 'advanced' })
         })
@@ -566,6 +580,8 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDropPanel',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true,
         Properties: ng_diProperties({
           "className": ng_diString('wfrDropPanel', { Level: 'advanced' })
         })
@@ -574,6 +590,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrMenu',function(d,c,ref) {
       return {
+        ControlCategory: 'Menus',
         Properties: ng_diProperties({
           "className": ng_diString('wfrMenu', { Level: 'advanced' }),
           "Data": {
@@ -596,6 +613,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrMenuBar',function(d,c,ref) {
       return {
+        ControlCategory: 'Menus',
         Properties: ng_diProperties({
           "className": ng_diString('wfrMenuBar', { Level: 'advanced' }),
           "Data": {
@@ -607,6 +625,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrMenuBarButton',function(d,c,ref) {
       return {
+        ControlCategory: false,
         Properties: ng_diProperties({
           "className": ng_diString('wfrMenuBarButton', { Level: 'advanced' }),
           "Data": {
@@ -620,6 +639,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrSplitButton',function(d,c,ref) {
       return {
+        ControlCategory: 'Buttons',
         Properties: ng_diProperties({
           "className": ng_diString('wfrSplitButton', { Level: 'advanced' }),
           "Data": {
@@ -780,6 +800,7 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrDlgAbout',function(d,c,ref) {
       return {
+        ControlCategory: 'Dialogs',
         Properties: ng_diProperties({
           "DialogType": ng_diString('wfrDlgMessageBox',{Level: 'advanced'}),
           "DlgIcon": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
@@ -795,6 +816,8 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrViewModelForm',function(d,c,ref) {
       return {
+        ControlCategory: 'Containers',
+        IsContainer: true,
         Properties: ng_diProperties({
           "ModifyControls": {
             "ErrorHint": ng_diControl('wfrTextHint', ng_diProperties({
