@@ -1079,7 +1079,11 @@ function ngRegisterControlDesignInfo(type, di)
     case 'string':
       if(type==di) return;
       ngRegisterControlDesignInfo(type,function(d, c, ref) {
-        return ngRegisteredControlDesignInfos[di];
+        var createfnc=ngRegisteredControlDesignInfos[di];
+        var idi;
+        if(typeof createfnc==='function') idi=createfnc.apply(arguments);
+        delete idi.IsBasic;
+        return idi;
       });
       break;
   }
