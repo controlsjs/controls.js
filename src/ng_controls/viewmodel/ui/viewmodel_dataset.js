@@ -276,12 +276,13 @@ function ngdsc_DataLoaded(vm,cmd)
   var ds=vm.DataSetControl;
   if(!ds) return;
   
+  if(ng_typeNumber(vm.ViewModel.TotalCount))
+  {
+    ds.SetLength(vm.ViewModel.TotalCount);
+  }
+
   if(cmd=='recordcount')
   {
-    if(ng_typeNumber(vm.ViewModel.TotalCount))
-    {
-      ds.SetLength(vm.ViewModel.TotalCount);
-    }
     delete vm.ViewModel.TotalCount;
     ds.SetAsyncData(999999999, null);
   }
