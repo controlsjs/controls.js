@@ -488,7 +488,7 @@ ngUserControls['list_designinfo'] = {
             "CheckedChangedDelay": ng_diInteger(0, { Level: 'basic' }),
             "ItemsControls": ng_diArrayOfControls(undefined, { Level: 'hidden' }),
             "ParentReferences": { Level: 'basic' },
-            "Frame": ng_diType( 'img_frame', { Level: 'basic', Collapsed: true }),
+            "Frame": ng_diType( 'img_frame', { Level: 'basic', Collapsed: true })
           },
           "Events": {
             "OnAdd": ng_diEvent('function(c, it, parent) { return true; }', { Level: 'basic' }),
@@ -677,7 +677,6 @@ ngUserControls['list_designinfo'] = {
             "OnPagingUpdated": ng_diEvent('function(c, pginfo) { return true; }', { Level: 'basic' }),
             "OnInvalidateData": ng_diEvent('function(c, idx, cnt) { return true; }', { Level: 'basic' }),
             "OnSetAsyncData": ng_diEvent('function(c, idx, data) { return true; }', { Level: 'basic' }),
-            "OnShowLoading": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnShowLoading": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnHideLoading": ng_diEvent('function(c) {}', { Level: 'basic' })
           },
