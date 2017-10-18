@@ -205,8 +205,8 @@ function ng_diTypeVal(type, defval, pdata, tdata) {
 function ng_diBoolean(defval, pdata, tdata) {
   var di=((tdata)&&(typeof tdata==='object')) ? tdata : {};
   ng_MergeVar(di, {
-    InitValue: true,
-  })
+    InitValue: true
+  });
   return ng_diTypeVal('boolean', defval, pdata, di);
 }
 
@@ -470,7 +470,7 @@ function ng_diArrayOf(itemptype, pdata, tdata, basetype) {
   if(itemptype) {
     ng_MergeVar(di, {
       ChildDesignInfo: itemptype
-    })
+    });
   }
   return ng_diType(ngVal(basetype,'array'),pdata,di);
 }
@@ -1053,7 +1053,7 @@ function ng_diProperties(props,data) {
 
     ng_MergeDI(obj.DesignInfo ,getBaseProperties());
   };
-})()
+})();
 
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
