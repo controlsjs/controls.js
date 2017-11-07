@@ -36,6 +36,9 @@ var nglClickItemImg = 4;
 var nglSortAsc = 0;
 var nglSortDesc = 1;
 
+var nglRowItem = 0;
+var nglRowGroup = 1;
+
 var ngl_LeaveListTimer = null;
 
 var ngl_CurrentRowId='';
@@ -645,13 +648,26 @@ function ngl_ToggleCollapsed(it)
   }
 }
 
-function ngl_GetRowClassName(it, selected, id)
+function ngl_GetRowClassName(it, selected, id, level, part)
 {
-  var cn='Row';
-  if(this.OnGetRowClassName)
-  {
-    var c=this.OnGetRowClassName(this, it, id);
-    if(ngVal(c,'')!='') cn=c;
+  var cn='';
+  switch(part){
+    case 1: //nglRowGroup
+      if(this.OnGetRowGroupClassName)
+      {
+        cn=this.OnGetRowGroupClassName(this, it, id, level);
+      }
+      if(ngVal(cn,'')=='') return '';
+    break;
+    case 0: //nglRowItem
+    default:
+      cn='Row';
+      if(this.OnGetRowClassName)
+      {
+        var c=this.OnGetRowClassName(this, it, id, level);
+        if(ngVal(c,'')!='') cn=c;
+      }
+    break;
   }
   if(it)
   {
@@ -758,7 +774,7 @@ function ngl_UpdateChecked(it,recursion,setall,id,level)
       var o=document.getElementById(this.ID+'_'+id);
       if(o)
       {
-        var cn=this.GetRowClassName(it, this.selected[id], id);
+        var cn=this.GetRowClassName(it, this.selected[id], id, level, 0/*nglRowItem*/);
         var i=o.className.indexOf('_Focus');
         if(i>=0) cn+='_Focus';
         o.className=cn;
@@ -2283,7 +2299,7 @@ function ngl_DrawItemText(html, it, id, level)
   if(this.Columns.length>0)
   {
     var col;
-    html.append('<tr class="'+this.GetRowClassName(it, selected, id)+'" '+(ngVal(it.Visible,true) ? '' : 'style="display:none;" ')+'id="'+this.ID+'_'+id+'"'+rowevents+'>');
+    html.append('<tr class="'+this.GetRowClassName(it, selected, id, level, 0/*nglRowItem*/)+'" '+(ngVal(it.Visible,true) ? '' : 'style="display:none;" ')+'id="'+this.ID+'_'+id+'"'+rowevents+'>');
     for(var i=0;i<this.Columns.length;i++)
     {
       col=this.Columns[i];
@@ -2357,7 +2373,7 @@ function ngl_DrawItemText(html, it, id, level)
     if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, it),'');
     else alt=ngVal(it.Alt,'');
 
-    html.append('<div class="'+this.GetRowClassName(it, selected, id)+'" ');
+    html.append('<div class="'+this.GetRowClassName(it, selected, id, level, 0/*nglRowItem*/)+'" ');
     if(alt!='') html.append('title="'+ng_htmlEncode(alt)+'" ');
     var style=(typeof height!=='undefined' ? 'height:'+height+'px;' : '')+(ngVal(it.Visible,true) ? '' : 'display:none;');
     if(style!='') style=' style="'+style+'"';
@@ -2387,6 +2403,7 @@ function ngl_DrawItem(html, it, id, level,pcollapsed)
   var action = this.GetItemAction(it);
   this.SyncItemAction(it,action);
 
+  var selected=ngVal(this.selected[id],false);
   var state=ngVal(it.Checked,0);
   var ret={l:level, s: state};
 
@@ -2414,7 +2431,8 @@ function ngl_DrawItem(html, it, id, level,pcollapsed)
     if((typeof it.Items !== 'undefined')&&(it.Items.length>0))
     {
       if(level>0) shtml.append('</tbody>');
-      shtml.append('<tbody id="'+this.ID+'_G'+id+'_0"'+(collapsed ? ' style="display:none;"' : '')+'>');
+      var cn=this.GetRowClassName(it, selected, id, level, 1/*nglRowGroup*/);
+      shtml.append('<tbody id="'+this.ID+'_G'+id+'_0"'+(collapsed ? ' style="display:none;"' : '')+(cn ? ' class="'+cn+'"' : '')+'>');
       var l,lvl=level;
       var gstate;
       for(var i=0;i<it.Items.length;i++)
@@ -2431,7 +2449,8 @@ function ngl_DrawItem(html, it, id, level,pcollapsed)
           shtml.append('</tbody>');
           if((i+1)<it.Items.length)
           {
-            shtml.append('<tbody id="'+this.ID+'_G'+id+'_'+(i+1)+'"'+(collapsed ? ' style="display:none;"' : '')+'>');
+            var cn=this.GetRowClassName(it, selected, id, lvl, 1/*nglRowGroup*/);
+            shtml.append('<tbody id="'+this.ID+'_G'+id+'_'+(i+1)+'"'+(collapsed ? ' style="display:none;"' : '')+(cn ? ' class="'+cn+'"' : '')+'>');
           }
         }
         if((checkgroup)&&(typeof gstate!=='undefined')) { it.Checked=gstate; ret.s=gstate; }
@@ -2443,7 +2462,8 @@ function ngl_DrawItem(html, it, id, level,pcollapsed)
   {
     if((typeof it.Items !== 'undefined')&&(it.Items.length>0))
     {
-      shtml.append('<div id="'+this.ID+'_G'+id+'" level="'+level+'" style="display:'+(ngVal(it.Collapsed,false) ? 'none' : 'block')+';">');
+      var cn=this.GetRowClassName(it, selected, id, level, 1/*nglRowGroup*/);
+      shtml.append('<div id="'+this.ID+'_G'+id+'" level="'+level+'" style="display:'+(ngVal(it.Collapsed,false) ? 'none' : 'block')+';"'+(cn ? ' class="'+cn+'"' : '')+'>');
       var l,gstate;
       for(var i=0;i<it.Items.length;i++)
       {
@@ -4062,6 +4082,10 @@ function ngList(id)
    *  Event: OnGetRowClassName
    */
   this.OnGetRowClassName = null;
+  /*
+   *  Event: OnGetRowGroupClassName
+   */
+  this.OnGetRowGroupClassName = null;
   /*
    *  Event: OnMeasureItem
    */
