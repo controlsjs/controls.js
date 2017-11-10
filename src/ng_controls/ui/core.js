@@ -5734,7 +5734,7 @@ function ngtb_Update(recursive)
     if(!to) return;
 
     var cc=this.ChildControls;
-    if(typeof cc === 'undefined') return;
+    if(typeof cc === 'undefined') cc=[];
 
     to.style.display = (this.Visible ? 'block' : 'none');
 
