@@ -42,7 +42,11 @@ ngUserControls['settings_localstorage'] = {
     }
 
     function ngsetls_IsActive() {
-      return (ngVal(this.StorageId,'')!='') && ('localStorage' in window && window['localStorage'] !== null);
+      try {
+        return (ngVal(this.StorageId,'')!='') && ('localStorage' in window && window['localStorage'] !== null);
+      } catch(e) {
+        return false;
+      }
     }
 
     function ngsetls_Load(settings)
