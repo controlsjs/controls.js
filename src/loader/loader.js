@@ -352,7 +352,7 @@ function ngLoadApplication(elm, callback, files)
         }
         else {
           var li=queue[0];
-          if(!li.Async) {
+          if((li)&&(!li.Async)) {
             if(typeof li.LoadFailCallback === 'function') li.LoadFailCallback(li.Data.Type,li.URL,li.Data);
             li.LoadCallback=null;
           }
