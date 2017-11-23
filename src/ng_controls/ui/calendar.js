@@ -767,7 +767,7 @@ function ngcal_DoLeave(lid)
 {
   if(ngcal_LeaveTimer) clearTimeout(ngcal_LeaveTimer); ngcal_LeaveTimer=null;
   var l=ngGetControlById(lid, 'ngCalendar');
-  if(lid)
+  if(l)
   {
     if(ngcal_CurrentDay!='')
     {
