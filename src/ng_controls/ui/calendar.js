@@ -325,7 +325,9 @@ function ngcal_SetSelected(dates)
 
   this.BeginUpdate();
   try {
-    this.ClearSelected()
+    var selected_dates=[];
+    var sel_changed=false;
+    var cur_date = this.CurrentDate;
     var d,f=0,rs=0;
     for(var i=0;i<dates.length;i++)
     {
@@ -334,23 +336,40 @@ function ngcal_SetSelected(dates)
       if(typeof d!=='undefined')
       {
         d=ng_ExtractDate(d);
-        if(this.SelectType==ngcalSelectRange)
+        if(this.SelectType===ngcalSelectRange)
         {
-          if(!rs) this.SelectFrom=d;
-          else if(rs==1) this.SelectTo=d;
+          if(!rs) {
+            if(!ng_VarEquals(this.SelectFrom,d)) sel_changed=true;
+            this.SelectFrom=d;
+          }
+          else if(rs==1) {
+            if(!ng_VarEquals(this.SelectTo,d)) sel_changed=true;
+            this.SelectTo=d;
+          }
           else if(rs>1) break;
           rs++;
         }
-        else this.SelectedDates[ngcal_DateStrKey(d)]=d;
+        else selected_dates[ngcal_DateStrKey(d)]=d;
 
-        if(!f) { this.CurrentDate=d; f=1; }
+        if((!f)||(ng_VarEquals(this.CurrentDate,d))) { cur_date=d; f=1; }
       }
     }
-    if(rs==1) this.SelectTo=this.SelectFrom;
+    if(rs==1) {
+      if(!ng_VarEquals(this.SelectTo,this.SelectFrom)) sel_changed=true;
+      this.SelectTo=this.SelectFrom;
+    }
   }
   finally
   {
-    this.SelectChanged();
+    if(this.SelectType!==ngcalSelectRange) {
+      sel_changed=!ng_VarEquals(selected_dates,this.SelectedDates);
+      if(sel_changed) this.SelectedDates=selected_dates;
+    }
+    if(sel_changed) {
+      this.CurrentDate = cur_date;
+      this.last_selected = null;
+      this.SelectChanged();
+    }
     this.EndUpdate();
   }
 }
