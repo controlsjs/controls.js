@@ -1966,7 +1966,8 @@ function ng_SetControlMenu(c,m)
       c.RemoveEvent('SetVisible',ngmnb_SetControlVisible);
       c.RemoveEvent('SetEnable',ngmnb_SetControlVisible);
       c.RemoveEvent('DoDispose',ngmn_DoMenuDispose);
-      if(c.OnClick == ngmn_DefaultClick) c.OnClick=null;
+      if(c.DoMenuClick === ngmn_DefaultClick) delete c.DoMenuClick;
+      if(c.OnClick === ngmn_DefaultClick) c.OnClick=null;
     }
 
     var oc=ngVal(om.Owner,null);
@@ -1991,6 +1992,7 @@ function ng_SetControlMenu(c,m)
       c.AddEvent('SetEnable',ngmnb_SetControlVisible);
       c.AddEvent('DoDispose',ngmn_DoMenuDispose);
 
+      if(typeof c.DoMenuClick === 'undefined') c.DoMenuClick=ngmn_DefaultClick;
       if((typeof c.OnClick !== 'undefined')&&(!c.OnClick)&&(!mb))
         c.OnClick=ngmn_DefaultClick;
     }
