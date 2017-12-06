@@ -27,7 +27,8 @@ var WinXPControls = {
   ControlImages: [
     'winxp_base.png?9',
     'winxp_hbox.png?6',
-    'winxp_vbox.png?5'
+    'winxp_vbox.png?5',
+    'loading.gif?1'
   ],
 
   Images: {
@@ -303,24 +304,27 @@ var WinXPControls = {
       Bottom: { L: 0, T: 149, H: 15, Src: 1 },
       RightBottom: { L: 51, T: 158, W: 30, H: 30 }
     },
-    HintAnchors: {
-      topleft:     { L: 15, T: -11, HX: 22, HY: 0,
-                     Img: { L: 350, T: 89, W: 29, H: 16 } },
-      topright:    { R: 22, T: -11, HX: 6, HY: 0,
-                     Img: { L: 318, T: 89, W: 29, H: 16 } },
-      bottomright: { R: 22, B: -2, HX: 10, HY: 15,
-                     Img: { L: 314, T: 106, W: 34, H: 17 } },
-      bottomleft:  { L: 15, B: -2, HX: 22, HY: 15,
-                     Img: { L: 350, T: 106, W: 34, H: 17 } },
+    HintAnchorsImg: {
+      topleft:     { L: 350, T: 89, W: 29, H: 16 },
+      topright:    { L: 318, T: 89, W: 29, H: 16 },
+      bottomright: { L: 314, T: 106, W: 34, H: 17 },
+      bottomleft:  { L: 350, T: 106, W: 34, H: 17 },
 
-      lefttop:     { L: -9, T: 13, HX: 0, HY: 22,
-                     Img: { L: 237, T: 91, W: 16, H: 29 } },
-      leftbottom:  { L: -9, B: 23, HX: 0, HY: 6,
-                     Img: { L: 255, T: 91, W: 16, H: 29 } },
-      righttop:    { R: -3, T: 13, HX: 15, HY: 22,
-                     Img: { L: 293, T: 91, W: 17, H: 34 } },
-      rightbottom: { R: -3, B: 22, HX: 15, HY: 10,
-                     Img: { L: 274, T: 87, W: 17, H: 34 } }
+      lefttop:     { L: 237, T: 91, W: 16, H: 29 },
+      leftbottom:  { L: 255, T: 91, W: 16, H: 29 },
+      righttop:    { L: 293, T: 91, W: 17, H: 34 },
+      rightbottom: { L: 274, T: 87, W: 17, H: 34 }
+    },
+    HintAnchors: {
+      topleft:     { L: 15, T: -11, HX: 22, HY: 0 },
+      topright:    { R: 22, T: -11, HX: 6, HY: 0 },
+      bottomright: { R: 22, B: -2, HX: 10, HY: 15 },
+      bottomleft:  { L: 15, B: -2, HX: 22, HY: 15 },
+
+      lefttop:     { L: -9, T: 13, HX: 0, HY: 22 },
+      leftbottom:  { L: -9, B: 23, HX: 0, HY: 6 },
+      righttop:    { R: -3, T: 13, HX: 15, HY: 22 },
+      rightbottom: { R: -3, B: 22, HX: 15, HY: 10 }
     },
 
     TextHint: {
@@ -471,6 +475,10 @@ var WinXPControls = {
     var winimages=this.Images;
     var winxp=this;
     var skinfnc={};
+
+    for(var i in winimages.HintAnchors) {
+      winimages.HintAnchors[i].Img=winimages.HintAnchorsImg[i];
+    }
 
     /*
      *  Group: Control Types
@@ -1102,7 +1110,6 @@ var WinXPControls = {
           HTMLEncode: false
         }
       });
-      ng_PreloadImage(libpath+'loading.gif');
       var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
       if(c)
       {
@@ -2695,7 +2702,7 @@ var WinXPControls = {
             Picker: {
               Type: 'stdColorPickerBox',
               W:196,
-              Layout : layout,
+              Layout: layout,
               ModifyControls: {
                 ModeBar: {
                   Events:{
@@ -2816,10 +2823,13 @@ var WinXPControls = {
      */
     if (ngUserControls['fileuploader'])
     {
+      /*  Class: stdFileUploader
+       *  Standard menu control (based on <ngFileUploader>).
+       */
+      /*<>*/
       skinfnc.Create_FileUploader=function(def, ref, parent)
       {
         ng_MergeDef(def, {
-          Base: 'ngPanel',
           className: 'wxpFileUploader',
           Controls: {
             ListFiles: {
@@ -2909,6 +2919,136 @@ var WinXPControls = {
         return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
       }
       ngRegisterControlType('stdFileUploader', function(def,ref,parent) { return skinfnc.Create_FileUploader(def,ref,parent); });
+    }
+
+    /**
+     * Auth Controls
+     */
+    if (ngUserControls['auth_controls'])
+    {
+      /*  Class: stdLoginForm
+       *  Standard menu control (based on <ngLoginForm>).
+       */
+      /*<>*/
+      ngRegisterControlType('stdLoginForm', {
+        Type: 'ngLoginForm',
+        W: 200,
+        Data: {
+          VPadding: 2
+        },
+        Controls: {
+          OrganizationLabel: {
+            Type: 'stdLabel'
+          },
+          Organization: {
+            Type: 'stdEdit'
+          },
+          LoginLabel: {
+            Type: 'stdLabel'
+          },
+          Login: {
+            Type: 'stdEdit'
+          },
+          PasswordLabel: {
+            Type: 'stdLabel'
+          },
+          Password: {
+            Type: 'stdEdit'
+          },
+          CapsLockWarn: {
+            Type: 'stdText',
+            className: 'wxpLoginFormCapsLogWarn',
+            style: {
+              marginBottom: '5px'
+            }
+          },
+          RememberMe: {
+            Type: 'stdCheckBox'
+          },
+          LoginBtn: {
+            Type: 'stdButton',
+            W: 100,
+            style: {
+              marginTop: '10px'
+            }
+          },
+          Progress: {
+            Type: 'stdProgressDot',
+            style: {
+              marginLeft: '10px',
+              marginTop: '12px'
+            },
+            Data: {
+              Visible: false
+            }
+          },
+          Error: {
+            Type: 'stdText',
+            className: 'wxpLoginFormErrorMessage',
+            style: {
+              marginTop: '5px'
+            }
+          }
+        }
+      });
+
+      /*  Class: stdPasswordForm
+       *  Standard menu control (based on <ngPasswordForm>).
+       */
+      /*<>*/
+      ngRegisterControlType('stdPasswordForm', {
+        Type: 'ngPasswordForm',
+        W: 200,
+        Data: {
+          VPadding: 2
+        },
+        ModifyControls: {
+          OldPasswordLabel: {
+            Type: 'stdLabel'
+          },
+          OldPassword: {
+            Type: 'stdEdit'
+          },
+          NewPasswordLabel: {
+            Type: 'stdLabel'
+          },
+          NewPassword: {
+            Type: 'stdEdit'
+          },
+          ConfirmNewPasswordLabel: {
+            Type: 'stdLabel'
+          },
+          ConfirmNewPassword: {
+            Type: 'stdEdit'
+          },
+          CapsLockWarn: {
+            Type: 'stdText',
+            className: 'wxpLoginFormCapsLogWarn',
+            style: {
+              marginTop: '5px'
+            }
+          },
+          Error: {
+            Type: 'stdText',
+            className: 'wxpLoginFormErrorMessage',
+            style: {
+              marginTop: '5px'
+            }
+          }
+        }
+      });
+
+      /*  Class: stdLoginButton
+       *  Standard menu control (based on <ngLoginButton>).
+       */
+      /*<>*/
+      ngRegisterControlType('stdLoginButton', {
+        Type: 'ngLoginButton',
+        className: 'wxpLink',
+        Menu: {
+          Type: 'stdMenu'
+        }
+      });
     }
 
     /**

@@ -1189,3 +1189,17 @@
   border-style: dotted;
 }
 
+/* wxpLoginForm ***************************************************************/
+
+.wxpLoginFormErrorMessage {
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  color: #FF0000;
+}
+
+.wxpLoginFormCapsLogWarn {
+  font-family: Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:11px;
+  color: #7F9DB9;
+}
+
