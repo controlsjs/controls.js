@@ -94,15 +94,18 @@ function ngBindingDeferUpdates(type, allBindingsAccessor, setstate) {
 
 function ngApplyBindings(ctrl, viewModel, databind)
 {
+  if((!ctrl)||(ngVal(databind,'')=='')) return false;
+
   if(ng_typeString(viewModel))
   {
     var vm=getViewModelById(viewModel);
-    if(!vm) ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
+    if((!vm)&&(!ctrl.InDesignMode)) ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
     viewModel=vm;
   }
-  if(!viewModel) ngDEBUGERROR('ViewModel for control "'+ctrl.ID+'" not found!');
-
-  if((!ctrl)||(!viewModel)||(ngVal(databind,'')=='')) return false;
+  if(!viewModel) {
+    if(!ctrl.InDesignMode) ngDEBUGERROR('ViewModel for control "'+ctrl.ID+'" not found!');
+    return false;
+  }
 
   if(viewModel.ViewModel) viewModel=viewModel.ViewModel;
 
