@@ -68,7 +68,7 @@ var ViewModel_Controls_DesignInfo = (function()
     {
       case 'ngSysTimer':
         props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
-        props["Command"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Command"] = ng_diType('databind_string', { Level: 'basic' });
         break;
 
       case 'ngSysURLParams':
