@@ -34,9 +34,9 @@ ngUserControls['calendar_designinfo'] = {
                                          },
                                          undefined,{ Add: false }),
             "DateFormat": ng_diString('', { Level: 'basic' }),
-            "ImgWeekDay": ng_diType('image', { Level: 'basic' }),
-            "ImgDay": ng_diType('image', { Level: 'basic' }),
-            "ImgNow": ng_diType('image', { Level: 'basic' }),
+            "ImgWeekDay": ng_diType('image', { Level: 'advanced' }),
+            "ImgDay": ng_diType('image', { Level: 'advanced' }),
+            "ImgNow": ng_diType('image', { Level: 'advanced' }),
             "Navigation": ng_diBoolean(true, { Level: 'basic' }),
             "YearNavigation": ng_diBoolean(false, { Level: 'basic' }),
             "FastNavigation": ng_diBoolean(true, { Level: 'basic' }),
@@ -56,7 +56,7 @@ ngUserControls['calendar_designinfo'] = {
                                            }, undefined, { Add: false }),
             "MinDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
             "MaxDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
-            "Frame": ng_diType('img_frame', { Collapsed: true, Level: 'basic' })
+            "Frame": ng_diType('img_frame', { Collapsed: true, Level: 'advanced' })
           },
           "Events": {
             "OnDayClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
@@ -66,12 +66,12 @@ ngUserControls['calendar_designinfo'] = {
             "OnFormatDate": ng_diEvent('function(c, d) { return ng_FormatDate(d); }', { Level: 'basic' }),
             "OnParseDate": ng_diEvent('function(c, d) { return ng_ParseDate(d); }', { Level: 'basic' }),
             "OnIsDayEnabled": ng_diEvent('function(c, date, enabled) { return enabled; }', { Level: 'basic' }),
-            "OnGetWeekDayImg": ng_diEvent('function(c, wday) { return null; }', { Level: 'basic' }),
-            "OnGetWeekDayText": ng_diEvent('function(c, wday) { return ""; }', { Level: 'basic' }),
-            "OnGetWeekDayAlt": ng_diEvent('function(c, wday) { return ""; }', { Level: 'basic' }),
-            "OnGetDayImg": ng_diEvent('function(c, display_date, col, row) { return null; }', { Level: 'basic' }),
-            "OnGetDayText": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'basic' }),
-            "OnGetDayAlt": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'basic' })
+            "OnGetWeekDayImg": ng_diEvent('function(c, wday) { return null; }', { Level: 'advanced' }),
+            "OnGetWeekDayText": ng_diEvent('function(c, wday) { return ""; }', { Level: 'advanced' }),
+            "OnGetWeekDayAlt": ng_diEvent('function(c, wday) { return ""; }', { Level: 'advanced' }),
+            "OnGetDayImg": ng_diEvent('function(c, display_date, col, row) { return null; }', { Level: 'advanced' }),
+            "OnGetDayText": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'advanced' }),
+            "OnGetDayAlt": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'advanced' })
           }
         })
       };
