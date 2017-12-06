@@ -61,7 +61,7 @@ ngUserControls['auth_controls'] = {
         Data: {
           SettingsName: 'ngLoginForm',
           ErrorMessage: '',
-          AutoSize: true,
+          AutoSize: true
         },
         Events: {
           OnLogin: null,

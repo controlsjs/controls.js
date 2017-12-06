@@ -47,7 +47,7 @@ var WinXP_DesignInfo = {
           "className": ng_diString('wxpCheckBox'),
           "Data": {
             "TextAlign": ng_diString('right'),
-            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.CheckBoxLeft'),
+            "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.CheckBoxLeft')
           }
         })
       };
@@ -688,7 +688,7 @@ var WinXP_DesignInfo = {
           "ModifyControls": {
             "Hint": ng_diControl('stdText', {
               "L": ng_diTypeVal('bounds', 5),
-              "T": ng_diTypeVal('bounds', 2),
+              "T": ng_diTypeVal('bounds', 2)
             }, { Level: 'advanced' })
           }
         })
@@ -871,7 +871,7 @@ var WinXP_DesignInfo = {
               "H": ng_diTypeVal('bounds', 30)
             }),
             "Progress": ng_diControl('stdProgressBar', {
-              "T": ng_diTypeVal('bounds', 5),
+              "T": ng_diTypeVal('bounds', 5)
             }, { Level: 'basic' }, { InheritedFrom: 'ngProgressBar' })
           }
         })

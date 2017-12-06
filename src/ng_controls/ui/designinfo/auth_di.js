@@ -44,7 +44,7 @@ ngUserControls['auth_controls_designinfo'] = {
             "OnHideProgress": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnShowCapsLockWarning": ng_diEvent('function(c) {}', { Level: 'advanced' }),
             "OnGetSettings": ng_diEvent('function(c) { var data; return data; }', { Level: 'advanced' }),
-            "OnSetSettings": ng_diEvent('function(c, data) { return true; }', { Level: 'advanced' }),
+            "OnSetSettings": ng_diEvent('function(c, data) { return true; }', { Level: 'advanced' })
           },
           "Methods": {
             "DoSetSettings": ng_diFunction('function(data) { return ng_CallParent(this, "DoSetSettings", arguments, data); }'),
