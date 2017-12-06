@@ -1116,7 +1116,7 @@ var WinXPControls = {
         c.AddEvent(function (b) {
           var txt=ngVal(b.Text,'');
           if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+ng_htmlEncode(txt)+'</span>';
-          return '<img src="'+libpath+'loading.gif" align="top" />'+txt;
+          return '<img src="' + WinXPControls.ControlImages[3] + '" align="top" />'+txt;
         }, 'OnGetText');
       }
       return c;
