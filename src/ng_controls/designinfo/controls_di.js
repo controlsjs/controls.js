@@ -768,7 +768,7 @@ function ng_diIntegerIdentifiers(defvalue, consts, pdata, ids_tdata, int_tdata, 
   return ng_diMixed([
     ng_diTypeVal(ngVal(ids_basetype,'identifier'),defvalue, null, di1),
     ng_diTypeVal(ngVal(int_basetype,'integer'), defival, null, di2)
-  ],ngVal(ids_basetype,'identifier'),pdata);
+  ],pdata);
 }
 
 /**
@@ -795,17 +795,17 @@ function ng_diProperties(props,data) {
       case 'Methods':
       case 'style':
         if(typeof di[i]==='undefined') di[i]={};
-        di[i]=ng_diObject(props[i],void 0,di[i]);
+        di[i]=ng_diObject(props[i],di[i]);
         break;
       case 'Controls':
       case 'ModifyControls':
         if(typeof di[i]==='undefined') di[i]={};
-        di[i]=ng_diControls(props[i],void 0,di[i]);
+        di[i]=ng_diControls(props[i],di[i]);
         break;
       case 'DataBind':
       case 'DOMDataBind':
         if(typeof di[i]==='undefined') di[i]={};
-        di[i]=ng_diBindings(props[i],void 0,di[i]);
+        di[i]=ng_diBindings(props[i],di[i]);
         break;
       default:
         di[i]=props[i];
@@ -970,7 +970,7 @@ function ng_diProperties(props,data) {
             "pinchin":    ng_diBoolean(false, { Level: 'optional' }),
             "pinchout":   ng_diBoolean(false, { Level: 'optional' }),
             "rotate":     ng_diBoolean(false, { Level: 'optional' })
-          }, { Level: 'advanced' }, { DestroyIfEmpty: true }),
+          }, { Collapsed: true, Level: 'advanced' }, { DestroyIfEmpty: true }),
           "ngText": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
           "ngTextD": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
           "ngAlt": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
