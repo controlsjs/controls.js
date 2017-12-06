@@ -153,14 +153,14 @@ ngUserControls['panels_designinfo'] = {
             "AutoMinimize": ng_diInteger(0, { Level: 'basic' }),
             "AutoMaximize": ng_diInteger(0, { Level: 'basic' }),
             "HandleVisible": ng_diBoolean(true, { Level: 'basic' }),
-            "MoverStartImg": ng_diType('image', { Level: 'basic' }),
-            "MoverMiddleImg": ng_diType('image', { Level: 'basic' }, {
+            "MoverStartImg": ng_diType('image', { Level: 'advanced' }),
+            "MoverMiddleImg": ng_diType('image', { Level: 'advanced' }, {
               EditorOptions: {
                 HorizontalImages: true
               }
             }),
-            "MoverEndImg": ng_diType('image', { Level: 'basic' }),
-            "HandleImg": ng_diType('image', { Level: 'basic' })
+            "MoverEndImg": ng_diType('image', { Level: 'advanced' }),
+            "HandleImg": ng_diType('image', { Level: 'advanced' })
           },
           "Events": {
             "OnResize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
