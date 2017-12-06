@@ -85,6 +85,7 @@ ngUserControls['uicore'] = {
           "ParentReferences": { Level: 'advanced' },
           "ScrollBars": { Level: 'basic' },
           "Controls": { Level: 'basic' },
+          "ModifyControls": { Level: 'basic' },
           "Data": ng_diObject({
             "ChildHandling": { Level: 'basic' },
             "FormID": ng_diString('', { Level: 'basic' })
@@ -110,14 +111,14 @@ ngUserControls['uicore'] = {
         },
         Properties: ng_diProperties({
           "style": {
-            "color": { Level: 'basic' },
-            "fontFamily": { Level: 'basic' },
-            "fontSize": { Level: 'basic' },
-            "fontStyle": { Level: 'basic' },
-            "fontWeight": { Level: 'basic' },
-            "lineHeight": { Level: 'basic' },
-            "textTransform": { Level: 'basic' },
-            "whiteSpace": { Level: 'basic' }
+            "color": { Level: 'advanced' },
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' },
+            "fontStyle": { Level: 'advanced' },
+            "fontWeight": { Level: 'advanced' },
+            "lineHeight": { Level: 'advanced' },
+            "textTransform": { Level: 'advanced' },
+            "whiteSpace": { Level: 'advanced' }
           },
 
           "Data": {
@@ -213,12 +214,12 @@ ngUserControls['uicore'] = {
         Properties: ng_diProperties({
           "H": null,
           "style": {
-            "color": { Level: 'basic' },
-            "fontFamily": { Level: 'basic' },
-            "fontSize": { Level: 'basic' },
-            "fontStyle": { Level: 'basic' },
-            "fontWeight": { Level: 'basic' },
-            "textTransform": { Level: 'basic' }
+            "color": { Level: 'advanced' },
+            "fontFamily": { Level: 'advanced' },
+            "fontSize": { Level: 'advanced' },
+            "fontStyle": { Level: 'advanced' },
+            "fontWeight": { Level: 'advanced' },
+            "textTransform": { Level: 'advanced' }
           },
           "Data": {
             "Action": ng_diString('', { Level: 'basic' }), // TODO: browse from existing actions
@@ -233,19 +234,19 @@ ngUserControls['uicore'] = {
             "AutoSize": ng_diBoolean(true),
             "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
-            "RadioGroup": ng_diMixed(['undefined', 'string'], { InitType: 'string' }), // TODO: browse from existing radio groups
-            "Cursor": ng_diTypeVal('css_cursor', 'pointer', { Level: 'basic' }),
+            "RadioGroup": ng_diMixed(['undefined', 'string'], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
+            "Cursor": ng_diTypeVal('css_cursor', 'pointer', { Level: 'advanced' }),
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "Img": ng_diType('image', { Level: 'basic' }),
             "ImgAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
             "ImgIndent": ng_diInteger(0, { Level: 'basic' }),
-            "LeftImg": ng_diType('image', { Level: 'basic' }),
-            "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+            "LeftImg": ng_diType('image', { Level: 'advanced' }),
+            "MiddleImg": ng_diType('image', { Level: 'advanced' }, {
               EditorOptions: {
                 HorizontalImages: true
               }
             }),
-            "RightImg": ng_diType('image', { Level: 'basic' }),
+            "RightImg": ng_diType('image', { Level: 'advanced' }),
             "Default": ng_diBoolean(false, { Level: 'basic' }),
             "Cancel": ng_diBoolean(false, { Level: 'basic' })
           },
@@ -260,8 +261,8 @@ ngUserControls['uicore'] = {
             "OnSetText": ng_diEvent('function(text, c) { return text; }'),
             "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'basic' }),
-            "OnGetClassName": ng_diEvent('function(c, cls, text) { return cls; }', { Level: 'basic' })
+            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'advanced' }),
+            "OnGetClassName": ng_diEvent('function(c, cls, text) { return cls; }', { Level: 'advanced' })
           }
         })
       };
@@ -298,7 +299,7 @@ ngUserControls['uicore'] = {
             "ngTextD": { Level: 'basic' },
             "Text": ng_diStringRefName({ Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true }),
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' })
           },
           "OverrideEvents": {
@@ -307,7 +308,8 @@ ngUserControls['uicore'] = {
           }
         },
         {
-          "Controls": { Level: 'basic' }
+          "Controls": { Level: 'basic' },
+          "ModifyControls": { Level: 'basic' }
         })
       };
     });
@@ -353,13 +355,13 @@ ngUserControls['uicore'] = {
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "Password": ng_diBoolean(false, { Level: 'basic' }),
             "MaxLength": ng_diInteger(0, { Level: 'basic' }),
-            "LeftImg": ng_diType('image', { Level: 'basic' }),
-            "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+            "LeftImg": ng_diType('image', { Level: 'advanced' }),
+            "MiddleImg": ng_diType('image', { Level: 'advanced' }, {
                EditorOptions: {
                  HorizontalImages: true
                }
             }),
-            "RightImg": ng_diType('image', { Level: 'basic' }),
+            "RightImg": ng_diType('image', { Level: 'advanced' }),
             "OffsetTop": ng_diInteger(0, { Level: 'basic' }),
             "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
             "DropDownType": ng_diIntegerIdentifiers(0,['ngeDropDownEdit','ngeDropDownList']),
@@ -386,8 +388,8 @@ ngUserControls['uicore'] = {
             "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetHint": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetClassName": ng_diEvent('function(c, cls, text, hint) { return cls; }', { Level: 'basic' }),
-            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'basic' }),
+            "OnGetClassName": ng_diEvent('function(c, cls, text, hint) { return cls; }', { Level: 'advanced' }),
+            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'advanced' }),
             "OnSuggestionSetText": ng_diEvent('function(text, it) { return text; }'),
             "OnSuggestionURL": ng_diEvent('function(c, url) { return url; }'),
 
@@ -451,7 +453,7 @@ ngUserControls['uicore'] = {
             "Hint": ng_diString('', { Level: 'basic' }),
             "HintStyle": ng_diIntegerIdentifiers(ngVal(ngDefaultHintStyle,1),['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'basic' }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
             "LockHintCaretPos": ng_diBoolean(true, { Level: 'basic' }),
             "Invalid": ng_diBoolean(false, { Level: 'basic' })
@@ -550,8 +552,8 @@ ngUserControls['uicore'] = {
             "TextAlign": ng_diStringValues('left', ['left','right','center','justify'], { Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "RowOverlap": ng_diInteger(0, { Level: 'basic' }),
-            "PageImages": ng_diArrayOf('image', { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true })
+            "PageImages": ng_diArrayOf('image', { Level: 'advanced' }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true })
           },
           "OverrideEvents": {
             "OnGetText": ng_diEvent('function(c, pg) { return ""; }', { Level: 'basic' }),
@@ -785,7 +787,8 @@ ngUserControls['uicore'] = {
                 "ToolBarNoWrap": ng_diBoolean(false, { Level: 'basic', Order: 0.8 })
               }
             }))
-          })
+          }),
+          "ModifyControls": { Level: 'basic' }
         })
       };
     });
@@ -804,14 +807,14 @@ ngUserControls['uicore'] = {
           "Data": {
             "Position": ng_diInteger(0, { Level: 'basic' }),
             "Smooth": ng_diBoolean(false, { Level: 'basic' }),
-            "LeftImg": ng_diType('image', { Level: 'basic' }),
-            "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+            "LeftImg": ng_diType('image', { Level: 'advanced' }),
+            "MiddleImg": ng_diType('image', { Level: 'advanced' }, {
               EditorOptions: {
                 HorizontalImages: true
               }
             }),
-            "RightImg": ng_diType('image', { Level: 'basic' }),
-            "BarImg": ng_diType('image', { Level: 'basic' }, {
+            "RightImg": ng_diType('image', { Level: 'advanced' }),
+            "BarImg": ng_diType('image', { Level: 'advanced' }, {
               EditorOptions: {
                 HorizontalImages: true
               }
@@ -937,12 +940,12 @@ ngUserControls['uicore'] = {
             }
           }
         },
-        Properties: ng_diProperties({
+        Properties: {
           "DropDownType": ng_diMixed([
             ng_diIdentifier('ngeDropDownList'),
             ng_diInteger(1)
           ])
-        })
+        }
       };
       ng_MergeDI(di,DropDownDI(d,c,ref));
       return di;
@@ -1036,7 +1039,7 @@ ngUserControls['uicore'] = {
             "OnSetText": ng_diEvent('function(text, c) { return text; }'),
             "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'basic' })
+            "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'advanced' })
           }
         })
       }
