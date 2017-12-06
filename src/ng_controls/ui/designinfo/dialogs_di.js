@@ -17,12 +17,18 @@ ngUserControls['dialogs_designinfo'] = {
     if(!ngDESIGNINFO) return;
 
     ngRegisterControlDesignInfo('ngMessageDlg',function(d,c,ref) {
+      var dialogresultsconsts=[{Value:0,Text:'mbNone'},{Value:1,Text:'mbCancel'},{Value:2,Text:'mbOK'},{Value:4,Text:'mbYes'},{Value:8,Text:'mbNo'}];
       return {
         ControlCategory: 'Dialog',
         IsContainer: false,
         NewControl: {
           Default: {
             Properties: {
+              "Data": {
+                ObjectProperties: {
+                  "Text": { ValueByRefName: true }
+                }
+              },
               "ModifyControls": {
                 ObjectProperties: {
                   "Message": {
@@ -41,8 +47,10 @@ ngUserControls['dialogs_designinfo'] = {
         },
 
         Properties: ng_diProperties({
+          "L": ng_diTypeVal('bounds', 200),
+          "T": ng_diTypeVal('bounds', 150),
           "DialogType": ng_diString('ngWindow',{Level: 'optional'}),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }, { Level: 'basic' }, {
+          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }, { Level: 'basic' }, { // TODO: Check default value
             EditorOptions: {
               BitMaskIdentifiers: [
 //                    {value: mbNone,       id: 'mbNone'},
@@ -60,10 +68,10 @@ ngUserControls['dialogs_designinfo'] = {
           }),
           "CloseBtn": ng_diBoolean(false, { Level: 'optional' }), // CloseBtn has no implementation in ngMessageDlg
           "Data": {
-            "DialogResult": ng_diIntegerIdentifiers(0,[{Value:0,Text:'mbNone'},{Value:1,Text:'mbCancel'},{Value:2,Text:'mbOK'},{Value:4,Text:'mbYes'},{Value:8,Text:'mbNo'}],{ Level: 'basic' }),
+            "DialogResult": ng_diIntegerIdentifiers(0,dialogresultsconsts,{ Level: 'basic' }),
 
             // changed ngWindow defaults
-            "AutoSize": { Level: 'optional' },
+            "AutoSize": ng_diBoolean(true, { Level: 'optional' }),
             "Centered": ng_diBoolean(true),
             "Visible": ng_diBoolean(false),
             "Sizeable": ng_diBoolean(false),
@@ -71,20 +79,59 @@ ngUserControls['dialogs_designinfo'] = {
             "DisposeOnClose": ng_diBoolean(true)
           },
           "ModifyControls": {
-            "Message": ng_diControl('ngText', null, { Level: 'basic' }, { InheritedFrom: 'ngText' }),
-            "Content": ng_diControl('ngPanel', null, { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),
+            "Message": ng_diControl('ngText', ng_diProperties({
+              "L": ng_diTypeVal('bounds', 15),
+              "T": ng_diTypeVal('bounds', 15),
+              "Data": {
+                "AutoSize": ng_diBoolean(true)
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngText' }),
+            "Content": ng_diControl('ngPanel', {
+              "L": ng_diTypeVal('bounds', 15),
+              "R": ng_diTypeVal('bounds', 15),
+              "H": ng_diTypeVal('bounds', 15)
+            }, { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),
             "Buttons": ng_diControl('ngToolBar', ng_diProperties({
-                         "Data": {
-                           "CenterButtons": ng_diBoolean(true, { Level: 'basic' })
-                         }
-                       }), { Level: 'basic' }, { InheritedFrom: 'ngToolBar' }),
-            "OK": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Yes": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "No": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Cancel": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' })
+              "H": ng_diTypeVal('bounds', 23),
+              "Data": {
+                "CenterButtons": ng_diBoolean(true, { Level: 'basic' }),
+                "Vertical": ng_diBoolean(true),
+                "AutoSize": ng_diBoolean(true),
+                "HPadding": ng_diInteger(10)
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngToolBar' }),
+            "OK": ng_diControl('ngButton', ng_diProperties({
+              "W": ng_diTypeVal('bounds', 80),
+              "Data": {
+                "ngText": ng_diString('mbOK'),
+                "Default": ng_diBoolean(true),
+                "DialogResult": ng_diIntegerIdentifiers('mbOK',dialogresultsconsts,{Level: 'basic'})
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Yes": ng_diControl('ngButton', ng_diProperties({
+              "W": ng_diTypeVal('bounds', 80),
+              "Data": {
+                "ngText": ng_diString('mbYes'),
+                "Default": ng_diBoolean(true),
+                "DialogResult": ng_diIntegerIdentifiers('mbYes',dialogresultsconsts,{Level: 'basic'})
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "No": ng_diControl('ngButton', ng_diProperties({
+              "W": ng_diTypeVal('bounds', 80),
+              "Data": {
+                "ngText": ng_diString('mbNo'),
+                "DialogResult": ng_diIntegerIdentifiers('mbNo',dialogresultsconsts,{Level: 'basic'})
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('ngButton', ng_diProperties({
+              "W": ng_diTypeVal('bounds', 80),
+              "Data": {
+                "ngText": ng_diString('mbCancel'),
+                "Cancel": ng_diBoolean(true),
+                "DialogResult": ng_diIntegerIdentifiers('mbCancel',dialogresultsconsts,{Level: 'basic'})
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' })
           }
-        },{
-          "ModifyControls": { Level: 'basic' }
         })
       };
     });
@@ -93,6 +140,8 @@ ngUserControls['dialogs_designinfo'] = {
       return {
         ControlCategory: 'Dialog',
         Properties: ng_diProperties({
+          "DialogType": ng_diString('ngMessageDlg'),
+          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }), // TODO: Check default value
           "AboutSystemInfo": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "AboutComponents": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "AboutLibraries": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
@@ -105,7 +154,33 @@ ngUserControls['dialogs_designinfo'] = {
             "AppText": ng_diString('',{ Level: 'basic' })
           },
           "ModifyControls": {
-            "AppInfo": ng_diControl('ngList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' })
+            "Message": ng_diControl(undefined, ng_diProperties({
+              "Data": {
+                "MinWidth": ng_diInteger(260)
+              }
+            })),
+            "Content": ng_diControl(undefined, {
+              "H": ng_diTypeVal('bounds', 125)
+            }),
+            "AppInfo": ng_diControl('ngList', ng_diProperties({
+              "T": ng_diTypeVal('bounds', 20),
+              "H": ng_diTypeVal('bounds', 90),
+              "Data": {
+                "Items": ng_diTypeVal('ngListItems',[ // TODO: How to define default value?
+                  { id: 'SystemInfo',   Collapsed: true },
+                  { id: 'Components',   Collapsed: true },
+                  { id: 'Libraries',    Visible: false },
+                  { id: 'Trademarks',   Visible: false },
+                  { id: 'ReleaseNotes', Visible: false }]
+                )
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngList' }),
+            "Buttons": ng_diControl(undefined, ng_diProperties({
+              "R": ng_diTypeVal('bounds', 10),
+              "Data": {
+                "CenterButtons": ng_diBoolean(false)
+              }
+            }))
           }
         })
       };
