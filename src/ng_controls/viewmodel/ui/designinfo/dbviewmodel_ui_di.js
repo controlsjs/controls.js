@@ -68,10 +68,32 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             "OnDBViewModelChanged": ng_diEvent('function(c, changetype, primarykey) {}',{ Level: 'basic' })
           },
           "ModifyControls": {
-            "NewRecord": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "LoadRecord": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "DeleteRecord": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Refresh": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' })
+            "NewRecord": ng_diControl('ngButton', ng_diProperties({
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_dataset_new'),
+                "ngAltD": ng_diString('dbviewmodel_dataset_new')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "LoadRecord": ng_diControl('ngButton', ng_diProperties({
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_dataset_edit'),
+                "ngAltD": ng_diString('dbviewmodel_dataset_edit'),
+                "Enabled": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "DeleteRecord": ng_diControl('ngButton', ng_diProperties({
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_dataset_delete'),
+                "ngAltD": ng_diString('dbviewmodel_dataset_delete'),
+                "Enabled": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Refresh": ng_diControl('ngButton', ng_diProperties({
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_dataset_refresh'),
+                "ngAltD": ng_diString('dbviewmodel_dataset_refresh')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
@@ -93,11 +115,56 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
         },
         Properties: ng_diProperties({
           "ModifyControls": {
-            "New": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Delete": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Insert": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Update": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "Cancel": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' })
+            "New": ng_diControl('ngButton', ng_diProperties({
+              "DataBind": {
+                "Command": ng_diTypeVal('databind_string',"new", { Level: 'basic '}),
+                "Enabled": ng_diTypeVal('databind_expression',"_RecordState() != recStateNewRecord", { Level: 'basic' })
+              },
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_toolbar_new'),
+                "ngAltD": ng_diString('dbviewmodel_toolbar_new')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Delete": ng_diControl('ngButton', ng_diProperties({
+              "DataBind": {
+                "Command": ng_diTypeVal('databind_string',"delete", { Level: 'basic '}),
+                "Enabled": ng_diTypeVal('databind_expression',"_RecordState() == recStateLoaded", { Level: 'basic' })
+              },
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_toolbar_delete'),
+                "ngAltD": ng_diString('dbviewmodel_toolbar_delete')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Insert": ng_diControl('ngButton', ng_diProperties({
+              "DataBind": {
+                "Command": ng_diTypeVal('databind_string',"insert", { Level: 'basic '}),
+                "Visible": ng_diTypeVal('databind_expression',"_RecordState() == recStateNewRecord", { Level: 'basic' })
+              },
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_toolbar_insert'),
+                "ngAltD": ng_diString('dbviewmodel_toolbar_insert')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Update": ng_diControl('ngButton', ng_diProperties({
+              "DataBind": {
+                "Command": ng_diTypeVal('databind_string',"update", { Level: 'basic '}),
+                "Visible": ng_diTypeVal('databind_expression',"_RecordState() != recStateNewRecord", { Level: 'basic' })
+              },
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_toolbar_update'),
+                "ngAltD": ng_diString('dbviewmodel_toolbar_update')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "Cancel": ng_diControl('ngButton', ng_diProperties({
+              "DataBind": {
+                "Command": ng_diTypeVal('databind_string',"cancel", { Level: 'basic '}),
+                "Enabled": ng_diTypeVal('databind_expression',"_RecordChanged() || _RecordState() == recStateNewRecord", { Level: 'basic' })
+              },
+              "Data": {
+                "ngTextD": ng_diString('dbviewmodel_toolbar_cancel'),
+                "ngAltD": ng_diString('dbviewmodel_toolbar_cancel')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' })
           }
         })
       };
