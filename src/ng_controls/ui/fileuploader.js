@@ -26,11 +26,11 @@ var FileUploaderControl = {
      */
     function Create_ngFileUploader(def, ref, parent)
     {
-      if (typeof(def.Data)==='undefined') def.Data = new Object();
+      if (typeof(def.Data)==='undefined') def.Data = {};
       if (typeof def.FileUploaderID !== 'undefined') def.Data.FileUploaderID=def.FileUploaderID;
 
       var buttonsalign='top';
-      var base = ngVal(def.Base, 'ngPanel');
+      var base = ngVal(def.Base, 'ngFrame');
       var id = ngVal(def.Data.FileUploaderID, 'Main');
       var selectFileType = ngVal(def.SelectFileType, ngFupSelect_CheckItem);
       selectFileType = ngVal(def.Data.SelectFileType, selectFileType);
