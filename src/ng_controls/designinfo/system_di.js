@@ -23,7 +23,12 @@ ngUserControls['system_designinfo'] = {
         IsBasic: true,
         IsContainer: true,
         Properties: {
-          "ParentReferences": ng_diBoolean(false, { Level: 'optional' })
+          "ParentReferences": ng_diBoolean(false, { Level: 'advanced' }),
+          "Controls": { Level: 'basic' },
+          "ModifyControls": { Level: 'basic' },
+          "Data": ng_diObject({
+            "ChildHandling": { Level: 'basic' }
+          })
         }
       };
     });
