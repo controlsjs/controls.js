@@ -33,7 +33,7 @@ ngUserControls['ngColorControls'] = {
  *  Standard color picker control.
  *
  *  See also:
- *    Abstract class <ngPanel>.
+ *    Abstract class <ngFrame>.
  */
 function ngColorPicker(def,ref,parent)
 {
@@ -381,7 +381,7 @@ function ngColorPicker(def,ref,parent)
         Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
           SatVal: {
-            Type: 'ngPanel',
+            Type: 'ngFrame',
             ParentReferences: false,
             Data: { ChildHandling: ngChildEnabledParentAware },
             Controls: {
@@ -635,7 +635,7 @@ function ngColorPicker(def,ref,parent)
   ngcop_SetDefColor(def,{H:0,S:0,V:0,R:0,G:0,B:0,A:1,HEX:'#000000',HEXA:'#000000ff'});
 
   return ngCreateControlAsType(
-    def,(def.Data.AsToolbar) ? 'ngToolBar' : 'ngPanel',ref,parent
+    def,(def.Data.AsToolbar) ? 'ngToolBar' : 'ngFrame',ref,parent
   );
 }
 
@@ -646,7 +646,7 @@ function ngColorPicker(def,ref,parent)
 function ngcopch_GetSliderLayout()
 {
   return {
-    Type: 'ngPanel',
+    Type: 'ngFrame',
     ParentReferences: false,
     Data: {
       Vertical: false,
@@ -3318,7 +3318,7 @@ function ngColorPickerBox(def,ref,parent)
     OnCreated: ngcopbx_OnPickerBoxCreated,
     Controls: {
       ModeBar: {
-        Type: 'ngPanel',
+        Type: 'ngFrame',
         ParentReferences: false,
         Data: { ChildHandling: ngChildEnabledParentAware },
         Controls: {
@@ -3335,7 +3335,7 @@ function ngColorPickerBox(def,ref,parent)
                     Data: {
                       Mode: 'h_sv',
                       ngTextD: 'colorpicker_H-SV',
-                      Checked: true
+                      Checked: 1
                     },
                     Events: { OnCheckChanged: ngcopbx_OnModeChange }
                   }
