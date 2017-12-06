@@ -149,6 +149,9 @@ ngUserControls['window_designinfo'] = {
             "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
             "OnGetImg": ng_diEvent('function(c) { return null; }', { Level: 'basic' })
           }
+        }, {
+          "Controls": { Level: 'basic' },
+          "ModifyControls": { Level: 'basic' }
         })
       };
     });
@@ -203,7 +206,9 @@ ngUserControls['window_designinfo'] = {
           "Events": {
             "OnCheckPlacement": ng_diEvent('function(c, p) {}', { Level: 'basic' }),
             "OnPopup": ng_diEvent('function(c, info) { return true; }', { Level: 'basic' })
-          }
+          },
+          "Controls": { Level: 'basic' },
+          "ModifyControls": { Level: 'basic' }
         })
       };
     });
