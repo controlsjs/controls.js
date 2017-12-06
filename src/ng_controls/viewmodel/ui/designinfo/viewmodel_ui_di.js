@@ -116,7 +116,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       case 'ngSysAction':
         props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
         props["Checked"] = ng_diType('databind_expression', { Level: 'basic' });
-        props["Command"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Command"] = ng_diType('databind_string', { Level: 'basic' });
         break;
 
       case 'ngPages':
@@ -187,7 +187,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           Properties: ng_diProperties({
             "ErrorHint": ng_diControl('ngTextHint', null, { Level: 'basic' }, { InheritedFrom: 'ngHint' }),
             "Data": {
-              "DefaultFindFieldControlsBindings": ng_diTypeVal('array_strings', ["'Data'","'Value'","'Checked'","'Selected'","'Lookup'","'Error'","'Link'"], { Level: 'basic' }),
+              "DefaultFindFieldControlsBindings": ng_diTypeVal('array_strings', ["'Data'","'Value'","'Checked'","'Selected'","'Lookup'","'Error'","'Link'"], { Level: 'advanced' }),
               "DisableOnCommand": ng_diBoolean(true, { Level: 'basic' })
             },
             "Events": {
@@ -234,7 +234,9 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           Properties: ng_diProperties({
             "ErrorHint": ng_diControl('ngTextHint', null, { Level: 'basic' }, { InheritedFrom: 'ngHint' }),
             "Data": {
-              "ErrorBindings": ng_diTypeVal('array_strings', [ "'Value'", "'Lookup'" ], { Level: 'basic' })
+              "HintX": { Level: 'advanced' },
+              "HintY": { Level: 'advanced' },
+              "ErrorBindings": ng_diTypeVal('array_strings', [ "'Value'", "'Lookup'" ], { Level: 'advanced' })
             },
             "Events": {
               "OnSetErrorState": ng_diEvent('function(c, state) { return true; }',{ Level: 'basic' }),
