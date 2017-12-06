@@ -22,19 +22,33 @@ ngUserControls['window_designinfo'] = {
         ShortName: 'an',
         Basic: false,
         Options: {
+          Add: false,
           ObjectProperties: {
-            "L": ng_diInteger(0, { Level: 'basic', Order: 0.11 }),
-            "T": ng_diInteger(0, { Level: 'basic', Order: 0.12 }),
-            "R": ng_diInteger(0, { Level: 'basic', Order: 0.13 }),
-            "B": ng_diInteger(0, { Level: 'basic', Order: 0.14 }),
-            "HX": ng_diInteger(0, { Level: 'basic', Order: 0.15 }),
-            "HY": ng_diInteger(0, { Level: 'basic', Order: 0.16 }),
+            "L": ng_diInteger(0, { DisplayName: 'Left (L)', Level: 'basic', Order: 0.11 }),
+            "T": ng_diInteger(0, { DisplayName: 'Top (T)', Level: 'basic', Order: 0.12 }),
+            "R": ng_diInteger(0, { DisplayName: 'Right (R)', Level: 'basic', Order: 0.13 }),
+            "B": ng_diInteger(0, { DisplayName: 'Bottom (B)', Level: 'basic', Order: 0.14 }),
+            "HX": ng_diInteger(0, { DisplayName: 'HotspotX (HX)', Level: 'basic', Order: 0.15 }),
+            "HY": ng_diInteger(0, { DisplayName: 'HotspotY (HY)', Level: 'basic', Order: 0.16 }),
             "Img": ng_diType('image', { Level: 'basic', Order: 0.17 })
           }
         }
       }
     ];
     FormEditor.RegisterPropertyType(win_types);
+  },
+  OnControlDesignInfo: function(def, c, ref)
+  {
+    if((c)&&(!def.CtrlInheritanceDepth)&&(c.DesignInfo)&&(!c.DesignInfo.NonVisual)) {
+      ng_MergeVar(c.DesignInfo, {
+        Properties: ng_diProperties({
+          "Data": {
+            "HintX": ng_diInteger(0, { Level: 'optional' }),
+            "HintY": ng_diInteger(0, { Level: 'optional' })
+          }
+        })
+      });
+    }
   },
   OnInit: function()
   {
@@ -94,12 +108,12 @@ ngUserControls['window_designinfo'] = {
             "MinimizedBounds": ng_diMixed([
               ng_diUndefined(),
               ng_diObject({
-                "L": ng_diType('bounds', { Level: 'basic', Order: 0.11 }),
-                "T": ng_diType('bounds', { Level: 'basic', Order: 0.12 }),
-                "W": ng_diType('bounds', { Level: 'basic', Order: 0.13 }),
-                "H": ng_diType('bounds', { Level: 'basic', Order: 0.14 }),
-                "R": ng_diType('bounds', { Level: 'basic', Order: 0.15 }),
-                "B": ng_diType('bounds', { Level: 'basic', Order: 0.16 })
+                "L": ng_diType('bounds', { DisplayName: 'Left (L)', Level: 'basic', Order: 0.11 }),
+                "T": ng_diType('bounds', { DisplayName: 'Top (T)', Level: 'basic', Order: 0.12 }),
+                "W": ng_diType('bounds', { DisplayName: 'Width (W)', Level: 'basic', Order: 0.13 }),
+                "H": ng_diType('bounds', { DisplayName: 'Height (H)', Level: 'basic', Order: 0.14 }),
+                "R": ng_diType('bounds', { DisplayName: 'Right (R)', Level: 'basic', Order: 0.15 }),
+                "B": ng_diType('bounds', { DisplayName: 'Bottom (B)', Level: 'basic', Order: 0.16 })
               })
             ], { InitType: 'object', Level: 'optional' }),
             "MinWidth": ng_diInteger(100, { Level: 'basic' }),
@@ -108,16 +122,16 @@ ngUserControls['window_designinfo'] = {
             "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
             "Buttons": ng_diObject(undefined, { Level: 'hidden' }),
             "Img": ng_diType('image', { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true } ),
+            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true } ),
             "CaptionImg": ng_diObject({
-              "LeftImg": ng_diType('image', { Level: 'basic' }),
-              "MiddleImg": ng_diType('image', { Level: 'basic' }, {
+              "LeftImg": ng_diType('image', { Level: 'advanced' }),
+              "MiddleImg": ng_diType('image', { Level: 'advanced' }, {
                 EditorOptions: {
                   HorizontalImages: true
                 }
               }),
-              "RightImg": ng_diType('image', { Level: 'basic' })
-            }, { Level: 'basic' }, { Add: false })
+              "RightImg": ng_diType('image', { Level: 'advanced' })
+            }, { Level: 'advanced' }, { Add: false })
           },
           "Events": {
             "OnClick": ng_diEvent('function(e) {}', { Level: 'basic' }),
@@ -179,7 +193,7 @@ ngUserControls['window_designinfo'] = {
               })
             ], { InitType: 'object', Level: 'basic' }),
             "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'basic', Collapsed: true }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true }),
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' }),
             "AutoHideTimeout": ng_diInteger(0, { Level: 'basic' }),
             "DisposeOnHide": ng_diBoolean(false, { Level: 'basic' }),
