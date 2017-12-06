@@ -113,11 +113,12 @@ ngUserControls['menu_designinfo'] = {
             "MaxHeight": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
             "MinWidth": ng_diInteger(100,{ Level: 'basic' }),
             "MinScreenIndent": ng_diInteger(5,{ Level: 'basic' }),
+            "SubMenuImg": ng_diType('image', { Level: 'advanced' }),
             "SubMenuDef": ng_diControl('ngMenu', {
               "AutoDef": ng_diBoolean(false,{ Level: 'optional' })
             }, { Level: 'advanced' }, { InheritedFrom: 'ngMenu' }),
-            "SubMenuOverlapX": ng_diInteger(5,{ Level: 'basic' }),
-            "SubMenuOverlapY": ng_diInteger(0,{ Level: 'basic' }),
+            "SubMenuOverlapX": ng_diInteger(5,{ Level: 'advanced' }),
+            "SubMenuOverlapY": ng_diInteger(0,{ Level: 'advanced' }),
             "AutoPopup": ng_diMixed([
               ng_diUndefined(),
               ng_diBoolean(true)
@@ -178,7 +179,7 @@ ngUserControls['menu_designinfo'] = {
           "Data": {
             "SubMenuDef": ng_diControl('ngMenu', {
               "AutoDef": ng_diBoolean(false,{ Level: 'optional' })
-            }, undefined, { InheritedFrom: 'ngMenu' })
+            }, { Level: 'advanced' }, { InheritedFrom: 'ngMenu' })
           },
           "Events": {
             "OnItemsChanged": ng_diEvent('function(c, items) {}', { Level: 'basic' })
