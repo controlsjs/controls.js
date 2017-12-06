@@ -59,20 +59,41 @@ var FileUploaderControl_DesignInfo = {
             "OnGetRequestParams": ng_diEvent('function(params) {}', { Level: 'basic' })
           },
           "ModifyControls": {
-            "ListFiles": ng_diControl('ngList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),
+            "ListFiles": ng_diControl('ngList', ng_diProperties({
+              "Data": {
+                "Columns": ng_diTypeVal('ngListColumns', [ // TODO: Check how to define
+                  {ID: 'File'}
+                ]),
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngList' }),
             "DragAndDropPanel": ng_diControl('ngPanel', ng_diProperties({
+              "style": {
+                "zIndex": ng_diInteger(1000, { Level: 'basic'})
+              },
               "Events": {
                 "OnFilesDragOver": ng_diEvent('function(c, o) {}', { Level: 'basic' }),
                 "OnFilesDragLeave": ng_diEvent('function(c, o) {}', { Level: 'basic' })
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),
-            "DragAndDropInfo": ng_diControl('ngText', null, { Level: 'basic' }),
+            "DragAndDropInfo": ng_diControl('ngText', ng_diProperties({
+              "T": ng_diTypeVal('bounds', '50%'),
+              "Data": {
+                "TextAlign": ng_diString('center')
+              }
+            }), { Level: 'basic' }),
             "Buttons": ng_diControl('ngToolBar', null, { Level: 'basic' }, { InheritedFrom: 'ngToolBar' }),
-            "BtnAddFile": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            "BtnRemoveFiles": ng_diControl('ngButton', null, { Level: 'basic' }, { InheritedFrom: 'ngButton' })
+            "BtnAddFile": ng_diControl('ngButton', ng_diProperties({
+              "Data": {
+                "ngText": ng_diString('ngfup_AddFile')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+            "BtnRemoveFiles": ng_diControl('ngButton', ng_diProperties({
+              "Data": {
+                "ngText": ng_diString('ngfup_RemoveFiles'),
+                "Enabled": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' })
           }
-        },{
-          "ModifyControls": { Level: 'basic' }
         })
       };
     });
