@@ -3341,6 +3341,16 @@ function ngSysControl(obj, id, type)
    */
   //obj.ChildControls = new Array();
 
+  /*  Variable: ChildHandling
+   *  If present, describes how control state changes influence control children.
+   *  Type: integer
+   *
+   *  Constants:
+   *  - ngChildEnabledAsParent
+   *  - ngChildEnabledParentAware
+   *  - ngChildEnabledIndependent
+   */
+  //obj.ChildHandling = 0;
 
   /*
    *  Group: Methods
