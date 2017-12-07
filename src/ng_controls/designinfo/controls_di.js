@@ -65,6 +65,7 @@
         InitType: 'type',
         Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental)
         PropertyGroup: 'All'(Definition|Data|DataBind|Events|...Events|Methods|Controls|All),
+        DisplayName: 'PropertyName' (function(propertyname, displayname) { return displayname; }),
         Order: 0.5,
         Collapsed: true,
         ContainerProperty: false,
