@@ -19,6 +19,7 @@
 /*
   {
     ControlCategory: 'category',
+    IsContainer: false,
     IsBasic: false,
     IsViewModel: false,
     NonVisual: false,
@@ -65,7 +66,7 @@
         Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental)
         PropertyGroup: 'All'(Definition|Data|DataBind|Events|...Events|Methods|Controls|All),
         Order: 0.5,
-        Collapsed: false,
+        Collapsed: true,
         ContainerProperty: false,
         Required: false,
         FixedType: false,
@@ -129,7 +130,6 @@
     OnActionsMenuCreating: function(ActionsMenu) {
     },
 
-    IsContainer: false,
     TargetContainer: function(control, target_control, control_elm, target_elm) {
       return null;
     }
