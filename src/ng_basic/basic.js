@@ -3011,13 +3011,12 @@ function ng_OverrideMethod(cls,method,fnc) {
 function ng_OverrideFunction(oldfnc,fnc,thisarg) {
   if((typeof oldfnc!=='function')||(typeof fnc!=='function')) return (typeof fnc!=='function' || !thisarg ? fnc : fnc.bind(thisarg));
   else {
-    if(!thisarg) thisarg=this;
     var parentfnc=function() {
-      return oldfnc.apply(thisarg,arguments);
+      return oldfnc.apply(thisarg ? thisarg : this, arguments);
     };
     var newfnc = function() {
       newfnc.callParent = parentfnc;
-      return fnc.apply(thisarg,arguments);
+      return fnc.apply(thisarg ? thisarg : this, arguments);
     }
     return newfnc;
   }
