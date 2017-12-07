@@ -849,7 +849,7 @@ function ng_diProperties(props,data) {
             PropertyGroup: 'Controls'
           }
         }),
-        "ModifyControls": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls' }, {
+        "ModifyControls": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
           DestroyIfEmpty: true,
           ChildDesignInfo: {
             PropertyGroup: 'Controls'
@@ -970,7 +970,7 @@ function ng_diProperties(props,data) {
             "pinchin":    ng_diBoolean(false, { Level: 'optional' }),
             "pinchout":   ng_diBoolean(false, { Level: 'optional' }),
             "rotate":     ng_diBoolean(false, { Level: 'optional' })
-          }, { Collapsed: true, Level: 'advanced' }, { DestroyIfEmpty: true }),
+          }, { Level: 'advanced' }, { DestroyIfEmpty: true }),
           "ngText": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
           "ngTextD": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
           "ngAlt": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),

@@ -24,7 +24,7 @@ ngUserControls['menu_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "SubMenu": ng_diType('ngMenuItems', { Level: 'basic', Collapsed: true }),
+            "SubMenu": ng_diType('ngMenuItems', { Level: 'basic', Collapsed: false }),
             "OnMenuClick": ng_diEvent('function(e, m, it) { return true; }', { Order: 0.9, Level: 'basic' }),
             // change defaults
             "Items": { Level: 'optional' },

@@ -122,7 +122,7 @@ ngUserControls['window_designinfo'] = {
             "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
             "Buttons": ng_diObject(undefined, { Level: 'hidden' }),
             "Img": ng_diType('image', { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true } ),
+            "Frame": ng_diType('img_frame', { Level: 'advanced' } ),
             "CaptionImg": ng_diObject({
               "LeftImg": ng_diType('image', { Level: 'advanced' }),
               "MiddleImg": ng_diType('image', { Level: 'advanced' }, {
@@ -196,7 +196,7 @@ ngUserControls['window_designinfo'] = {
               })
             ], { InitType: 'object', Level: 'basic' }),
             "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' }),
             "AutoHideTimeout": ng_diInteger(0, { Level: 'basic' }),
             "DisposeOnHide": ng_diBoolean(false, { Level: 'basic' }),

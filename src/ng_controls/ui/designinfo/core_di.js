@@ -299,7 +299,7 @@ ngUserControls['uicore'] = {
             "ngTextD": { Level: 'basic' },
             "Text": ng_diStringRefName({ Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' })
           },
           "OverrideEvents": {
@@ -553,7 +553,7 @@ ngUserControls['uicore'] = {
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "RowOverlap": ng_diInteger(0, { Level: 'basic' }),
             "PageImages": ng_diArrayOf('image', { Level: 'advanced' }),
-            "Frame": ng_diType('img_frame', { Level: 'advanced', Collapsed: true })
+            "Frame": ng_diType('img_frame', { Level: 'advanced' })
           },
           "OverrideEvents": {
             "OnGetText": ng_diEvent('function(c, pg) { return ""; }', { Level: 'basic' }),

@@ -56,7 +56,7 @@ ngUserControls['calendar_designinfo'] = {
                                            }, undefined, { Add: false }),
             "MinDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
             "MaxDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
-            "Frame": ng_diType('img_frame', { Collapsed: true, Level: 'advanced' })
+            "Frame": ng_diType('img_frame', { Level: 'advanced' })
           },
           "Events": {
             "OnDayClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),

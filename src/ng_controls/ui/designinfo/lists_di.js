@@ -200,7 +200,6 @@ ngUserControls['list_designinfo'] = {
             ng_diType('ngListCol', undefined, { Level: 'basic' }),
             ng_diType('ngListColClass', undefined, { Level: 'hidden' })
           ], {
-            Collapsed: true,
             OnPropertyInit: function(ch)
             {
               if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
@@ -233,7 +232,6 @@ ngUserControls['list_designinfo'] = {
           Priority: 0.52,
           ChildDesignInfo: {
             DefaultType: 'ngListItem', Level: 'basic',
-            Collapsed: false,
             OnPropertyInit: function(ch)
             {
               if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
@@ -321,7 +319,6 @@ ngUserControls['list_designinfo'] = {
           Priority: 0.51,
           ChildDesignInfo: {
             DefaultType: 'string', Level: 'basic',
-            Collapsed: false,
             OnPropertyInit: function(ch)
             {
               if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'string'))
@@ -455,8 +452,8 @@ ngUserControls['list_designinfo'] = {
         },
         Properties: ng_diProperties({
           "Data": {
-            "Columns": ng_diType('ngListColumns', { Level: 'basic' }),
-            "Items": ng_diMixed(['ngListItems','ngListStringItems'], { Level: 'basic', Collapsed: true }),
+            "Columns": ng_diType('ngListColumns', { Collapsed: false, Level: 'basic' }),
+            "Items": ng_diMixed(['ngListItems','ngListStringItems'], { Collapsed: false, Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "ListIndent": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'advanced' }),
             "DefaultIndent": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'advanced' }),
@@ -488,7 +485,7 @@ ngUserControls['list_designinfo'] = {
             "CheckedChangedDelay": ng_diInteger(0, { Level: 'advanced' }),
             "ItemsControls": ng_diArrayOfControls(undefined, { Level: 'hidden' }),
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
-            "Frame": ng_diType( 'img_frame', { Level: 'advanced', Collapsed: true })
+            "Frame": ng_diType( 'img_frame', { Level: 'advanced' })
           },
           "Events": {
             "OnAdd": ng_diEvent('function(c, it, parent) { return true; }', { Level: 'basic' }),
