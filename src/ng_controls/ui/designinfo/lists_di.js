@@ -13,6 +13,12 @@
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['list_designinfo'] = {
   OnFormEditorInit: function(FE) {
+    var undefined;
+
+    function getpropertytext(p) {
+      return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
+    }
+
     var list_types = [
       // ngListColClass
       {
@@ -200,6 +206,20 @@ ngUserControls['list_designinfo'] = {
             ng_diType('ngListCol', undefined, { Level: 'basic' }),
             ng_diType('ngListColClass', undefined, { Level: 'hidden' })
           ], {
+            DisplayName: function(pname, dispname) {
+              var txt='';
+              var capprops = FormEditor.GetSelectedControlsProperty(pname+'.Caption');
+              var idprops = FormEditor.GetSelectedControlsProperty(pname+'.ID');
+              for(var i=0;i<capprops.length;i++) {
+                var t=getpropertytext(capprops[i]);
+                if(t=='') t=getpropertytext(idprops[i]);
+                if(!i) txt=t;
+                else if(t!=txt) { txt=''; break; }
+              }
+              var dn=dispname;
+              if(txt!='') dn=dn+': '+txt;
+              return dn;
+            },
             OnPropertyInit: function(ch)
             {
               if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
@@ -232,6 +252,31 @@ ngUserControls['list_designinfo'] = {
           Priority: 0.52,
           ChildDesignInfo: {
             DefaultType: 'ngListItem', Level: 'basic',
+            DisplayName: function(pname, dispname) {
+              function gettextobj(p) {
+                if(p.PropertyType==='object') {
+                  var v=ngVal(p.PropertyValue,{});
+                  for(var j in v) {
+                    var cprops = FormEditor.GetSelectedControlsProperty(pname+'.Text.'+j, [p.ControlID]);
+                    if(cprops.length>0) p=cprops[0];
+                    break;
+                  }
+                }
+                return getpropertytext(p);
+              }
+              var txt='';
+              var txtprops = FormEditor.GetSelectedControlsProperty(pname+'.Text');
+              var idprops = FormEditor.GetSelectedControlsProperty(pname+'.ID');
+              for(var i=0;i<txtprops.length;i++) {
+                var t=gettextobj(txtprops[i]);
+                if(t=='') t=getpropertytext(idprops[i]);
+                if(!i) txt=t;
+                else if(t!=txt) { txt=''; break; }
+              }
+              var dn=dispname;
+              if(txt!='') dn=dn+': '+txt;
+              return dn;
+            },
             OnPropertyInit: function(ch)
             {
               if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'object'))
