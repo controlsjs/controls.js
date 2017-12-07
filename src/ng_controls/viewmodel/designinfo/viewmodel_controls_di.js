@@ -190,6 +190,48 @@ var ViewModel_Controls_DesignInfo = (function()
         'ARRAY','OBJECT'
       ];
 
+      var attrsprops={
+        "PrivateField": ng_diBoolean(false, { Level: 'basic' }),
+        "DisplayName": ng_diMixed(['undefined','string'], { Level: 'basic', InitType: 'string' }),
+        "Size": ng_diMixed(['undefined','integer'], { Level: 'basic', InitType: 'integer' }),
+        "Precision": ng_diMixed(['undefined','integer'], { Level: 'basic' }),
+        "Required": ng_diBoolean(false, { Level: 'basic' }),
+        "NullIfEmpty": ng_diBoolean(true, { Level: 'basic' }),
+        "AllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
+        "AutoTrim": ng_diIntegerIdentifiers(1,['fdNoTrim','fdTrim','fdLeftTrim','fdRightTrim'],{ Level: 'basic' }),
+        "ReadOnly": ng_diMixed(['undefined',ng_diBoolean(true)], { Level: 'basic', InitType: 'boolean' }),
+        "MinValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
+        "MaxValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
+        "Enum": ng_diArrayOf(ng_diType('jstypes', { DefaultType: 'undefined' }), { Level: 'basic' }),
+        "DefaultValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
+        "Command": ng_diMixed(['undefined','string'], { Level: 'basic', InitType: 'string' }),
+        "NoReset": ng_diBoolean(false, { Level: 'basic' }),
+        "Value": ng_diMixed(['ko.observable','ko.computed','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
+        "RemoveEmptyItems": ng_diBoolean(false, { Level: 'optional' }),
+        "Serialize": ng_diBoolean(true, { Level: 'advanced' }),
+        "DateTimeFormat": ng_diString('', { Level: 'basic' }),
+        "DateFormat": ng_diString('', { Level: 'basic' }),
+        "TimeFormat": ng_diString('', { Level: 'basic' }),
+        "FormatNumber": ng_diBoolean(false, { Level: 'basic' }),
+        "DecimalSeparator": ng_diString('', { Level: 'basic' }),
+        "ThousandsSeparator": ng_diString('', { Level: 'basic' }),
+
+        "EditNumStep": ng_diInteger(1, { Level: 'basic' }),
+        "EditNumStepRound": ng_diBoolean(false, { Level: 'basic' })
+      };
+
+      if(typeof ngUserControls['dbviewmodel'] === 'object')
+      {
+        attrsprops["PrimaryKey"]=ng_diBoolean(false, { Level: 'basic' });
+        attrsprops["ReadOnly"]=ng_diBoolean(false, { Level: 'basic' });
+        attrsprops["DBField"]=ng_diMixed(['boolean','string'], { Level: 'basic' });
+      }
+      if(typeof ngUserControls['viewmodel_dataset'] === 'object')
+      {
+        attrsprops["DataSetColumnAlign"]=ng_diStringValues('left', ['left', 'center', 'right'], { Level: 'basic' });
+        attrsprops["DataSetColumnWidth"]=ng_diMixed(['undefined',ng_diInteger(0, {}, { InitValue: 100 })], { Level: 'basic', InitType: 'integer' });
+      }
+
       function fdtype(typename, shortname, args) {
         fdtypes.push(typename);
         var di={
@@ -377,32 +419,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Name: 'ngFieldDef Attrs',
           ShortName: 'attrs',
           Options: {
-            ObjectProperties: {
-              "PrivateField": ng_diBoolean(false, { Level: 'basic' }),
-              "DisplayName": ng_diMixed(['undefined','string'], { Level: 'basic', InitType: 'string' }),
-              "Size": ng_diMixed(['undefined','integer'], { Level: 'basic', InitType: 'integer' }),
-              "Precision": ng_diMixed(['undefined','integer'], { Level: 'basic' }),
-              "Required": ng_diBoolean(false, { Level: 'basic' }),
-              "NullIfEmpty": ng_diBoolean(true, { Level: 'basic' }),
-              "AllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
-              "AutoTrim": ng_diIntegerIdentifiers(1,['fdNoTrim','fdTrim','fdLeftTrim','fdRightTrim'],{ Level: 'basic' }),
-              "ReadOnly": ng_diMixed(['undefined',ng_diBoolean(true)], { Level: 'basic', InitType: 'boolean' }),
-              "MinValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
-              "MaxValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
-              "Enum": ng_diArrayOf(ng_diType('jstypes', { DefaultType: 'undefined' }), { Level: 'basic' }),
-              "DefaultValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
-              "Command": ng_diString('', { Level: 'basic' }),
-              "NoReset": ng_diBoolean(false, { Level: 'basic' }),
-              "Value": ng_diMixed(['ko.observable','ko.computed','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
-              "RemoveEmptyItems": ng_diBoolean(false, { Level: 'optional' }),
-              "Serialize": ng_diBoolean(true, { Level: 'advanced' }),
-              "DateTimeFormat": ng_diString('', { Level: 'basic' }),
-              "DateFormat": ng_diString('', { Level: 'basic' }),
-              "TimeFormat": ng_diString('', { Level: 'basic' }),
-              "FormatNumber": ng_diBoolean(false, { Level: 'basic' }),
-              "DecimalSeparator": ng_diString('', { Level: 'basic' }),
-              "ThousandsSeparator": ng_diString('', { Level: 'basic' })
-            }
+            ObjectProperties: attrsprops 
           }
         },
 
