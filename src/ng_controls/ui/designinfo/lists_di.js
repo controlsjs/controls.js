@@ -19,6 +19,19 @@ ngUserControls['list_designinfo'] = {
       return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
     }
 
+    function nitemstring(prefix,ch)
+    {
+      var val='';
+      var tmp = ch.Name.split('.');
+      var itemID = ng_toInteger(tmp[tmp.length - 2]);
+      if (!isNaN(itemID)) val = prefix + (itemID + 1);
+
+      ch.Type = 'string';
+      ch.Value = val;
+
+      return true;
+    }
+
     var list_types = [
       // ngListColClass
       {
@@ -35,8 +48,16 @@ ngUserControls['list_designinfo'] = {
           InitValue: ["'colid'"],
           Add: false,
           ObjectProperties: {
-            0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'colid' }),
-            1: ng_diString('', { DisplayName: 'Caption', Level: 'basic' }, { InitValue: 'Column name' }),
+            0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic',
+              OnPropertyInit: function(ch) {
+                return nitemstring('c', ch);
+              }
+            }),
+            1: ng_diString('', { DisplayName: 'Caption', Level: 'basic',
+              OnPropertyInit: function(ch) {
+                return nitemstring('Column', ch);
+              }
+            }),
             2: ng_diStringValues('left', ['left', 'center', 'right'], { DisplayName: 'Align', Level: 'basic' }),
             3: ng_diMixed([
                  ng_diUndefined(),
@@ -55,8 +76,16 @@ ngUserControls['list_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "ID": ng_diString('', { Level: 'basic', Order: 0.4 }),
-            "Caption": ng_diString('', { Level: 'basic', Order: 0.41 }),
+            "ID": ng_diString('', { Level: 'basic', Order: 0.4,
+              OnPropertyInit: function(ch) {
+                return nitemstring('c', ch);
+              }
+            }),
+            "Caption": ng_diString('', { Level: 'basic', Order: 0.41,
+              OnPropertyInit: function(ch) {
+                return nitemstring('Column', ch);
+              }
+            }),
             "Align": ng_diStringValues('left', ['left','center','right'], { Level: 'basic' }),
             "VAlign": ng_diStringValues('top', ['top','middle','bottom','baseline'], { Level: 'basic' }),
             "Width": ng_diMixed([
@@ -105,7 +134,7 @@ ngUserControls['list_designinfo'] = {
                 }
                 else {
                   ch.Type = 'string';
-                  ch.Value = 'Item ' + (itemID + 1);
+                  ch.Value = val;
                 }
 
                 return true;
@@ -119,7 +148,11 @@ ngUserControls['list_designinfo'] = {
                 ChildDesignInfo: ng_diString()
               })
             ], { InitType: 'string', Level: 'basic' }),
-            "ID": ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'basic' }),
+            "ID": ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'basic',
+              OnPropertyInit: function(ch) {
+                return nitemstring('item', ch);
+              }
+            }),
             "Checked": ng_diIntegerIdentifiers(0,['nglUnchecked','nglChecked','nglGrayed'],{ Level: 'basic' }),
             "CheckGroup": ng_diMixed([
               ng_diUndefined(),
@@ -208,11 +241,23 @@ ngUserControls['list_designinfo'] = {
           ], {
             DisplayName: function(pname, dispname) {
               var txt='';
-              var capprops = FormEditor.GetSelectedControlsProperty(pname+'.Caption');
-              var idprops = FormEditor.GetSelectedControlsProperty(pname+'.ID');
-              for(var i=0;i<capprops.length;i++) {
-                var t=getpropertytext(capprops[i]);
-                if(t=='') t=getpropertytext(idprops[i]);
+              var props = FormEditor.GetSelectedControlsProperty(pname);
+              var capprop, idprop,cids;
+              for(var i=0;i<props.length;i++) {
+                cids=[props[i].ControlID];
+                if(props[i].PropertyType==='ngListColClass') {
+                  idprop = FormEditor.GetSelectedControlsProperty(pname+'.0',cids);
+                  capprop = FormEditor.GetSelectedControlsProperty(pname+'.1',cids);
+                }
+                else
+                {
+                  capprop = FormEditor.GetSelectedControlsProperty(pname+'.Caption',cids);
+                  idprop = FormEditor.GetSelectedControlsProperty(pname+'.ID',cids);
+                }
+                if((capprop)&&(capprop.length>0)) capprop = capprop[0];
+                if((idprop)&&(idprop.length>0)) idprop = idprop[0];
+                var t=getpropertytext(capprop);
+                if(t=='') t=getpropertytext(idprop);
                 if(!i) txt=t;
                 else if(t!=txt) { txt=''; break; }
               }
