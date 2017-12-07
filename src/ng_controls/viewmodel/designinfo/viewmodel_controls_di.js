@@ -80,7 +80,6 @@ var ViewModel_Controls_DesignInfo = (function()
 
     var vm_di = {
       Properties: ng_diProperties({
-        "ViewModel": ng_diType('viewmodel', { Level: 'basic', Order: 0.21, PropertyGroup: 'DataBind' }),
         "Data": {
           "ViewModelData": { Level: 'hidden' }
         },
@@ -111,6 +110,10 @@ var ViewModel_Controls_DesignInfo = (function()
         ], { Level: 'optional', Order: 0.5, PropertyGroup: 'DataBind' })
       })
     };
+    if((c.DesignInfo)&&(c.DesignInfo.NonVisual)&&(!c.CtrlInheritsFrom('ngSysViewModel'))) {
+      vm_di.Properties["ViewModel"]=ng_diType('viewmodel', { Level: 'basic', Order: 0.21, PropertyGroup: 'DataBind' });
+    }
+    
 
     // handle DataBind Events properties
     if (di && di.Properties && di.Properties.Events && di.Properties.Events.Types && di.Properties.Events.Types['object'])
@@ -172,13 +175,157 @@ var ViewModel_Controls_DesignInfo = (function()
 
   return {
     OnFormEditorInit: function(FE) {
+
+      function getpropertytext(p) {
+        return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
+      }
+
+      var fdtypes=['ngFieldDef'];
+      var fdbasetypes=[
+        'BOOL','INTEGER','FLOAT',
+        'SBYTE','BYTE','SHORT','USHORT','LONG','ULONG',
+        'DECIMAL','STRING','NVARCHAR',
+        'TIMESTAMP','DATETIME','DATE', 'TIME',
+        'UTCTIMESTAMP','UTCDATETIME','UTCDATE','UTCTIME',
+        'ARRAY','OBJECT'
+      ];
+
+      function fdtype(typename, shortname, args) {
+        fdtypes.push(typename);
+        var di={
+          TypeID: typename,
+          TypeBase: 'callee',
+          Name: typename,
+          ShortName: shortname,
+          Options: {
+            Callee: typename,
+            NewExpression: true,
+            Add: false,
+            DefaultCode: "new "+typename+"('')", // TODO: Check why not set default value of first parameter on init
+            ObjectProperties: {
+              0: ng_diString('', { DisplayName: 'ID', Level: 'basic' })
+            }
+          }
+        };
+        if(args) {
+          for(var i = 0; i<args.length; i++) {
+            di.Options.ObjectProperties[i+1]=args[i];
+          }
+        }
+        return di;
+      }
+
+      function fdattrvaltype(type,prop,nominmax) {
+        if(!prop) prop={};
+        var di={ 
+          "Size": { Level: 'optional' },
+          "Precision": { Level: 'optional' },
+          "DefaultValue": { DefaultType: type },
+          "Enum": { Types: { array: { ChildDesignInfo: { DefaultType: type }} } },
+          "DateTimeFormat": { Level: 'optional' },
+          "DateFormat": { Level: 'optional' },
+          "TimeFormat": { Level: 'optional' },
+        };
+        switch(type) {
+          case 'integer':
+          case 'float':
+            ng_MergeVar(di, {
+              "FormatNumber": { Level: 'basic' },
+              "DecimalSeparator": { Level: 'basic' },
+              "ThousandsSeparator": { Level: 'basic' }
+            })
+          default:
+            ng_MergeVar(di, {
+              "FormatNumber": { Level: 'optional' },
+              "DecimalSeparator": { Level: 'optional' },
+              "ThousandsSeparator": { Level: 'optional' }
+            })
+        }
+
+        if(!nominmax) {
+          ng_MergeVar(di,{
+            "MinValue": { DefaultType: type },
+            "MaxValue": { DefaultType: type }
+          });
+        }
+        else {
+          ng_MergeVar(di,{
+            "MinValue": { Level: 'optional' },
+            "MaxValue": { Level: 'optional' }
+          });
+        }
+        ng_MergeVar(prop,di);
+        return { ObjectProperties: prop };
+      }
+
+      function fdattrvalstring(prop,nominmax) {
+        if(!prop) prop={};
+        ng_MergeVar(prop,{
+          "Size": { Level: 'basic' }
+        });
+        return fdattrvaltype('string',prop,nominmax)
+      }
+
+      function vmdisplayname(pname, dispname) {
+        var txt='';
+        var idprops = FormEditor.GetSelectedControlsProperty(pname+'.0');
+        for(var i=0;i<idprops.length;i++) {
+          t=getpropertytext(idprops[i]);
+          if(!i) txt=t;
+          else if(t!=txt) { txt=''; break; }
+        }
+        var dn=dispname;
+        if((txt!='')&&(dn!=txt)) dn=dn+': '+txt;
+        return dn;
+      }
+
       var vm_types = [
+        // TODO: ko.observable and ko.computed not working
+
+        // ko.observable
+        {
+          TypeID: 'ko.observable',
+          TypeBase: 'callee',
+          Name: 'ko.observable',
+          ShortName: 'ko.o',
+          Options: {
+            Callee: 'ko.observable',
+            NewExpression: false,
+            Add: false,
+            DefaultCode: "ko.observable('')",
+            ObjectProperties: {
+              0: ng_diType('jstypes', { DisplayName: 'Value', Required: true, Level: 'basic', DefaultType: 'string' })
+            }
+          }
+        },
+
+        // ko.computed
+        {
+          TypeID: 'ko.computed',
+          TypeBase: 'callee',
+          Name: 'ko.computed',
+          ShortName: 'ko.c',
+          Options: {
+            Callee: 'ko.computed',
+            NewExpression: false,
+            Add: false,
+            DefaultCode: "ko.computed({ read: function() {}, write: function(v) {}, owner: this})",
+            ObjectProperties: {
+              0: ng_diObject({
+                "read": ng_diFunction('function() {}', { Required: true, Level: 'basic' }),
+                "write": ng_diFunction('function(v) {}', { Level: 'basic' }),
+                "owner": ng_diTypeVal('identifier','this', { Level: 'basic' })
+              }, { DisplayName: 'Computed', Level: 'basic' })
+            }
+          }
+        },
+
         // ViewModel Identifier
         {
           TypeID: 'vmid',
           TypeBase: 'string',
           Name: 'viewmodel id',
-          ShortName: 'vmi',
+          ShortName: 'id',
           Options: {
           }
         },
@@ -187,9 +334,9 @@ var ViewModel_Controls_DesignInfo = (function()
           TypeID: 'vmobject',
           TypeBase: 'object',
           Name: 'viewmodel object',
-          ShortName: 'vm',
+          ShortName: 'obj',
           Options: {
-            ChildDesignInfo: ng_diMixed(['undefined','jstypes'])
+            ChildDesignInfo: ng_diMixed(['ko.observable','ko.computed','jstypes'], { DefaultType: 'undefined' })
           }
         },
         // ViewModel Constructor
@@ -197,12 +344,32 @@ var ViewModel_Controls_DesignInfo = (function()
           TypeID: 'vmconstructor',
           TypeBase: 'function',
           Name: 'viewmodel constructor',
-          ShortName: 'vmc',
+          ShortName: 'fnc',
           Options: {
             // TODO: Check why not working?
-            DefaultValue: 'function(vm) {}'
+            DefaultCode: 'function(vm) {}'
           }
         },
+        // ngViewModel
+        {
+          TypeID: 'ngViewModel',
+          TypeBase: 'callee',
+          Name: 'ngViewModel',
+          ShortName: 'vm',
+          Options: {
+            Callee: 'ngViewModel',
+            NewExpression: true,
+            Add: false,
+            DefaultCode: "new ngViewModel('')",
+            ObjectProperties: {
+              0: ng_diString('', { DisplayName: 'ID', Level: 'basic'}),
+              1: ng_diString('', { DisplayName: 'Namespace', Level: 'basic'}),
+              2: ng_diMixed(['vmobject', 'vmconstructor'], { DisplayName: 'ViewModel', Level: 'basic'}),
+              3: ng_diType('url', { DisplayName: 'URL', Level: 'basic'})
+            }
+          }
+        },
+
         // ngFieldDefAttrs
         {
           TypeID: 'ngFieldDefAttrs',
@@ -211,7 +378,30 @@ var ViewModel_Controls_DesignInfo = (function()
           ShortName: 'attrs',
           Options: {
             ObjectProperties: {
-              "Required": ng_diBoolean(false, { Level: 'basic' })
+              "PrivateField": ng_diBoolean(false, { Level: 'basic' }),
+              "DisplayName": ng_diMixed(['undefined','string'], { Level: 'basic', InitType: 'string' }),
+              "Size": ng_diMixed(['undefined','integer'], { Level: 'basic', InitType: 'integer' }),
+              "Precision": ng_diMixed(['undefined','integer'], { Level: 'basic' }),
+              "Required": ng_diBoolean(false, { Level: 'basic' }),
+              "NullIfEmpty": ng_diBoolean(true, { Level: 'basic' }),
+              "AllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
+              "AutoTrim": ng_diIntegerIdentifiers(1,['fdNoTrim','fdTrim','fdLeftTrim','fdRightTrim'],{ Level: 'basic' }),
+              "ReadOnly": ng_diMixed(['undefined',ng_diBoolean(true)], { Level: 'basic', InitType: 'boolean' }),
+              "MinValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
+              "MaxValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
+              "Enum": ng_diArrayOf(ng_diType('jstypes', { DefaultType: 'undefined' }), { Level: 'basic' }),
+              "DefaultValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
+              "Command": ng_diString('', { Level: 'basic' }),
+              "NoReset": ng_diBoolean(false, { Level: 'basic' }),
+              "Value": ng_diMixed(['ko.observable','ko.computed','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
+              "RemoveEmptyItems": ng_diBoolean(false, { Level: 'optional' }),
+              "Serialize": ng_diBoolean(true, { Level: 'advanced' }),
+              "DateTimeFormat": ng_diString('', { Level: 'basic' }),
+              "DateFormat": ng_diString('', { Level: 'basic' }),
+              "TimeFormat": ng_diString('', { Level: 'basic' }),
+              "FormatNumber": ng_diBoolean(false, { Level: 'basic' }),
+              "DecimalSeparator": ng_diString('', { Level: 'basic' }),
+              "ThousandsSeparator": ng_diString('', { Level: 'basic' })
             }
           }
         },
@@ -229,74 +419,329 @@ var ViewModel_Controls_DesignInfo = (function()
             Add: false,
             DefaultCode: "new ngFieldDef()",
             DefaultValue: [],
-            InitValue: ["'vmfield1'", "'STRING'"],
+            InitValue: ["''", "'STRING'"],
             ObjectProperties: {
-              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'vmfield1' }),
-              1: ng_diStringValues('STRING', [
-                   'BOOL','INTEGER','FLOAT',
-                   'SBYTE','BYTE','SHORT','USHORT','LONG','ULONG',
-                   'DECIMAL','STRING','NVARCHAR',
-                   'TIMESTAMP','DATETIME','DATE', 'TIME',
-                   'UTCTIMESTAMP','UTCDATETIME','UTCDATE','UTCTIME',
-                   'ARRAY','OBJECT'
-                 ], { DisplayName: 'Type', Required: true, Level: 'basic' }),
+              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }),
+              1: ng_diStringValues('STRING', fdbasetypes, { DisplayName: 'Type', Required: true, Level: 'basic' }),
               2: ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' })
             }
           }
         },
 
-        // ngFieldDef_Bool
+        // ngFieldDefsArray
         {
-          TypeID: 'ngFieldDef_Bool',
-          TypeBase: 'callee',
-          Name: 'ngFieldDef_Bool',
-          ShortName: 'BOOL',
+          TypeID: 'ngFieldDefsArray',
+          TypeBase: 'array',
+          Name: 'ngFieldDefs',
+          ShortName: 'fds',
+          Basic: false,
           Options: {
-            Callee: 'ngFieldDef_Bool',
-            NewExpression: true,
-            DefaultCode: "new ngFieldDef_Bool()",
-            DefaultValue: [],
-            InitValue: ["'vmfield1'"],
-            Add: false,
-            ObjectProperties: {
-              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'vmfield1' }),
-              1: ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' })
-            }
+            ChildDesignInfo: ng_diType('vmfielddef', {
+              DefaultType: 'ngFieldDef_String',
+              OnPropertyInit: function(ch)
+              {
+                if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'callee'))
+                {
+                  var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
+                  if (pname)
+                  {
+                    var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
+                    var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
+
+                    if (!ng_IsArrayVar(ch.Value)) ch.Value = [];
+                    ch.Value[0] = "'Field" + (itemscnt + 1) + "'";
+                  }
+                }
+                return true;
+              },
+              DisplayName: vmdisplayname
+            })
           }
         },
 
-        // ngFieldDef_Integer
+        // ngFieldDefsObject
         {
-          TypeID: 'ngFieldDef_Integer',
-          TypeBase: 'callee',
-          Name: 'ngFieldDef_Integer',
-          ShortName: 'INT',
+          TypeID: 'ngFieldDefsObject',
+          TypeBase: 'object',
+          Name: 'ngFieldDefsObject',
+          ShortName: 'obj',
+          Basic: false,
           Options: {
-            Callee: 'ngFieldDef_Integer',
-            NewExpression: true,
-            DefaultCode: "new ngFieldDef_Integer()",
-            DefaultValue: [],
-            InitValue: ["'vmfield1'"],
-            Add: false,
-            ObjectProperties: {
-              0: ng_diString('', { DisplayName: 'ID', Required: true, Level: 'basic' }, { InitValue: 'vmfield1' }),
-              1: ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' })
-            }
+            ChildDesignInfo: ng_diType('vmfielddef', {
+              DefaultType: 'ngFieldDef_String',
+              DisplayName: vmdisplayname
+            })
           }
-        }
+        },
 
 
+        // ngFieldDef_Bool
+        fdtype('ngFieldDef_Bool', 'BOOL', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('boolean'))
+        ]),
+
+        // ngFieldDef_Integer
+        fdtype('ngFieldDef_Integer', 'INT', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_Float
+        fdtype('ngFieldDef_Float', 'FLT', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('float'))
+        ]),
+
+        // ngFieldDef_SByte
+        fdtype('ngFieldDef_SByte', 'SB', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_Byte
+        fdtype('ngFieldDef_Byte', 'B', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_Short
+        fdtype('ngFieldDef_Short', 'S', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_UShort
+        fdtype('ngFieldDef_UShort', 'US', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_Long
+        fdtype('ngFieldDef_Long', 'L', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_ULong
+        fdtype('ngFieldDef_ULong', 'UL', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer'))
+        ]),
+
+        // ngFieldDef_Decimal
+        fdtype('ngFieldDef_Decimal', 'DEC', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('string', {
+            'Size': { Level: 'basic' },
+            'Precision': { Level: 'basic' },
+            'FormatNumber': { Level: 'basic' },
+            'DecimalSeparator': { Level: 'basic' },
+            'ThousandsSeparator': { Level: 'basic' }
+          }, true))
+        ]),
+
+        // ngFieldDef_String
+        fdtype('ngFieldDef_String', 'STR', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring())
+        ]),
+
+        // ngFieldDef_Timestamp
+        fdtype('ngFieldDef_Timestamp', 'TS', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "DateTimeFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_DateTime
+        fdtype('ngFieldDef_DateTime', 'DT', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "DateTimeFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_Date
+        fdtype('ngFieldDef_Date', 'D', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('date', {
+            "DateFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_Time
+        fdtype('ngFieldDef_Time', 'T', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "TimeFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_UTCTimestamp
+        fdtype('ngFieldDef_UTCTimestamp', 'UTS', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "DateTimeFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_UTCDateTime
+        fdtype('ngFieldDef_UTCDateTime', 'UDT', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "DateTimeFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_UTCDate
+        fdtype('ngFieldDef_UTCDate', 'UD', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('date', {
+            "DateFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_UTCTime
+        fdtype('ngFieldDef_UTCTime', 'UT', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "TimeFormat": { Level: 'basic' }
+          }))
+        ]),
+
+        // ngFieldDef_Array
+        fdtype('ngFieldDef_Array', 'ARR', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('array', {
+            'RemoveEmptyItems': { Level: 'basic' }
+          })),
+          ng_diMixed(['undefined','vmfielddef'], { DisplayName: 'ValueFieldDef', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Object
+        fdtype('ngFieldDef_Object', 'OBJ', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('object',{},true)),
+          ng_diMixed(['undefined','ngFieldDefsObject'], { DisplayName: 'PropsFieldDefs', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_WWW
+        fdtype('ngFieldDef_WWW', 'WWW', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring())
+        ]),
+
+        // ngFieldDef_Email
+        fdtype('ngFieldDef_Email', '@', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring({
+            'AtSignIfEmpty': ng_diBoolean(true, { Level: 'basic' }),
+          }))
+        ]),
+
+        // ngFieldDef_IP4
+        fdtype('ngFieldDef_IP4', 'IP4', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring())
+        ]),
+
+        // ngFieldDef_IP4
+        fdtype('ngFieldDef_IP6', 'IP6', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring())
+        ]),
+
+        // ngFieldDef_IP46
+        fdtype('ngFieldDef_IP46', 'IP46', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring())
+        ]),
+
+        // ngFieldDef_Currency
+        fdtype('ngFieldDef_Currency', 'CUR', [
+          ng_diString('', { DisplayName: 'Units', Level: 'basic' }),
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('string', {
+            'Size': ng_diInteger(23, { Level: 'basic' }),
+            'Precision': ng_diInteger(3, { Level: 'basic' }),
+            'FormatNumber': { Level: 'basic' },
+            'DecimalSeparator': { Level: 'basic' },
+            'ThousandsSeparator': { Level: 'basic' },
+            'CurrencyPrefix': ng_diString('', { Level: 'basic' }),
+            'CurrencySuffix': ng_diString('', { Level: 'basic' }),
+          })),
+          ng_diStringValues('DECIMAL', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Distance
+        fdtype('ngFieldDef_Distance', 'm', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('float', {
+            'Precision': ng_diInteger(2, { Level: 'basic' })
+          })),
+          ng_diStringValues('FLOAT', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Area
+        fdtype('ngFieldDef_Area', 'm2', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('float', {
+            'Precision': ng_diInteger(2, { Level: 'basic' })
+          })),
+          ng_diStringValues('FLOAT', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Area
+        fdtype('ngFieldDef_SIUnits', 'SI', [
+          ng_diString('', { DisplayName: 'Units', Level: 'basic' }),
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('float', {
+            'Precision': ng_diInteger(2, { Level: 'basic' }),
+            'SIUnits': ng_diString('', { Level: 'basic' }),
+            'SIAllowedPref': ng_diString('', { Level: 'basic' })
+          })),
+          ng_diString('', { DisplayName: 'SIAllowedPref', Level: 'basic' }),
+          ng_diStringValues('FLOAT', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Minutes
+        fdtype('ngFieldDef_Minutes', 'min', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer', {
+            'Precision': ng_diInteger(0, { Level: 'basic' })
+          })),
+          ng_diStringValues('INTEGER', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Seconds
+        fdtype('ngFieldDef_Seconds', 'sec', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer', {
+            'Precision': ng_diInteger(0, { Level: 'basic' })
+          })),
+          ng_diStringValues('INTEGER', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_Bytes
+        fdtype('ngFieldDef_Bytes', 'kB', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('integer', {
+            'Precision': ng_diInteger(0, { Level: 'basic' })
+          })),
+          ng_diStringValues('INTEGER', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
+        ]),
+
+        // ngFieldDef_RegExp
+        fdtype('ngFieldDef_RegExp', 'reX', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring({
+            'RegExp': ng_diString('', { Level: 'basic' }),
+            'RegExpMods': ng_diString('', { Level: 'basic' }),
+            'RegExpError': ng_diString('', { Level: 'basic' })
+          }))
+        ]),
+
+        // ngFieldDef_Percent
+        fdtype('ngFieldDef_Percent', '%', [
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('string', {
+            'Size': ng_diInteger(3,{ Level: 'basic' }),
+            'Precision': ng_diInteger(0,{ Level: 'basic' }),
+            'MinValue': ng_diInteger(0),
+            'MaxValue': ng_diInteger(100)
+          }, true))
+        ])
       ];
+
+      // ngFieldDef_Phone
+      if(typeof ng_isPhone === 'function') {
+        vm_types.push(
+          fdtype('ngFieldDef_Phone', 'TEL', [
+            ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring({
+              //'Size': { DefaultValue: NG_PHONE_MAXLENGTH },
+              'PhoneAllowedPrefixes': ng_diType('array_strings', { Level: 'basic' }),
+              'PhoneAllowShortcode': ng_diBoolean(false, { Level: 'basic' }),
+              'PhonePrefix': ng_diString('', { Level: 'basic' }),
+              'PhonePrefixOperation': ng_diIntegerIdentifiers(1,[{Value:-1,Text:'NG_PHONE_PREFIX_REMOVE'},{Value:0,Text:'NG_PHONE_PREFIX_DONTCHANGE'},{Value:1,Text:'NG_PHONE_PREFIX_ADD'},{Value:2,Text:'NG_PHONE_PREFIX_REPLACE'}],{ Level: 'basic' }),
+
+              'PhoneZeros': ng_diBoolean(false, { Level: 'basic' }),
+              'PhoneAllowedShortcodes': ng_diType('array_strings', { Level: 'basic' })
+            }))
+          ])
+        );
+      }
+
       FormEditor.RegisterPropertyType(vm_types);
 
-      FE.RegisterPropertyTypesGroup('viewmodel',     ['vmid','vmobject']);
-      FE.RegisterPropertyTypesGroup('viewmodel_def', ['vmobject', 'vmconstructor']);
-      FE.RegisterPropertyTypesGroup('vmfielddef',    ['ngFieldDef',
-                                                      'ngFieldDef_Bool',
-                                                      'ngFieldDef_Integer'
-                                                       // TODO: Implement more ngFieldDef_*
-                                                     ]); 
-
+      FE.RegisterPropertyTypesGroup('viewmodel', ['vmid','vmobject','ngViewModel']);
+      FE.RegisterPropertyTypesGroup('vmfielddef', fdtypes);
     },
     OnControlDesignInfo: function(def, c, ref)
     {
@@ -326,27 +771,8 @@ var ViewModel_Controls_DesignInfo = (function()
           Properties: ng_diProperties({
             "ID": { Level: 'basic' },
             "Namespace": ng_diString('', { Level: 'basic', Order: 0.05 }),
-            "FieldDefs": ng_diArrayOf(
-              ng_diType('vmfielddef', {
-                DefaultType: 'ngFieldDef_Integer',
-                OnPropertyInit: function(ch)
-                {
-                  if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'callee'))
-                  {
-                    var pname = ch.Name.substring(0, ch.Name.lastIndexOf('.'));
-                    if (pname)
-                    {
-                      var controlsprops = FormEditor.GetControlsProperty(pname, [ch.ControlID]);
-                      var itemscnt = (controlsprops[0] && (ng_IsArrayVar(controlsprops[0].PropertyValue)) ) ? controlsprops[0].PropertyValue.length : 0;
-
-                      if (!ng_IsArrayVar(ch.Value)) ch.Value = [];
-                      ch.Value[0] = "'Field" + (itemscnt + 1) + "'";
-                    }
-                  }
-                  return true;
-                }
-              }), { Level: 'basic', Order: 0.051 }),
-            "ViewModel": ng_diType('viewmodel_def', { Level: 'basic', Order: 0.052, PropertyGroup: 'Definition' }),
+            "FieldDefs": ng_diType('ngFieldDefsArray', { Level: 'basic', Order: 0.051, Collapsed: false }),
+            "ViewModel": ng_diMixed(['vmobject', 'vmconstructor'], { Level: 'basic', Order: 0.052, PropertyGroup: 'Definition' }),
             "RefViewModel": ng_diType('vmid', { Level: 'basic', Order: 0.053 }),
             "Data": {
               "ViewModel": ng_diType('vmobject', { Level: 'basic' }),
