@@ -1074,6 +1074,14 @@ ngUserControls['controls_designinfo'] = {
       var cdi=c.DesignInfo;
       var di = {};
 
+      if(c.GetText===ngc_GetText) {
+        ng_MergeVar(cdi.Properties, {
+          "Data": ng_diObject({
+            "DesignText": ng_diString('', { Level: 'basic' })
+          })
+        });
+      }
+
       // define common DesignInfo
       var events = (cdi && cdi.Properties && cdi.Properties.Events) ? cdi.Properties.Events : {},
           eventstype = [{ id: 'Before', order: 0.91 }, { id: 'After', order: 0.93 }, { id: 'Override', order: 0.94 }],
@@ -1091,6 +1099,11 @@ ngUserControls['controls_designinfo'] = {
   },
   OnInit: function() {
     if(!ngDESIGNINFO) return;
+
+    ngc_GetText=ng_OverrideFunction(ngc_GetText, function() {
+      if((this.InDesignMode)&&(ngVal(this.DesignText,'')!=='')) return this.DesignText;
+      return ngc_GetText.callParent.apply(this,arguments);
+    });
 
     // register generic control
     function feGenericControl(id)

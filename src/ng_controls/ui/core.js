@@ -3087,7 +3087,9 @@ function nge_DoUpdate(o)
   }
   else
   {
-    this.HintVisible=(this.Text=='')&&(hint!='');
+    var txt=this.Text;
+    if((this.InDesignMode)&&(ngVal(this.DesignText,'')!=='')) txt=this.DesignText;
+    this.HintVisible=(txt=='')&&(hint!='');
     html.append('<input type=');
     if((this.Password)&&(!this.HintVisible)) html.append('"password" ');
     else html.append('"text" ');
@@ -3095,7 +3097,7 @@ function nge_DoUpdate(o)
     html.append('id="'+this.ID+'_T" class="'+this.GetClassName('Input',hint));
     html.append('" style="border:0px; white-space: nowrap;text-align:'+this.TextAlign+';position: absolute; z-index:1;left:'+(lw+bl)+'px;top:'+this.OffsetTop+'px;width:'+(tw)+'px;'+(paddingRight_CF!='' ? 'padding-right:'+paddingRight_CF+';' : ''));
     if(readonly) html.append("cursor: default;");
-    html.append('" value="'+ng_htmlEncode(this.Text=='' ? hint : this.Text)+'" ');
+    html.append('" value="'+ng_htmlEncode(txt=='' ? hint : txt)+'" ');
     if((this.MaxLength>0)&&(!this.HintVisible)) html.append('maxlength="'+this.MaxLength+'" ');
     html.append('onkeydown="nge_KeyDown(event,this)" onkeyup="nge_KeyUp(event,this)" onkeypress="nge_KeyPress(event,this)" onchange="nge_TextChanged(event,this)"');
     html.append(' onfocus="ngc_Focus(event,this,\'ngEdit\')" onblur="ngc_Blur(event,this,\'ngEdit\')"');
@@ -4311,7 +4313,9 @@ function ngem_DoUpdate(o)
   }
   else
   {
-    this.HintVisible=(this.Text=='')&&(hint!='');
+    var txt=this.Text;
+    if((this.InDesignMode)&&(ngVal(this.DesignText,'')!=='')) txt=this.DesignText;
+    this.HintVisible=(txt=='')&&(hint!='');
     html.append('<textarea ');
     if(alt!='') html.append('title="'+ng_htmlEncode(alt)+'" ');
     if(readonly) html.append('readonly="readonly" ');
@@ -4320,7 +4324,7 @@ function ngem_DoUpdate(o)
     html.append('onkeydown="ngem_KeyDown(event,this)" onkeyup="ngem_KeyUp(event,this)" onkeypress="ngem_KeyPress(event,this)" onchange="ngem_TextChanged(event,this)"');
     html.append(' onfocus="ngc_Focus(event,this,\'ngMemo\')" onblur="ngc_Blur(event,this,\'ngMemo\')"');
     html.append('>');
-    html.append(ng_htmlEncode(this.Text == '' ? hint : this.Text).replace(/\n/g, "&#13;&#10;"));
+    html.append(ng_htmlEncode(txt == '' ? hint : txt).replace(/\n/g, "&#13;&#10;"));
     html.append('</textarea>');
 
     ng_SetInnerHTML(o,html.toString());
