@@ -837,9 +837,9 @@ function ngfup_GetRPC(){
     var rpc = new ngRPC(this.ID+'RPC','',true);
     rpc.Type = rpcHttpRequestPOST;
     rpc.Owner = this;
-    rpc.OnReceivedData = ngfup_RPC_OnReceivedData;
-    rpc.OnHTTPRequestFailed = ngfup_RPC_OnHTTPRequestFailed;
-    rpc.OnHTTPRequest = ngfup_RPC_OnHTTPRequest;
+    rpc.AddEvent('OnReceivedData', ngfup_RPC_OnReceivedData);
+    rpc.AddEvent('OnHTTPRequestFailed', ngfup_RPC_OnHTTPRequestFailed);
+    rpc.AddEvent('OnHTTPRequest', ngfup_RPC_OnHTTPRequest);
     this.file_rpc = rpc;
   }
   return this.file_rpc;
