@@ -501,11 +501,9 @@ var WinXP_DesignInfo = {
         Properties: ng_diProperties({
           "className": ng_diString('wxpDropPanel'),
           "ControlsPanel": ng_diControl('ngGroup',ng_diProperties({
-            "ControlsPanel": ng_diControl(undefined,ng_diProperties({
-              "style": {
-                "backgroundColor": ng_diTypeVal('css_colors', '#FFFFFF', { Level: 'advanced' }) // TODO: Check why not displayed
-              }
-            })),
+            "style": {
+              "backgroundColor": ng_diTypeVal('css_colors', '#FFFFFF', { Level: 'advanced' })
+            },
             "Data": {
               "Frame": ng_diType('img_frame', {}, {
                 ObjectProperties: {
@@ -710,7 +708,7 @@ var WinXP_DesignInfo = {
             "ngAltD": { Level: 'basic' },
             "Alt": ng_diString('', { Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' })
-          }, { Collapsed: true, Level: 'basic' }),
+          }, { Level: 'basic' }),
           "DialogType": ng_diString('stdDialog'),
           "ModifyControls": {
             "Message": ng_diControl('stdText'),
@@ -831,7 +829,7 @@ var WinXP_DesignInfo = {
       var di = {
         Properties: ng_diProperties({
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
-          "DlgItems": ng_diMixed(['ngListItems','ngListStringItems'], { Level: 'basic', Collapsed: true }),
+          "DlgItems": ng_diMixed(['ngListItems','ngListStringItems'], { Level: 'basic', Collapsed: false }),
           "DialogType": ng_diString('stdMessageDlg'),
           "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
           "ModifyControls": {
