@@ -141,10 +141,10 @@ return {
 
           "Data": {
             "TextAlign": ng_diStringValues('left', ['left','right','center','justify'], { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(false),
-            "AutoSizeMode": ng_diStringValues('auto', ['auto','horizontal','vertical']),
-            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
-            "MinHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
+            "AutoSize": ng_diBoolean(false, { Level: 'advanced' }),
+            "AutoSizeMode": ng_diStringValues('auto', ['auto','horizontal','vertical'], { Level: 'advanced' }),
+            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MinHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
 
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
@@ -156,7 +156,7 @@ return {
             "CanSelect": ng_diBoolean(true, { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' })
           }
@@ -173,7 +173,7 @@ return {
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": ng_diString('', { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(true),
+            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "Img": ng_diType('image', { Level: 'basic' })
           },
           "OverrideEvents": {
@@ -193,7 +193,7 @@ return {
             "ngAlt":  { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": ng_diString('', { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(true),
+            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "Img": ng_diType('image', { Level: 'basic' }),
             "Cursor": ng_diType('css_cursor', { Level: 'basic' }),
             "Shapes": ng_diArrayOf('ngImageShape', { Level: 'basic' })
@@ -202,8 +202,8 @@ return {
             "OnShapeClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
             "OnMouseEnter":  { },
             "OnMouseLeave":  { },
-            "OnMouseShapeEnter": ng_diEvent('function(c, shapeidx) { }'),
-            "OnMouseShapeLeave": ng_diEvent('function(c, shapeidx) { }')
+            "OnMouseShapeEnter": ng_diEvent('function(c, shapeidx) { }', { Level: 'advanced' }),
+            "OnMouseShapeLeave": ng_diEvent('function(c, shapeidx) { }', { Level: 'advanced' })
           },
           "OverrideEvents": {
             "OnGetImg": ng_diEvent('function(c) { return null; }', { Level: 'basic' }),
@@ -249,8 +249,8 @@ return {
             "ngAltD": { Level: 'basic' },
             "Alt": ng_diString('', { Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(true),
-            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
+            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
+            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
             "RadioGroup": ng_diMixed(['undefined', ng_diString('',{},{
               Editor: 'ngfeEditor_DropDown',
@@ -285,7 +285,7 @@ return {
             "OnMouseLeave": { }
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'advanced' }),
@@ -317,8 +317,8 @@ return {
           "ParentReferences": { Level: 'advanced' },
           "W": { Exclude: ['CW'] },
           "H": { Exclude: ['CH'] },
-          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
-          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'], Level: 'advanced' }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
           "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
@@ -330,7 +330,7 @@ return {
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' })
           }
         },
@@ -365,7 +365,7 @@ return {
               }
             }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
             { Level: 'basic', Collapsed: false, PropertyGroup: 'Controls' }, { DestroyIfEmpty: true }),
-          "DropDown": ng_diControl(undefined, undefined, { PropertyGroup: 'Controls' }),
+          "DropDown": ng_diControl(undefined, undefined, { PropertyGroup: 'Controls', Level: 'advanced' }),
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'optional' },
@@ -391,42 +391,42 @@ return {
             "RightImg": ng_diType('image', { Level: 'advanced' }),
             "OffsetTop": ng_diInteger(0, { Level: 'basic' }),
             "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
-            "DropDownType": ng_diIntegerIdentifiers(0,['ngeDropDownEdit','ngeDropDownList']),
-            "DropDownWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
-            "DropDownAlign": ng_diStringValues('left', ['left','right']),
+            "DropDownType": ng_diIntegerIdentifiers(0,['ngeDropDownEdit','ngeDropDownList'], { Level: 'advanced' }),
+            "DropDownWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer',  Level: 'advanced' }),
+            "DropDownAlign": ng_diStringValues('left', ['left','right'], { Level: 'advanced' }),
             "LockHintCaretPos": ng_diBoolean(true, { Level: 'basic' }),
             "Invalid": ng_diBoolean(false, { Level: 'basic' }),
-            "Suggestion": ng_diBoolean(false),
-            "SuggestionDelay": ng_diInteger(200),
-            "SuggestionSearchColumn": ng_diString(),
-            "SuggestionIgnoreCase": ng_diBoolean(true),
-            "SuggestionPartial": ng_diTypeValues('integer',2,[{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}]),
-            "SuggestionURL": ng_diType('url'),
-            "SuggestionType": ng_diString()
+            "Suggestion": ng_diBoolean(false, { Level: 'advanced' }),
+            "SuggestionDelay": ng_diInteger(200, { Level: 'advanced' }),
+            "SuggestionSearchColumn": ng_diString('', { Level: 'advanced' }),
+            "SuggestionIgnoreCase": ng_diBoolean(true, { Level: 'advanced' }),
+            "SuggestionPartial": ng_diTypeValues('integer',2,[{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}], { Level: 'advanced' }),
+            "SuggestionURL": ng_diType('url', { Level: 'advanced' }),
+            "SuggestionType": ng_diString('', { Level: 'advanced' })
           },
           "Methods": {
-            "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }'),
-            "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }'),
-            "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }'),
-            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }')
+            "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }', { Level: 'advanced' }),
+            "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }', { Level: 'advanced' }),
+            "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }', { Level: 'advanced' }),
+            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }', { Level: 'advanced' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetHint": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetClassName": ng_diEvent('function(c, cls, text, hint) { return cls; }', { Level: 'advanced' }),
             "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'advanced' }),
-            "OnSuggestionSetText": ng_diEvent('function(text, it) { return text; }'),
-            "OnSuggestionURL": ng_diEvent('function(c, url) { return url; }'),
+            "OnSuggestionSetText": ng_diEvent('function(text, it) { return text; }', { Level: 'advanced' }),
+            "OnSuggestionURL": ng_diEvent('function(c, url) { return url; }', { Level: 'advanced' }),
 
             // ngList DropDown Events
             "OnListItemGetText":  ng_diEvent('function(c, list, it, t) { return t; }',{ Level: 'optional' })
           },
           "Events": {
             "OnTextChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
-            "OnDropDown": ng_diEvent('function(c, dd) { return true; }'),
-            "OnHideDropDown": ng_diEvent('function(c, dd) { return true; }'),
+            "OnDropDown": ng_diEvent('function(c, dd) { return true; }', { Level: 'advanced' }),
+            "OnHideDropDown": ng_diEvent('function(c, dd) { return true; }', { Level: 'advanced' }),
             "OnClickOutside": { },
             "OnKeyDown": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
             "OnKeyUp": ng_diEvent('function(e, elm) { return true; }', { Level: 'basic' }),
@@ -438,10 +438,10 @@ return {
             "OnSetInvalid": ng_diEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
             "OnSetReadOnly": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' }),
             "OnReadOnlyChanged": ng_diEvent('function(c, state) { }', { Level: 'basic' }),
-            "OnSuggestionSearch": ng_diEvent('function(c, txt, res) { return true; }'),
-            "OnSuggestionCompareItem": ng_diEvent('function(c, txt, itemtxt, list, it, parent) { return (txt==itemtxt); }'),
-            "OnSuggestionResults": ng_diEvent('function(c, txt, data, res) { return true; }'),
-            "OnSuggestionData": ng_diEvent('function(c, txt, data) { return true; }'),
+            "OnSuggestionSearch": ng_diEvent('function(c, txt, res) { return true; }', { Level: 'advanced' }),
+            "OnSuggestionCompareItem": ng_diEvent('function(c, txt, itemtxt, list, it, parent) { return (txt==itemtxt); }', { Level: 'advanced' }),
+            "OnSuggestionResults": ng_diEvent('function(c, txt, data, res) { return true; }', { Level: 'advanced' }),
+            "OnSuggestionData": ng_diEvent('function(c, txt, data) { return true; }', { Level: 'advanced' }),
 
             // ngList DropDown Events
             "OnListItemChanged": ng_diEvent('function(c, list, it, ddoli) { return true; }',{ Level: 'optional' })
@@ -486,13 +486,13 @@ return {
             "Invalid": ng_diBoolean(false, { Level: 'basic' })
           },
           "Methods": {
-            "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }'),
-            "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }'),
-            "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }'),
-            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }')
+            "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }', { Level: 'advanced' }),
+            "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }', { Level: 'advanced' }),
+            "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }', { Level: 'advanced' }),
+            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }', { Level: 'advanced' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetHint": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
@@ -551,6 +551,7 @@ return {
           "Pages": ng_diArrayOf(
             ng_diType('ngPage', {
               Collapsed: false,
+              Level: 'basic',
               OnPropertyInit: function(ch)
               {
                 if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'ngPage'))
@@ -790,7 +791,7 @@ return {
         Properties: ng_diProperties({
           "Data": {
             "ChildHandling": { Level: 'advanced' },
-            "AutoSize": ng_diBoolean(false),
+            "AutoSize": ng_diBoolean(false, { Level: 'advanced' }),
             "Vertical": ng_diBoolean(false, { Level: 'basic' }),
             "VPadding": ng_diInteger(0, { Level: 'basic' }),
             "HPadding": ng_diInteger(0, { Level: 'basic' }),
@@ -1013,14 +1014,14 @@ return {
             "DefaultNum": ng_diInteger(0, { Level: 'basic' })
           },
           "Methods": {
-            "DoDown": ng_diFunction('function() { ng_CallParent(this, "DoDown", arguments); }'),
-            "DoUp": ng_diFunction('function() { ng_CallParent(this, "DoUp", arguments); }')
+            "DoDown": ng_diFunction('function() { ng_CallParent(this, "DoDown", arguments); }', { Level: 'advanced' }),
+            "DoUp": ng_diFunction('function() { ng_CallParent(this, "DoUp", arguments); }', { Level: 'advanced' })
           },
           "OverrideEvents": {
-            "OnGetNum": ng_diEvent('function(c) { return 0; }')
+            "OnGetNum": ng_diEvent('function(c) { return 0; }', { Level: 'advanced' })
           },
           "Events": {
-            "OnSetNum": ng_diEvent('function(c, num) {  }'),
+            "OnSetNum": ng_diEvent('function(c, num) {  }', { Level: 'advanced' }),
             "OnUp": ng_diEvent('function(e, num) { return true; }', { Level: 'basic' }),
             "OnDown": ng_diEvent('function(e, num) { return true; }', { Level: 'basic' })
           }
@@ -1058,12 +1059,12 @@ return {
           "Events": {
             "OnClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
             "OnCheckChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
-            "OnSetVisible": ng_diEvent('function(c, v) { return true; }'),
+            "OnSetVisible": ng_diEvent('function(c, v) { return true; }', { Level: 'advanced' }),
             "OnVisibleChanged": ng_diEvent('function(c) {}', { Level: 'basic' }),
-            "OnUpdate": ng_diEvent('function(c) { return true; }')
+            "OnUpdate": ng_diEvent('function(c) { return true; }', { Level: 'advanced' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
             "OnGetImg": ng_diEvent('function(c, idx) { return null; }', { Level: 'advanced' })

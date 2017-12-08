@@ -937,7 +937,7 @@ function ng_diProperties(props,data) {
           "textDecoration": ng_diStringValues('none', ['none','underline','overline','line-through','initial','inherit'], { Level: 'optional' }),
           "textTransform": ng_diStringValues('none', ['none','uppercase','lowercase','capitalize','initial','inherit'], { Level: 'optional' }),
           "whiteSpace": ng_diStringValues('normal', ['normal','nowrap','pre','pre-line','pre-wrap','initial','inherit'], { Level: 'optional' }),
-          "zIndex": ng_diInteger()
+          "zIndex": ng_diInteger(0, { Level: 'advanced' })
         }, { Level: 'advanced', Order: 0.252 }, { DestroyIfEmpty: true }),
         "Opacity": ng_diFloat(1.0, { Level: 'basic', Order: 0.253 }, { InitValue: 0.5 }),
         "className": ng_diString('', { Level: 'advanced', Order: 0.251 }),

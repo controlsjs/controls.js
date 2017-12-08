@@ -59,13 +59,13 @@ var MaskEdit_DesignInfo = {
               '990°00\'00"Z'
             ], { Level: 'basic' }, { Editor: 'ngfeEditor_DropDown' }),
             "TextAlign": ng_diStringValues('left', ['left','right','center'], { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(true),
+            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "CharWidth": ng_diInteger(10, { Level: 'basic' }),
-            "PartWidths": ng_diArrayOf('integer'),
-            "PartDefaultValues": ng_diArrayOf('string'),
-            "PartInitValues": ng_diType('array_strings'),
+            "PartWidths": ng_diArrayOf('integer', { Level: 'advanced' }),
+            "PartDefaultValues": ng_diArrayOf('string', { Level: 'advanced' }),
+            "PartInitValues": ng_diType('array_strings', { Level: 'advanced' }),
             "DefaultValuesAsHint": ng_diBoolean(true, { Level: 'basic' }),
-            "PartDefs": ng_diArrayOfControls(),
+            "PartDefs": ng_diArrayOfControls(undefined, { Level: 'advanced' }),
             "Invalid": ng_diBoolean(false, { Level: 'basic' }),
             "LockHintCaretPos": ng_diBoolean(false, { Level: 'basic' }),
             "Text": ng_diString('', { Level: 'basic' })
@@ -76,14 +76,14 @@ var MaskEdit_DesignInfo = {
             "OnValidate": ng_diEvent('function(c, part, text, re) { return true; }', { Level: 'basic' }),
             "OnSetInvalid": ng_diEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
             "OnSetInvalidPart": ng_diEvent('function(c, part, state, update) { return true; }', { Level: 'basic' }),
-            "OnCreatePart": ng_diEvent('function(c, partInfo, def, parts) {}'),
-            "OnCreateLeftHolder": ng_diEvent('function(c, def) {}'),
-            "OnCreateRightHolder": ng_diEvent('function(c, def) {}')
+            "OnCreatePart": ng_diEvent('function(c, partInfo, def, parts) {}', { Level: 'advanced' }),
+            "OnCreateLeftHolder": ng_diEvent('function(c, def) {}', { Level: 'advanced' }),
+            "OnCreateRightHolder": ng_diEvent('function(c, def) {}', { Level: 'advanced' })
           },
           "OverrideEvents": {
-            "OnGetText": ng_diEvent('function(c) { return ""; }'),
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
-            "OnSetMask": ng_diEvent('function(mask, c) { return mask; }')
+            "OnGetText": ng_diEvent('function(c) { return ""; }', { Level: 'advanced' }),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
+            "OnSetMask": ng_diEvent('function(mask, c) { return mask; }', { Level: 'advanced' })
           }
         })
       };

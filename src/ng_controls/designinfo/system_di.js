@@ -82,20 +82,20 @@ ngUserControls['system_designinfo'] = {
               'rpcData','rpcDataPOST','rpcDataGET',
               {Value:99,Text:'rpcUser'}
             ],{ Level: 'basic' }),
-            "HTTPMethod": ng_diStringValues('',['GET','POST','PUT','DELETE','OPTIONS','HEAD','CONNECT'], undefined, { Editor: 'ngfeEditor_DropDown' }),
+            "HTTPMethod": ng_diStringValues('',['GET','POST','PUT','DELETE','OPTIONS','HEAD','CONNECT'], { Level: 'advanced' }, { Editor: 'ngfeEditor_DropDown' }),
             "URL": ng_diType('url', { Level: 'basic' }),
             "Params": ng_diObject(undefined, { Level: 'basic' }, {
-              ChildDesignInfo: ng_diString()
+              ChildDesignInfo: ng_diString('', { Level: 'basic' })
             })
           },
           "Events": {
             "OnRequest": ng_diEvent('function(c, reqinfo) { return true; }',{ Level: 'basic' }),
             "OnSendRequest": ng_diEvent('function(c, url, reqinfo) { return true; }',{ Level: 'basic' }),
             "OnRequestSent": ng_diEvent('function(c, url, reqinfo) {}',{ Level: 'basic' }),
-            "OnIFrameRequest": ng_diEvent('function(c) { return true; }'),
-            "OnHTTPRequest": ng_diEvent('function(c, reqinfo) { return true; }'),
-            "OnHTTPReadyStateChanged": ng_diEvent('function(c, xmlhttp, reqinfo) { return true; }'),
-            "OnHTTPRequestFailed": ng_diEvent('function(c, xmlhttp, reqinfo) {}'),
+            "OnIFrameRequest": ng_diEvent('function(c) { return true; }', { Level: 'advanced' }),
+            "OnHTTPRequest": ng_diEvent('function(c, reqinfo) { return true; }', { Level: 'advanced' }),
+            "OnHTTPReadyStateChanged": ng_diEvent('function(c, xmlhttp, reqinfo) { return true; }', { Level: 'advanced' }),
+            "OnHTTPRequestFailed": ng_diEvent('function(c, xmlhttp, reqinfo) {}', { Level: 'advanced' }),
             "OnReceivedJSON": ng_diEvent('function(c, data, xmlhttp) {}',{ Level: 'basic' }),
             "OnReceivedData": ng_diEvent('function(c, response, xmlhttp, reqinfo) { return true; }',{ Level: 'basic' })
           },
@@ -113,10 +113,10 @@ ngUserControls['system_designinfo'] = {
         Properties: ng_diProperties({
           "Data": {
             "Params": ng_diObject(undefined, { Level: 'basic' }, {
-              ChildDesignInfo: ng_diString()
+              ChildDesignInfo: ng_diString('', { Level: 'basic' })
             }),
             "DefaultValues": ng_diObject(undefined, { Level: 'basic' }, {
-              ChildDesignInfo: ng_diString()
+              ChildDesignInfo: ng_diString('', { Level: 'basic' })
             })
           },
           "Events": {

@@ -215,13 +215,13 @@ ngUserControls['list_designinfo'] = {
               }
             }),
             "ControlsHolder": ng_diMixed(['undefined','object'], { Level: 'hidden' }),
-            "OnClick": ng_diEvent('function(e) { return true; }', { Order: 0.9 }),
-            "OnDblClick": ng_diEvent('function(e) { return true; }', { Order: 0.9 }),
-            "OnClickItem": ng_diEvent('function(e) {}', { Order: 0.9 }),
-            "OnCollapsing": ng_diEvent('function(c, it) { return true; }', { Order: 0.9 }),
-            "OnCollapsed": ng_diEvent('function(c, it) {}', { Order: 0.9 }),
-            "OnExpanding": ng_diEvent('function(c, it) { return true; }', { Order: 0.9 }),
-            "OnExpanded": ng_diEvent('function(c, it) {}', { Order: 0.9 })
+            "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced', Order: 0.9 }),
+            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced', Order: 0.9 }),
+            "OnClickItem": ng_diEvent('function(e) {}', { Level: 'advanced', Order: 0.9 }),
+            "OnCollapsing": ng_diEvent('function(c, it) { return true; }', { Level: 'advanced', Order: 0.9 }),
+            "OnCollapsed": ng_diEvent('function(c, it) {}', { Level: 'advanced', Order: 0.9 }),
+            "OnExpanding": ng_diEvent('function(c, it) { return true; }', { Level: 'advanced', Order: 0.9 }),
+            "OnExpanded": ng_diEvent('function(c, it) {}', { Level: 'advanced', Order: 0.9 })
           }
         }
       },
@@ -239,6 +239,7 @@ ngUserControls['list_designinfo'] = {
             ng_diType('ngListCol', undefined, { Level: 'basic' }),
             ng_diType('ngListColClass', undefined, { Level: 'hidden' })
           ], {
+            Level: 'basic',
             DisplayName: function(pname, dispname) {
               var txt='';
               var props = FormEditor.GetSelectedControlsProperty(pname);
@@ -629,8 +630,8 @@ ngUserControls['list_designinfo'] = {
             "OnRedrawSelected": ng_diEvent('function(c, elm, selected, itemid) {}', { Level: 'advanced' }),
             "OnClickItem": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
             "OnDblClickItem": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
-            "OnDblClick": ng_diEvent('function(e) { return true; }'),
-            "OnClick": ng_diEvent('function(e) { return true; }'),
+            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced' }),
+            "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced' }),
             "OnCaptionClick": ng_diEvent('function(e, list, colid, startelm) {}', { Level: 'basic' }), // TODO: Check startelm
             "OnCaptionDblClick": ng_diEvent('function(e, list, colid, startelm) {}', { Level: 'basic' }), // TODO: Check startelm'
             "OnKeyDown": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),

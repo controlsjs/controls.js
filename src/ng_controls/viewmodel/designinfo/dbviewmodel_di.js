@@ -29,7 +29,7 @@ var DBViewModel_DesignInfo = {
               "recStateLoaded": ng_diBoolean(true, { Level: 'basic' }),
               "recStateNone": ng_diBoolean(false, { Level: 'basic' }),
               "recStateDeleted": ng_diBoolean(false, { Level: 'basic' })
-            }, { Level: 'basic', Collapsed: false }, { ChildDesignInfo: ng_diBoolean() })
+            }, { Level: 'basic', Collapsed: false }, { ChildDesignInfo: ng_diBoolean(false, { Level:'basic' }) })
           },
           "Events": {
             "OnNewRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),

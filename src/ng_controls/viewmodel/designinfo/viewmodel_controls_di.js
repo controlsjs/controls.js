@@ -16,8 +16,8 @@ var ViewModel_Controls_DesignInfo = (function()
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      "Calls": ng_diMixed(['object','databind_function_name']),
-      "Data": ng_diType('databind_expression'),
+      "Calls": ng_diMixed(['object','databind_function_name'], { Level: 'advanced' }),
+      "Data": ng_diType('databind_expression', { Level: 'advanced' }),
       "Link": ng_diType('databind_expression', { Level: 'basic' }),
       "Controls": ng_diType('databind_expression', { Level: (di.IsContainer ? 'basic' : 'optional') })
     };
@@ -25,7 +25,7 @@ var ViewModel_Controls_DesignInfo = (function()
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
-        "MouseOver": ng_diType('databind_function_name')
+        "MouseOver": ng_diType('databind_function_name', { Level: 'advanced' })
       });
 
       if (typeof c.SetBounds === 'function')
@@ -35,10 +35,10 @@ var ViewModel_Controls_DesignInfo = (function()
 
       if (typeof c.Elm === 'function')
       {
-        props["style"] = ng_diMixed(['object','databind_expression']);
-        props["className"] = ng_diType('databind_expression');
-        props["SubClassName"] = ng_diType('databind_expression');
-        props["BaseClassName"] = ng_diType('databind_expression');
+        props["style"] = ng_diMixed(['object','databind_expression'], { Level: 'advanced' });
+        props["className"] = ng_diType('databind_expression', { Level: 'advanced' });
+        props["SubClassName"] = ng_diType('databind_expression', { Level: 'advanced' });
+        props["BaseClassName"] = ng_diType('databind_expression', { Level: 'advanced' });
       }
 
       if (typeof c.SetFocus === 'function')
@@ -133,12 +133,12 @@ var ViewModel_Controls_DesignInfo = (function()
       var eventprop1 = ng_diMixed([
         ng_diObject(o, undefined, { DestroyIfEmpty: true }),
         ng_diType('bindings_string')
-      ], { Order: undefined });
+      ], { Order: undefined, Level: 'advanced' });
 
       var eventprop2 = ng_diMixed([
         ng_diObject({}, undefined, { DestroyIfEmpty: true }),
         ng_diType('bindings_string')
-      ]);
+      ], { Level: 'advanced' });
       for (var i in o)
       {
         eventprop2.Types['object'].ObjectProperties[i] = ng_CopyVar(o[i]);
@@ -168,7 +168,7 @@ var ViewModel_Controls_DesignInfo = (function()
     }
 
     ng_MergeVar(databindprops, {
-      "DeferUpdates": ng_diObject(deferbindings)
+      "DeferUpdates": ng_diObject(deferbindings, { Level: 'advanced' })
     });
 
   }
@@ -381,7 +381,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Name: 'viewmodel object',
           ShortName: 'obj',
           Options: {
-            ChildDesignInfo: ng_diMixed(['ko.observable','ko.computed','jstypes'], { DefaultType: 'undefined' })
+            ChildDesignInfo: ng_diMixed(['ko.observable','ko.computed','jstypes'], { Level: 'basic', DefaultType: 'undefined' })
           }
         },
         // ViewModel Constructor
@@ -459,6 +459,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Options: {
             ChildDesignInfo: ng_diType('vmfielddef', {
               DefaultType: 'ngFieldDef_String',
+              Level: 'basic',
               OnPropertyInit: function(ch)
               {
                 if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'callee'))
@@ -490,6 +491,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Options: {
             ChildDesignInfo: ng_diType('vmfielddef', {
               DefaultType: 'ngFieldDef_String',
+              Level: 'basic',
               DisplayName: vmdisplayname
             })
           }

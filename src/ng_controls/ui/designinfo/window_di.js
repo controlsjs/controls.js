@@ -77,11 +77,11 @@ ngUserControls['window_designinfo'] = {
           "ParentReferences": ng_diBoolean(false, { Level: 'optional' }),
           "W": { Exclude: ['CW'] },
           "H": { Exclude: ['CH'] },
-          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
-          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'], Level: 'advanced' }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
           "R": null,
           "B": null,
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false }),
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false, Level: 'advanced' }),
           "style": {
             "zIndex": { Level: 'hidden' }
           },
@@ -103,7 +103,7 @@ ngUserControls['window_designinfo'] = {
             "Moveable": ng_diBoolean(true, { Level: 'basic' }),
             "Modal": ng_diBoolean(false, { Level: 'basic' }),
             "DisposeOnClose": ng_diBoolean(false, { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(true),
+            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "Centered": ng_diBoolean(false, { Level: 'basic' }),
             "MinimizedBounds": ng_diMixed([
               ng_diUndefined(),
@@ -178,24 +178,24 @@ ngUserControls['window_designinfo'] = {
           "ParentReferences": ng_diBoolean(true),
           "W": { Exclude: ['CW'] },
           "H": { Exclude: ['CH'] },
-          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'] }),
-          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'] }),
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false }),
+          "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'], Level: 'advanced' }),
+          "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
+          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false, Level: 'advanced' }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
-            "AutoSize": ng_diBoolean(true),
+            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "MinWidth": ng_diInteger(0, { Level: 'basic' }),
             "MinHeight": ng_diInteger(0, { Level: 'basic' }),
             "MaxWidth": ng_diInteger(0, { Level: 'basic' }),
             "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
-            "Anchor": ng_diString('auto', { Level: 'basic' }),
+            "Anchor": ng_diString('auto', { Level: 'basic' }), // TODO: Browse from anchors
             "Anchors": ng_diMixed([
               ng_diNull(),
               ng_diObject(undefined, undefined, {
-                ChildDesignInfo: ng_diType('ngHintAnchor')
+                ChildDesignInfo: ng_diType('ngHintAnchor', { Level: 'basic' })
               })
             ], { InitType: 'object', Level: 'basic' }),
-            "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }),
+            "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }), // TODO: Browse from anchors
             "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' }),
             "AutoHideTimeout": ng_diInteger(0, { Level: 'basic' }),
@@ -206,7 +206,8 @@ ngUserControls['window_designinfo'] = {
           "Events": {
             "OnCheckPlacement": ng_diEvent('function(c, p) {}', { Level: 'basic' }),
             "OnPopup": ng_diEvent('function(c, info) { return true; }', { Level: 'basic' })
-          },
+          }
+        }, {
           "Controls": { Level: 'basic' },
           "ModifyControls": { Level: 'basic' }
         })
@@ -237,10 +238,10 @@ ngUserControls['window_designinfo'] = {
             "Text": ng_diStringRefName({ Level: 'basic' })
           },
           "Events": {
-            "OnClick": ng_diEvent('function(e) {}')
+            "OnClick": ng_diEvent('function(e) {}', { Level: 'advanced' })
           },
           "OverrideEvents": {
-            "OnSetText": ng_diEvent('function(text, c) { return text; }'),
+            "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),
             "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' })
           },
           "ModifyControls": {
@@ -252,8 +253,6 @@ ngUserControls['window_designinfo'] = {
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngText' })
           }
-        },{
-          "ModifyControls": { Level: 'basic' }
         })
       };
     });
