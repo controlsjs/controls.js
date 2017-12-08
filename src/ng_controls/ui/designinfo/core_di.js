@@ -12,7 +12,12 @@
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['uicore'] = (function(){
-var radiogroups={};
+
+  var radiogroups={};
+
+  function getpropertytext(p) {
+    return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
+  }
 
 return {
   OnFormEditorInit: function(FE)
@@ -550,8 +555,26 @@ return {
         Properties: ng_diProperties({
           "Pages": ng_diArrayOf(
             ng_diType('ngPage', {
-              Collapsed: false,
               Level: 'basic',
+              DisplayName: function(pname, dispname) {
+                var txt='';
+                var props = FormEditor.GetSelectedControlsProperty(pname);
+                var capprop, idprop,cids;
+                for(var i=0;i<props.length;i++) {
+                  cids=[props[i].ControlID];
+                  capprop = FormEditor.GetSelectedControlsProperty(pname+'.Text',cids);
+                  idprop = FormEditor.GetSelectedControlsProperty(pname+'.id',cids);
+                  if((capprop)&&(capprop.length>0)) capprop = capprop[0];
+                  if((idprop)&&(idprop.length>0)) idprop = idprop[0];
+                  var t=getpropertytext(capprop);
+                  if(t=='') t=getpropertytext(idprop);
+                  if(!i) txt=t;
+                  else if(t!=txt) { txt=''; break; }
+                }
+                var dn=dispname;
+                if(txt!='') dn=dn+': '+txt;
+                return dn;
+              },
               OnPropertyInit: function(ch)
               {
                 if (FormEditor.PropertyTypeInheritsFrom(ch.Type, 'ngPage'))
@@ -579,7 +602,7 @@ return {
             "PagesVAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
             "TextAlign": ng_diStringValues('left', ['left','right','center','justify'], { Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
-            "RowOverlap": ng_diInteger(0, { Level: 'basic' }),
+            "RowOverlap": ng_diInteger(0, { Level: 'advanced' }),
             "PageImages": ng_diArrayOf('image', { Level: 'advanced' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' })
           },
