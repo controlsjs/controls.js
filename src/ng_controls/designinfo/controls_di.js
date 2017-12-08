@@ -972,12 +972,12 @@ function ng_diProperties(props,data) {
             "pinchout":   ng_diBoolean(false, { Level: 'optional' }),
             "rotate":     ng_diBoolean(false, { Level: 'optional' })
           }, { Level: 'advanced' }, { DestroyIfEmpty: true }),
-          "ngText": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
-          "ngTextD": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
-          "ngAlt": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
-          "ngAltD": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
-          "ngHint": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
-          "ngHintD": ng_diString('', { Level: 'optional' }, { Editor: 'ngfeEditor_Lang' })
+          "ngText": ng_diString('', { DisplayName: 'Text Resource (ngText)', Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
+          "ngTextD": ng_diString('', { DisplayName: 'Text Resource (ngTextD)', Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
+          "ngAlt": ng_diString('', { DisplayName: 'Alt Resource (ngAlt)', Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
+          "ngAltD": ng_diString('', { DisplayName: 'Alt Resource (ngAltD)', Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
+          "ngHint": ng_diString('', { DisplayName: 'Hint Resource (ngHint)', Level: 'optional' }, { Editor: 'ngfeEditor_Lang' }),
+          "ngHintD": ng_diString('', { DisplayName: 'Hint Resource (ngHintD)', Level: 'optional' }, { Editor: 'ngfeEditor_Lang' })
         }),
         "Events": ng_diObject({
           "OnSetVisible": ng_diEvent('function(c, v) { return true; }', { Level: 'advanced' }),
