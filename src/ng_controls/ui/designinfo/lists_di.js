@@ -11,13 +11,14 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-ngUserControls['list_designinfo'] = {
+ngUserControls['list_designinfo'] = (function(){
+  function getpropertytext(p) {
+    return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
+  }
+
+return {
   OnFormEditorInit: function(FE) {
     var undefined;
-
-    function getpropertytext(p) {
-      return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
-    }
 
     function nitemstring(prefix,ch)
     {
@@ -482,10 +483,6 @@ ngUserControls['list_designinfo'] = {
   {
     if(!ngDESIGNINFO) return;
 
-    function getpropertytext(p) {
-      return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
-    }
-
     ngRegisterControlDesignInfo('ngList',function(d,c,ref) {
       return {
         ControlCategory: 'List',
@@ -828,3 +825,4 @@ ngUserControls['list_designinfo'] = {
 
   }
 };
+})();
