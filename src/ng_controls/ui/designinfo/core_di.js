@@ -11,9 +11,16 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-ngUserControls['uicore'] = {
+ngUserControls['uicore'] = (function(){
+var radiogroups={};
+
+return {
   OnFormEditorInit: function(FE)
   {
+    FE.AddEvent('OnCreateForm', function(test) {
+      if(!test) radiogroups={};
+    });
+
     var undefined;
     var types = [
       // ngImageShape
@@ -63,6 +70,17 @@ ngUserControls['uicore'] = {
     ];
     FormEditor.RegisterPropertyType(types);
   },
+
+  OnControlCreated: function(def,c) {
+    if(!FormEditor.Params.creatingform) return;
+    switch(c.CtrlType)
+    {
+      case 'ngButton':
+        if(ngVal(c.RadioGroup,'')!='') radiogroups[c.RadioGroup]=true;
+        break;
+    }
+  },
+
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
@@ -234,7 +252,16 @@ ngUserControls['uicore'] = {
             "AutoSize": ng_diBoolean(true),
             "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer' }),
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
-            "RadioGroup": ng_diMixed(['undefined', 'string'], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
+            "RadioGroup": ng_diMixed(['undefined', ng_diString('',{},{
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: function(api) {
+                  var items=[];
+                  for(var i in radiogroups) items.push(i);
+                  return items;
+                }
+              }
+            })], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
             "Cursor": ng_diTypeVal('css_cursor', 'pointer', { Level: 'advanced' }),
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "Img": ng_diType('image', { Level: 'basic' }),
@@ -1046,3 +1073,4 @@ ngUserControls['uicore'] = {
     });
  }
 };
+})();
