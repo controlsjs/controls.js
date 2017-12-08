@@ -2046,7 +2046,9 @@ function ngc_Attach(o)
   var oid=this.ID;
   if(id!=this.ID)
   {
-    if(this.ID!='') delete ngControlsIDs[this.ID];
+    if(this.ID!='') {
+      if(ngControlsIDs[this.ID]===this) delete ngControlsIDs[this.ID];
+    }
     if(id!='') ngControlsIDs[id]=this;
     this.ID=id;
   }
@@ -2148,7 +2150,9 @@ function ngc_Dispose()
     {
     }
   }
-  if(id!='') delete ngControlsIDs[id];
+  if(id!='') {
+    if(ngControlsIDs[id]===this) delete ngControlsIDs[id];
+  }
 }
 
 function ngc_Enable()
