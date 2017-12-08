@@ -47,16 +47,16 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
     if (typeof c.SetText === 'function')
     {
       props["Text"] = ng_diType('databind_expression', { Level: 'basic' });
-      props["ngText"] = ng_diType('databind_expression', { Level: 'basic' });
+      props["ngText"] = ng_diType('databind_expression', { DisplayName: 'Text Resource (ngText)', Level: 'basic' });
     }
 
     var has_alt=(typeof c.Alt!=='undefined');
     props["Alt"] = ng_diType('databind_expression', { Level: has_alt ? 'basic' : 'optional' });
-    props["ngAlt"] = ng_diType('databind_expression', { Level: has_alt ? 'basic' : 'optional' });
+    props["ngAlt"] = ng_diType('databind_expression', { DisplayName: 'Alt Resource (ngAlt)', Level: has_alt ? 'basic' : 'optional' });
 
     var has_hint=(typeof c.Hint!=='undefined');
     props["Hint"] = ng_diType('databind_expression', { Level: has_hint ? 'basic' : 'optional' });
-    props["ngHint"] = ng_diType('databind_expression', { Level: has_hint ? 'basic' : 'optional' });
+    props["ngHint"] = ng_diType('databind_expression', { DisplayName: 'Hint Resource (ngHint)', Level: has_hint ? 'basic' : 'optional' });
 
     if (typeof c.SetInvalid === 'function')
     {
