@@ -792,6 +792,8 @@ function ng_diProperties(props,data) {
     switch(i) {
       case 'Data':
       case 'Events':
+      case 'AfterEvents':
+      case 'BeforeEvents':
       case 'OverrideEvents':
       case 'Methods':
       case 'style':
