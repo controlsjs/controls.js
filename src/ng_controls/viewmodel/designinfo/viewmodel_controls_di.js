@@ -91,7 +91,7 @@ var ViewModel_Controls_DesignInfo = (function()
           "OnViewModelDataChanged": ng_diEvent('function(c, oldval) { }', { Level: 'basic' }),
           "OnDataBindingInit": ng_diEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
           "OnDataBindingUpdate": ng_diEvent('function(c, bindingKey, valueAccessor, allBindings, bindingContext) { return true; }', { Level: 'optional' }),
-          "OnIsViewModelControlChanged": ng_diEvent('function(c, val, oldval) { return true }', { Level: (di.IsContainer ? 'basic' : 'optional') })
+          "OnIsViewModelControlChanged": ng_diEvent('function(c, val, oldval) { return true; }', { Level: (di.IsContainer ? 'basic' : 'optional') })
         }
       },{
         "DataBind": ng_diMixed([
