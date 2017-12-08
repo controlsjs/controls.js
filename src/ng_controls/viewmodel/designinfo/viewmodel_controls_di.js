@@ -244,6 +244,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: true,
             Add: false,
             DefaultCode: "new "+typename+"('')", // TODO: Check why not set default value of first parameter on init
+            DefaultValue: [''],
             ObjectProperties: {
               0: ng_diString('', { DisplayName: 'ID', Level: 'basic' })
             }
@@ -335,6 +336,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: false,
             Add: false,
             DefaultCode: "ko.observable('')",
+            DefaultValue: [''],
             ObjectProperties: {
               0: ng_diType('jstypes', { DisplayName: 'Value', Required: true, Level: 'basic', DefaultType: 'string' })
             }
@@ -352,6 +354,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: false,
             Add: false,
             DefaultCode: "ko.computed({ read: function() {}, write: function(v) {}, owner: this})",
+            DefaultValue: ['{ read: function() {}, write: function(v) {}, owner: this}'],
             ObjectProperties: {
               0: ng_diObject({
                 "read": ng_diFunction('function() {}', { Required: true, Level: 'basic' }),
@@ -388,8 +391,8 @@ var ViewModel_Controls_DesignInfo = (function()
           Name: 'viewmodel constructor',
           ShortName: 'fnc',
           Options: {
-            // TODO: Check why not working?
-            DefaultCode: 'function(vm) {}'
+            DefaultCode: 'function(vm) {}',
+            DefaultValue: 'function(vm) {}'
           }
         },
         // ngViewModel
@@ -403,6 +406,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: true,
             Add: false,
             DefaultCode: "new ngViewModel('')",
+            DefaultValue: [''],
             ObjectProperties: {
               0: ng_diString('', { DisplayName: 'ID', Level: 'basic'}),
               1: ng_diString('', { DisplayName: 'Namespace', Level: 'basic'}),
