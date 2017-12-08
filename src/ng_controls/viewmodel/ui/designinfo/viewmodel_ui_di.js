@@ -21,6 +21,22 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       "ShowError": ng_diType('databind_expression', { Level: 'advanced' })
     };
 
+    var ndi = {
+      "DataBind": props
+    };
+
+    function dievent(evname, ev, nooverride) {
+      if(typeof ndi["Events"] === 'undefined') ndi["Events"]={};
+      if(typeof ndi["AfterEvents"] === 'undefined') ndi["AfterEvents"]={};
+      if(typeof ndi["BeforeEvents"] === 'undefined') ndi["BeforeEvents"]={};
+      if((!nooverride)&&(typeof ndi["OverrideEvents"] === 'undefined')) ndi["OverrideEvents"]={};
+
+      ndi["Events"][evname] = ev;
+      ndi["AfterEvents"][evname] = ev;
+      ndi["BeforeEvents"][evname] = ev;
+      if(!nooverride) ndi["OverrideEvents"][evname] = ev;
+    }
+
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
@@ -111,6 +127,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         
         props["SimpleArrayItemColumnID"] = ng_diType('databind_string', { Level: 'advanced' });
         props["KeyField"] = ng_diType('databind_string', { Level: 'basic' });
+
+        dievent("OnCreateViewModelItem",ng_diEvent('function(c,ci) { ci.NewItem={}; return true; ', { Level: 'advanced' }));
         break;
       case 'ngButton':
       case 'ngSysAction':
@@ -134,11 +152,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         break;
     }
 
-    ng_MergeVar(di,
-    {
-      Properties: ng_diProperties({
-        "DataBind": props
-      })
+    ng_MergeVar(di, {
+      Properties: ng_diProperties(ndi)
     });
   }
 
