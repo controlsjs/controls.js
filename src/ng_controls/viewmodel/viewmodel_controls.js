@@ -350,6 +350,11 @@ function ngSysViewModel(id, namespace)
 {
   ngSysControl(this, id, 'ngSysViewModel');
   this.DoCreate=ngsvm_DoCreate;
+  this.AddEvent(function() {
+    if(this.ID!='') {
+      if(ngViewModels[this.ID] === this) delete ngViewModels[this.ID];
+    }
+  },'Dispose');
   ngViewModel.apply(this,[id]);
   ngControlCreated(this);
 }
