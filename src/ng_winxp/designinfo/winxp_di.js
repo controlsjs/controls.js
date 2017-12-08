@@ -177,7 +177,7 @@ var WinXP_DesignInfo = {
         Properties: ng_diProperties({
           "Buttons": { Level: 'advanced' },
           "Methods": {
-            "Search": ng_diFunction('function(text) { ng_CallParent(this, "Search", arguments); }')
+            "Search": ng_diFunction('function(text) { ng_CallParent(this, "Search", arguments); }', { Level: 'advanced' })
           },
           "Events": {
             "OnSearch": ng_diEvent('function(c, text) {}', { Level: 'basic' })
@@ -218,7 +218,7 @@ var WinXP_DesignInfo = {
             "TextAlign": ng_diString('center')
           },
           "Methods": {
-            "GetColor": ng_diFunction('function() { return ng_CallParent(this, "GetColor", arguments, ""); }')
+            "GetColor": ng_diFunction('function() { return ng_CallParent(this, "GetColor", arguments, ""); }', { Level: 'advanced' })
           }
         })
       };
@@ -413,7 +413,7 @@ var WinXP_DesignInfo = {
               "Data": {
                 "Visible": ng_diBoolean(false)
               }
-            })),
+            }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {
               "className": ng_diString('wxpPageListPaging')
             }),
@@ -1322,7 +1322,9 @@ var WinXP_DesignInfo = {
         },
         Properties: ng_diProperties({
           "CreateFrom": ng_diString('stdColorButton'),
-          "HintDef": ng_diControl('stdColorPickerHint')
+          "Data": {
+            "HintDef": ng_diControl('stdColorPickerHint')
+          }
         })
       };
     });
@@ -1503,16 +1505,14 @@ var WinXP_DesignInfo = {
         ControlCategory: 'Container',
         IsContainer: true,
         Properties: ng_diProperties({
-          "ModifyControls": {
-            "ErrorHint": ng_diControl('stdTextHint', {
-              "className": ng_diString('wxpEditFieldError')
-            })
-          }
+          "ErrorHint": ng_diControl('stdTextHint', {
+            "className": ng_diString('wxpEditFieldError')
+          })
         })
       };
     });
     
-    function stdEditFieldDI (d,c,ref) {
+    function stdEditFieldDI(d,c,ref) {
       var di = {
         ControlCategory: 'Edit Field',
         Properties: ng_diProperties({
@@ -1524,10 +1524,14 @@ var WinXP_DesignInfo = {
           })
         })
       };
-      ng_MergeVar(di,stdEditDI(d,c,ref));
       return di;
     };
-    ngRegisterControlDesignInfo('stdEditField',stdEditFieldDI);
+    ngRegisterControlDesignInfo('stdEditField',function(d,c,ref) {
+      var di=stdEditDI(d,c,ref);
+      ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      di.ControlCategory='Edit Field';
+      return di;
+    });
     ngRegisterControlDesignInfo('stdSearchBoxField',function(d,c,ref) {
       var di=stdSearchBoxDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));
