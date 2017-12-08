@@ -22,7 +22,7 @@ ngUserControls['calendar_designinfo'] = {
         ControlCategory: 'Misc',
         Properties: ng_diProperties({
           "Data": {
-            "CurrentDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+            "CurrentDate": ng_diType('date', { Level: 'advanced' }),
             "WeekStartDay": ng_diInteger(1, { Level: 'basic' }),
             "HiliteWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday (0)', Level: 'basic' }),
                                             1: ng_diBoolean(false, { DisplayName: 'Monday (1)', Level: 'basic' }),
@@ -32,7 +32,7 @@ ngUserControls['calendar_designinfo'] = {
                                             5: ng_diBoolean(false, { DisplayName: 'Friday (5)', Level: 'basic' }),
                                             6: ng_diBoolean(false, { DisplayName: 'Saturday (6)', Level: 'basic' })
                                          },
-                                         undefined,{ Add: false }),
+                                         { Level: 'basic' },{ Add: false }),
             "DateFormat": ng_diString('', { Level: 'basic' }),
             "ImgWeekDay": ng_diType('image', { Level: 'advanced' }),
             "ImgDay": ng_diType('image', { Level: 'advanced' }),
@@ -43,9 +43,9 @@ ngUserControls['calendar_designinfo'] = {
             "DisplayedDates": ng_diArray({ Level: 'hidden' }),
             "SelectedDates": ng_diArray({ Level: 'hidden' }),
             "SelectType": ng_diIntegerIdentifiers(1,['ngcalSelectNone','ngcalSelectSingle','ngcalSelectMulti','ngcalSelectMultiExt','ngcalSelectRange'], { Level: 'basic' }),
-            "SelectFrom": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
-            "SelectTo": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
-            "BlockedDates": ng_diArray(),
+            "SelectFrom": ng_diType('date', { Level: 'advanced' }),
+            "SelectTo": ng_diType('date', { Level: 'advanced' }),
+            "BlockedDates": ng_diArrayOf(ng_diType('date', { Level: 'advanced' }), { Level: 'advanced' }),
             "BlockedWeekDays": ng_diObject({ 0: ng_diBoolean(false, { DisplayName: 'Sunday (0)', Level: 'basic' }),
                                              1: ng_diBoolean(false, { DisplayName: 'Monday (1)', Level: 'basic' }),
                                              2: ng_diBoolean(false, { DisplayName: 'Tuesday (2)', Level: 'basic' }),
@@ -53,9 +53,9 @@ ngUserControls['calendar_designinfo'] = {
                                              4: ng_diBoolean(false, { DisplayName: 'Thursday (4)', Level: 'basic' }),
                                              5: ng_diBoolean(false, { DisplayName: 'Friday (5)', Level: 'basic' }),
                                              6: ng_diBoolean(false, { DisplayName: 'Saturday (6)', Level: 'basic' })
-                                           }, undefined, { Add: false }),
-            "MinDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
-            "MaxDate": ng_diComputed('function() { return new Date(); }'), // TODO: Date selection editor
+                                           }, { Level: 'basic' }, { Add: false }),
+            "MinDate": ng_diType('date', { Level: 'advanced' }),
+            "MaxDate": ng_diType('date', { Level: 'advanced' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' })
           },
           "Events": {
