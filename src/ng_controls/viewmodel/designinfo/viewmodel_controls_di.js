@@ -216,8 +216,8 @@ var ViewModel_Controls_DesignInfo = (function()
         "DecimalSeparator": ng_diString('', { Level: 'basic' }),
         "ThousandsSeparator": ng_diString('', { Level: 'basic' }),
 
-        "EditNumStep": ng_diInteger(1, { Level: 'basic' }),
-        "EditNumStepRound": ng_diBoolean(false, { Level: 'basic' })
+        "EditNumStep": ng_diInteger(1, { Level: 'optional' }),
+        "EditNumStepRound": ng_diBoolean(false, { Level: 'optional' })
       };
 
       if(typeof ngUserControls['dbviewmodel'] === 'object')
@@ -228,8 +228,8 @@ var ViewModel_Controls_DesignInfo = (function()
       }
       if(typeof ngUserControls['viewmodel_dataset'] === 'object')
       {
-        attrsprops["DataSetColumnAlign"]=ng_diStringValues('left', ['left', 'center', 'right'], { Level: 'basic' });
-        attrsprops["DataSetColumnWidth"]=ng_diMixed(['undefined',ng_diInteger(0, {}, { InitValue: 100 })], { Level: 'basic', InitType: 'integer' });
+        attrsprops["DataSetColumnAlign"]=ng_diStringValues('left', ['left', 'center', 'right'], { Level: 'optional' });
+        attrsprops["DataSetColumnWidth"]=ng_diMixed(['undefined',ng_diInteger(0, {}, { InitValue: 100 })], { Level: 'optional', InitType: 'integer' });
       }
 
       function fdtype(typename, shortname, args) {
