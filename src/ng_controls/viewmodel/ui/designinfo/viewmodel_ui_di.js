@@ -17,8 +17,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
   {
     var props = {
       "ReadOnly": ng_diType('databind_expression', { Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' }),
-      "Error": ng_diType('databind_expression'),
-      "ShowError": ng_diType('databind_expression')
+      "Error": ng_diType('databind_expression', { Level: 'advanced' }),
+      "ShowError": ng_diType('databind_expression', { Level: 'advanced' })
     };
 
     // dependent bindings
@@ -50,7 +50,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
     var instantUpdateProperty = ng_diMixed([
       ng_diBoolean(false),
-      ng_diType('databind_expression', undefined, {
+      ng_diType('databind_expression', { Level: 'advanced' }, {
         EditorOptions: {
           IgnoreDataModel: true
         }
@@ -59,7 +59,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
     var delayedUpdateProperty = ng_diMixed([
       ng_diInteger(500),
-      ng_diType('databind_expression', undefined, {
+      ng_diType('databind_expression', { Level: 'advanced' }, {
         EditorOptions: {
           IgnoreDataModel: true
         }
@@ -107,7 +107,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           })
         ], { Level: 'basic' });
 
-        props["ItemMatchingProps"] = ng_diArrayOf(ng_diType('databind_string', { Level: 'basic' }));
+        props["ItemMatchingProps"] = ng_diArrayOf(ng_diType('databind_string', { Level: 'basic' }), { Level: 'advanced' });
         
         props["SimpleArrayItemColumnID"] = ng_diType('databind_string', { Level: 'advanced' });
         props["KeyField"] = ng_diType('databind_string', { Level: 'basic' });
@@ -156,7 +156,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
             ChildDesignInfo: ng_diMixed([
               ng_diType('databind_string'),
               ng_diBoolean()
-            ])
+            ], { Level: 'basic' })
           }
         }
       ];
@@ -185,7 +185,12 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           IsContainer: true,
           IsViewModel: true,
           Properties: ng_diProperties({
-            "ErrorHint": ng_diControl('ngTextHint', null, { Level: 'basic' }, { InheritedFrom: 'ngHint' }),
+            "ErrorHint": ng_diControl('ngTextHint', ng_diProperties({
+              "ParentReferences": ng_diBoolean(false),
+              "Data": {
+                "IsPopup": ng_diBoolean(true)
+              }
+            }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngHint' }),
             "Data": {
               "DefaultFindFieldControlsBindings": ng_diTypeVal('array_strings', ["'Data'","'Value'","'Checked'","'Selected'","'Lookup'","'Error'","'Link'"], { Level: 'advanced' }),
               "DisableOnCommand": ng_diBoolean(true, { Level: 'basic' })
@@ -232,7 +237,12 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           ControlCategory: 'Edit Field',
           IsViewModel: true,
           Properties: ng_diProperties({
-            "ErrorHint": ng_diControl('ngTextHint', null, { Level: 'basic' }, { InheritedFrom: 'ngHint' }),
+            "ErrorHint": ng_diControl('ngTextHint', ng_diProperties({
+              "ParentReferences": ng_diBoolean(false),
+              "Data": {
+                "IsPopup": ng_diBoolean(true)
+              }
+            }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngHint' }),
             "Data": {
               "HintX": { Level: 'advanced' },
               "HintY": { Level: 'advanced' },
