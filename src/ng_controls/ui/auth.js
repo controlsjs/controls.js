@@ -211,7 +211,7 @@ ngUserControls['auth_controls'] = {
         },
         Controls: {
           OrganizationLabel: {
-            Type: 'ngLabel',
+            Type: 'ngButton',
             Data: {
               ToolBarBreak: true,
               Visible: (showorganization ? true : false),
@@ -236,7 +236,7 @@ ngUserControls['auth_controls'] = {
             }
           },
           LoginLabel: {
-            Type: 'ngLabel',
+            Type: 'ngButton',
             Data: {
               ToolBarBreak: true,
               ngTextD: 'ngauthLogin'
@@ -259,7 +259,7 @@ ngUserControls['auth_controls'] = {
             }
           },
           PasswordLabel: {
-            Type: 'ngLabel',
+            Type: 'ngButton',
             Data: {
               ToolBarBreak: true,
               ngTextD: 'ngauthLoginPassword'
@@ -498,7 +498,7 @@ ngUserControls['auth_controls'] = {
         },
         Controls: {
           OldPasswordLabel: {
-            Type: 'ngLabel',
+            Type: 'ngButton',
             Data: {
               Visible: (showoldpassword ? true : false),
               ToolBarBreak: true,
@@ -533,7 +533,7 @@ ngUserControls['auth_controls'] = {
             }
           },
           NewPasswordLabel: {
-            Type: 'ngLabel',
+            Type: 'ngButton',
             Data: {
               ToolBarBreak: true,
               ngTextD: 'ngauthNewPassword'
@@ -567,7 +567,7 @@ ngUserControls['auth_controls'] = {
             }
           },
           ConfirmNewPasswordLabel: {
-            Type: 'ngLabel',
+            Type: 'ngButton',
             Data: {
               ToolBarBreak: true,
               ngTextD: 'ngauthConfirmNewPassword'

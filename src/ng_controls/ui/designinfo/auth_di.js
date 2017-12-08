@@ -47,31 +47,31 @@ ngUserControls['auth_controls_designinfo'] = {
             "OnSetSettings": ng_diEvent('function(c, data) { return true; }', { Level: 'advanced' })
           },
           "Methods": {
-            "DoSetSettings": ng_diFunction('function(data) { return ng_CallParent(this, "DoSetSettings", arguments, data); }'),
-            "DoGetSettings": ng_diFunction('function() { return ng_CallParent(this, "DoGetSettings", arguments); }'),
-            "DoLogin": ng_diFunction('function() { ng_CallParent(this, "DoLogin", arguments); }')
+            "DoSetSettings": ng_diFunction('function(data) { return ng_CallParent(this, "DoSetSettings", arguments, data); }', { Level: 'advanced' }),
+            "DoGetSettings": ng_diFunction('function() { return ng_CallParent(this, "DoGetSettings", arguments); }', { Level: 'advanced' }),
+            "DoLogin": ng_diFunction('function() { ng_CallParent(this, "DoLogin", arguments); }', { Level: 'advanced' })
           },
           "ModifyControls": {
-            'OrganizationLabel': ng_diControl('ngLabel', ng_diProperties({
+            'OrganizationLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthOrganization')
               }
-            }), { Level: 'basic' }, { InheritedFrom: 'ngLabel' }),
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'Organization': ng_diControl('ngEdit', null, { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
-            'LoginLabel': ng_diControl('ngLabel', ng_diProperties({
+            'LoginLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthLogin')
               }
-            }), { Level: 'basic' }, { InheritedFrom: 'ngLabel' }),
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'Login': ng_diControl('ngEdit', null, { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
-            'PasswordLabel': ng_diControl('ngLabel', ng_diProperties({
+            'PasswordLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthPassword')
               }
-            }), { Level: 'basic' }, { InheritedFrom: 'ngLabel' }),
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'Password': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
                 "Password": ng_diBoolean(true)
@@ -133,34 +133,34 @@ ngUserControls['auth_controls_designinfo'] = {
             "OnNewPasswordErrorMessage": ng_diEvent('function(c,err) { var msg; return msg; }', { Level: 'basic' })
           },
           "ModifyControls": {
-            'OldPasswordLabel': ng_diControl('ngLabel', ng_diProperties({
+            'OldPasswordLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthOldPassword')
               }
-            }), { Level: 'basic' }, { InheritedFrom: 'ngLabel' }),
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'OldPassword': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
                 "Password": ng_diBoolean(true)
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
-            'NewPasswordLabel': ng_diControl('ngLabel', ng_diProperties({
+            'NewPasswordLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthNewPassword')
               }
-            }), { Level: 'basic' }, { InheritedFrom: 'ngLabel' }),
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'NewPassword': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
                 "Password": ng_diBoolean(true)
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
-            'ConfirmNewPasswordLabel': ng_diControl('ngLabel', ng_diProperties({
+            'ConfirmNewPasswordLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthConfirmNewPassword')
               }
-            }), { Level: 'basic' }, { InheritedFrom: 'ngLabel' }),
+            }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'ConfirmNewPassword': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
                 "Password": ng_diBoolean(true)
@@ -210,8 +210,8 @@ ngUserControls['auth_controls_designinfo'] = {
             "UserName": ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'hidden' })
           },
           "Methods": {
-            "LoggedIn": ng_diFunction('function(username) { ng_CallParent(this, "LoggedIn", arguments); }'),
-            "LoggedOut": ng_diFunction('function() { ng_CallParent(this, "LoggedOut", arguments); }')
+            "LoggedIn": ng_diFunction('function(username) { ng_CallParent(this, "LoggedIn", arguments); }', { Level: 'advanced' }),
+            "LoggedOut": ng_diFunction('function() { ng_CallParent(this, "LoggedOut", arguments); }', { Level: 'advanced' })
           },
           "Events": {
             "OnLoginClick": ng_diEvent('function(c) {}', { Level: 'basic' }),
