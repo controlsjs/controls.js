@@ -481,6 +481,10 @@ ngUserControls['list_designinfo'] = {
   {
     if(!ngDESIGNINFO) return;
 
+    function getpropertytext(p) {
+      return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
+    }
+
     ngRegisterControlDesignInfo('ngList',function(d,c,ref) {
       return {
         ControlCategory: 'List',
@@ -569,7 +573,39 @@ ngUserControls['list_designinfo'] = {
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "SelectType": ng_diIntegerIdentifiers(0,['nglSelectNone','nglSelectSingle','nglSelectMulti','nglSelectMultiExt','nglSelectSingleExt','nglSelectCheck'], { Level: 'basic' }),
             "SelCount": ng_diInteger(0, { Level: 'hidden' }),
-            "SortColumn": ng_diString('', { Level: 'basic' }),
+            "SortColumn": ng_diString('', { Level: 'basic' },{
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: function(api) {
+                  var i,j,k,citems,col,idprops,items=[];
+                  var cols = FormEditor.GetSelectedControlsProperty('Data.Columns');
+                  for(i=0;i<cols.length;i++) {
+                    citems=[];
+                    col=cols[i].PropertyValue;
+                    if(ng_IsArrayVar(col)) {
+                      for(j=0;j<col.length;j++) {
+                        idprops = FormEditor.GetControlsProperty('Data.Columns.'+j+'.ID', [cols[i].ControlID]);
+                        if(idprops.length>0) citems.push(getpropertytext(idprops[0]));
+                      }
+                    }
+                    if(!i) items=citems;
+                    else {
+                      for(k=citems.length-1;k>=0;k--) {
+                        for(j=0;j<items.length;j++)
+                          if(items[j]===citems[k]) break;
+                        if(j>=items.length) citems.splice(k,1);
+                      }
+                      for(k=items.length-1;k>=0;k--) {
+                        for(j=0;j<citems.length;j++)
+                          if(items[j]===citems[k]) break;
+                        if(j>=citems.length) items.splice(k,1);
+                      }
+                    }
+                  }
+                  return items;
+                }
+              }
+            }),
             "SortDir": ng_diIntegerIdentifiers(0,['nglSortAsc','nglSortDesc'], { Level: 'basic' }),
             "SortCaseSensitive": ng_diBoolean(false, { Level: 'basic' }),
             "CheckedChangedDelay": ng_diInteger(0, { Level: 'advanced' }),
