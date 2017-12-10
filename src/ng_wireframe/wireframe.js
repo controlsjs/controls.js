@@ -237,22 +237,39 @@ var WireframeControls = {
         Bottom:      { L: 0, T: 817, H: 8, DT: 838, Src: 1 },
         RightBottom: { L: 210, T: 114, W: 8, H: 8, DL: 228 }
       },
+      AnchorsImg: {
+        topleft:     { L: 237, T: 76, W: 21, H: 40, DL: 301 },
+        topcenter:   { L: 259, T: 76, W: 19, H: 40, DL: 323 },
+        topright:    { L: 279, T: 76, W: 21, H: 40, DL: 343 },
+
+        bottomleft:   { L: 237, T: 117, W: 21, H: 40, DL: 301 },
+        bottomcenter: { L: 259, T: 117, W: 19, H: 40, DL: 323 },
+        bottomright:  { L: 279, T: 117, W: 21, H: 40, DL: 343 },
+
+        lefttop:     { L: 237, T: 158, W: 40, H: 21, DL: 319 },
+        leftcenter:  { L: 237, T: 180, W: 40, H: 19, DL: 319 },
+        leftbottom:  { L: 237, T: 200, W: 40, H: 21, DL: 319 },
+
+        righttop:    { L: 278, T: 158, W: 40, H: 21, DL: 360 },
+        rightcenter: { L: 278, T: 180, W: 40, H: 19, DL: 360 },
+        rightbottom: { L: 278, T: 200, W: 40, H: 21, DL: 360 }
+      },
       Anchors: {
-        topleft:     { L: 7, T: -32, HX: 13, HY: 1, Img: { L: 237, T: 76, W: 21, H: 40, DL: 301 }},
-        topcenter:   { L: 90, T: -32, HX: 9, HY: 1, Img: { L: 259, T: 76, W: 19, H: 40, DL: 323 }},
-        topright:    { R: 7, T: -32, HX: 8, HY: 1, Img: { L: 279, T: 76, W: 21, H: 40, DL: 343 }},
+        topleft:     { L: 7, T: -32, HX: 13, HY: 1 },
+        topcenter:   { L: 90, T: -32, HX: 9, HY: 1 },
+        topright:    { R: 7, T: -32, HX: 8, HY: 1 },
 
-        bottomleft:   { L: 7, B: -32, HX: 13, HY: 39, Img: { L: 237, T: 117, W: 21, H: 40, DL: 301 }},
-        bottomcenter: { L: 90, B: -32, HX: 9, HY: 39, Img: { L: 259, T: 117, W: 19, H: 40, DL: 323 }},
-        bottomright:  { R: 7, B: -32, HX: 8, HY: 39, Img: { L: 279, T: 117, W: 21, H: 40, DL: 343 }},
+        bottomleft:   { L: 7, B: -32, HX: 13, HY: 39 },
+        bottomcenter: { L: 90, B: -32, HX: 9, HY: 39 },
+        bottomright:  { R: 7, B: -32, HX: 8, HY: 39 },
 
-        lefttop:     { L: -32, T: 7, HX: 1, HY: 13, Img: { L: 237, T: 158, W: 40, H: 21, DL: 319 }},
-        leftcenter:  { L: -32, T: 55, HX: 1, HY: 9, Img: { L: 237, T: 180, W: 40, H: 19, DL: 319 }},
-        leftbottom:  { L: -32, B: 7, HX: 1, HY: 8, Img: { L: 237, T: 200, W: 40, H: 21, DL: 319 }},
+        lefttop:     { L: -32, T: 7, HX: 1, HY: 13 },
+        leftcenter:  { L: -32, T: 55, HX: 1, HY: 9 },
+        leftbottom:  { L: -32, B: 7, HX: 1, HY: 8 },
 
-        righttop:    { R: -32, T: 7, HX: 39, HY: 13, Img: { L: 278, T: 158, W: 40, H: 21, DL: 360 }},
-        rightcenter: { R: -32, T: 55, HX: 39, HY: 9, Img: { L: 278, T: 180, W: 40, H: 19, DL: 360 }},
-        rightbottom: { R: -32, B: 7, HX: 39, HY: 8, Img: { L: 278, T: 200, W: 40, H: 21, DL: 360 }}
+        righttop:    { R: -32, T: 7, HX: 39, HY: 13 },
+        rightcenter: { R: -32, T: 55, HX: 39, HY: 9 },
+        rightbottom: { R: -32, B: 7, HX: 39, HY: 8 }
       }
     },
 
@@ -267,15 +284,25 @@ var WireframeControls = {
         Bottom:      { L: 0, T: 934, H: 4, DT: 952, Src: 1 },
         RightBottom: { L: 214, T: 145, W: 4, H: 4, DL: 232 }
       },
+      AnchorsImg: {
+        topleft:     { L: 401, T: 146, W: 21, H: 27, DT: 202 },
+        topright:    { L: 437, T: 146, W: 21, H: 27, DT: 202 },
+
+        left:        { L: 459, T: 168, W: 27, H: 13, DT: 226 },
+        right:       { L: 487, T: 168, W: 27, H: 13, DT: 226 },
+
+        bottomleft:  { L: 401, T: 174, W: 21, H: 27, DT: 230 },
+        bottomright: { L: 437, T: 174, W: 21, H: 27, DT: 230 }
+      },
       Anchors: {
-        topleft:     { L: 0, T: -19, HX: 0, HY: 0, Img: { L: 401, T: 146, W: 21, H: 27, DT: 202 } },
-        topright:    { R: 0, T: -19, HX: 21, HY: 0, Img: { L: 437, T: 146, W: 21, H: 27, DT: 202 } },
+        topleft:     { L: 0, T: -19, HX: 0, HY: 0 },
+        topright:    { R: 0, T: -19, HX: 21, HY: 0 },
 
-        left:        { L: -19, T: 7, HX: 0, HY: 13, Img: { L: 459, T: 168, W: 27, H: 13, DT: 226 } },
-        right:       { R: -19, T: 7, HX: 27, HY: 13, Img: { L: 487, T: 168, W: 27, H: 13, DT: 226 } },
+        left:        { L: -19, T: 7, HX: 0, HY: 13 },
+        right:       { R: -19, T: 7, HX: 27, HY: 13 },
 
-        bottomleft:  { L: 0, B: -19, HX: 0, HY: 27, Img: { L: 401, T: 174, W: 21, H: 27, DT: 230 } },
-        bottomright: { R: 0, B: -19, HX: 21, HY: 27, Img: { L: 437, T: 174, W: 21, H: 27, DT: 230 } }
+        bottomleft:  { L: 0, B: -19, HX: 0, HY: 27 },
+        bottomright: { R: 0, B: -19, HX: 21, HY: 27 }
       },
       NoAnchors: {
         topleft:     { L: -2, T: -16, HX: 0, HY: 0 },
@@ -465,6 +492,13 @@ var WireframeControls = {
     var WFRImages = this.Images;
     var WFR = this;
     var skinfnc={};
+
+    for(var i in WFRImages.Hint.Anchors) {
+      WFRImages.Hint.Anchors[i].Img=WFRImages.Hint.AnchorsImg[i];
+    }
+    for(var i in WFRImages.TextHint.Anchors) {
+      WFRImages.TextHint.Anchors[i].Img=WFRImages.TextHint.AnchorsImg[i];
+    }
 
     /**
      *  Group: Control Types
@@ -1360,35 +1394,41 @@ var WireframeControls = {
             OnUpdated: function(calendar){
               //set header line
               var header = document.getElementById(calendar.ID + '_Head');
-              var headerImg = 'url("' + WFRImages.Calendar.Header.Src + '") repeat-x scroll 0px -';
-              var top = (calendar.Enabled)
-                ? ((WFRImages.Calendar.Header.T) ? WFRImages.Calendar.Header.T : 0)
-                : ((WFRImages.Calendar.Header.DT) ? WFRImages.Calendar.Header.DT : 0);
-              top += (calendar.YearNavigation) ? 0 : +21 ;
-              headerImg += top + 'px';
-              header.style.background = headerImg;
+              if(header) {
+                var headerImg = 'url("' + WFRImages.Calendar.Header.Src + '") repeat-x scroll 0px -';
+                var top = (calendar.Enabled)
+                  ? ((WFRImages.Calendar.Header.T) ? WFRImages.Calendar.Header.T : 0)
+                  : ((WFRImages.Calendar.Header.DT) ? WFRImages.Calendar.Header.DT : 0);
+                top += (calendar.YearNavigation) ? 0 : +21 ;
+                headerImg += top + 'px';
+                header.style.background = headerImg;
+              }
 
               //set footer line
               var footer = document.getElementById(calendar.ID + '_Foot');
-              var footerImg = 'url("' + WFRImages.Calendar.Footer.Src + '") repeat-x scroll 0px -';
-              var top = (calendar.Enabled)
-                ? ((WFRImages.Calendar.Footer.T) ? WFRImages.Calendar.Footer.T : 0)
-                : ((WFRImages.Calendar.Footer.DT) ? WFRImages.Calendar.Footer.DT : 0);
-              footerImg += top + 'px';
-              var height = (WFRImages.Calendar.Footer.H) ? WFRImages.Calendar.Footer.H : 0;
-              footer.style.background = footerImg;
-              footer.style.height = height + 'px';
+              if(footer) {
+                var footerImg = 'url("' + WFRImages.Calendar.Footer.Src + '") repeat-x scroll 0px -';
+                var top = (calendar.Enabled)
+                  ? ((WFRImages.Calendar.Footer.T) ? WFRImages.Calendar.Footer.T : 0)
+                  : ((WFRImages.Calendar.Footer.DT) ? WFRImages.Calendar.Footer.DT : 0);
+                footerImg += top + 'px';
+                var height = (WFRImages.Calendar.Footer.H) ? WFRImages.Calendar.Footer.H : 0;
+                footer.style.background = footerImg;
+                footer.style.height = height + 'px';
+              }
 
               //set WeekDays line
               var wd = document.getElementById(calendar.ID + '_WeekDays');
-              var wdImg = 'url("' + WFRImages.Calendar.WeekDays.Src + '") repeat-x scroll 0px -';
-              var top = (calendar.Enabled)
-                ? ((WFRImages.Calendar.WeekDays.T) ? WFRImages.Calendar.WeekDays.T : 0)
-                : ((WFRImages.Calendar.WeekDays.DT) ? WFRImages.Calendar.WeekDays.DT : 0);
-              wdImg += top + 'px';
-              var height = (WFRImages.Calendar.WeekDays.H) ? WFRImages.Calendar.WeekDays.H : 0;
-              wd.style.background = wdImg;
-              wd.style.height = height + 'px';
+              if(wd) {
+                var wdImg = 'url("' + WFRImages.Calendar.WeekDays.Src + '") repeat-x scroll 0px -';
+                var top = (calendar.Enabled)
+                  ? ((WFRImages.Calendar.WeekDays.T) ? WFRImages.Calendar.WeekDays.T : 0)
+                  : ((WFRImages.Calendar.WeekDays.DT) ? WFRImages.Calendar.WeekDays.DT : 0);
+                wdImg += top + 'px';
+                var height = (WFRImages.Calendar.WeekDays.H) ? WFRImages.Calendar.WeekDays.H : 0;
+                wd.style.background = wdImg;
+                wd.style.height = height + 'px';
+              }
 
               return true;
             }
@@ -2177,7 +2217,6 @@ var WireframeControls = {
                AppInfo: {
                  Type: 'wfrTreeList',
                  H: 200,
-                 TreeImg: 'triangle',
                  Data: {
                    Frame: null,
                    DefaultIndent: 0
