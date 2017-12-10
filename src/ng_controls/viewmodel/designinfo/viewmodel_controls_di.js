@@ -620,13 +620,13 @@ var ViewModel_Controls_DesignInfo = (function()
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('array', {
             'RemoveEmptyItems': { Level: 'basic' }
           })),
-          ng_diMixed(['undefined','vmfielddef'], { DisplayName: 'ValueFieldDef', Level: 'basic' })
+          ng_diMixed(['undefined','vmfielddef'], { DisplayName: 'ValueFieldDef'/*, InitType: 'vmfielddef'*/, Level: 'basic' }) // TODO: InitType prevents property initialization
         ]),
 
         // ngFieldDef_Object
         fdtype('ngFieldDef_Object', 'OBJ', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('object',{},true)),
-          ng_diMixed(['undefined','ngFieldDefsObject'], { DisplayName: 'PropsFieldDefs', Level: 'basic' })
+          ng_diMixed(['undefined','ngFieldDefsObject'], { DisplayName: 'PropsFieldDefs', InitType: 'ngFieldDefsObject', Level: 'basic' })
         ]),
 
         // ngFieldDef_WWW
