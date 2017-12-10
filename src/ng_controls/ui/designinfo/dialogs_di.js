@@ -139,6 +139,12 @@ ngUserControls['dialogs_designinfo'] = {
     ngRegisterControlDesignInfo('ngAboutDlg',function(d,c,ref) {
       return {
         ControlCategory: 'Dialog',
+        NewControl: {
+          Default: {
+            Properties: {
+            }
+          }
+        },
         Properties: ng_diProperties({
           "DialogType": ng_diString('ngMessageDlg'),
           "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }), // TODO: Check default value
