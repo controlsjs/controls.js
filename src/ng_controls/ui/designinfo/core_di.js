@@ -603,7 +603,12 @@ return {
             "TextAlign": ng_diStringValues('left', ['left','right','center','justify'], { Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
             "RowOverlap": ng_diInteger(0, { Level: 'advanced' }),
-            "PageImages": ng_diArrayOf('image', { Level: 'advanced' }),
+            "PageImages": ng_diArrayOf(ng_diObject({
+              "LeftImg": ng_diType('image', { Level: 'advanced' }),
+              "MiddleImg": ng_diType('image', { Level: 'advanced' }),
+              "RightImg": ng_diType('image', { Level: 'advanced' }),
+              "Separator": ng_diType('image', { Level: 'advanced' })
+            }, { Level: 'advanced' }), { Level: 'advanced' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' })
           },
           "OverrideEvents": {
@@ -995,7 +1000,7 @@ return {
           "DropDownType": ng_diMixed([
             ng_diIdentifier('ngeDropDownList'),
             ng_diInteger(1)
-          ])
+          ], { Level: 'advanced' })
         }
       };
       ng_MergeDI(di,DropDownDI(d,c,ref));
