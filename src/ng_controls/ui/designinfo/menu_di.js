@@ -82,24 +82,37 @@ ngUserControls['menu_designinfo'] = {
   },
   OnControlDesignInfo: function(def, c, ref)
   {
-    if((c)&&(!def.CtrlInheritanceDepth)&&(c.DesignInfo)&&(!c.DesignInfo.NonVisual)&&(!c.CtrlInheritsFrom('ngMenu'))) {
+    if((c)&&(!def.CtrlInheritanceDepth)&&(c.DesignInfo)&&(!c.DesignInfo.NonVisual)) {
       var di=c.DesignInfo;
-      var hasonclick=((di.Properties)&&(di.Properties.Events)
-                    &&(di.Properties.Events.Types)&&(di.Properties.Events.Types.object)
-                    &&(di.Properties.Events.Types.object.ObjectProperties)
-                    &&(di.Properties.Events.Types.object.ObjectProperties.OnClick));
-
       ng_MergeVar(di, {
-        Properties: {
-          "Menu": ng_diControl('ngMenu', {
-            "Type": { Required: true }
-          }, { Level: hasonclick ? 'basic' : 'optional', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngMenu' }),
-
-          "PopupMenu": ng_diControl('ngMenu', {
-            "Type": { Required: true }
-          }, { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngMenu' })
-        }
+        Properties: ng_diProperties({
+          "Data": {
+            "MenuHAlign": ng_diStringValues('left', ['left','center','right'],{ Level: 'optional' }),
+            "MenuVAlign": ng_diStringValues('top', ['top','center','bottom'],{ Level: 'optional' }),
+            "MinScreenIndent": ng_diInteger(5,{ Level: 'optional' }),
+            "MenuOverlapX": ng_diInteger(0,{ Level: 'optional' }),
+            "MenuOverlapY": ng_diInteger(0,{ Level: 'optional' })
+          }
+        })
       });
+      if(!c.CtrlInheritsFrom('ngMenu')) {
+        var hasonclick=((di.Properties)&&(di.Properties.Events)
+                      &&(di.Properties.Events.Types)&&(di.Properties.Events.Types.object)
+                      &&(di.Properties.Events.Types.object.ObjectProperties)
+                      &&(di.Properties.Events.Types.object.ObjectProperties.OnClick));
+
+        ng_MergeVar(di, {
+          Properties: {
+            "Menu": ng_diControl('ngMenu', {
+              "Type": { Required: true }
+            }, { Level: hasonclick ? 'basic' : 'optional', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngMenu' }),
+
+            "PopupMenu": ng_diControl('ngMenu', {
+              "Type": { Required: true }
+            }, { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngMenu' })
+          }
+        });
+      }
     }
   },
   OnInit: function()
