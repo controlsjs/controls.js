@@ -61,11 +61,11 @@ var MaskEdit_DesignInfo = {
             "TextAlign": ng_diStringValues('left', ['left','right','center'], { Level: 'basic' }),
             "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "CharWidth": ng_diInteger(10, { Level: 'basic' }),
-            "PartWidths": ng_diArrayOf('integer', { Level: 'advanced' }),
+            "PartWidths": ng_diArrayOf(ng_diInteger(0, { Level: 'basic' }), { Level: 'advanced' }),
             "PartDefaultValues": ng_diArrayOf('string', { Level: 'advanced' }),
             "PartInitValues": ng_diType('array_strings', { Level: 'advanced' }),
             "DefaultValuesAsHint": ng_diBoolean(true, { Level: 'basic' }),
-            "PartDefs": ng_diArrayOfControls(undefined, { Level: 'advanced' }),
+            "PartDefs": ng_diArrayOfControls({ Level: 'basic' }, { Level: 'advanced' }),
             "Invalid": ng_diBoolean(false, { Level: 'basic' }),
             "LockHintCaretPos": ng_diBoolean(false, { Level: 'basic' }),
             "Text": ng_diString('', { Level: 'basic' })

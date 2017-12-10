@@ -849,13 +849,15 @@ function ng_diProperties(props,data) {
         }, { Level: 'basic', Order: 0.4 }, { DestroyIfEmpty: true }),
         "Controls": ng_diControls(undefined, { Level: 'optional', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls' }, {
           ChildDesignInfo: {
-            PropertyGroup: 'Controls'
+            PropertyGroup: 'Controls',
+            Level: 'basic'
           }
         }),
         "ModifyControls": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
           DestroyIfEmpty: true,
           ChildDesignInfo: {
-            PropertyGroup: 'Controls'
+            PropertyGroup: 'Controls',
+            Level: 'basic'
           }
         }),
         "Events": ng_diObject({
