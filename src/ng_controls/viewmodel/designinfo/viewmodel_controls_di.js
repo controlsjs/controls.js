@@ -323,8 +323,6 @@ var ViewModel_Controls_DesignInfo = (function()
       }
 
       var vm_types = [
-        // TODO: ko.observable and ko.computed not working
-
         // ko.observable
         {
           TypeID: 'ko.observable',
