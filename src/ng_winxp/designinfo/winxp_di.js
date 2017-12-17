@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2017 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -944,7 +944,7 @@ var WinXP_DesignInfo = {
             "Progress": ng_diControl('stdProgressDot', {
               "L": ng_diTypeVal('bounds', 15),
               "T": ng_diTypeVal('bounds', 15)
-            }, { Level: 'basic' }, { InheritedFrom: 'ngProgressDot' }),
+            }, { Level: 'basic' }),
             "Content": ng_diControl(undefined, ng_diProperties({
               "Data": {
                 "Visible": ng_diBoolean(false)
@@ -1028,7 +1028,7 @@ var WinXP_DesignInfo = {
       return ng_diControl('stdButton')
     }
     function colorpicker_sliderDef() {
-      return ng_diControl('stdLabel', ng_diProperties({
+      return ng_diControl(undefined, ng_diProperties({
         'L': ng_diTypeVal('bounds',5),
         'T': ng_diTypeVal('bounds',18),
         'R': ng_diTypeVal('bounds',5),
@@ -1188,7 +1188,7 @@ var WinXP_DesignInfo = {
             'Hex_Panel': ng_diControl(undefined, ng_diProperties({
               'H': ng_diTypeVal('bounds',39),
               'ModifyControls': {
-                'AHexEdit': ng_diControl('ngEdit', ng_diProperties({
+                'AHexEdit': ng_diControl('stdEdit', ng_diProperties({
                   'L': ng_diTypeVal('bounds',5),
                   'W': ng_diTypeVal('bounds',80),
                   'T': ng_diTypeVal('bounds',18),
