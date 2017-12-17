@@ -678,7 +678,7 @@ var WireframeControls_DesignInfo = {
                 "HY": ng_diInteger(27),
                 "Img": ng_diTypeVal('image', 'WireframeControls.Images.TextHint.AnchorsImg.bottomright')
               },undefined,undefined,'ngHintAnchor')
-            }),
+            })
           },
           "ModifyControls": {
             "Hint": ng_diControl('wfrText', {

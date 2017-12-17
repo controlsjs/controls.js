@@ -289,7 +289,7 @@ var WinXP_DesignInfo = {
               "DropDown": { Value: "{ Type: 'stdList' }"}
             }
           }
-        },
+        }
       };
       ng_MergeVar(di,stdEditDI(d,c,ref));
       return di;
@@ -305,7 +305,7 @@ var WinXP_DesignInfo = {
               "DropDown": { Value: "{ Type: 'stdList' }"}
             }
           }
-        },
+        }
       };
       ng_MergeVar(di,stdEditDI(d,c,ref));
       return di;
