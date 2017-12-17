@@ -1133,7 +1133,7 @@ var WireframeControls_DesignInfo = {
             "Progress": ng_diControl('wfrProgressDot', {
               "L": ng_diTypeVal('bounds', 15),
               "T": ng_diTypeVal('bounds', 13)
-            }, { Level: 'basic' }, { InheritedFrom: 'ngProgressDot' }),
+            }, { Level: 'basic' }),
             "Content": ng_diControl(undefined, ng_diProperties({
               "Data": {
                 "Visible": ng_diBoolean(false)
