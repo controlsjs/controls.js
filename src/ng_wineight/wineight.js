@@ -321,23 +321,26 @@ var WinEightControls = {
       Bottom: { L: 0, T: 30, H: 2, Src: 1 }
     },
     HintAnchors: {
-      topleft:      { L: 12, T: -8, HX: 7, HY: 1,
-                     Img: { L: 331, T: 214, W: 16, H: 10 } },
-      topright:     { R: 12, T: -8, HX: 7, HY: 1,
-                     Img: { L: 331, T: 214, W: 16, H: 10 } },
-      bottomright:  { R: 12, B: -8, HX: 7, HY: 8,
-                      Img: { L: 357, T: 214, W: 16, H: 10 } },
-      bottomleft:   { L: 12, B: -8, HX: 7, HY: 8,
-                      Img: { L: 357, T: 214, W: 16, H: 10 } },
+      topleft:      { L: 12, T: -8, HX: 7, HY: 1 },
+      topright:     { R: 12, T: -8, HX: 7, HY: 1 },
+      bottomright:  { R: 12, B: -8, HX: 7, HY: 8 },
+      bottomleft:   { L: 12, B: -8, HX: 7, HY: 8 },
 
-      lefttop:      { L: -8, T: 12, HX: 1, HY: 7,
-                     Img: { L: 403, T: 214, W: 10, H: 16 } },
-      leftbottom:   { L: -8, B: 12, HX: 1, HY: 7,
-                     Img: { L: 403, T: 214, W: 10, H: 16 } },
-      righttop:     { R: -8, T: 12, HX: 8, HY: 7,
-                     Img: { L: 383, T: 214, W: 10, H: 16 } },
-      rightbottom:  { R: -8, B: 12, HX: 8, HY: 7,
-                     Img: { L: 383, T: 214, W: 10, H: 16 } }
+      lefttop:      { L: -8, T: 12, HX: 1, HY: 7 },
+      leftbottom:   { L: -8, B: 12, HX: 1, HY: 7 },
+      righttop:     { R: -8, T: 12, HX: 8, HY: 7 },
+      rightbottom:  { R: -8, B: 12, HX: 8, HY: 7 }
+    },
+    HintAnchorsImg: {
+      topleft:      { L: 331, T: 214, W: 16, H: 10 },
+      topright:     { L: 331, T: 214, W: 16, H: 10 },
+      bottomright:  { L: 357, T: 214, W: 16, H: 10 },
+      bottomleft:   { L: 357, T: 214, W: 16, H: 10 },
+
+      lefttop:      { L: 403, T: 214, W: 10, H: 16 },
+      leftbottom:   { L: 403, T: 214, W: 10, H: 16 },
+      righttop:     { L: 383, T: 214, W: 10, H: 16 },
+      rightbottom:  { L: 383, T: 214, W: 10, H: 16 }
     },
 
     TextHint: {
@@ -351,14 +354,16 @@ var WinEightControls = {
       RightBottom: { L: 24, T: 233, W: 7, H: 6 }
     },
     TextHintAnchors: {
-      topleft:      { L: 12, T: -8, HX: 7, HY: 1,
-                     Img: { L: 331, T: 214, W: 16, H: 10 } },
-      topright:     { R: 12, T: -8, HX: 7, HY: 1,
-                     Img: { L: 331, T: 214, W: 16, H: 10 } },
-      bottomright:  { R: 12, B: -8, HX: 7, HY: 8,
-                      Img: { L: 357, T: 214, W: 16, H: 10 } },
-      bottomleft:   { L: 12, B: -8, HX: 7, HY: 8,
-                      Img: { L: 357, T: 214, W: 16, H: 10 } }
+      topleft:      { L: 12, T: -8, HX: 7, HY: 1 },
+      topright:     { R: 12, T: -8, HX: 7, HY: 1 },
+      bottomright:  { R: 12, B: -8, HX: 7, HY: 8 },
+      bottomleft:   { L: 12, B: -8, HX: 7, HY: 8 }
+    },
+    TextHintAnchorsImg: {
+      topleft:      { L: 331, T: 214, W: 16, H: 10 },
+      topright:     { L: 331, T: 214, W: 16, H: 10 },
+      bottomright:  { L: 357, T: 214, W: 16, H: 10 },
+      bottomleft:   { L: 357, T: 214, W: 16, H: 10 }
     },
 
     CalendarMonPrevLight: { L: 0, T: 800, W: 32, H: 32, Src: 3, SL: 33, DL: 66 },
@@ -561,6 +566,14 @@ var WinEightControls = {
       winimages.AppMenuIcons[1][i]={ L: 0, T: n*32, oL: 33, DL: 66, W: 33, H: 32, Src: 3 };
     }
 
+    for(var i in winimages.HintAnchors) {
+      winimages.HintAnchors[i].Img=winimages.HintAnchorsImg[i];
+    }
+
+    for(var i in winimages.TextHintAnchors) {
+      winimages.TextHintAnchors[i].Img=winimages.TextHintAnchorsImg[i];
+    }
+
     function colorscheme(def) {
       return ngVal(def.ColorScheme,wineight.ColorScheme);
     }
@@ -683,7 +696,7 @@ var WinEightControls = {
      */
     ngRegisterControlType('weRadioButton', function(def,ref,parent) {
       var th=theme(def);
-      if(typeof def.className === 'undefined') def.className=(th ? 'weRadioLight' : 'weRadioDark');
+      if(typeof def.className === 'undefined') def.className=(th ? 'weRadioLight' : 'weRadioDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
       return skinfnc.Create_weCheckBox(def,ref,parent,(th ? winimages.RadioLeftLight : winimages.RadioLeftDark),(th ? winimages.RadioRightLight : winimages.RadioRightDark), 'ngRadioButton');
     });
 
@@ -692,7 +705,7 @@ var WinEightControls = {
      */
     ngRegisterControlType('weToggleSwitch', function(def,ref,parent) {
       var th=theme(def);
-      if(typeof def.className === 'undefined') def.className=(th ? 'weToggleSwitchLight' : 'weToggleSwitchDark')+(!th && typeof def.ColorScheme === 'undefined' ? '' : ' we'+colorscheme(def));
+      if(typeof def.className === 'undefined') def.className=(th ? 'weToggleSwitchLight' : 'weToggleSwitchDark');
       var img=(th ? winimages.ToggleSwitchLight : winimages.ToggleSwitchDark);
       var c=skinfnc.Create_weCheckBox(def,ref,parent,img,img);
       if(c)
@@ -1830,8 +1843,8 @@ var WinEightControls = {
         var c=ngCreateControlAsType(def, 'ngWindow', ref, parent);
         if(!c) return c;
         var closebtn=ngVal(def.CloseBtn,(dialog ? true : false));
-        c.Frame=(th ? winimages.WindowLight : winimages.WindowDark);
-        c.CaptionImg = (th ? winimages.WindowCaptionLight : winimages.WindowCaptionDark);
+        c.Frame=ng_CopyVar(th ? winimages.WindowLight : winimages.WindowDark);
+        c.CaptionImg = ng_CopyVar(th ? winimages.WindowCaptionLight : winimages.WindowCaptionDark);
         c.MinimizedBounds = { H: 42 };
         if(closebtn)
         {
