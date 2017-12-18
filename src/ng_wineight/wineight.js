@@ -3537,6 +3537,167 @@ var WinEightControls = {
     }
 
     /**
+     * Auth Controls
+     */
+    if (ngUserControls['auth_controls'])
+    {
+      ngRegisterControlType('weLoginForm', function(def,ref,parent) {
+        var th=theme(def);
+        var compact=ngVal(def.CompactMode,false);
+        ng_MergeDef(def, {
+          W: 260,
+          Controls: {
+            OrganizationLabel: {
+              Type: 'weLabel',
+              Theme: th
+            },
+            Organization: {
+              Type: 'weEdit',
+              Theme: th,
+              Data: {
+                ToolBarVPadding: compact ? 8 : 0
+              }
+            },
+            LoginLabel: {
+              Type: 'weLabel',
+              Theme: th
+            },
+            Login: {
+              Type: 'weEdit',
+              Theme: th,
+              Data: {
+                ToolBarVPadding: compact ? 8 : 0
+              }
+            },
+            PasswordLabel: {
+              Type: 'weLabel',
+              Theme: th
+            },
+            Password: {
+              Type: 'weEdit',
+              Theme: th,
+              Data: {
+                ToolBarVPadding: compact ? 8 : 0
+              }
+            },
+            CapsLockWarn: {
+              Type: 'weText',
+              Theme: th,
+              style: {
+                marginTop: '5px',
+                marginBottom: '5px'
+              }
+            },
+            RememberMe: {
+              Type: 'weCheckBox',
+              Theme: th,
+              style: {
+                marginTop: '5px'
+              }
+            },
+            LoginBtn: {
+              Type: 'weButton',
+              Theme: th,
+              W: 100,
+              style: {
+                marginTop: '8px'
+              }
+            },
+            Progress: {
+              Type: 'weProgressDot',
+              Theme: th,
+              style: {
+                marginLeft: '10px',
+                marginTop: '12px'
+              },
+              Data: {
+                Visible: false
+              }
+            },
+            Error: {
+              Type: 'weText',
+              Theme: th,
+              className: 'weLoginFormErrorMessage',
+              style: {
+                marginTop: '8px'
+              }
+            }
+          }
+        });
+        return ngCreateControlAsType(def, 'ngLoginForm', ref, parent);
+      });
+      ngRegisterControlType('wePasswordForm', function(def,ref,parent) {
+        var th=theme(def);
+        var compact=ngVal(def.CompactMode,false);
+        ng_MergeDef(def, {
+          W: 260,
+          Controls: {
+            OldPasswordLabel: {
+              Type: 'weLabel',
+              Theme: th
+            },
+            OldPassword: {
+              Type: 'weEdit',
+              Theme: th,
+              Data: {
+                ToolBarVPadding: compact ? 8 : 0
+              }
+            },
+            NewPasswordLabel: {
+              Type: 'weLabel',
+              Theme: th
+            },
+            NewPassword: {
+              Type: 'weEdit',
+              Theme: th,
+              Data: {
+                ToolBarVPadding: compact ? 8 : 0
+              }
+            },
+            ConfirmNewPasswordLabel: {
+              Type: 'weLabel',
+              Theme: th
+            },
+            ConfirmNewPassword: {
+              Type: 'weEdit',
+              Theme: th,
+              Data: {
+                ToolBarVPadding: compact ? 8 : 0
+              }
+            },
+            CapsLockWarn: {
+              Type: 'weText',
+              Theme: th,
+              style: {
+                marginTop: '5px',
+                marginBottom: '5px'
+              }
+            },
+            Error: {
+              Type: 'weText',
+              Theme: th,
+              className: 'weLoginFormErrorMessage',
+              style: {
+                marginTop: '8px'
+              }
+            }
+          }
+        });
+        return ngCreateControlAsType(def, 'ngPasswordForm', ref, parent);
+      });
+      ngRegisterControlType('weLoginButton', function(def,ref,parent) {
+        if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weLinkLight' : 'weLinkDark')+' we'+colorscheme(def)+'Text';
+        ng_MergeDef(def, {
+          Menu: {
+            Type: 'weMenu'
+          }
+        });
+        return ngCreateControlAsType(def, 'ngLoginButton', ref, parent);
+      });
+    }
+
+
+    /**
      * ViewModel Controls
      */
     if(ngUserControls['viewmodel_controls'])

@@ -1734,6 +1734,109 @@ var WinEight_DesignInfo = {
       });
     });
     
+
+    ngRegisterControlDesignInfo('weLoginForm',function(d,c,ref) {
+      return themeDI({
+        ControlCategory: 'Form',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 260 }
+            }
+          }
+        },
+        Properties: ng_diProperties({
+          "W": ng_diTypeVal('bounds',260),
+          "ModifyControls": {
+            "OrganizationLabel": ng_diControl('weLabel'),
+            "Organization": ng_diControl('weEdit'),
+            "LoginLabel": ng_diControl('weLabel'),
+            "Login": ng_diControl('weEdit'),
+            "PasswordLabel": ng_diControl('weLabel'),
+            "Password": ng_diControl('weEdit'),
+            "CapsLockWarn": ng_diControl('weText', ng_diProperties({
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' }),
+                "marginBottom": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            })),
+            "RememberMe": ng_diControl('weCheckBox', ng_diProperties({
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            })),
+            "LoginBtn": ng_diControl('weButton', ng_diProperties({
+             'W': ng_diTypeVal('bounds',100),
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '8px', { Level: 'advanced' })
+              }
+            })),
+            "Progress": ng_diControl('weProgressDot', ng_diProperties({
+              "style": {
+                "marginLeft": ng_diTypeVal('css_dim_px', '10px', { Level: 'advanced' }),
+                "marginTop": ng_diTypeVal('css_dim_px', '12px', { Level: 'advanced' })
+              },
+              "Data": {
+                "Visible": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }),
+            "Error": ng_diControl('weText', ng_diProperties({
+              "className": ng_diString('weLoginFormErrorMessage'),
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '8px', { Level: 'advanced' })
+              }
+            }))
+          }
+        })
+      });
+    });
+
+    ngRegisterControlDesignInfo('wePasswordForm',function(d,c,ref) {
+      return themeDI({
+        ControlCategory: 'Form',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 260 }
+            }
+          }
+        },
+        Properties: ng_diProperties({
+          "W": ng_diTypeVal('bounds',260),
+          "ModifyControls": {
+            "OldPasswordLabel": ng_diControl('weLabel'),
+            "OldPassword": ng_diControl('weEdit'),
+            "NewPasswordLabel": ng_diControl('weLabel'),
+            "NewPassword": ng_diControl('weEdit'),
+            "ConfirmNewPasswordLabel":  ng_diControl('weLabel'),
+            "ConfirmNewPassword": ng_diControl('weEdit'),
+            "CapsLockWarn": ng_diControl('weText', ng_diProperties({
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' }),
+                "marginBottom": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            })),
+            "Error": ng_diControl('weText', ng_diProperties({
+              "className": ng_diString('weLoginFormErrorMessage'),
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '8px', { Level: 'advanced' })
+              }
+            }))
+          }
+        })
+      });
+    });
+
+    ngRegisterControlDesignInfo('weLoginButton',function(d,c,ref) {
+      return themeSchemeDI({
+        ControlCategory: 'Button',
+        Properties: ng_diProperties({
+          "className": defThemeSchemeClassName('Link','Text'),
+          "Menu": ng_diControl('weMenu')
+        })
+      });
+    });
+
     function weViewModelFormDI(d,c,ref) {
       return schemeDI({
         ControlCategory: 'Container',
