@@ -1181,6 +1181,106 @@ var WireframeControls_DesignInfo = {
       };
     });
 
+    ngRegisterControlDesignInfo('wfrLoginForm',function(d,c,ref) {
+      return {
+        ControlCategory: 'Form',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 200 }
+            }
+          }
+        },
+        Properties: ng_diProperties({
+          "W": ng_diTypeVal('bounds',200),
+          "Data": {
+            "VPadding": ng_diInteger(2)
+          },
+          "ModifyControls": {
+            "OrganizationLabel": ng_diControl('wfrLabel'),
+            "Organization": ng_diControl('wfrEdit'),
+            "LoginLabel": ng_diControl('wfrLabel'),
+            "Login": ng_diControl('wfrEdit'),
+            "PasswordLabel": ng_diControl('wfrLabel'),
+            "Password": ng_diControl('wfrEdit'),
+            "CapsLockWarn": ng_diControl('wfrText', ng_diProperties({
+              "style": {
+                "marginBottom": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            })),
+            "RememberMe": ng_diControl('wfrCheckBox'),
+            "LoginBtn": ng_diControl('wfrButton', ng_diProperties({
+             'W': ng_diTypeVal('bounds',100),
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '10px', { Level: 'advanced' })
+              }
+            })),
+            "Progress": ng_diControl('wfrProgressDot', ng_diProperties({
+              "style": {
+                "marginLeft": ng_diTypeVal('css_dim_px', '10px', { Level: 'advanced' }),
+                "marginTop": ng_diTypeVal('css_dim_px', '12px', { Level: 'advanced' })
+              },
+              "Data": {
+                "Visible": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }),
+            "Error": ng_diControl('wfrText', ng_diProperties({
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            }))
+          }
+        })
+      }
+    });
+
+    ngRegisterControlDesignInfo('wfrPasswordForm',function(d,c,ref) {
+      return {
+        ControlCategory: 'Form',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 200 }
+            }
+          }
+        },
+        Properties: ng_diProperties({
+          "W": ng_diTypeVal('bounds',200),
+          "Data": {
+            "VPadding": ng_diInteger(2)
+          },
+          "ModifyControls": {
+            "OldPasswordLabel": ng_diControl('wfrLabel'),
+            "OldPassword": ng_diControl('wfrEdit'),
+            "NewPasswordLabel": ng_diControl('wfrLabel'),
+            "NewPassword": ng_diControl('wfrEdit'),
+            "ConfirmNewPasswordLabel":  ng_diControl('wfrLabel'),
+            "ConfirmNewPassword": ng_diControl('wfrEdit'),
+            "CapsLockWarn": ng_diControl('wfrText', ng_diProperties({
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            })),
+            "Error": ng_diControl('wfrText', ng_diProperties({
+              "style": {
+                "marginTop": ng_diTypeVal('css_dim_px', '5px', { Level: 'advanced' })
+              }
+            }))
+          }
+        })
+      }
+    });
+
+    ngRegisterControlDesignInfo('wfrLoginButton',function(d,c,ref) {
+      return {
+        ControlCategory: 'Button',
+        Properties: ng_diProperties({
+          "className": ng_diString('wfrLink'),
+          "Menu": ng_diControl('wfrMenu')
+        })
+      };
+    });
+
     ngRegisterControlDesignInfo('wfrViewModelForm',function(d,c,ref) {
       return {
         ControlCategory: 'Container',

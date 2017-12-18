@@ -2289,6 +2289,132 @@ var WireframeControls = {
     });
 
     /**
+     * Auth Controls
+     */
+    if (ngUserControls['auth_controls'])
+    {
+      /*  Class: wfrLoginForm
+       *  Standard menu control (based on <ngLoginForm>).
+       */
+      /*<>*/
+      ngRegisterControlType('wfrLoginForm', {
+        Type: 'ngLoginForm',
+        W: 200,
+        Data: {
+          VPadding: 2
+        },
+        Controls: {
+          OrganizationLabel: {
+            Type: 'wfrLabel'
+          },
+          Organization: {
+            Type: 'wfrEdit'
+          },
+          LoginLabel: {
+            Type: 'wfrLabel'
+          },
+          Login: {
+            Type: 'wfrEdit'
+          },
+          PasswordLabel: {
+            Type: 'wfrLabel'
+          },
+          Password: {
+            Type: 'wfrEdit'
+          },
+          CapsLockWarn: {
+            Type: 'wfrText',
+            style: {
+              marginBottom: '5px'
+            }
+          },
+          RememberMe: {
+            Type: 'wfrCheckBox'
+          },
+          LoginBtn: {
+            Type: 'wfrButton',
+            W: 100,
+            style: {
+              marginTop: '10px'
+            }
+          },
+          Progress: {
+            Type: 'wfrProgressDot',
+            style: {
+              marginLeft: '10px',
+              marginTop: '12px'
+            },
+            Data: {
+              Visible: false
+            }
+          },
+          Error: {
+            Type: 'wfrText',
+            style: {
+              marginTop: '5px'
+            }
+          }
+        }
+      });
+
+      /*  Class: wfrPasswordForm
+       *  Standard menu control (based on <ngPasswordForm>).
+       */
+      /*<>*/
+      ngRegisterControlType('wfrPasswordForm', {
+        Type: 'ngPasswordForm',
+        W: 200,
+        Data: {
+          VPadding: 2
+        },
+        ModifyControls: {
+          OldPasswordLabel: {
+            Type: 'wfrLabel'
+          },
+          OldPassword: {
+            Type: 'wfrEdit'
+          },
+          NewPasswordLabel: {
+            Type: 'wfrLabel'
+          },
+          NewPassword: {
+            Type: 'wfrEdit'
+          },
+          ConfirmNewPasswordLabel: {
+            Type: 'wfrLabel'
+          },
+          ConfirmNewPassword: {
+            Type: 'wfrEdit'
+          },
+          CapsLockWarn: {
+            Type: 'wfrText',
+            style: {
+              marginTop: '5px'
+            }
+          },
+          Error: {
+            Type: 'wfrText',
+            style: {
+              marginTop: '5px'
+            }
+          }
+        }
+      });
+
+      /*  Class: wfrLoginButton
+       *  Standard menu control (based on <ngLoginButton>).
+       */
+      /*<>*/
+      ngRegisterControlType('wfrLoginButton', {
+        Type: 'ngLoginButton',
+        className: 'wfrLink',
+        Menu: {
+          Type: 'wfrMenu'
+        }
+      });
+    }
+
+    /**
      * ViewModel Controls
      */
     if(ngUserControls['viewmodel_controls']){
