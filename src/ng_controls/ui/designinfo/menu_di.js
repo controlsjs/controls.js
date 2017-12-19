@@ -148,11 +148,7 @@ ngUserControls['menu_designinfo'] = {
         },
         Properties: ng_diProperties({
           "Data": {
-            "Items": ng_diMixed([
-              ng_diType('ngMenuItems'),
-              ng_diType('ngListItems', { Level: 'hidden' }),
-              ng_diType('ngListStringItems', { Level: 'hidden' })
-            ], { Level: 'basic' }),
+            "Items": ng_diReplaceType(['ngListItems','ngListStringItems'],'ngMenuItems'),
             "MenuHAlign": ng_diStringValues('left', ['left','center','right'],{ Level: 'basic' }),
             "MenuVAlign": ng_diStringValues('top', ['top','center','bottom'],{ Level: 'basic' }),
             "MaxHeight": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
