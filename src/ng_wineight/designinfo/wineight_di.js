@@ -11,22 +11,84 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-var WinEight_DesignInfo = {
+var WinEight_DesignInfo = (function() {
+
+  var undefined;
+  var avail_schemes=[
+    'Blue',
+    'LtBlue',
+    'Green',
+    'Yellow',
+    'Maroon',
+    'Gray',
+    'LtGray',
+    'DkGray',
+    'White'
+  ];
+  var used_schemes={};
+
+return {
+  OnFormEditorInit: function(FE)
+  {
+    FE.AddEvent('OnCreateForm', function(test) {
+      if(!test) used_schemes={};
+    });
+
+    var skin_types = [
+      // weMenuItem
+      {
+        TypeID: 'weMenuItem',
+        TypeBase: 'ngMenuItem',
+        Name: 'weMenuItem',
+        ShortName: 'item',
+        Basic: false,
+        Options: {
+          ObjectProperties: {
+            "Image": ng_diMixed(['image', ng_diString('Empty',{},{
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: function(api) {
+                  var items=['Empty'];
+                  if((typeof WinEightControls === 'object')&&(WinEightControls)) {
+                    var images=WinEightControls.Images.AppIcons[0];
+                    items=[];
+                    for(var i in images) {
+                      if((i==='_noMerge')||(i==='Src')) continue;
+                      items.push(i);
+                    }
+                  }
+                  return items;
+                }
+              }
+            })], { DefaultType: 'string' })
+          }
+        }
+      },
+      // weMenuItems
+      {
+        TypeID: 'weMenuItems',
+        TypeBase: 'ngMenuItems',
+        Name: 'weMenuItems',
+        ShortName: 'items',
+        Basic: false,
+        Options: {
+          Priority: 0.5301,
+          ChildDesignInfo: ng_diReplaceType('ngMenuItem','weMenuItem')
+        }
+      }
+    ];
+    FormEditor.RegisterPropertyType(skin_types);
+  },
+  OnControlCreated: function(def,c) {
+    if(!FormEditor.Params.creatingform) return;
+    if(typeof def.ColorScheme !== 'undefined') {
+      var scheme=''+ngVal(def.ColorScheme,'');
+      if(scheme!=='') used_schemes[scheme]=true;
+    }
+  },
+
   OnInit: function() {
     if(!ngDESIGNINFO) return;
-
-    var undefined;
-    var avail_schemes=[
-      'Blue',
-      'LtBlue',
-      'Green',
-      'Yellow',
-      'Maroon',
-      'Gray',
-      'LtGray',
-      'DkGray',
-      'White'
-    ];
 
     function deftheme() {
       var deftheme;
@@ -88,7 +150,14 @@ var WinEight_DesignInfo = {
           "ColorScheme": ng_diString(scheme, { Level: 'basic', Order: 0.06 }, {
             Editor: 'ngfeEditor_DropDown',
             EditorOptions: {
-              Items: avail_schemes
+              Items: function(api) {
+                var items=[];
+                for(var i in used_schemes) items.push(i);
+                for(var i=0;i<avail_schemes.length;i++) {
+                  if(!used_schemes[avail_schemes[i]]) items.push(avail_schemes[i]);
+                }
+                return items;
+              }
             }
           })
         }
@@ -1661,6 +1730,7 @@ var WinEight_DesignInfo = {
           "className": deftheme() ? defThemeSchemeClassName('Menu', 'Menu') : ng_diString('weMenuDark'),
           "Theme": ng_diIntegerIdentifiers('WE_LIGHT'),
           "Data": {
+            "Items": ng_diReplaceType('ngMenuItems','weMenuItems'),
             "SubMenuImg": ng_diTypeVal('image', 'WinEightControls.Images.SubMenu'+defthemetxt()),
             "SubMenuDef": ng_diControl('weMenu')
           }
@@ -1994,4 +2064,5 @@ var WinEight_DesignInfo = {
     
   }
 };
+})();
 ngUserControls['wineight_designinfo'] = WinEight_DesignInfo;
