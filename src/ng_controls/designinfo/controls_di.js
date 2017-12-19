@@ -189,6 +189,51 @@ function ng_diTypeVal(type, defval, pdata, tdata) {
 }
 
 /**
+ *  Function: ng_diDisableType
+ *  Disables specified property type.
+ *
+ *  Syntax:
+ *    object *ng_diDisableType* (mixed type [, object pdata={}])
+ *
+ *  Parameters:
+ *    type - property type to be disabled (can be list of types defined as index array)
+ *    pdata - additional property definition
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_diDisableType(type, pdata) {
+  var types={};
+  if(!ng_IsArrayVar(type)) type=[type];
+  for(var i=0;i<type.length;i++) types[type[i]]=false;
+  var ret=((pdata)&&(typeof pdata==='object')) ? pdata : {};
+  ng_MergeVar(ret,{ Types: types });
+  return ret;
+}
+
+/**
+ *  Function: ng_diReplaceType
+ *  Replaces specified property type with another one.
+ *
+ *  Syntax:
+ *    object *ng_diReplaceType* (mixed oldtype, mixed newtype [, object pdata={}])
+ *
+ *  Parameters:
+ *    oldtype - property type to be disabled (can be list of types defined as index array)
+ *    newtype - new property type (string type or design info)
+ *    pdata - additional property definition
+ *
+ *  Returns:
+ *    Property design info.
+ */
+function ng_diReplaceType(oldtype, newtype, pdata) {
+  if(typeof newtype==='string') newtype=ng_diType(newtype);
+  var ret=((pdata)&&(typeof pdata==='object')) ? pdata : {};
+  ng_MergeVar(ret,ng_diDisableType(oldtype, newtype));
+  return ret;
+}
+
+/**
  *  Function: ng_diBoolean
  *  Defines boolean type property design info.
  *
