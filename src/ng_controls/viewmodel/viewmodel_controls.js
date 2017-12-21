@@ -94,16 +94,16 @@ function ngBindingDeferUpdates(type, allBindingsAccessor, setstate) {
 
 function ngApplyBindings(ctrl, viewModel, databind)
 {
-  if((!ctrl)||(ngVal(databind,'')=='')) return false;
+  if((!ctrl)||(ngVal(databind,'')=='')||(typeof ctrl.InDesignMode !== 'undefined')) return false;
 
   if(ng_typeString(viewModel))
   {
     var vm=getViewModelById(viewModel);
-    if((!vm)&&(!ctrl.InDesignMode)) ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
+    if(!vm) ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
     viewModel=vm;
   }
   if(!viewModel) {
-    if(!ctrl.InDesignMode) ngDEBUGERROR('ViewModel for control "'+ctrl.ID+'" not found!');
+    ngDEBUGERROR('ViewModel for control "'+ctrl.ID+'" not found!');
     return false;
   }
 
@@ -395,6 +395,8 @@ ngUserControls['viewmodel_controls'] = {
 
   OnControlCreated: function(def,c,ref) {
     if((typeof def.ViewModel !== 'undefined')&&(typeof c.ViewModel === 'undefined')) c.ViewModel=def.ViewModel;
+
+    if(typeof c.InDesignMode !== 'undefined') return;
 
     var dombind=def.DOMDataBind;
     if(typeof dombind !== 'undefined') {

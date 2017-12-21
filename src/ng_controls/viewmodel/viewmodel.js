@@ -1788,11 +1788,13 @@ function ngvm_SetViewModel(vmodel)
   if(typeof vmodel === 'function') 
   {                                     
     this.viewmodel_history.push(vmodel);    
-    this.ViewModel.__newvmodel = vmodel;
-    try {
-      this.ViewModel.__newvmodel(this);
-    } finally {
-      delete this.ViewModel.__newvmodel;
+    if(typeof this.InDesignMode!=='undefined') {
+      try {
+        vmodel.apply(this.ViewModel,[this]);
+      } catch(e) { ngDEBUGERROR(e); }
+    }
+    else {
+      vmodel.apply(this.ViewModel,[this]);
     }
   }
   else 
