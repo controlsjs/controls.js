@@ -323,9 +323,11 @@ return {
               var txt='';
               var txtprops = FormEditor.GetSelectedControlsProperty(pname+'.Text');
               var idprops = FormEditor.GetSelectedControlsProperty(pname+'.ID');
+              var acprops = FormEditor.GetSelectedControlsProperty(pname+'.Action');
               for(var i=0;i<txtprops.length;i++) {
                 var t=gettextobj(txtprops[i]);
                 if(t=='') t=getpropertytext(idprops[i]);
+                if(t=='') t=getpropertytext(acprops[i]);
                 if(!i) txt=t;
                 else if(t!=txt) { txt=''; break; }
               }
