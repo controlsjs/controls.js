@@ -16,7 +16,75 @@ ngUserControls['list_designinfo'] = (function(){
     return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
   }
 
+  function intersect(items,citems)
+  {
+    var k,j;
+    for(k=citems.length-1;k>=0;k--) {
+      for(j=0;j<items.length;j++)
+        if(items[j]===citems[k]) break;
+      if(j>=items.length) citems.splice(k,1);
+    }
+    for(k=items.length-1;k>=0;k--) {
+      for(j=0;j<citems.length;j++)
+        if(items[j]===citems[k]) break;
+      if(j>=citems.length) items.splice(k,1);
+    }
+  }
+
+  function editor_listradiogroups(api) {
+    var citems,items=[];
+
+    function scanitems(citems,it,ref,cid) {
+      var its=it.PropertyValue;
+      if(ng_IsArrayVar(its)) {
+        for(var j=0;j<its.length;j++) {
+          var idprops = FormEditor.GetControlsProperty(ref+j+'.RadioGroup', [cid]);
+          if(idprops.length>0) {
+            var s=getpropertytext(idprops[0]);
+            if(s!='') citems.push(s);
+          }
+          var itprops = FormEditor.GetControlsProperty(ref+j+'.Items', [cid]);
+          if(itprops.length>0) {
+            scanitems(citems,itprops[0],ref+j+'.Items.',cid);
+          }
+        }
+      }
+    }
+
+    var litems = FormEditor.GetSelectedControlsProperty('Data.Items');
+    for(var i=0;i<litems.length;i++) {
+      citems=[];
+      scanitems(citems,litems[i],'Data.Items.',litems[i].ControlID);
+      if(!i) items=citems;
+      else intersect(items,citems);
+    }
+    return items;
+  }
+
+  function editor_listcolumns(api) {
+    var citems,s,col,idprops,items=[];
+    var cols = FormEditor.GetSelectedControlsProperty('Data.Columns');
+    for(var i=0;i<cols.length;i++) {
+      citems=[];
+      col=cols[i].PropertyValue;
+      if(ng_IsArrayVar(col)) {
+        for(var j=0;j<col.length;j++) {
+          idprops = FormEditor.GetControlsProperty('Data.Columns.'+j+'.ID', [cols[i].ControlID]);
+          if(idprops.length>0) {
+            s=getpropertytext(idprops[0]);
+            if(s!='') citems.push(s);
+          }
+        }
+      }
+      if(!i) items=citems;
+      else intersect(items,citems);
+    }
+    return items;
+  }
+
 return {
+  EditorListColumns: editor_listcolumns,
+
   OnFormEditorInit: function(FE) {
     var undefined;
 
@@ -172,13 +240,17 @@ return {
             "Collapsed": ng_diBoolean(false, { Level: 'basic' }),
             "Visible": ng_diBoolean(true, { Level: 'basic' }),
             "Enabled": ng_diBoolean(true, { Level: 'basic' }),
-            "RadioGroup": ng_diMixed(['undefined','string'], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
+            "RadioGroup": ng_diMixed(['undefined',ng_diString('', {}, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: editor_listradiogroups
+              }
+            })], { InitType: 'string', Level: 'basic' }),
             "RadioAllowUncheck": ng_diBoolean(false, { Level: 'basic' }),
             "H": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
             "MinHeight": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
             "Image": ng_diType('image', { Level: 'basic' }),
             "Parent": ng_diMixed(['undefined','object','null'], { Level: 'hidden' }),
-            "Items": ng_diMixed(['undefined', 'ngListItems','ngListStringItems'], {  InitType: 'ngListItems', Level: 'basic' }),
             "Controls": ng_diMixed([
               // TODO: Check priority 'object' vs 'controls'
               ng_diControls(undefined, { Level: 'basic' }, {
@@ -225,13 +297,15 @@ return {
               }
             }),
             "ControlsHolder": ng_diMixed(['undefined','object'], { Level: 'hidden' }),
-            "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced', Order: 0.9 }),
-            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced', Order: 0.9 }),
-            "OnClickItem": ng_diEvent('function(e) {}', { Level: 'advanced', Order: 0.9 }),
-            "OnCollapsing": ng_diEvent('function(c, it) { return true; }', { Level: 'advanced', Order: 0.9 }),
-            "OnCollapsed": ng_diEvent('function(c, it) {}', { Level: 'advanced', Order: 0.9 }),
-            "OnExpanding": ng_diEvent('function(c, it) { return true; }', { Level: 'advanced', Order: 0.9 }),
-            "OnExpanded": ng_diEvent('function(c, it) {}', { Level: 'advanced', Order: 0.9 })
+            "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced', Order: 0.8 }),
+            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'advanced', Order: 0.8 }),
+            "OnClickItem": ng_diEvent('function(e) {}', { Level: 'advanced', Order: 0.8 }),
+            "OnCollapsing": ng_diEvent('function(c, it) { return true; }', { Level: 'advanced', Order: 0.8 }),
+            "OnCollapsed": ng_diEvent('function(c, it) {}', { Level: 'advanced', Order: 0.8 }),
+            "OnExpanding": ng_diEvent('function(c, it) { return true; }', { Level: 'advanced', Order: 0.8 }),
+            "OnExpanded": ng_diEvent('function(c, it) {}', { Level: 'advanced', Order: 0.8 }),
+
+            "Items": ng_diMixed(['ngListItems','ngListStringItems'], {  InitType: 'ngListItems', Level: 'basic', Order: 0.9 })
           }
         }
       },
@@ -598,34 +672,7 @@ return {
             "SortColumn": ng_diString('', { Level: 'basic' },{
               Editor: 'ngfeEditor_DropDown',
               EditorOptions: {
-                Items: function(api) {
-                  var i,j,k,citems,col,idprops,items=[];
-                  var cols = FormEditor.GetSelectedControlsProperty('Data.Columns');
-                  for(i=0;i<cols.length;i++) {
-                    citems=[];
-                    col=cols[i].PropertyValue;
-                    if(ng_IsArrayVar(col)) {
-                      for(j=0;j<col.length;j++) {
-                        idprops = FormEditor.GetControlsProperty('Data.Columns.'+j+'.ID', [cols[i].ControlID]);
-                        if(idprops.length>0) citems.push(getpropertytext(idprops[0]));
-                      }
-                    }
-                    if(!i) items=citems;
-                    else {
-                      for(k=citems.length-1;k>=0;k--) {
-                        for(j=0;j<items.length;j++)
-                          if(items[j]===citems[k]) break;
-                        if(j>=items.length) citems.splice(k,1);
-                      }
-                      for(k=items.length-1;k>=0;k--) {
-                        for(j=0;j<citems.length;j++)
-                          if(items[j]===citems[k]) break;
-                        if(j>=citems.length) items.splice(k,1);
-                      }
-                    }
-                  }
-                  return items;
-                }
+                Items: editor_listcolumns
               }
             }),
             "SortDir": ng_diIntegerIdentifiers(0,['nglSortAsc','nglSortDesc'], { Level: 'basic' }),
