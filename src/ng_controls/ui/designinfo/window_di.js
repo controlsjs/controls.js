@@ -28,8 +28,8 @@ ngUserControls['window_designinfo'] = {
             "T": ng_diInteger(0, { DisplayName: 'Top (T)', Level: 'basic', Order: 0.12 }),
             "R": ng_diInteger(0, { DisplayName: 'Right (R)', Level: 'basic', Order: 0.13 }),
             "B": ng_diInteger(0, { DisplayName: 'Bottom (B)', Level: 'basic', Order: 0.14 }),
-            "HX": ng_diInteger(0, { DisplayName: 'HotspotX (HX)', Level: 'basic', Order: 0.15 }),
-            "HY": ng_diInteger(0, { DisplayName: 'HotspotY (HY)', Level: 'basic', Order: 0.16 }),
+            "HX": ng_diInteger(0, { DisplayName: 'Hotspot X (HX)', Level: 'basic', Order: 0.15 }),
+            "HY": ng_diInteger(0, { DisplayName: 'Hotspot Y (HY)', Level: 'basic', Order: 0.16 }),
             "Img": ng_diType('image', { Level: 'basic', Order: 0.17 })
           }
         }
@@ -53,6 +53,32 @@ ngUserControls['window_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
+
+    function editor_anchors() {
+      var a, i, j, k, citems, items=[];
+      var anchors = FormEditor.GetSelectedControlsProperty('Data.Anchors');
+      for(i=0;i<anchors.length;i++) {
+        citems=[];
+        a=anchors[i].PropertyDesignInfo.Types && anchors[i].PropertyDesignInfo.Types['object'] ? anchors[i].PropertyDesignInfo.Types['object'].ObjectProperties : false;
+        if(ng_IsObjVar(a)) {
+          for(j in a) citems.push(j);
+        }
+        if(!i) items=citems;
+        else {
+          for(k=citems.length-1;k>=0;k--) {
+            for(j=0;j<items.length;j++)
+              if(items[j]===citems[k]) break;
+            if(j>=items.length) citems.splice(k,1);
+          }
+          for(k=items.length-1;k>=0;k--) {
+            for(j=0;j<citems.length;j++)
+              if(items[j]===citems[k]) break;
+            if(j>=citems.length) items.splice(k,1);
+          }
+        }
+      }
+      return items;
+    }
 
     ngRegisterControlDesignInfo('ngWindow',function(d,c,ref) {
       return {
@@ -188,14 +214,36 @@ ngUserControls['window_designinfo'] = {
             "MinHeight": ng_diInteger(0, { Level: 'basic' }),
             "MaxWidth": ng_diInteger(0, { Level: 'basic' }),
             "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
-            "Anchor": ng_diString('auto', { Level: 'basic' }), // TODO: Browse from anchors
+            "Anchor": ng_diString('auto', { Level: 'basic' }, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: function(api) {
+                  var items=editor_anchors();
+                  items.splice(0,0,'auto');
+                  return items;
+                }
+              }
+            }),
             "Anchors": ng_diMixed([
               ng_diNull(),
               ng_diObject(undefined, undefined, {
                 ChildDesignInfo: ng_diType('ngHintAnchor', { Level: 'basic' })
               })
             ], { InitType: 'object', Level: 'basic' }),
-            "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }), // TODO: Browse from anchors
+            "PreferredAnchors": ng_diType('array_strings', { Level: 'basic' }, {
+              ChildDesignInfo: {
+                Types: {
+                  'string': {
+                    Editor: 'ngfeEditor_DropDown',
+                    EditorOptions: {
+                      Items: function(api) {
+                        return editor_anchors();
+                      }
+                    }
+                  }
+                }
+              }
+            }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' }),
             "AutoHideTimeout": ng_diInteger(0, { Level: 'basic' }),
