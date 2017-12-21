@@ -141,7 +141,16 @@ return {
                 return true;
               }
             }),
-            "Action": ng_diString('', { Level: 'basic' }), // TODO: browse from existing actions
+            "Action": ng_diString('', { Level: 'basic' }, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: function() {
+                  var items;
+                  if(typeof CoreUI_DesignInfo==='object') items=CoreUI_DesignInfo.EditorActionIDs();
+                  return items;
+                }
+              }
+            }),
             "Alt": ng_diMixed([
               ng_diUndefined(),
               ng_diString(),
@@ -477,6 +486,19 @@ return {
     FormEditor.RegisterPropertyType(list_types);
   },
 
+  OnControlCreated: function(def,c) {
+    if(!FormEditor.Params.creatingform) return;
+    switch(c.CtrlType)
+    {
+      case 'ngList':
+        if(typeof CoreUI_DesignInfo === 'object') {
+          c.Scan(function(l, it, parent) {
+            if(typeof it.Action==='string') CoreUI_DesignInfo.RegisterActionID(it.Action);
+          });
+        }
+        break;
+    }
+  },
   //OnControlDesignInfo: function(def, c, ref) {},
 
   OnInit: function()

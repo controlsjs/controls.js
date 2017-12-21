@@ -11,19 +11,52 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-ngUserControls['uicore'] = (function(){
+var CoreUI_DesignInfo = (function(){
 
   var radiogroups={};
+  var action_radiogroups={};
+  var actionids={};
 
   function getpropertytext(p) {
     return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
   }
 
+  function reg_actionid(id) {
+    actionids[id]=id;
+  }
+
+  function editor_radiogroups(api) {
+    var items=[];
+    for(var i in radiogroups) items.push(i);
+    items.sort();
+    return items;
+  }
+
+  function editor_action_radiogroups(api) {
+    var items=[];
+    for(var i in action_radiogroups) items.push(i);
+    items.sort();
+    return items;
+  }
+
+  function editor_actionids(api) {
+    var items=[];
+    for(var i in actionids) items.push(i);
+    items.sort();
+    return items;
+  }
+
 return {
+  RegisterActionID: reg_actionid,
+  EditorActionIDs: editor_actionids,
+
   OnFormEditorInit: function(FE)
   {
     FE.AddEvent('OnCreateForm', function(test) {
-      if(!test) radiogroups={};
+      if(test) return;
+      radiogroups={};
+      action_radiogroups={};
+      actionids={};
     });
 
     var undefined;
@@ -82,6 +115,11 @@ return {
     {
       case 'ngButton':
         if(ngVal(c.RadioGroup,'')!='') radiogroups[c.RadioGroup]=true;
+        if((typeof c.Action==='string')&&(c.Action!='')) actionids[c.Action]=true;
+        break;
+      case 'ngSysAction':
+        if(ngVal(def.ID,'')!='') actionids[def.ID]=true;
+        if(ngVal(c.RadioGroup,'')!='') action_radiogroups[c.RadioGroup]=true;
         break;
     }
   },
@@ -245,7 +283,12 @@ return {
             "textTransform": { Level: 'advanced' }
           },
           "Data": {
-            "Action": ng_diString('', { Level: 'basic' }), // TODO: browse from existing actions
+            "Action": ng_diString('', { Level: 'basic' }, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: editor_actionids
+              }
+            }),
             "TextAlign": ng_diStringValues('center', ['left','right','center'], { Level: 'basic' }),
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
@@ -260,13 +303,9 @@ return {
             "RadioGroup": ng_diMixed(['undefined', ng_diString('',{},{
               Editor: 'ngfeEditor_DropDown',
               EditorOptions: {
-                Items: function(api) {
-                  var items=[];
-                  for(var i in radiogroups) items.push(i);
-                  return items;
-                }
+                Items: editor_radiogroups
               }
-            })], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
+            })], { InitType: 'string', Level: 'basic' }),
             "Cursor": ng_diTypeVal('css_cursor', 'pointer', { Level: 'advanced' }),
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "Img": ng_diType('image', { Level: 'basic' }),
@@ -1080,7 +1119,12 @@ return {
             "Text": ng_diStringRefName({ Level: 'basic' }),
             "Alt": ng_diString('', { Level: 'basic' }),
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
-            "RadioGroup": ng_diMixed(['undefined', 'string'], { InitType: 'string', Level: 'basic' }), // TODO: browse from existing radio groups
+            "RadioGroup": ng_diMixed(['undefined', ng_diString('', {}, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: editor_action_radiogroups
+              }
+            })], { InitType: 'string', Level: 'basic' }),
             "Img": ng_diType('image', { Level: 'basic' }),
             "Visible": ng_diBoolean(true, { Level: 'basic' })
           },
@@ -1103,3 +1147,4 @@ return {
  }
 };
 })();
+ngUserControls['uicore_designinfo'] = CoreUI_DesignInfo;
