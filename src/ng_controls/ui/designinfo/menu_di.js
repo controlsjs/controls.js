@@ -29,52 +29,25 @@ ngUserControls['menu_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
-            "SubMenu": ng_diType('ngMenuItems', { Level: 'basic', Collapsed: false }),
-            "OnMenuClick": ng_diEvent('function(e, m, it) { return true; }', { Order: 0.9, Level: 'basic' }),
             // change defaults
             "Items": { Level: 'optional' },
             "Collapsed": { Level: 'optional' },
-            "CheckGroup": { Level: 'optional' }
+            "CheckGroup": { Level: 'optional' },
+            "OnMenuClick": ng_diEvent('function(e, m, it) { return true; }', { Order: 0.8, Level: 'basic' }),
+            "SubMenu": ng_diType('ngMenuItems', { Level: 'basic', Collapsed: false, Order: 0.9 })
           }
         }
       },
       // ngMenuItems
       {
         TypeID: 'ngMenuItems',
-        TypeBase: 'array',
+        TypeBase: 'ngListItems',
         Name: 'ngMenuItems',
         ShortName: 'items',
         Basic: false,
         Options: {
           Priority: 0.53,
-          ChildDesignInfo: ng_diType('ngMenuItem', {
-            Level: 'basic',
-            DisplayName: function(pname, dispname) {
-              function gettextobj(p) {
-                if(p.PropertyType==='object') {
-                  var v=ngVal(p.PropertyValue,{});
-                  for(var j in v) {
-                    var cprops = FormEditor.GetSelectedControlsProperty(pname+'.Text.'+j, [p.ControlID]);
-                    if(cprops.length>0) p=cprops[0];
-                    break;
-                  }
-                }
-                return getpropertytext(p);
-              }
-              var txt='';
-              var txtprops = FormEditor.GetSelectedControlsProperty(pname+'.Text');
-              var idprops = FormEditor.GetSelectedControlsProperty(pname+'.ID');
-              for(var i=0;i<txtprops.length;i++) {
-                var t=gettextobj(txtprops[i]);
-                if(t=='') t=getpropertytext(idprops[i]);
-                if(!i) txt=t;
-                else if(t!=txt) { txt=''; break; }
-              }
-              var dn=dispname;
-              if(txt!='') dn=dn+': '+txt;
-              return dn;
-            },
-          })
+          ChildDesignInfo: ng_diType('ngMenuItem')
         }
       }
     ];
