@@ -244,7 +244,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: true,
             Add: false,
             DefaultCode: "new "+typename+"('')", // TODO: Check why not set default value of first parameter on init
-            DefaultValue: [''],
+            DefaultValue: ["''"],
             ObjectProperties: {
               0: ng_diString('', { DisplayName: 'ID', Level: 'basic' })
             }
@@ -334,7 +334,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: false,
             Add: false,
             DefaultCode: "ko.observable('')",
-            DefaultValue: [''],
+            DefaultValue: ["''"],
             ObjectProperties: {
               0: ng_diType('jstypes', { DisplayName: 'Value', Required: true, Level: 'basic', DefaultType: 'string' })
             }
@@ -404,7 +404,7 @@ var ViewModel_Controls_DesignInfo = (function()
             NewExpression: true,
             Add: false,
             DefaultCode: "new ngViewModel('')",
-            DefaultValue: [''],
+            DefaultValue: ["''"],
             ObjectProperties: {
               0: ng_diString('', { DisplayName: 'ID', Level: 'basic'}),
               1: ng_diString('', { DisplayName: 'Namespace', Level: 'basic'}),
