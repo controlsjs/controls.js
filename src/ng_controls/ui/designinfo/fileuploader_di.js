@@ -61,9 +61,16 @@ var FileUploaderControl_DesignInfo = {
           "ModifyControls": {
             "ListFiles": ng_diControl('ngList', ng_diProperties({
               "Data": {
-                "Columns": ng_diTypeVal('ngListColumns', [ // TODO: Check how to define
-                  {ID: 'File'}
-                ])
+                "Columns": ng_diType('ngListColumns', {}, {
+                  ObjectProperties: {
+                    0: ng_diType('ngListCol', { OnPropertyInit: null }, {
+                      ObjectProperties: {
+                        'ID': ng_diString('File', { OnPropertyInit: null }),
+                        'Caption': ng_diString(ngTxt('ngfup_ColFile'), { OnPropertyInit: null })
+                      }
+                    })
+                  }
+                })
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngList' }),
             "DragAndDropPanel": ng_diControl('ngPanel', ng_diProperties({
