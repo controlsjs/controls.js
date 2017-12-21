@@ -180,7 +180,10 @@ function ng_diType(type, pdata, tdata) {
  */
 function ng_diTypeVal(type, defval, pdata, tdata) {
   var di=((tdata)&&(typeof tdata==='object')) ? tdata : {};
-  if((typeof defval!=='undefined')&&(typeof di.DefaultValue==='undefined')) di.DefaultValue=defval;
+  if((typeof defval!=='undefined')&&(typeof di.DefaultValue==='undefined')) {
+    di.DefaultValue=defval;
+    if(typeof di.InitValue==='undefined') di.InitValue=defval;
+  }
   var types={};
   types[type]=di;
   var ret=((pdata)&&(typeof pdata==='object')) ? pdata : {};
