@@ -16,21 +16,6 @@ ngUserControls['list_designinfo'] = (function(){
     return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
   }
 
-  function intersect(items,citems)
-  {
-    var k,j;
-    for(k=citems.length-1;k>=0;k--) {
-      for(j=0;j<items.length;j++)
-        if(items[j]===citems[k]) break;
-      if(j>=items.length) citems.splice(k,1);
-    }
-    for(k=items.length-1;k>=0;k--) {
-      for(j=0;j<citems.length;j++)
-        if(items[j]===citems[k]) break;
-      if(j>=citems.length) items.splice(k,1);
-    }
-  }
-
   function editor_listradiogroups(api) {
     var citems,items=[];
 
@@ -56,7 +41,7 @@ ngUserControls['list_designinfo'] = (function(){
       citems=[];
       scanitems(citems,litems[i],'Data.Items.',litems[i].ControlID);
       if(!i) items=citems;
-      else intersect(items,citems);
+      else ng_ArrayIntersect(items,citems);
     }
     return items;
   }
@@ -77,7 +62,7 @@ ngUserControls['list_designinfo'] = (function(){
         }
       }
       if(!i) items=citems;
-      else intersect(items,citems);
+      else ng_ArrayIntersect(items,citems);
     }
     return items;
   }
