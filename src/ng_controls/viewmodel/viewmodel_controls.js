@@ -364,7 +364,7 @@ function ng_FindViewModel(def, c)
   var vm=def.ViewModel;
   if(typeof vm==='undefined')
   {
-    var p=c.ParentControl;
+    var p=c;
     while((p)&&(typeof vm==='undefined'))
     {
       vm=p.ViewModel;
