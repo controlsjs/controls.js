@@ -125,7 +125,20 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
         props["ItemMatchingProps"] = ng_diArrayOf(ng_diType('databind_string', { Level: 'basic' }), { Level: 'advanced' });
         
-        props["SimpleArrayItemColumnID"] = ng_diType('databind_string', { Level: 'advanced' });
+        var coleditor;
+        if(typeof ngUserControls['list_designinfo'] ==='object') {
+          var editor_listcolumns=ngUserControls['list_designinfo'].EditorListColumns;
+          if(editor_listcolumns) {
+            coleditor={
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: editor_listcolumns
+              }
+            };
+          }
+        }
+        props["SimpleArrayItemColumnID"] = ng_diType('databind_string', { Level: 'advanced' }, coleditor);
+
         props["KeyField"] = ng_diType('databind_string', { Level: 'basic' });
 
         dievent("OnCreateViewModelItem",ng_diEvent('function(c,ci) { ci.NewItem={}; return true; ', { Level: 'advanced' }));
