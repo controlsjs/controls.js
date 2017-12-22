@@ -72,6 +72,7 @@
         Required: false,
         FixedType: false,
         Exclude: ['exprop1', 'exprop2', ... 'expropN'],
+        DesignRemove: false,
         OnPropertyInit: function(ch) {
           return true;
         },
@@ -880,8 +881,8 @@ function ng_diProperties(props,data) {
         "R": ng_diType('bounds', { DisplayName: "Right (R)", Level: 'basic', Order: 0.15 }),
         "B": ng_diType('bounds', { DisplayName: "Bottom (B)", Level: 'basic', Order: 0.16 }),
         "ParentReferences": ng_diBoolean(true, { Level: 'optional', Order: 0.302 }),
-        "OnCreating": ng_diEvent('function(def, ref, parent, options) { return true; }', { Level: 'advanced', Order: 0.306 }),
-        "OnCreated": ng_diEvent('function(c, refs, options) {}', { Level: 'advanced', Order: 0.307 }),
+        "OnCreating": ng_diEvent('function(def, ref, parent, options) { return true; }', { Level: 'advanced', Order: 0.306, DesignRemove: true }),
+        "OnCreated": ng_diEvent('function(c, refs, options) {}', { Level: 'advanced', Order: 0.307, DesignRemove: true }),
         "Data": ng_diObject({
           "Enabled": ng_diBoolean(true, { Level: 'basic' }),
           "ChildHandling": ng_diIntegerIdentifiers(0,['ngChildEnabledAsParent','ngChildEnabledParentAware','ngChildEnabledIndependent'], { Level: 'optional' }) // TODO: change to bitmask when bitmask editor will be better
@@ -911,7 +912,7 @@ function ng_diProperties(props,data) {
         "Events": ng_diObject({
           "OnSetEnabled": ng_diEvent('function(c, v, p) { return true; }', { Level: 'advanced' }),
           "OnEnabledChanged": ng_diEvent('function(c, p) {}', { Level: 'basic' })
-        }, { Level: 'basic', Order: 0.92 }, { DestroyIfEmpty: true }),
+        }, { Level: 'basic', Order: 0.92 }, { DestroyIfEmpty: true, ChildDesignInfo: { DesignRemove: true } }),
         "Methods": ng_diObject({
           "DoDispose": ng_diFunction('function() { return ng_CallParent(this, "DoDispose", arguments, true); }', { Level: 'advanced' }),
           "DoCreate": ng_diFunction('function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }', { Level: 'advanced' }),
@@ -928,7 +929,7 @@ function ng_diProperties(props,data) {
           "Dispose": ng_diFunction('function() { ng_CallParent(this, "Dispose", arguments); }',{ Level: 'optional' }),
           "AddEvent": ng_diFunction('function(ev, fce, once) { ng_CallParent(this, "AddEvent", arguments); }',{ Level: 'optional' }),
           "RemoveEvent": ng_diFunction('function(ev, fce) { ng_CallParent(this, "RemoveEvent", arguments); }',{ Level: 'optional' })
-        }, { Level: 'advanced', Order: 0.8 }, { DestroyIfEmpty: true })
+        }, { Level: 'advanced', Order: 0.8 }, { DestroyIfEmpty: true, ChildDesignInfo: { DesignRemove: true } })
       }
     };
 
@@ -997,7 +998,7 @@ function ng_diProperties(props,data) {
         "id": ng_diString('', { Level: 'optional', Order: 0.05 }),
         "parent": ng_diMixed(['string','object'], { Level: 'optional', Order: 0.07 }),
         "IE6AlignFix": ng_diBoolean(ngIE6AlignFix, { Level: 'optional', Order: 0.304 }),
-        "OnCreateHTMLElement": ng_diEvent('function(props, ref, c) {}', { Level: 'optional', Order: 0.305 }),
+        "OnCreateHTMLElement": ng_diEvent('function(props, ref, c) {}', { Level: 'optional', Order: 0.305, DesignRemove: true }),
         "Data": ng_diObject({
           "Visible": ng_diBoolean(true, { Level: 'basic' }),
           "IsPopup": ng_diBoolean(false, { Level: 'advanced' }),
