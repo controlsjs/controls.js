@@ -381,7 +381,7 @@ var ViewModel_Controls_DesignInfo = (function()
             Callee: typename,
             NewExpression: true,
             Add: false,
-            DefaultCode: "new "+typename+"('')", // TODO: Check why not set default value of first parameter on init
+            DefaultCode: "new "+typename+"('')",
             DefaultValue: ["''"],
             ObjectProperties: {
               0: ng_diString('', { DisplayName: 'ID', Level: 'basic' })
@@ -794,7 +794,7 @@ var ViewModel_Controls_DesignInfo = (function()
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('array', {
             'RemoveEmptyItems': { Level: 'basic' }
           })),
-          ng_diMixed(['undefined','vmfielddef'], { DisplayName: 'ValueFieldDef'/*, InitType: 'vmfielddef'*/, Level: 'basic' }) // TODO: InitType prevents property initialization
+          ng_diMixed(['undefined','vmfielddef'], { DisplayName: 'ValueFieldDef', InitType: 'ngFieldDef_String', Level: 'basic' })
         ]),
 
         // ngFieldDef_Object
