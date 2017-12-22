@@ -1001,7 +1001,11 @@ return {
           }
         },
         Properties: ng_diProperties({
-          "DropDown":         { Level: 'basic' },
+          "DropDown": ng_diControl(undefined , ng_diProperties({
+            "Data": {
+              "MaxHeight": ng_diInteger(150, { Level: 'basic' })
+            }
+          }), { Level: 'basic' }),
           "Data": {
             "DropDownWidth":  { Level: 'basic' },
             "DropDownAlign":  { Level: 'basic' },
