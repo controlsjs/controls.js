@@ -16,9 +16,9 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      "ReadOnly": ng_diType('databind_expression', { Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' }),
-      "Error": ng_diType('databind_expression', { Level: 'advanced' }),
-      "ShowError": ng_diType('databind_expression', { Level: 'advanced' })
+      "ReadOnly": ng_diType('vm_databind_field', { Level: (typeof c.SetReadOnly === 'function') ? 'basic' : 'optional' }),
+      "Error": ng_diType('vm_databind_field', { Level: 'advanced' }),
+      "ShowError": ng_diType('vm_databind_field', { Level: 'advanced' })
     };
 
     var ndi = {
@@ -40,33 +40,33 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
-        "OnClick": ng_diType('databind_function_name', { Level: 'optional' })
+        "OnClick": ng_diType('vm_databind_function_name', { Level: 'optional' })
       });
     }
 
     if (typeof c.SetText === 'function')
     {
-      props["Text"] = ng_diType('databind_expression', { Level: 'basic' });
-      props["ngText"] = ng_diType('databind_expression', { DisplayName: 'Text Resource (ngText)', Level: 'basic' });
+      props["Text"] = ng_diType('vm_databind_field', { Level: 'basic' });
+      props["ngText"] = ng_diType('vm_databind_field', { DisplayName: 'Text Resource (ngText)', Level: 'basic' });
     }
 
     var has_alt=(typeof c.Alt!=='undefined');
-    props["Alt"] = ng_diType('databind_expression', { Level: has_alt ? 'basic' : 'optional' });
-    props["ngAlt"] = ng_diType('databind_expression', { DisplayName: 'Alt Resource (ngAlt)', Level: has_alt ? 'basic' : 'optional' });
+    props["Alt"] = ng_diType('vm_databind_field', { Level: has_alt ? 'basic' : 'optional' });
+    props["ngAlt"] = ng_diType('vm_databind_field', { DisplayName: 'Alt Resource (ngAlt)', Level: has_alt ? 'basic' : 'optional' });
 
     var has_hint=(typeof c.Hint!=='undefined');
-    props["Hint"] = ng_diType('databind_expression', { Level: has_hint ? 'basic' : 'optional' });
-    props["ngHint"] = ng_diType('databind_expression', { DisplayName: 'Hint Resource (ngHint)', Level: has_hint ? 'basic' : 'optional' });
+    props["Hint"] = ng_diType('vm_databind_field', { Level: has_hint ? 'basic' : 'optional' });
+    props["ngHint"] = ng_diType('vm_databind_field', { DisplayName: 'Hint Resource (ngHint)', Level: has_hint ? 'basic' : 'optional' });
 
     if (typeof c.SetInvalid === 'function')
     {
-      props["Invalid"] = ng_diType('databind_expression', { Level: 'basic' });
-      props["Valid"] = ng_diType('databind_expression', { Level: 'basic' });
+      props["Invalid"] = ng_diType('vm_databind_field', { Level: 'basic' });
+      props["Valid"] = ng_diType('vm_databind_field', { Level: 'basic' });
     }
 
     var instantUpdateProperty = ng_diMixed([
       ng_diBoolean(false),
-      ng_diType('databind_expression', { Level: 'advanced' }, {
+      ng_diType('vm_databind_field', { Level: 'advanced' }, {
         EditorOptions: {
           IgnoreDataModel: true
         }
@@ -75,7 +75,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
     var delayedUpdateProperty = ng_diMixed([
       ng_diInteger(500),
-      ng_diType('databind_expression', { Level: 'advanced' }, {
+      ng_diType('vm_databind_field', { Level: 'advanced' }, {
         EditorOptions: {
           IgnoreDataModel: true
         }
@@ -88,35 +88,35 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["InstantUpdate"] = instantUpdateProperty;
         props["DelayedUpdate"] = delayedUpdateProperty;
         props["Focus"] = { Level: 'basic' };
-        props["Lookup"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Lookup"] = ng_diType('vm_databind_field', { Level: 'basic' });
         props["KeyField"] = ng_diType('databind_string', { Level: 'basic' });
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         break;
       case 'ngMemo':
         props["InstantUpdate"] = instantUpdateProperty;
         props["DelayedUpdate"] = delayedUpdateProperty;
         props["Focus"] = { Level: 'basic' };
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         break;
       case 'ngToolBar':
         if(c.CtrlInheritsFrom('ngMenuBar')) {
-          props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
-          props["Selected"] = ng_diType('databind_expression', { Level: 'optional' });
-          props["Checked"] = ng_diType('databind_expression', { Level: 'basic' });
+          props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+          props["Selected"] = ng_diType('vm_databind_field', { Level: 'optional' });
+          props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
           props["ItemMapping"] = ng_diType('databind_itemmapping', { Level: 'basic' });
         }
         break;
       case 'ngList':
         props["Focus"] = { Level: 'basic' };
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
-        props["Selected"] = ng_diType('databind_expression', { Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' });
-        props["Checked"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        props["Selected"] = ng_diType('vm_databind_field', { Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' });
+        props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
 
         props["ItemMapping"] = ng_diType('databind_itemmapping', { Level: 'basic' });
 
         props["DelayedUpdate"] = ng_diMixed([
           ng_diInteger(10),
-          ng_diType('databind_expression', undefined, {
+          ng_diType('vm_databind_field', undefined, {
             EditorOptions: {
               IgnoreDataModel: true
             }
@@ -132,8 +132,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         break;
       case 'ngButton':
       case 'ngSysAction':
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
-        props["Checked"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
         props["Command"] = ng_diType('databind_string', { Level: 'basic' });
         break;
 
@@ -141,13 +141,13 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       case 'ngWebBrowser':
       case 'ngProgressBar':
       case 'ngCalendar':
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         break;
 
       default:
         if (typeof c.SetText === 'function')
         {
-          props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+          props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         }
         break;
     }
@@ -176,7 +176,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         }
       ];
       FormEditor.RegisterPropertyType(databind_types);
-      FE.RegisterPropertyTypesGroup('databind_itemmapping', ['databind_objitemmapping', 'databind_expression']);
+      FE.RegisterPropertyTypesGroup('databind_itemmapping', ['databind_objitemmapping', 'vm_databind_field']);
     },
 
     OnControlDesignInfo: function(def, c, ref)

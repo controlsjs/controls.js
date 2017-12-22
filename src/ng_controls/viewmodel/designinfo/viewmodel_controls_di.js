@@ -13,68 +13,160 @@
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
 var ViewModel_Controls_DesignInfo = (function()
 {
+  var vm_ids={};
+  var vm_namespaces={};
+
+  function editor_vmids(api) {
+    var items=[];
+    for(var i in vm_ids) items.push(i);
+    for(var i in ngViewModels)
+      if(!vm_ids[i]) items.push(i);
+    items.sort();
+    return items;
+  }
+
+  function editor_vmnamespaces(api) {
+    var items=[];
+    for(var i in vm_namespaces)
+      items.push(i);
+    for(var i in ngViewModelNamespaces)
+      if(!vm_namespaces[i]) items.push(i);
+    items.sort();
+    return items;
+  }
+
+  function scanvm(expr,flditems,fncitems,vm,pref) {
+    var f;
+    for(var j in vm) {
+      f=vm[j];
+      if(j==='Owner') continue;
+      if(ngIsFieldDef(f)) { if(flditems) flditems.push(pref+j+'.Value'+(expr ? '()' : '')); continue; }
+      if(ko.isObservable(f)) { if(flditems) flditems.push(pref+j+(expr ? '()' : '')); continue; }
+      if(typeof f==='function') { if(fncitems) fncitems.push(pref+j); continue; }
+      if(ng_IsObjVar(f)) { scanvm(expr,flditems,fncitems,f,j+'.'); continue; }
+      if(flditems) flditems.push(pref+j);
+    }
+  }
+
+  function editor_scanvm(api,expr,fld_items,fnc_items) {
+    var flditems,fncitems,vm,c,ctrls=FormEditor.GetSelectedControls();
+    var vms=[];
+    for(var i=0;i<ctrls.length;i++) {
+      c=ctrls[i].Control;
+      if(!c) continue;
+      vm=ng_FindViewModel({},c);
+      if((!vm)||(ng_inArray(vm,vms))) continue;
+      vms.push(vm);
+      if(!ng_IsObjVar(vm.ViewModel)) continue;
+      if(fld_items) flditems=[];
+      if(fnc_items) fncitems=[];
+      scanvm(expr,flditems,fncitems,vm.ViewModel,'');
+      if(fld_items) {
+        if(!i) for(var j=0;j<flditems.length;j++) fld_items.push(flditems[j]);
+        else ng_ArrayIntersect(fld_items,flditems);
+      }
+      if(fnc_items) {
+        if(!i) for(var j=0;j<fncitems.length;j++) fnc_items.push(fncitems[j]);
+        else ng_ArrayIntersect(fnc_items,fncitems);
+      }
+    }
+  }
+
+  function editor_vm_fields(api) {
+    var items=[];
+    editor_scanvm(api,false,items);
+    if(!items.length) return;
+    items.sort();
+    return items;
+  }
+
+  function editor_vm_fieldsexpr(api) {
+    var items=[];
+    editor_scanvm(api,true,items);
+    if(!items.length) return;
+    items.sort();
+    return items;
+  }
+
+  function editor_vm_functions(api) {
+    var items=[];
+    editor_scanvm(api,false,null,items);
+    if(!items.length) return;
+    items.sort();
+    return items;
+  }
+
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      "Calls": ng_diMixed(['object','databind_function_name'], { Level: 'advanced' }),
-      "Data": ng_diType('databind_expression', { Level: 'advanced' }),
-      "Link": ng_diType('databind_expression', { Level: 'basic' }),
-      "Controls": ng_diType('databind_expression', { Level: (di.IsContainer ? 'basic' : 'optional') })
+      "Calls": ng_diMixed(['object',ng_diType('vm_databind_function_name')
+      ], { Level: 'advanced' }),
+      "Data": ng_diType('vm_databind_field', { Level: 'advanced' }),
+      "Link": ng_diType('vm_databind_field', { Level: 'basic' }),
+      "Controls": ng_diType('vm_databind_field', { Level: (di.IsContainer ? 'basic' : 'optional') })
     };
 
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
-        "MouseOver": ng_diType('databind_function_name', { Level: 'advanced' })
+        "MouseOver": ng_diType('vm_databind_function_name', { Level: 'advanced' })
       });
 
       if (typeof c.SetBounds === 'function')
       {
-        props["Bounds"] = ng_diMixed(['object','databind_expression'], { Level: 'basic' });
+        var bprops={};
+        var dip=ng_IsObjVar(di.Properties) ? di.Properties : {};
+        if((dip.L)&&(typeof dip.L==='object')) bprops['L']=ng_diType('vm_databind_field', { DisplayName: 'Left (L)', Level: 'basic', Order: 0.11 });
+        if((dip.T)&&(typeof dip.T==='object')) bprops['T']=ng_diType('vm_databind_field', { DisplayName: 'Top (T)', Level: 'basic', Order: 0.12 });
+        if((dip.R)&&(typeof dip.R==='object')) bprops['R']=ng_diType('vm_databind_field', { DisplayName: 'Right (R)', Level: 'basic', Order: 0.15 });
+        if((dip.B)&&(typeof dip.B==='object')) bprops['B']=ng_diType('vm_databind_field', { DisplayName: 'Bottom (B)', Level: 'basic', Order: 0.16 });
+        if((dip.W)&&(typeof dip.W==='object')) bprops['W']=ng_diType('vm_databind_field', { DisplayName: 'Width (W)', Level: 'basic', Order: 0.13 });
+        if((dip.H)&&(typeof dip.H==='object')) bprops['H']=ng_diType('vm_databind_field', { DisplayName: 'Height (H)', Level: 'basic', Order: 0.14 });
+        props["Bounds"] = ng_diMixed([ng_diObject(bprops),'vm_databind_field'], { Level: 'basic', Collapsed: false });
       }
 
       if (typeof c.Elm === 'function')
       {
-        props["style"] = ng_diMixed(['object','databind_expression'], { Level: 'advanced' });
-        props["className"] = ng_diType('databind_expression', { Level: 'advanced' });
-        props["SubClassName"] = ng_diType('databind_expression', { Level: 'advanced' });
-        props["BaseClassName"] = ng_diType('databind_expression', { Level: 'advanced' });
+        props["style"] = ng_diMixed(['object','vm_databind_field'], { Level: 'advanced' });
+        props["className"] = ng_diType('vm_databind_field', { Level: 'advanced' });
+        props["SubClassName"] = ng_diType('vm_databind_field', { Level: 'advanced' });
+        props["BaseClassName"] = ng_diType('vm_databind_field', { Level: 'advanced' });
       }
 
       if (typeof c.SetFocus === 'function')
       {
-        props["Focus"] = ng_diType('databind_function_name', { Level: 'optional' });
+        props["Focus"] = ng_diType('vm_databind_function_name', { Level: 'optional' });
       }
 
       if (typeof c.SetOpacity === 'function')
       {
-        props["Opacity"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Opacity"] = ng_diType('vm_databind_field', { Level: 'basic' });
       }
 
       if (typeof c.SetVisible === 'function')
       {
-        props["Visible"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Visible"] = ng_diType('vm_databind_field', { Level: 'basic' });
       }
     }
 
     if (typeof c.SetEnabled === 'function')
     {
-      props["Enabled"] = ng_diType('databind_expression', { Level: 'basic' });
-      props["Disabled"] = ng_diType('databind_expression', { Level: 'basic' });
+      props["Enabled"] = ng_diType('vm_databind_field', { Level: 'basic' });
+      props["Disabled"] = ng_diType('vm_databind_field', { Level: 'basic' });
     }
 
 
     switch (c.DefType)
     {
       case 'ngSysTimer':
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         props["Command"] = ng_diType('databind_string', { Level: 'basic' });
         break;
 
       case 'ngSysURLParams':
       case 'ngSysViewModelSettings':
       case 'ngSysRPC':
-        props["Value"] = ng_diType('databind_expression', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         break;
     }
 
@@ -97,21 +189,44 @@ var ViewModel_Controls_DesignInfo = (function()
         "DataBind": ng_diMixed([
           ng_diBindings(props),
           ng_diObject({
-            "Default": ng_diObject()
-          }, undefined, { DestroyIfEmpty: true }),
+            "Default": {}
+          }, undefined, {
+            DestroyIfEmpty: true,
+            ChildDesignInfo: ng_diMixed([
+              ng_diBindings(props),
+              ng_diType('bindings_string')
+            ], { Level: 'basic' })
+          }),
           ng_diType('bindings_string')
         ], { Level: 'basic', Order: 0.5 }),
         "DOMDataBind": ng_diMixed([
           ng_diBindings(),
           ng_diObject({
-            "Default": ng_diObject()
-          }, undefined, { DestroyIfEmpty: true }),
+            "Default": {}
+          }, undefined, {
+            DestroyIfEmpty: true,
+            ChildDesignInfo: ng_diMixed([
+              ng_diBindings(),
+              ng_diType('bindings_string')
+            ], { Level: 'basic' })
+          }),
           ng_diType('bindings_string')
         ], { Level: 'optional', Order: 0.5, PropertyGroup: 'DataBind' })
       })
     };
-    if((c.DesignInfo)&&(c.DesignInfo.NonVisual)&&(!c.CtrlInheritsFrom('ngSysViewModel'))) {
-      vm_di.Properties["ViewModel"]=ng_diType('viewmodel', { Level: 'basic', Order: 0.21, PropertyGroup: 'DataBind' });
+    if((c.DesignInfo)&&((!c.DesignInfo.NonVisual)||(!c.CtrlInheritsFrom('ngSysViewModel')))) {
+      vm_di.Properties["ViewModel"]=ng_diType('viewmodel', { Level: 'basic', Order: 0.21, PropertyGroup: 'DataBind',
+        Types: {
+          'vmid': {
+            DefaultValue: 'As parent or owner',
+            InitValue: '',
+            Editor: 'ngfeEditor_DropDown',
+            EditorOptions: {
+              Items: editor_vmids
+            }
+          }
+        }
+      });
     }
     
 
@@ -124,7 +239,7 @@ var ViewModel_Controls_DesignInfo = (function()
           props = di.Properties.Events.Types['object'].ObjectProperties;
       for (var i in props)
       {
-        o[i] = ng_diType('databind_function_name');
+        o[i] = ng_diType('vm_databind_function_name');
 
         if (typeof props[i].Level !== undefined) o[i].Level = props[i].Level;
         else o[i].Level = 'advanced';
@@ -168,17 +283,23 @@ var ViewModel_Controls_DesignInfo = (function()
     }
 
     ng_MergeVar(databindprops, {
-      "DeferUpdates": ng_diObject(deferbindings, { Level: 'advanced' })
+      "DeferUpdates": ng_diObject(deferbindings, { Level: 'advanced' }, { ChildDesignInfo: { Level: 'basic' } })
     });
 
+  }
+
+  function getpropertytext(p) {
+    return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
   }
 
   return {
     OnFormEditorInit: function(FE) {
 
-      function getpropertytext(p) {
-        return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
-      }
+      FE.AddEvent('OnCreateForm', function(test) {
+        if(test) return;
+        vm_ids={};
+        vm_namespaces={};
+      });
 
       var fdtypes=['ngFieldDef'];
       var fdbasetypes=[
@@ -323,6 +444,44 @@ var ViewModel_Controls_DesignInfo = (function()
       }
 
       var vm_types = [
+        // vm_databind_identifier
+        {
+          TypeID: 'vm_databind_identifier',
+          TypeBase: 'databind_identifier',
+          Name: 'databind identifier',
+          ShortName: 'id',
+          Options: {
+            Priority: 0.21,
+            EditorOptions: {
+              Items: editor_vm_fields
+            }
+          }
+        },
+        // vm_databind_expression
+        {
+          TypeID: 'vm_databind_expression',
+          TypeBase: 'databind_expression',
+          Name: 'databind expression',
+          Options: {
+            Priority: 0.2,
+            EditorOptions: {
+              Items: editor_vm_fieldsexpr
+            }
+          }
+        },
+        // vm_databind_function_name
+        {
+          TypeID: 'vm_databind_function_name',
+          TypeBase: 'databind_function_name',
+          Name: 'databind function name',
+          ShortName: 'fnc',
+          Options: {
+            EditorOptions: {
+              Items: editor_vm_functions
+            }
+          }
+        },
+
         // ko.observable
         {
           TypeID: 'ko.observable',
@@ -761,9 +920,26 @@ var ViewModel_Controls_DesignInfo = (function()
 
       FormEditor.RegisterPropertyType(vm_types);
 
+      FE.RegisterPropertyTypesGroup('vm_databind_field', ['vm_databind_identifier','vm_databind_expression']);
+
       FE.RegisterPropertyTypesGroup('viewmodel', ['vmid','vmobject','ngViewModel']);
       FE.RegisterPropertyTypesGroup('vmfielddef', fdtypes);
     },
+
+    OnControlCreated: function(def,c) {
+      if(!FormEditor.Params.creatingform) return;
+
+      switch(c.CtrlType)
+      {
+        case 'ngSysViewModel':
+          if(ngVal(c.Namespace,'')!='') vm_namespaces[c.Namespace]=true;
+          break;
+        default:
+          if((typeof def.ViewModel==='string')&&(def.ViewModel!='')) vm_ids[def.ViewModel]=true;
+          break;
+      }
+    },
+
     OnControlDesignInfo: function(def, c, ref)
     {
       if((c)&&(!def.CtrlInheritanceDepth))
@@ -791,10 +967,30 @@ var ViewModel_Controls_DesignInfo = (function()
           },
           Properties: ng_diProperties({
             "ID": { Level: 'basic' },
-            "Namespace": ng_diString('', { Level: 'basic', Order: 0.05 }),
+            "Namespace": ng_diString('', { Level: 'basic', Order: 0.05 }, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: editor_vmnamespaces
+              }
+            }),
             "FieldDefs": ng_diType('ngFieldDefsArray', { Level: 'basic', Order: 0.051, Collapsed: false }),
             "ViewModel": ng_diMixed(['vmobject', 'vmconstructor'], { Level: 'basic', Order: 0.052, PropertyGroup: 'Definition' }),
-            "RefViewModel": ng_diType('vmid', { Level: 'basic', Order: 0.053 }),
+            "RefViewModel": ng_diType('vmid', { Level: 'basic', Order: 0.053 }, {
+              Editor: 'ngfeEditor_DropDown',
+              EditorOptions: {
+                Items: function(api) {
+                  var items=editor_vmids(api);
+                  var idprops = FormEditor.GetSelectedControlsProperty("ID");
+                  for(var i=0;i<idprops.length;i++) {
+                    var t=getpropertytext(idprops[i]);
+                    if(t=='') continue;
+                    for(var j=items.length-1;j>=0;j--)
+                      if(items[j]==t) { items.splice(j,1); break; }
+                  }
+                  return items;
+                }
+              }
+            }),
             "Data": {
               "ViewModel": ng_diType('vmobject', { Level: 'basic' }),
               "DefaultValues": ng_diType('jsobject', { Level: 'basic' }),
