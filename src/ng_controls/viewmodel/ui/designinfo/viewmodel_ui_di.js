@@ -89,7 +89,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["DelayedUpdate"] = delayedUpdateProperty;
         props["Focus"] = { Level: 'basic' };
         props["Lookup"] = ng_diType('vm_databind_field', { Level: 'basic' });
-        props["KeyField"] = ng_diType('databind_string', { Level: 'basic' });
+        props["KeyField"] = ng_diTypeVal('databind_string', 'Value', { Level: 'basic' });
         props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
         break;
       case 'ngMemo':
@@ -103,7 +103,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
           props["Selected"] = ng_diType('vm_databind_field', { Level: 'optional' });
           props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
-          props["ItemMapping"] = ng_diType('databind_itemmapping', { Level: 'basic' });
+          props["ItemMapping"] = ng_diMixed(['databind_ngmenu_itemmapping', 'vm_databind_field'], { Level: 'basic' });
         }
         break;
       case 'ngList':
@@ -112,7 +112,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         props["Selected"] = ng_diType('vm_databind_field', { Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' });
         props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
 
-        props["ItemMapping"] = ng_diType('databind_itemmapping', { Level: 'basic' });
+        props["ItemMapping"] = ng_diMixed([c.CtrlInheritsFrom('ngMenu') ? 'databind_ngmenu_itemmapping' : 'databind_nglist_itemmapping', 'vm_databind_field'], { Level: 'basic' });
 
         props["DelayedUpdate"] = ng_diMixed([
           ng_diInteger(10),
@@ -139,7 +139,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         }
         props["SimpleArrayItemColumnID"] = ng_diType('databind_string', { Level: 'advanced' }, coleditor);
 
-        props["KeyField"] = ng_diType('databind_string', { Level: 'basic' });
+        props["KeyField"] = ng_diTypeVal('databind_string', 'Value', { Level: 'basic' });
 
         dievent("OnCreateViewModelItem",ng_diEvent('function(c,ci) { ci.NewItem={}; return true; ', { Level: 'advanced' }));
         break;
@@ -173,23 +173,55 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
   return {
     OnFormEditorInit: function(FE) {
       var databind_types = [
-        // databind_itemmapping
+        // databind_nglist_itemmapping
         {
-          TypeID: 'databind_objitemmapping',
+          TypeID: 'databind_nglist_itemmapping',
           TypeBase: 'object',
-          Name: 'databind item mapping',
+          Name: 'databind list item mapping',
           ShortName: 'obj',
           Basic: false,
           Options: {
             ChildDesignInfo: ng_diMixed([
               ng_diType('databind_string'),
               ng_diBoolean()
-            ], { Level: 'basic' })
+            ], { Level: 'basic' }),
+            ObjectProperties: {
+              "Text": ng_diBoolean(false),
+              "Alt": ng_diBoolean(false),
+              "ID": ng_diBoolean(false),
+              "Checked": ng_diBoolean(false),
+              "CheckGroup": ng_diBoolean(false),
+              "AllowGrayed": ng_diBoolean(false),
+              "Collapsed": ng_diBoolean(false),
+              "Visible": ng_diBoolean(false),
+              "Enabled": ng_diBoolean(false),
+              "RadioGroup": ng_diBoolean(false),
+              "RadioAllowUncheck": ng_diBoolean(false),
+              "H": ng_diBoolean(false),
+              "MinHeight": ng_diBoolean(false),
+              "Image": ng_diBoolean(false),
+              "Items": ng_diBoolean(false)
+            }
+          }
+        },
+        // databind_ngmenu_itemmapping
+        {
+          TypeID: 'databind_ngmenu_itemmapping',
+          TypeBase: 'databind_nglist_itemmapping',
+          Name: 'databind menu item mapping',
+          ShortName: 'obj',
+          Basic: false,
+          Options: {
+            ObjectProperties: {
+              "Items": { Level: 'optional' },
+              "Collapsed": { Level: 'optional' },
+              "CheckGroup": { Level: 'optional' },
+              "SubMenu": ng_diBoolean(false)
+            }
           }
         }
       ];
       FormEditor.RegisterPropertyType(databind_types);
-      FE.RegisterPropertyTypesGroup('databind_itemmapping', ['databind_objitemmapping', 'vm_databind_field']);
     },
 
     OnControlDesignInfo: function(def, c, ref)
