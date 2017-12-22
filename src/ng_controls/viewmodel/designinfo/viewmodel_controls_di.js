@@ -99,7 +99,9 @@ var ViewModel_Controls_DesignInfo = (function()
   function add_databind_di(di, def, c, ref)
   {
     var props = {
-      "Calls": ng_diMixed(['object',ng_diType('vm_databind_function_name')
+      "Calls": ng_diMixed([ng_diObject(undefined, undefined, {
+        ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'basic' })
+      }),ng_diType('bindings_string')
       ], { Level: 'advanced' }),
       "Data": ng_diType('vm_databind_field', { Level: 'advanced' }),
       "Link": ng_diType('vm_databind_field', { Level: 'basic' }),
@@ -127,7 +129,18 @@ var ViewModel_Controls_DesignInfo = (function()
 
       if (typeof c.Elm === 'function')
       {
-        props["style"] = ng_diMixed(['object','vm_databind_field'], { Level: 'advanced' });
+        var sprops={};
+        var distyleprops=ng_IsObjVar(di.Properties) &&
+                         ng_IsObjVar(di.Properties.style) &&
+                         ng_IsObjVar(di.Properties.style.Types) &&
+                         ng_IsObjVar(di.Properties.style.Types['object']) &&
+                         ng_IsObjVar(di.Properties.style.Types['object'].ObjectProperties) ? di.Properties.style.Types['object'].ObjectProperties : {};
+
+        for(var j in distyleprops) {
+          sprops[j]=ng_diType('vm_databind_field', { Level: distyleprops[j].Level });
+        }
+        props["style"] = ng_diMixed([ng_diObject(sprops),'vm_databind_field'], { Level: 'advanced' });
+
         props["className"] = ng_diType('vm_databind_field', { Level: 'advanced' });
         props["SubClassName"] = ng_diType('vm_databind_field', { Level: 'advanced' });
         props["BaseClassName"] = ng_diType('vm_databind_field', { Level: 'advanced' });
@@ -283,7 +296,7 @@ var ViewModel_Controls_DesignInfo = (function()
     }
 
     ng_MergeVar(databindprops, {
-      "DeferUpdates": ng_diObject(deferbindings, { Level: 'advanced' }, { ChildDesignInfo: { Level: 'basic' } })
+      "DeferUpdates": ng_diObject(deferbindings, { Level: 'advanced' }, { ChildDesignInfo: ng_diBoolean(false, { Level: 'basic' }) })
     });
 
   }
