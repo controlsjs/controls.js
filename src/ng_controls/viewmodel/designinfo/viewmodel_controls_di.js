@@ -100,7 +100,11 @@ var ViewModel_Controls_DesignInfo = (function()
   {
     var props = {
       "Calls": ng_diMixed([ng_diObject(undefined, undefined, {
-        ChildDesignInfo: ng_diType('databind_function_name', { Level: 'basic' })
+        ChildDesignInfo: ng_diType('databind_function_name', { Level: 'basic' }, {
+          EditorOptions: {
+            IgnoreDataModel: true
+          }
+        })
       }),ng_diType('bindings_string')
       ], { Level: 'advanced' }),
       "Data": ng_diType('vm_databind_field', { Level: 'advanced' }),
