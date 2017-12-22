@@ -2287,6 +2287,54 @@ function ng_inArray(value, arr, fromidx, toidx,cmpfnc,userdata) {
   return (ng_idxInArray(value, arr, fromidx, toidx, cmpfnc,userdata)>=0);
 }
 
+/**
+ *  Function: ng_ArrayIntersect
+ *  Compares the values of two (or more) array and returns the matches.
+ *
+ *  Syntax:
+ *    array *ng_ArrayIntersect* (array arr1, array arr2 [, array arr3, ...])
+ *
+ *  Parameters:
+ *    arr1 - array to compare from
+ *    arr2 - array to compare against
+ *    arrN - more arrays to compare against
+ *
+ *  Returns:
+ *    Array containing the entries from arr1 that are present in all the other arrays.
+ */
+function ng_ArrayIntersect() {
+  var ret={};
+  var len=arguments.length;
+  var len1=len-1;
+  var arr,found;
+
+  var arr1=arguments[0];
+  var idxvar=ng_IsArrayVar(arr1);
+  for(var k1 in arr1) {
+    for(var i=1;i<len;i++) {
+      arr = arguments[i];
+      idxvar = idxvar && ng_IsArrayVar(arr);
+      found = false;
+      for(var k in arr) {
+        if (arr[k] === arr1[k1]) {
+          if (i === len1) {
+            ret[k1] = arr1[k1];
+          }
+          found=true;
+          break;
+        }
+      }
+      if(!found) break;
+    }
+  }
+  if(idxvar) {
+    var ret2=[];
+    for(var i in ret) ret2.push(ret[i]);
+    ret=ret2;
+  }
+  return ret;
+}
+
 /** 
  *  Group: DateTime functions    
  */
