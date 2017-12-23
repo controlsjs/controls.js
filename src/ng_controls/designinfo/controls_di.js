@@ -912,7 +912,7 @@ function ng_diProperties(props,data) {
         "Events": ng_diObject({
           "OnSetEnabled": ng_diEvent('function(c, v, p) { return true; }', { Level: 'advanced' }),
           "OnEnabledChanged": ng_diEvent('function(c, p) {}', { Level: 'basic' })
-        }, { Level: 'basic', Order: 0.92 }, { DestroyIfEmpty: true, ChildDesignInfo: { DesignRemove: true } }),
+        }, { Level: 'basic', Order: 0.92 }, { DestroyIfEmpty: true, ChildDesignInfo: ng_diFunction('function(c) { return true; }', { DesignRemove: true, Level: 'user' }) }),
         "Methods": ng_diObject({
           "DoDispose": ng_diFunction('function() { return ng_CallParent(this, "DoDispose", arguments, true); }', { Level: 'advanced' }),
           "DoCreate": ng_diFunction('function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }', { Level: 'advanced' }),
@@ -929,7 +929,7 @@ function ng_diProperties(props,data) {
           "Dispose": ng_diFunction('function() { ng_CallParent(this, "Dispose", arguments); }',{ Level: 'optional' }),
           "AddEvent": ng_diFunction('function(ev, fce, once) { ng_CallParent(this, "AddEvent", arguments); }',{ Level: 'optional' }),
           "RemoveEvent": ng_diFunction('function(ev, fce) { ng_CallParent(this, "RemoveEvent", arguments); }',{ Level: 'optional' })
-        }, { Level: 'advanced', Order: 0.8 }, { DestroyIfEmpty: true, ChildDesignInfo: { DesignRemove: true } })
+        }, { Level: 'basic', Order: 0.8 }, { DestroyIfEmpty: true, ChildDesignInfo: ng_diFunction('function() {}', { DesignRemove: true, Level: 'user' }) })
       }
     };
 
