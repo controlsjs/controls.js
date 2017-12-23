@@ -283,8 +283,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
             "Controls": ng_diControls(undefined, { Level: 'basic' }, {
               ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
                 "Methods": {
-                  "SetInvalid": ng_diFunction('function(s) { return ng_CallParent(this, "SetInvalid", arguments, true); }', { Level: 'basic' }),
-                  "SetErrorState": ng_diFunction('function(s) { return ng_CallParent(this, "SetErrorState", arguments, true); }', { Level: 'basic' })
+                  "SetInvalid": ng_diFunction('function(s) { return ng_CallParent(this, "SetInvalid", arguments, true); }', { Level: 'advanced' }),
+                  "SetErrorState": ng_diFunction('function(s) { return ng_CallParent(this, "SetErrorState", arguments, true); }', { Level: 'advanced' })
                 }
               }))
             })
