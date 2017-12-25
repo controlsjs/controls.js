@@ -35,16 +35,88 @@ var ViewModel_Controls_DesignInfo = (function()
     return items;
   }
 
+  function strquote(s) {
+    return "'"+s
+        .replace(/[\\]/g, '\\\\')
+        .replace(/[\/]/g, '\\/')
+        .replace(/[\b]/g, '\\b')
+        .replace(/[\f]/g, '\\f')
+        .replace(/[\n]/g, '\\n')
+        .replace(/[\r]/g, '\\r')
+        .replace(/[\t]/g, '\\t')
+        .replace(/[\"]/g, '\\"')
+        .replace(/[\']/g, "\\'")+"'";
+  }
+
+  function scanvmfld(expr,flditems,f,pref) {
+    if(ko.isObservable(f)) {
+      flditems.push(pref+(expr ? '()' : ''));
+      return;
+    }
+    if(!ngIsFieldDef(f)) return;
+    flditems.push(pref+'.Value'+(expr ? '()' : ''));
+    switch(f.DataType)
+    {
+      case 'ARRAY':
+        if(typeof f.Item==='function') {
+          if(ngIsFieldDef(f.ValueFieldDef)) scanvmfld(expr,flditems,f.ValueFieldDef,pref+".Item(0)");
+          else flditems.push(pref+'.Item(0)'+(expr ? '()' : ''));
+        }
+        break;
+      case 'OBJECT':
+        if(ng_IsObjVar(f.PropsFieldDefs)) {
+          for(var p in f.PropsFieldDefs) {
+            if(ngNullVal(f.PropsFieldDefs[p].ID,'')!='') scanvmfld(expr,flditems,f.PropsFieldDefs[p],pref+'.Properties['+strquote(f.PropsFieldDefs[p].ID)+']');
+          }
+        }
+        break;
+    }
+  }
+
   function scanvm(expr,flditems,fncitems,vm,pref) {
     var f;
     for(var j in vm) {
       f=vm[j];
       if(j==='Owner') continue;
-      if(ngIsFieldDef(f)) { if(flditems) flditems.push(pref+j+'.Value'+(expr ? '()' : '')); continue; }
-      if(ko.isObservable(f)) { if(flditems) flditems.push(pref+j+(expr ? '()' : '')); continue; }
+      if((ngIsFieldDef(f))||(ko.isObservable(f)))
+      {
+        if(flditems) scanvmfld(expr,flditems,f,pref+j);
+        continue;
+      }
       if(typeof f==='function') { if(fncitems) fncitems.push(pref+j); continue; }
       if(ng_IsObjVar(f)) { scanvm(expr,flditems,fncitems,f,j+'.'); continue; }
       if(flditems) flditems.push(pref+j);
+    }
+  }
+
+  function scanvm_app(expr,flditems) {
+    if((!ng_IsObjVar(window['ngApp']))||(!ng_IsObjVar(ngApp.ViewModel))||(!flditems)) return;
+
+    var f, p, pref='ngApp.ViewModel.';
+    for(var i in ngApp.ViewModel) {
+      f=ngApp.ViewModel[i];
+      switch(i)
+      {
+        case 'ngDeviceProfile':
+        case 'ngDeviceProfileD':
+          if(!expr) break;
+          var it=[];
+          scanvmfld(expr,it,f,pref+i);
+          if(!it.length) break;
+          var features={};
+          for(var d in ngDevices) {
+            p=ngDevices[d];
+            if(!ng_IsObjVar(p)) continue;
+            for(var f in p) {
+              if((''+f).substr(0,1)==='_') features[f]=true;
+            }
+          }
+          for(var f in features) {
+            flditems.push(it[0]+'['+strquote(f)+']');
+          }
+          break;
+      }
+      scanvmfld(expr,flditems,f,pref+i);
     }
   }
 
@@ -72,31 +144,51 @@ var ViewModel_Controls_DesignInfo = (function()
     }
   }
 
+  function editor_dditems(api, items) {
+    if (api.Owner && typeof api.Owner.GetEditorDropDownItems === 'function')
+    {
+      var dditems=api.Owner.GetEditorDropDownItems(api);
+      if(ng_IsArrayVar(dditems)) for(var i=0;i<dditems.length;i++) items.push(dditems[i]);
+    }
+  }
+
+  function editor_cmpitem(a,b)
+  {
+    var t1=a, t2=b;
+    if(ng_IsObjVar(t1)) t1=ngVal(t1.Text,'');
+    if(ng_IsObjVar(t2)) t2=ngVal(t2.Text,'');
+    if(t1<t2) return -1;
+    if(t1>t2) return 1;
+    return 0;
+  }
+
   function editor_vm_fields(api) {
     var items=[];
     editor_scanvm(api,false,items);
-    if(!items.length) return;
-    items.sort();
+    scanvm_app(false,items);
+    editor_dditems(api, items);
+    items.sort(editor_cmpitem);
     return items;
   }
 
   function editor_vm_fieldsexpr(api) {
     var items=[];
     editor_scanvm(api,true,items);
-    if(!items.length) return;
-    items.sort();
+    scanvm_app(true,items);
+    editor_dditems(api, items);
+    items.sort(editor_cmpitem);
     return items;
   }
 
   function editor_vm_functions(api) {
     var items=[];
     editor_scanvm(api,false,null,items);
-    if(!items.length) return;
-    items.sort();
+    editor_dditems(api, items);
+    items.sort(editor_cmpitem);
     return items;
   }
 
-  function add_databind_di(di, def, c, ref)
+  function add_databind_di(di, def, c)
   {
     var props = {
       "Calls": ng_diMixed([ng_diObject(undefined, undefined, {
@@ -344,7 +436,7 @@ var ViewModel_Controls_DesignInfo = (function()
         "DefaultValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
         "Command": ng_diMixed(['undefined','string'], { Level: 'basic', InitType: 'string' }),
         "NoReset": ng_diBoolean(false, { Level: 'basic' }),
-        "Value": ng_diMixed(['ko.observable','ko.computed','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
+        "Value": ng_diMixed(['kotypes','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
         "RemoveEmptyItems": ng_diBoolean(false, { Level: 'optional' }),
         "Serialize": ng_diBoolean(true, { Level: 'advanced' }),
         "DateTimeFormat": ng_diString('', { Level: 'basic' }),
@@ -503,7 +595,7 @@ var ViewModel_Controls_DesignInfo = (function()
         {
           TypeID: 'ko.observable',
           TypeBase: 'callee',
-          Name: 'ko.observable',
+          Name: 'ko.observable()',
           ShortName: 'ko.o',
           Options: {
             Callee: 'ko.observable',
@@ -517,24 +609,64 @@ var ViewModel_Controls_DesignInfo = (function()
           }
         },
 
+        // ko.observableArray
+        {
+          TypeID: 'ko.observableArray',
+          TypeBase: 'callee',
+          Name: 'ko.observableArray()',
+          ShortName: 'ko.a',
+          Options: {
+            Callee: 'ko.observableArray',
+            NewExpression: false,
+            Add: false,
+            DefaultCode: "ko.observableArray([])",
+            DefaultValue: ["[]"],
+            ObjectProperties: {
+              0: ng_diType('jsarray', { DisplayName: 'Value', Required: true, Level: 'basic' })
+            }
+          }
+        },
+
         // ko.computed
         {
           TypeID: 'ko.computed',
           TypeBase: 'callee',
-          Name: 'ko.computed',
+          Name: 'ko.computed()',
           ShortName: 'ko.c',
           Options: {
             Callee: 'ko.computed',
             NewExpression: false,
             Add: false,
-            DefaultCode: "ko.computed({ read: function() {}, write: function(v) {}, owner: this})",
-            DefaultValue: ['{ read: function() {}, write: function(v) {}, owner: this}'],
+            DefaultCode: "ko.computed({ read: function() { var v; return v; }, owner: this})",
+            DefaultValue: ['{ read: function() { var v; return v; }, owner: this}'],
             ObjectProperties: {
               0: ng_diObject({
-                "read": ng_diFunction('function() {}', { Required: true, Level: 'basic' }),
-                "write": ng_diFunction('function(v) {}', { Level: 'basic' }),
-                "owner": ng_diTypeVal('identifier','this', { Level: 'basic' })
-              }, { DisplayName: 'Computed', Level: 'basic' })
+                "read": ng_diFunction('function() { var v; return v; }', { Required: true, Level: 'basic', Order: 0.2 }),
+                "write": ng_diFunction('function(v) {}', { Level: 'basic', Order: 0.3 }),
+                "owner": ng_diTypeVal('identifier','this', { Required: true, Level: 'basic', Order: 0.4 })
+              }, { DisplayName: 'Value', Required: true, Level: 'basic' })
+            }
+          }
+        },
+
+        // ko.pureComputed
+        {
+          TypeID: 'ko.pureComputed',
+          TypeBase: 'callee',
+          Name: 'ko.pureComputed()',
+          ShortName: 'ko.C',
+          Options: {
+            Callee: 'ko.pureComputed',
+            NewExpression: false,
+            Add: false,
+            DefaultCode: "ko.pureComputed({ read: function() { var v; return v; }, owner: this})",
+            DefaultValue: ['{ read: function() { var v; return v; }, owner: this}'],
+            ObjectProperties: {
+              0: ng_diObject({
+                "read": ng_diFunction('function() { var v; return v; }', { Required: true, Level: 'basic', Order: 0.2 }),
+                "write": ng_diFunction('function(v) {}', { Level: 'basic', Order: 0.3 }),
+                "owner": ng_diTypeVal('identifier','this', { Required: true, Level: 'basic', Order: 0.4 })
+              }, { DisplayName: 'Value', Required: true, Level: 'basic' })
             }
           }
         },
@@ -555,7 +687,7 @@ var ViewModel_Controls_DesignInfo = (function()
           Name: 'viewmodel object',
           ShortName: 'obj',
           Options: {
-            ChildDesignInfo: ng_diMixed(['ko.observable','ko.computed','jstypes'], { Level: 'basic', DefaultType: 'undefined' })
+            ChildDesignInfo: ng_diMixed(['kotypes','jstypes'], { Level: 'basic', DefaultType: 'undefined' })
           }
         },
         // ViewModel Constructor
@@ -565,8 +697,8 @@ var ViewModel_Controls_DesignInfo = (function()
           Name: 'viewmodel constructor',
           ShortName: 'fnc',
           Options: {
-            DefaultCode: 'function(vm) {}',
-            DefaultValue: 'function(vm) {}'
+            DefaultCode: 'function(c) {}',
+            DefaultValue: 'function(c) {}'
           }
         },
         // ngViewModel
@@ -937,6 +1069,7 @@ var ViewModel_Controls_DesignInfo = (function()
 
       FormEditor.RegisterPropertyType(vm_types);
 
+      FE.RegisterPropertyTypesGroup('kotypes',['ko.observable','ko.observableArray','ko.computed','ko.pureComputed']);
       FE.RegisterPropertyTypesGroup('vm_databind_field', ['vm_databind_identifier','vm_databind_expression']);
 
       FE.RegisterPropertyTypesGroup('viewmodel', ['vmid','vmobject','ngViewModel']);
@@ -944,6 +1077,14 @@ var ViewModel_Controls_DesignInfo = (function()
     },
 
     OnControlCreated: function(def,c) {
+      if(!ngHASDESIGNINFO()) return;
+
+      if((c)&&(!def.CtrlInheritanceDepth))
+      {
+        // define Databind DesignInfo of all controls, OnControlDesignInfo is not used because we want to be last
+        add_databind_di(c.DesignInfo, def, c);
+      }
+
       if(!FormEditor.Params.creatingform) return;
 
       switch(c.CtrlType)
@@ -954,15 +1095,6 @@ var ViewModel_Controls_DesignInfo = (function()
         default:
           if((typeof def.ViewModel==='string')&&(def.ViewModel!='')) vm_ids[def.ViewModel]=true;
           break;
-      }
-    },
-
-    OnControlDesignInfo: function(def, c, ref)
-    {
-      if((c)&&(!def.CtrlInheritanceDepth))
-      {
-        // define Databind DesignInfo of all controls
-        add_databind_di(c.DesignInfo, def, c, ref); // TODO: determine how to make it last call ever
       }
     },
 
@@ -984,15 +1116,15 @@ var ViewModel_Controls_DesignInfo = (function()
           },
           Properties: ng_diProperties({
             "ID": { Level: 'basic' },
-            "Namespace": ng_diString('', { Level: 'basic', Order: 0.05 }, {
+            "Namespace": ng_diString('', { Level: 'basic', Order: 0.05, PropertyGroup: 'DataBind' }, {
               Editor: 'ngfeEditor_DropDown',
               EditorOptions: {
                 Items: editor_vmnamespaces
               }
             }),
-            "FieldDefs": ng_diType('ngFieldDefsArray', { Level: 'basic', Order: 0.051, Collapsed: false }),
-            "ViewModel": ng_diMixed(['vmobject', 'vmconstructor'], { Level: 'basic', Order: 0.052, PropertyGroup: 'Definition' }),
-            "RefViewModel": ng_diType('vmid', { Level: 'basic', Order: 0.053 }, {
+            "FieldDefs": ng_diType('ngFieldDefsArray', { Level: 'basic', Order: 0.051, Collapsed: false, PropertyGroup: 'DataBind' }),
+            "ViewModel": ng_diMixed(['vmconstructor', 'vmobject'], { Level: 'basic', Order: 0.052, PropertyGroup: 'DataBind' }),
+            "RefViewModel": ng_diType('vmid', { Level: 'basic', Order: 0.053, PropertyGroup: 'DataBind' }, {
               Editor: 'ngfeEditor_DropDown',
               EditorOptions: {
                 Items: function(api) {
