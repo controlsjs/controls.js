@@ -2057,7 +2057,7 @@ function ngc_Attach(o)
     if(id!='') {
       if(ngHASDEBUG()) {
         var oc=ngGetControlById(id);
-        if((oc)&&(oc!==this)) ngDEBUGWARN('New control overrides the ID "%s" which was already used. New control: %o, Previous control: %o',id,this, oc);
+        if((oc)&&(oc!==this)) ngDEBUGWARN('Control overrides the ID "%s" which was already used. New control: %o, Previous control: %o',id,this, oc);
       }
       ngControlsIDs[id]=this;
     }
