@@ -1902,6 +1902,11 @@ function ngc_Create(props, ref)
 
   if(id=='') id=ngCreateControlId(props.Type);
 
+  if(ngHASDEBUG()) {
+    var oc=ngGetControlById(id);
+    if((oc)&&(oc!==this)) ngDEBUGWARN('New control overrides the ID "%s" which was already used. New control: %o, Previous control: %o',id,this, oc);
+  }
+
   var f = document.getElementById(id);
   var nd = f;
   if(!nd)
@@ -2049,7 +2054,13 @@ function ngc_Attach(o)
     if(this.ID!='') {
       if(ngControlsIDs[this.ID]===this) delete ngControlsIDs[this.ID];
     }
-    if(id!='') ngControlsIDs[id]=this;
+    if(id!='') {
+      if(ngHASDEBUG()) {
+        var oc=ngGetControlById(id);
+        if((oc)&&(oc!==this)) ngDEBUGWARN('New control overrides the ID "%s" which was already used. New control: %o, Previous control: %o',id,this, oc);
+      }
+      ngControlsIDs[id]=this;
+    }
     this.ID=id;
   }
   if(o)
@@ -3279,7 +3290,13 @@ function ngcs_Create(props, ref)
     if(id=='') id=ngCreateControlId(props.Type);
   }
   this.ID=id;
-  if(id!='') ngControlsIDs[id]=this;
+  if(id!='') {
+    if(ngHASDEBUG()) {
+      var oc=ngGetControlById(id);
+      if((oc)&&(oc!==this)) ngDEBUGWARN('New control overrides the ID "%s" which was already used. New control: %o, Previous control: %o',id,this, oc);
+    }
+    ngControlsIDs[id]=this;
+  }
 
   if(this.DoCreate) this.DoCreate(props, ref);
   if(props.OnCreated) props.OnCreated(this, ref);
