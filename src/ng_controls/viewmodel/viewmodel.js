@@ -593,7 +593,23 @@ function ngfd_Serialize(v)
   if(this.OnSerialize) r=this.OnSerialize(this,v);  
   if((ng_isEmpty(r))&&(this.DoSerialize)) r=this.DoSerialize(v);
   if(ng_isEmpty(r)) r=this.TypedValue(v);
-  if(((this.DataType=='ULONG')||(this.DataType=='INTEGER'))&&(!ng_isEmpty(r))) r=ng_toString(r); // PHP doesn't support unsigned longs and JavaScript big integers, pass it as string
+  switch(this.DataType)
+  {
+    case 'ULONG':
+    case 'INTEGER':
+      if(!ng_isEmpty(r)) r=ng_toString(r); // PHP doesn't support unsigned longs and JavaScript big integers, pass it as string
+      break;
+    case 'TIMESTAMP':
+    case 'DATETIME':
+    case 'DATE':
+    case 'TIME':
+    case 'UTCTIMESTAMP':
+    case 'UTCDATETIME':
+    case 'UTCDATE':
+    case 'UTCTIME':
+      r=ng_toUnixTimestamp(r);
+      break;
+  }
   return r;
 }
 
