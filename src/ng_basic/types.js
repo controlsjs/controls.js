@@ -443,6 +443,7 @@ function ng_isEmptyObject(o)
 {
   if(ng_isEmptyOrNull(o)) return true;
   if(typeof o !== 'object') return false;
+  if(ng_typeDate(o)) return false;
   var v;
   for(var k in o) {
     v=o[k];
