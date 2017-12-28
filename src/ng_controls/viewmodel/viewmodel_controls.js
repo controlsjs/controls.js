@@ -99,7 +99,10 @@ function ngApplyBindings(ctrl, viewModel, databind)
   if(ng_typeString(viewModel))
   {
     var vm=getViewModelById(viewModel);
-    if(!vm) ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
+    if(!vm) {
+      ngDEBUGERROR('ViewModel "'+viewModel+'" referenced from control "'+ctrl.ID+'" not found!');
+      return false;
+    }
     viewModel=vm;
   }
   if(!viewModel) {
@@ -365,7 +368,7 @@ function ng_FindViewModel(def, c)
   if(typeof vm==='undefined')
   {
     var p=c;
-    while((p)&&(typeof vm==='undefined'))
+    while((p)&&(!vm))
     {
       vm=p.ViewModel;
       p=p.ParentControl;
@@ -373,7 +376,7 @@ function ng_FindViewModel(def, c)
     if(typeof vm==='undefined')
     {
       var p=c.Owner;
-      while((p)&&(typeof vm==='undefined'))
+      while((p)&&(!vm))
       {
         vm=p.ViewModel;
         p=p.Owner;
