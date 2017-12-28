@@ -1654,13 +1654,30 @@ function ngvm_recievedata(results)
 
   // Update Values
   if(sresults.Values) {
-    if(!ngVal(sresults.NoReset,false)) 
+    if(!ngVal(sresults.NoReset,false))
     {
-      // Reset all except PrivateFields
+      var valexist={};
+
+      function getvalexist(vals, path) {
+        if((!ng_IsObjVar(vals))||(ng_typeDate(vals))||(ng_IsArrayVar(vals))) return;
+        for(var i in vals) {
+          if(i=='') continue;
+          valexist[path+i]=true;
+          getvalexist(vals[i], path+i+'.');
+        }
+      }
+      getvalexist(sresults.Values, '');
+
+      // Reset all except result Values and PrivateFields
       vm.Reset(function (vm,val,instance,path) {
+        if(valexist[path]) {
+          if((ko.isObservable(val))||(!ng_typeObject(val))||(ng_typeDate(val))||(ng_IsArrayVar(val))) return false;
+        }
         if((ngIsFieldDef(instance))&&(instance.PrivateField)) return false;
         return true;
       });
+
+      delete valexist;
     }
     vm.SetValues(sresults.Values,true);
   }
