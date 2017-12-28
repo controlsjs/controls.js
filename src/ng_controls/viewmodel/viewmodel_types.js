@@ -339,6 +339,29 @@ function ngfd_ArrayDoTypedValue(v)
   return r;
 }
 
+function ngfd_ArrayDoSerialize(v)
+{
+  if(!ngIsFieldDef(this.ValueFieldDef)) return;
+  var r=this.TypedValue(v);
+  var ret=[];
+  for(var k in r) {
+    ret[k]=this.ValueFieldDef.Serialize(r[k]);
+  }
+  return ret;
+}
+
+function ngfd_ArrayDoDeserialize(v)
+{
+  if(!ngIsFieldDef(this.ValueFieldDef)) return;
+  if((typeof v==='object')&&(v)) {
+    var ret=[];
+    for(var k in v) {
+      ret[k]=this.ValueFieldDef.Deserialize(v[k]);
+    }
+    return ret;
+  }
+}
+
 function ngfd_ArrayFormatItemError(err)
 {
   return ngTxt('viewmodel_err_type');
@@ -384,7 +407,9 @@ function ngFieldDef_Array(id, attrs, valfielddef) {
   this.ValueFieldDef=ngVal(valfielddef,null);
   if(ng_typeObject(this.ValueFieldDef)) ng_SetByRef(this.ValueFieldDef,'Parent',this);
   this.DoTypedValue = ngfd_ArrayDoTypedValue;
-  this.DoFormatError = ngfd_ArrayFormatError;  
+  this.DoSerialize = ngfd_ArrayDoSerialize;
+  this.DoDeserialize = ngfd_ArrayDoDeserialize;
+  this.DoFormatError = ngfd_ArrayFormatError;
   this.DoFormatItemError = ngfd_ArrayFormatItemError;
   this.GetChildFieldByID = ngfd_ArrayGetChildFieldByID;
 }
@@ -439,6 +464,40 @@ function ngfd_ObjectDoTypedValue(v)
       }
     }
     r=v;
+  }
+  return r;
+}
+
+function ngfd_ObjectDoSerialize(v)
+{
+  if(!ng_typeObject(this.PropsFieldDefs)) return;
+  var r=this.TypedValue(v);
+  if(ng_typeObject(r))
+  {
+    var fd;
+    for(var k in this.PropsFieldDefs)
+    {
+      fd=this.PropsFieldDefs[k];
+      if(!ngIsFieldDef(fd)) continue;
+      vmSetFieldValueByID(r,k,fd.Serialize(vmGetFieldByID(r,k)));
+    }
+  }
+  return r;
+}
+
+function ngfd_ObjectDoDeserialize(v)
+{
+  if(!ng_typeObject(this.PropsFieldDefs)) return;
+  var r;
+  if(ng_typeObject(v))
+  {
+    r={};
+    for(var k in this.PropsFieldDefs)
+    {
+      fd=this.PropsFieldDefs[k];
+      if(!ngIsFieldDef(fd)) continue;
+      vmSetFieldValueByID(r,k,fd.Deserialize(vmGetFieldByID(v,k)));
+    }
   }
   return r;
 }
@@ -523,7 +582,9 @@ function ngFieldDef_Object(id, attrs, propsfielddefs) {
   this.PropsFieldDefs=propsfielddefs;
 
   this.DoTypedValue = ngfd_ObjectDoTypedValue;
-  this.DoFormatError = ngfd_ObjectFormatError;  
+  this.DoSerialize = ngfd_ObjectDoSerialize;
+  this.DoDeserialize = ngfd_ObjectDoDeserialize;
+  this.DoFormatError = ngfd_ObjectFormatError;
   this.DoFormatPropertyError = ngfd_ObjectDoFormatPropertyError;
   this.GetChildFieldByID = ngfd_ObjectGetChildFieldByID;
 }
