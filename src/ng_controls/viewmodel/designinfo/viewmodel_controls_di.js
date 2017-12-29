@@ -201,7 +201,15 @@ var ViewModel_Controls_DesignInfo = (function()
       ], { Level: 'advanced' }),
       "Data": ng_diType('vm_databind_field', { Level: 'advanced' }),
       "Link": ng_diType('vm_databind_field', { Level: 'basic' }),
-      "Controls": ng_diType('vm_databind_field', { Level: (di.IsContainer ? 'basic' : 'optional') })
+      "Controls": ng_diType('vm_databind_field', { Level: (di.IsContainer ? 'basic' : 'optional') }),
+      "ControlsDelayedUpdate": ng_diMixed([
+          ng_diInteger(10),
+          ng_diType('vm_databind_field', { Level: 'advanced' }, {
+            EditorOptions: {
+              IgnoreDataModel: true
+            }
+          })
+        ], { Level: (di.IsContainer ? 'advanced' : 'optional') })
     };
 
     // dependent bindings
@@ -220,7 +228,15 @@ var ViewModel_Controls_DesignInfo = (function()
         if((dip.B)&&(typeof dip.B==='object')) bprops['B']=ng_diType('vm_databind_field', { DisplayName: 'Bottom (B)', Level: 'basic', Order: 0.16 });
         if((dip.W)&&(typeof dip.W==='object')) bprops['W']=ng_diType('vm_databind_field', { DisplayName: 'Width (W)', Level: 'basic', Order: 0.13 });
         if((dip.H)&&(typeof dip.H==='object')) bprops['H']=ng_diType('vm_databind_field', { DisplayName: 'Height (H)', Level: 'basic', Order: 0.14 });
-        props["Bounds"] = ng_diMixed([ng_diObject(bprops),'vm_databind_field'], { Level: 'basic', Collapsed: false });
+        props["Bounds"] = ng_diMixed([ng_diObject(bprops, {}, { Add: false }),'vm_databind_field'], { Level: 'basic', Collapsed: false });
+        props["BoundsDelayedUpdate"] = ng_diMixed([
+          ng_diInteger(10),
+          ng_diType('vm_databind_field', {}, {
+            EditorOptions: {
+              IgnoreDataModel: true
+            }
+          })
+        ], { Level: 'advanced' });
       }
 
       if (typeof c.Elm === 'function')
@@ -264,18 +280,34 @@ var ViewModel_Controls_DesignInfo = (function()
       props["Disabled"] = ng_diType('vm_databind_field', { Level: 'basic' });
     }
 
+    if (typeof c.SetChildControlsEnabled === 'function') {
+      props["ChildEnabled"] = ng_diType('vm_databind_field', { Level: (di.IsContainer ? 'advanced' : 'optional') });
+      props["ChildDisabled"] = ng_diType('vm_databind_field', { Level: (di.IsContainer ? 'advanced' : 'optional') });
+    }
 
+    var dn='';
     switch (c.DefType)
     {
       case 'ngSysTimer':
-        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic', DisplayName: 'Interval (Value)' });
         props["Command"] = ng_diType('databind_string', { Level: 'basic' });
+        props["ValueNames"] = ng_diMixed([
+          ng_diArrayOf(ng_diMixed(['databind_string','vm_databind_field'], { Level: 'basic' })),
+          'vm_databind_field'
+        ], { Level: 'basic' });
         break;
 
-      case 'ngSysURLParams':
       case 'ngSysViewModelSettings':
+        dn='Settings (Value)';
+      case 'ngSysURLParams':
       case 'ngSysRPC':
-        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        if(dn==='') dn='Parameters (Value)';
+        props["Value"] = ng_diMixed([
+          ng_diObject({},undefined, {
+            ChildDesignInfo: ng_diType('vm_databind_field', { Level: 'basic' })
+          }),
+          ng_diType('vm_databind_field')
+        ], { Level: 'basic', DisplayName: dn, Collapsed: false });
         break;
     }
 
@@ -355,12 +387,12 @@ var ViewModel_Controls_DesignInfo = (function()
       }
 
       var eventprop1 = ng_diMixed([
-        ng_diObject(o, undefined, { DestroyIfEmpty: true }),
+        ng_diObject(o, undefined, { DestroyIfEmpty: true, ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'user' }) }),
         ng_diType('bindings_string')
       ], { Order: undefined, Level: 'advanced' });
 
       var eventprop2 = ng_diMixed([
-        ng_diObject({}, undefined, { DestroyIfEmpty: true }),
+        ng_diObject({}, undefined, { DestroyIfEmpty: true, ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'user' }) }),
         ng_diType('bindings_string')
       ], { Level: 'advanced' });
       for (var i in o)

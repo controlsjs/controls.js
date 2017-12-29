@@ -40,7 +40,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
     // dependent bindings
     if(!di.NonVisual) {
       ng_MergeVar(props, {
-        "OnClick": ng_diType('vm_databind_function_name', { Level: 'optional' })
+        "OnClick": ng_diType('vm_databind_function_name', { Level: typeof c.OnClick !== 'undefined' ? 'basic' : 'optional' })
       });
     }
 
@@ -105,14 +105,16 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
           props["ItemMapping"] = ng_diMixed(['databind_ngmenu_itemmapping', 'vm_databind_field'], { Level: 'basic' });
         }
-        break;
+        else break;
       case 'ngList':
-        props["Focus"] = { Level: 'basic' };
-        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
-        props["Selected"] = ng_diType('vm_databind_field', { Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' });
-        props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        if(c.CtrlType==='ngList') {
+          props["Focus"] = { Level: 'basic' };
+          props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+          props["Selected"] = ng_diType('vm_databind_field', { Level: c.CtrlInheritsFrom('ngMenu') ? 'optional' : 'basic' });
+          props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
 
-        props["ItemMapping"] = ng_diMixed([c.CtrlInheritsFrom('ngMenu') ? 'databind_ngmenu_itemmapping' : 'databind_nglist_itemmapping', 'vm_databind_field'], { Level: 'basic' });
+          props["ItemMapping"] = ng_diMixed([c.CtrlInheritsFrom('ngMenu') ? 'databind_ngmenu_itemmapping' : 'databind_nglist_itemmapping', 'vm_databind_field'], { Level: 'basic' });
+        }
 
         props["DelayedUpdate"] = ng_diMixed([
           ng_diInteger(10),
@@ -145,16 +147,26 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         break;
       case 'ngButton':
       case 'ngSysAction':
-        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'optional', DisplayName: 'Check (Value)' });
         props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
         props["Command"] = ng_diType('databind_string', { Level: 'basic' });
+        props["ValueNames"] = ng_diMixed([
+          ng_diArrayOf(ng_diMixed(['databind_string','vm_databind_field'], { Level: 'basic' })),
+          'vm_databind_field'
+        ], { Level: 'basic' });
         break;
 
       case 'ngPages':
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic', DisplayName: 'Page (Value)' });
+        break;
       case 'ngWebBrowser':
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic', DisplayName: 'URL (Value)' });
+        break;
       case 'ngProgressBar':
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic', DisplayName: 'Position (Value)' });
+        break;
       case 'ngCalendar':
-        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'basic', DisplayName: 'Selected (Value)' });
         break;
 
       default:
