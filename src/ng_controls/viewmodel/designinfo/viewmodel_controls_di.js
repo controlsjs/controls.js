@@ -1109,9 +1109,7 @@ var ViewModel_Controls_DesignInfo = (function()
     },
 
     OnControlCreated: function(def,c) {
-      if(!ngHASDESIGNINFO()) return;
-
-      if((c)&&(!def.CtrlInheritanceDepth))
+      if((ngHASDESIGNINFO())&&(c)&&(!def.CtrlInheritanceDepth))
       {
         // define Databind DesignInfo of all controls, OnControlDesignInfo is not used because we want to be last
         add_databind_di(c.DesignInfo, def, c);
@@ -1124,7 +1122,6 @@ var ViewModel_Controls_DesignInfo = (function()
           if(ngVal(c.Namespace,'')!='') vm_namespaces[c.Namespace]=true;
           break;
         default:
-        console.log(def.ViewModel);
           if((typeof def.ViewModel==='string')&&(def.ViewModel!='')) vm_ids[def.ViewModel]=true;
           break;
       }
