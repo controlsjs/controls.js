@@ -63,7 +63,7 @@
       "property1": {
         DefaultType: 'type',
         InitType: 'type',
-        Level: 'advanced' (basic|advanced|optional|hidden|invalid|parent|deprecated|experimental|user)
+        Level: 'advanced' (basic|advanced|optional|hidden|invalid|deprecated|experimental|user)
         PropertyGroup: 'All'(Definition|Data|DataBind|Events|...Events|Methods|Controls|All),
         DisplayName: 'PropertyName' (function(propertyname, displayname) { return displayname; }),
         Order: 0.5,
