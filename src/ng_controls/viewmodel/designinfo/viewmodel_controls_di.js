@@ -505,8 +505,8 @@ var ViewModel_Controls_DesignInfo = (function()
             Callee: typename,
             NewExpression: true,
             Add: false,
-            DefaultCode: "new "+typename+"('')",
-            DefaultValue: ["''"],
+            DefaultCode: "new "+typename+"()",
+            DefaultValue: [],
             ObjectProperties: {
               0: ng_diString('', { DisplayName: 'ID', Level: 'basic' })
             }
@@ -1116,7 +1116,6 @@ var ViewModel_Controls_DesignInfo = (function()
         // define Databind DesignInfo of all controls, OnControlDesignInfo is not used because we want to be last
         add_databind_di(c.DesignInfo, def, c);
       }
-
       if(!FormEditor.Params.creatingform) return;
 
       switch(c.CtrlType)
@@ -1125,6 +1124,7 @@ var ViewModel_Controls_DesignInfo = (function()
           if(ngVal(c.Namespace,'')!='') vm_namespaces[c.Namespace]=true;
           break;
         default:
+        console.log(def.ViewModel);
           if((typeof def.ViewModel==='string')&&(def.ViewModel!='')) vm_ids[def.ViewModel]=true;
           break;
       }
