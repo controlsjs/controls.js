@@ -59,10 +59,28 @@ function ngHASDESIGNINFO() {
   return ((ngHASDEBUG())&&(ngDESIGNINFO)&&(ngDESIGNINFOCnt>0));
 }
 
+/**
+ *  Function: ngDesignInfoBegin
+ *  Enables controls design info.
+ *
+ *  Syntax: *ngDesignInfoBegin* ()
+ *
+ *  Returns:
+ *  -
+ */
 function ngDesignInfoBegin() {
   ngDESIGNINFOCnt++;
 }
 
+/**
+ *  Function: ngDesignInfoEnd
+ *  Disables controls design info.
+ *
+ *  Syntax: *ngDesignInfoEnd* ()
+ *
+ *  Returns:
+ *  -
+ */
 function ngDesignInfoEnd() {
   ngDESIGNINFOCnt--;
   if (ngDESIGNINFOCnt<0) ngDESIGNINFOCnt=0;
