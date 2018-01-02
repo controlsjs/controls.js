@@ -864,7 +864,9 @@ return {
             "HPadding": ng_diInteger(0, { Level: 'basic' }),
             "VAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
             "HAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
-            "Wrapable": ng_diBoolean(true, { Level: 'basic' })
+            "Wrapable": ng_diBoolean(true, { Level: 'basic' }),
+            "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MinHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' })
           }
         },
         {

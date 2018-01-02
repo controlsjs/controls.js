@@ -5844,6 +5844,7 @@ function ngtb_Update(recursive)
       {
         ng_SetClientWidth(to,sw);
         var cbw=ng_StyleWidth(to);
+        if((typeof this.MinWidth !== 'undefined')&&(cbw<this.MinWidth)) cbw=this.MinWidth;
         if(this.Bounds.W!=cbw)
         {
           changed=true;
@@ -5855,6 +5856,7 @@ function ngtb_Update(recursive)
       {
         ng_SetClientHeight(to,sh);
         var cbh=ng_StyleHeight(to);
+        if((typeof this.MinHeight !== 'undefined')&&(cbh<this.MinHeight)) cbh=this.MinHeight;
         if(this.Bounds.H!=cbh)
         {
           changed=true;
@@ -5936,6 +5938,18 @@ function ngToolBar(id)
    *  Default value: *true*
    */
   this.Wrapable = true;
+  /*  Variable: MinWidth
+   *  ...
+   *  Type: integer
+   *  Default value: *undefined*
+   */
+  //this.MinWidth = undefined;
+  /*  Variable: MinHeight
+   *  ...
+   *  Type: integer
+   *  Default value: *undefined*
+   */
+  //this.MinHeight = undefined;
 
   /*
    *  Group: Methods
