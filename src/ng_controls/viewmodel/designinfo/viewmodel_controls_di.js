@@ -529,7 +529,7 @@ var ViewModel_Controls_DesignInfo = (function()
           "Enum": { Types: { array: { ChildDesignInfo: { DefaultType: type }} } },
           "DateTimeFormat": { Level: 'optional' },
           "DateFormat": { Level: 'optional' },
-          "TimeFormat": { Level: 'optional' },
+          "TimeFormat": { Level: 'optional' }
         };
         switch(type) {
           case 'integer':
@@ -975,7 +975,7 @@ var ViewModel_Controls_DesignInfo = (function()
         // ngFieldDef_Email
         fdtype('ngFieldDef_Email', '@', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvalstring({
-            'AtSignIfEmpty': ng_diBoolean(true, { Level: 'basic' }),
+            'AtSignIfEmpty': ng_diBoolean(true, { Level: 'basic' })
           }))
         ]),
 
@@ -1004,7 +1004,7 @@ var ViewModel_Controls_DesignInfo = (function()
             'DecimalSeparator': { Level: 'basic' },
             'ThousandsSeparator': { Level: 'basic' },
             'CurrencyPrefix': ng_diString('', { Level: 'basic' }),
-            'CurrencySuffix': ng_diString('', { Level: 'basic' }),
+            'CurrencySuffix': ng_diString('', { Level: 'basic' })
           })),
           ng_diStringValues('DECIMAL', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
         ]),
