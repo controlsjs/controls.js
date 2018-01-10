@@ -135,10 +135,10 @@ ngUserControls['panels_designinfo'] = {
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "PanelAlign": ng_diStringValues('left', ['left','right','top','bottom'], { Level: 'basic' }),
-            "ResizeMode": ng_diTypeVal('bitmask', { value: ngspResizeNone }, { Level: 'basic' }, {
+            "ResizeMode": ng_diTypeVal('bitmask', ngspResizeNone, { Level: 'basic' }, {
               EditorOptions: {
                 BitMaskIdentifiers: [
-//                  {value: ngspResizeNone,        id: 'ngspResizeNone'},
+                  {value: ngspResizeNone,        id: 'ngspResizeNone'},
                   {value: ngspResizeSize,        id: 'ngspResizeSize'},
                   {value: ngspResizeMinSize,     id: 'ngspResizeMinSize'},
                   {value: ngspResizeMaxSize,     id: 'ngspResizeMaxSize'},

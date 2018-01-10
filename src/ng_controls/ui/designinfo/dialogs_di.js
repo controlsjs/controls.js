@@ -50,10 +50,10 @@ ngUserControls['dialogs_designinfo'] = {
           "L": ng_diTypeVal('bounds', 200),
           "T": ng_diTypeVal('bounds', 150),
           "DialogType": ng_diString('ngWindow',{Level: 'optional'}),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }, { Level: 'basic' }, { // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK, { Level: 'basic' }, {
             EditorOptions: {
               BitMaskIdentifiers: [
-//                    {value: mbNone,       id: 'mbNone'},
+                {value: mbNone,       id: 'mbNone'},
                 {value: mbCancel,     id: 'mbCancel'},
                 {value: mbOK,         id: 'mbOK'},
                 {value: mbYes,        id: 'mbYes'},

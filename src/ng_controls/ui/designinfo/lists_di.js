@@ -450,7 +450,7 @@ return {
 
           return true;
         },
-        Read: function(v, type, Interface)
+        Read: function(v, type, IFace)
         {
           if (ng_IsOverriden(this.Read)) v = this.Read.callParent.apply(this, arguments);
 
@@ -494,7 +494,7 @@ return {
             }
           }
         },
-        Read: function(v, type, Interface)
+        Read: function(v, type, IFace)
         {
           if (ng_IsOverriden(this.Read)) v = this.Read.callParent.apply(this, arguments);
 
@@ -502,7 +502,7 @@ return {
           {
             if (ng_IsArrayVar(v))
             {
-              var node = Interface.GetEsprimaNode();
+              var node = IFace.GetEsprimaNode();
               if (node)
               {
                 var v2 = [];
@@ -797,7 +797,7 @@ return {
         Properties: ng_diProperties({
           "Data": {
             "DisplayMode": ng_diIntegerIdentifiers(1,['plDisplayFixed','plDisplayFit'],{ Level: 'basic' }),
-            "PagingType": ng_diTypeVal('bitmask', { value: plPagingSimple }, { Level: 'basic' }, {
+            "PagingType": ng_diTypeVal('bitmask', plPagingSimple, { Level: 'basic' }, {
               EditorOptions: {
                 BitMaskIdentifiers: [
                   {value: plPaging_First,        id: 'plPaging_First'},

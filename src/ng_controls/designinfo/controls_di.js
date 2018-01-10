@@ -885,8 +885,7 @@ function ng_diProperties(props,data) {
         "OnCreated": ng_diEvent('function(c, refs, options) {}', { Level: 'advanced', Order: 0.307, DesignRemove: true }),
         "Data": ng_diObject({
           "Enabled": ng_diBoolean(true, { Level: 'basic' }),
-          "ChildHandling": ng_diIntegerIdentifiers(0,['ngChildEnabledAsParent','ngChildEnabledParentAware','ngChildEnabledIndependent'], { Level: 'optional' }) // TODO: change to bitmask when bitmask editor will be better
-          /*"ChildHandling": ng_diTypeVal('bitmask', { value: ngChildEnabledAsParent }, { Level: 'optional' }, {
+          "ChildHandling": ng_diTypeVal('bitmask', ngChildEnabledAsParent, { Level: 'optional' }, {
             EditorOptions: {
               BitMaskIdentifiers: [
                 {value: ngChildEnabledAsParent,    id: 'ngChildEnabledAsParent'},
@@ -894,7 +893,7 @@ function ng_diProperties(props,data) {
                 {value: ngChildEnabledIndependent, id: 'ngChildEnabledIndependent'}
               ]
             }
-          })*/
+          })
         }, { Level: 'basic', Order: 0.4 }, { DestroyIfEmpty: true }),
         "Controls": ng_diControls(undefined, { Level: 'optional', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls' }, {
           ChildDesignInfo: {

@@ -195,10 +195,7 @@ ngUserControls['ngColorControls_designinfo'] = {
         ShortName: 'cop-l',
         Options: {
           DefaultCode: 'ngCopLayout_Default',
-          DefaultValue: {
-            value: ngCopLayout_Default,
-            identifiers: [{ id: 'ngCopLayout_Default', value: ngCopLayout_Default }]
-          },
+          DefaultValue: ngCopLayout_Default,
           EditorOptions: {
             BitMaskIdentifiers: [
               { id: 'ngColorPickerH', value: ngColorPickerH },
