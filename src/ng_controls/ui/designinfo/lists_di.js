@@ -427,7 +427,7 @@ return {
             }
           }
         },
-        Detect: function(esprimanode, raw, options)
+        Detect: function(esprimanode, raw, IFace)
         {
           if (ng_IsOverriden(this.Detect))
           {
