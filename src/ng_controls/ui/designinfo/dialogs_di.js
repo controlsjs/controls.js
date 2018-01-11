@@ -53,16 +53,16 @@ ngUserControls['dialogs_designinfo'] = {
           "DlgButtons": ng_diTypeVal('bitmask', mbOK, { Level: 'basic' }, {
             EditorOptions: {
               BitMaskIdentifiers: [
-                {value: mbNone,       id: 'mbNone'},
-                {value: mbCancel,     id: 'mbCancel'},
-                {value: mbOK,         id: 'mbOK'},
-                {value: mbYes,        id: 'mbYes'},
-                {value: mbNo,         id: 'mbNo'},
+                {Value: mbNone,       ID: 'mbNone'},
+                {Value: mbCancel,     ID: 'mbCancel'},
+                {Value: mbOK,         ID: 'mbOK'},
+                {Value: mbYes,        ID: 'mbYes'},
+                {Value: mbNo,         ID: 'mbNo'},
 
-                {value: mbDefButton1, id: 'mbDefButton1'},
-                {value: mbDefButton2, id: 'mbDefButton2'},
-                {value: mbDefButton3, id: 'mbDefButton3'},
-                {value: mbDefButton4, id: 'mbDefButton4'}
+                {Value: mbDefButton1, ID: 'mbDefButton1'},
+                {Value: mbDefButton2, ID: 'mbDefButton2'},
+                {Value: mbDefButton3, ID: 'mbDefButton3'},
+                {Value: mbDefButton4, ID: 'mbDefButton4'}
               ]
             }
           }),
@@ -147,7 +147,7 @@ ngUserControls['dialogs_designinfo'] = {
         },
         Properties: ng_diProperties({
           "DialogType": ng_diString('ngMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK),
           "AboutSystemInfo": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "AboutComponents": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),
           "AboutLibraries": ng_diMixed(['null','ngListStringItems'], { InitType: 'ngListItems', Level: 'basic' }),

@@ -56,8 +56,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             "LoadOnClick": ng_diBoolean(false, { Level: 'basic' }),
             "LoadOnDblClick": ng_diBoolean(true, { Level: 'basic' }),
             "AutoSelectDBVMRecord": ng_diBoolean(true, { Level: 'basic' }),
-            // change default
-            "PagingType": ng_diTypeVal('bitmask', { value: plPagingDataSetEx }), // TODO: Check bitmask value definition
+            "PagingType": ng_diTypeVal('bitmask', plPagingDataSetEx),
             "PagingInside": ng_diBoolean(false)
           },
           "Events": {

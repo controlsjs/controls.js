@@ -198,31 +198,31 @@ ngUserControls['ngColorControls_designinfo'] = {
           DefaultValue: ngCopLayout_Default,
           EditorOptions: {
             BitMaskIdentifiers: [
-              { id: 'ngColorPickerH', value: ngColorPickerH },
-              { id: 'ngColorPickerS', value: ngColorPickerS },
-              { id: 'ngColorPickerV', value: ngColorPickerV },
-              { id: 'ngColorPickerSV', value: ngColorPickerSV },
+              { ID: 'ngColorPickerH', Value: ngColorPickerH },
+              { ID: 'ngColorPickerS', Value: ngColorPickerS },
+              { ID: 'ngColorPickerV', Value: ngColorPickerV },
+              { ID: 'ngColorPickerSV', Value: ngColorPickerSV },
 
-              { id: 'ngColorPickerR', value: ngColorPickerR },
-              { id: 'ngColorPickerG', value: ngColorPickerG },
-              { id: 'ngColorPickerB', value: ngColorPickerB },
+              { ID: 'ngColorPickerR', Value: ngColorPickerR },
+              { ID: 'ngColorPickerG', Value: ngColorPickerG },
+              { ID: 'ngColorPickerB', Value: ngColorPickerB },
 
-              { id: 'ngColorPickerA', value: ngColorPickerA },
-              { id: 'ngColorPickerPreview', value: ngColorPickerPreview },
+              { ID: 'ngColorPickerA', Value: ngColorPickerA },
+              { ID: 'ngColorPickerPreview', Value: ngColorPickerPreview },
 
-              { id: 'ngColorPickerHex', value: ngColorPickerHex },
-              { id: 'ngColorPickerAHex', value: ngColorPickerAHex },
-              { id: 'ngColorPickerEdits', value: ngColorPickerEdits },
+              { ID: 'ngColorPickerHex', Value: ngColorPickerHex },
+              { ID: 'ngColorPickerAHex', Value: ngColorPickerAHex },
+              { ID: 'ngColorPickerEdits', Value: ngColorPickerEdits },
 
-              { id: 'ngColorPickerModeBar', value: ngColorPickerModeBar },
+              { ID: 'ngColorPickerModeBar', Value: ngColorPickerModeBar },
 
-              { id: 'ngCopLayout_H_SV', value: ngCopLayout_H_SV },
-              { id: 'ngCopLayout_HA_SV', value: ngCopLayout_HA_SV },
-              { id: 'ngCopLayout_HSV', value: ngCopLayout_HSV },
-              { id: 'ngCopLayout_HSVA', value: ngCopLayout_HSVA },
-              { id: 'ngCopLayout_RGB', value: ngCopLayout_RGB },
-              { id: 'ngCopLayout_RGBA', value: ngCopLayout_RGBA },
-              { id: 'ngCopLayout_Default', value: ngCopLayout_Default }
+              { ID: 'ngCopLayout_H_SV', Value: ngCopLayout_H_SV },
+              { ID: 'ngCopLayout_HA_SV', Value: ngCopLayout_HA_SV },
+              { ID: 'ngCopLayout_HSV', Value: ngCopLayout_HSV },
+              { ID: 'ngCopLayout_HSVA', Value: ngCopLayout_HSVA },
+              { ID: 'ngCopLayout_RGB', Value: ngCopLayout_RGB },
+              { ID: 'ngCopLayout_RGBA', Value: ngCopLayout_RGBA },
+              { ID: 'ngCopLayout_Default', Value: ngCopLayout_Default }
             ]
           }
         }

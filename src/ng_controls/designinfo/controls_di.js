@@ -888,9 +888,9 @@ function ng_diProperties(props,data) {
           "ChildHandling": ng_diTypeVal('bitmask', ngChildEnabledAsParent, { Level: 'optional' }, {
             EditorOptions: {
               BitMaskIdentifiers: [
-                {value: ngChildEnabledAsParent,    id: 'ngChildEnabledAsParent'},
-                {value: ngChildEnabledParentAware, id: 'ngChildEnabledParentAware'},
-                {value: ngChildEnabledIndependent, id: 'ngChildEnabledIndependent'}
+                {Value: ngChildEnabledAsParent,    ID: 'ngChildEnabledAsParent', Exclude: [ngChildEnabledIndependent] },
+                {Value: ngChildEnabledParentAware, ID: 'ngChildEnabledParentAware', Exclude: [ngChildEnabledIndependent]},
+                {Value: ngChildEnabledIndependent, ID: 'ngChildEnabledIndependent', Exclude: [ngChildEnabledAsParent, ngChildEnabledParentAware] }
               ]
             }
           })

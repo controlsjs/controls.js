@@ -800,24 +800,24 @@ return {
             "PagingType": ng_diTypeVal('bitmask', plPagingSimple, { Level: 'basic' }, {
               EditorOptions: {
                 BitMaskIdentifiers: [
-                  {value: plPaging_First,        id: 'plPaging_First'},
-                  {value: plPaging_Prev,         id: 'plPaging_Prev'},
-                  {value: plPaging_Next,         id: 'plPaging_Next'},
-                  {value: plPaging_Last,         id: 'plPaging_Last'},
-                  {value: plPaging_Pages,        id: 'plPaging_Pages'},
-                  {value: plPaging_PageNo,       id: 'plPaging_PageNo'},
-                  {value: plPaging_HideDisabled, id: 'plPaging_HideDisabled'},
+                  {Value: plPaging_First,        ID: 'plPaging_First'},
+                  {Value: plPaging_Prev,         ID: 'plPaging_Prev'},
+                  {Value: plPaging_Next,         ID: 'plPaging_Next'},
+                  {Value: plPaging_Last,         ID: 'plPaging_Last'},
+                  {Value: plPaging_Pages,        ID: 'plPaging_Pages'},
+                  {Value: plPaging_PageNo,       ID: 'plPaging_PageNo'},
+                  {Value: plPaging_HideDisabled, ID: 'plPaging_HideDisabled'},
 
-                  {value: plPagingSimple,        id: 'plPagingSimple'},
-                  {value: plPagingSimple2,       id: 'plPagingSimple2'},
-                  {value: plPagingSimpleEx,      id: 'plPagingSimpleEx'},
-                  {value: plPagingPages,         id: 'plPagingPages'},
-                  {value: plPagingPages2,        id: 'plPagingPages2'},
-                  {value: plPagingPagesEx,       id: 'plPagingPagesEx'},
-                  {value: plPagingPagesEx2,      id: 'plPagingPagesEx2'},
-                  {value: plPagingDataSet,       id: 'plPagingDataSet'},
-                  {value: plPagingDataSetEx,     id: 'plPagingDataSetEx'},
-                  {value: plPagingAll,           id: 'plPagingAll'}
+                  {Value: plPagingSimple,        ID: 'plPagingSimple'},
+                  {Value: plPagingSimple2,       ID: 'plPagingSimple2'},
+                  {Value: plPagingSimpleEx,      ID: 'plPagingSimpleEx'},
+                  {Value: plPagingPages,         ID: 'plPagingPages'},
+                  {Value: plPagingPages2,        ID: 'plPagingPages2'},
+                  {Value: plPagingPagesEx,       ID: 'plPagingPagesEx'},
+                  {Value: plPagingPagesEx2,      ID: 'plPagingPagesEx2'},
+                  {Value: plPagingDataSet,       ID: 'plPagingDataSet'},
+                  {Value: plPagingDataSetEx,     ID: 'plPagingDataSetEx'},
+                  {Value: plPagingAll,           ID: 'plPagingAll'}
                 ]
               }
             }),

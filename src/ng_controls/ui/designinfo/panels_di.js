@@ -138,12 +138,12 @@ ngUserControls['panels_designinfo'] = {
             "ResizeMode": ng_diTypeVal('bitmask', ngspResizeNone, { Level: 'basic' }, {
               EditorOptions: {
                 BitMaskIdentifiers: [
-                  {value: ngspResizeNone,        id: 'ngspResizeNone'},
-                  {value: ngspResizeSize,        id: 'ngspResizeSize'},
-                  {value: ngspResizeMinSize,     id: 'ngspResizeMinSize'},
-                  {value: ngspResizeMaxSize,     id: 'ngspResizeMaxSize'},
-                  {value: ngspResizeAutoMinimize,id: 'ngspResizeAutoMinimize'},
-                  {value: ngspResizeAutoMaximize,id: 'ngspResizeAutoMaximize'}
+                  {Value: ngspResizeNone,        ID: 'ngspResizeNone'},
+                  {Value: ngspResizeSize,        ID: 'ngspResizeSize'},
+                  {Value: ngspResizeMinSize,     ID: 'ngspResizeMinSize'},
+                  {Value: ngspResizeMaxSize,     ID: 'ngspResizeMaxSize'},
+                  {Value: ngspResizeAutoMinimize,ID: 'ngspResizeAutoMinimize'},
+                  {Value: ngspResizeAutoMaximize,ID: 'ngspResizeAutoMaximize'}
                 ]
               }
             }),
