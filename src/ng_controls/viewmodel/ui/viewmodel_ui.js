@@ -300,16 +300,25 @@ function ngvmf_FindFieldControls(fid, visibleonly, bindings, parentfielddef)
       b[bindings[j]]=true;
     bindings=b;
   }
+
+  function checkvalue(v,fid,parentfielddef)
+  {
+    var fd = (v && v.FieldDef) ? v.FieldDef : v;
+    if(ngIsFieldDef(fd)) return ((fd.ID==fid)&&(ngVal(fd.Parent,null)===parentfielddef));
+    return false;
+  }
+
   function findfield(f)
   {
     if(!ng_typeObject(f.ChildControls)) return;
-    var c,b,v;
+    var c,b,v,cf;
     for(var i=0;i<f.ChildControls.length;i++)
     {
       c=f.ChildControls[i];
       if((!c)||((visibleonly)&&(!c.Visible))) continue;
       if(c.DataBindings)
       {
+        cf=false;
         for(var j in c.DataBindings)
         {
           if((bindings)&&(typeof bindings[j] === 'undefined')) continue;
@@ -317,8 +326,17 @@ function ngvmf_FindFieldControls(fid, visibleonly, bindings, parentfielddef)
           if((ng_typeObject(b))&&(b.ValueAccessor))
           {
             v=b.ValueAccessor();
-            if((v)&&(v.FieldDef)&&(v.FieldDef.ID==fid)&&(ngVal(v.FieldDef.Parent,null)===parentfielddef)) { found.push(c); break; }
+            if(ng_typeArray(v))
+            {
+              for(var k in v)
+              {
+                if(checkvalue(v[k],fid,parentfielddef)) { found.push(c); cf=true; break; }
+              }
+            }
+            else if(v)
+              if(checkvalue(v,fid,parentfielddef)) { found.push(c); cf=true; }
           }
+          if(cf) break;
         }
       }
       findfield(c);
