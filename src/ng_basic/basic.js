@@ -1944,7 +1944,9 @@ function ng_OuterWidth(o)
     w=ng_GetStylePx(o.offsetWidth);
     ng_EndMeasureElement(o);
   }
-  return w + ng_GetCurrentStylePx(o,'margin-left') + ng_GetCurrentStylePx(o,'margin-right');
+  var m=ng_GetCurrentStylePx(o,'margin-left'); if(m>0) w+=m;
+  m=ng_GetCurrentStylePx(o,'margin-right'); if(m>0) w+=m;
+  return w;
 }
 
 /**
@@ -1970,7 +1972,9 @@ function ng_OuterHeight(o)
     h=ng_GetStylePx(o.offsetHeight);
     ng_EndMeasureElement(o);
   }
-  return h + ng_GetCurrentStylePx(o,'margin-top') + ng_GetCurrentStylePx(o,'margin-bottom');
+  var m=ng_GetCurrentStylePx(o,'margin-top'); if(m>0) h+=m;
+  m=ng_GetCurrentStylePx(o,'margin-bottom'); if(m>0) h+=m;
+  return h;
 }
 
 /**
@@ -1989,9 +1993,12 @@ function ng_OuterHeight(o)
  */
 function ng_SetOuterWidth(o,v)
 {
-  v-=ng_GetCurrentStylePx(o,'margin-left') + ng_GetCurrentStylePx(o,'margin-right');
-  v-=ng_GetCurrentStylePx(o,'border-left-width') + ng_GetCurrentStylePx(o,'border-right-width');
-  v-=ng_GetCurrentStylePx(o,'padding-left') + ng_GetCurrentStylePx(o,'padding-right');
+  var m=ng_GetCurrentStylePx(o,'margin-left'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'margin-right'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'border-left-width'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'border-right-width'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'padding-left'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'padding-right'); if(m>0) v-=m;
   ng_SetStyleWidth(o,v);
 }
 
@@ -2011,9 +2018,12 @@ function ng_SetOuterWidth(o,v)
  */
 function ng_SetOuterHeight(o,v)
 {
-  v-=ng_GetCurrentStylePx(o,'margin-top') + ng_GetCurrentStylePx(o,'margin-bottom');
-  v-=ng_GetCurrentStylePx(o,'border-top-width') + ng_GetCurrentStylePx(o,'border-bottom-width');
-  v-=ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom');
+  var m=ng_GetCurrentStylePx(o,'margin-top'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'margin-bottom'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'border-top-width'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'border-bottom-width'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'padding-top'); if(m>0) v-=m;
+  m=ng_GetCurrentStylePx(o,'padding-bottom'); if(m>0) v-=m;
   ng_SetStyleHeight(o,v);
 }
 
@@ -2043,7 +2053,8 @@ function ng_ClientWidth(o)
     if((!w)&&(o.style.width!=''))
     {
       w=ng_StyleWidth(o);
-      w+=ng_GetCurrentStylePx(o,'padding-left') + ng_GetCurrentStylePx(o,'padding-right');
+      var p=ng_GetCurrentStylePx(o,'padding-left'); if(p>0) w+=p;
+          p=ng_GetCurrentStylePx(o,'padding-right'); if(p>0) w+=p;
     }
   }
   return w;
@@ -2096,7 +2107,8 @@ function ng_ClientHeight(o)
     if((!h)&&(o.style.height!=''))
     {
       h=ng_StyleHeight(o);
-      h+=ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom');
+      var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) h+=p;
+          p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) h+=p;
     }
   }
   return h;
@@ -2139,7 +2151,8 @@ function ng_ClientHeightEx(o)
  */
 function ng_SetClientWidth(o,v)
 {
-  v-=ng_GetCurrentStylePx(o,'padding-left') + ng_GetCurrentStylePx(o,'padding-right');
+  var p=ng_GetCurrentStylePx(o,'padding-left'); if(p>0) v-=p;
+  p=ng_GetCurrentStylePx(o,'padding-right'); if(p>0) v-=p;
   ng_SetStyleWidth(o,v);
 }
 
@@ -2159,7 +2172,8 @@ function ng_SetClientWidth(o,v)
  */
 function ng_SetClientHeight(o,v)
 {
-  v-=ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom');
+  var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) v-=p;
+  p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) v-=p;
   ng_SetStyleHeight(o,v);
 }
 
