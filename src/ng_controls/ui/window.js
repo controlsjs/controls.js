@@ -433,8 +433,18 @@ function ngw_DoPtrStart(pi)
         o.style.overflowX='visible';
         o.style.overflowY='visible';
       }
-      pi.FrameHorzBorder = ng_GetCurrentStylePx(f,'border-left-width') + ng_GetCurrentStylePx(f,'border-right-width') + ng_GetCurrentStylePx(f,'margin-left') + ng_GetCurrentStylePx(f,'margin-right');
-      pi.FrameVertBorder = ng_GetCurrentStylePx(f,'border-top-width') + ng_GetCurrentStylePx(f,'border-bottom-width') + ng_GetCurrentStylePx(f,'margin-top') + ng_GetCurrentStylePx(f,'margin-bottom');
+      var b=0;
+      var m=ng_GetCurrentStylePx(f,'border-left-width'); if(m>0) b+=m;
+      m=ng_GetCurrentStylePx(f,'border-right-width'); if(m>0) b+=m;
+      m=ng_GetCurrentStylePx(f,'margin-left'); if(m>0) b+=m;
+      m=ng_GetCurrentStylePx(f,'margin-right'); if(m>0) b+=m;
+      pi.FrameHorzBorder = b;
+      b=0;
+      m=ng_GetCurrentStylePx(f,'border-top-width'); if(m>0) b+=m;
+      m=ng_GetCurrentStylePx(f,'border-bottom-width'); if(m>0) b+=m;
+      m=ng_GetCurrentStylePx(f,'margin-top'); if(m>0) b+=m;
+      m=ng_GetCurrentStylePx(f,'margin-bottom'); if(m>0) b+=m;
+      pi.FrameVertBorder = b;
 
       var w=(o ? ng_ClientWidth(o)-pi.FrameHorzBorder : 0);
       var h=(o ? ng_ClientHeight(o)-pi.FrameVertBorder : 0);

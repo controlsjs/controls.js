@@ -757,12 +757,16 @@ function ngmn_PopupSubMenu(o,halign,valign)
   }
   if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
 
-  var mt=ng_GetCurrentStylePx(mo,'padding-top') +
-         ng_GetCurrentStylePx(mo,'margin-top') +
-         ng_GetCurrentStylePx(mo,'border-top-width');
-  var mb=ng_GetCurrentStylePx(mo,'padding-bottom') +
-         ng_GetCurrentStylePx(mo,'margin-bottom') +
-         ng_GetCurrentStylePx(mo,'border-bottom-width');
+  var mt=0;
+  var m=ng_GetCurrentStylePx(mo,'padding-top'); if(m>0) mt+=m;
+  m=ng_GetCurrentStylePx(mo,'margin-top'); if(m>0) mt+=m;
+  m=ng_GetCurrentStylePx(mo,'border-top-width'); if(m>0) mt+=m;
+
+  var mb=0;
+  m=ng_GetCurrentStylePx(mo,'padding-bottom'); if(m>0) mb+=m;
+  m=ng_GetCurrentStylePx(mo,'margin-bottom'); if(m>0) mb+=m;
+  m=ng_GetCurrentStylePx(mo,'border-bottom-width'); if(m>0) mb+=m;
+
   if(valign=='bottom')
   {
     my=pos.y+pos.h-sh-oy+mb;

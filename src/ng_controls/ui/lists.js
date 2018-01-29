@@ -2585,7 +2585,8 @@ function ngl_DoUpdate(o)
     else
     {
       w=ng_ClientWidth(o);
-      w-=ng_GetCurrentStylePx(o,'padding-left') + ng_GetCurrentStylePx(o,'padding-right');
+      var p=ng_GetCurrentStylePx(o,'padding-left'); if(p>0) w-=p;
+      p=ng_GetCurrentStylePx(o,'padding-right'); if(p>0) w-=p;
       w+='px';
     }
     if((typeof this.Bounds.H==='undefined')&&((typeof this.Bounds.T==='undefined')||(typeof this.Bounds.B==='undefined')))
@@ -2600,7 +2601,8 @@ function ngl_DoUpdate(o)
     else
     {
       h=ng_ClientHeight(o);
-      h-=ng_GetCurrentStylePx(o,'padding-bottom') + ng_GetCurrentStylePx(o,'padding-top');
+      var p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) h-=p;
+      p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) h-=p;
       h+='px';
     }
 
@@ -4350,7 +4352,8 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
       var maxh = ng_ClientHeight(o)-1;
 
       var hheight = 0, io;
-      maxh-=(ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom'));
+      var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) maxh-=p;
+      p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) maxh-=p;
 
       var changed_height=false;
       if((list.draw_height!=maxh)&&(list.draw_height>0))

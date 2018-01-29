@@ -77,17 +77,23 @@ function ngapc_DoUpdate(o)
 
 function ngap_OuterHeight(o,v)
 {
-  v+=ng_GetCurrentStylePx(o,'margin-top') + ng_GetCurrentStylePx(o,'margin-bottom');
-  v+=ng_GetCurrentStylePx(o,'border-top-width') + ng_GetCurrentStylePx(o,'border-bottom-width');
-  v+=ng_GetCurrentStylePx(o,'padding-top') + ng_GetCurrentStylePx(o,'padding-bottom');
+  var m=ng_GetCurrentStylePx(o,'margin-top'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'margin-bottom'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'border-top-width'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'border-bottom-width'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'padding-top'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'padding-bottom'); if(m>0) v+=m;
   return v;
 }
 
 function ngap_OuterWidth(o,v)
 {
-  v+=ng_GetCurrentStylePx(o,'margin-left') + ng_GetCurrentStylePx(o,'margin-right');
-  v+=ng_GetCurrentStylePx(o,'border-left-width') + ng_GetCurrentStylePx(o,'border-right-width');
-  v+=ng_GetCurrentStylePx(o,'padding-left') + ng_GetCurrentStylePx(o,'padding-right');
+  var m=ng_GetCurrentStylePx(o,'margin-left'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'margin-right'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'border-left-width'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'border-right-width'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'padding-left'); if(m>0) v+=m;
+  m=ng_GetCurrentStylePx(o,'padding-right'); if(m>0) v+=m;
   return v;
 }
 
