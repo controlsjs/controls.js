@@ -2718,7 +2718,7 @@ function ngl_DoUpdate(o)
     {
       cc=this.ItemsControls[i];
       setbounds(cc);
-      cc.Update();
+      if(typeof cc.Update==='function') cc.Update();
     }
   }
 
