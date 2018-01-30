@@ -2196,7 +2196,11 @@ function ngc_Disable()
 
 function ngc_SetChildControlsEnabled(v,p)
 {
-  var cc=this.ChildControls;
+  this.DoSetChildControlsEnabled(this.ChildControls,v,p);
+}
+
+function ngc_DoSetChildControlsEnabled(cc,v,p)
+{
   if((typeof cc === 'undefined')||(!cc.length)) return;
   switch(ngVal(this.ChildHandling,0) & 7) // 3bits are reserved form enabled state handling
   {
@@ -3025,6 +3029,20 @@ function ngControl(obj, id, type)
    */
   obj.SetChildControlsEnabled = ngc_SetChildControlsEnabled;
 
+  /*  Function: DoSetChildControlsEnabled
+   *  Sets enabled state of passed control's children.
+   *
+   *  Syntax:
+   *    void *DoSetChildControlsEnabled* (array controls, bool enabled [, object parent])
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.DoSetChildControlsEnabled = ngc_DoSetChildControlsEnabled;
+
+
   /*  Function: SetVisible
    *  Sets control visibility.
    *
@@ -3456,6 +3474,19 @@ function ngSysControl(obj, id, type)
    *    -
    */
   obj.SetChildControlsEnabled = ngc_SetChildControlsEnabled;
+
+  /*  Function: DoSetChildControlsEnabled
+   *  Sets enabled state of passed control's children.
+   *
+   *  Syntax:
+   *    void *DoSetChildControlsEnabled* (array controls, bool enabled [, object parent])
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.DoSetChildControlsEnabled = ngc_DoSetChildControlsEnabled;
 
   /*  Function: Elm
    *  Gets access to container DIV element object.
