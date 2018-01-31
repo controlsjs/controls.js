@@ -910,17 +910,22 @@ function ng_diProperties(props,data) {
         }),
         "Events": ng_diObject({
           "OnSetEnabled": ng_diEvent('function(c, v, p) { return true; }', { Level: 'advanced' }),
-          "OnEnabledChanged": ng_diEvent('function(c, p) {}', { Level: 'basic' })
+          "OnEnabledChanged": ng_diEvent('function(c, p) {}', { Level: 'basic' }),
+          "OnAddChildControl": ng_diEvent('function(obj) {}', { Level: 'advanced' }),
+          "OnRemoveChildControl": ng_diEvent('function(obj) {}', { Level: 'advanced' })
         }, { Level: 'basic', Order: 0.92 }, { DestroyIfEmpty: true, ChildDesignInfo: ng_diFunction('function(c) { return true; }', { DesignRemove: true, Level: 'user' }) }),
         "Methods": ng_diObject({
           "DoDispose": ng_diFunction('function() { return ng_CallParent(this, "DoDispose", arguments, true); }', { Level: 'advanced' }),
           "DoCreate": ng_diFunction('function(props, ref, nd, parent) { ng_CallParent(this, "DoCreate", arguments); }', { Level: 'advanced' }),
           "DoSetEnabled": ng_diFunction('function(v) { ng_CallParent(this, "DoSetEnabled", arguments); }', { Level: 'advanced' }),
           "DoSetChildEnabled": ng_diFunction('function(c, v, p) { ng_CallParent(this, "DoSetChildEnabled", arguments); }', { Level: 'advanced' }),
+          "DoSetChildControlsEnabled": ng_diFunction('function(cc, v, p) { ng_CallParent(this, "DoSetChildControlsEnabled", arguments); }', { Level: 'advanced' }),
 
           "Enable": ng_diFunction('function() { ng_CallParent(this, "Enable", arguments); }',{ Level: 'optional' }),
           "Disable": ng_diFunction('function() { ng_CallParent(this, "Disable, arguments); }',{ Level: 'optional' }),
           "SetEnabled": ng_diFunction('function(v, p) { ng_CallParent(this, "SetEnabled", arguments); }',{ Level: 'optional' }),
+          "AddChildControl": ng_diFunction('function(obj) { ng_CallParent(this, "AddChildControl", arguments); }', { Level: 'optional' }),
+          "RemoveChildControl": ng_diFunction('function(obj) { ng_CallParent(this, "RemoveChildControl", arguments); }', { Level: 'optional' }),
           "SetChildControlsEnabled": ng_diFunction('function(v, p) { ng_CallParent(this, "SetChildControlsEnabled", arguments); }', { Level: 'optional' }),
           "Elm": ng_diFunction('function() { return ng_CallParent(this, "Elm", arguments, null); }',{ Level: 'optional' }),
           "CtrlInheritsFrom": ng_diFunction('function(type) { return ng_CallParent(this, "CtrlInheritsFrom", arguments, false); }',{ Level: 'optional' }),
