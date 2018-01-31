@@ -1882,6 +1882,9 @@ function ngCreateControlHTML(props)
 
 // --- ngControl (abstract) ----------------------------------------------------
 
+var ngOnAddChildControl = ngOnAddChildControl || null;
+var ngOnRemoveChildControl = ngOnRemoveChildControl || null;
+
 var ngChildEnabledAsParent    = 0;
 var ngChildEnabledParentAware = 1;
 var ngChildEnabledIndependent = 2;
@@ -2192,6 +2195,34 @@ function ngc_Enable()
 function ngc_Disable()
 {
   this.SetEnabled(false);
+}
+
+function ngc_AddChildControl(obj)
+{
+  if(!obj) return;
+  if(typeof this.ChildControls === 'undefined') this.ChildControls = new Array();
+  if(typeof this.OnAddChildControl === 'function') this.OnAddChildControl(obj);
+  if(ngOnAddChildControl) ngOnAddChildControl(this,obj);
+  this.ChildControls[this.ChildControls.length]=obj;
+  if(!obj.ParentControl) obj.ParentControl=this;
+}
+
+function ngc_RemoveChildControl(obj)
+{
+  if(!obj) return;
+  if(typeof this.OnRemoveChildControl === 'function') this.OnRemoveChildControl(obj);
+  if(ngOnRemoveChildControl) ngOnRemoveChildControl(this,obj);
+  var cc=this.ChildControls;
+  if(typeof cc !== 'undefined') {
+    var c;
+    for(var i=cc.length-1;i>=0;i--)
+    {
+      c=cc[i];
+      if(c==obj) cc.splice(i,1);
+    }
+    if(!cc.length) delete this.ChildControls;
+  }
+  if(obj.ParentControl==this) obj.ParentControl=null;
 }
 
 function ngc_SetChildControlsEnabled(v,p)
@@ -3016,6 +3047,32 @@ function ngControl(obj, id, type)
    */
   obj.SetEnabled = ngc_SetEnabled;
 
+  /*  Function: AddChildControl
+   *  Adds control into child controls.
+   *
+   *  Syntax:
+   *    void *AddChildControl* (object obj)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.AddChildControl = ngc_AddChildControl;
+
+  /*  Function: RemoveChildControl
+   *  Removes control from child controls.
+   *
+   *  Syntax:
+   *    void *RemoveChildControl* (object obj)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.RemoveChildControl = ngc_RemoveChildControl;
+
   /*  Function: SetChildControlsEnabled
    *  Sets enabled state of control's children.
    *
@@ -3285,6 +3342,14 @@ function ngControl(obj, id, type)
    */
   obj.OnEnabledChanged = null;
   /*
+   *  Event: OnAddChildControl
+   */
+  obj.OnAddChildControl = null;
+  /*
+   *  Event: OnRemoveChildControl
+   */
+  obj.OnRemoveChildControl = null;
+  /*
    *  Event: OnSetVisible
    */
   obj.OnSetVisible     = null;
@@ -3462,6 +3527,32 @@ function ngSysControl(obj, id, type)
    */
   obj.SetEnabled = ngc_SetEnabled;
 
+    /*  Function: AddChildControl
+   *  Adds control into child controls.
+   *
+   *  Syntax:
+   *    void *AddChildControl* (object obj)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.AddChildControl = ngc_AddChildControl;
+
+  /*  Function: RemoveChildControl
+   *  Removes control from child controls.
+   *
+   *  Syntax:
+   *    void *RemoveChildControl* (object obj)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  obj.RemoveChildControl = ngc_RemoveChildControl;
+
   /*  Function: SetChildControlsEnabled
    *  Sets enabled state of control's children.
    *
@@ -3560,36 +3651,30 @@ function ngSysControl(obj, id, type)
    *  Event: OnEnabledChanged
    */
   obj.OnEnabledChanged = null;
+  /*
+   *  Event: OnAddChildControl
+   */
+  obj.OnAddChildControl = null;
+  /*
+   *  Event: OnRemoveChildControl
+   */
+  obj.OnRemoveChildControl = null;
 
   if ((ngHASDESIGNINFO())&&(typeof ngSysControlDesignInfo === 'function')) ngSysControlDesignInfo(obj);
 }
 
 // --- ngControl - children ----------------------------------------------------
 
-var ngOnAddChildControl = ngOnAddChildControl || null;
-
 function ngAddChildControl(parentobj, obj)
 {
   if((!parentobj)||(!obj)) return;
-  if(typeof parentobj.ChildControls === 'undefined') parentobj.ChildControls = new Array();
-  if (ngOnAddChildControl) ngOnAddChildControl(parentobj,obj);
-  parentobj.ChildControls[parentobj.ChildControls.length]=obj;
-  if(!obj.ParentControl) obj.ParentControl=parentobj;
+  if(typeof parentobj.AddChildControl === 'function') parentobj.AddChildControl(obj);
 }
 
 function ngRemoveChildControl(parentobj, obj)
 {
   if((!parentobj)||(!obj)) return;
-  var cc=parentobj.ChildControls;
-  if(typeof cc === 'undefined') return;
-  var c;
-  for(var i=cc.length-1;i>=0;i--)
-  {
-    c=cc[i];
-    if(c==obj) cc.splice(i,1);
-  }
-  if(!cc.length) delete parentobj.ChildControls;
-  if(obj.ParentControl==parentobj) obj.ParentControl=null;
+  if(typeof parentobj.RemoveChildControl === 'function') parentobj.RemoveChildControl(obj);
 }
 
 function ngSavePropState(parentobj, prop, recursive, states)
