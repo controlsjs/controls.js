@@ -252,6 +252,21 @@ var FileUploaderControl = {
        */
       c.ServerData = ngfup_ServerData;
 
+      /*  Function: AddUploadedFile
+       *  ...
+       *
+       *  Syntax:
+       *    bool *AddUploadedFile* (object data)
+       *
+       *  Parameters:
+       *    data - ...
+       *
+       *  Returns:
+       *    -
+       */
+      c.AddUploadedFile = ngfup_AddUploadedFile;
+
+
       /*  Function: ChangeFile
        *  ...
        *
@@ -524,7 +539,7 @@ function ngfup_ServerData(data){
     if(ng_IsArrayVar(data)){
       var errorData = [];
       for(var f = 0; f < data.length; f++){
-        var error = ngfup_FileUploaded(this,data[f]);
+        var error = this.AddUploadedFile(data[f]);
         if(error){errorData.push(error);}
       }
       if(errorData.length > 0){
@@ -533,7 +548,7 @@ function ngfup_ServerData(data){
       }
     }
     else{
-      var error = ngfup_FileUploaded(this,data);
+      var error = this.AddUploadedFile(data);
       if(error){
         this.ShowError(error);
         return false;
@@ -596,14 +611,14 @@ function ngfup_UploadFile(filename, content, contenttype){
   return false;
 }
 
-function ngfup_FileUploaded(c,data){
+function ngfup_AddUploadedFile(data){
   if((typeof data !== 'object') || (data === null)){return null;}
 
   if(data.Error){ return { Name: data.Name, Error: data.Error }; }
-  if(!c.CheckMaxFiles()){return { Name: data.Name, Error: { Message: 'ngfup_Error_MaxFiles', Data: this.MaxFilesCount } };}
+  if(!this.CheckMaxFiles()){return { Name: data.Name, Error: { Message: 'ngfup_Error_MaxFiles', Data: this.MaxFilesCount } };}
 
-  c.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
-  if(c.OnFileAdded){c.OnFileAdded(c, data.Name, data);}
+  this.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
+  if(this.OnFileAdded){this.OnFileAdded(this, data.Name, data);}
   return null;
 }
 
