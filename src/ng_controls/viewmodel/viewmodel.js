@@ -865,6 +865,50 @@ function ngfd_GetAttribute(attr)
   }
 }
 
+function ngfd_SetAttributes(attrs)
+{
+  if(ng_IsObjVar(attrs))
+    for(var attr in attrs)
+      this.SetAttribute(attr,attrs[attr]);
+}
+
+function ngfd_GetAttributes(attrs)
+{
+  var result={};
+  var getAll=false;
+  if(!ng_IsArrayVar(attrs)){
+    getAll=true;
+    attrs=new Array(
+      'PrivateField',
+      'DisplayName',
+      'Size',
+      'Precision',
+
+      'Required',
+      'NullIfEmpty',
+      'AllowEmpty',
+      'AutoTrim',
+      'ReadOnly',
+      'MinValue',
+      'MaxValue',
+      'Enum',
+      'DefaultValue'
+    );
+  }
+
+  var attr;
+  for(var i in attrs){
+    attr=attrs[i];
+    result[attr]=this.GetAttribute(attr);
+  }
+
+  if(getAll)
+    for(var attr in this.Attrs)
+      result[attr]=this.GetAttribute(attr);
+
+  return result;
+}
+
 function ngFieldDefCreateAs(fd, id, type, attrs)
 {
   try 
@@ -1156,6 +1200,34 @@ function ngFieldDef(id, type, attrs)
    */
   this.SetAttribute = ngfd_SetAttribute;
 
+  /*  Function: GetAttributes
+   *  Gets field attributes.
+   *
+   *  Syntax:
+   *    object *GetAttributes* (array attrs)
+   *
+   *  Parameters:
+   *    attrs - array of attribute names
+   *
+   *  Returns:
+   *    The value of all attribute.
+   */
+  this.GetAttributes = ngfd_GetAttributes;
+
+  /*  Function: SetAttributes
+   *  Sets field attributes.
+   *
+   *  Syntax:
+   *    object *SetAttributes* (object attrs)
+   *
+   *  Parameters:
+   *    attrs - name-value pairs
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetAttributes = ngfd_SetAttributes;
+
   /*  Function: TypedValue
    *  Converts given value according to field type.   
    *   
@@ -1331,8 +1403,7 @@ function ngFieldDef(id, type, attrs)
    */   
   this.OnParseString = null;
 
-  for(var i in attrs)
-    this.SetAttribute(i,attrs[i]);
+  this.SetAttributes(attrs);
 }
 
 function ngvm_SetValues(values,deserialize)
