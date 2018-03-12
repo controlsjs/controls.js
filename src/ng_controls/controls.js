@@ -1173,20 +1173,17 @@ function ngInitUserControls()
       ngCurrentUserControls=i;
       ngCurrentControlsGroup=ngVal(uc.ControlsGroup,ngCurrentLib);
       if(typeof uc.OnInit === 'function') uc.OnInit();
-      if((typeof uc.ControlImages === 'string')&&(ngControlImages!=uc.ControlImages))
+      if(typeof uc.ControlImages === 'string')
       {
-        uc.ControlImages=ng_URL(ng_ToAbsPath(uc.ControlImages, uc.Lib));
-        ng_PreloadImage(uc.ControlImages);
+        uc.ControlImages=ngInitUserControlImage(uc.ControlImages, uc.Lib);
         ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
       }
-      else if((typeof uc.ControlImages === 'object')&&(typeof uc.ControlImages.length === 'number'))
+      else if(ng_IsArrayVar(uc.ControlImages))
       {
         for(var j=0;j<uc.ControlImages.length;j++)
-        {
-          uc.ControlImages[j]=ng_URL(ng_ToAbsPath(uc.ControlImages[j], uc.Lib));
-          if(ngControlImages!=uc.ControlImages[j]) ng_PreloadImage(uc.ControlImages[j]);
-        }
-        if(uc.ControlImages.length>0) ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
+          uc.ControlImages[j]=ngInitUserControlImage(uc.ControlImages[j], uc.Lib);
+
+        ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
       }
       uc.initialized=true;
     }
@@ -1199,6 +1196,15 @@ function ngInitUserControls()
   }
 }
 
+function ngInitUserControlImage(imagePath, lib)
+{
+  if(typeof imagePath === 'string')
+  {
+    imagePath=ng_URL(ng_ToAbsPath(imagePath, lib));
+    if(imagePath!=ngControlImages) ng_PreloadImage(imagePath);
+  }
+  return imagePath;
+}
 
 /**
  *  Function: ng_MergeDef
