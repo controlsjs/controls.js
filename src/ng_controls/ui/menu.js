@@ -1049,34 +1049,32 @@ function ngmn_OnKeyDown(e)
   return true;
 }
 
+function ngmn_DoDrawItemText(html, text, it, col, id, level)
+{
+  var image=this.SubMenuImg;
+  if((it.SubMenu)&&(image)&&((this.Columns.length<=0)||(col.ID==this.Columns[list.Columns.length-1].ID)))
+  {
+    var dp=ngl_ItemImgDrawProps(this.ID+'_'+id+'M', (this.Enabled)&&(ngVal(it.Enabled,true)), image);
+    html.append('<div style="position: relative;">');
+    ngc_Img(html,dp,"width: "+dp.W+"px;",'class="'+this.BaseClassName+'SubMenu"');
+    html.append('<div style="padding-right:'+dp.W+'px">')
+    ng_CallParent(this,'DoDrawItemText',arguments);
+    html.append('</div></div>');
+  }
+  else ng_CallParent(this,'DoDrawItemText',arguments);
+}
 
 function ngmn_MenuText(list, it, col)
 {
-  var txt,t=new ngStringBuilder;
+  var txt;
 
   if(typeof it.OnGetText === 'function') txt=ngVal(it.OnGetText(list, it, col),'');
   else
   {
-    if(list.Columns.length>0)
-    {
-      txt=ngVal(it.Text[col.ID],'');
-      if(txt=='') txt='&nbsp;';
-    }
+    if(list.Columns.length>0) txt=ngVal(it.Text[col.ID],'');
     else txt=it.Text;
   }
-  var image=list.SubMenuImg;
-  if((it.SubMenu)&&(image)&&((list.Columns.length<=0)||(col.ID==list.Columns[list.Columns.length-1].ID)))
-  {
-    var id=list.ItemId(it);
-    var dp=ngl_ItemImgDrawProps(list.ID+'_'+id+'M', (list.Enabled)&&(ngVal(it.Enabled,true)), image);
-    t.append('<div style="position: relative;">');
-    ngc_Img(t,dp,"width: "+dp.W+"px;",'class="'+list.BaseClassName+'SubMenu"');
-    t.append('<div style="padding-right:'+dp.W+'px">')
-    t.append(txt);
-    t.append('</div></div>');
-  }
-  else t.append(txt);
-  return t.toString();
+  return txt;
 }
 
 function ngmn_DrawItemText(html, it, id, level)
@@ -2481,6 +2479,8 @@ function Create_ngMenu(def, ref, parent)
 
   c.DefaultDrawItemText=c.DrawItemText;
   c.DrawItemText = ngmn_DrawItemText;
+  ng_OverrideMethod(c,'DoDrawItemText',ngmn_DoDrawItemText);
+  
 
   /*
    *  Group: Events
