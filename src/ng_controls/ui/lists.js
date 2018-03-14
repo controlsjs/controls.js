@@ -2226,6 +2226,11 @@ function ngl_SyncItemAction(it, action)
   }
 }
 
+function ngl_DoDrawItemText(html, text, it, col, id, level)
+{
+  html.append(text);
+}
+
 function ngl_DrawItemText(html, it, id, level)
 {
   if((this.OnDrawItemText)&&(!ngVal(this.OnDrawItemText(this, html, it, id, level),false))) return;
@@ -2337,7 +2342,9 @@ function ngl_DrawItemText(html, it, id, level)
         {
           html.append('<div class="'+cclass+'Text"'+textevents);
           if((i)&&(alt!='')) html.append(' title="'+ng_htmlEncode(alt)+'"');
-          html.append('>'+text+'</div>');
+          html.append('>');
+          this.DoDrawItemText(html, text, it, col, id, level);
+          html.append('</div>');
         }
         html.append('<div style="position:relative;height:1px;">');
         html.append(it.ControlsHolder[col.ID].innerHTML);
@@ -2347,7 +2354,9 @@ function ngl_DrawItemText(html, it, id, level)
       {
         html.append('<div class="'+cclass+'Text"'+textevents);
         if((i)&&(alt!='')) html.append(' title="'+ng_htmlEncode(alt)+'"');
-        html.append('>'+text+'</div>');
+        html.append('>');
+        this.DoDrawItemText(html, text, it, col, id, level);
+        html.append('</div>');
       }
 
       if(!i) html.append('</div>');
@@ -2385,11 +2394,20 @@ function ngl_DrawItemText(html, it, id, level)
 
     if(typeof it.ControlsHolder !== 'undefined')
     {
-      if(!emptytext) html.append('<div class="'+cclass+'Text" style="position:relative;"'+textevents+'>'+text+'</div>'); // pos:relative - IE6 background-color fix
+      if(!emptytext) {
+        html.append('<div class="'+cclass+'Text" style="position:relative;"'+textevents+'>'); // pos:relative - IE6 background-color fix
+        this.DoDrawItemText(html, text, it, void 0, id, level);
+        html.append('</div>');
+
+      }
       html.append('<div style="position:relative;height:1px;">');
       html.append(it.ControlsHolder.innerHTML);
       html.append('</div>');
-    } else html.append('<div class="'+cclass+'Text" style="position:relative;"'+textevents+'>'+text+'</div>'); // pos:relative - IE6 background-color fix
+    } else {
+      html.append('<div class="'+cclass+'Text" style="position:relative;"'+textevents+'>'); // pos:relative - IE6 background-color fix
+      this.DoDrawItemText(html, text, it, void 0, id, level);
+      html.append('</div>');
+    }
 
     if(minheight>0) html.append('<div style="clear:both;height:0px;overflow:hidden;"></div>');
     html.append('</div></div>');
@@ -3889,6 +3907,7 @@ function ngList(id)
 
   this.GetRowClassName = ngl_GetRowClassName;
   this.DrawItemText = ngl_DrawItemText;
+  this.DoDrawItemText = ngl_DoDrawItemText;
   this.DrawItem = ngl_DrawItem;
   this.DoUpdate = ngl_DoUpdate;
   this.UpdateColumns = ngl_UpdateColumns;
