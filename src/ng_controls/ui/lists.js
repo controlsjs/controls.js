@@ -2489,35 +2489,43 @@ function ngl_DrawItem(html, it, id, level,pcollapsed)
 
 function ngl_CalcIndent()
 {
-  var id,indent,image,maxindent=0,it=null;
+  var indent,maxindent=0,it=null;
 
   for(var i=0;(i<this.Items.length)||(!i);i++)
   {
     if(this.Items.length>0) it=this.Items[i];
     if(!it) it=new ngListItem(':MeasureImg:');
 
-    indent=0;
-    if((this.OnGetItemImg)||(this.OnGetCheckImg)||(this.OnGetTreeImg)) id=this.ItemId(it);
-    if(this.OnGetItemImg) image=this.OnGetItemImg(this, it, id, 0);
-    else
-    {
-      this.SyncItemAction(it);
-      image=ngVal(it.Image,this.ItemImg);
-    }
-    if(image) indent+=ngVal(image.W,0);
-
-    if(this.OnGetCheckImg) image=this.OnGetCheckImg(this, it, id);
-    else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
-    if(image) indent+=ngVal(image.W,0);
-
-    if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, it, id);
-    else image=this.TreeImg;
-    if(image) indent+=ngVal(image.W,0);
-
+    indent=this.CalcItemIndent(it);
     if(indent>maxindent) maxindent=indent;
   }
   if(typeof this.ListIndent === 'undefined') this.ListIndent=maxindent;
   if(typeof this.DefaultIndent === 'undefined') this.DefaultIndent=maxindent;
+}
+
+function ngl_CalcItemIndent(item)
+{
+  var indent=0;
+  if(!item) return indent;
+
+  var id,image;
+  if((this.OnGetItemImg)||(this.OnGetCheckImg)||(this.OnGetTreeImg)) id=this.ItemId(item);
+  if(this.OnGetItemImg) image=this.OnGetItemImg(this, item, id, 0);
+  else
+  {
+    this.SyncItemAction(item);
+    image=ngVal(item.Image,this.ItemImg);
+  }
+  if(image) indent+=ngVal(image.W,0);
+
+  if(this.OnGetCheckImg) image=this.OnGetCheckImg(this, item, id);
+  else image=(typeof item.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
+  if(image) indent+=ngVal(image.W,0);
+
+  if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, item, id);
+  else image=this.TreeImg;
+  if(image) indent+=ngVal(image.W,0);
+  return indent;
 }
 
 function ngl_DoUpdate(o)
@@ -3872,6 +3880,7 @@ function ngList(id)
   this.ItemId = ngl_ItemId;
   this.ItemById = nglist_ItemById;
   this.CalcIndent=ngl_CalcIndent;
+  this.CalcItemIndent=ngl_CalcItemIndent;
 
   this.DoDropDown = ngl_DoDropDown;
   this.DoDropDownFinished = ngl_DoDropDownFinished;
