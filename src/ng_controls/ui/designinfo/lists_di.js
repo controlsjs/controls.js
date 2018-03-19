@@ -667,6 +667,12 @@ return {
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
             "Frame": ng_diType( 'img_frame', { Level: 'advanced' })
           },
+          "Methods": {
+            "DoItemsChanged": ng_diFunction('function() { ng_CallParent(this, "DoLoadData", arguments); }', { Level: 'advanced' }),
+            "DoDrawItemText": ng_diFunction('function(html, text, it, col, id, level) { ng_CallParent(this, "DoDrawItemText", arguments); }', { Level: 'advanced' }),
+            "DoDropDown": ng_diFunction('function(edit) { ng_CallParent(this, "DoDropDown", arguments); }', { Level: 'advanced' }),
+            "DoDropDownFinished": ng_diFunction('function(edit) { ng_CallParent(this, "DoDropDownFinished", arguments); }', { Level: 'advanced' })
+          },
           "Events": {
             "OnAdd": ng_diEvent('function(c, it, parent) { return true; }', { Level: 'basic' }),
             "OnRemove": ng_diEvent('function(c, it, parent) {}', { Level: 'basic' }),
@@ -847,6 +853,9 @@ return {
             "AsyncDataRetryCnt": ng_diInteger(3, { Level: 'basic' }),
             "AsyncDataURL": ng_diType('url', { Level: 'basic' }),
             "DesignLive": ng_diBoolean(false, { Level: 'basic', Order: 0.95 })
+          },
+          "Methods": {
+            "DoLoadData": ng_diFunction('function(idx, cnt, retry) { return ng_CallParent(this, "DoLoadData", arguments, true); }', { Level: 'advanced' })
           },
           "Events": {
             "OnPageChanging": ng_diEvent('function(c, page) { return true; }', { Level: 'basic' }),
