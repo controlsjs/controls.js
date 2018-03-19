@@ -17,6 +17,7 @@ var ngOnAppCreated=(typeof ngOnAppCreated === 'undefined' ? null : ngOnAppCreate
 var ngOnAppLoadProgress=(typeof ngOnAppLoadProgress === 'undefined' ? null : ngOnAppLoadProgress);
 var ngOnAppFileLoad=(typeof ngOnAppFileLoad === 'undefined' ? null : ngOnAppFileLoad);
 var ngOnAppFileLoaded=(typeof ngOnAppFileLoaded === 'undefined' ? null : ngOnAppFileLoaded);
+var ngOnAppFileLoadFailed=(typeof ngOnAppFileLoadFailed === 'undefined' ? null : ngOnAppFileLoadFailed);
 
 function ngCreateHTMLFragment(htmlStr) {
   var frag = document.createDocumentFragment();
@@ -325,13 +326,18 @@ function ngLoadApplication(elm, callback, files)
       case 1: queue = scriptsqueue; exec = exec_script; break;
     }
 
+    function loadfailed(type,url,data) {
+      if(typeof loadfailcallback==='function') loadfailcallback(type,url,data);
+      if(typeof ngOnAppFileLoadFailed === 'function') ngOnAppFileLoadFailed(type,url,data);
+    }
+
     if(!async) {
-      var filedata={ URL: url, LoadURL: loadurl, Data: data, Async: asyncloader, LoadCallback: loadcallback, LoadFailCallback: loadfailcallback };
+      var filedata={ URL: url, LoadURL: loadurl, Data: data, Async: asyncloader, LoadCallback: loadcallback, LoadFailCallback: loadfailed };
       queue.push(filedata);
       if((!asyncloader)&&(queue.length>1)) {return;}
     }
 
-    function loadfile(url, data, loadcallback, asyncloader, loadfailcallback)
+    function loadfile(url, data, loadcallback, asyncloader, loadfailcallback2)
     {
       function fileerror(isasync)
       {
@@ -345,8 +351,8 @@ function ngLoadApplication(elm, callback, files)
         }
 
         if(async){
-          if(typeof loadfailcallback==='function'){
-            loadfailcallback(data.Type,url,data);
+          if(typeof loadfailcallback2==='function'){
+            loadfailcallback2(data.Type,url,data);
             loadcallback=null;
           }
         }
@@ -450,10 +456,10 @@ function ngLoadApplication(elm, callback, files)
       }
     }
 
-    loadfile(loadurl, data, loadcallback, asyncloader, loadfailcallback);
+    loadfile(loadurl, data, loadcallback, asyncloader, loadfailed);
   };
 
-  window.ngLoadAppImg = function(url, data, loadcallback)
+  window.ngLoadAppImg = function(url, data, loadcallback, async, loadfailcallback)
   {
     if((typeof ngOnAppFileLoad === 'function')&&(!ngOnAppFileLoad(2,url,data))) return null;
     var i=appimages[url];
@@ -462,6 +468,14 @@ function ngLoadApplication(elm, callback, files)
       i=new Image;
       appparts++;
       var loaded = false;
+      function imgfailed()
+      {
+        if(loaded) return;
+        loaded = true;
+        if(typeof loadfailcallback === 'function') loadfailcallback(2,url,data);;
+        if(typeof ngOnAppFileLoadFailed === 'function') ngOnAppFileLoadFailed(2,url,data);
+        apppartloaded(-1,url,data);
+      }
       function imgloaded()
       {
         if(loaded) return;
@@ -470,8 +484,8 @@ function ngLoadApplication(elm, callback, files)
         apppartloaded(2,url,data);
       }
       i.onload=imgloaded;
-      i.onfailure=imgloaded;
-      i.onerror=imgloaded;
+      i.onfailure=imgfailed;
+      i.onerror=imgfailed;
       appimages[url]=i;
       i.src=ngAppURL(url);
     }
