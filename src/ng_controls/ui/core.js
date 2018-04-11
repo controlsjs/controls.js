@@ -2759,10 +2759,10 @@ function nge_HideDropDown()
   if(l){
     l.SetVisible(false);
 
-    if(this._origDDWidth!==null){
+    if(typeof this._origDDWidth !== 'undefined'){
       var o=l.Elm();
       if(o) o.style.width=this._origDDWidth;
-      this._origDDWidth=null;
+      delete this._origDDWidth;
     }
   }
 }
