@@ -343,11 +343,13 @@ function ngfd_ArrayDoSerialize(v)
 {
   if(!ngIsFieldDef(this.ValueFieldDef)) return;
   var r=this.TypedValue(v);
-  var ret=[];
-  for(var k in r) {
-    ret[k]=this.ValueFieldDef.Serialize(r[k]);
+  if((typeof r==='object')&&(r)) {
+    var ret=[];
+    for(var k in r) {
+      ret[k]=this.ValueFieldDef.Serialize(r[k]);
+    }
+    return ret;
   }
-  return ret;
 }
 
 function ngfd_ArrayDoDeserialize(v)
@@ -418,6 +420,9 @@ function ngfd_ObjectDoTypedValue(v)
 {
   if(v===null) return null;
   var r;
+  if(!ng_typeObject(v))
+    throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
+
   if(ng_typeObject(this.PropsFieldDefs))
   {
     r={};
@@ -452,16 +457,12 @@ function ngfd_ObjectDoTypedValue(v)
     if(isempty) r=null;
   }
   else {
-    if(!ng_typeObject(v)) throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty'); // type error
-    else
-    {
-      if(this.NullIfEmpty) {
-        var isempty=true;
-        for(var k in v) {
-          if(!ng_isEmptyObject(v[k])) { isempty=false; break; }
-        }
-        if(isempty) v=null;
+    if(this.NullIfEmpty) {
+      var isempty=true;
+      for(var k in v) {
+        if(!ng_isEmptyObject(v[k])) { isempty=false; break; }
       }
+      if(isempty) v=null;
     }
     r=v;
   }
