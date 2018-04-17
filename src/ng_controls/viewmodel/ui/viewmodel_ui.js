@@ -2247,6 +2247,7 @@ ngUserControls['viewmodel_ui'] = {
                 var checkedacc=c.DataBindings.Checked.ValueAccessor();
                 if((bindinfo.Checked)&&(checkedacc)) {
                   var checked=checkedacc();
+                  if(!ng_IsArrayVar(checked)) checked=[];
                   if(arr_sync(checked,bindinfo.Checked)) {
                     //console.log('VMUpdate Checked',checked);
                     checkedacc(checked);
