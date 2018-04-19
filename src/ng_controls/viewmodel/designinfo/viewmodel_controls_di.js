@@ -209,7 +209,8 @@ var ViewModel_Controls_DesignInfo = (function()
               IgnoreDataModel: true
             }
           })
-        ], { Level: (di.IsContainer ? 'advanced' : 'optional') })
+        ], { Level: (di.IsContainer ? 'advanced' : 'optional') }),
+      "ControlsIgnoreItemValue": ng_diBoolean(false, { Level: (di.IsContainer ? 'advanced' : 'optional') })
     };
 
     // dependent bindings

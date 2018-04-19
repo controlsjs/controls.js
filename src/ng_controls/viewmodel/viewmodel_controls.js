@@ -1223,6 +1223,8 @@ ngUserControls['viewmodel_controls'] = {
       function (c, valueAccessor, allBindingsAccessor) {
         ngCtrlBindingRead('Controls',c,valueAccessor,function(val) {
           var controlsdelayedupdate = ngVal(allBindingsAccessor.get("ControlsDelayedUpdate"),10);
+          var controlsignoreitemval = ngVal(allBindingsAccessor.get("ControlsIgnoreItemValue"),false);
+
           if(c._vmcontrolsupdtimer) clearTimeout(c._vmcontrolsupdtimer);
           c._vmcontrolsupdtimer=null;
 
@@ -1232,18 +1234,24 @@ ngUserControls['viewmodel_controls'] = {
           var oldval=c.VMControls._oldval;
           var dfrom=0;
           if((ng_typeArray(val))&&(ng_typeArray(oldval))) {
-            if(c.OnIsViewModelControlChanged)
-            {
-              for(var i=0;i<val.length && i<oldval.length;i++) {
-                if(!ngVal(c.OnIsViewModelControlChanged(c,val[i],oldval[i]),true)) dfrom=i+1;
-                else break;
+            if(!controlsignoreitemval) {
+              if(c.OnIsViewModelControlChanged)
+              {
+                for(var i=0;i<val.length && i<oldval.length;i++) {
+                  if(!ngVal(c.OnIsViewModelControlChanged(c,val[i],oldval[i]),true)) dfrom=i+1;
+                  else break;
+                }
+              }
+              else {
+                for(var i=0;i<val.length && i<oldval.length;i++) {
+                  if(ng_VarEquals(val[i],oldval[i])) dfrom=i+1;
+                  else break;
+                }
               }
             }
             else {
-              for(var i=0;i<val.length && i<oldval.length;i++) {
-                if(ng_VarEquals(val[i],oldval[i])) dfrom=i+1;
-                else break;
-              }
+              if(val.length<oldval.length) dfrom=val.length;
+              else dfrom=oldval.length;
             }
           }
           else {
