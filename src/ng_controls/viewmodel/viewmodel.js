@@ -3798,11 +3798,13 @@ ngUserControls['viewmodel'] = {
           if(writing_properties) return;
           fd.Value(v);
         });
-        var objprops={};
+        var objprops={},pv;
         for(var k in fd.PropsFieldDefs) {
           pfd=fd.PropsFieldDefs[k];
           if(ngIsFieldDef(pfd)) {
-            ko.ng_fielddef(objprops,pfd,vmGetFieldByID(v,k));
+            pv=vmGetFieldByID(v,k);
+            if(typeof pv==='undefined') pv=ko.observable(void 0);
+            ko.ng_fielddef(objprops,pfd,pv);
             pfd=pfd.Value;
           }
           else objprops[k]=pfd;
