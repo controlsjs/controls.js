@@ -616,28 +616,29 @@ function ngfd_Serialize(v)
 function ngfd_Deserialize(v)
 {
   var r;
-  if(this.OnDeserialize) r=this.OnDeserialize(this,v);
-  if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
-  if(ng_isEmpty(r)) r=v; 
-  switch(this.DataType) 
+  try
   {
-    case 'TIMESTAMP':
-    case 'DATETIME':
-    case 'DATE':
-    case 'TIME':
-    case 'UTCTIMESTAMP':
-    case 'UTCDATETIME':
-    case 'UTCDATE':
-    case 'UTCTIME':          
-      r=ng_toDate(r,r);
-      break;                   
-  }
-  try   
-  {
+    if(this.OnDeserialize) r=this.OnDeserialize(this,v);
+    if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
+    if(ng_isEmpty(r)) r=v;
+    switch(this.DataType)
+    {
+      case 'TIMESTAMP':
+      case 'DATETIME':
+      case 'DATE':
+      case 'TIME':
+      case 'UTCTIMESTAMP':
+      case 'UTCDATETIME':
+      case 'UTCDATE':
+      case 'UTCTIME':
+        r=ng_toDate(r,r);
+        break;
+    }
     r=this.TypedValue(r);
   }
   catch(e)
   {
+    r=v;
   }
   return r;  
 }
@@ -1649,7 +1650,7 @@ function ngvm_makeobservable(o,serializeable)
 function ngvm_recievedata(results)
 {
   if(!results) return;
-    
+
   // Parse request id
   var vmid='';
   var reqid=ngVal(results.reqid,'');
