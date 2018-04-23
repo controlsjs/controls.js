@@ -2031,6 +2031,13 @@ function vmGetFieldByID(vm,propid)
   return; //undefined
 }
 
+function vmGetObservableByID(vm,propid)
+{
+  var f=vmGetFieldByID(vm,propid);
+  if(ngIsFieldDef(f)) f=f.Value;
+  return (ko.isObservable(f) ? f : undefined);
+}
+
 function ngvm_GetFieldByID(propid)
 {
   return vmGetFieldByID(this.ViewModel,propid);
@@ -2830,7 +2837,7 @@ ngUserControls['viewmodel'] = {
      */
     ko.ng_linkvalue = function (prop,viewModel,propName,callonsync) {
       var vm=viewmodel(viewModel);
-      var f=vmGetFieldByID(vm,propName);
+      var f=vmGetObservableByID(vm,propName);
       if((ko.isObservable(f))&&(ko.isObservable(prop))) {
         ko.ng_setvalue(prop,ko.ng_getvalue(f))
         f.subscribe(function(v) {
@@ -2858,9 +2865,9 @@ ngUserControls['viewmodel'] = {
      */
     ko.ng_linkvalues = function (viewModel1,propName1,viewModel2,propName2,callonsync) {
       var vm1=viewmodel(viewModel1);
-      var prop=vmGetFieldByID(vm1,propName1);
+      var prop=vmGetObservableByID(vm1,propName1);
       var vm2=viewmodel(viewModel2);
-      var f=vmGetFieldByID(vm2,propName2);
+      var f=vmGetObservableByID(vm2,propName2);
       if((ko.isObservable(f))&&(ko.isObservable(prop))) {
         ko.ng_setvalue(f,ko.ng_getvalue(prop))
         f.subscribe(function(v) {
@@ -3022,7 +3029,7 @@ ngUserControls['viewmodel'] = {
             var p;
             for(var i=1;i<fargs.length;i++)
             {
-              p=vmGetFieldByID(vm,fargs[i]);                
+              p=vmGetObservableByID(vm,fargs[i]);
               if((p)&&(typeof p.subscribe === 'function'))
                 p.subscribe(function(newValue) { changed(true); });
             }
@@ -3068,7 +3075,7 @@ ngUserControls['viewmodel'] = {
             var p;
             for(var i=1;i<fargs.length;i++)
             {
-              p=vmGetFieldByID(vm,fargs[i]);                
+              p=vmGetObservableByID(vm,fargs[i]);
               if((p)&&(typeof p.subscribe === 'function'))
                 p.subscribe(function(newValue) { version(version()+1); });
             }
@@ -3179,7 +3186,7 @@ ngUserControls['viewmodel'] = {
             for(var i=1;i<fargs.length-1;i+=2)
             {
               (function() {
-                var p=vmGetFieldByID(vm,fargs[i]);
+                var p=vmGetObservableByID(vm,fargs[i]);
                 if(typeof p==='undefined') p=vmGetFieldValueByID(vm,fargs[i]);                
                 var v=cmpprop(vm,fargs[i+1]);
                 if(typeof v==='undefined') v=cmpval(vm,fargs[i+1]);                
@@ -3259,7 +3266,7 @@ ngUserControls['viewmodel'] = {
             for(var i=1;i<fargs.length-1;i+=2)
             {
               (function() {
-                var p=vmGetFieldByID(vm,fargs[i]);
+                var p=vmGetObservableByID(vm,fargs[i]);
                 if(typeof p==='undefined') p=vmGetFieldValueByID(vm,fargs[i]);                
                 var v=cmpprop(vm,fargs[i+1]);
                 if(typeof v==='undefined') v=cmpval(vm,fargs[i+1]);                
