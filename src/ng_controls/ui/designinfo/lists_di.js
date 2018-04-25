@@ -116,7 +116,8 @@ return {
             3: ng_diMixed([
                  ng_diUndefined(),
                  ng_diInteger(0, undefined, { InitValue: 100 })
-               ], { DisplayName: 'Width', InitType: 'integer', Level: 'basic' })
+               ], { DisplayName: 'Width', InitType: 'integer', Level: 'basic' }),
+            4: ng_diBoolean(true, { DisplayName: 'Visible', Level: 'basic' })
           }
         }
       },
@@ -145,7 +146,8 @@ return {
             "Width": ng_diMixed([
               ng_diUndefined(),
               ng_diInteger(0, undefined, { InitValue: 100 })
-            ], { InitType: 'integer', Level: 'basic' })
+            ], { InitType: 'integer', Level: 'basic' }),
+            "Visible": ng_diBoolean(true, { Level: 'basic' })
           }
         }
       },
@@ -685,6 +687,7 @@ return {
             "OnCheckChanged": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnSetItemVisible": ng_diEvent('function(c, it) {}', { Level: 'basic' }),
             "OnSetItemEnabled": ng_diEvent('function(c, it) {}', { Level: 'basic' }),
+            "OnSetColumnVisible": ng_diEvent('function(c, col) {}', { Level: 'basic' }),
             "OnSelectChanged": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnRedrawSelected": ng_diEvent('function(c, elm, selected, itemid) {}', { Level: 'advanced' }),
             "OnClickItem": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),

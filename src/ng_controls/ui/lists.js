@@ -946,6 +946,29 @@ function ngl_SetItemEnabled(it, state)
   }
 }
 
+function ngl_SetColumnVisible(id,visible)
+{
+  if(this.Columns.length>0)
+  {
+    var col;
+    for(var i=0;i<this.Columns.length;i++)
+    {
+      col = this.Columns[i];
+      if(col.ID!=id) continue;
+
+      visible=ngVal(visible,true);
+      if(ngVal(col.Visible,true)!=visible)
+      {
+        col.Visible=visible;
+        if(this.OnSetColumnVisible) this.OnSetColumnVisible(this,col);
+
+        if(col.Visible==visible) this.Update();
+      }
+      break;
+    }
+  }
+}
+
 function ngl_SelectChanged()
 {
   var o,changed=false;
@@ -2308,6 +2331,8 @@ function ngl_DrawItemText(html, it, id, level)
     for(var i=0;i<this.Columns.length;i++)
     {
       col=this.Columns[i];
+      if(!ngVal(col.Visible,true)) continue;
+
       html.append('<td valign="'+ngVal(col.VAlign,'top')+'" align="'+col.Align+'"'+(minheight>0 ? ' height="'+minheight+'"' : '')+'>');
       if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, it, col),'');
       else
@@ -2665,6 +2690,8 @@ function ngl_DoUpdate(o)
     for(var i=0;i<this.Columns.length;i++)
     {
       col=this.Columns[i];
+      if(!ngVal(col.Visible,true)) continue;
+
       th_append('<td');
       if(i==width100) th_append(' width="'+(this.Columns.length==1 ? 1 : 100)+'%"'); // strange fix, 100% will not work if one column
       th_append(' align="'+col.Align+'"');
@@ -3141,18 +3168,19 @@ function ngListItem(txt)
  *  This class implements <ngList> column.
  *
  *  Syntax:
- *    new *ngListCol* (string id, string caption [, string align='left', int width=undefined])
+ *    new *ngListCol* (string id, string caption [, string align='left', int width=undefined, bool visible=true])
  *
  *  Parameters:
  *    id - column id
  *    caption - column caption
  *    align - column alignment
  *    width - column width in pixels
+ *    visible - column visibility
  *
  *  See also:
  *    <ngList>
  */
-function ngListCol(id, caption, align, width)
+function ngListCol(id, caption, align, width, visible)
 {
   /*
    *  Group: Properties
@@ -3183,6 +3211,11 @@ function ngListCol(id, caption, align, width)
    *  Type: int
    */
   this.Width=width;
+  /*  Variable: Visible
+   *  ...
+   *  Type: bool
+   */
+  this.Visible=ngVal(visible,true);
 }
 
 /**
@@ -3654,6 +3687,16 @@ function ngList(id)
    *    -
    */
   this.SetItemEnabled = ngl_SetItemEnabled;
+  /*  Function: SetColumnVisible
+   *  Sets column visibility.
+   *
+   *  Syntax:
+   *    void *SetColumnVisible* (int id [, bool visible = true])
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetColumnVisible = ngl_SetColumnVisible;
 
   /*  Function: Sort
    *  Performs a sort on the list.
@@ -4018,6 +4061,11 @@ function ngList(id)
    *  Event: OnSetItemEnabled
    */
   this.OnSetItemEnabled = null;
+
+  /*
+   *  Event: OnSetColumnVisible
+   */
+  this.OnSetColumnVisible = null;
 
   /*
    *  Event: OnSelectChanged
