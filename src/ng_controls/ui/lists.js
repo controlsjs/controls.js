@@ -2251,7 +2251,7 @@ function ngl_SyncItemAction(it, action)
 
 function ngl_DoDrawItemText(html, text, it, col, id, level)
 {
-  html.append(text);
+  html.append(''+text);
 }
 
 function ngl_DrawItemText(html, it, id, level)
