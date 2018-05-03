@@ -3828,15 +3828,21 @@ function ngStringBuilder(value)
    */                     
   this.append = function (value)
   {
-    if(typeof value === 'object') 
+    switch(typeof value)
     {
-      if(value)
-      {
-        if(value.strings)  for(var i=0;i<value.strings.length;i++) this.strings.push(value.strings[i]);
-        else               for(var i=0;i<value.length;i++) this.strings.push(value[i]);
-      }
+      case 'object':
+        if(value)
+        {
+          if(value.strings)  for(var i=0;i<value.strings.length;i++) this.strings.push(value.strings[i]);
+          else               for(var i=0;i<value.length;i++) this.strings.push(value[i]);
+        }
+        break;
+      case 'undefined':
+        break;
+      default:
+        this.strings.push(value);
+        break;
     }
-    else this.strings.push(value);
     return this;
   }
   
