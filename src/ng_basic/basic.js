@@ -3830,12 +3830,12 @@ function ngStringBuilder(value)
   {
     if(value) 
     {
-      if(typeof value === 'string') this.strings.push(value);
-      else
+      if(typeof value === 'object') 
       {
         if(value.strings)  for(var i=0;i<value.strings.length;i++) this.strings.push(value.strings[i]);
         else               for(var i=0;i<value.length;i++) this.strings.push(value[i]);
       }
+      else this.strings.push(value);
     }
     return this;
   }
