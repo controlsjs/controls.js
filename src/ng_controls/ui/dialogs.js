@@ -478,8 +478,7 @@ ngUserControls['dialogs'] = {
         }
         if(typeof b.Data.DialogResult !== 'undefined')
         {
-          if(!b.Data.OnClick) b.Data.OnClick=dlgbx_BtnClick;
-          if(b.Data.DialogResult == mbCancel) // cancel found, assign close btn  
+          if(b.Data.DialogResult == mbCancel) // cancel found, assign close btn
           {
             def.Data.DialogResult=mbCancel;
             def.CloseBtn=true;
@@ -487,6 +486,10 @@ ngUserControls['dialogs'] = {
           }
           if(typeof defresult==='undefined') defresult=b.Data.DialogResult;
           else if(defresult != b.Data.DialogResult) defresult=mbNone;
+          
+          b.OnCreated=ngAddEvent(b.OnCreated, function (c, ref) {
+            if(!c.OnClick) c.OnClick=dlgbx_BtnClick;
+          });
         }
       }
       if(bcnt==1) // one button
