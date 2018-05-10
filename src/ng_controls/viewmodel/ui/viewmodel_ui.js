@@ -2092,7 +2092,12 @@ ngUserControls['viewmodel_ui'] = {
                       }
                     else {
                       if((c!==list)||(!menubar)) {
-                        if((it.SubMenu)&&(typeof it.SubMenu.Dispose === 'function')) it.SubMenu.Dispose();
+                        var sm=it.SubMenu;
+                        if((sm)&&(typeof sm.Dispose === 'function')) {
+                          delete it.SubMenu;
+                          sm.Dispose();
+                          list.need_update=true;
+                        }
                       }
                     }
                   }
