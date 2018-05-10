@@ -2050,11 +2050,11 @@ ngUserControls['viewmodel_ui'] = {
                   var it=items[j];
                   var vmit=arr[j];
                   for(var p in vmit) {
-                    if(ignoredprops[p]) continue;
+                    if((ignoredprops[p])||(it[p]===vmit[p])) continue;
                     it[p]=vmit[p];
+                    list.need_update=true;
+                    list.DoItemsChanged();
                   }
-
-                  list.need_update=true;
 
                   if((c!==list)||(!menubar)) {
                     if((typeof vmit.Checked !== 'undefined')&&(it.Checked!==vmit.Checked)) list.CheckItem(it,vmit.Checked);
@@ -2072,7 +2072,7 @@ ngUserControls['viewmodel_ui'] = {
                   if(ng_IsArrayVar(vitems))
                     synclistupdateex(vitems, it.Items, it, list);
                   else {
-                    if((c!==list)||(!menubar)) list.Clear(it);
+                    if(((c!==list)||(!menubar))&&(ng_IsArrayVar(it.Items))) list.Clear(it);
                   }
 
                   if(ismenu) {
@@ -2080,6 +2080,7 @@ ngUserControls['viewmodel_ui'] = {
                     if(ng_IsArrayVar(vsubmenu))
                       if(!it.SubMenu) {
                         if(typeof list.CreateSubMenu === 'function') {
+                          list.need_update=true;
                           list.CreateSubMenu(it);
                           if(it.SubMenu) register_listchanges(c, it.SubMenu, menubar);
                         }
