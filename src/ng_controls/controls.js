@@ -810,7 +810,9 @@ function ng_ToAbsPath(path,lib)
     return ngLibPath(lib) + path;
   if((typeof ngApp === 'object')&&(ngApp))
     return ngApp.AppPath + path;
-  return window.location.href.substr(0, window.location.href.indexOf('#'))+path;
+  var pos=window.location.href.indexOf('?');
+  if (pos<0) pos=window.location.href.indexOf('#');
+  return window.location.href.substr(0, pos)+path;
 }
 
 function ng_SetOpacity(o,v)
