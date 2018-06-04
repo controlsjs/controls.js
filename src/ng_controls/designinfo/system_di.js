@@ -47,7 +47,7 @@ ngUserControls['system_designinfo'] = {
           },
           "Events": {
             "OnTimer": ng_diEvent('function(c, tickcnt) { return true; }',{Level:'basic'}),
-            "OnStart": ng_diEvent('function(c) {}',{Level:'basic'}),
+            "OnStart": ng_diEvent('function(c) { return true; }',{Level:'basic'}),
             "OnStop": ng_diEvent('function(c, tickcnt) {}',{Level:'basic'})
           }
         })
