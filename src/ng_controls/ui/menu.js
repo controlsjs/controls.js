@@ -531,6 +531,11 @@ function ngmn_DoPopup()
   return mo;
 }
 
+function ngmn_nearestpos(mx,mx1,mx2)
+{
+  return (Math.abs(mx-mx1)<Math.abs(mx-mx2)) ? mx1 : mx2;
+}
+
 function ngmn_Popup(x,y,halign,valign)
 {
   var mo=this.DoPopup();
@@ -567,7 +572,7 @@ function ngmn_Popup(x,y,halign,valign)
     }
     if(mx+sw>srect.Right-msi) mx=x-sw; // right
   }
-  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
+  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=ngmn_nearestpos(mx,srect.Left+msi,srect.Right-msi-sw);
 
   if(valign==='bottom')
   {
@@ -586,7 +591,7 @@ function ngmn_Popup(x,y,halign,valign)
     }
     if(my+sh>srect.Bottom-msi) my=y-sh; // bottom
   }
-  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=ngmn_nearestpos(my,srect.Top+msi,srect.Bottom-msi-sh);
 
   mo.style.left=mx+'px';
   mo.style.top=my+'px';
@@ -680,8 +685,7 @@ function ngmn_PopupCtrl(c,halign,valign)
     }
     if(mx+sw>srect.Right-msi) mx=pos.x+pos.w-sw-ox; // right
   }
-  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
-
+  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=ngmn_nearestpos(mx,srect.Left+msi,srect.Right-msi-sw);
 
   if(valign==='bottom')
   {
@@ -700,7 +704,7 @@ function ngmn_PopupCtrl(c,halign,valign)
     }
     if(my+sh>srect.Bottom-msi) my=pos.y-sh-oy; // bottom
   }
-  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=ngmn_nearestpos(my,srect.Top+msi,srect.Bottom-msi-sh);
 
   mx+=ng_ScrollX(mp);
   my+=ng_ScrollY(mp);
@@ -755,7 +759,7 @@ function ngmn_PopupSubMenu(o,halign,valign)
     mx=pos.x+pos.w-ox;
     if(mx+sw>srect.Right-msi) mx=pos.x-sw+ox; // right
   }
-  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=srect.Left+msi;
+  if((mx<srect.Left)||(mx+sw>srect.Right-msi)) mx=ngmn_nearestpos(mx,srect.Left+msi,srect.Right-msi-sw);
 
   var mt=0;
   var m=ng_GetCurrentStylePx(mo,'padding-top'); if(m>0) mt+=m;
@@ -777,7 +781,7 @@ function ngmn_PopupSubMenu(o,halign,valign)
     my=pos.y+oy-mt;
     if(my+sh>srect.Bottom-msi) my=pos.y+pos.h-sh-oy+mb; // bottom
   }
-  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=srect.Top+msi;
+  if((my<srect.Top)||(my+sh>srect.Bottom-msi)) my=ngmn_nearestpos(my,srect.Top+msi,srect.Bottom-msi-sh);
 
   mx+=ng_ScrollX(mp);
   my+=ng_ScrollY(mp);
