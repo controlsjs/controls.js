@@ -1935,103 +1935,17 @@ function nge_Suggestion(id)
   c.SuggestionTimer=null;
 
   var txt=c.GetText();
-  if(txt=='') { c.HideDropDown(); c.SuggestionLastSearch=''; return; }
-  if(ngVal(c.SuggestionLastSearch,'')!=txt)
+  var changed;
+  if(c.OnSuggestionChanged) {
+    changed=ngVal(c.OnSuggestionChanged(c,txt),true);
+  }
+  else {
+    if(txt=='') { c.HideDropDown(); c.SuggestionLastSearch=''; return; }
+    changed=(ngVal(c.SuggestionLastSearch,'')!=txt);
+  }
+  if(changed)
   {
-    if(c.OnSuggestionSearch)
-    {
-      var res=new Object;
-      res.found=false;
-      res.needupdate=false;
-
-      if(!ngVal(c.OnSuggestionSearch(c,txt,res),false)) return;
-
-      var dd=c.DropDownControl;
-      if((dd)&&(dd.Visible)&&(res.needupdate)&&(res.found))
-      {
-        dd.SetItemFocus(null);
-        dd.Update();
-      }
-      c.SuggestionFound=res.found;
-      c.SuggestionLastSearch=txt;
-    }
-    else
-    {
-      c.SuggestionLastSearch=txt;
-
-      var url=ngVal(c.SuggestionURL,'');
-      var ignorecase=ngVal(c.SuggestionIgnoreCase,true);
-      var partial=ngVal(c.SuggestionPartial,2);
-      if(c.OnSuggestionURL) url=c.OnSuggestionURL(c,url);
-      else
-      {
-        if(url!='')
-        {
-          c.SuggestionCmdID=ngVal(c.SuggestionCmdID,-1)+1;
-          if(c.SuggestionCmdID>99) c.SuggestionCmdID=0;
-
-          url=ng_AddURLParam(url,"S="+ng_URLEncode(c.ID+'_'+c.SuggestionCmdID));
-          if((typeof c.SuggestionType !== 'undefined')&&(c.SuggestionType!='')) url=ng_AddURLParam(url,"T="+ng_URLEncode(c.SuggestionType));
-          url=ng_AddURLParam(url,"Q="+ng_URLEncode(txt)+"&IC="+(ignorecase ? '1' : '0')+"&P="+partial);
-        }
-      }
-      if(url!='') // Server suggestions
-      {
-        if(!c.SuggestionRPC) c.SuggestionRPC=new ngRPC(c.ID);
-        c.SuggestionRPC.sendRequest(url);
-        return;
-      }
-      else // Client suggestions
-      {
-        var found=false;
-        var needupdate=false;
-        var dd=c.DropDownControl;
-        if(dd)
-        {
-          if(ignorecase) txt=txt.toLowerCase();
-          var cid='';
-          if(dd.Columns.length>0) cid=ngVal(c.SuggestionSearchColumn,dd.Columns[0].ID);
-
-          var t,v;
-          if(c.OnSuggestionCompareItem) partial=-1;
-          else if(partial==-1) partial=2;
-          dd.Scan(function(list, it, parent, userdata) {
-            if(dd.Columns.length>0) t=ngVal(it.Text[cid],'');
-            else t=it.Text;
-            if(ignorecase) t=t.toLowerCase();
-            switch(partial)
-            {
-              case -1:
-                v=ngVal(c.OnSuggestionCompareItem(c,txt,t,list,it,parent),false);
-                break;
-              case 1:
-                if(txt.length>t.length) return false;
-                v=(t.substring(0,txt.length)==txt);
-                break;
-              case 2:
-                v=(t.indexOf(txt)>=0)
-                break;
-              default:
-                v=(t==txt);
-                break;
-            }
-            if(it.Visible!=v)
-            {
-              it.Visible=v;
-              needupdate=true;
-            }
-            if(it.Visible) found=true;
-            return true;
-          });
-          if((dd.Visible)&&(needupdate)&&(found))
-          {
-            dd.SetItemFocus(null);
-            dd.Update();
-          }
-        }
-        c.SuggestionFound=found;
-      }
-    }
+    c.SuggestionSearch(txt);
     if(c.SuggestionFound)
     {
       var dd=c.DropDownControl;
@@ -2041,6 +1955,105 @@ function nge_Suggestion(id)
     else c.HideDropDown();
   }
   else c.HideDropDown();
+}
+
+function nge_SuggestionSearch(txt)
+{
+  txt=ngVal(txt,'');
+  if(this.OnSuggestionSearch)
+  {
+    var res=new Object;
+    res.found=false;
+    res.needupdate=false;
+
+    if(!ngVal(this.OnSuggestionSearch(this,txt,res),false)) return;
+
+    var dd=this.DropDownControl;
+    if((dd)&&(dd.Visible)&&(res.needupdate)&&(res.found))
+    {
+      dd.SetItemFocus(null);
+      dd.Update();
+    }
+    this.SuggestionFound=res.found;
+    this.SuggestionLastSearch=txt;
+  }
+  else
+  {
+    this.SuggestionLastSearch=txt;
+
+    var url=ngVal(this.SuggestionURL,'');
+    var ignorecase=ngVal(this.SuggestionIgnoreCase,true);
+    var partial=ngVal(this.SuggestionPartial,2);
+    if(this.OnSuggestionURL) url=this.OnSuggestionURL(this,url);
+    else
+    {
+      if(url!='')
+      {
+        this.SuggestionCmdID=ngVal(this.SuggestionCmdID,-1)+1;
+        if(this.SuggestionCmdID>99) this.SuggestionCmdID=0;
+
+        url=ng_AddURLParam(url,"S="+ng_URLEncode(this.ID+'_'+this.SuggestionCmdID));
+        if((typeof this.SuggestionType !== 'undefined')&&(this.SuggestionType!='')) url=ng_AddURLParam(url,"T="+ng_URLEncode(this.SuggestionType));
+        url=ng_AddURLParam(url,"Q="+ng_URLEncode(txt)+"&IC="+(ignorecase ? '1' : '0')+"&P="+partial);
+      }
+    }
+    if(url!='') // Server suggestions
+    {
+      if(!this.SuggestionRPC) this.SuggestionRPC=new ngRPC(this.ID);
+      this.SuggestionRPC.sendRequest(url);
+      return;
+    }
+    else // Client suggestions
+    {
+      var found=false;
+      var needupdate=false;
+      var dd=this.DropDownControl;
+      if(dd)
+      {
+        if(ignorecase) txt=txt.toLowerCase();
+        var cid='';
+        if(dd.Columns.length>0) cid=ngVal(this.SuggestionSearchColumn,dd.Columns[0].ID);
+
+        var t,v;
+        if(this.OnSuggestionCompareItem) partial=-1;
+        else if(partial==-1) partial=2;
+        dd.Scan(function(list, it, parent, userdata) {
+          if(dd.Columns.length>0) t=ngVal(it.Text[cid],'');
+          else t=it.Text;
+          if(ignorecase) t=t.toLowerCase();
+          switch(partial)
+          {
+            case -1:
+              v=ngVal(this.OnSuggestionCompareItem(this,txt,t,list,it,parent),false);
+              break;
+            case 1:
+              if(txt.length>t.length) return false;
+              v=(t.substring(0,txt.length)==txt);
+              break;
+            case 2:
+              v=(t.indexOf(txt)>=0)
+              break;
+            default:
+              v=(t==txt);
+              break;
+          }
+          if(it.Visible!=v)
+          {
+            it.Visible=v;
+            needupdate=true;
+          }
+          if(it.Visible) found=true;
+          return true;
+        });
+        if((dd.Visible)&&(needupdate)&&(found))
+        {
+          dd.SetItemFocus(null);
+          dd.Update();
+        }
+      }
+      this.SuggestionFound=found;
+    }
+  }
 }
 
 function nge_SuggestionRefresh(forcerequery, delay)
@@ -3602,6 +3615,17 @@ function ngEdit(id, text)
    */
   this.HideDropDown = nge_HideDropDown;
 
+  /*  Function: SuggestionSearch
+   *  Searches suggestion.
+   *
+   *  Syntax:
+   *    void *SuggestionSearch* (string txt)
+   *
+   *  Returns:
+   *    -
+   */
+  this.SuggestionSearch = nge_SuggestionSearch;
+
   /*  Function: SuggestionRefresh
    *  Refreshes suggestion content.
    *
@@ -3739,6 +3763,10 @@ function ngEdit(id, text)
    *  Event: OnSuggestionSetText
    */
   // c.OnSuggestionSetText=null;
+  /*
+   *  Event: OnSuggestionChanged
+   */
+  // c.OnSuggestionChanged=null;
   /*
    *  Event: OnSuggestionSearch
    */
