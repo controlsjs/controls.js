@@ -5633,7 +5633,7 @@ function ngtbc_OnSetVisible(c,v)
 }
 
 function ngtbc_SetBounds(props) {
-  var ret=this.tb_SetBounds.apply(this,arguments);
+  var ret=ng_CallParent(this,'SetBounds',arguments,false);
   if(ret) this.tb_boundschanged=true;
   return ret;
 }
@@ -5675,11 +5675,11 @@ function ngtbc_DoUpdate(o)
       var m=ngtbc_Measure(this,o);
       if((this.tb_height!=m.ch)||(this.tb_width!=m.cw)) changed=true;
     }
-    if((!changed)&&(typeof this.ngc_DoUpdate==='function')) {
+    if(!changed) {
       this.tb_boundschanged=false;
       var tbw=this.ToolBarWidth;
       var tbh=this.ToolBarHeight;
-      var ret=this.ngc_DoUpdate(o);
+      var ret=ng_CallParent(this,'DoUpdate',arguments,false);
       if((ret)&&(this.tb_boundschanged)) {
         if((this.ToolBarWidth!==tbw)||(this.ToolBarHeight!==tbh)) changed=true;
         else {
@@ -5695,48 +5695,34 @@ function ngtbc_DoUpdate(o)
     return ret;
   }
   else {
-    if(typeof this.ngc_DoUpdate==='function')
-      return this.ngc_DoUpdate(o);
+    return ng_CallParent(this,'DoUpdate',arguments,false);
   }
-
-  return true;
 }
 
 function ngtb_RegisterControl(c)
 {
   if((typeof c!=='object')||(!c)||(c.tb_fncregistered)) return;
 
-  if(c.DoUpdate!=ngtbc_DoUpdate)
-  {
-    c.ngc_DoUpdate=c.DoUpdate;
-    c.DoUpdate=ngtbc_DoUpdate;
-    c.AddEvent(ngtbc_OnSetVisible,'OnSetVisible');
-    c.tb_SetBounds=c.SetBounds;
-    c.SetBounds=ngtbc_SetBounds;
-  }
+  ng_OverrideMethod(c,'DoUpdate',ngtbc_DoUpdate);
+
+  c.AddEvent(ngtbc_OnSetVisible,'OnSetVisible');
+  ng_OverrideMethod(c,'SetBounds',ngtbc_SetBounds);
+  c.DoUpdate.ToolBarRegistered=true;
+
   c.tb_fncregistered=true;
 }
 
 function ngtb_UnregisterControl(c)
 {
-  if((typeof c!=='object')||(!c)) return;
+  if((typeof c!=='object')||(!c)||(!c.tb_fncregistered)) return;
 
-  if(c.DoUpdate==ngtbc_DoUpdate)
-  {
-    if(typeof c.ngc_DoUpdate === 'function')
-    {
-      c.DoUpdate=c.ngc_DoUpdate;
-      delete c.ngc_DoUpdate;
-    }
-    c.RemoveEvent('OnSetVisible',ngtbc_OnSetVisible);
-    if(typeof c.tb_SetBounds === 'function')
-    {
-      c.SetBounds = c.tb_SetBounds;
-      delete c.tb_SetBounds;
-    }
-  }
-  if(typeof c.tb_fncregistered!=='undefined')
-    c.tb_fncregistered=false;
+  if(typeof c.DoUpdate.removeOverride==='function') c.DoUpdate.removeOverride(ngtbc_DoUpdate);
+  else if(c.DoUpdate===ngtbc_DoUpdate) delete c.DoUpdate;
+  if(typeof c.SetBounds.removeOverride==='function') c.SetBounds.removeOverride(ngtbc_SetBounds);
+  else if(c.SetBounds===ngtbc_SetBounds) delete c.SetBounds;
+
+  c.RemoveEvent('OnSetVisible',ngtbc_OnSetVisible);
+  delete c.tb_fncregistered;
 }
 
 function ngtb_Update(recursive)
