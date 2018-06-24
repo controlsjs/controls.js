@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2008-2016 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2008-2018 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2016 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2018 Position s.r.o.';
 
 /**
  *  Variable: ngApp
@@ -598,8 +598,17 @@ var OnModalChanged = OnModalChanged || null;
  */
 var ngModalClassName = 'ngModalCurtain';
 
+/**
+ *  Variable: ngAnimatedModalClasses
+ *  Asociation array used for detection if used ngModalClassName is animated.
+ */
+var ngAnimatedModalClasses = {
+  'ngModalCurtain': false
+};
+
 var ngModalZIndexDelta = 10000;
 var ngModalCnt=0;
+var ngModalTimer = null;
 
 /**
  *  Function: ngStartModalControl
@@ -617,13 +626,15 @@ function ngStartModalControl()
   {
     if((!OnStartModal)||(ngVal(OnStartModal(),false)))
     {
+      var anim=ng_IsObjVar(window.ngAnimatedModalClasses) && ngAnimatedModalClasses[ngModalClassName] && (typeof ngCANANIM==='function' ? ngCANANIM() : false);
+      var clsname=ngModalClassName + (anim ? ' '+ngModalClassName+'AnimShow' : '');
       var o = document.getElementById('NGMODALWINDOW_CURTAIN');
       if(!o)
       {
          var parent=((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
          o=document.createElement('div');
          o.id="NGMODALWINDOW_CURTAIN";
-         o.className=ngModalClassName;
+         o.className=ngModalClassName + (anim ? ' '+ngModalClassName+'AnimInit' : '');
          o.style.position='absolute';
          o.style.left=ng_ScrollX(parent)+'px';
          o.style.top=ng_ScrollY(parent)+'px';
@@ -639,17 +650,28 @@ function ngStartModalControl()
                o.style.top=ng_ScrollY(parent)+'px';
              }
            });
+           if(anim) {
+             if(ngModalTimer) clearTimeout(ngModalTimer);
+             ngModalTimer=setTimeout(function() {
+               if(ngModalTimer) clearTimeout(ngModalTimer);
+               ngModalTimer=null;
+               var o = document.getElementById('NGMODALWINDOW_CURTAIN');
+               if(o) o.className=clsname;
+             },1);
+           }
          }
       }
       else
       {
         var parent=o.parentNode;
-        o.className=ngModalClassName;
+        o.className=clsname;
         o.style.left=ng_ScrollX(parent)+'px';
         o.style.top=ng_ScrollY(parent)+'px';
         o.style.zIndex=ngModalZIndexDelta;
-        o.style.display='block';
-        o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
+        if(!anim) {
+          o.style.display='block';
+          o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
+        }
         ng_IE7RedrawFix(o);
       }
     }
@@ -683,12 +705,17 @@ function ngStopModalControl()
     ngModalCnt=0;
     if((!OnStopModal)||(ngVal(OnStopModal(),false)))
     {
+      if(ngModalTimer) clearTimeout(ngModalTimer); ngModalTimer=null;
       o = document.getElementById('NGMODALWINDOW_CURTAIN');
       if(o)
       {
-        o.style.display='none';
-        o.style.visibility='hidden'; // IE7 sometimes don't hide elements if display is none
-        ng_IE7RedrawFix(o);
+        var anim=ng_IsObjVar(window.ngAnimatedModalClasses) && ngAnimatedModalClasses[ngModalClassName] && (typeof ngCANANIM==='function' ? ngCANANIM() : false);
+        o.className=ngModalClassName + (anim ? ' '+ngModalClassName+'AnimHide' : '');
+        if(!anim) {
+          o.style.display='none';
+          o.style.visibility='hidden'; // IE7 sometimes don't hide elements if display is none
+          ng_IE7RedrawFix(o);
+        }
       }
     }
   }
@@ -5057,6 +5084,8 @@ function nga_DoRun()
   if(nga_RunTimer) clearTimeout(nga_RunTimer); nga_RunTimer=null;
 
   ngApp.State = ngaStateInitializing;
+
+  if(typeof ngApp.StartParams.Animation !== 'undefined') ngANIM=parseInt(ngApp.StartParams.Animation,10);
 
   // Language detection
   ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
