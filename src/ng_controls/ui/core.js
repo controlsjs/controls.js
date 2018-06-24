@@ -6195,17 +6195,23 @@ function npb_UpdateProcess(cid)
         dp=ngc_ImgProps(c.ID+'_B', 0, c.Enabled, image);
 
         var p=c.process_pos;
-        var s=(w/10);
-        if(s<=0) s=1;
-        p+=s*c.process_dir;
-        var step=dp.W;
-        if(typeof step==='undefined') step=Math.floor((w+9)/10);
-        var pw=(w/4);
-        pw=Math.round(pw/step);
-        pw*=step;
-        if(p>w-pw) { p=w-pw; c.process_dir*=-1; }
-        if(p<0) { p=0; c.process_dir*=-1; }
-        p=(c.process_dir==1 ? Math.ceil(p) : Math.floor(p));
+        var animprohibited=ngANIMPROHIBITED();
+        if(animprohibited) {
+          p=Math.ceil(w*0.25);
+        }
+        else {
+          var s=(w/10);
+          if(s<=0) s=1;
+          p+=s*c.process_dir;
+          var step=dp.W;
+          if(typeof step==='undefined') step=Math.floor((w+9)/10);
+          var pw=(w/4);
+          pw=Math.round(pw/step);
+          pw*=step;
+          if(p>w-pw) { p=w-pw; c.process_dir*=-1; }
+          if(p<0) { p=0; c.process_dir*=-1; }
+          p=(c.process_dir==1 ? Math.ceil(p) : Math.floor(p));
+        }
         c.process_pos=p;
         var bid=c.ID+'_B_';
         lw+=p;
@@ -6216,7 +6222,7 @@ function npb_UpdateProcess(cid)
           ng_setLeftTop(o,lw,0);
           lw+=dp.W;
         }
-        c.process_timer=setTimeout("npb_UpdateProcess('"+c.ID+"')",120);
+        if(!animprohibited) c.process_timer=setTimeout("npb_UpdateProcess('"+c.ID+"')",120);
       }
     }
   }
@@ -6230,6 +6236,10 @@ function npb_BeginProcess()
     this.Update();
     this.process_pos = 0;
     this.process_dir = 1;
+    if(ngANIMPROHIBITED()) {
+      npb_UpdateProcess(this.ID);
+      return;
+    }
     this.process_timer=setTimeout("npb_UpdateProcess('"+this.ID+"')",120);
   }
 }
