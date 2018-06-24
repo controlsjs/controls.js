@@ -164,7 +164,41 @@ var ngUsingTouch = (ngSupportsTouch)&&(ngAndroid || ngiOS || ngWindowsPhone || (
  */  
 var ngFirebug = !!(window.console && (window.console.firebug || window.console.exception));
 
-/** 
+/**
+ *  Variable: ngANIM
+  * Level of animation effects (0 = disabled, 1 = enabled, -1 = prohibited)
+ */
+var ngANIM = (typeof ngANIM === 'undefined' ? 1 : ngANIM);
+
+/**
+ *  Function: ngCANANIM
+ *  Tests if animation effects are enabled.
+ *
+ *  Syntax:
+ *    bool *ngCANANIM* ()
+ *
+ *  Returns:
+ *    If TRUE the animation effects are allowed.
+ */
+function ngCANANIM() {
+  return ngANIM > 0;
+}
+
+/**
+ *  Function: ngANIMPROHIBITED
+ *  Tests if animation is stricty prohibited.
+ *
+ *  Syntax:
+ *    bool *ANIMPROHIBITED* ()
+ *
+ *  Returns:
+ *    If TRUE the animation effects are disabled and application should avoid all unnecessary visual behaviour.
+ */
+function ngANIMPROHIBITED() {
+  return ngANIM < 0;
+}
+
+/**
  *  Section: Debug Functions  
  */
 var ngDEBUG = (typeof ngDEBUG === 'undefined' ? 0 : ngDEBUG);
