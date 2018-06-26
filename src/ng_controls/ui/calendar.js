@@ -1457,6 +1457,21 @@ function Create_ngEditTime(def, ref, parent)
   /*
    *  Group: Methods
    */
+  /*  Function: GetTimeFormat
+   *  Gets time format.
+   *
+   *  Syntax:
+   *    string *GetTimeFormat* (bool parse=false)
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   */
+  c.GetTimeFormat = function(parse)
+  {
+    return c.TimeFormat;
+  };
   /*  Function: FormatTime
    *  Formats date to string.
    *   
@@ -1471,8 +1486,8 @@ function Create_ngEditTime(def, ref, parent)
   c.FormatTime = function(d)
   {
     if(c.OnFormatTime) return c.OnFormatTime(c, d);
-    return ng_FormatTime(d,c.TimeFormat);
-  }        
+    return ng_FormatTime(d,c.GetTimeFormat(false));
+  };
   /*  Function: ParseTime
    *  Parses date from string.
    *   
@@ -1487,8 +1502,8 @@ function Create_ngEditTime(def, ref, parent)
   c.ParseTime = function(d)
   {
     if(c.OnParseTime) return c.OnParseTime(c, d);
-    return ng_ParseTime(d,c.DateFormat);
-  }
+    return ng_ParseTime(d,c.GetTimeFormat(true));
+  };
   /*  Function: GetDate
    *  Gets edited date.
    *   
