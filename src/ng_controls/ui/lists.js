@@ -4967,7 +4967,7 @@ function npgl_UpdatePaging()
     c.SetVisible(v);
     pg--;
   }
-  if((this.OnPagingUpdated)&&(!ngVal(OnPagingUpdated(this,pginfo),false))) return;
+  if((this.OnPagingUpdated)&&(!ngVal(this.OnPagingUpdated(this,pginfo),false))) return;
 
   if((pginfo.Update)&&(this.Controls.Paging)) { this.Controls.Paging.Update(); return true; }
   return false;
