@@ -2873,7 +2873,15 @@ var WinEightControls = {
         var div=1;
         ng_MergeDef(def, {
           className: (th ? 'weEditLight' : 'weEditDark'),
+          /*
+           *  Group: Properties
+           */
           Data: {
+            /*  Variable: TimeFormat
+             *  ...
+             *  Type: string
+             */
+            TimeFormat: ''
   //          DropDownWidth: 100,
   //          DropDownAlign: 'right'
           },
@@ -2887,7 +2895,8 @@ var WinEightControls = {
                   for(var j=0;j<60;j+=div)
                   {
                     var d=new Date(0,0,0,i,j,0);
-                    items.push({Text:ng_FormatTime(d,ng_TimeFormat(false,true)),Time:d});
+                    var format=(l.TimeFormat ? l.TimeFormat : ng_TimeFormat(false,true));
+                    items.push({Text:ng_FormatTime(d,format),Time:d});
                   }
                 l.AddItems(items);
                 l.EndUpdate();
