@@ -5695,7 +5695,7 @@ function ngtbc_DoUpdate(o)
     return ret;
   }
   else {
-    return ng_CallParent(this,'DoUpdate',arguments,false);
+    return ng_CallParent(this,'DoUpdate',arguments,true);
   }
 }
 
@@ -5707,7 +5707,6 @@ function ngtb_RegisterControl(c)
 
   c.AddEvent(ngtbc_OnSetVisible,'OnSetVisible');
   ng_OverrideMethod(c,'SetBounds',ngtbc_SetBounds);
-  c.DoUpdate.ToolBarRegistered=true;
 
   c.tb_fncregistered=true;
 }
