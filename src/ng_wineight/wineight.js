@@ -604,7 +604,11 @@ var WinEightControls = {
       Wizard: 165,
       Factory: 166,
       Server: 167,
-      Finish: 168
+      Finish: 168,
+      threeoclock: 169,
+      sixoclock: 170,
+      nineoclock: 171,
+      noon: 172
     },{
       // automaticaly created from AppIcons
     }
