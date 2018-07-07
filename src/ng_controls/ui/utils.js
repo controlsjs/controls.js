@@ -59,11 +59,14 @@ var ng_CreateImageHTML = function(id,url,left,top,width, height, style, attr, in
 
 function ng_CreateImageHTMLNotIE6(id,url,left,top,width, height, style, attr, innerHTML)
 {
+  if(typeof url==='object') { var img=ng_SelectHiResImage(url); url=img.Src; var img_width=img.SrcW; var img_height=ngVal(img.SrcH); }
   if(typeof attr==='undefined') attr='';
   if(typeof style==='undefined') style='';
   if(typeof innerHTML==='undefined') innerHTML='';
   if(url!='')
-    style = "background: transparent url('"+url+"') no-repeat scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";" + style;
+    style = "background: transparent url('"+url+"') no-repeat scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";"
+          + (typeof img_width!=='undefined' ? 'background-size:'+img_width+'px '+ngVal(img_height,0)+'px;' : '')
+          + style;
   else
     if(ngIExplorer) style = "background: transparent url('"+ngEmptyURL+"');" + style;
   return '<span id="'+id+'" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+width+'px;height:'+height+'px;'+style+'" '+attr+'>'+innerHTML+'</span>';
@@ -71,6 +74,7 @@ function ng_CreateImageHTMLNotIE6(id,url,left,top,width, height, style, attr, in
 
 function ng_CreateImageHTMLIE6(id,url,left,top,width, height, style, attr, innerHTML)
 {
+  if(typeof url==='object') { var img=ng_SelectHiResImage(url); url=img.Src; }
   if(typeof attr==='undefined') attr='';
   if(typeof style==='undefined') style='';
   if(typeof innerHTML==='undefined') innerHTML='';
@@ -88,16 +92,22 @@ function ng_CreateImageHTMLSW(id,l,w,url,left,top,width,height, style, attr, inn
   if(typeof innerHTML==='undefined') innerHTML='';
   if((typeof width === 'undefined')||(url==''))
   {
+    if(typeof url==='object') { var img=ng_SelectHiResImage(url); url=img.Src; var img_width=img.SrcW; var img_height=ngVal(img.SrcH); }
     if((ngIExplorer6)&&(url!=''))
     {
-      var img=ng_PreloadImage(url);
-      if(!img) return '';
-      width=img.width;
+      width=img_width;
+      if(typeof width==='undefined') {
+        var img=ng_PreloadImage(url);
+        if(!img) return '';
+        width=img.width;
+      }
     }
     else
     {
       if(url!='')
-        style = "background: transparent url('"+url+"') repeat-x scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";" + style;
+        style = "background: transparent url('"+url+"') repeat-x scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";"
+              + (typeof img_width!=='undefined' ? 'background-size:'+img_width+'px '+ngVal(img_height,0)+'px;' : '')
+              + style;
       else
         if(ngIExplorer) style = "background: transparent url('"+ngEmptyURL+"');" + style;
       return '<span id="'+id+'_1" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+w+'px;height:'+height+'px;'+style+'left:'+l+'px;" '+attr+'>'+innerHTML+'</span>';
@@ -124,16 +134,22 @@ function ng_CreateImageHTMLSH(id,t,h,url,left,top,width,height, style, attr,inne
   if(typeof innerHTML==='undefined') innerHTML='';
   if((typeof height==='undefined')||(url==''))
   {
+    if(typeof url==='object') { var img=ng_SelectHiResImage(url); url=img.Src; var img_width=img.SrcW; var img_height=ngVal(img.SrcH); }
     if((ngIExplorer6)&&(url!=''))
     {
-      var img=ng_PreloadImage(url);
-      if(!img) return '';
-      height=img.height;
+      height=img_height;
+      if(typeof height==='undefined') {
+        var img=ng_PreloadImage(url);
+        if(!img) return '';
+        height=img.height;
+      }
     }
     else
     {
       if(url!='')
-        style = "background: transparent url('"+url+"') repeat-y scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";" + style;
+        style = "background: transparent url('"+url+"') repeat-y scroll "+(-left)+"px "+(-top)+(top==0 ? "pt" : "px")+";"
+              + (typeof img_width!=='undefined' ? 'background-size:'+img_width+'px '+ngVal(img_height,0)+'px;' : '')
+              + style;
       else
         if(ngIExplorer) style = "background: transparent url('"+ngEmptyURL+"');" + style;
       return '<span id="'+id+'_1" unselectable="on" style="font-size:0;line-height:0;overflow:hidden;width:'+width+'px;height:'+h+'px;'+style+'top:'+t+'px" '+attr+'>'+innerHTML+'</span>';

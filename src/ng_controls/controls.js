@@ -852,6 +852,14 @@ function ng_SetOpacity(o,v)
   o.style.filter='alpha(opacity=' + v*100 + ')';
 }
 
+/*
+  Return Value (binary flags):
+  00001 = FR
+  00010 = FB
+  00100 = FL & FR
+  01000 = FT & FB
+  10000 = supports hi-res (defined in ngc_Align)
+*/
 function ng_Align(o)
 {
   var ret=0,aret=0;
@@ -964,6 +972,145 @@ function ng_CanFocusElm(e)
       return true;
   }
   return false;
+}
+
+// --- Controls Images ---------------------------------------------------------
+
+var ngDevicePixelRatio=window.devicePixelRatio;
+if(typeof ngDevicePixelRatio==='undefined') ngDevicePixelRatio=1;
+var ngDevicePixelRatioChanged=false;
+
+var ngAllowHiResImages = true;
+var ngInitAllHiResImages = (typeof ngInitAllHiResImages === 'undefined' ? false : ngInitAllHiResImages);
+
+function ng_SelectHiResImage(src, pixelratio)
+{
+  var ret={};
+  if((!src)||(typeof src!=='object')) {
+    ret.Src=src;
+    return ret;
+  }
+
+  if((!ngSupportsHiResImages)||(!ngAllowHiResImages)) {
+    if(typeof src.Src!=='undefined') {
+      ret.Src=src.Src;
+      return ret;
+    }
+    pixelratio=1;
+  }
+  else {
+    if(typeof src.W!=='undefined') ret.SrcW=src.W;
+    if(typeof src.H!=='undefined') ret.SrcH=src.H;
+
+    if(typeof pixelratio==='undefined') {
+      pixelratio=window.devicePixelRatio;
+      if(typeof pixelratio==='undefined') pixelratio=1;
+    }
+  }
+  if(pixelratio<1) pixelratio=1;
+
+  var foundratio,foundsrc=src[pixelratio];
+  if(typeof foundsrc==='undefined') {
+    if((pixelratio===1)&&(typeof src.Src!=='undefined')) {
+      foundsrc=src[1]=src.Src;
+      foundratio=1;
+    } else {
+      if((!ngSupportsHiResImages)||(!ngAllowHiResImages)) {
+        ngDEBUGERROR('ng_SelectHiResImage cannot select image beacause of hi-res images are not available and default image not found!',src);
+        ret.Src='';
+        return ret;
+      }
+      var r,cmpratio=pixelratio*0.99; // allow 1% tolerance
+      var lastsrc='', lastratio=1;
+      foundsrc=''; foundratio=-1;
+
+      for(var i in src) {
+        if(i==='Src') r=1;
+        else r=parseFloat(i);
+        if(isNaN(r)) continue;
+        r=r-cmpratio;
+        if((r>=0)&&((foundratio<0)||(r<foundratio))) {
+          foundsrc=src[i];
+          foundratio=r;
+        }
+        else if((r<0)&&((lastratio>0)||(r>lastratio))) {
+          lastsrc=src[i];
+          lastratio=r;
+        }
+      }
+      if((foundratio<0)&&(lastratio<0)) {
+        foundsrc=lastsrc;
+        foundratio=lastratio;
+      }
+
+      if(foundsrc==='') foundsrc=ngVal(src.Src,'');
+    }
+    ng_PreloadImage(foundsrc);
+    src[pixelratio]=foundsrc;
+  }
+  else foundratio=pixelratio;
+  if((foundratio!==1)&&((typeof ret.SrcW ==='undefined')||(typeof ret.SrcH ==='undefined'))&&(foundsrc!==''))
+  {
+    ngDEBUGERROR('ng_SelectHiResImage detected usable hi-res image but original size is missing!',src);
+    foundsrc='';
+  }
+  ret.Src=foundsrc;
+  return ret;
+}
+
+function ngUsrCtrlSetImages(obj, images)
+{
+  if((typeof obj !== 'object')||(!obj)) return;
+  if(typeof obj._noMerge==='undefined') obj._noMerge=true;
+  for(var i in obj)
+    if(typeof obj[i] === 'object') ngUsrCtrlSetImages(obj[i], images);
+  if(typeof obj.Src==='undefined') obj.Src=images;
+}
+
+function ngUsrCtrlSetImagesArray(obj, images)
+{
+  if((typeof obj !== 'object')||(!obj)) return;
+  if(typeof obj._noMerge==='undefined') obj._noMerge=true;
+  for(var i in obj)
+    if(typeof obj[i] === 'object') ngUsrCtrlSetImagesArray(obj[i], images);
+  if(typeof obj.Src==='undefined') obj.Src=images[0];
+  else if(typeof obj.Src==='number') obj.Src=images[obj.Src];
+}
+
+function ngInitUserControlImage(imagePath, lib)
+{
+  function canpreload(p) {
+    if(p=='') return false;
+    if(typeof ngControlImages==='string') {
+      return (p!=ngControlImages);
+    }
+    if((typeof ngControlImages==='object')&&(ngControlImages)) {
+      for(var i in ngControlImages) {
+        if(ngControlImages[i]===p) return false;
+      }
+    }
+    return true;
+  }
+
+  if((typeof imagePath === 'object')&&(imagePath)) {
+    var imgpath;
+    for(var i in imagePath) {
+      imgpath=imagePath[i];
+      if(typeof imgpath!=='string') continue;
+      imgpath=ng_URL(ng_ToAbsPath(imgpath, lib));
+      if((ngInitAllHiResImages)&&(canpreload(imgpath))) ng_PreloadImage(imgpath);
+    }
+    if(!ngInitAllHiResImages) {
+      var img=ng_SelectHiResImage(imagePath);
+      if(canpreload(img.Src)) ng_PreloadImage(img.Src);
+    }
+  }
+  if(typeof imagePath === 'string')
+  {
+    imagePath=ng_URL(ng_ToAbsPath(imagePath, lib));
+    if(canpreload(imagePath)) ng_PreloadImage(imagePath);
+  }
+  return imagePath;
 }
 
 // --- Controls ----------------------------------------------------------------
@@ -1166,25 +1313,6 @@ function ngControlCreated(obj)
 
 if(typeof ngUserControls === 'undefined') ngUserControls = {};
 
-function ngUsrCtrlSetImages(obj, images)
-{
-  if((typeof obj !== 'object')||(!obj)) return;
-  if(typeof obj._noMerge==='undefined') obj._noMerge=true;
-  if(typeof obj.Src==='undefined') obj.Src=images;
-  for(var i in obj)
-    if(typeof obj[i] === 'object') ngUsrCtrlSetImages(obj[i], images);
-}
-
-function ngUsrCtrlSetImagesArray(obj, images)
-{
-  if((typeof obj !== 'object')||(!obj)) return;
-  if(typeof obj._noMerge==='undefined') obj._noMerge=true;
-  if(typeof obj.Src==='undefined') obj.Src=images[0];
-  else if(typeof obj.Src==='number') obj.Src=images[obj.Src];
-  for(var i in obj)
-    if(typeof obj[i] === 'object') ngUsrCtrlSetImagesArray(obj[i], images);
-}
-
 function ngInitUserControls()
 {
   if(typeof ngUserControls === 'undefined') return;
@@ -1223,16 +1351,6 @@ function ngInitUserControls()
       ngCurrentControlsGroup=oldcg;
     }
   }
-}
-
-function ngInitUserControlImage(imagePath, lib)
-{
-  if(typeof imagePath === 'string')
-  {
-    imagePath=ng_URL(ng_ToAbsPath(imagePath, lib));
-    if(imagePath!=ngControlImages) ng_PreloadImage(imagePath);
-  }
-  return imagePath;
 }
 
 /**
@@ -2473,6 +2591,13 @@ function ngc_Align(o)
   if(typeof o === 'string') o=document.getElementById(o);
   if(typeof this.DoResize !== 'function') r=ng_Align(o);
   else if(o) r=this.DoResize(o);
+  if(typeof this.HiResControl !=='undefined') {
+    if(this.HiResControl) {
+      r|=16;
+      if(o) ng_StartAutoResize(o,'hires');
+    }
+    else ng_EndAutoResize(o,'hires');
+  }
   return r;
 }
 
@@ -3037,6 +3162,13 @@ function ngControl(obj, id, type)
    *  Type: object
    */
   //obj.Gestures = undefined;
+
+  /*  Variable: HiResControl
+   *  If present, the control is handling device pixel ratio changes. If TRUE the 
+   *  control is updated whenever pixed ratio is changed.
+   *  Type: bool
+   */
+  //obj.HiResControl = undefined;
 
 
   /*
@@ -5145,9 +5277,29 @@ function nga_DoRun()
   }
 
   ng_PreloadImagesBegin();
-  ngControlImages=ng_URL(ngControlImages);
+  if(typeof ngControlImages==='string') ngControlImages=ng_URL(ngControlImages);
+  else if((typeof ngControlImages==='object')&&(ngControlImages)) {
+    for(var i in ngControlImages) {
+      if(typeof ngControlImages[i]==='string') ngControlImages[i]=ng_URL(ngControlImages[i]);
+    }
+  }
   ngInitUserControls();
-  if(ngControlImages!='') ng_PreloadImage(ngControlImages);
+
+  if(typeof ngControlImages==='string') {
+    if(ngControlImages!='') ng_PreloadImage(ngControlImages);
+  }
+  else if((typeof ngControlImages==='object')&&(ngControlImages)) {
+    if(!ngInitAllHiResImages) {
+      var img=ng_SelectHiResImage(ngControlImages);
+      if(img.Src!='') ng_PreloadImage(img.Src);
+    }
+    else {
+      for(var i in ngControlImages) {
+        if((typeof ngControlImages[i]==='string')&&(ngControlImages[i]!='')) ng_PreloadImage(ngControlImages[i]);
+      }
+    }
+  }
+  
 
   try{ window.focus(); } catch(e) { } // FF3 fix
 
@@ -5337,10 +5489,15 @@ function ng_SetAutoResize(o)
 
 function nga_OnResize(e)
 {
+  var pixelratio=window.devicePixelRatio;
+  if(typeof pixelratio==='undefined') pixelratio=1;
+  ngDevicePixelRatioChanged=(ngDevicePixelRatio!==pixelratio);
+
   if((typeof ngApp === 'undefined')||(!ngApp))
   {
     if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
     if((ngAutoResize)&&(ngAutoResizeCnt>0)) ngAutoResizeTimer=setTimeout(nga_DoResize, 100);
+    else ngDevicePixelRatio=pixelratio;
     return;
   }
   var ae=ngApp.Elm();
@@ -5385,6 +5542,7 @@ function nga_OnResize(e)
 
   if(ngAutoResizeTimer) clearTimeout(ngAutoResizeTimer); ngAutoResizeTimer=null;
   if((ngApp.OnDeviceChanged)||((ngAutoResize)&&(ngAutoResizeCnt>0))) ngAutoResizeTimer=setTimeout(nga_DoResize, 100);
+  else ngDevicePixelRatio=pixelratio;
 }
 
 function nga_DoResizeElement(id)
@@ -5406,7 +5564,7 @@ function nga_DoResizeElement(id)
   var c=ngGetControlById(id);
   if(!c)
   {
-    var r=ng_Align(o);
+    ng_Align(o);
     ngAutoResize[id]=ngAutoRSync;
     return;
   }
@@ -5427,7 +5585,7 @@ function nga_DoResizeControl(c,doupdate)
     if(doupdate)
     {
       var r=c.Align(c.ID);
-      if(((r&4)||(r&8))&&(c.Update)) { update=true; doupdate=false; }
+      if(((r&4)||(r&8)||((r&16)&&(ngDevicePixelRatioChanged)))&&(c.Update)) { update=true; doupdate=false; }
     }
     ngAutoResize[c.ID]=ngAutoRSync;
   }
@@ -5453,11 +5611,15 @@ function nga_DoResize()
       }
     }
   }
-  if((!ngAutoResize)||(ngAutoResizeCnt<=0)) return;
-
-  ngAutoRSync++;
-  for(var i in ngAutoResize)
-    nga_DoResizeElement(i);
+  if((ngAutoResize)&&(ngAutoResizeCnt>0)) {
+    ngAutoRSync++;
+    for(var i in ngAutoResize)
+      nga_DoResizeElement(i);
+  }
+  var pixelratio=window.devicePixelRatio;
+  if(typeof pixelratio==='undefined') pixelratio=1;
+  ngDevicePixelRatio=pixelratio;
+  ngDevicePixelRatioChanged=false;
 }
 
 function nga_GetRPC()
