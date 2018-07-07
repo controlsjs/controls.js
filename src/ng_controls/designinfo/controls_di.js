@@ -1006,6 +1006,7 @@ function ng_diProperties(props,data) {
         "Data": ng_diObject({
           "Visible": ng_diBoolean(true, { Level: 'basic' }),
           "IsPopup": ng_diBoolean(false, { Level: 'advanced' }),
+          "HiResControl": ng_diBoolean(false, { Level: 'advanced' }),
           "PopupGroup": ng_diString('default', { Level: 'optional' }),
           "Gestures": ng_diObject({
             "drag":       ng_diBoolean(false, { Level: 'advanced' }),
