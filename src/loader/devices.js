@@ -173,7 +173,8 @@ function ngGetDeviceInfo()
     ScreenOrientation: scrorientation,
     ScreenLandscape: scrlandscape,
     ScreenPortrait: !scrlandscape,
-     
+    DevicePixelRatio: (typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio),
+
     Width: width,
     Height: height,
 //    WidthInInches: inwidth,
