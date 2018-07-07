@@ -45,7 +45,7 @@ var ngOpera = (ua.indexOf("opera") != -1);
  *  Variable: ngOperaVersion
  *  Float number identifying Opera browser version
  */
-var ngOperaVersion = (ngOpera ? parseFloat(window.opera.version()) : undefined);
+var ngOperaVersion = (ngOpera ? parseFloat(window.opera.version()) : void 0);
 
 /** 
  *  Variable: ngIExplorer
@@ -56,7 +56,7 @@ var ngIExplorer = eval("/*@cc_on!@*/false");
  *  Variable: ngIExplorerVersion
  *  Version of the Internet Explorer browser.
  */  
-var ngIExplorerVersion = (ngIExplorer ? parseInt( ua.match( /msie (\d+)/ )[1] ) : undefined);
+var ngIExplorerVersion = (ngIExplorer ? parseInt( ua.match( /msie (\d+)/ )[1] ) : void 0);
 
 if((!ngIExplorer)&&(ua.match(/trident/))) // IE>=11 detection
 {
@@ -85,7 +85,7 @@ var ngEdge = (ua.indexOf("edge") != -1);
  *  Variable: ngEdgeVersion
  *  Version of the Microsoft Edge browser.
  */
-var ngEdgeVersion = (ngEdge ? parseInt( ua.match( /edge\/(.*)$/ )[1] ) : undefined);
+var ngEdgeVersion = (ngEdge ? parseInt( ua.match( /edge\/(.*)$/ )[1] ) : void 0);
 
 /** 
  *  Variable: ngFireFox
@@ -96,7 +96,7 @@ var ngFireFox = (ua.indexOf("firefox") != -1);
  *  Variable: ngFireFoxVersion
  *  Version of the Firefox browser.
  */  
-var ngFireFoxVersion = (ngFireFox ? parseInt( ua.match( /firefox\/(.*)$/ )[1] ) : undefined);
+var ngFireFoxVersion = (ngFireFox ? parseInt( ua.match( /firefox\/(.*)$/ )[1] ) : void 0);
 
 /** 
  *  Variable: ngFireFox1x
@@ -108,16 +108,26 @@ var ngFireFox1x = ((ngFireFox)&&(ua.indexOf("firefox/1.")!=-1));
  *  TRUE if user is using the Firefox browser version 2.x.
  */  
 var ngFireFox2x = ((ngFireFox)&&(ua.indexOf("firefox/2.")!=-1));
-/** 
+/**
  *  Variable: ngChrome
  *  TRUE if user is using the Chrome browser.
- */  
+ */
 var ngChrome = (ua.indexOf("chrome") != -1);
-/** 
+/**
+ *  Variable: ngChromeVersion
+ *  Version of the Chrome browser.
+ */
+var ngChromeVersion = (ngChrome ? parseInt( ua.match( /chrome\/(.*)$/ )[1] ) : void 0);
+/**
  *  Variable: ngSafari
  *  TRUE if user is using the Safari browser.
  */  
-var ngSafari = (ua.indexOf("safari") != -1);
+var ngSafari = !!ua.match(/Version\/[\d\.]+.*Safari/);
+/**
+ *  Variable: ngSafariVersion
+ *  Version of the Safari browser.
+ */
+var ngSafariVersion = (ngSafari ? parseInt( ua.match( /Version\/(.*)$/ )[1] ) : void 0);
 /** 
  *  Variable: ngAndroid
  *  TRUE if device uses Android OS.
@@ -158,7 +168,23 @@ var ngSupportsTouch = ('ontouchstart' in window || (window.DocumentTouch && docu
  *  TRUE if user uses touch as a primary input.
  */  
 var ngUsingTouch = (ngSupportsTouch)&&(ngAndroid || ngiOS || ngWindowsPhone || (ua.indexOf("mobile") != -1) || (ua.indexOf("tablet") != -1));
-/** 
+/**
+ *  Variable: ngSupportsHiResImages
+ *  TRUE if browser supports CSS style background-size and SVG images as CSS background images.
+ */
+var ngSupportsHiResImages = (ngChromeVersion>=15) || (ngIExplorerVersion>=9) || (ngEdgeVersion>=16) || (ngFireFoxVersion>=24) || (ngOperaVersion>=11.5) ||
+(function(){
+    // not a common browser, try detect basic support of CSS background-size, we cannot test SVG support :(
+    var supported = ('backgroundSize' in document.documentElement.style);
+    if(supported){
+        var temp = document.createElement('div');
+        temp.style.backgroundSize = '10px';
+        supported = temp.style.backgroundSize === '10px';
+    };
+    return supported;
+})();
+
+/**
  *  Variable: ngFirebug
  *  TRUE if Firebug present (useful for debug informations).
  */  
@@ -1822,7 +1848,7 @@ function ng_BeginMeasureElement(o)
       return arr;
     }    
   }
-  return undefined;
+  // return undefined
 }
 
 /**
@@ -1846,9 +1872,8 @@ function ng_EndMeasureElement(o)
 {
   if((o)&&(typeof o.measure_info !== 'undefined')) 
   {
-    var undefined;
     var arr=o.measure_info;
-    o.measure_info=undefined; // cannot delete - not supported in IE<=7
+    o.measure_info=void 0; // cannot delete - not supported in IE<=7
 
     var p;
     for (var i = (arr.length - 1); i >= 0; i--)
@@ -2829,7 +2854,7 @@ function ng_EmptyVar(o)
 function ngAddEvent(ev, fce) {
   if(typeof(fce)=='function') // only functions can be added to event handlers 
   {              
-    if(typeof(ev)=='function') return function() { var r1=ev.apply(this,arguments); var r2=fce.apply(this,arguments); return ((typeof r1 === typeof r2) && (r1 == r2) ? r1 : undefined); } // add new function to functions chain
+    if(typeof(ev)=='function') return function() { var r1=ev.apply(this,arguments); var r2=fce.apply(this,arguments); return ((typeof r1 === typeof r2) && (r1 == r2) ? r1 : void 0); } // add new function to functions chain
     return fce; // event handler not set, return added function
   }
   return ev;
@@ -2869,7 +2894,7 @@ function ngObjAddEvent(ev, fce, once) {
         evlist=[];
         var self=this;
         var handler=function() {
-          var r,ret,undefined;
+          var r,ret;
           var oldproc=handler.inprocess;
           handler.inprocess=true;
           try {
@@ -2878,7 +2903,7 @@ function ngObjAddEvent(ev, fce, once) {
               if(!evlist[i]) continue;
               r=evlist[i].apply(self,arguments);
               if(!i) ret=r;
-              else if(r !== ret) ret=undefined;
+              else if(r !== ret) ret=void 0;
             }
           }
           finally {
@@ -3162,7 +3187,7 @@ function ngDeleteCookie(cookie_name, path, domain, secure)
 function ngGetCookie(cookie_name)
 { 
   var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
-  return( results ? ng_unescape(results[2]) : undefined);
+  return( results ? ng_unescape(results[2]) : void 0);
 }
 
 function ngSetCookieByURL(name, value, expires, url, escapevalue)
@@ -3188,7 +3213,7 @@ function ngSetCookieByURL(name, value, expires, url, escapevalue)
     {
       idx=domain.indexOf('.');
       if(idx>=0) domain=domain.substring(idx+1,domain.length);
-      else domain=undefined;
+      else domain=void 0;
     }
   }
   else
@@ -3196,7 +3221,7 @@ function ngSetCookieByURL(name, value, expires, url, escapevalue)
     path=url;
   }
 
-  ngSetCookie(name, value, expires, path, undefined, secure, escapevalue);
+  ngSetCookie(name, value, expires, path, void 0, secure, escapevalue);
 }
 
 // --- ngRPC -------------------------------------------------------------------
