@@ -4330,14 +4330,12 @@ function npgl_DoUpdateBefore(o)
   var fit=(pl.DisplayMode==plDisplayFit);
   var ncnt=pl.DisplayedItems;
   if(fit) {
-    if((!this.max_displayed_items)&&(!this.draw_measure)) {
-      var aih=ngVal(pl.GetAverageItemHeight(),0);
-      if(aih>0) {
-        var gcnt = Math.floor((ng_ClientHeight(o)-1)/aih);
-        if(gcnt>ncnt) ncnt=gcnt;
-      }
+    ncnt=Math.max(this.max_displayed_items,ncnt);
+    var aih=ngVal(pl.GetAverageItemHeight(),0);
+    if(aih>0) {
+      var gcnt = Math.floor((ng_ClientHeight(o)-1)/aih);
+      if(gcnt>ncnt) ncnt=gcnt;
     }
-    else ncnt=Math.max(this.max_displayed_items, ncnt);
     ncnt+=2;
   }
   else ncnt++;
