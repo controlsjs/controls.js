@@ -385,14 +385,15 @@ function ngdbdsc_SelectChanged(list)
 function ngdbdsc_DoUpdateBefore(o)
 {
   var ds=this.Owner.Owner;
-  if(!ds) return;
+  if(!ds) return true;
   var dbvm=ds.GetDBViewModel();
   if((!dbvm)||(typeof dbvm.GetPrimaryKeyValues !== 'function')||(!ds.AutoSelectDBVMRecord))
   {
     delete this.__dbvmpk;
-    return;
+    return true;
   }
   this.__dbvmpk=dbvm.GetPrimaryKeyValues();
+  return true;
 }
 
 function ngdbdsc_DrawItem(l,ret,html,it,id,level,collapsed)
