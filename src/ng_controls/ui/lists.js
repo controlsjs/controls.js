@@ -67,18 +67,23 @@ function ngl_do_add(list,it,parent)
   this.need_update=true;
   if(typeof it==='undefined') return false;
   if(list!=this) ng_SetByRef(it,'Parent',list);
-  if((this.OnAdd)&&(!ngVal(this.OnAdd(this,it,parent),false))) { delete it.Parent; return false; }
+  this.update_cnt++;
+  try {
+    if((this.OnAdd)&&(!ngVal(this.OnAdd(this,it,parent),false))) { delete it.Parent; return false; }
 
-  var action = this.GetItemAction(it);
-  this.SyncItemAction(it,action);
+    var action = this.GetItemAction(it);
+    this.SyncItemAction(it,action);
 
-  if((!action)&&(typeof it.RadioGroup !== 'undefined')&&(ngVal(it.Checked,0)))
-  {
-    this.radio_groups[it.RadioGroup]=it;
+    if((!action)&&(typeof it.RadioGroup !== 'undefined')&&(ngVal(it.Checked,0)))
+    {
+      this.radio_groups[it.RadioGroup]=it;
+    }
+    if((typeof it.Checked !== 'undefined')&&(it.Checked!=0)&&(it.Checked!=false))
+      this.CheckChanged();
+    return true;
+  } finally {
+    this.update_cnt--;
   }
-  if((typeof it.Checked !== 'undefined')&&(it.Checked!=0)&&(it.Checked!=false))
-    this.CheckChanged();
-  return true;
 }
 
 function ngl_Add(it, parent)
@@ -185,53 +190,59 @@ function ngl_do_remove(it, parent)
 {
   if(typeof it==='undefined') return;
   this.need_update=true;
-  if(this.SelCount>0) this.SelectItem(it,false);
+  this.update_cnt++;
+  try {
+    if(this.SelCount>0) this.SelectItem(it,false);
 
-  if((typeof it.RadioGroup !== 'undefined')&&(typeof this.radio_groups[it.RadioGroup] !== 'undefined')&&(this.radio_groups[it.RadioGroup]==it))
-  {
-    this.radio_groups[it.RadioGroup]=null;
-  }
-
-  if((typeof it.Checked !== 'undefined')&&(it.Checked!=0)&&(it.Checked!=false))
-    this.CheckChanged();
-
-  if(this.OnRemove) this.OnRemove(this,it,parent);
-  it.Parent=null;
-  if((typeof it.Controls !== 'undefined')&&(typeof this.ItemsControls !== 'undefined'))
-  {
-    if(this.Columns.length>0)
+    if((typeof it.RadioGroup !== 'undefined')&&(typeof this.radio_groups[it.RadioGroup] !== 'undefined')&&(this.radio_groups[it.RadioGroup]==it))
     {
-      var cid,ctrls,ctrl;
-      for(var i=0;i<this.Columns.length;i++)
+      this.radio_groups[it.RadioGroup]=null;
+    }
+
+    if((typeof it.Checked !== 'undefined')&&(it.Checked!=0)&&(it.Checked!=false))
+      this.CheckChanged();
+
+    if(this.OnRemove) this.OnRemove(this,it,parent);
+    it.Parent=null;
+    if((typeof it.Controls !== 'undefined')&&(typeof this.ItemsControls !== 'undefined'))
+    {
+      if(this.Columns.length>0)
       {
-        cid=this.Columns[i].ID;
-        if(typeof it.Controls[cid]!=='undefined')
+        var cid,ctrls,ctrl;
+        for(var i=0;i<this.Columns.length;i++)
         {
-          ctrls=it.Controls[cid];
-          for(var c in ctrls)
+          cid=this.Columns[i].ID;
+          if(typeof it.Controls[cid]!=='undefined')
           {
-            if((c=='Owner')||(c=='Parent')) continue;
-            ctrl=ctrls[c];
-            this.RemoveItemControl(ctrl);
-            if((ctrl)&&(typeof ctrl.Dispose === 'function')) ctrl.Dispose();
+            ctrls=it.Controls[cid];
+            for(var c in ctrls)
+            {
+              if((c=='Owner')||(c=='Parent')) continue;
+              ctrl=ctrls[c];
+              this.RemoveItemControl(ctrl);
+              if((ctrl)&&(typeof ctrl.Dispose === 'function')) ctrl.Dispose();
+            }
+            delete it.Controls[cid];
           }
-          delete it.Controls[cid];
+        }
+      }
+      else
+      {
+        var ctrl;
+        for(var c in it.Controls)
+        {
+          if((c=='Owner')||(c=='Parent')) continue;
+          ctrl=it.Controls[c];
+          this.RemoveItemControl(ctrl);
+          if((ctrl)&&(typeof ctrl.Dispose === 'function')) ctrl.Dispose();
         }
       }
     }
-    else
-    {
-      var ctrl;
-      for(var c in it.Controls)
-      {
-        if((c=='Owner')||(c=='Parent')) continue;
-        ctrl=it.Controls[c];
-        this.RemoveItemControl(ctrl);
-        if((ctrl)&&(typeof ctrl.Dispose === 'function')) ctrl.Dispose();
-      }
-    }
+    if(it.Controls) delete it.Controls;
   }
-  if(it.Controls) delete it.Controls;
+  finally {
+    this.update_cnt--;
+  }
 }
 
 function ngl_Remove(it, parent)
@@ -4264,6 +4275,7 @@ function npgl_DoUpdate(o)
 function npgl_DoUpdateBefore(o)
 {
   if((this.update_cnt>0)||(this.ID=='')) return;
+  this.need_update=false;
 
   var pl=this.Owner.Owner;
   if(!pl) return false;
@@ -5310,24 +5322,31 @@ function npgl_SetAsyncData(idx, data)
   {
     var j;
     var asynclast=this.async_dataindex+this.async_datacount;
-    if((idx==this.async_dataindex)&&(data.length>=0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
-    {
-      this.SetLength(idx+data.length);
-      changed=true;
+    list.BeginUpdate();
+    try {
+      if((idx==this.async_dataindex)&&(data.length>=0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
+      {
+        this.SetLength(idx+data.length);
+        changed=true;
+      }
+      for(var i=0;i<data.length;i++)
+      {
+        j=i+idx;
+        if(j>=list.Items.length)
+        {
+          list.Items.length=j;
+          if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
+        }
+        if(typeof data[i] !== 'undefined')
+        {
+          list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
+          if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
+        }
+      }
     }
-    for(var i=0;i<data.length;i++)
-    {
-      j=i+idx;
-      if(j>=list.Items.length)
-      {
-        list.Items.length=j;
-        if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
-      }
-      if(typeof data[i] !== 'undefined')
-      {
-        list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
-        if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
-      }
+    finally {
+      if(changed) list.need_update=false;
+      list.EndUpdate();
     }
   }
   idx=this.async_dataindex;
