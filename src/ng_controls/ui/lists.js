@@ -968,12 +968,12 @@ function ngl_SetColumnVisible(id,visible)
       if(col.ID!=id) continue;
 
       visible=ngVal(visible,true);
-      if(ngVal(col.Visible,true)!=visible)
+      if(ngVal(col.Visible,true)!==visible)
       {
         col.Visible=visible;
         if(this.OnSetColumnVisible) this.OnSetColumnVisible(this,col);
 
-        if(col.Visible==visible) this.Update();
+        if(col.Visible===visible) this.Update();
       }
       break;
     }
@@ -2344,7 +2344,7 @@ function ngl_DrawItemText(html, it, id, level)
       col=this.Columns[i];
       if(!ngVal(col.Visible,true)) continue;
 
-      html.append('<td valign="'+ngVal(col.VAlign,'top')+'" align="'+col.Align+'"'+(minheight>0 ? ' height="'+minheight+'"' : '')+'>');
+      html.append('<td valign="'+ngVal(col.VAlign,'top')+'" align="'+ngVal(col.Align,'left')+'"'+(minheight>0 ? ' height="'+minheight+'"' : '')+'>');
       if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, it, col),'');
       else
       {
@@ -2705,7 +2705,7 @@ function ngl_DoUpdate(o)
 
       th_append('<td');
       if(i==width100) th_append(' width="'+(this.Columns.length==1 ? 1 : 100)+'%"'); // strange fix, 100% will not work if one column
-      th_append(' align="'+col.Align+'"');
+      th_append(' align="'+ngVal(col.Align,'left')+'"');
       if(!showheader) html.append(' style="visibility: hidden"');
       th_append('>');
       if(this.OnGetColumnWidth) cw=this.OnGetColumnWidth(this, col, i, captions[i]);
