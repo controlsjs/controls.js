@@ -449,7 +449,7 @@ var ViewModel_Controls_DesignInfo = (function()
         'SBYTE','BYTE','SHORT','USHORT','LONG','ULONG',
         'DECIMAL','STRING','NVARCHAR',
         'TIMESTAMP','DATETIME','DATE', 'TIME',
-        'UTCTIMESTAMP','UTCDATETIME','UTCDATE','UTCTIME',
+        'UTCTIMESTAMP','UTCDATETIME',
         'ARRAY','OBJECT'
       ];
 
@@ -937,20 +937,6 @@ var ViewModel_Controls_DesignInfo = (function()
         fdtype('ngFieldDef_UTCDateTime', 'UDT', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
             "DateTimeFormat": { Level: 'basic' }
-          }))
-        ]),
-
-        // ngFieldDef_UTCDate
-        fdtype('ngFieldDef_UTCDate', 'UD', [
-          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('date', {
-            "DateFormat": { Level: 'basic' }
-          }))
-        ]),
-
-        // ngFieldDef_UTCTime
-        fdtype('ngFieldDef_UTCTime', 'UT', [
-          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
-            "TimeFormat": { Level: 'basic' }
           }))
         ]),
 

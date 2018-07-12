@@ -152,10 +152,8 @@ function ng_ViewModelFormatError(err)
         case 'DATETIME':      
         case 'UTCTIMESTAMP':
         case 'UTCDATETIME':   msg.push(ngTxt('viewmodel_err_type_datetime')); break;
-        case 'DATE':          
-        case 'UTCDATE':       msg.push(ngTxt('viewmodel_err_type_date')); break;
-        case 'TIME':          
-        case 'UTCTIME':       msg.push(ngTxt('viewmodel_err_type_time')); break;
+        case 'DATE':          msg.push(ngTxt('viewmodel_err_type_date')); break;
+        case 'TIME':          msg.push(ngTxt('viewmodel_err_type_time')); break;
         case 'ARRAY':         msg.push(ngTxt('viewmodel_err_type_array')); break;
         default:              msg.push(ngTxt('viewmodel_err_type')); break;
       }
@@ -455,8 +453,6 @@ function ngfd_TypedValue(v)
       case 'TIME':          r=ng_toDate(v,null); break;
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':   r=ng_toDate(v,null); break;
-      case 'UTCDATE':       r=ng_toDateOnly(v,null); break;
-      case 'UTCTIME':       r=ng_toDate(v,null); break;
       // array
       case 'ARRAY':         if(ng_typeArray(v)) r=(origv===v ? ng_CopyVar(v) : v);
                             else
@@ -519,14 +515,6 @@ function ngfd_TypedValue(v)
         break;
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
-        typefnc=ng_toDate;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        break;
-      case 'UTCDATE':
-        typefnc=ng_toDateOnly;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        break;
-      case 'UTCTIME':       
         typefnc=ng_toDate;
         if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
@@ -605,8 +593,6 @@ function ngfd_Serialize(v)
     case 'TIME':
     case 'UTCTIMESTAMP':
     case 'UTCDATETIME':
-    case 'UTCDATE':
-    case 'UTCTIME':
       r=ng_toUnixTimestamp(r);
       break;
   }
@@ -629,8 +615,6 @@ function ngfd_Deserialize(v)
       case 'TIME':
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
-      case 'UTCDATE':
-      case 'UTCTIME':
         r=ng_toDate(r,r);
         break;
     }
@@ -691,12 +675,6 @@ function ngfd_FormatString(v)
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
         r=ng_FormatDateTime(ng_fromUTCDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
-        break;
-      case 'UTCDATE':       
-        r=ng_FormatDate(ng_fromUTCDate(v),ngVal(this.Attrs['DateFormat'],''),null);
-        break;
-      case 'UTCTIME':       
-        r=ng_FormatTime(ng_fromUTCDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
         break;
       case 'ARRAY':
         if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
@@ -774,13 +752,11 @@ function ngfd_ParseString(v)
             r=ng_ParseDateTime(v,fmt,null);
             break;
           case 'DATE':
-          case 'UTCDATE':
             var fmt=this.Attrs['ParseDateFormat'];
             if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateFormat'],'');
             r=ng_ParseDate(v,fmt,null);
             break;
           case 'TIME':          
-          case 'UTCTIME':
             var fmt=this.Attrs['ParseTimeFormat'];
             if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['TimeFormat'],'');
             r=ng_ParseTime(v,fmt,null);
@@ -800,8 +776,6 @@ function ngfd_ParseString(v)
             break;
           case 'UTCTIMESTAMP':
           case 'UTCDATETIME':
-          case 'UTCDATE':
-          case 'UTCTIME':
             if(r!==null) v=ng_toUTCDate(r);
             break;
         }
@@ -989,8 +963,6 @@ function ngFieldDef(id, type, attrs)
    *    'TIME' - time only type           
    *    'UTCTIMESTAMP' - date and time type (UTC)
    *    'UTCDATETIME' - date and time type (UTC) 
-   *    'UTCDATE' - date only type (UTC) 
-   *    'UTCTIME' - time only type (UTC)       
    *    'ARRAY' - array type
    */
   this.Type     = ngVal(this.Type, type);
