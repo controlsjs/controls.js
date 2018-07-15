@@ -273,7 +273,17 @@ ngUserControls['auth_controls'] = {
               ngHintD: (compact ? 'ngauthLoginPassword' : undefined)
             },
             Events: {
+              OnFocus: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  c.__msCapsLockWarningOff=document.msCapsLockWarningOff;
+                  document.msCapsLockWarningOff=true;
+                }
+              },
               OnBlur: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  document.msCapsLockWarningOff = c.__msCapsLockWarningOff;
+                  delete c.__msCapsLockWarningOff;
+                }
                 c.Owner.Owner.ShowCapsLockWarning(false);
                 c.Owner.Owner.UserClosedCapsWarn=false;
               }
@@ -514,7 +524,17 @@ ngUserControls['auth_controls'] = {
               Password: true
             },
             Events: {
+              OnFocus: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  c.__msCapsLockWarningOff=document.msCapsLockWarningOff;
+                  document.msCapsLockWarningOff=true;
+                }
+              },
               OnBlur: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  document.msCapsLockWarningOff = c.__msCapsLockWarningOff;
+                  delete c.__msCapsLockWarningOff;
+                }
                 var t=window.setTimeout(function() {
                   window.clearTimeout(t);
                   c.Owner.Owner.ShowCapsLockWarning(false);
@@ -556,7 +576,17 @@ ngUserControls['auth_controls'] = {
                 }
                 return true;
               },
+              OnFocus: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  c.__msCapsLockWarningOff=document.msCapsLockWarningOff;
+                  document.msCapsLockWarningOff=true;
+                }
+              },
               OnBlur: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  document.msCapsLockWarningOff = c.__msCapsLockWarningOff;
+                  delete c.__msCapsLockWarningOff;
+                }
                 var t=window.setTimeout(function() {
                   window.clearTimeout(t);
                   c.Owner.Owner.ShowCapsLockWarning(false);
@@ -583,7 +613,17 @@ ngUserControls['auth_controls'] = {
             Events: {
               OnKeyDown: ngauth_CapsOnKeyDown,
               OnKeyPress: ngauth_CapsOnKeyPress,
+              OnFocus: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  c.__msCapsLockWarningOff=document.msCapsLockWarningOff;
+                  document.msCapsLockWarningOff=true;
+                }
+              },
               OnBlur: function(c) {
+                if(typeof document.msCapsLockWarningOff!=='undefined') {
+                  document.msCapsLockWarningOff = c.__msCapsLockWarningOff;
+                  delete c.__msCapsLockWarningOff;
+                }
                 var t=window.setTimeout(function() {
                   window.clearTimeout(t);
                   c.Owner.Owner.ShowCapsLockWarning(false);
