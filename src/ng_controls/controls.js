@@ -5407,6 +5407,8 @@ function ng_SetBounds(o,props)
   }
   else
   {
+    o.style.bottom='';
+    o.style.right='';
     if(!ng_nullAttr(o.getAttribute('FT'))) o.setAttribute('FT','');
     if(!ng_nullAttr(o.getAttribute('FB'))) o.setAttribute('FB','');
     if(!ng_nullAttr(o.getAttribute('FL'))) o.setAttribute('FL','');
