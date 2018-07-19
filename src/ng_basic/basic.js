@@ -2890,9 +2890,31 @@ function ngObjAddEvent(ev, fce, once) {
       if(typeof evlist === 'undefined') {
         var oldfnc=this[ev];
         if((once)&&(fce===oldfnc)) return;
-        
-        evlist=[];
+
         var self=this;
+        if((typeof oldfnc.callParent === 'function')&&(typeof oldfnc.overrides === 'object')) // is overriden
+        {
+          var override;
+          if(swap) {
+            override=function() {
+              if(!oldfnc.hasParent()) return fce.apply(self,arguments);
+              var r=fce.apply(self,arguments);
+              if(oldfnc.callParent.apply(self,arguments)!==r) r=void 0;
+              return r;
+            };
+          } else {
+            override=function() {
+              if(!oldfnc.hasParent()) return fce.apply(self,arguments);
+              var r=oldfnc.callParent.apply(self,arguments);
+              if(fce.apply(self,arguments)!==r) r=void 0;
+              return r;
+            };
+          };
+          override.event_fnc=fce;
+          ng_OverrideMethod(this,ev,override);
+          return;
+        }
+        evlist=[];
         var handler=function() {
           var r,ret;
           var oldproc=handler.inprocess;
@@ -2961,16 +2983,13 @@ function ngObjRemoveEvent(ev, fce)
       ngObjRemoveEvent.apply(this,[ev,fce[i]]);
     return;
   }
-  if(typeof(fce)=='function') // only functions can be added to event handlers 
-  { 
-    var handler=this[ev];
-    if(!handler) return;
-    if(handler===fce) { this[ev] = null; return; }
+
+  function remove_event(handler) {
     var evlist=handler.events;
     if(typeof evlist !== 'undefined')
     {
       var inproc=handler.inprocess;
-      for(var i=evlist.length-1;i>=0;i--) 
+      for(var i=evlist.length-1;i>=0;i--)
         if(evlist[i]===fce) {
           if(inproc) {
             handler.changed=true;
@@ -2990,7 +3009,40 @@ function ngObjRemoveEvent(ev, fce)
           delete handler.events;
         }
       }
-    } 
+    }
+  }
+
+  if(typeof(fce)=='function') // only functions can be added to event handlers 
+  { 
+    var handler=this[ev];
+    if(!handler) return;
+    if(handler===fce) { this[ev] = null; return; }
+
+    if((typeof handler.callParent === 'function')&&(typeof handler.overrides === 'object')) // is overriden
+    {
+      var evlist=handler.overrides;
+      var inproc=handler.inprocess;
+      for(var i=evlist.length-1;i>=0;i--) {
+        if(evlist[i].event_fnc===fce) {
+          handler.removeOverride(evlist[i]);
+        } else {
+          if(evlist[i]===fce) {
+            if(inproc) {
+              handler.changed=true;
+              evlist[i]=null;
+            }
+            else evlist.splice(i,1);
+          }
+          else {
+            if(typeof evlist[i].events!=='undefined') {
+              remove_event(evlist[i]);
+            }
+          }
+        }
+      }
+      return;
+    }
+    remove_event(handler);
   }
 }
 
@@ -3025,11 +3077,20 @@ function ng_OverrideMethod(cls,method,fnc) {
       evlist=[fnc,parent];
       var handler = function() {
         var ret,olddive=dive;
+        var oldproc=handler.inprocess;
         dive=0;
+        handler.inprocess=true;
         try {
           ret=evlist[0].apply(cls,arguments);
         } finally {
+          if(handler.changed)
+          {
+            delete handler.changed;
+            for(var i=evlist.length-1;i>=0;i--)
+              if(!evlist[i]) evlist.splice(i,1);
+          }
           dive=olddive;
+          handler.inprocess=oldproc;
         }
         return ret;
       };
@@ -3039,7 +3100,23 @@ function ng_OverrideMethod(cls,method,fnc) {
       handler.callParent = function() {
         var ret;
         try {
-          ret=evlist[++dive].apply(cls,arguments);
+          if(!handler.changed) ret=evlist[++dive].apply(cls,arguments);
+          else {
+            var ev;
+            var olddive=dive+1;
+            try {
+              while(++dive<evlist.length) {
+                ev=evlist[dive];
+                if(ev) {
+                  ret=ev.apply(cls,arguments);
+                  break;
+                }
+              }
+            }
+            finally {
+              dive=olddive;
+            }
+          }
         }
         finally {
           dive--;
@@ -3049,8 +3126,11 @@ function ng_OverrideMethod(cls,method,fnc) {
       handler.removeOverride = function(rfnc) {
         for(var i=evlist.length-2;i>=0;i--) {
           if(evlist[i]===rfnc) {
-            if((dive>0)&&(dive>=i)) throw new Error('Cannot remove override of function in the middle of its invocation.');
-            evlist.splice(i,1);
+            if((dive>0)&&(dive>=i)) {
+              evlist[i]=null;
+              handler.changed=true;
+            }
+            else evlist.splice(i,1);
           }
         }
       };
