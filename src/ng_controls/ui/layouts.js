@@ -132,6 +132,8 @@ ngUserControls['layouts'] = {
         for(var i=chidx+1;i<len;i++) setbounds(i);
       }
       var s=t-padding;
+      if(p.AutoSize) ngvhlay_setSize(vert, p, s);
+
       var po=p.Elm();
       if(po) {
         var w=ng_ClientWidth(po);
@@ -143,10 +145,25 @@ ngUserControls['layouts'] = {
           p._layout_width=w;
           p._layout_height=h;
           p.UpdateChildren();
-          s=ngvhlay_calcSize(vert,cc,bound,p.Reverse);
         }
       }
-      if(p.AutoSize) ngvhlay_setSize(vert, p, s);
+    }
+
+    function ngvhlay_CtrlSetBounds(props) {
+      var p=this.ParentControl;
+      var changingbounds=false;
+      var cc=p.ChildControls;
+      if((p)&&(!this.IgnoreLayout)&&(!p._layout_updating)&&(props)&&(cc)&&(cc.length)) {
+        var bound=ngvhlay_getBound(p);
+        var vert=((bound==='T')||(bound==='B'));
+        changingbounds=((vert)&&(typeof props.H!=='undefined'))||((!vert)&&(typeof props.W!=='undefined'));
+      }
+      var ret=ng_CallParent(this,'SetBounds',arguments,false);
+      if((ret)&&(changingbounds)) {
+        var chidx=ngvhlay_findChild(cc, this, p.Reverse);
+        if(chidx>=0) ngvhlay_reflowChildren(cc, this, chidx, p);
+      }
+      return ret;
     }
 
     function ngvhlay_CtrlUpdate(c) {
@@ -219,12 +236,14 @@ ngUserControls['layouts'] = {
       ctrl.AddEvent(ngvhlay_CtrlUpdate,'OnUpdate');
       ctrl.AddEvent('OnUpdated',ngvhlay_CtrlUpdated);
       ctrl.AddEvent('OnVisibleChanged',ngvhlay_CtrlVisibleChanged);
+      ng_OverrideMethod(ctrl,'SetBounds',ngvhlay_CtrlSetBounds);
     }
 
     function ngvhlay_RemoveChildControl(ctrl) {
       ctrl.RemoveEvent('OnUpdate',ngvhlay_CtrlUpdate);
       ctrl.RemoveEvent('OnUpdated',ngvhlay_CtrlUpdated);
       ctrl.RemoveEvent('OnVisibleChanged',ngvhlay_CtrlVisibleChanged);
+      if(ng_IsOverriden(ctrl.SetBounds)) ctrl.SetBounds.removeOverride(ngvhlay_CtrlSetBounds);
     }
 
     function ngvhlay_UpdateChildren(recursively)
@@ -306,6 +325,15 @@ ngUserControls['layouts'] = {
 
       var s;
       var cc=this.ChildControls;
+      if(this.AutoSize) {
+        if((cc)&&(cc.length>0)) s=ngvhlay_calcSize(vert,cc,bound,this.Reverse);
+        else s=0;
+      }
+
+      if(typeof s==='undefined') s=(vert ? this.Bounds.H : this.Bounds.W);
+
+      if(typeof s!=='undefined') ngvhlay_setSize(vert, this, s);
+
       if((cc)&&(cc.length>0)) {
         var o=this.Elm();
         var w=ng_ClientWidth(o);
@@ -317,13 +345,7 @@ ngUserControls['layouts'] = {
           // Scrollbars changed, redraw
           this.UpdateChildren();
         }
-
-        if(this.AutoSize) s=ngvhlay_calcSize(vert,cc,bound,this.Reverse);
       }
-      else if(this.AutoSize) s=0;
-      if(typeof s==='undefined') s=(vert ? this.Bounds.H : this.Bounds.W);
-
-      if(typeof s!=='undefined') ngvhlay_setSize(vert, this, s);
     }
 
     function Create_VLayout(def, ref, parent) {
