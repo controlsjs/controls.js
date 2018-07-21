@@ -160,8 +160,12 @@ ngUserControls['layouts'] = {
       }
       var ret=ng_CallParent(this,'SetBounds',arguments,false);
       if((ret)&&(changingbounds)) {
-        var chidx=ngvhlay_findChild(cc, this, p.Reverse);
-        if(chidx>=0) ngvhlay_reflowChildren(cc, this, chidx, p);
+        var chidx=ngvhlay_findChild(cc, this, p.Reverse, this._layout_child);
+        if(chidx>=0) {
+          this._layout_child=chidx;
+          ngvhlay_reflowChildren(cc, this, chidx, p);
+        }
+        else delete this._layout_child;
       }
       return ret;
     }
@@ -171,8 +175,12 @@ ngUserControls['layouts'] = {
       if((p)&&(!c.IgnoreLayout)) {
         var cc=p.ChildControls;
         if((cc)&&(cc.length)) {
-          var chidx=ngvhlay_findChild(cc, c, p.Reverse, p._layout_child);
-          if(chidx<0) return true; // not a child
+          var chidx=ngvhlay_findChild(cc, c, p.Reverse, p._layout_updating ? p._layout_child_idx : c._layout_child);
+          if(chidx<0) {
+            delete c._layout_child;
+            return true; // not a child
+          }
+          c._layout_child=chidx;
 
           var bound=ngvhlay_getBound(p);
           var vert=((bound==='T')||(bound==='B'));
@@ -196,9 +204,6 @@ ngUserControls['layouts'] = {
             case 'R': b.L=void 0; break;
           }
           c.SetBounds(b);
-
-          p._layout_child=p.Reverse ? chidx-1 : chidx+1;
-          if(!p._layout_updating) c._layout_child=chidx;
           return true;
         }
       }
@@ -208,16 +213,12 @@ ngUserControls['layouts'] = {
 
     function ngvhlay_CtrlUpdated(c,o) {
       var p=c.ParentControl;
-      if((!p)||(p._layout_updating)) return;
-
-      var chidx=c._layout_child;
-      if(typeof chidx === 'undefined') return;
-      delete c._layout_child;
+      if((!p)||(p._layout_updating)||(typeof c._layout_child === 'undefined')) return;
 
       var cc=p.ChildControls;
-      if((!cc)||(!cc.length)||(chidx>=cc.length)) return;
+      if((!cc)||(!cc.length)) return;
 
-      ngvhlay_reflowChildren(cc, c, chidx, p);
+      ngvhlay_reflowChildren(cc, c, c._layout_child, p);
     }
 
     function ngvhlay_CtrlVisibleChanged(c) {
@@ -227,7 +228,7 @@ ngUserControls['layouts'] = {
       var cc=p.ChildControls;
       if((!cc)||(!cc.length)) return;
 
-      var chidx=ngvhlay_findChild(cc, c, p.Reverse);
+      var chidx=ngvhlay_findChild(cc, c, p.Reverse, c._layout_child);
       if(chidx<0) return;
       ngvhlay_reflowChildren(cc, c, chidx, p);
     }
@@ -254,21 +255,23 @@ ngUserControls['layouts'] = {
       var c;
 
       var old_layout_updating=this._layout_updating;
-      var old_layout_child=this._layout_child;
+      var old_layout_child_idx=this._layout_child_idx;
       this._layout_updating=true;
       try {
         if(this.Reverse) {
-          this._layout_child=cc.length-1;
+          this._layout_child_idx=cc.length-1;
           for(var i=cc.length-1;i>=0;i--)
           {
+            this._layout_child_idx=i;
             c=cc[i];
             if(c.Update) c.Update(recursive);
           }
         }
         else {
-          this._layout_child=0;
+          this._layout_child_idx=0;
           for(var i=0;i<cc.length;i++)
           {
+            this._layout_child_idx=i;
             c=cc[i];
             if(c.Update) c.Update(recursive);
           }
@@ -277,8 +280,8 @@ ngUserControls['layouts'] = {
       finally {
         this._layout_updating=old_layout_updating;
         if(typeof this._layout_updating==='undefined') delete this._layout_updating;
-        this._layout_child=old_layout_child;
-        if(typeof this._layout_child==='undefined') delete this._layout_child;
+        this._layout_child_idx=old_layout_child_idx;
+        if(typeof this._layout_child_idx==='undefined') delete this._layout_child_idx;
       }
     }
 
