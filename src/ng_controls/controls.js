@@ -2189,6 +2189,30 @@ function ngc_SetBounds(props)
   return changed;
 }
 
+function ngc_UpdateBounds(props, recursive)
+{
+  var self=this;
+
+  function cmp_width() {
+    if(typeof self.Bounds.W!=='undefined') return self.Bounds.W;
+    if((typeof self.Bounds.L!=='undefined')&&((typeof self.Bounds.R!=='undefined'))) return self.Bounds.L+self.Bounds.R; // compare changes in L and R
+    return 0;
+  }
+
+  function cmp_height() {
+    if(typeof self.Bounds.H!=='undefined') return self.Bounds.H;
+    if((typeof self.Bounds.T!=='undefined')&&((typeof self.Bounds.B!=='undefined'))) return self.Bounds.T+self.Bounds.B;
+    return 0;
+  }
+
+  var w=cmp_width();
+  var h=cmp_height();
+  var ret=this.SetBounds(props);
+  if((ret)&&((w!==cmp_width())||(h!==cmp_height()))) this.Update(recursive);
+  else ret=false;
+  return ret;
+}
+
 function ngc_SetScrollBars(v)
 {
   this.ScrollBars=v;
@@ -3344,14 +3368,30 @@ function ngControl(obj, id, type)
    *  Updates or sets position of the control.
    *
    *  Syntax:
-   *    void *SetBounds* ([object props])
+   *    boolean *SetBounds* ([object props])
    *
    *  Parameters:
+   *    props - boundary properties
+   *
+   *  Returns:
+   *    TRUE if control boundary changed.
+   */
+  obj.SetBounds = ngc_SetBounds;
+
+  /*  Function: UpdateBounds
+   *  Updates or sets position of the control and redraws control if size changed.
+   *
+   *  Syntax:
+   *    boolean *UpdateBounds* ([object props, boolean recursive=true])
+   *
+   *  Parameters:
+   *    props - boundary properties
+   *    recursive - if TRUE the control's children are updated recursively
    *
    *  Returns:
    *    -
    */
-  obj.SetBounds = ngc_SetBounds;
+  obj.UpdateBounds = ngc_UpdateBounds;
 
   /*  Function: SetScrollBars
    *  Sets scroll bars apperance.
