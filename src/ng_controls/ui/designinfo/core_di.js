@@ -712,6 +712,11 @@ return {
               var pg_Text = FormEditor.GetControlsProperty('Pages.'+page_selected+'.Text', [cidx]),
                   pg_txt = (pg_Text && pg_Text[0] && pg_Text[0].PropertyDefined !== 0 && typeof pg_Text[0].PropertyValue === 'string') ? pg_Text[0].PropertyValue : '';
 
+              if(pg_txt==='') {
+                  pg_Text = FormEditor.GetControlsProperty('Pages.'+page_selected+'.id', [cidx]),
+                  pg_txt = (pg_Text && pg_Text[0] && pg_Text[0].PropertyDefined !== 0 && typeof pg_Text[0].PropertyValue === 'string') ? pg_Text[0].PropertyValue : '';
+              }
+
               FormEditor.MessageDlg('feMessageBox', 'Delete page `'+pg_txt+'` (ID: '+page_selected+')?', 'Delete Page', function(c) {
                 if (c.DialogResult === mbYes)
                 {
@@ -803,6 +808,11 @@ return {
                 var pg_Text = FormEditor.GetControlsProperty('Pages.'+pg+'.Text', [cidx]),
                     pg_txt = (pg_Text && pg_Text[0] && pg_Text[0].PropertyDefined !== 0 && typeof pg_Text[0].PropertyValue === 'string') ? pg_Text[0].PropertyValue : '',
                     checked = (pg === page_selected) ? 1 : 0;
+
+                if(pg_txt==='') {
+                  pg_Text = FormEditor.GetControlsProperty('Pages.'+pg+'.id', [cidx]);
+                  pg_txt = (pg_Text && pg_Text[0] && pg_Text[0].PropertyDefined !== 0 && typeof pg_Text[0].PropertyValue === 'string') ? pg_Text[0].PropertyValue : '';
+                }
 
                 var action = {
                   Text: (!rootadd ? ('%'+id+'\\') : '@%'+lastid+'+:' ) + ('('+pg+') - ' + pg_txt),
