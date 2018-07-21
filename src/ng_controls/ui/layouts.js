@@ -78,7 +78,8 @@ ngUserControls['layouts'] = {
     function ngvhlay_findChild(cc, c, reverse, chidx)
     {
       var i;
-      chidx=ngVal(chidx,0);
+      if(typeof chidx==='undefined') chidx=c._layout_child;
+      if(typeof chidx==='undefined') chidx=0;
       for(i=0;i<cc.length;i++)
       {
         chidx=chidx%cc.length;
@@ -89,7 +90,11 @@ ngUserControls['layouts'] = {
         }
         else chidx++;
       }
-      if(i>=cc.length) return -1; // not a child
+      if(i>=cc.length) {
+        delete c._layout_child;
+        return -1; // not a child
+      }
+      c._layout_child=chidx;
       return chidx;
     }
 
@@ -150,24 +155,26 @@ ngUserControls['layouts'] = {
     }
 
     function ngvhlay_CtrlSetBounds(props) {
-      var p=this.ParentControl;
-      var changingbounds=false;
-      var cc=p.ChildControls;
-      if((p)&&(!this.IgnoreLayout)&&(!p._layout_updating)&&(props)&&(cc)&&(cc.length)) {
-        var bound=ngvhlay_getBound(p);
-        var vert=((bound==='T')||(bound==='B'));
-        changingbounds=((vert)&&(typeof props.H!=='undefined'))||((!vert)&&(typeof props.W!=='undefined'));
-      }
       var ret=ng_CallParent(this,'SetBounds',arguments,false);
-      if((ret)&&(changingbounds)) {
-        var chidx=ngvhlay_findChild(cc, this, p.Reverse, this._layout_child);
-        if(chidx>=0) {
-          this._layout_child=chidx;
-          ngvhlay_reflowChildren(cc, this, chidx, p);
+      if((ret)&&(props)&&(!this._layout_ctrl_updating)&&(!this.IgnoreLayout)) {
+        var p=this.ParentControl;
+        var cc=p ? p.ChildControls : null;
+        if((cc)&&(cc.length)) {
+          var bound=ngvhlay_getBound(p);
+          var vert=((bound==='T')||(bound==='B'));
+          if(((vert)&&(typeof props.H!=='undefined'))||((!vert)&&(typeof props.W!=='undefined'))) {
+            var chidx=ngvhlay_findChild(cc, this, p.Reverse);
+            if(chidx>=0) ngvhlay_reflowChildren(cc, this, chidx, p);
+          }
         }
-        else delete this._layout_child;
       }
       return ret;
+    }
+
+    function ngvhlay_CtrlDoUpdate(o) {
+      if(typeof this._layout_ctrl_updating_old==='undefined') this._layout_ctrl_updating_old=this._layout_ctrl_updating;
+      this._layout_ctrl_updating=true;
+      return ng_CallParent(this,'DoUpdate',arguments,true);
     }
 
     function ngvhlay_CtrlUpdate(c) {
@@ -176,11 +183,7 @@ ngUserControls['layouts'] = {
         var cc=p.ChildControls;
         if((cc)&&(cc.length)) {
           var chidx=ngvhlay_findChild(cc, c, p.Reverse, p._layout_updating ? p._layout_child_idx : c._layout_child);
-          if(chidx<0) {
-            delete c._layout_child;
-            return true; // not a child
-          }
-          c._layout_child=chidx;
+          if(chidx<0) return true; // not a child
 
           var bound=ngvhlay_getBound(p);
           var vert=((bound==='T')||(bound==='B'));
@@ -212,6 +215,10 @@ ngUserControls['layouts'] = {
     }
 
     function ngvhlay_CtrlUpdated(c,o) {
+      this._layout_ctrl_updating=this._layout_ctrl_updating_old;
+      delete this._layout_ctrl_updating_old;
+      if(typeof this._layout_ctrl_updating==='undefined') delete this._layout_ctrl_updating;
+
       var p=c.ParentControl;
       if((!p)||(p._layout_updating)||(typeof c._layout_child === 'undefined')) return;
 
@@ -228,7 +235,7 @@ ngUserControls['layouts'] = {
       var cc=p.ChildControls;
       if((!cc)||(!cc.length)) return;
 
-      var chidx=ngvhlay_findChild(cc, c, p.Reverse, c._layout_child);
+      var chidx=ngvhlay_findChild(cc, c, p.Reverse);
       if(chidx<0) return;
       ngvhlay_reflowChildren(cc, c, chidx, p);
     }
@@ -237,6 +244,7 @@ ngUserControls['layouts'] = {
       ctrl.AddEvent(ngvhlay_CtrlUpdate,'OnUpdate');
       ctrl.AddEvent('OnUpdated',ngvhlay_CtrlUpdated);
       ctrl.AddEvent('OnVisibleChanged',ngvhlay_CtrlVisibleChanged);
+      ng_OverrideMethod(ctrl,'DoUpdate',ngvhlay_CtrlDoUpdate);
       ng_OverrideMethod(ctrl,'SetBounds',ngvhlay_CtrlSetBounds);
     }
 
@@ -244,6 +252,7 @@ ngUserControls['layouts'] = {
       ctrl.RemoveEvent('OnUpdate',ngvhlay_CtrlUpdate);
       ctrl.RemoveEvent('OnUpdated',ngvhlay_CtrlUpdated);
       ctrl.RemoveEvent('OnVisibleChanged',ngvhlay_CtrlVisibleChanged);
+      if(ng_IsOverriden(ctrl.DoUpdate)) ctrl.DoUpdate.removeOverride(ngvhlay_CtrlDoUpdate);
       if(ng_IsOverriden(ctrl.SetBounds)) ctrl.SetBounds.removeOverride(ngvhlay_CtrlSetBounds);
     }
 
