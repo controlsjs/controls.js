@@ -1083,6 +1083,7 @@ function ng_diProperties(props,data) {
           "Release": ng_diFunction('function() { ng_CallParent(this, "Release", arguments); }', { Level: 'optional' }),
           "Update": ng_diFunction('function(recursive) { ng_CallParent(this, "Update", arguments); }', { Level: 'optional' }),
           "UpdateLater": ng_diFunction('function(s) { ng_CallParent(this, "UpdateLater", arguments); }', { Level: 'optional' }),
+          "UpdateChildren": ng_diFunction('function(recursive) { ng_CallParent(this, "UpdateChildren", arguments); }', { Level: 'optional' }),
 
           "DoPointerDown": ng_diFunction('function(pi) { return ng_CallParent(this, "DoPointerDown", arguments, true); }', { Level: 'advanced' }),
           "DoPtrStart": ng_diFunction('function(pi) { ng_CallParent(this, "DoPtrStart", arguments); }', { Level: 'advanced' }),

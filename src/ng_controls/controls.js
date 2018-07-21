@@ -2645,6 +2645,19 @@ function ngc_WillUpdateLater() {
   return ((this.ID!='')&&(ngLateUpdateControls!==null)&&(ngLateUpdateControls[this.ID]));
 }
 
+function ngc_UpdateChildren(recursive)
+{
+  var cc=this.ChildControls;
+  if((!cc)||(!cc.length)) return;
+  if(typeof recursive==='undefined') recursive=true;
+  var c;
+  for(var i=0;i<cc.length;i++)
+  {
+    c=cc[i];
+    if(c.Update) c.Update(recursive);
+  }
+}
+
 function ngc_Update(recursive)
 {
   ngResetCtrlLateUpdate(this);
@@ -2658,6 +2671,7 @@ function ngc_Update(recursive)
   }
   if((this.OnUpdate)&&(!ngVal(this.OnUpdate(this),false))) return;
 
+  var ret;
   var o=this.Elm();
   if(o)
   {
@@ -2667,27 +2681,13 @@ function ngc_Update(recursive)
       var cw=ng_ClientWidth(o);
       var ch=ng_ClientHeight(o);
     }
-    var ret=true;
     if(this.DoUpdate) ret=ngVal(this.DoUpdate(o),false);
-  }
-  if(ret)
-  {
-    if(ngVal(recursive,true))
-    {
-      var cc=this.ChildControls;
-      if(typeof cc !== 'undefined')
-      {
-        var c;
-        for(var i=0;i<cc.length;i++)
-        {
-          c=cc[i];
-          if(c.Update) c.Update(true);
-        }
-      }
-    }
+    else ret=true;
   }
 
   if(!ret) return;
+
+  if((ngVal(recursive,true))&&(this.UpdateChildren)) this.UpdateChildren(true);
 
   if(o)
   {
@@ -3436,9 +3436,10 @@ function ngControl(obj, id, type)
    *  Redraws control.
    *
    *  Syntax:
-   *    void *Update* (bool recursive)
+   *    void *Update* (bool recursive=true)
    *
    *  Parameters:
+   *    recursive - if TRUE the children controls are updated recurively
    *
    *  Returns:
    *    -
@@ -3469,6 +3470,20 @@ function ngControl(obj, id, type)
    *    TRUE if control was marked for late update.
    */
   obj.WillUpdateLater = ngc_WillUpdateLater;
+
+  /*  Function: UpdateChildren
+   *  Updates control children controls.
+   *
+   *  Parameters:
+   *    recursive - if TRUE the children of children controls are updated recurively
+   *
+   *  Syntax:
+   *    void *UpdateChildren* (bool recursive=true)
+   *
+   *  Returns:
+   *    -
+   */
+  obj.UpdateChildren = ngc_UpdateChildren;
 
   /*
    *  Group: Events
