@@ -1075,6 +1075,7 @@ function ng_diProperties(props,data) {
           "SetVisible": ng_diFunction('function(v) { ng_CallParent(this, "SetVisible", arguments); }', { Level: 'optional' }),
           "SetFocus": ng_diFunction('function(state) { ng_CallParent(this, "SetFocus", arguments); }', { Level: 'optional' }),
           "SetBounds": ng_diFunction('function(props) { return ng_CallParent(this, "SetBounds", arguments, false); }', { Level: 'optional' }),
+          "UpdateBounds": ng_diFunction('function(props, recursive) { return ng_CallParent(this, "UpdateBounds", arguments, false); }', { Level: 'optional' }),
           "SetScrollBars": ng_diFunction('function(v) { ng_CallParent(this, "SetScrollBars", arguments); }', { Level: 'optional' }),
           "SetPopup": ng_diFunction('function(p) { ng_CallParent(this, "SetPopup", arguments); }', { Level: 'optional' }),
           "SetOpacity": ng_diFunction('function(v) { ng_CallParent(this, "SetOpacity", arguments); }', { Level: 'optional' }),
