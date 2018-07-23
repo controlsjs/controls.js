@@ -863,23 +863,29 @@ ngUserControls['layouts'] = {
       return d+1;
     }
 
-    function ngconst_updateDepth(p,updepth,pc) {
+    function ngconst_updateDepth(p,updepth,pc,remove) {
       if((typeof updepth!=='undefined')&&(updepth.length>0)) {
-        var uc,depth;
-        for(var i=updepth.length-1;i>=0;i--) {
-          uc=updepth[i];
-          if(uc._layout_updating_depth) continue;
-          depth=ngconst_calcDepth(uc);
-          if(depth!==uc._layout_depth) { // depth changed
-            uc._layout_depth=depth;
-            ngconst_addControl(p,uc,true);
-            uc._layout_updating_depth=true;
-            try {
-              ngconst_updateDepth(p,uc._layout_dependent,uc);
+        var uc,depth,first;
+        if(typeof remove === 'undefined') {
+          remove=[]; first=true;
+        }
+        try {
+          for(var i=updepth.length-1;i>=0;i--) {
+            uc=updepth[i];
+            if(typeof uc==='string') continue;
+            if(uc._layout_updating_depth) continue;
+            depth=ngconst_calcDepth(uc);
+            if(depth!==uc._layout_depth) { // depth changed
+              uc._layout_depth=depth;
+              ngconst_addControl(p,uc,true);
+              uc._layout_updating_depth=true;
+              remove.push(uc);
+              ngconst_updateDepth(p,uc._layout_dependent,uc,remove);
             }
-            finally {
-              delete uc._layout_updating_depth;
-            }
+          }
+        } finally {
+          if(first) {
+            for(var i=remove.length-1;i>=0;i--) delete remove[i]._layout_updating_depth;
           }
         }
       }
@@ -965,8 +971,7 @@ ngUserControls['layouts'] = {
             if(typeof p._layout_needresolve === 'undefined') p._layout_needresolve=[];
             ngconst_arrAddOnce(p._layout_needresolve,c);
           }
-          for(i=don.length-1;i>=0;i--) if(don[i]===ctrl) break;
-          if(i<0) don.push(ctrl);
+          ngconst_arrAddOnce(don,ctrl);
         }
 
         adddep(lc.LtoL);
@@ -1139,7 +1144,9 @@ ngUserControls['layouts'] = {
 
       var ur=c.ChildControls;
       if(typeof ur !== 'undefined') {
-        var reported={};
+        var reported={}, remove=[];
+        var circular_dep=false;
+
         function check_circles(ctrl, from) {
           var ld=ctrl._layout_dependent;
           if(typeof ld === 'undefined') return false;
@@ -1147,25 +1154,31 @@ ngUserControls['layouts'] = {
           if(typeof from==='undefined') from=ctrl;
           var dc,ret=false;
           ctrl._layout_checking_circles=true;
-          try {
-            for(var i=ld.length-1;i>=0;i--) {
-              dc=ld[i];
-              if(reported[dc.ID]) continue;
-              if(dc._layout_checking_circles) {
-                ngDEBUGERROR('ngConstraintLayout('+c.ID+'): Circular constraint found!', dc);
-                reported[dc.ID]=true;
-                ret=true;
-                continue;
-              }
-              if(check_circles(dc,from)) { reported[dc.ID]=true; ret=true; }
+          remove.push(ctrl);
+          for(var i=ld.length-1;i>=0;i--) {
+            dc=ld[i];
+            if(reported[dc.ID]) continue;
+            if(dc._layout_checking_circles) {
+              ngDEBUGERROR('ngConstraintLayout('+c.ID+'): Circular constraint found!', dc);
+              circular_dep=true;
+              reported[dc.ID]=true;
+              ret=true;
+              continue;
             }
-          } finally {
-            delete ctrl._layout_checking_circles;
+            if(check_circles(dc,from)) { reported[dc.ID]=true; ret=true; }
           }
           return ret;
         }
         for(var i=0;i<ur.length;i++) {
           if(!reported[ur[i].ID]) check_circles(ur[i]);
+        }
+        for(var i=remove.length-1;i>=0;i--) delete remove[i]._layout_checking_circles;
+
+        if(circular_dep) {
+          // clear layout
+          delete c._layout_needresolve;
+          delete c._layout_independent;
+          delete c._layout_controls;
         }
       }
     }
