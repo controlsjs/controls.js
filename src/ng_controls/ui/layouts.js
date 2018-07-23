@@ -1174,7 +1174,7 @@ ngUserControls['layouts'] = {
         }
         for(var i=remove.length-1;i>=0;i--) delete remove[i]._layout_checking_circles;
 
-        if(circular_dep) {
+        if((circular_dep)&&(!c.InDesignMode)) {
           // clear layout
           delete c._layout_needresolve;
           delete c._layout_independent;
