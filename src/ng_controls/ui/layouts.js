@@ -853,7 +853,7 @@ ngUserControls['layouts'] = {
 
     function ngconst_calcDepth(c) {
       var ld=c._layout_depends;
-      if((typeof ld==='undefined')||(!ld.length)) return 0;
+      if((typeof ld==='undefined')||(!ld.length)) return;
       var ctrl,d=0;
       for(var i=ld.length-1;i>=0;i--)
       {
@@ -863,29 +863,38 @@ ngUserControls['layouts'] = {
       return d+1;
     }
 
-    function ngconst_updateDepth(p,updepth,pc,remove) {
+
+    function ngconst_updateDepth(p,updepth,visited,first) {
       if((typeof updepth!=='undefined')&&(updepth.length>0)) {
-        var uc,depth,first;
-        if(typeof remove === 'undefined') {
-          remove=[]; first=true;
+        var uc,depth;
+        if(typeof visited === 'undefined') {
+          visited=[]; first=true;
         }
         try {
           for(var i=updepth.length-1;i>=0;i--) {
             uc=updepth[i];
-            if(typeof uc==='string') continue;
-            if(uc._layout_updating_depth) continue;
+            if((typeof uc==='string')||(uc._layout_depth_updated)) continue;
+            visited.push(uc);
             depth=ngconst_calcDepth(uc);
+            uc._layout_depth_updated=true;
             if(depth!==uc._layout_depth) { // depth changed
-              uc._layout_depth=depth;
-              ngconst_addControl(p,uc,true);
-              uc._layout_updating_depth=true;
-              remove.push(uc);
-              ngconst_updateDepth(p,uc._layout_dependent,uc,remove);
+              if(typeof depth==='undefined') {
+                delete uc._layout_depth;
+                ngconst_arrRemove(p._layout_controls,uc);
+                ngconst_arrAddOnce(p._layout_independent,uc);
+              }
+              else {
+                uc._layout_depth=depth;
+                ngconst_arrRemove(p._layout_independent,uc);
+                ngconst_addControl(p,uc,true);
+              }
+              ngconst_updateDepth(p,uc._layout_dependent,visited);
             }
           }
         } finally {
           if(first) {
-            for(var i=remove.length-1;i>=0;i--) delete remove[i]._layout_updating_depth;
+            for(var j=visited.length-1;j>=0;j--) delete visited[j]._layout_depth_updated;
+            visited=[];
           }
         }
       }
@@ -899,15 +908,20 @@ ngUserControls['layouts'] = {
       }
       var depth=c._layout_depth;
       var lctrl,depcnt=typeof c._layout_dependent === 'undefined' ? 0 : c._layout_dependent.length;
-      var inserted=false;
+      var inserted=false,removed=false;
       for(var i=p._layout_controls.length-1;i>=0;i--) {
         lctrl=p._layout_controls[i];
-        if(lctrl===c) { p._layout_controls.splice(i,1); continue; }
+        if(lctrl===c) {
+          p._layout_controls.splice(i,1);
+          removed=true;
+          if(inserted) break;
+          continue;
+        }
         if(inserted) continue;
         if((lctrl._layout_depth>depth)||((lctrl._layout_depth===depth)&&((typeof lctrl._layout_dependent === 'undefined' ? 0 : lctrl._layout_dependent.length)>depcnt))) continue;
         p._layout_controls.splice(i+1,0,c);
         inserted=true;
-        if(!resort) break;
+        if((!resort)||(removed)) break;
       }
       if(!inserted) p._layout_controls.splice(0,0,c);
     }
@@ -915,7 +929,7 @@ ngUserControls['layouts'] = {
     function ngconst_addConst(p,c) {
       var lc=c.LayoutConstraints;
       var don=[];
-      var updepth;
+      var updepth,updepthvisited=[];
 
       var r=p._layout_needresolve;
       if(typeof r!=='undefined') {
@@ -933,6 +947,8 @@ ngUserControls['layouts'] = {
                   ngconst_arrAddOnce(c._layout_dependent,ctrl);
                   if(typeof updepth==='undefined') updepth=[];
                   ngconst_arrAddOnce(updepth,ctrl);
+                  c._layout_depth_updated=true; // don't update my depth when updating depths
+                  updepthvisited.push(c);
                 }
               }
               else allresolved=false;
@@ -994,7 +1010,7 @@ ngUserControls['layouts'] = {
         c._layout_depth=ngconst_calcDepth(c);
         ngconst_addControl(p,c);
       }
-      ngconst_updateDepth(p,updepth);
+      ngconst_updateDepth(p,updepth,updepthvisited,true);
     }
 
     function ngconst_UpdateConstraints() {
@@ -1144,41 +1160,54 @@ ngUserControls['layouts'] = {
 
       var ur=c.ChildControls;
       if(typeof ur !== 'undefined') {
-        var reported={}, remove=[];
-        var circular_dep=false;
+        var visited,circlectrls=[];
+        var circle_found;
 
-        function check_circles(ctrl, from) {
-          var ld=ctrl._layout_dependent;
-          if(typeof ld === 'undefined') return false;
+        function check_circles(ctrl) {
+          if(ctrl._layout_reported_circle) return;
 
-          if(typeof from==='undefined') from=ctrl;
-          var dc,ret=false;
-          ctrl._layout_checking_circles=true;
-          remove.push(ctrl);
-          for(var i=ld.length-1;i>=0;i--) {
-            dc=ld[i];
-            if(reported[dc.ID]) continue;
-            if(dc._layout_checking_circles) {
-              ngDEBUGERROR('ngConstraintLayout('+c.ID+'): Circular constraint found!', dc);
-              circular_dep=true;
-              reported[dc.ID]=true;
-              ret=true;
-              continue;
-            }
-            if(check_circles(dc,from)) { reported[dc.ID]=true; ret=true; }
+          var ld=ctrl._layout_depends;
+          if((typeof ld === 'undefined')||(!ld.length)) return;
+
+          ngconst_arrAddOnce(visited,ctrl);
+
+          if(ctrl._layout_checking_circles) {
+            ngDEBUGERROR('ngConstraintLayout('+c.ID+'): Circular constraint found!', ctrl);
+            ctrl._layout_reported_circle=true;
+            circle_found=true;
+            return;
           }
-          return ret;
+
+          ctrl._layout_checking_circles=true;
+          try {
+            for(var i=ld.length-1;i>=0;i--) {
+              check_circles(ld[i]);
+            }
+          } finally {
+            delete ctrl._layout_checking_circles;
+          }
         }
         for(var i=0;i<ur.length;i++) {
-          if(!reported[ur[i].ID]) check_circles(ur[i]);
+          if(ur[i]._layout_reported_circle) continue;
+          circle_found=false;
+          visited=[];
+          check_circles(ur[i]);
+          if(circle_found) {
+            for(var j=visited.length-1;j>=0;j--) {
+              circlectrls.push(visited[j]);
+              visited[j]._layout_reported_circle=true;
+            }
+          }
         }
-        for(var i=remove.length-1;i>=0;i--) delete remove[i]._layout_checking_circles;
-
-        if((circular_dep)&&(!c.InDesignMode)) {
-          // clear layout
-          delete c._layout_needresolve;
-          delete c._layout_independent;
-          delete c._layout_controls;
+        
+        if(circlectrls.length) {
+          for(var i=circlectrls.length-1;i>=0;i--) delete circlectrls[i]._layout_reported_circle;
+          if(!c.InDesignMode) {
+            // clear layout
+            delete c._layout_needresolve;
+            delete c._layout_independent;
+            delete c._layout_controls;
+          }
         }
       }
     }
