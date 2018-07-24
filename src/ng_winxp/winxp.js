@@ -494,16 +494,6 @@ var WinXPControls = {
      */
     /*<>*/
     ngRegisterControlType('stdFrame', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngFrame', ref, parent); });
-    /*  Class: stdAlignPanel
-     *  Standard panel control (based on <ngAlignPanel (ngAlignFrame)>).
-     */
-    /*<>*/
-    ngRegisterControlType('stdAlignPanel', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngAlignPanel', ref, parent); });
-    /*  Class: stdAlignFrame
-     *  Standard Frame control (based on <ngAlignPanel (ngAlignFrame)>).
-     */
-    /*<>*/
-    ngRegisterControlType('stdAlignFrame', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngAlignFrame', ref, parent); });
 
     /*  Class: stdText
      *  Standard text control (based on <ngText>).

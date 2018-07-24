@@ -518,20 +518,6 @@ var WireframeControls = {
       return ngCreateControlAsType(def, 'ngFrame', ref, parent);
     });
 
-    /** Class: wfrAlignPanel
-     *  "Wireframe" skin align panel control (based on <ngAlignPanel (ngAlignFrame)>).
-     */
-    ngRegisterControlType('wfrAlignPanel', function(def,ref,parent){
-      return ngCreateControlAsType(def, 'ngAlignPanel', ref, parent);
-    });
-
-    /** Class: wfrAlignFrame
-     *  "Wireframe" skin align frame control (based on <ngAlignPanel (ngAlignFrame)>).
-     */
-    ngRegisterControlType('wfrAlignFrame', function(def,ref,parent){
-      return ngCreateControlAsType(def, 'ngAlignFrame', ref, parent);
-    });
-
     /** Class: wfrToolBar
      *  "Wireframe" skin toolbar control (based on <ngToolBar>).
      */

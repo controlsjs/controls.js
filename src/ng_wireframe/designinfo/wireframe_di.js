@@ -22,10 +22,6 @@ var WireframeControls_DesignInfo = {
 
     ngRegisterControlDesignInfo('wfrFrame', 'ngFrame');
 
-    ngRegisterControlDesignInfo('wfrAlignPanel', 'ngAlignPanel');
-
-    ngRegisterControlDesignInfo('wfrAlignFrame', 'ngAlignFrame');
-
     ngRegisterControlDesignInfo('wfrToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Container',

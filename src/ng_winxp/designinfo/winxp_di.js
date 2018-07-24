@@ -20,10 +20,6 @@ var WinXP_DesignInfo = {
 
     ngRegisterControlDesignInfo('stdFrame', 'ngFrame');
 
-    ngRegisterControlDesignInfo('stdAlignPanel','ngAlignPanel');
-
-    ngRegisterControlDesignInfo('stdAlignFrame','ngAlignFrame');
-
     ngRegisterControlDesignInfo('stdText',function(d,c,ref) {
       return {
         ControlCategory: 'Label',

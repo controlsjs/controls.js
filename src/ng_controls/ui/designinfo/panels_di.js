@@ -17,55 +17,6 @@ ngUserControls['panels_designinfo'] = {
     if(!ngDESIGNINFO) return;
     var undefined;
 
-    var alignpanel_DI={
-      ControlCategory: 'Container',
-      IsContainer: true,
-
-      NewControl: {
-        Default: {
-          Properties: {
-            "W": { Value: 100 },
-            "H": { Value: 100 }
-          }
-        }
-      },
-      Properties: ng_diProperties({
-        "Data": {
-          "ChildHandling": { Level: 'advanced' },
-          "AutoSize": ng_diBoolean(false, { Level: 'basic' })
-        }
-      },
-      {
-        "Controls": ng_diControls(undefined, undefined, {
-          ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
-            "Data": {
-              "ControlAlign": ng_diIntegerIdentifiers('alNone',['alNone','alClient', 'alLeft','alRight', 'alTop', 'alBottom'],{ Level: 'basic',  Order: 0.8 }),
-              "AlignAutoUpdate": ng_diBoolean(true, { Level: 'basic',  Order: 0.8 })
-            }
-          }))
-        })
-      })
-    };
-    ngRegisterControlDesignInfo('ngAlignPanel',function(d,c,ref) {
-      var di={
-        IsBasic: true
-      };
-      ng_MergeVar(di,alignpanel_DI);
-      return di;
-    });
-
-    ngRegisterControlDesignInfo('ngAlignFrame',function(d,c,ref) {
-
-      var di={
-        IsBasic: true,
-        Properties: {
-          "ParentReferences": ng_diBoolean(false, { Level: 'optional' })
-        }
-      };
-      ng_MergeVar(di,alignpanel_DI);
-      return di;
-    });
-
     ngRegisterControlDesignInfo('ngDropPanel',function(d,c,ref) {
       return {
         ControlCategory: 'Container',

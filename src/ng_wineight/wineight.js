@@ -1851,24 +1851,6 @@ var WinEightControls = {
      */
     if(ngUserControls['panels'])
     {
-      /*  Class: weAlignPanel
-       *  Standard panel control (based on <ngAlignPanel (ngAlignFrame)>).
-       */
-      /*<>*/
-      ngRegisterControlType('weAlignPanel', function(def,ref,parent) {
-        if(typeof def.className === 'undefined') def.className=(typeof def.ColorScheme === 'undefined' ? 'wePanel' : 'we'+def.ColorScheme);
-        return ngCreateControlAsType(def, 'ngAlignPanel', ref, parent);
-      });
-
-      /*  Class: weAlignFrame
-       *  Standard Frame control (based on <ngAlignPanel (ngAlignFrame)>).
-       */
-      /*<>*/
-      ngRegisterControlType('weAlignFrame', function(def,ref,parent) {
-        if(typeof def.className === 'undefined') def.className=(typeof def.ColorScheme === 'undefined' ? 'wePanel' : 'we'+def.ColorScheme);
-        return ngCreateControlAsType(def, 'ngAlignFrame', ref, parent);
-      });
-
       /*  Class: weSplitPanel
        *  Standard split panel control (based on <ngSplitPanel>).
        */
