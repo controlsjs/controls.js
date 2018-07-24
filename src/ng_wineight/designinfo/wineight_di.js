@@ -804,26 +804,6 @@ return {
       return di;
     });
     
-    ngRegisterControlDesignInfo('weAlignPanel',function(d,c,ref) {
-      return schemeDI({
-        ControlCategory: 'Container',
-        IsContainer: true,
-        Properties: {
-          "className": ng_diString('wePanel')
-        }
-      });
-    });
-    
-    ngRegisterControlDesignInfo('weAlignFrame',function(d,c,ref) {
-      return schemeDI({
-        ControlCategory: 'Container',
-        IsContainer: true,
-        Properties: {
-          "className": ng_diString('wePanel')
-        }
-      });
-    });
-    
     ngRegisterControlDesignInfo('weSplitPanel',function(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'Container',
