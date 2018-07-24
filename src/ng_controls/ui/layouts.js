@@ -577,7 +577,7 @@ ngUserControls['layouts'] = {
             v=cache.getParentHeight()-v; break;
         }
       }
-      v+=cache.getBound(ngVal(margin,0),bound);
+      v+=ngVal(margin,0);
       if((typeof b[bound]==='undefined')||(b[bound]<v)) b[bound]=v;
     }
 
@@ -593,17 +593,7 @@ ngUserControls['layouts'] = {
       else if(!p._layout_updating) cache.invalidate();
       cache.invalidateCtrl(c);
 
-      var b={};
-      ngconst_calcBound(lc.LtoL,b,'L','L',lc.LtoLMargin,cache);
-      ngconst_calcBound(lc.LtoR,b,'L','R',lc.LtoRMargin,cache);
-      ngconst_calcBound(lc.RtoL,b,'R','L',lc.RtoLMargin,cache);
-      ngconst_calcBound(lc.RtoR,b,'R','R',lc.RtoRMargin,cache);
-      ngconst_calcBound(lc.TtoT,b,'T','T',lc.TtoTMargin,cache);
-      ngconst_calcBound(lc.TtoB,b,'T','B',lc.TtoBMargin,cache);
-      ngconst_calcBound(lc.BtoT,b,'B','T',lc.BtoTMargin,cache);
-      ngconst_calcBound(lc.BtoB,b,'B','B',lc.BtoBMargin,cache);
-
-      function limit(bound,val,align,max) {
+      function getBoundG(val, align) {
         if(typeof val==='undefined') return;
         if((typeof val==='string')&&(val!=='')&&(p.Guidelines)) {
           var v=p.Guidelines[val];
@@ -617,7 +607,22 @@ ngUserControls['layouts'] = {
           }
           val=v;
         }
-        val=cache.getBound(val,align);
+        return cache.getBound(val,align);
+      }
+
+      var b={};
+      ngconst_calcBound(lc.LtoL,b,'L','L',getBoundG(lc.LtoLMargin,'L'),cache);
+      ngconst_calcBound(lc.LtoR,b,'L','R',getBoundG(lc.LtoRMargin,'L'),cache);
+      ngconst_calcBound(lc.RtoL,b,'R','L',getBoundG(lc.RtoLMargin,'R'),cache);
+      ngconst_calcBound(lc.RtoR,b,'R','R',getBoundG(lc.RtoRMargin,'R'),cache);
+      ngconst_calcBound(lc.TtoT,b,'T','T',getBoundG(lc.TtoTMargin,'T'),cache);
+      ngconst_calcBound(lc.TtoB,b,'T','B',getBoundG(lc.TtoBMargin,'T'),cache);
+      ngconst_calcBound(lc.BtoT,b,'B','T',getBoundG(lc.BtoTMargin,'B'),cache);
+      ngconst_calcBound(lc.BtoB,b,'B','B',getBoundG(lc.BtoBMargin,'B'),cache);
+
+      function limit(bound,val,align,max) {
+        val = getBoundG(val,align);
+        if(typeof val==='undefined') return;
         if(align!==bound) {
           switch(align) {
             case 'L':
