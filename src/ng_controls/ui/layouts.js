@@ -461,16 +461,24 @@ ngUserControls['layouts'] = {
       var CW={},CH={};
 
       this.getBound = function(v,bound) {
-        var vert=((bound==='T')||(bound==='B'));
-        if(typeof v==='number') return v;
-        var i,c,sb=''+v;
+        if((typeof v==='number')||(typeof v!=='string')) return v;
+        var i,c,sb=v;
         for(i=sb.length-1;i>=0;i--) {
           c=sb.charAt(i);
           if(((c>='0')&&(c<='9'))||(c==='.')) break;
         }
-        if(sb.substr(i+1)!=='%') return;
-        v=parseFloat(sb.substr(0,i+1));
-        return Math.floor((vert ? self.getParentHeight() : self.getParentWidth())*(v/100.0));
+        var units=sb.substr(i+1);
+        var val=parseFloat(sb.substr(0,i+1));
+        if(!isNaN(val)) {
+          switch(units) {
+            case '%':
+              return Math.floor((((bound==='T')||(bound==='B')) ? self.getParentHeight() : self.getParentWidth())*(val/100.0));
+            case 'px':
+            default:
+              return val;
+          }
+        }
+        return v;
       }
 
       this.getParentWidth = function () {
@@ -597,7 +605,7 @@ ngUserControls['layouts'] = {
 
       function limit(bound,val,align,max) {
         if(typeof val==='undefined') return;
-        if((typeof val==='string')&&(p.Guidelines)) {
+        if((typeof val==='string')&&(val!=='')&&(p.Guidelines)) {
           var v=p.Guidelines[val];
           if(typeof v==='undefined') {
             v=cache.getBound(val,align);
