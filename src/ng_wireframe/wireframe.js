@@ -21,9 +21,9 @@ var WireframeControls = {
   ControlsGroup: 'Wireframe Skin',
 
   ControlImages: [
-    'images/wireframe_base.png?4',
-    'images/wireframe_h.png?3',
-    'images/wireframe_v.png?3',
+    'images/wireframe_base.png?5',
+    'images/wireframe_h.png?5',
+    'images/wireframe_v.png?5',
     'images/wireframe_dot.gif?3'
   ],
   Images: {
