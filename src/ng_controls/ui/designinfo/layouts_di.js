@@ -204,7 +204,9 @@ ngUserControls['layouts_designinfo'] = {
             "VAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
             "Reverse": ng_diBoolean(false, { Level: 'basic' }),
             "MinHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
-            "MaxHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' })
+            "MaxHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MinParentGap": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MaxParentGap": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' })
           }
         },
         {
@@ -244,7 +246,9 @@ ngUserControls['layouts_designinfo'] = {
             "HAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
             "Reverse": ng_diBoolean(false, { Level: 'basic' }),
             "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
-            "MaxWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' })
+            "MaxWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MinParentGap": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MaxParentGap": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' })
           }
         },
         {

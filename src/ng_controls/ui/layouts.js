@@ -58,13 +58,43 @@ ngUserControls['layouts'] = {
 
     function ngvhlay_setSize(vert,p,v) {
       var b={};
+      var psize;
+      if((typeof p.MinParentGap!=='undefined')||(typeof p.MaxParentGap!=='undefined'))
+      {
+        var o=p.Elm();
+        var po = o ? o.parentNode : null;
+        if(po) {
+          if(vert) psize=ng_ClientHeightEx(po);
+          else     psize=ng_ClientWidthEx(po);
+        }
+      }
       if(vert) {
+        if(typeof psize!=='undefined') {
+          var gap;
+          if(typeof p.Bounds.T!=='undefined') gap=psize-p.Bounds.T;
+          else if(typeof p.Bounds.B!=='undefined') gap=psize-p.Bounds.B;
+          if(typeof gap!=='undefined') {
+            if((typeof p.MinParentGap!=='undefined')&&(gap-v<p.MinParentGap)) v=gap-p.MinParentGap;
+            if((typeof p.MaxParentGap!=='undefined')&&(gap-v>p.MaxParentGap)) v=gap-p.MaxParentGap;
+            if(v<0) v=0;
+          }
+        }
         if((typeof p.MinHeight !== 'undefined')&&(v<p.MinHeight)) v=p.MinHeight;
         if((typeof p.MaxHeight !== 'undefined')&&(v>p.MaxHeight)) v=p.MaxHeight;
         b.H=v;
         if(typeof p.Bounds.T!=='undefined') b.B=void 0;
         else b.T=void 0;
       } else {
+        if(typeof psize!=='undefined') {
+          var gap;
+          if(typeof p.Bounds.L!=='undefined') gap=psize-p.Bounds.L;
+          else if(typeof p.Bounds.R!=='undefined') gap=psize-p.Bounds.R;
+          if(typeof gap!=='undefined') {
+            if((typeof p.MinParentGap!=='undefined')&&(gap-v<p.MinParentGap)) v=gap-p.MinParentGap;
+            if((typeof p.MaxParentGap!=='undefined')&&(gap-v>p.MaxParentGap)) v=gap-p.MaxParentGap;
+            if(v<0) v=0;
+          }
+        }
         if((typeof p.MinWidth !== 'undefined')&&(v<p.MinWidth)) v=p.MinWidth;
         if((typeof p.MaxWidth !== 'undefined')&&(v>p.MaxWidth)) v=p.MaxWidth;
         b.W=v;
@@ -352,7 +382,9 @@ ngUserControls['layouts'] = {
           VAlign: 'top',
           Reverse: false,
           MinHeight: void 0,
-          MaxHeight: void 0
+          MaxHeight: void 0,
+          MinParentGap: void 0,
+          MaxParentGap: void 0
         },
         Methods: {
           DoUpdate: ngvhlay_DoUpdate,
@@ -380,7 +412,9 @@ ngUserControls['layouts'] = {
           HAlign: 'left',
           Reverse: false,
           MinWidth: void 0,
-          MaxWidth: void 0
+          MaxWidth: void 0,
+          MinParentGap: void 0,
+          MaxParentGap: void 0
         },
         Methods: {
           DoUpdate: ngvhlay_DoUpdate,
