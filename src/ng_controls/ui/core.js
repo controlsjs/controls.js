@@ -2017,6 +2017,7 @@ function nge_SuggestionSearch(txt)
         var t,v;
         if(this.OnSuggestionCompareItem) partial=-1;
         else if(partial==-1) partial=2;
+        var self=this;
         dd.Scan(function(list, it, parent, userdata) {
           if(dd.Columns.length>0) t=ngVal(it.Text[cid],'');
           else t=it.Text;
@@ -2024,7 +2025,7 @@ function nge_SuggestionSearch(txt)
           switch(partial)
           {
             case -1:
-              v=ngVal(this.OnSuggestionCompareItem(this,txt,t,list,it,parent),false);
+              v=ngVal(self.OnSuggestionCompareItem(self,txt,t,list,it,parent),false);
               break;
             case 1:
               if(txt.length>t.length) return false;
