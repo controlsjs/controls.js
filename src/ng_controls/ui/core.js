@@ -2846,7 +2846,7 @@ function nge_DropDown()
     var wh=ng_ClientHeightEx(op);
     var ww=ng_ClientWidthEx(op);
     var left,top;
-    if(((pos.x+lw<=ww-20)&&(this.DropDownAlign=='left'))||((pos.x+ew-lw)<0))
+    if(((pos.x+lw<=ww-20)&&(ngVal(this.DropDownAlign,'left')==='left'))||((pos.x+ew-lw)<0))
     {
       if(pos.x+lw>ww) {
         left=ww-lw;
@@ -2856,9 +2856,11 @@ function nge_DropDown()
     }
     else left=pos.x+ew-lw;
 
-    if((pos.y+eh+lh>wh-20)&&((pos.y-lh)>=0))
+    var valign=ngVal(this.DropDownVAlign,'auto');
+    if(((valign==='auto')&&(pos.y+eh+lh>wh-20)&&((pos.y-lh)>=0))||(valign==='up'))
     {
       top=pos.y-lh;
+      if(top<0) top=0;
     }
     else
     {
@@ -3429,6 +3431,12 @@ function ngEdit(id, text)
    *  Default value: *'left'*
    */
   this.DropDownAlign = 'left';
+  /*  Variable: DropDownVAlign
+   *  ...
+   *  Type: string
+   *  Default value: *'auto'*
+   */
+  this.DropDownVAlign = 'auto';
 
   /*  Variable: LockHintCaretPos
    *  ...

@@ -438,6 +438,7 @@ return {
             "DropDownType": ng_diIntegerIdentifiers(0,['ngeDropDownEdit','ngeDropDownList'], { Level: 'advanced' }),
             "DropDownWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer',  Level: 'advanced' }),
             "DropDownAlign": ng_diStringValues('left', ['left','right'], { Level: 'advanced' }),
+            "DropDownVAlign": ng_diStringValues('auto', ['auto','up','down'], { Level: 'advanced' }),
             "LockHintCaretPos": ng_diBoolean(true, { Level: 'basic' }),
             "Invalid": ng_diBoolean(false, { Level: 'basic' }),
             "Suggestion": ng_diBoolean(false, { Level: 'advanced' }),
