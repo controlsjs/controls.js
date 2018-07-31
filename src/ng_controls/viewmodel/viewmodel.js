@@ -3765,7 +3765,12 @@ ngUserControls['viewmodel'] = {
         if(typeof value==='undefined') defaultval=fd.GetTypedDefaultValue();
         else defaultval=ng_CopyVar(value);
         isarray = isarray || ng_IsArrayVar(defaultval);
-        val=(isarray ? ko.observableArray(defaultval) : ko.observable(defaultval));
+
+        if(isarray) {
+          val=ko.observableArray();
+          val(defaultval);
+        }
+        else val=ko.observable(defaultval);
       }
 
       // Create OBJECT binding access
