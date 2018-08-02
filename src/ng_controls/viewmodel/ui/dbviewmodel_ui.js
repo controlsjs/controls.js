@@ -251,10 +251,10 @@ function ngdbdsc_RecordDeleted(vm,sresults,delpk)
 
 function ngdbdsc_DoNotifyChange(dbvm, changetype, primarykey)
 {
-  if(this.GetDBViewModel()!=dbvm) return;
+  if(this.GetDBViewModel()!==dbvm) return;
 
   var list=this.Controls.List;
-  if(changetype==dsdbLoaded)
+  if(changetype===dsdbLoaded)
   {
     if((this.AutoSelectDBVMRecord)&&(list))
     {
@@ -266,41 +266,52 @@ function ngdbdsc_DoNotifyChange(dbvm, changetype, primarykey)
   {
     if(list)
     {
-      if(changetype==dsdbDeleted)
+      if(changetype===dsdbDeleted)
       {
-        var sel=list.GetSelected();
-        for(var i=0;i<sel.length;i++)
-        {
-          var itpk=this.GetRecordPrimaryKey(sel[i]);
-          if((primarykey)&&(ng_VarEquals(primarykey,itpk)))
+        if(primarykey) {
+          var sel=list.GetSelected();
+          for(var i=0;i<sel.length;i++)
           {
-            sel=sel[i];
-            list.SelectItem(sel,false);
-            if(list.SelCount==0)
+            var itpk=this.GetRecordPrimaryKey(sel[i]);
+            if(ng_VarEquals(primarykey,itpk))
             {
-              var found=null;
-              this.ScanVisiblePageItems(function(ds,it,list,userdata) {
-                if(sel==it) {
-                  sel=null;
-                  if(found) return false;
+              sel=sel[i];
+              list.SelectItem(sel,false);
+              if((list.SelCount===0)&&(this.AutoSelectNextOnDelete))
+              {
+                var found=null;
+                this.ScanVisiblePageItems(function(ds,it,list,userdata) {
+                  if(sel==it) {
+                    sel=null;
+                    if(found) return false;
+                    return true;
+                  }
+                  found=it;
+                  if(!sel) return false;
                   return true;
-                }
-                found=it;
-                if(!sel) return false;
-                return true;
-              });
-              if(found) list.SelectItem(found);
+                });
+                if(found) list.SelectItem(found);
+              }
+              break;
             }
-            break;
+          }
+        } else {
+          list.ClearSelected();
+          if(this.AutoSelectNextOnDelete) {
+            var found=null;
+            this.ScanVisiblePageItems(function(ds,it,list,userdata) {
+              if(!found) found=it;
+              return false;
+            });
+            if(found) list.SelectItem(found);
           }
         }
       }
       else list.ClearSelected();
     }
-    if(changetype!=dsdbNew)
+    if(changetype!==dsdbNew)
     {
-      var undefined;
-      this.MaxLength=undefined;
+      this.MaxLength=void 0;
       this.InvalidateData();
     }
   }
@@ -692,6 +703,7 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
   c.LoadOnDblClick = true;
 
   c.AutoSelectDBVMRecord = true;
+  c.AutoSelectNextOnDelete = true;
 
   /*
    *  Group: Methods

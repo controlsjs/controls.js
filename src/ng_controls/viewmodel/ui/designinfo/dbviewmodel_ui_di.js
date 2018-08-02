@@ -56,6 +56,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             "LoadOnClick": ng_diBoolean(false, { Level: 'basic' }),
             "LoadOnDblClick": ng_diBoolean(true, { Level: 'basic' }),
             "AutoSelectDBVMRecord": ng_diBoolean(true, { Level: 'basic' }),
+            "AutoSelectNextOnDelete": ng_diBoolean(true, { Level: 'basic' }),
             "PagingType": ng_diTypeVal('bitmask', plPagingDataSetEx),
             "PagingInside": ng_diBoolean(false)
           },
