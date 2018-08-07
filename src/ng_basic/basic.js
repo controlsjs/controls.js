@@ -2984,6 +2984,7 @@ function ngObjRemoveEvent(ev, fce)
     return;
   }
 
+  var self=this;
   function remove_event(handler) {
     var evlist=handler.events;
     if(typeof evlist !== 'undefined')
@@ -3000,19 +3001,19 @@ function ngObjRemoveEvent(ev, fce)
       if(!inproc) {
         if(!evlist.length)
         {
-          this[ev]=null;
+          self[ev]=null;
           delete handler.events;
         }
         else if(evlist.length==1)
         {
-          this[ev]=evlist[0];
+          self[ev]=evlist[0];
           delete handler.events;
         }
       }
     }
   }
 
-  if(typeof(fce)=='function') // only functions can be added to event handlers 
+  if(typeof fce ==='function')
   { 
     var handler=this[ev];
     if(!handler) return;
