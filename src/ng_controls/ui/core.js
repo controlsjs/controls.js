@@ -2843,7 +2843,7 @@ function nge_DropDown()
 
     if(typeof this.DropDownWidth !== 'undefined')
     {
-      if(this.DropDownWidth>0) ng_SetOuterWidth(o,this.DropDownWidth);
+      if(this.DropDownWidth>0) { ng_SetOuterWidth(o,this.DropDownWidth); lw=this.DropDownWidth; }
     }
     else if(lw<ew) { ng_SetOuterWidth(o,ew); lw=ew; }
     var maxh=ngVal(l.MaxHeight,150);
@@ -2852,9 +2852,10 @@ function nge_DropDown()
     var wh=ng_ClientHeightEx(op);
     var ww=ng_ClientWidthEx(op);
     var left,top;
-    if(((pos.x+lw<=ww-20)&&(ngVal(this.DropDownAlign,'left')==='left'))||((pos.x+ew-lw)<0))
+    var align=ngVal(this.DropDownAlign,'left');
+    if((align!=='fixedright')&&((align==='fixedleft')||((pos.x+lw<=ww-20)&&(align==='left'))||((pos.x+ew-lw)<0)))
     {
-      if(pos.x+lw>ww) {
+      if((pos.x+lw>ww)&&(align!=='fixedleft')) {
         left=ww-lw;
         if(left<0) left=0;
       }
@@ -2863,14 +2864,14 @@ function nge_DropDown()
     else left=pos.x+ew-lw;
 
     var valign=ngVal(this.DropDownVAlign,'auto');
-    if(((valign==='auto')&&(pos.y+eh+lh>wh-20)&&((pos.y-lh)>=0))||(valign==='up'))
+    if(((valign==='auto')&&(pos.y+eh+lh>wh-20)&&((pos.y-lh)>=0))||(valign==='up')||(valign==='fixedup'))
     {
       top=pos.y-lh;
-      if(top<0) top=0;
+      if((top<0)&&(valign!=='fixedup')) top=0;
     }
     else
     {
-      if(pos.y+eh+lh>wh) {
+      if((pos.y+eh+lh>wh)&&(valign!=='fixeddown')) {
         top=wh-lh;
         if(top<0) top=0;
       }
