@@ -1940,7 +1940,7 @@ function nge_Suggestion(id)
     changed=ngVal(c.OnSuggestionChanged(c,txt),true);
   }
   else {
-    if(txt=='') { c.HideDropDown(); c.SuggestionLastSearch=''; return; }
+    if((txt=='')&&(!c.SuggestionAllowEmpty)) { c.HideDropDown(); c.SuggestionLastSearch=''; return; }
     changed=(ngVal(c.SuggestionLastSearch,'')!=txt);
   }
   if(changed)
@@ -2010,6 +2010,7 @@ function nge_SuggestionSearch(txt)
       var dd=this.DropDownControl;
       if(dd)
       {
+        var emptytxt=((txt=='')&&(this.SuggestionAllowEmpty));
         if(ignorecase) txt=txt.toLowerCase();
         var cid='';
         if(dd.Columns.length>0) cid=ngVal(this.SuggestionSearchColumn,dd.Columns[0].ID);
@@ -2028,14 +2029,19 @@ function nge_SuggestionSearch(txt)
               v=ngVal(self.OnSuggestionCompareItem(self,txt,t,list,it,parent),false);
               break;
             case 1:
-              if(txt.length>t.length) return false;
-              v=(t.substring(0,txt.length)==txt);
+              if(emptytxt) v=true;
+              else {
+                if(txt.length>t.length) return false;
+                v=(t.substring(0,txt.length)==txt);
+              }
               break;
             case 2:
-              v=(t.indexOf(txt)>=0)
+              if(emptytxt) v=true;
+              else v=(t.indexOf(txt)>=0)
               break;
             default:
-              v=(t==txt);
+              if(emptytxt) v=true;
+              else v=(t==txt);
               break;
           }
           if(it.Visible!=v)
@@ -2387,7 +2393,7 @@ function nge_KeyUp(e,elm)
           }
           if(e.keyCode!=40) break;
         default:
-          if(elm.value=='')
+          if((elm.value=='')&&(!edit.SuggestionAllowEmpty))
           {
             if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
             edit.SuggestionTimer=null;
@@ -3500,6 +3506,12 @@ function ngEdit(id, text)
    *  Default value: *''*
    */
   //this.SuggestionType='';
+  /*  Variable: SuggestionAllowEmpty
+   *  ...
+   *  Type: bool
+   *  Default value: *''*
+   */
+  //this.SuggestionAllowEmpty=false;
 
   /*
    *  Group: Methods
