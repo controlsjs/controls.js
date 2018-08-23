@@ -2022,7 +2022,7 @@ function nge_SuggestionSearch(txt)
         dd.Scan(function(list, it, parent, userdata) {
           if(dd.Columns.length>0) t=ngVal(it.Text[cid],'');
           else t=it.Text;
-          if(ignorecase) t=t.toLowerCase();
+          if((ignorecase)&&(typeof t.toLowerCase==='function')) t=t.toLowerCase();
           switch(partial)
           {
             case -1:
