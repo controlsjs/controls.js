@@ -2050,6 +2050,7 @@ ngUserControls['viewmodel_ui'] = {
                   var it=items[j];
                   var vmit=arr[j];
                   for(var p in vmit) {
+                    if((ismenu)&&(p==='SubMenu')) continue;
                     if((ignoredprops[p])||(ng_VarEquals(it[p],vmit[p]))) continue;
                     it[p]=vmit[p];
                     list.need_update=true;
