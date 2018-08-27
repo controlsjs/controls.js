@@ -549,9 +549,11 @@ ngUserControls['viewmodel_controls'] = {
         {
           function setfielddefs()
           {
+            var fd;
             for(var i=0;i<def.FieldDefs.length;i++)
             {
-              if(ngIsFieldDef(def.FieldDefs[i])) ko.ng_fielddef(this,def.FieldDefs[i]);
+              fd=def.FieldDefs[i];
+              if((ngIsFieldDef(fd))&&(fd.ID!='')) ko.ng_fielddef(this,fd);
             }
           }
           vm.SetViewModel(setfielddefs);
@@ -572,6 +574,558 @@ ngUserControls['viewmodel_controls'] = {
           });
         }
         return vm;
+      };
+      fc.ControlsGroup='System';
+      return fc;
+    })());
+
+
+    window.DSVM_SORT_ASC=0;
+    window.DSVM_SORT_DESC=1;
+
+    window.ngSortBy = function(field,sortdir) {
+      this.FieldID=field;
+      this.SortDir=ngVal(sortdir,0)
+    };
+
+    window.ngSortBy.Fields = function() {
+      var args=arguments;
+      if((args.length===1)&&(ng_IsArrayVar(args[0]))) args=args[0];
+      var arg,dir=0;
+      var f=null;
+      var ret=[];
+      for(var i=0;i<=args.length;i++) {
+        if(i<args.length)
+        {
+          arg=args[i];
+          if(ng_isNumber(arg))
+          {
+            dir=arg;
+            continue;
+          }
+        }
+        if(f)
+        {
+          ret.push(new ngSortBy(f,dir));
+          dir=0;
+          f=null;
+        }
+        if(ng_typeString(arg)) f=arg;
+      }
+      return ret;
+    };
+
+    window.ngSortBy.AllowAnySortBy = function() {
+      return [new ngSortBy('*')];
+    };
+
+    function ngdsvm_HasDataSet() {
+      if(ng_IsArrayVar(this.DataSet)) return true;
+
+      var ds=this.ViewModel.DataSet;
+      if(ngIsFieldDef(ds)) {
+        ds=ds.GetTypedValue(false);
+        if(ng_IsArrayVar(ds)) return true;
+      }
+      return false;
+    }
+
+    function ngdsvm_DoGetDataSet() {
+      var ds=this.ViewModel.DataSet;
+      if(ngIsFieldDef(ds)) {
+        ds=ds.GetTypedValue(false);
+        if(ng_IsArrayVar(ds)) return ng_CopyVar(ds);
+      }
+      return ng_CopyVar(this.DataSet);
+    }
+
+    window.DBVM_FILTERTYPE_IGNORE=     'IGNORE';
+    window.DBVM_FILTERTYPE_STARTSWITH= 'STARTSWITH';
+    window.DBVM_FILTERTYPE_ENDSWITH=   'ENDSWITH';
+    window.DBVM_FILTERTYPE_CONTAINS=   'CONTAINS';
+    window.DBVM_FILTERTYPE_GT=         'GT';
+    window.DBVM_FILTERTYPE_GTE=        'GTE';
+    window.DBVM_FILTERTYPE_LT=         'LT';
+    window.DBVM_FILTERTYPE_LTE=        'LTE';
+    window.DBVM_FILTERTYPE_NOTEQ=      'NOTEQ';
+    window.DBVM_FILTERTYPE_EQ=         'EQ';
+
+    function ngdsvm_DoFilterDataSetField(fd,fid,val,filterval,filtertype)
+    {
+      if(this.OnFilterDataSetField) return ngVal(this.OnFilterDataSetField(this,fd,fid,val,filterval,filtertype),false);
+      if(filterval===null) return true;
+      switch(filtertype)
+      {
+        case DBVM_FILTERTYPE_IGNORE:
+          return true;
+        case DBVM_FILTERTYPE_STARTSWITH:
+        case DBVM_FILTERTYPE_ENDSWITH:
+        case DBVM_FILTERTYPE_CONTAINS:
+          val=ng_toString(val).toLowerCase();
+          filterval=ng_toString(filterval).toLowerCase();
+          break;
+      }
+
+      switch(filtertype)
+      {
+        case DBVM_FILTERTYPE_STARTSWITH:
+          if(val.substr(0,filterval.length)===filterval) return true;
+          break;
+        case DBVM_FILTERTYPE_ENDSWITH:
+          if((val.length>=filterval.length)&&(val.substr(val.length-filterval.length,filterval.length)===filterval)) return true;
+          break;
+        case DBVM_FILTERTYPE_CONTAINS:
+          if(val.indexOf(filterval)>=0) return true;
+          break;
+        case DBVM_FILTERTYPE_GT:
+          if(val>filterval) return true;
+          break;
+        case DBVM_FILTERTYPE_GTE:
+          if(val>=filterval) return true;
+          break;
+        case DBVM_FILTERTYPE_LT:
+          if(val<filterval) return true;
+          break;
+        case DBVM_FILTERTYPE_LTE:
+          if(val<=filterval) return true;
+          break;
+        case DBVM_FILTERTYPE_NOTEQ:
+          if(val!=filterval) return true;
+          break;
+        default:
+        case DBVM_FILTERTYPE_EQ:
+          if(val==filterval) return true;
+          break;
+      }
+      return false;
+    }
+
+    function ngdsvm_DoFilterDataSet(ds) {
+      var filtervals=this.GetActiveFilterValues(null, true, false);
+      if(!ng_EmptyVar(filtervals)) {
+        var i,f,v,r,m,fd,ft,fds=[];
+        var filterfields={};
+        for(i in filtervals) filterfields[i]=this.GetFieldByID('Filters.'+i);
+        for(i=0;i<ds.length;i++) {
+          r=ds[i];
+          m=true;
+          for(f in filtervals) {
+            v=vmGetFieldValueByID(r,f);
+            fd=filterfields[f];
+            if(ngIsFieldDef(fd)) {
+              ft=ngVal(fd.Attrs['FilterType'],null);
+              if((ft===null)&&((fd.DataType==='STRING')||(fd.DataType==='NVARCHAR'))&&(ng_isEmpty(fd.Enum))) ft=DBVM_FILTERTYPE_STARTSWITH;
+            }
+            else { ft=DBVM_FILTERTYPE_EQ; fd=null; }
+            if(!this.DoFilterDataSetField(fd,f,v,filtervals[f],ft)) { m=false; break; }
+          }
+          if(m) fds.push(r);
+        }
+        ds=fds;
+      }
+      return ds;
+    }
+
+    function ngdsvm_DoSortDataSet(ds, sortby) {
+      if((ng_IsArrayVar(sortby))&&(ng_IsArrayVar(ds))&&(typeof ds.sort==='function')) {
+        var oncompare=ds.OnSortCompare;
+        ds.sort(function (a,b) {
+          var v1,v2,f,d,r;
+          for(var i=0;i<sortby.length;i++) {
+            f=ngVal(sortby[i].FieldID,'');
+            if(f==='') continue;
+            d=ngVal(sortby[i].SortDir,0);
+            v1=(ng_typeObject(a) ? a[f] : void 0);
+            v2=(ng_typeObject(b) ? b[f] : void 0);
+            if(oncompare) {
+              r=ngVal(oncompare(ds,v1,v2,f,d),0);
+              if(r!==0) {
+                if(d) {
+                  r=r<0 ? 1 : -1;
+                }
+              }
+            }
+            else {
+              if(v1<v2) return d ? 1 : -1;
+              if(v1>v2) return d ? -1 : 1;
+            }
+          }
+          return 0;
+        });
+      }
+      return ds;
+    }
+
+    function ngdsvm_DoGetRecords(offset, count, coldefs, sortby)
+    {
+      var recs;
+      if(this.OnDoGetRecords) recs=this.OnDoGetRecords(this, offset, count, coldefs, sortby);
+      if(!ng_IsArrayVar(recs)) {
+        var ds=this.DoGetDataSet();
+        if(ng_IsArrayVar(ds)) {
+          ds=this.DoFilterDataSet(ds);
+          if(!ng_IsArrayVar(ds)) return;
+          ds=this.DoSortDataSet(ds, sortby);
+          if(!ng_IsArrayVar(ds)) return;
+          recs=[];
+          var to=offset+count;
+          for(var i=offset;(i<to)&&(i<ds.length);i++)
+            recs.push(ds[i]);
+        }
+      }
+      return recs;
+    }
+
+    function ngdsvm_DoGetTotalCount()
+    {
+      var totalcnt;
+      if(this.OnDoGetTotalCount) totalcnt=this.OnDoGetTotalCount(this);
+      if(!ng_isNumber(totalcnt)) {
+        var ds=this.DoGetDataSet();
+        if(ng_IsArrayVar(ds)) {
+          ds=this.DoFilterDataSet(ds);
+          if(ng_IsArrayVar(ds)) totalcnt=ds.length;
+        }
+      }
+      return totalcnt;
+    }
+
+    function ngdsvm_IsAllowedSortBy(sortby)
+    {
+      if(!ng_IsArrayVar(sortby)) return false;
+
+      var vm=this.ViewModel;
+      if(!vm) return false;
+      var allowedsortby;
+      if(ngIsFieldDef(vm.AllowedSortBy)) {
+        allowedsortby=vm.AllowedSortBy.GetTypedValue(false,null);
+      } else
+        return false;
+
+      if(!ng_IsArrayVar(allowedsortby)) return false;
+
+      var sbcnt=sortby.length;
+      var cnt=allowedsortby.length;
+      for(var i=0;i<cnt;i++)
+      {
+        var asb=allowedsortby[i];
+        var asbcnt=asb.length;
+        if((asbcnt>0)&&(asb[0].FieldID=='*')) return true;
+        if(asbcnt===sbcnt)
+        {
+          for(var j=0;j<sbcnt;j++)
+          {
+            var s1=sortby[j];
+            var s2=asb[j];
+            if(s2.FieldID==='*') return true;
+            if((s1.FieldID!==s2.FieldID)||(s1.SortDir!==s2.SortDir)) break;
+          }
+          if(j===sbcnt) return true;
+        }
+      }
+      return false;
+    }
+
+    function ngdsvm_GetActiveFilterValues(filterfields, asarray, includenull)
+    {
+      var vals={};
+      var vm=this.ViewModel;
+      if((!vm)||(ng_EmptyVar(vm._ActiveFilters))) return vals;
+
+      if(ngNullVal(filterfields,null)===null) filterfields=this.GetFilterDefs();
+      var fd,val;
+      for(i in filterfields)
+      {
+        fd=filterfields[i];
+        if(!fd) continue;
+
+        if((!ngIsFieldDef(fd))||(!fd.PrivateField)) val=vmGetFieldValueByID(vm,'_ActiveFilters.'+i);
+        else val=ko.ng_getvalue(fd);
+
+        try
+        {
+          if(ngIsFieldDef(fd)) val=fd.TypedValue(val);
+          if((includenull)||(val!==null)) {
+            if(asarray) vals[i]=val;
+            else vmSetFieldValueByID(vals,i,val);
+          }
+        }
+        catch(e)
+        {
+        }
+      }
+      return vals;
+    }
+
+    function ngdsvm_DoCommand(c,cmd,options,vals,err) {
+
+      if(!options.DataSetRecords) delete vals['Records'];
+
+      var offset=ko.ng_getvalue(c.ViewModel.Offset);
+      var count=ko.ng_getvalue(c.ViewModel.Count);
+      offset=ng_toNumber(offset,0);
+      count=ng_toNumber(count,0);
+      if(offset<0)
+      {
+        count+=offset;
+        offset=0;
+      }
+      if(count<0) count=0;
+
+      function getrecords() {
+        var sortby=ko.ng_getvalue(c.ViewModel.SortBy);
+        if(!c.IsAllowedSortBy(sortby))
+        {
+          if(ngIsFieldDef(c.ViewModel.SortBy)) sortby=c.ViewModel.SortBy.GetTypedDefaultValue();
+        }
+        
+        var recs=c.DoGetRecords(offset, count, c.GetColumnDefs(), sortby);
+        if((ng_IsArrayVar(recs))&&(c.ViewModel)) {
+          var vm=c.ViewModel;
+          if(ngIsFieldDef(vm.Records)) recs=vm.Records.TypedValue(recs);
+          vm.Records=ko.ng_setvalue(vm.Records, recs);
+          return true;
+        }
+        return false;
+      }
+
+      function applyfilters() {
+        var activefilters={};
+        c.ScanValues(function(vm,val,instance,valpath) {
+          if(valpath.substr(0,8)==='Filters.') {
+            valpath=valpath.substr(8);
+            if(ngIsFieldDef(instance)) {
+              if(instance.PrivateField) return true;
+              try {
+                val=instance.GetTypedValue();
+              } catch(e) {
+                val=instance.GetTypedDefaultValue();
+              }
+            }
+            vmSetFieldValueByID(activefilters,valpath,val);
+          }
+          return true;
+        });
+        var vm=c.ViewModel;
+        if(vm) {
+          if(ng_EmptyVar(activefilters)) delete vm._ActiveFilters;
+          else vm._ActiveFilters=ko.ng_setvalue(vm._ActiveFilters, activefilters);
+        }
+      }
+      var noserver=(ngVal(options.URL,this.ServerURL)=='') || c.HasDataSet(); // no server
+      switch(cmd)
+      {
+        case 'getrecords':
+          if(c.OnGetRecords) {
+            var ret=c.OnGetRecords(c, offset, count);
+            if(ngVal(ret,true)) return true;
+          }
+          if(noserver) {
+            if(getrecords()) return true;
+          }
+          break;
+        case 'recordcount':
+          if(c.OnGetTotalCount) {
+            var ret=c.OnGetTotalCount(c);
+            if(ngVal(ret,true)) return true;
+          }
+          if(noserver) {
+            var totalcnt=c.DoGetTotalCount();
+            if((ng_isNumber(totalcnt))&&(c.ViewModel)) {
+              var vm=c.ViewModel;
+              if(ngIsFieldDef(vm.TotalCount)) totalcnt=vm.TotalCount.TypedValue(totalcnt);
+              vm.TotalCount=ko.ng_setvalue(vm.TotalCount, totalcnt);
+              return true;
+            }
+          }
+          break;
+        case 'applyfilters':
+          if(c.OnApplyFilters) {
+            var ret=c.OnApplyFilters(c);
+            if(ngVal(ret,true)) return true;
+          }
+          if(noserver) {
+            applyfilters();
+            getrecords();
+            return true;
+          }
+          break;
+        case 'resetfilters':
+          if(c.OnResetFilters) {
+            var ret=c.OnResetFilters(c);
+            if(ngVal(ret,true)) return true;
+          }
+          if(noserver) {
+            c.ScanValues(function(vm,val,instance,valpath) {
+              if(valpath.substr(0,8)==='Filters.') {
+                if(ngIsFieldDef(instance)) {
+                  if((ko.isObservable(instance.Value))&&(typeof instance.DefaultValue!=='undefined'))
+                    ko.ng_setvalue(instance.Value, instance.DefaultValue)
+                  else instance.Clear();
+                }
+                else {
+                  var val=vmGetFieldValueByID(c.DefaultValues,valpath);
+                  if(typeof val!=='undefined') vmSetFieldValueByID(vm, valpath, val);
+                }
+              }
+              return true;
+            });
+            applyfilters();
+            getrecords();
+            return true;
+          }
+          break;
+      }
+      return ng_CallParent(c,'OnDoCommand',arguments,false);
+    }
+
+    function ngdsvmm_GetRecords() {
+      var c=this.Owner;
+      if(c) c.Command('getrecords');
+    }
+
+    function ngdsvmm_GetTotalCount() {
+      var c=this.Owner;
+      if(c) c.Command('recordcount');
+    }
+
+    function ngdsvmm_ApplyFilters() {
+      var c=this.Owner;
+      if(c) c.Command('applyfilters');
+    }
+
+    function ngdsvmm_ResetFilters() {
+      var c=this.Owner;
+      if(c) c.Command('resetfilters');
+    }
+
+    function ngdsvm_GetColumnDefs() {
+      var defs={};
+      this.ScanValues(function(vm,val,instance,valpath) {
+        if(valpath.substr(0,8)==='Columns.') {
+          valpath=valpath.substr(8);
+          if(ngIsFieldDef(instance)) defs[valpath]=instance;
+          else defs[valpath]=val;
+        }
+        return true;
+      });
+      return defs;
+    }
+
+    function ngdsvm_GetFilterDefs() {
+      var defs={};
+      this.ScanValues(function(vm,val,instance,valpath) {
+        if(valpath.substr(0,8)==='Filters.') {
+          valpath=valpath.substr(8);
+          if(ngIsFieldDef(instance)) defs[valpath]=instance;
+          else defs[valpath]=val;
+        }
+        return true;
+      });
+      return defs;
+    }
+
+    ngRegisterControlType('ngSysDataSetViewModel',(function()
+    {
+      var fc=function(def, ref, parent) {
+        ng_MergeDef(def, {
+          Data: {
+            DataSet: void 0
+          },
+          Methods: {
+            HasDataSet: ngdsvm_HasDataSet,
+            DoGetDataSet: ngdsvm_DoGetDataSet,
+            DoFilterDataSet: ngdsvm_DoFilterDataSet,
+            DoFilterDataSetField: ngdsvm_DoFilterDataSetField,
+            DoSortDataSet: ngdsvm_DoSortDataSet,
+
+            DoGetRecords: ngdsvm_DoGetRecords,
+            DoGetTotalCount: ngdsvm_DoGetTotalCount,
+            GetColumnDefs: ngdsvm_GetColumnDefs,
+            GetFilterDefs: ngdsvm_GetFilterDefs,
+            IsAllowedSortBy: ngdsvm_IsAllowedSortBy,
+            GetActiveFilterValues: ngdsvm_GetActiveFilterValues
+          },
+          OverrideEvents: {
+            OnDoCommand: ngdsvm_DoCommand,
+            OnDoGetRecords: null,
+            OnDoGetTotalCount: null
+          },
+          Events: {
+            OnGetRecords: null,
+            OnGetTotalCount: null,
+            OnApplyFilters: null,
+            OnResetFilters: null,
+            OnSortCompare: null,
+            OnFilterDataSetField: null
+          }
+        });
+        def.OnCreated=ngAddEvent(def.OnCreated, function(c,ref) {
+          var fd,cols=c.GetFilterDefs();
+          for(var i in cols) {
+            fd=cols[i];
+            if(!ngIsFieldDef(fd)) continue;
+            fd.ReadOnly=void 0;
+            fd.Required=false;
+            fd.Attrs['Serialize']=false;
+          }
+        });
+        var vmdata;
+        if((typeof def.Data === 'object')&&(typeof def.Data.ViewModel === 'object'))
+        {
+          // set values after dataset fields are created
+          vmdata=def.Data.ViewModel;
+          delete def.Data.ViewModel;
+        }
+
+        var c=ngCreateControlAsType(def, 'ngSysViewModel', ref, parent);
+        if(c) {
+          var vm=c.ViewModel;
+          if(vm) {
+            if(typeof vm.Offset==='undefined')        ko.ng_fielddef(vm, new ngFieldDef('Offset', 'INTEGER'));
+            if(typeof vm.Count==='undefined')         ko.ng_fielddef(vm, new ngFieldDef('Count', 'INTEGER'));
+            if(typeof vm.DataSet==='undefined')       {
+              ko.ng_fielddef(vm, new ngDataSetFieldDef('DataSet', { DefaultValue: null } ));
+              vm.DataSet.Value(null); // Knockout workaround
+            }
+            if(typeof vm.SortBy==='undefined')        ko.ng_fielddef(vm, new ngFieldDef('SortBy', 'ARRAY'));
+            if(typeof vm.AllowedSortBy==='undefined') ko.ng_fielddef(vm, new ngLookupFieldDef('AllowedSortBy'));
+            if(typeof vm.Records==='undefined')       ko.ng_fielddef(vm, new ngFieldDef('Records', 'ARRAY', { NullIfEmpty: false }));
+            if(typeof vm.TotalCount==='undefined')    ko.ng_fielddef(vm, new ngFieldDef('TotalCount', 'INTEGER'));
+            if(typeof vm.GetRecords==='undefined')    vm.GetRecords=ngdsvmm_GetRecords;
+            if(typeof vm.GetTotalCount==='undefined') vm.GetTotalCount=ngdsvmm_GetTotalCount;
+            if(typeof vm.ApplyFilters==='undefined')  vm.ApplyFilters=ngdsvmm_ApplyFilters;
+            if(typeof vm.ResetFilters==='undefined')  vm.ResetFilters=ngdsvmm_ResetFilters;
+
+            if(((ng_typeArray(def.ColumnFieldDefs))&&(def.ColumnFieldDefs.length>0))
+             ||((ng_typeArray(def.FilterFieldDefs))&&(def.FilterFieldDefs.length>0)))
+            {
+              function addfielddefs(vm,fdefs,prefix) {
+                if(!ng_typeArray(fdefs)) return;
+
+                var fd;
+                for(var i=0;i<fdefs.length;i++)
+                {
+                  fd=fdefs[i];
+                  if((ngIsFieldDef(fd))&&(fd.ID!='')) {
+                    if(fd.ID.substr(0,prefix.length)!==prefix) fd.ID=prefix+fd.ID;
+                    ko.ng_fielddef(vm,fd);
+                  }
+                }
+              }
+
+              function setfielddefs()
+              {
+                addfielddefs(this,def.ColumnFieldDefs,"Columns.");
+                addfielddefs(this,def.FilterFieldDefs,"Filters.");
+              }
+              c.SetViewModel(setfielddefs);
+            }
+
+            if(typeof vmdata!=='undefined') c.SetValues(vmdata);
+          }
+        }
+        return c;
       };
       fc.ControlsGroup='System';
       return fc;

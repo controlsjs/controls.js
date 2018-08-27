@@ -1188,6 +1188,66 @@ var ViewModel_Controls_DesignInfo = (function()
           })
         };
       });
+
+      ngRegisterControlDesignInfo('ngSysDataSetViewModel',function(d,c,ref) {
+        return {
+          ControlCategory: 'System',
+          IsViewModel: true,
+          Properties: ng_diProperties({
+            "ColumnFieldDefs": ng_diType('ngFieldDefsArray', { Level: 'basic', Order: 0.0512, Collapsed: false, PropertyGroup: 'DataBind' }),
+            "FilterFieldDefs": ng_diType('ngFieldDefsArray', { Level: 'basic', Order: 0.0513, Collapsed: false, PropertyGroup: 'DataBind' }),
+            "Data": {
+              "DataSet": ng_diMixed([
+                'undefined',
+                ng_diArrayOf('jsobject', {
+                  Level: 'basic',
+                }, {
+                  ChildDesignInfo: {
+                    OnPropertyInit: function(ch)
+                    {
+                      var columns = FormEditor.GetControlsProperty('ColumnFieldDefs', [ch.ControlID]);
+                      var columnscnt = (columns[0] && (ng_IsArrayVar(columns[0].PropertyValue))) ? columns[0].PropertyValue.length : 0;
+                      if(columnscnt>0) {
+                        var columnid,it={};
+                        for(var i=0;i<columnscnt;i++) {
+                          columnid = FormEditor.GetControlsProperty('ColumnFieldDefs.'+i+'.0', [ch.ControlID]);
+                          if((columnid[0])&&(columnid[0].PropertyType==='string')&&(ngVal(columnid[0].PropertyValue,'')!='')) {
+                            it[columnid[0].PropertyValue]=null;
+                          }
+                        }
+                        ch.Type = 'jsobject';
+                        ch.Value= JSON.stringify(it);
+                      }
+                      return true;
+                    }
+                  }
+                })
+              ], { InitType: 'array', Level: 'basic' })
+            },
+            "Methods": {
+              "DoGetDataSet": ng_diFunction('function() { return ng_CallParent(this,"DoGetDataSet",arguments,null); }', { Level: 'advanced' }),
+              "DoFilterDataSet": ng_diFunction('function(ds) { return ng_CallParent(this,"DoFilterDataSet",arguments,ds); }', { Level: 'advanced' }),
+              "DoFilterDataSetField": ng_diFunction('function(fd,fid,val,filterval,filtertype) { return ng_CallParent(this,"DoFilterDataSetField",arguments,true); }', { Level: 'advanced' }),
+              "DoSortDataSet": ng_diFunction('function(ds,sortby) { return ng_CallParent(this,"DoSortDataSet",arguments,ds); }', { Level: 'advanced' }),
+              "DoGetRecords": ng_diFunction('function(offset,count, coldefs, sortby) { return ng_CallParent(this,"DoGetRecords",arguments,[]); }', { Level: 'advanced' }),
+              "DoGetTotalCount": ng_diFunction('function() { return ng_CallParent(this,"DoGetTotalCount",arguments,0); }', { Level: 'advanced' })
+            },
+            "OverrideEvents": {
+              "OnDoGetRecords": ng_diEvent('function(c, offset, count, coldefs, sortby) { return false; }',{ Level: 'advanced' }),
+              "OnDoGetTotalCount": ng_diEvent('function(c) { return false; }',{ Level: 'advanced' })
+            },
+            "Events": {
+              "OnGetRecords": ng_diEvent('function(c, offset, count) { return results; }',{ Level: 'basic' }),
+              "OnGetTotalCount": ng_diEvent('function(c) { return false; }',{ Level: 'basic' }),
+              "OnApplyFilters": ng_diEvent('function(c) { return false; }',{ Level: 'basic' }),
+              "OnResetFilters": ng_diEvent('function(c) { return false; }',{ Level: 'basic' }),
+              "OnSortCompare": ng_diEvent('function(c, v1, v2, fid, dir) { return 0; }',{ Level: 'basic' }),
+              "OnFilterDataSetField": ng_diEvent('function(c, fd, fid, val, filterval, filtertype) { return true; }',{ Level: 'basic' })
+            }
+          })
+        };
+      });
+
       ngRegisterControlDesignInfo('ngSysViewModelSettings',function(d,c,ref) {
         return {
           ControlCategory: 'System',
