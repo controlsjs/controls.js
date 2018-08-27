@@ -55,6 +55,19 @@ var DBViewModel_DesignInfo = {
         })
       };
     });
+    ngRegisterControlDesignInfo('ngSysDBDataSetViewModel',function(d,c,ref) {
+      return {
+        ControlCategory: 'System',
+        IsBasic: true,
+        IsViewModel: true,
+        Properties: ng_diProperties({
+          "Events": {
+            "OnDBSuccess": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
+            "OnDBError": ng_diEvent('function(c, cmd,sresults) {}',{ Level: 'basic' })
+          }
+        })
+      };
+    });
   }
 };
 ngUserControls['dbviewmodel_designinfo'] = DBViewModel_DesignInfo;

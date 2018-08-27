@@ -659,5 +659,44 @@ ngUserControls['dbviewmodel'] = {
 
   OnInit: function() {
     ngRegisterControlType('ngSysDBViewModel',(function() { var def=Create_ngSysDBViewModel; def.ControlsGroup='System'; return def; })());
+    ngRegisterControlType('ngSysDBDataSetViewModel',(function()
+    {
+      var fc=function(def, ref, parent) {
+        ng_MergeDef(def,{
+          Events: {
+            OnCommandData: function (vm,cmd,sresults) {
+              if(ngVal(sresults.DBError,0)!=0)
+              {
+                if(sresults.DBError==1)
+                {
+                  if(vm.OnDBSuccess) vm.OnDBSuccess(vm,cmd,sresults);
+                }
+              }
+            },
+            OnCommandFinished: function (vm,cmd,sresults) {
+              if(ngVal(sresults.DBError,0)!=0)
+              {
+                if(sresults.DBError!=1)
+                {
+                  if(vm.OnDBError) vm.OnDBError(vm,cmd,sresults);
+                  else
+                  {
+                    var errmsg=ng_ViewModelFormatDBError(sresults.DBError,cmd);
+                    if(errmsg!='') alert(errmsg);
+                  }
+                }
+              }
+            }
+          }
+        });
+        var c=ngCreateControlAsType(def, 'ngSysDataSetViewModel', ref, parent);
+        if(c) {
+          if(typeof c.OnDBError==='undefined') c.OnDBError=null;
+        }
+        return c;
+      };
+      fc.ControlsGroup='System';
+      return fc;
+    })());
   }
 };
