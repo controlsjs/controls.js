@@ -128,12 +128,6 @@ function ngdsc_IsAllowedSortBy(sortby)
   for(i=0;i<allowed.length;i++)
   {
     al=allowed[i];
-    if(!ng_typeArray(al)) {
-      if(ng_typeObject(al)) {
-        if(ng_typeArray(al.SortBy)) al=[al.SortBy];
-        else al=[al];
-      }
-    }
     if((al.length>0)&&(al[0].FieldID=='*')) return true;
     if(al.length==sortby.length)
     {
@@ -251,13 +245,22 @@ function ngdsc_LoadData(ds, list, idx, cnt)
   if((!vm)||(!vm.ViewModel.Records)||(!ngIsFieldDef(vm.ViewModel.Offset))||(!ngIsFieldDef(vm.ViewModel.Count))) {
     return [];
   }
-  var undefined;
-  vm.ViewModel.Records.SetTypedValue(undefined,false);
+  vm.ViewModel.Records.SetTypedValue(void 0,false);
   if(idx==999999999)
   {
-    vm.ViewModel.Offset.Value(undefined);
-    vm.ViewModel.Count.Value(undefined);
+    vm.ViewModel.Offset.Value(void 0);
+    vm.ViewModel.Count.Value(void 0);
+    vm.ViewModel.TotalCount=ko.ng_setvalue(vm.TotalCount, void 0);
     vm.Command('recordcount');
+    if(ng_typeNumber(ko.ng_getvalue(vm.ViewModel.TotalCount))) {
+      if(ds.async_loaddata_timer) clearTimeout(ds.async_loaddata_timer);
+      ds.async_loaddata_timer=setTimeout(function() {
+        if(ds.async_loaddata_timer) clearTimeout(ds.async_loaddata_timer);
+        delete ds.async_loaddata_timer;
+        ngdsc_DataLoaded.apply(vm, [ vm, 'recordcount'] );
+      },1);
+      return true;
+    }
   }
   else
   {
@@ -266,6 +269,25 @@ function ngdsc_LoadData(ds, list, idx, cnt)
     if(!vm.Command(ds.GetRecordsCommand))
     {      
       ds.SetAsyncData(999999999, null); // cancel load
+    }
+    else {
+      var records=ko.ng_getvalue(vm.ViewModel.Records);
+      if(ng_IsArrayVar(records)) {
+        if(ds.AsyncData) {
+          if(ds.async_loaddata_timer) clearTimeout(ds.async_loaddata_timer);
+          ds.async_loaddata_timer=setTimeout(function() {
+            if(ds.async_loaddata_timer) clearTimeout(ds.async_loaddata_timer);
+            delete ds.async_loaddata_timer;
+            ngdsc_DataLoaded.apply(vm, [ vm, ds.GetRecordsCommand] );
+          },1);
+          return;
+        } else {
+          var data=new Array();
+          for(var i=0;i<records.length;i++)
+            data[i]= { Record: records[i] };
+          return data;
+        }
+      }
     }
   }
   return; // undefined
@@ -276,19 +298,21 @@ function ngdsc_DataLoaded(vm,cmd)
   var ds=vm.DataSetControl;
   if(!ds) return;
   
-  if(ng_typeNumber(vm.ViewModel.TotalCount))
+  var totslcnt=ko.ng_getvalue(vm.ViewModel.TotalCount);
+  if(ng_typeNumber(totslcnt))
   {
-    ds.SetLength(vm.ViewModel.TotalCount);
+    ds.SetLength(totslcnt);
   }
 
   if(cmd=='recordcount')
   {
-    delete vm.ViewModel.TotalCount;
+    if(!ngIsFieldDef(vm.ViewModel.TotalCount)) delete vm.ViewModel.TotalCount;
+    else vm.ViewModel.TotalCount.Value(void 0);
     ds.SetAsyncData(999999999, null);
   }
   else
   {  
-    ds.GetRecordsCommand = 'getrecords';    
+    ds.GetRecordsCommand = 'getrecords';
     var offset=vm.ViewModel.Offset.GetTypedValue(false);
     var records=vm.ViewModel.Records.GetTypedValue(false);
     var data=new Array();
@@ -371,22 +395,31 @@ function ngdsc_SetViewModel(vm)
   if(ovm)
   {
     this.RemoveEvent('OnLoadData',ngdsc_LoadData);
-    ovm.RemoveEvent('OnGetValues', ngdsc_GetValues);
-    ovm.RemoveEvent('OnCommandData', ngdsc_DataLoaded);
-    ovm.RemoveEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
+    if(typeof ovm.RemoveEvent === 'function') {
+      ovm.RemoveEvent('OnGetValues', ngdsc_GetValues);
+      ovm.RemoveEvent('OnCommandData', ngdsc_DataLoaded);
+      ovm.RemoveEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
+    }
     delete ovm.DataSetControl;
-    delete ovm.ReloadDataSet;
-    delete ovm.ApplyFilters;
-    delete ovm.ResetFilters;
+    if(typeof ovm.SetViewModel==='function') {
+      ovm.SetViewModel(function() {
+        if(this.ReloadDataSet === ngdscvm_ReloadDataSet) delete this.ReloadDataSet;
+        else if(ng_IsOverriden(this.ReloadDataSet)) this.ReloadDataSet.removeOverride(ngdscvm_ReloadDataSet);
+        if(this.ApplyFilters === ngdscvm_ApplyFilters) delete this.ApplyFilters;
+        else if(ng_IsOverriden(this.ApplyFilters)) this.ApplyFilters.removeOverride(ngdscvm_ApplyFilters);
+        if(this.ResetFilters === ngdscvm_ResetFilters) delete this.ResetFilters;
+        else if(ng_IsOverriden(this.ResetFilters)) this.ResetFilters.removeOverride(ngdscvm_ResetFilters);
+      });
+    }
   }
   this.ViewModel=vm;
   if(vm)
   {
     vm.DataSetControl=this;
-    vm.SetViewModel(function() { 
-      this.ReloadDataSet = ngdscvm_ReloadDataSet; 
-      this.ApplyFilters = ngdscvm_ApplyFilters; 
-      this.ResetFilters = ngdscvm_ResetFilters; 
+    vm.SetViewModel(function() {
+      ng_OverrideMethod(this,'ReloadDataSet',ngdscvm_ReloadDataSet);
+      ng_OverrideMethod(this,'ApplyFilters',ngdscvm_ApplyFilters);
+      ng_OverrideMethod(this,'ResetFilters',ngdscvm_ResetFilters);
     });
 
     if(!this.OnLoadData) {
@@ -399,6 +432,13 @@ function ngdsc_SetViewModel(vm)
     vm.AddEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
   }
   if(this.OnSetViewModel) this.OnSetViewModel(this,vm,ovm);
+}
+
+function ngdsc_DoDispose() {
+  this.SetViewModel(null);
+  if(this.async_loaddata_timer) clearTimeout(this.async_loaddata_timer);
+  delete this.async_loaddata_timer;
+  return true;
 }
 
 
@@ -437,6 +477,8 @@ function Create_ngDataSet(def, ref, parent,basetype)
 
     c.UpdateDataSetColumns();
   });
+
+  c.AddEvent('DoDispose',ngdsc_DoDispose);
 
   /*
    *  Group: Properties
