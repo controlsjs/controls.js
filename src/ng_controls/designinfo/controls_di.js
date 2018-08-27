@@ -514,7 +514,8 @@ function ng_diArray(pdata, tdata) {
 function ng_diArrayOf(itemptype, pdata, tdata, basetype) {
   if(typeof itemptype==='string') {
     if(itemptype==='string') return ng_diType('array_strings', pdata, tdata);
-    itemptype=ng_diType(itemptype);
+    pdata=((pdata)&&(typeof pdata==='object')) ? pdata : {};
+    itemptype=ng_diType(itemptype, { Level: pdata.Level });
   }
   var di=((tdata)&&(typeof tdata==='object')) ? tdata : {};
   if(itemptype) {
