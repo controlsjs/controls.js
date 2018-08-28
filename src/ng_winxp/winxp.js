@@ -1258,6 +1258,13 @@ var WinXPControls = {
                 Visible: false
               }
             },
+            NoData: {
+              Type: 'stdText',
+              L: 10, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
+              Data: {
+                Visible: false
+              }
+            },
             /*  Object: Paging
              *  <ngToolBar>
              */

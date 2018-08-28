@@ -1808,6 +1808,14 @@ var WinEightControls = {
                 Visible: false
               }
             },
+            NoData: {
+              Type: 'weText',
+              Theme: th,
+              L: 10, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 55 : 8),
+              Data: {
+                Visible: false
+              }
+            },
             /*  Object: Paging
              *  <ngToolBar>
              */

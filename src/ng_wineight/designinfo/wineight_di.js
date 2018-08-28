@@ -736,6 +736,13 @@ return {
                 "Visible": ng_diBoolean(false)
               }
             }), { Level: 'basic' }),
+            "NoData": ng_diControl('weText',ng_diProperties({
+              "L": ng_diTypeVal('bounds', 10),
+              "T": ng_diTypeVal('bounds', 8),
+              "Data": {
+                "Visible": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {
               "className": defThemeClassName('PageListPaging'),
               "H": ng_diTypeVal('bounds', 32)

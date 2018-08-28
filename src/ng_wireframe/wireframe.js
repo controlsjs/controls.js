@@ -1133,6 +1133,13 @@ var WireframeControls = {
                 Visible: false
               }
             },
+            NoData: {
+              Type: 'wfrText',
+              L: 15, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 43 : 15),
+              Data: {
+                Visible: false
+              }
+            },
             Paging: {
               H:27,
               className: 'wfrPageListPaging',

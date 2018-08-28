@@ -362,7 +362,14 @@ var WireframeControls_DesignInfo = {
               "Data": {
                 "Visible": ng_diBoolean(false)
               }
-            })),
+            }), { Level: 'basic' }),
+            "NoData": ng_diControl('wfrText', ng_diProperties({
+              "L": ng_diTypeVal('bounds', 15),
+              "T": ng_diTypeVal('bounds', 15),
+              "Data": {
+                "Visible": ng_diBoolean(false)
+              }
+            }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {
               "className": ng_diString('wfrPageListPaging')
             }),
