@@ -334,6 +334,7 @@
   line-height:28px;
   vertical-align: top;
   font-weight: bold;
+  cursor: default;
 }
 
 .wfrListBoxRow,
