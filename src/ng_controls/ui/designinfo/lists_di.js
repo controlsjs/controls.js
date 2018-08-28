@@ -855,6 +855,7 @@ return {
             "AsyncDataTimeout": ng_diInteger(30, { Level: 'basic' }),
             "AsyncDataRetryCnt": ng_diInteger(3, { Level: 'basic' }),
             "AsyncDataURL": ng_diType('url', { Level: 'basic' }),
+            "NoDataText": ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
             "DesignLive": ng_diBoolean(false, { Level: 'basic', Order: 0.95 })
           },
           "Methods": {
@@ -868,12 +869,15 @@ return {
             "OnInvalidateData": ng_diEvent('function(c, idx, cnt) { return true; }', { Level: 'basic' }),
             "OnSetAsyncData": ng_diEvent('function(c, idx, data) { return true; }', { Level: 'basic' }),
             "OnShowLoading": ng_diEvent('function(c) {}', { Level: 'basic' }),
-            "OnHideLoading": ng_diEvent('function(c) {}', { Level: 'basic' })
+            "OnHideLoading": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnShowNoData": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnHideNoData": ng_diEvent('function(c) {}', { Level: 'basic' })
           },
           "OverrideEvents": {
             "OnLoadData": ng_diEvent('function(c, list, idx, cnt) { return []; }', { Level: 'basic' }),
             "OnAsyncURLRequest": ng_diEvent('function(c, url, idx, cnt) { return url; }', { Level: 'basic' }),
-            "OnSetLength": ng_diEvent('function(c, len) { return len; }', { Level: 'basic' })
+            "OnSetLength": ng_diEvent('function(c, len) { return len; }', { Level: 'basic' }),
+            "OnNoDataText": ng_diEvent('function(c) { return ""; }', { Level: 'basic' })
           },
           "ModifyControls": {
             "List": ng_diControl('ngList', null, { Level: 'basic' }, { InheritedFrom: 'ngList' }),

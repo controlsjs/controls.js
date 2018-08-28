@@ -4586,6 +4586,33 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
   return true;
 }
 
+function npgl_ShowNoData(v)
+{
+  if((v)&&(this.OnShowNoData)) {
+    this.OnShowNoData(this);
+    return;
+  }
+  if((!v)&&(this.OnHideNoData)) {
+    this.OnHideNoData(this);
+    return;
+  }
+  if((typeof this.Controls.NoData === 'object')&&(typeof this.Controls.NoData.SetVisible === 'function')) {
+    if((v)&&(typeof this.Controls.NoData.SetText === 'function')) {
+      var txt;
+      if(this.OnNoDataText) {
+        txt=ngVal(this.OnNoDataText(this),'');
+      }
+      else {
+        txt=ngVal(this.NoDataText,'');
+        if(txt!='') txt=ngTxt(txt,txt);
+      }
+      if(txt!='') this.Controls.NoData.SetText(txt);
+      else v=false;
+    }
+    this.Controls.NoData.SetVisible(v);
+  }
+}
+
 function npgl_ShowLoading(v)
 {
   if((v)&&(this.OnShowLoading)) {
@@ -4615,7 +4642,11 @@ function npgl_DoUpdateAfter(o)
   }
   if(this.Loading)
   {
+    pl.ShowNoData(false);
     if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
+  }
+  else {
+    pl.ShowNoData((typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0));
   }
 
   if(this.draw_paging_elm)
@@ -5747,6 +5778,13 @@ function Create_ngPageList(def, ref, parent)
    */
   c.AsyncDataURL = '';
 
+  /*  Variable: NoDataText
+   *  ...
+   *  Type: string
+   *  Default value: *''*
+   */
+  c.NoDataText = '';
+
   /*
    *  Group: Methods
    */
@@ -6015,6 +6053,17 @@ function Create_ngPageList(def, ref, parent)
    */
   c.ShowLoading=npgl_ShowLoading;
 
+  /*  Function: ShowNoData
+   *  Shows no data control, if available.
+   *
+   *  Syntax:
+   *    void *ShowNoData* (bool visible)
+   *
+   *  Returns:
+   *    -
+   */
+  c.ShowNoData=npgl_ShowNoData;
+
   c.IsAsyncLoadingBlock = npgl_IsAsyncLoadingBlock;
 
   c.loading_displayed=false;
@@ -6074,6 +6123,19 @@ function Create_ngPageList(def, ref, parent)
    *  Event: OnHideLoading
    */
   c.OnHideLoading = null;
+
+  /*
+   *  Event: OnShowNoData
+   */
+  c.OnShowNoData = null;
+  /*
+   *  Event: OnHideNoData
+   */
+  c.OnHideNoData = null;
+  /*
+   *  Event: OnNoDataText
+   */
+  c.OnNoDataText = null;
 
   /*
    *  Group: Controls
