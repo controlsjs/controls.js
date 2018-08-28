@@ -373,11 +373,15 @@
   border: 1px solid #C9C7BA;
 }
 
+.wxpListBoxDisabled .wxpListBoxText
+{
+  cursor: default;
+}
 .wxpListBoxText
 {
   padding-left: 3px;
   line-height: 16px;
-  cursor: pointer;
+  cursor: default;
 }
 
 .wxpListBoxCaption
@@ -391,6 +395,7 @@
   line-height:20px;
   vertical-align: top;
   border-bottom: 1px solid #CBC7B8;
+  cursor: default;
 }
 
 .wxpListBoxSelected
