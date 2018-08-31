@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     pkg: packageJSON,
 
     banner: grunt.file.read('src/srcheader.txt'),
-    allow_debug: '\n// Debug ENABLED\nvar ngDEBUG=1;\n\n'
+    allow_debug: '\n// Debug ENABLED\nvar ngDEBUG=(typeof ngDEBUG === "undefined" ? 1 : ngDEBUG);\n\n'
   };
 
   var files = {};
@@ -402,7 +402,8 @@ module.exports = function(grunt) {
       closurecompiler: {
         files: compilerfiles('controls-raw.js',files),
         options: {
-          compilation_level: 'SIMPLE_OPTIMIZATIONS'
+          compilation_level: 'SIMPLE_OPTIMIZATIONS',
+          strict_mode_input: 'false'
         }
       },
       usebanner: releaseBanner('controls-raw.js','banner')
@@ -489,7 +490,7 @@ module.exports = function(grunt) {
     'controls-prepare-release',
     'controls-ui-raw-release',
     'controls-lib-ui-release',
-    'controls-finalize-release',
+    'controls-finalize-release'
   ]);
 
   grunt.registerTask('controls-vm-release', [
