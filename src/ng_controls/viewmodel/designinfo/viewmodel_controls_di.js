@@ -1200,7 +1200,7 @@ var ViewModel_Controls_DesignInfo = (function()
               "DataSet": ng_diMixed([
                 'undefined',
                 ng_diArrayOf('jsobject', {
-                  Level: 'basic',
+                  Level: 'basic'
                 }, {
                   ChildDesignInfo: {
                     OnPropertyInit: function(ch)
