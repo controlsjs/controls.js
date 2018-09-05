@@ -2078,7 +2078,7 @@ ngUserControls['viewmodel_ui'] = {
 
                   if(ismenu) {
                     var vsubmenu=vmit.SubMenu;
-                    if(ng_IsArrayVar(vsubmenu))
+                    if(ng_IsArrayVar(vsubmenu)) {
                       if(!it.SubMenu) {
                         if(typeof list.CreateSubMenu === 'function') {
                           list.need_update=true;
@@ -2091,6 +2091,7 @@ ngUserControls['viewmodel_ui'] = {
                           synclistupdateex(vsubmenu, it.SubMenu.Items, it.SubMenu, it.SubMenu);
                         }
                       }
+                    }
                     else {
                       if((c!==list)||(!menubar)) {
                         var sm=it.SubMenu;
