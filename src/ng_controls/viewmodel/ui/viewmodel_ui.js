@@ -1438,11 +1438,15 @@ ngUserControls['viewmodel_ui'] = {
           case '_vmCollapsed':
           case '_vmSimpleArrayItem':
             break;
-          case 'OnClick':
-            if((ismenu)&&(it.OnClick===ngmn_OnClick)) break;
-          case 'SubMenu':
-            if(ismenu) break;
           default:
+            if(ismenu){
+              if(
+                (i==='SubMenu')
+                || ((i==='OnClick')&&(it.OnClick===ngmn_OnClick))
+                || ((i==='OnGetText')&&(it.OnGetText===ngmn_GetResText))
+              ) break;
+            }
+
             if(bindinfo.ItemMapping) {
               p=bindinfo.ItemMapping[i];
               if(!p) break;
@@ -1680,6 +1684,8 @@ ngUserControls['viewmodel_ui'] = {
           delete keys.SubMenu;
           if(((a.OnClick===ngmn_OnClick)&&(typeof b.OnClick === 'undefined'))||
              ((b.OnClick===ngmn_OnClick)&&(typeof a.OnClick === 'undefined'))) delete keys.OnClick;
+          if(((a.OnGetText===ngmn_GetResText)&&(typeof b.OnGetText === 'undefined'))||
+             ((b.OnGetText===ngmn_GetResText)&&(typeof a.OnGetText === 'undefined'))) delete keys.OnGetText;
         }
       }
 
