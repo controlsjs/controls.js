@@ -121,7 +121,7 @@ function ngLoadApplication(elm, callback, files)
       }
       switch(f[i].Type)
       {
-        case 0: ngLoadAppFile(f[i].File, f[i], null, f[i].Async); break;
+        case 0: ngLoadAppFile(f[i].File, f[i], null, typeof f[i].Async === 'undefined' ? false : f[i].Async); break;
         case 2: ngLoadAppImg(f[i].File, f[i]); break;
       }
     }
@@ -310,7 +310,7 @@ function ngLoadApplication(elm, callback, files)
   window.ngLoadAppFile = function(url, data, loadcallback, async, loadfailcallback)
   {
     var loadurl=ngAppURL(url);
-    var asyncloader=(window.XMLHttpRequest)&&
+    var asyncloader=(async!==false)&&(window.XMLHttpRequest)&&
                     ((typeof ngDEBUG === 'undefined')||(!ngDEBUG))&&
                     ((!opera)||((operaver>=11.1)&&(window.location.protocol!='file:')))&&
                     ((cordova)
