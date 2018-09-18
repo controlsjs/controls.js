@@ -1430,7 +1430,7 @@ function ng_toDECIMAL(v, digits, frac_digits, def)
   }
   
   if(frac_digits>0) digits++;
-
+  else if(frac_digits<0) frac_digits=0;
   var i;
   if(ng_typeString(v))
   {     
@@ -1471,29 +1471,21 @@ function ng_toDECIMAL(v, digits, frac_digits, def)
             {
               // round
               var n,r=0;
-              for(var j=l-1;(j>i)&&(fd>=frac_digits);j--)
+              for(var j=l-1;(j>=0)&&((r)||(fd>frac_digits));j--)
               {
+                if(j===i) continue;
                 n=parseInt(v.charAt(j));
                 if(r) 
                 {
                   n++;
-                  v=v.substr(0,j)+n+v.substr(j+1,v.length);
+                  v=v.substr(0,j)+(n % 10)+v.substr(j+1,v.length);
+                  if((n<10)&&(fd<=frac_digits)) break;
                 }
-                if(n<5) r=0;
-                else r=1;
+                r=(n<5 ? 0 : 1);
                 fd--;
               }
-              if(!frac_digits)
-              {
-                if((r)&&(i>0))
-                {
-                  n=parseInt(v.charAt(i-1));
-                  n++;
-                  v=v.substr(0,i-1)+n;
-                }
-                else v=v.substr(0,i);
-              }
-              else v=v.substr(0,i+1+frac_digits);
+              v=v.substr(0,i+(frac_digits ? 1+frac_digits : 0));
+              if((j<0)&&(r)) v='1'+v;
             }
           }
         }        
