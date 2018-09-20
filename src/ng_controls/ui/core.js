@@ -5701,7 +5701,7 @@ function ngtbc_DoUpdate(o)
       this.tb_boundschanged=false;
       var tbw=this.ToolBarWidth;
       var tbh=this.ToolBarHeight;
-      var ret=ng_CallParent(this,'DoUpdate',arguments,false);
+      var ret=ng_CallParent(this,'DoUpdate',arguments,true);
       if((ret)&&(this.tb_boundschanged)) {
         if((this.ToolBarWidth!==tbw)||(this.ToolBarHeight!==tbh)) changed=true;
         else {
