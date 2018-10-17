@@ -4646,7 +4646,7 @@ function npgl_DoUpdateAfter(o)
     if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
   }
   else {
-    pl.ShowNoData((typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0));
+    pl.ShowNoData(pl.IsDynamicData() ? (typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0) : (!this.Items.length));
   }
 
   if(this.draw_paging_elm)
