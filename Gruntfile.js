@@ -16,6 +16,8 @@ module.exports = function(grunt) {
   //var defaultBuild = 'controls-noui';
   //var defaultBuild = 'controls-vm-noui';
 
+  var useLibFontLoader = true;
+
   // ---------------------------------------------------------------------------
 
   var packageJSON = grunt.file.readJSON('package.json');
@@ -248,7 +250,8 @@ module.exports = function(grunt) {
     clean: [ debugBuild('controls.js') ],
     concat: {
       src:   [ debugBuild('controls-raw.js'),
-               debugBuild('libs/lib_hammerjs/hammer.js')
+               debugBuild('libs/lib_hammerjs/hammer.js'),
+               debugBuild('libs/lib_FontLoader/FontLoader.js')
              ],
       dest:  debugBuild('controls.js')
     },
@@ -261,7 +264,8 @@ module.exports = function(grunt) {
     clean: [ debugBuild('controls.js') ],
     concat: {
       src:   [ debugBuild('controls-raw.js'),
-               debugBuild('libs/lib_knockout/knockout.js')
+               debugBuild('libs/lib_knockout/knockout.js'),
+               debugBuild('libs/lib_FontLoader/FontLoader.js')
              ],
       dest:  debugBuild('controls.js')
     },
@@ -275,7 +279,8 @@ module.exports = function(grunt) {
     concat: {
       src:   [ debugBuild('controls-raw.js'),
                debugBuild('libs/lib_hammerjs/hammer.js'),
-               debugBuild('libs/lib_knockout/knockout.js')
+               debugBuild('libs/lib_knockout/knockout.js'),
+               debugBuild('libs/lib_FontLoader/FontLoader.js')
              ],
       dest:  debugBuild('controls.js')
     },
@@ -297,11 +302,13 @@ module.exports = function(grunt) {
   registerTask('controls-finalize-debug', {
     clean: [ debugBuild('controls-raw.js') ],
     'clean:lib_knockout-debug': true,
+    'clean:lib_FontLoader-debug': true,
     'clean:lib_hammerjs-debug': true
   });
 
   grunt.registerTask('controls-debug', [
     'lib_hammerjs-debug',
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
     'controls-ui-raw-debug',
     'controls-lib-ui-debug',
@@ -312,6 +319,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-vm-debug', [
     'lib_hammerjs-debug',
     'lib_knockout-debug',
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
     'controls-ui-vm-raw-debug',
     'controls-lib-ui-vm-debug',
@@ -322,6 +330,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls+vm-debug', [
     'lib_hammerjs-debug',
     'lib_knockout-debug',
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
 
     'controls-ui-vm-raw-debug',
@@ -336,6 +345,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('controls-notouch-debug', [
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
     'controls-ui-raw-debug',
     'controls-nolib-debug',
@@ -345,6 +355,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('controls-vm-notouch-debug', [
     'lib_knockout-debug',
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
     'controls-ui-vm-raw-debug',
     'controls-lib-vm-debug',
@@ -353,6 +364,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('controls-noui-debug', [
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
     'controls-raw-debug',
     'controls-nolib-debug',
@@ -362,6 +374,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('controls-vm-noui-debug', [
     'lib_knockout-debug',
+    'lib_FontLoader-debug',
     'controls-prepare-debug',
     'controls-vm-raw-debug',
     'controls-lib-vm-debug',
@@ -433,7 +446,8 @@ module.exports = function(grunt) {
     clean: [ releaseBuild('controls.js') ],
     concat: {
       src:   [ releaseBuild('controls-raw.js'),
-               releaseBuild('libs/lib_hammerjs/hammer.js')
+               releaseBuild('libs/lib_hammerjs/hammer.js'),
+               releaseBuild('libs/lib_FontLoader/FontLoader.js')
              ],
       dest:  releaseBuild('controls.js')
     },
@@ -446,7 +460,8 @@ module.exports = function(grunt) {
     clean: [ releaseBuild('controls.js') ],
     concat: {
       src:   [ releaseBuild('controls-raw.js'),
-               releaseBuild('libs/lib_knockout/knockout.js')
+               releaseBuild('libs/lib_knockout/knockout.js'),
+               releaseBuild('libs/lib_FontLoader/FontLoader.js')
              ],
       dest:  releaseBuild('controls.js')
     },
@@ -460,7 +475,8 @@ module.exports = function(grunt) {
     concat: {
       src:   [ releaseBuild('controls-raw.js'),
                releaseBuild('libs/lib_hammerjs/hammer.js'),
-               releaseBuild('libs/lib_knockout/knockout.js')
+               releaseBuild('libs/lib_knockout/knockout.js'),
+               releaseBuild('libs/lib_FontLoader/FontLoader.js')
              ],
       dest:  releaseBuild('controls.js')
     },
@@ -482,11 +498,13 @@ module.exports = function(grunt) {
   registerTask('controls-finalize-release', {
     clean: [ releaseBuild('controls-raw.js') ],
     'clean:lib_knockout-release': true,
+    'clean:lib_FontLoader-release': true,
     'clean:lib_hammerjs-release': true
   });
 
   grunt.registerTask('controls-release', [
     'lib_hammerjs-release',
+    'lib_FontLoader-release',
     'controls-prepare-release',
     'controls-ui-raw-release',
     'controls-lib-ui-release',
@@ -496,6 +514,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls-vm-release', [
     'lib_hammerjs-release',
     'lib_knockout-release',
+    'lib_FontLoader-release',
     'controls-prepare-release',
     'controls-ui-vm-raw-release',
     'controls-lib-ui-vm-release',
@@ -505,6 +524,7 @@ module.exports = function(grunt) {
   grunt.registerTask('controls+vm-release', [
     'lib_hammerjs-release',
     'lib_knockout-release',
+    'lib_FontLoader-release',
     'controls-prepare-release',
 
     'controls-ui-vm-raw-release',
@@ -518,6 +538,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('controls-notouch-release', [
+    'lib_FontLoader-release',
     'controls-prepare-release',
     'controls-ui-raw-release',
     'controls-nolib-release',
@@ -526,6 +547,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('controls-vm-notouch-release', [
     'lib_knockout-release',
+    'lib_FontLoader-release',
     'controls-prepare-release',
     'controls-ui-vm-raw-release',
     'controls-lib-vm-release',
@@ -533,6 +555,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('controls-noui-release', [
+    'lib_FontLoader-release',
     'controls-prepare-release',
     'controls-raw-release',
     'controls-nolib-release',
@@ -541,6 +564,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('controls-vm-noui-release', [
     'lib_knockout-release',
+    'lib_FontLoader-release',
     'controls-prepare-release',
     'controls-vm-raw-release',
     'controls-lib-vm-release',
@@ -629,6 +653,44 @@ module.exports = function(grunt) {
     },
     usebanner: releaseBanner('libs/lib_knockout/*.js','banner_knockout')
   });
+
+  // == Library: FontLoader.js =================================================
+
+  if(useLibFontLoader) {
+    files['lib_FontLoader'] = [
+      'libs/lib_FontLoader/FontLoader.js'
+    ];
+
+    config.banner_FontLoader = '/*! FontLoader.js v<%= pkg.lib_FontLoader.version %> (C) 2013 Simon Hanukaev   MIT @license: en.wikipedia.org/wiki/MIT_License */\n\n';
+
+    registerTask('lib_FontLoader-debug', {
+      clean: [ debugBuild('libs/lib_FontLoader/') ],
+      concat: {
+        src:   getFiles('lib_FontLoader'),
+        dest:  debugBuild('libs/lib_FontLoader/FontLoader.js')
+      },
+      usebanner: debugBanner('libs/lib_FontLoader/*.js','banner_FontLoader')
+    });
+
+    registerTask('lib_FontLoader-release', {
+      clean: [ releaseBuild('libs/lib_FontLoader/') ],
+      closurecompiler: {
+        files: compilerfiles('libs/lib_FontLoader/FontLoader.js','lib_FontLoader'),
+        options: {
+          compilation_level: 'SIMPLE_OPTIMIZATIONS'
+        }
+      },
+      usebanner: releaseBanner('libs/lib_FontLoader/*.js','banner_FontLoader')
+    });
+  }
+  else {
+    registerTask('lib_FontLoader-debug', {
+      clean: [ debugBuild('libs/lib_FontLoader/') ]
+    });
+    registerTask('lib_FontLoader-release', {
+      clean: [ releaseBuild('libs/lib_FontLoader/') ]
+    });
+  }
 
   // == Loaders ================================================================
 
