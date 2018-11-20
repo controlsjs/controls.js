@@ -5359,6 +5359,94 @@ function nga_DoRun()
   try{ window.focus(); } catch(e) { } // FF3 fix
 
   if(typeof ngInit === 'function') ngInit();
+
+  // Initialize app fonts
+  var fonts=[];
+
+  function addfont(font) {
+    fonts.push(font);
+  }
+
+  if((typeof ngControlFonts==='object')&&(ngControlFonts)) {
+    for(var i in ngControlFonts) addfont(ngControlFonts[i]);
+  }
+  if(ngApp.Fonts) {
+    for(var i=0;i<ngApp.Fonts.length;i++) addfont(ngApp.Fonts[i]);
+  }
+  if(fonts.length>0) {
+
+    function normalizeFamilyName(family) {
+	    return family.replace( /[\'\"]/g, '' ).toLowerCase();
+    };
+
+    function normalizeWeight(weight) {
+      weight=''+weight;
+      switch(weight.toLowerCase()) {
+        case 'normal': weight='400'; break;
+        case 'bold': weight='700'; break;
+      }
+      return weight;
+		};
+
+    var font;
+    var fkey,usedfonts={};
+    for(var j=fonts.length-1;j>=0;j--) {
+      font=fonts[j];
+      if(ngVal(font.weight,'')=='') font.weight='400';
+      if(ngVal(font.style,'')=='') font.style='normal';
+      if(ngVal(font.stretch,'')=='') font.stretch='normal';
+      font.weight=normalizeWeight(font.weight);
+      fkey=normalizeFamilyName(font.family)+'|'+font.weight+'|'+font.style+'|'+font.stretch;
+      if(usedfonts[fkey]===true) fonts.splice(j,1);
+      else usedfonts[fkey]=true;
+    }
+
+    if(("fonts" in window.document)&&(ngSafariVersion!==10)) { // Safari 10 has buggy fonts API
+      for(var j=0;j<fonts.length;j++) {
+        font=fonts[j];
+        var ffamily=normalizeFamilyName(font.family);
+        var fweight=font.weight;
+        var fstyle=font.style;
+        window.document.fonts.forEach(function( font ) {
+          if((normalizeFamilyName(font.family)===ffamily)&&(normalizeWeight(font.weight)===fweight)&&(font.style===fstyle)) {
+            ng_PreloadImagesBegin();
+            font.load().then(function() {
+              ng_PreloadImagesEnd();
+            });
+          }
+        });
+      }
+    }
+    else {
+      var timeout=ngVal(ngApp.FontsInitTimeout,3000);
+
+      ng_PreloadImagesBegin();
+      if(typeof FontLoader === 'function') { // Test if lib_FontLoader library is available
+
+        FontLoader.useAdobeBlank=false; // Using AdobeBlank seems to be sometimes buggy (at least in Chrome)
+        var fontLoader = new FontLoader(fonts, {
+          "complete": function(error) {
+            if (error !== null) {
+              // Reached the timeout but not all fonts were loaded
+              ngDEBUGERROR(error.message);
+              ngDEBUGERROR(error.notLoadedFonts);
+            }
+            ng_PreloadImagesEnd();
+          }
+        }, timeout);
+        fontLoader.loadFonts();
+      }
+      else {
+        // we don't have anything useful, just try to give it a time
+        if(timeout>0) {
+          var fontloadtimer=setTimeout(function() {
+            clearTimeout(fontloadtimer);
+            ng_PreloadImagesEnd();
+          }, timeout);
+        }
+      }
+    }
+  }
   ng_PreloadImagesEnd(nga_DoRunFinal);
 }
 
@@ -6414,6 +6502,36 @@ function nga_InvokeLater(fnc)
   this.invokelater_events.push(fnc);
 }
 
+function nga_UsesFont(family, weight, style, stretch)
+{
+  family=ngVal(family,'');
+  if(family=='') return;
+  this.Fonts.push({
+    family: family,
+    weight: ''+ngVal(weight,'400'),
+    style: ngVal(style,'normal'),
+    stretch: ngVal(stretch,'normal')
+  });
+}
+
+function nga_UsesImg(img)
+{
+  if(typeof img==='string') {
+    if(img!='') ng_PreloadImage(img);
+  }
+  else if((typeof img==='object')&&(img)) {
+    if(!ngInitAllHiResImages) {
+      var i=ng_SelectHiResImage(img);
+      if(i.Src!='') ng_PreloadImage(i.Src);
+    }
+    else {
+      for(var i in img) {
+        if((typeof img[i]==='string')&&(img[i]!='')) ng_PreloadImage(img[i]);
+      }
+    }
+  }
+}
+
 /**
  *  Class: ngApplication
  *  This class encapsulates web application.
@@ -6535,6 +6653,14 @@ function ngApplication(startparams, elm, autorun)
    *  Type: bool
    */
   this.MobileKeyboardFix=true;
+
+  /*  Variable: FontsInitTimeout
+   *  ...
+   *  Type: int
+   *  DefaultValue: 3000
+   */
+  this.FontsInitTimeout=3000;
+  this.Fonts=[];
 
   /*
    *  Group: Methods
@@ -6851,6 +6977,38 @@ function ngApplication(startparams, elm, autorun)
    *    -
    */
   this.InvokeLater=nga_InvokeLater;
+
+  /*  Function: UsesFont
+   *  Loads specified font. Use this in ngInit function to make sure all required
+   *  fonts are loaded before application is started.
+   *
+   *  Syntax:
+   *    void *UsesFont* (family [, string weight='400', string style='normal', string stretch='normal'])
+   *
+   *  Parameters:
+   *    family - font family
+   *    weight - font weight
+   *    style - font style
+   *    stretch - font stretch
+   *
+   *  Returns:
+   *    -
+   */
+  this.UsesFont=nga_UsesFont;
+
+  /*  Function: UsesImg
+   *  Loads specified image(s).
+   *
+   *  Syntax:
+   *    void *UsesImg* (mixed img)
+   *
+   *  Parameters:
+   *    img - list of used fonts
+   *
+   *  Returns:
+   *    -
+   */
+  this.UsesImg=nga_UsesImg;
 
   this.BuildURLParams = nga_BuildURLParams;
   this.CallURL = nga_CallURL;
