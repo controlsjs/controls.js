@@ -42,6 +42,15 @@
         this.stretch = fontDescriptor.stretch;
     }
 
+    // cross-browser array indexOf
+    function arrayIndexOf(arr,item) {
+      if(typeof arr.indexOf === 'function') return arr.indexOf(item);
+      for(var i in arr) {
+        if(arr[i]===item) return i;
+      }
+      return -1;
+    }
+
     FontDescriptor.prototype = {
         constructor: FontDescriptor,
         /**
@@ -87,7 +96,7 @@
                     }
                 }
             }
-            if (FontLoader.possibleFontStyles.indexOf(fontDescriptor.style) === -1) {
+            if (arrayIndexOf(FontLoader.possibleFontStyles,fontDescriptor.style) === -1) {
                 throw new Error("Illegal font descriptor, style property must be one of the following: " + FontLoader.possibleFontStyles.join(", "));
             }
 
@@ -101,7 +110,7 @@
                         }
                     }
                 }
-                if (FontLoader.possibleFontStretches.indexOf(fontDescriptor.stretch) === -1) {
+                if (arrayIndexOf(FontLoader.possibleFontStretches,fontDescriptor.stretch) === -1) {
                     throw new Error("Illegal font descriptor, stretch property must be one of the following: " + FontLoader.possibleFontStretches.join(", "));
                 }
             } else {
