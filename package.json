@@ -40,5 +40,12 @@
     "licenses": [
       { "type": "MIT", "url": "https://github.com/eightmedia/hammer.js/blob/master/LICENSE" }
     ]
+  },
+  "lib_FontLoader": {
+    "version": "0.0.3",
+    "homepage": "https://github.com/smnh/FontLoader",
+    "licenses": [
+      { "type": "MIT", "url": "http://www.opensource.org/licenses/mit-license.php" }
+    ]
   }
 }
