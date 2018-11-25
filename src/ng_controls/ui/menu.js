@@ -1056,7 +1056,7 @@ function ngmn_OnKeyDown(e)
 function ngmn_DoDrawItemText(html, text, it, col, id, level)
 {
   var image=this.SubMenuImg;
-  if((it.SubMenu)&&(image)&&((this.Columns.length<=0)||(col.ID==this.Columns[list.Columns.length-1].ID)))
+  if((it.SubMenu)&&(image)&&((this.Columns.length<=0)||(col.ID===this.Columns[this.Columns.length-1].ID)))
   {
     var dp=ngl_ItemImgDrawProps(this.ID+'_'+id+'M', (this.Enabled)&&(ngVal(it.Enabled,true)), image);
     html.append('<div style="position: relative;">');
