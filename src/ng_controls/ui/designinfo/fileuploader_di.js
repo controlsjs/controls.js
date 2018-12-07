@@ -48,9 +48,9 @@ var FileUploaderControl_DesignInfo = {
           "Events": {
             "OnError": ng_diEvent('function(c, errmsg, data) {}', { Level: 'basic' }),
             "OnFileAdding": ng_diEvent('function(c, fname) { return true; }', { Level: 'basic' }),
-            "OnFileAdded ": ng_diEvent('function(c, fname, data) {}', { Level: 'basic' }),
+            "OnFileAdded": ng_diEvent('function(c, fname, data) {}', { Level: 'basic' }),
             "OnFileChanging": ng_diEvent('function(c, fname, files) { return true; }', { Level: 'basic' }),
-            "OnFileChanged ": ng_diEvent('function(c, fname, files) {}', { Level: 'basic' }),
+            "OnFileChanged": ng_diEvent('function(c, fname, files) {}', { Level: 'basic' }),
             "OnFileDeleting": ng_diEvent('function(c, it, chidx) { return true; }', { Level: 'basic' }),
             "OnFileDeleted": ng_diEvent('function(c, it, chidx) {}', { Level: 'basic' }),
             "OnUploadProgress": ng_diEvent('function(c, p) { return true; }', { Level: 'basic' }),
