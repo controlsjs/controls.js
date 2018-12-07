@@ -1795,8 +1795,10 @@ function ngCreateControls(defs,ref,parent,options)
               if(cinfo.OnCreated) cinfo.Options = ng_CopyVar(options);
               if((!oldmodify)&&(ngHASDEBUG())&&(options.ModifyControls))
               {
-                for(var q in options.ModifyControls)
+                for(var q in options.ModifyControls) {
+                  if(options.ModifyControls[q].IgnoreModifyIfMissing) continue;
                   ngDEBUGWARN('Component referenced by "%s" doesn\'t have an subcomponent "%s" which should be modified.',i,q,ref);
+                }
               }
               options.ModifyControls=oldmodify;
             }
