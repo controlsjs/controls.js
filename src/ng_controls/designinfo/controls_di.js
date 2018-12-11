@@ -905,11 +905,11 @@ function ng_diProperties(props,data) {
         "ModifyControls": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
           DestroyIfEmpty: true,
           ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
-            "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 }),
+            "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 })
           }),
           {
             PropertyGroup: 'Controls',
-            Level: 'basic',
+            Level: 'basic'
           })
         }),
         "Events": ng_diObject({
