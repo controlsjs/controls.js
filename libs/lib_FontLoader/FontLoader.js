@@ -460,7 +460,7 @@
         },
         _getFontFamilyFromElement: function(element) {
             var font = this._getFontFromElement(element);
-            return font.family;
+            return font ? font.family : '';
         },
         _getReferenceFontFamilyIndexFromElement: function(element) {
             return element.getAttribute("data-ref-font-family-index");
