@@ -39,8 +39,6 @@ var nglSortDesc = 1;
 var nglRowItem = 0;
 var nglRowGroup = 1;
 
-var ngl_LeaveListTimer = null;
-
 var ngl_CurrentRowId='';
 var ngl_FocusTime=0;
 
@@ -1767,18 +1765,23 @@ function ngl_ClickItem(it, e)
 
 function ngl_DoMouseEnter(e, mi, elm)
 {
-  if(ngl_LeaveListTimer) clearTimeout(ngl_LeaveListTimer); ngl_LeaveListTimer=null;
+  if(this.leave_timer) {
+    clearTimeout(this.leave_timer);
+    delete this.leave_timer;
+    return;
+  }
   ngc_EnterBox(this.ID);
-  if((mi)&&(mi.Object)&&(mi.Object!=this)) ngl_DoLeave(mi.Object.ID);
   if(this.OnMouseEnter) this.OnMouseEnter(this);
 }
 
 function ngl_DoLeave(lid)
 {
-  if(ngl_LeaveListTimer) clearTimeout(ngl_LeaveListTimer); ngl_LeaveListTimer=null;
   var l=ngGetControlById(lid, 'ngList');
   if(l)
   {
+    if(l.leave_timer) clearTimeout(l.leave_timer);
+    delete l.leave_timer;
+
     var ii=ngl_ItemById(ngl_CurrentRowId);
     if(ii.list==l)
     {
@@ -1792,7 +1795,8 @@ function ngl_DoLeave(lid)
 
 function ngl_DoMouseLeave(e)
 {
-  ngl_LeaveListTimer=setTimeout("ngl_DoLeave('"+this.ID+"');",100);
+  if(this.leave_timer) clearTimeout(this.leave_timer);
+  this.leave_timer=setTimeout("ngl_DoLeave('"+this.ID+"');",100);
 }
 
 var ngl_LeaveRowTimer = null;
@@ -3032,6 +3036,8 @@ function ngl_DoAttach(o)
 
 function ngl_DoDispose()
 {
+  if(this.leave_timer) clearTimeout(this.leave_timer);
+  delete this.leave_timer;
   this.Clear();
   return true;
 }
