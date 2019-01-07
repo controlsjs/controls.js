@@ -3265,6 +3265,7 @@ function nge_DoCreate(d, ref, elm, parent)
       if(b)
       {
         b.Owner=this;
+        if(b.ID=='') b.Attach(this.ID+'_B'+(i+1));
         this.Buttons[this.Buttons.length]=b;
       }
     }
