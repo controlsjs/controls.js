@@ -1578,9 +1578,15 @@ function ng_DocumentDeselect()
 {
   if(document.selection && document.selection.empty) {
     document.selection.empty();
-  } else if(window.getSelection) {
-    var sel = window.getSelection();
-    sel.removeAllRanges();
+  } else {
+    if (document.body.createTextRange) { // All IE but Edge
+      var range = document.body.createTextRange();
+      range.collapse();
+      range.select();
+    }
+    else {
+      if(window.getSelection) window.getSelection().removeAllRanges();
+    }
   }
 }
   
