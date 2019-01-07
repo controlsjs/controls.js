@@ -3038,6 +3038,8 @@ function ngl_DoDispose()
 {
   if(this.leave_timer) clearTimeout(this.leave_timer);
   delete this.leave_timer;
+  var ii=ngl_ItemById(ngl_CurrentRowId);
+  if(ii.list===this) ngl_CurrentRowId='';
   this.Clear();
   return true;
 }
