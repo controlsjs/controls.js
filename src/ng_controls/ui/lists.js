@@ -113,17 +113,23 @@ function ngl_AddItems(items, parent)
 {
   if(!items) return;
   this.BeginUpdate();
-  for(var j in items)
-    this.Add(items[j], parent);
-  this.EndUpdate();
+  try {
+    for(var j in items)
+      this.Add(items[j], parent);
+  } finally {
+    this.EndUpdate();
+  }
 }
 
 function ngl_SetItems(items)
 {
   this.BeginUpdate();
-  this.Clear();
-  this.AddItems(items);
-  this.EndUpdate();
+  try {
+    this.Clear();
+    this.AddItems(items);
+  } finally {
+    this.EndUpdate();
+  }
 }
 
 function ngl_Insert(idx, it, parent)
@@ -2887,75 +2893,78 @@ function ngl_RemoveItemControl(obj)
 function ngl_CreateItemControls(it, recursive)
 {
   this.BeginUpdate();
-  if(!it) it=this;
-  else
-  {
-    if((typeof it.Controls !== 'undefined')&&(typeof it.Controls.Owner === 'undefined')&&(typeof it.Controls.Parent === 'undefined'))
+  try {
+    if((typeof it === 'undefined')||(it===null)) it=this;
+    else
     {
-      if(this.Columns.length>0)
+      if((typeof it.Controls !== 'undefined')&&(typeof it.Controls.Owner === 'undefined')&&(typeof it.Controls.Parent === 'undefined'))
       {
-        var cid;
-        for(var i=0;i<this.Columns.length;i++)
+        if(this.Columns.length>0)
         {
-          cid=this.Columns[i].ID;
-          if(typeof it.Controls[cid] !== 'undefined')
+          var cid;
+          for(var i=0;i<this.Columns.length;i++)
           {
-            if(typeof it.ControlsHolder === 'undefined') it.ControlsHolder=new Object;
-
-            it.ControlsHolder[cid]=document.createElement('div');
-            var lref=ngCreateControls(it.Controls[cid],undefined,it.ControlsHolder[cid]);
-            var ref;
-            if(typeof it.Controls === 'undefined') it.Controls=new Object;
-            var ctrls=new Object;
-            ng_SetByRef(ctrls,'Owner',this);
-            ng_SetByRef(ctrls,'Parent',it);
-            it.Controls[cid]=ctrls;
-            if(!this.ParentReferences) ref=ctrls;
-            else ref=this.Owner;
-            var c;
-            for(var j in lref)
+            cid=this.Columns[i].ID;
+            if(typeof it.Controls[cid] !== 'undefined')
             {
-              c=lref[j];
-              c.Owner=ref;
-              this.AddItemControl(c);
-              if(ref) ref[j]=c;
-              if(ref!=ctrls) ctrls[j]=c;
+              if(typeof it.ControlsHolder === 'undefined') it.ControlsHolder=new Object;
+
+              it.ControlsHolder[cid]=document.createElement('div');
+              var lref=ngCreateControls(it.Controls[cid],undefined,it.ControlsHolder[cid]);
+              var ref;
+              if(typeof it.Controls === 'undefined') it.Controls=new Object;
+              var ctrls=new Object;
+              ng_SetByRef(ctrls,'Owner',this);
+              ng_SetByRef(ctrls,'Parent',it);
+              it.Controls[cid]=ctrls;
+              if(!this.ParentReferences) ref=ctrls;
+              else ref=this.Owner;
+              var c;
+              for(var j in lref)
+              {
+                c=lref[j];
+                c.Owner=ref;
+                this.AddItemControl(c);
+                if(ref) ref[j]=c;
+                if(ref!=ctrls) ctrls[j]=c;
+              }
             }
           }
         }
-      }
-      else
-      {
-        it.ControlsHolder=document.createElement('div');
-        var lref=ngCreateControls(it.Controls,undefined,it.ControlsHolder);
-        var ref;
-
-        it.Controls=new Object;
-        ng_SetByRef(it.Controls,'Owner',this);
-        ng_SetByRef(it.Controls,'Parent',it);
-        if(!this.ParentReferences) ref=it.Controls;
-        else ref=this.Owner;
-        var c;
-        for(var j in lref)
+        else
         {
-          c=lref[j];
-          c.Owner=ref;
-          this.AddItemControl(c);
-          if(ref) ref[j]=c;
-          if(ref!=it.Controls) it.Controls[j]=c;
+          it.ControlsHolder=document.createElement('div');
+          var lref=ngCreateControls(it.Controls,undefined,it.ControlsHolder);
+          var ref;
+
+          it.Controls=new Object;
+          ng_SetByRef(it.Controls,'Owner',this);
+          ng_SetByRef(it.Controls,'Parent',it);
+          if(!this.ParentReferences) ref=it.Controls;
+          else ref=this.Owner;
+          var c;
+          for(var j in lref)
+          {
+            c=lref[j];
+            c.Owner=ref;
+            this.AddItemControl(c);
+            if(ref) ref[j]=c;
+            if(ref!=it.Controls) it.Controls[j]=c;
+          }
         }
+        this.Update();
       }
-      this.Update();
     }
-  }
-  if((typeof it.Items!=='undefined')&&(ngVal(recursive,true)))
-  {
-    for(var j in it.Items)
+    if((typeof it.Items!=='undefined')&&(ngVal(recursive,true)))
     {
-      this.CreateItemControls(it.Items[j],true);
+      for(var j in it.Items)
+      {
+        this.CreateItemControls(it.Items[j],true);
+      }
     }
+  } finally {
+    this.EndUpdate();
   }
-  this.EndUpdate();
 }
 
 function ngl_DoCreate(def, ref, elm, parent)
@@ -5470,22 +5479,25 @@ function npgl_Reset(doclear)
 {
   var list=this.Controls.List;
   if(list) list.BeginUpdate();
+  try {
+    delete this.firstitemselected;
+    this.MaxLength = undefined;
+    this.async_dataindex = undefined;
+    this.async_datacount = undefined;
+    this.last_asyncdata_index=-1;
+    this.last_asyncdata_count=0;
 
-  delete this.firstitemselected;
-  this.MaxLength = undefined;
-  this.async_dataindex = undefined;
-  this.async_datacount = undefined;
-  this.last_asyncdata_index=-1;
-  this.last_asyncdata_count=0;
-
-  if(list) list.ClearSelected();
-  this.FirstPage();
-  this.InvalidateData();
-  if(list)
-  {
-    list.max_displayed_items=0;
-    if(ngVal(doclear,false)) list.Clear();
-    list.EndUpdate();
+    if(list) list.ClearSelected();
+    this.FirstPage();
+    this.InvalidateData();
+  }
+  finally {
+    if(list)
+    {
+      list.max_displayed_items=0;
+      if(ngVal(doclear,false)) list.Clear();
+      list.EndUpdate();
+    }
   }
 }
 
