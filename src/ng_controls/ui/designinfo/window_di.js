@@ -157,7 +157,8 @@ ngUserControls['window_designinfo'] = {
                 }
               }),
               "RightImg": ng_diType('image', { Level: 'advanced' })
-            }, { Level: 'advanced' }, { Add: false })
+            }, { Level: 'advanced' }, { Add: false }),
+            "IgnoreDefFormBtn": ng_diBoolean(false, { Level: 'basic' })
           },
           "Events": {
             "OnClick": ng_diEvent('function(e) {}', { Level: 'basic' }),
