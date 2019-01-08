@@ -2586,11 +2586,13 @@ function ng_FormatDate(date, format, def)
  *   MM - month (2 digits)
  *   M - month (1 or 2 digits)  
  *   MMM - full name of month
+ *   MMMM - full name of month used in formating
  *   NNN - short name of month
  *   d - day of month (1 or 2 digits)
  *   dd - day of month (2 digits)
  *   E - short name of day of week       
  *   EE - full name of day of week   
+ *   EEE - full name of day of week used in formating
  *   HH - hour 0-23 (2 digits)
  *   H - hour 0-23 (1 or 2 digits)
  *   hh - hour 1-12 (2 digits)
@@ -2604,7 +2606,8 @@ function ng_FormatDate(date, format, def)
  *   ss - second (2 digits)
  *   s - second (1 or 2 digits)
  *   u - milliseconds
- *   a - AM/PM      
+ *   a - AM/PM
+ *   aa - locale version of AM/PM
  *  
  *  Returns:
  *    Formated date and time.
@@ -2660,11 +2663,13 @@ function ng_FormatDateTime(date, format,def)
       case 'M':    res+=M; break;
       case 'MM':   res+=LZ(M); break;
       case 'MMM':  res+=ngTypesTxt('calendar_months')[M-1]; break;
+      case 'MMMM': res+=ngTypesTxt('calendar_months_formating')[M-1]; break;
       case 'NNN':  res+=ngTypesTxt('calendar_months_short')[M-1]; break;
       case 'd':    res+=d; break;
       case 'dd':   res+=LZ(d); break;
       case 'E':    res+=ngTypesTxt('calendar_days_short')[E]; break;
       case 'EE':   res+=ngTypesTxt('calendar_days')[E]; break;
+      case 'EEE':  res+=ngTypesTxt('calendar_days_formating')[E]; break;
       case 'H':    res+=H; break;
       case 'HH':   res+=LZ(H); break;
       case 'h':    res+=h; break;
@@ -2678,6 +2683,7 @@ function ng_FormatDateTime(date, format,def)
       case 's':    res+=s; break;
       case 'ss':   res+=LZ(s); break;
       case 'a':    res+=(H>11 ? 'PM' : 'AM'); break;
+      case 'aa':   res+=ngTypesTxt('time_am_pm',['AM','PM'])[(H>11 ? 1 : 0)]; break;
       case 'u':    res+=formatms(u); break;
       default:     res+=token; break;
     }		
@@ -2816,11 +2822,15 @@ function ng_ParseDateTime(val, format, def)
           else          year=2000+(year-0); 
         }
         break;
+      case 'MMMM':
       case 'MMM':
       case 'NNN':
         month=0;
-        if(token=='MMM') names=ngTypesTxt('calendar_months');
-        else             names=ngTypesTxt('calendar_months_short');
+        switch(token) {
+          case 'MMMM': names=ngTypesTxt('calendar_months_formating'); break;
+          case 'MMM':  names=ngTypesTxt('calendar_months'); break;
+          default:     names=ngTypesTxt('calendar_months_short'); break;
+        }
 
         for(var i=0; i<names.length; i++) 
         {
@@ -2834,10 +2844,14 @@ function ng_ParseDateTime(val, format, def)
         }
         if ((month < 1)||(month>12)) return def;
         break;
+      case 'EEE':
       case 'EE':
       case 'E':
-        if(token=='E') names=ngTypesTxt('calendar_days_short');
-        else           names=ngTypesTxt('calendar_days');
+        switch(token) {
+          case 'EEE': names=ngTypesTxt('calendar_days_formating'); break
+          case 'E':   names=ngTypesTxt('calendar_days_short'); break
+          default:    names=ngTypesTxt('calendar_days'); break
+        }
         for(var i=0; i<names.length; i++) 
         {
           name=names[i];
@@ -2902,6 +2916,21 @@ function ng_ParseDateTime(val, format, def)
         if((ss==null)||(ss<0)||(ss>59)) return def;
         i_val+=ss.length;
         break;
+      case 'aa':
+        names=ngTypesTxt('time_am_pm');
+        ampm="";
+        for(var i=0; i<names.length && i<2; i++)
+        {
+          name=names[i];
+          if (val.substring(i_val,i_val+name.length).toLowerCase()==name.toLowerCase())
+          {
+            if(!i) ampm='AM';
+            else ampm='PM';
+            i_val += name.length;
+            break;
+           }
+        }
+        if(ampm!=='') break;
       case 'a':
         if(val.substring(i_val,i_val+2).toLowerCase()=='am')      ampm='AM';
         else if(val.substring(i_val,i_val+2).toLowerCase()=='pm') ampm='PM';
