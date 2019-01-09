@@ -325,6 +325,8 @@ return {
             "OnCheckChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),
             "OnDblClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
             "OnClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
+            "OnSetReadOnly": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' }),
+            "OnReadOnlyChanged": ng_diEvent('function(c, state) { }', { Level: 'basic' }),
             "OnMouseEnter": { },
             "OnMouseLeave": { }
           },

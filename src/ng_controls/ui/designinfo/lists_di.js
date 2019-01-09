@@ -706,7 +706,9 @@ return {
             "OnFocus": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnBlur": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnDrawItem": ng_diEvent('function(c, retval, html, it, id, level, pcollapsed) { return true; }', { Level: 'basic' }),
-            "OnDrawItemText": ng_diEvent('function(c, html, it, id, level) { return true; }', { Level: 'basic' })
+            "OnDrawItemText": ng_diEvent('function(c, html, it, id, level) { return true; }', { Level: 'basic' }),
+            "OnSetReadOnly": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' }),
+            "OnReadOnlyChanged": ng_diEvent('function(c, state) { }', { Level: 'basic' })
           },
           "OverrideEvents": {
             "OnGetText": ng_diEvent('function(c, it, col) { return ""; }', { Level: 'basic' }),
