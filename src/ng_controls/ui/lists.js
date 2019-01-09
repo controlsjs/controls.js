@@ -2892,7 +2892,17 @@ function ngl_RemoveItemControl(obj)
   obj.ParentControl=undefined;
 }
 
+function ngl_SetReadOnly(ro)
+{
+  ro=ngVal(ro,true);
+  if(ro==this.ReadOnly) return true;
+  if ((this.OnSetReadOnly) && (!ngVal(this.OnSetReadOnly(this,ro), false))) return false;
 
+  this.ReadOnly=ro;
+
+  if (this.OnReadOnlyChanged) this.OnReadOnlyChanged(this,ro);
+  return true;
+}
 
 function ngl_CreateItemControls(it, recursive)
 {
@@ -3966,6 +3976,20 @@ function ngList(id)
    */
   this.RemoveItemControl = ngl_RemoveItemControl;
 
+  /*  Function: SetReadOnly
+   *  Sets readonly state of control.
+   *
+   *  Syntax:
+   *    void *SetReadOnly* ([bool ro=true])
+   *
+   *  Parameters:
+   *    ro - readonly state
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetReadOnly=ngl_SetReadOnly;
+
   this.ItemId = ngl_ItemId;
   this.ItemById = nglist_ItemById;
   this.CalcIndent=ngl_CalcIndent;
@@ -4220,6 +4244,15 @@ function ngList(id)
    *  Event: OnGetColumnWidth
    */
   this.OnGetColumnWidth = null;
+  /*
+   *  Event: OnSetReadOnly
+   */
+  this.OnSetReadOnly = null;
+
+  /*
+   *  Event: OnReadOnlyChanged
+   */
+  this.OnReadOnlyChanged = null;
 
   ngControlCreated(this);
 

@@ -1032,8 +1032,8 @@ function ngb_DoUpdate(o)
     if(dp.H>th) th=dp.H;
   }
 
-  var hasclick=(this.Enabled)&&(action ? (action.OnClick)||(this.OnClick) : this.OnClick);
-  var hasdblclick=(this.OnDblClick)&&(this.Enabled);
+  var hasclick=(this.Enabled)&&(!this.ReadOnly)&&(action ? (action.OnClick)||(this.OnClick) : this.OnClick);
+  var hasdblclick=(this.OnDblClick)&&(this.Enabled)&&(!this.ReadOnly);
   var gestures='';
   if(hasclick) gestures='tap';
   if(hasdblclick)
@@ -1097,6 +1097,19 @@ function ngb_DoUpdate(o)
     this.Bounds.H=cbh;
     this.SetBounds();
   }
+  return true;
+}
+
+function ngb_SetReadOnly(ro)
+{
+  ro=ngVal(ro,true);
+  if(ro==this.ReadOnly) return true;
+  if ((this.OnSetReadOnly) && (!ngVal(this.OnSetReadOnly(this,ro), false))) return false;
+
+  this.ReadOnly=ro;
+  this.Update();
+
+  if (this.OnReadOnlyChanged) this.OnReadOnlyChanged(this,ro);
   return true;
 }
 
@@ -1278,7 +1291,7 @@ function ngButton(id, text)
    *  Type: bool
    *  Default value: *false*
    */
-  // this.ReadOnly = false;
+  this.ReadOnly = false;
 
   this.DoMouseEnter = ngb_DoMouseEnter;
   this.DoMouseLeave = ngb_DoMouseLeave;
@@ -1385,6 +1398,20 @@ function ngButton(id, text)
    */
   this.GetAlt=ngc_GetAlt;
 
+  /*  Function: SetReadOnly
+   *  Sets readonly state of control.
+   *
+   *  Syntax:
+   *    void *SetReadOnly* ([bool ro=true])
+   *
+   *  Parameters:
+   *    ro - readonly state
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetReadOnly=ngb_SetReadOnly;
+
   this.GetImg = ngb_GetImg;
   this.GetClassName = ngb_GetClassName;
   this.DoCreate = ngb_DoCreate;
@@ -1440,6 +1467,16 @@ function ngButton(id, text)
    *  Event: OnMouseLeave
    */
   this.OnMouseLeave = null;
+
+  /*
+   *  Event: OnSetReadOnly
+   */
+  this.OnSetReadOnly = null;
+
+  /*
+   *  Event: OnReadOnlyChanged
+   */
+  this.OnReadOnlyChanged = null;
 
   /*
    *  Event: OnGetImg
