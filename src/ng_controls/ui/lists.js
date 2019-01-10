@@ -313,7 +313,7 @@ function ngl_GetPath(parent, path, create, oncreatefnc, userdata)
             if(ngname)
             {
               for(var j=0;j<list.Items.length;j++)
-                if(list.Items[j].ngText[cname] == name) { found = list.Items[j]; break; }
+                if((list.Items[j].ngText[cname] == name) || (list.Items[j].ngTextD[cname] == name)) { found = list.Items[j]; break; }
             }
             else
             {
@@ -326,7 +326,7 @@ function ngl_GetPath(parent, path, create, oncreatefnc, userdata)
             if(ngname)
             {
               for(var j=0;j<list.Items.length;j++)
-                if(list.Items[j].ngText == name) { found = list.Items[j]; break; }
+                if((list.Items[j].ngText == name) || (list.Items[j].ngTextD == name)) { found = list.Items[j]; break; }
             }
             else
             {
