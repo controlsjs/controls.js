@@ -3039,7 +3039,7 @@ function nge_DoUpdate(o)
       b.Enabled=this.Enabled;
       if((b.BaseClassName=='')||(b.BaseClassName==b.CtrlType)) b.BaseClassName=cclass+'Button';
       if(!b.Visible) continue;
-      if(b.ID=='') b.Attach(this.ID+'_B'+(i+1));
+      if(b.ID=='') b.Attach(this.ID+'_B'+(this.button_id++));
       br=ngb_SimpleRect(b);
       if(br.H>th) th=br.H;
       a=ngVal(b.ButtonAlign,'');
@@ -3302,7 +3302,7 @@ function nge_DoCreate(d, ref, elm, parent)
       if(b)
       {
         b.Owner=this;
-        if(b.ID=='') b.Attach(this.ID+'_B'+(i+1));
+        if(b.ID=='') b.Attach(this.ID+'_B'+(this.button_id++));
         this.Buttons[this.Buttons.length]=b;
       }
     }
@@ -3338,6 +3338,8 @@ function ngEdit(id, text)
   this.DoDispose = nge_DoDispose;
   this.DoAcceptGestures = nge_DoAcceptGestures;
   this.DoGesture = nge_DoGesture;
+
+  this.button_id=1;
 
   /*
    *  Group: Definition
