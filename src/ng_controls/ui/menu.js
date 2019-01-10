@@ -191,7 +191,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
                       if(ngname)
                       {
                         for(var j=0;j<items.length;j++)
-                          if(items[j].ngText == at) { pos=j+after; break; }
+                          if((items[j].ngText == at) || (items[j].ngTextD == at)) { pos=j+after; break; }
                       }
                       else
                       {
@@ -212,7 +212,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
               if(ngname)
               {
                 for(var j=0;j<items.length;j++)
-                  if(items[j].ngText == name) { found = items[j]; break; }
+                  if((items[j].ngText == name) || (items[j].ngTextD == name)) { found = items[j]; break; }
               }
               else
               {
