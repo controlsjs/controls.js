@@ -1133,10 +1133,10 @@ return {
         Properties: ng_diProperties({
           "ID": { Level: 'basic' },
           "Data": {
-            "ngText": ng_diString('', { Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
-            "ngTextD": ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
-            "ngAlt": ng_diString('', { Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
-            "ngAltD": ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngText": ng_diString('', { DisplayName: 'Text Resource (ngText)', Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngTextD": ng_diString('', { DisplayName: 'Text Resource (ngTextD)', Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngAlt": ng_diString('', { DisplayName: 'Alt Resource (ngAlt)', Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngAltD": ng_diString('', { DisplayName: 'Alt Resource (ngAltD)', Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
             "Text": ng_diStringRefName({ Level: 'basic' }),
             "Alt": ng_diString('', { Level: 'basic' }),
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
