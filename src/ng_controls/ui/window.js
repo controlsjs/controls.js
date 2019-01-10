@@ -865,7 +865,7 @@ function ngw_DoUpdate(o)
       b.Enabled=this.Enabled;
       if((b.BaseClassName=='')||(b.BaseClassName==b.CtrlType)) b.BaseClassName=cclass+'Button'; 
       if(!b.Visible) continue;
-      if(b.ID=='') b.Attach(this.ID+'_B'+(i+1));
+      if(b.ID=='') b.Attach(this.ID+'_B'+(this.button_id++));
       bs=ngb_SimpleRect(b);
       bt=(th-bs.H)/2;
       a=ngVal(b.ButtonAlign,'');
@@ -1002,6 +1002,7 @@ function ngw_DoCreate(def, ref, elm, parent)
       if(b) 
       {
         b.Owner=this;
+        if(b.ID=='') b.Attach(this.ID+'_B'+(this.button_id++));
         this.Buttons[this.Buttons.length]=b;
       }
     }    
@@ -1106,6 +1107,8 @@ function ngWindow(id)
   this.SetBounds = ngw_SetBounds;
 
   this.StateBounds = null;
+
+  this.button_id = 1;
 
   /*
    *  Group: Definition
