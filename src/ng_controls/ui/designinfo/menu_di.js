@@ -29,6 +29,8 @@ ngUserControls['menu_designinfo'] = {
         Basic: false,
         Options: {
           ObjectProperties: {
+            "ngText": ng_diString('', { DisplayName: 'Text Resource (ngText)', Order: 0.41, Level: 'advanced' }, { Editor: 'ngfeEditor_Lang' }),
+            "ngTextD": ng_diString('', { DisplayName: 'Text Resource (ngTextD)', Order: 0.42, Level: 'basic' }, { Editor: 'ngfeEditor_Lang' }),
             // change defaults
             "Items": { Level: 'optional' },
             "Collapsed": { Level: 'optional' },
