@@ -949,7 +949,7 @@ function ng_CanSelectElm(e)
 
 function ng_CanFocusElm(e)
 {
-  if((e)&&(e.style.visibility!=='hidden')&&(e.style.display!=='none')&&(!e.disabled))
+  if((e)&&(typeof e.style === 'object')&&(e.style.visibility!=='hidden')&&(e.style.display!=='none')&&(!e.disabled))
   {
     if((ngIExplorer)&&(e.attributes.tabIndex)&&(e.attributes.tabIndex.specified)) return true;
 
