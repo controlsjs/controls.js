@@ -611,7 +611,7 @@ function ngcal_DoUpdate(o)
     }
     if(b)
     {
-      if(b.ID=='') b.Attach(this.ID+'_B'+(i+1));
+      if(b.ID=='') b.Attach(this.ID+'_B'+(this.button_id++));
       id=b.ID;
       b.Enabled=this.Enabled;
       if(typeof b.className !== 'undefined') cn=b.className;      
@@ -681,7 +681,7 @@ function ngcal_DoUpdate(o)
       b.Enabled=this.Enabled;
       b.Parent=this;
       if(!b.Visible) continue;
-      if(b.ID=='') b.Attach(this.ID+'_FB'+(i+1));
+      if(b.ID=='') b.Attach(this.ID+'_FB'+(this.button_id++));
       if(typeof b.className !== 'undefined') 
       {
         cn=b.className;
@@ -834,6 +834,107 @@ function ngcal_ParseDate(d)
   return ng_ParseDate(d,format);
 }
 
+function ngcal_DoCreate(def, ref, elm, parent)
+{
+  var b, bdef;
+  var ldefs=new Object;
+
+  if((typeof def.FastButtons === 'object')&&(def.FastButtons))
+  {
+    for(var i=0;i<def.FastButtons.length;i++) {
+      ldefs['B'+i]=ng_CopyVar(def.FastButtons[i]);
+    }
+  }
+  if((typeof def.PrevMonBtn === 'object')&&(def.PrevMonBtn)) {
+    var bdef=ng_CopyVar(def.PrevMonBtn);
+    ng_MergeDef(bdef, {
+      Type: 'ngButton',
+      Data: {
+        Text: '&lt;',
+        ngAltD: 'calendar_prevmonth'
+      },
+      Events: {
+        OnClick: function(e) { if(e.Owner.Parent) e.Owner.Parent.PrevMonth(!e.Owner.Parent.YearNavigation); }
+      }
+    });
+    ldefs['PrevMonBtn']=bdef;
+  }
+  if((typeof def.NextMonBtn === 'object')&&(def.NextMonBtn)) {
+    bdef=ng_CopyVar(def.NextMonBtn);
+    ng_MergeDef(bdef, {
+      Type: 'ngButton',
+      Data: {
+        Text: '&gt;',
+        ngAltD: 'calendar_nextmonth'
+      },
+      Events: {
+        OnClick: function(e) { if(e.Owner.Parent) e.Owner.Parent.NextMonth(!e.Owner.Parent.YearNavigation); }
+      }
+    });
+    ldefs['NextMonBtn']=bdef;
+  }
+  if((typeof def.PrevYearBtn === 'object')&&(def.PrevYearBtn)) {
+    bdef=ng_CopyVar(def.PrevYearBtn);
+    ng_MergeDef(bdef, {
+      Type: 'ngButton',
+      Data: {
+        Text: '&lt;',
+        ngAltD: 'calendar_prevyear'
+      },
+      Events: {
+        OnClick: function(e) { if(e.Owner.Parent) e.Owner.Parent.PrevYear(); }
+      }
+    });
+    ldefs['PrevYearBtn']=bdef;
+  }
+  if((typeof def.NextYearBtn === 'object')&&(def.NextYearBtn)) {
+    bdef=ng_CopyVar(def.NextYearBtn);
+    ng_MergeDef(bdef, {
+      Type: 'ngButton',
+      Data: {
+        Text: '&gt;',
+        ngAltD: 'calendar_nextyear'
+      },
+      Events: {
+        OnClick: function(e) { if(e.Owner.Parent) e.Owner.Parent.NextYear(); }
+      }
+    });
+    ldefs['NextYearBtn']=bdef;
+  }
+
+  if(!ng_EmptyVar(ldefs)) {
+    var lref=ngCreateControls(ldefs,undefined,null);
+    if((typeof def.FastButtons === 'object')&&(def.FastButtons))
+    {
+      this.FastButtons=new Array();
+      for(var i=0;i<def.FastButtons.length;i++)
+      {
+        b=lref['B'+i];
+        if(b) this.FastButtons.push(b);
+      }
+      if(!this.FastButtons.length) this.FastButtons=null;
+    }
+    if(lref['PrevMonBtn'])  this.PrevMonBtn=lref['PrevMonBtn'];
+    if(lref['NextMonBtn'])  this.NextMonBtn=lref['NextMonBtn'];
+    if(lref['PrevYearBtn']) this.PrevYearBtn=lref['PrevYearBtn'];
+    if(lref['NextYearBtn']) this.NextYearBtn=lref['NextYearBtn'];
+  }
+  if(this.FastButtons) {
+    for(var i=0;i<this.FastButtons.length;i++) {
+      b=this.FastButtons[i];
+      if(b) {
+        b.Owner=this;
+        if(b.ID=='') b.Attach(this.ID+'_FB'+(this.button_id++));
+      }
+    }
+  }
+
+  if((this.PrevMonBtn)&&(this.PrevMonBtn.ID==''))   this.PrevMonBtn.Attach(this.ID+'_B'+(this.button_id++));
+  if((this.NextMonBtn)&&(this.NextMonBtn.ID==''))   this.NextMonBtn.Attach(this.ID+'_B'+(this.button_id++));
+  if((this.PrevYearBtn)&&(this.PrevYearBtn.ID=='')) this.PrevYearBtn.Attach(this.ID+'_B'+(this.button_id++));
+  if((this.NextYearBtn)&&(this.NextYearBtn.ID=='')) this.NextYearBtn.Attach(this.ID+'_B'+(this.button_id++));
+}
+
 /**
  *  Class: ngCalendar
  *  This class implements a generic calendar control. 
@@ -850,6 +951,8 @@ function ngcal_ParseDate(d)
 function ngCalendar(id)
 {
   ngControl(this, id, 'ngCalendar');
+
+  this.button_id=1;
 
   /*
    *  Group: Properties
@@ -940,7 +1043,7 @@ function ngCalendar(id)
   b=new ngButton();
   b.Text = ngTxt('calendar_today');
   b.Alt = ngTxt('calendar_today');
-  b.OnClick = function(e) { if(e.Owner.Parent) e.Owner.Parent.SelectDate(new Date()); };
+  b.OnClick = function(e) { var d=new Date(); if(e.Owner.Parent) { e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d); } };
   /*  Variable: TodayBtn
    *  ...
    *  Type: object
@@ -950,7 +1053,7 @@ function ngCalendar(id)
   b=new ngButton();
   b.Text = ngTxt('calendar_tomorrow');
   b.Alt = ngTxt('calendar_tomorrow_alt');
-  b.OnClick = function(e) { if(e.Owner.Parent) { var d=new Date(); d.setDate(d.getDate()+1); e.Owner.Parent.SelectDate(d); } };
+  b.OnClick = function(e) { if(e.Owner.Parent) { var d=new Date(); d.setDate(d.getDate()+1); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d); } };
   /*  Variable: TomorrowBtn
    *  ...
    *  Type: object
@@ -960,7 +1063,7 @@ function ngCalendar(id)
   b=new ngButton();
   b.Text = ngTxt('calendar_nextweek');
   b.Alt = ngTxt('calendar_nextweek_alt');
-  b.OnClick = function(e) { if(e.Owner.Parent) { var d=new Date(); d.setDate(d.getDate()+7); e.Owner.Parent.SelectDate(d); } };
+  b.OnClick = function(e) { if(e.Owner.Parent) { var d=new Date(); d.setDate(d.getDate()+7); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d);  } };
   /*  Variable: NextWeekBtn
    *  ...
    *  Type: object
@@ -1224,6 +1327,7 @@ function ngCalendar(id)
    */
   this.IsDayEnabled=ngcal_IsDayEnabled;
       
+  this.DoCreate = ngcal_DoCreate;
   this.DoUpdate = ngcal_DoUpdate;
 
   this.need_update=false;
