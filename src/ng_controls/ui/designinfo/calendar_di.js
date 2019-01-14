@@ -21,6 +21,34 @@ ngUserControls['calendar_designinfo'] = {
       return {
         ControlCategory: 'Misc',
         Properties: ng_diProperties({
+          "PrevMonBtn": ng_diControl('ngButton', ng_diProperties({
+            "Data": {
+              "Text": ng_diString('&lt;'),
+              "ngAltD": ng_diString('calendar_prevmonth')
+            }
+          }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+          "NextMonBtn": ng_diControl('ngButton', ng_diProperties({
+            "Data": {
+              "Text": ng_diString('&gt;'),
+              "ngAltD": ng_diString('calendar_nextmonth')
+            }
+          }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+          "PrevYearBtn": ng_diControl('ngButton', ng_diProperties({
+            "Data": {
+              "Text": ng_diString('&lt;'),
+              "ngAltD": ng_diString('calendar_prevyear')
+            }
+          }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+          "NextYearBtn": ng_diControl('ngButton', ng_diProperties({
+            "Data": {
+              "Text": ng_diString('&gt;'),
+              "ngAltD": ng_diString('calendar_nextyear')
+            }
+          }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+          "FastButtons": ng_diArrayOfControls(
+            ng_diControl(undefined, ng_diProperties({
+            }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
+            { Level: 'basic', Collapsed: false, PropertyGroup: 'Controls' }, { DestroyIfEmpty: true }),
           "Data": {
             "CurrentDate": ng_diType('date', { Level: 'advanced' }),
             "WeekStartDay": ng_diInteger(1, { Level: 'basic' }),
