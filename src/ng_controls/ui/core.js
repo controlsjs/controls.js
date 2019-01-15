@@ -4861,6 +4861,7 @@ function ngpg_LeavePg(e,elm)
   if(!e) e=window.event;
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
 
+  if(!elm) return;
   var cn=elm.className;
   if(ngpg_CurrentPageId==elm.id) ngpg_CurrentPageId='';
   var i=cn.indexOf('_Focus');
@@ -4982,7 +4983,7 @@ function ngpg_SetPage(p)
     if(p<0) p=this.GetPageByText(s);
     if(p<0) p=s;
   }
-  p=parseInt(p);
+  p=parseInt(p,10);
   if((p<0)||(p>=this.Pages.length)||(isNaN(p))) return;
   if(p!=this.Page)
   {
@@ -4997,7 +4998,7 @@ function ngpg_SetPage(p)
 
     if(this.PagesVisible)
     {
-      if(this.row1pages[p])
+      if((this.row1pages[p])&&(this.update_cnt>0))
       {
         this.ChangePageState(p,1);
         this.ChangePageState(op,0);
@@ -5010,6 +5011,173 @@ function ngpg_SetPage(p)
       pg.ControlsPanel.SetVisible(true);
 
     if(this.OnPageChanged) this.OnPageChanged(this,op);
+  }
+}
+
+function ngpg_SetPageVisible(p, v) {
+  v=ngVal(v,true);
+  if(typeof p==='string') p=this.GetPageById(p);
+  else p=parseInt(p,10);
+  if((p<0)||(p>=this.Pages.length)||(isNaN(p))) return;
+  var pg=this.Pages[p];
+  if((pg)&&(ngVal(pg.Visible,true)!=v)) {
+    pg.Visible=v;
+    if(this.OnSetPageVisible) this.OnSetPageVisible(this,p,pg);
+    if(pg.Visible==v)
+    {
+      this.Update();
+    }
+  }
+}
+
+function ngpg_SetPageEnabled(p, s) {
+  s=ngVal(s,true);
+  if(typeof p==='string') p=this.GetPageById(p);
+  else p=parseInt(p,10);
+  if((p<0)||(p>=this.Pages.length)||(isNaN(p))) return;
+  var pg=this.Pages[p];
+  if((pg)&&(ngVal(pg.Enabled,true)!=s)) {
+    pg.Enabled=s;
+    if(this.OnSetPageEnabled) this.OnSetPageEnabled(this,p,pg);
+    if(pg.Enabled==s)
+    {
+      this.Update();
+    }
+  }
+}
+
+function ngpg_AddPages(pages, ref)
+{
+  if(!pages) return;
+  var refarray=ng_IsArrayVar(ref);
+  var ret=[];
+  this.BeginUpdate();
+  try {
+    var i=0;
+    for(var j in pages)
+      ret[i++]=this.AddPage(pages[j], refarray ? ref[j] : ref);
+  } finally {
+    this.EndUpdate();
+  }
+  return ret;
+}
+
+function ngpg_SetPages(pages, ref)
+{
+  var ret;
+  this.BeginUpdate();
+  try {
+    this.ClearPages();
+    ret=this.AddPages(pages, ref);
+    if(this.Pages.length>0) this.SetPage(0);
+  } finally {
+    this.EndUpdate();
+  }
+  return ret;
+}
+
+function ngpg_AddPage(pgdef, ref) {
+  return this.InsertPage(this.Pages.length, pgdef, ref);
+}
+
+function ngpg_InsertPage(idx, p, ref) {
+  if(typeof idx==='string') idx=this.GetPageById(idx);
+  else idx=parseInt(idx,10);
+  if(isNaN(idx)) return null;
+  if(idx<0) idx=0;
+  if(idx>this.Pages.length) idx=this.Pages.length;
+
+  var elm=this.Elm();
+  if(!elm) return null;
+
+  if((typeof ref!=='object')||(!ref)) {
+    ref=this.Owner;
+    if((typeof ref!=='object')||(!ref)) ref={};
+  }
+  if((typeof p!=='object')||(!p)) {
+    p={ Text: ''+p };
+  }
+  else if(!p) p={};
+
+  if((this.OnAddPage)&&(!ngVal(this.OnAddPage(this, idx, p, ref),false))) return null;
+
+  var pg = {};
+  var cntrls=p.Controls;
+  delete p.Controls;
+  ng_MergeDef(pg,p);
+  p.Controls=cntrls;
+
+  this.Pages.splice(idx,0,pg);
+
+  var ldefs=new Object;
+  ldefs.ControlsPanel = new Object;
+  ng_MergeDef(ldefs.ControlsPanel, p.ControlsPanel);
+  ng_MergeDef(ldefs.ControlsPanel, this.ControlsPanelDef);
+
+  ng_MergeDef(ldefs.ControlsPanel, {
+    Type: 'ngPanel',
+    className: this.BaseClassName+'ControlsPanels',
+    id: this.ID+'_P'+(this.panel_id++),
+    ScrollBars: ssAuto,
+    L:0,T:0,R:0,B:0,
+    Data: {
+      Visible: false
+    }
+  });
+  ldefs.ControlsPanel.Controls=p.Controls;
+  ldefs.ControlsPanel.ModifyControls=p.ModifyControls;
+
+  var lref=ngCreateControls(ldefs,undefined,elm);
+  if(!ngVal(this.ParentReferences,true))
+  {
+    (function (pg,pgid,pages) {
+      pg.Controls = new Object;
+      pg.Controls.Owner = pages;
+      pg.Controls.AddControls = function(defs, newparent) { ngCreateControls(defs,pg,ngVal(newparent,pgid)); }
+    })(pg,ldefs.ControlsPanel.id,this);
+    ref=pg.Controls;
+  }
+  pg.ControlsPanel=lref.ControlsPanel;
+  pg.ControlsPanel.Owner=this;
+  delete lref.ControlsPanel;
+  ngCloneRefs(ref,lref);
+
+  this.DoPagesChanged();
+
+  if(idx<=this.Page) this.SetPage(this.Page+1);
+
+  this.Update();
+  return ref;
+}
+
+function ngpg_DeletePage(p) {
+  if(typeof p==='string') p=this.GetPageById(p);
+  else p=parseInt(p,10);
+  if((p<0)||(p>=this.Pages.length)||(isNaN(p))) return;
+  var pg=this.Pages[p];
+  if(!pg) return;
+  if(this.OnDeletePage) this.OnDeletePage(this,p,pg);
+  this.Pages.splice(p,1);
+  if((pg.ControlsPanel)&&(typeof pg.ControlsPanel.Dispose==='function')) pg.ControlsPanel.Dispose();
+  if(p>=this.Pages.length) p=this.Pages.length-1;
+
+  this.Page=-1;
+  this.SetPage(p);
+
+  this.DoPagesChanged();
+
+  this.Update();
+}
+
+function ngpg_ClearPages()
+{
+  this.BeginUpdate();
+  try {
+    for(var i=this.Pages.length;i>=0;i--) {
+      this.DeletePage(i);
+    }
+  } finally {
+    this.EndUpdate();
   }
 }
 
@@ -5027,8 +5195,47 @@ function ngpg_DoRelease(o)
   this.row1pages = new Array();
 }
 
+function ngpg_PagesChanged()
+{
+  if(this.update_cnt>0) {
+    this._pages_changed = true;
+    this.need_update = true;
+  }
+  else {
+    this.DoPagesChanged();
+    this.Update();
+  }
+}
+
+function ngpg_DoPagesChanged()
+{
+  if(this.update_cnt > 0) this._pages_changed = true;
+  else if(this.OnPagesChanged) this.OnPagesChanged(this,this.Pages);
+}
+
+function ngpg_BeginUpdate()
+{
+  this.update_cnt++;
+}
+
+function ngpg_EndUpdate()
+{
+  this.update_cnt--;
+  if(this.update_cnt<=0) {
+    this.update_cnt=0;
+    if(this._pages_changed){
+      this._pages_changed = false;
+      this.DoPagesChanged();
+    }
+    if(this.need_update) this.Update();
+  }
+}
+
 function ngpg_DoUpdate(o)
 {
+  if((this.update_cnt>0)||(this.ID=='')) { this.need_update=true; return; }
+  this.need_update=false;
+
   var frame=document.getElementById(this.ID+'_F');
   if(!frame) return true;
 
@@ -5337,8 +5544,18 @@ function ngpg_DoUpdate(o)
 
 function ngpg_DoCreate(d, ref, elm, parent)
 {
+  if(typeof d.Data !== 'undefined')
+  {
+    if(typeof d.Data.ParentReferences !== 'undefined') this.ParentReferences = d.Data.ParentReferences;
+  }
   if((typeof d.Pages !== 'undefined')&&(typeof this.Pages === 'object'))
   {
+    if((typeof d.ControlsPanel === 'object')&&(d.ControlsPanel)) {
+      var pdef=this.ControlsPanelDef;
+      this.ControlsPanelDef=d.ControlsPanel;
+      ng_MergeDef(this.ControlsPanelDef,pdef);
+    }
+
     var pg,p,pgclass=this.BaseClassName+'ControlsPanels';
     for(var i in d.Pages)
     {
@@ -5354,12 +5571,12 @@ function ngpg_DoCreate(d, ref, elm, parent)
       var ldefs=new Object;
       ldefs.ControlsPanel = new Object;
       ng_MergeDef(ldefs.ControlsPanel, p.ControlsPanel);
-      ng_MergeDef(ldefs.ControlsPanel, d.ControlsPanel);
+      ng_MergeDef(ldefs.ControlsPanel, this.ControlsPanelDef);
 
       ng_MergeDef(ldefs.ControlsPanel, {
         Type: 'ngPanel',
         className: pgclass,
-        id: this.ID+'_P'+i,
+        id: this.ID+'_P'+(this.panel_id++),
         ScrollBars: ssAuto,
         L:0,T:0,R:0,B:0,
         Data: {
@@ -5411,6 +5628,11 @@ function ngpg_DoCreate(d, ref, elm, parent)
 function ngPages(id)
 {
   ngControl(this, id, 'ngPages');
+
+  this.panel_id = 0;
+  this.update_cnt=0;
+  this.need_update=false;
+
   this.DoCreate = ngpg_DoCreate;
   /*
    *  Group: Definition
@@ -5508,6 +5730,21 @@ function ngPages(id)
    *  Type: object
    */
   this.Frame = new Object;
+  /*
+   *  Variable: ParentReferences
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.ParentReferences=false;
+
+  /*
+   *  Variable: ControlsPanelDef
+   *  ...
+   *  Type: object
+   *  Default value: *{}*
+   */
+  this.ControlsPanelDef={};
 
   /*
    *  Group: Methods
@@ -5600,6 +5837,156 @@ function ngPages(id)
    */
   this.SetPageByControl = ngpg_SetPageByControl;
 
+  /*  Function: SetPageVisible
+   *  Sets page visibility.
+   *
+   *  Syntax:
+   *    void *SetPageVisible* (mixed page [, bool visible = true])
+   *
+   *  Parameters:
+   *    page - index or ID of the page
+   *    visible - TRUE if page is visible
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetPageVisible = ngpg_SetPageVisible;
+
+  /*  Function: SetPageEnabled
+   *  Sets enabled state of the page.
+   *
+   *  Syntax:
+   *    void *SetPageEnabled* (mixed page [, bool enabled = true])
+   *
+   *  Parameters:
+   *    page - index or ID of the page
+   *    enabled - TRUE if page is enabled
+   *
+   *  Returns:
+   *    -
+   */
+  this.SetPageEnabled = ngpg_SetPageEnabled;
+
+  /*  Function: AddPage
+   *  Adds new page.
+   *
+   *  Syntax:
+   *    object *AddPage* (object pagedef [, object ref])
+   *
+   *  Parameters:
+   *    pagedef - page definition
+   *    ref - optional object where references to created controls are stored (if ParentReferences is true)
+   *
+   *  Returns:
+   *    Object with references to created controls or null if page was not created.
+   */
+  this.AddPage = ngpg_AddPage;
+
+  /*  Function: AddPages
+   *  Adds multiple pages.
+   *
+   *  Syntax:
+   *    array *AddPages* (array pagedefs [, mixed ref])
+   *
+   *  Parameters:
+   *    pagedefs - array of page definitions
+   *    ref - object or array of objects where references to created controls are stored (if ParentReferences is true)
+   *
+   *  Returns:
+   *    Array of objects with references to created controls.
+   */
+  this.AddPages = ngpg_AddPages;
+
+  /*  Function: SetPages
+   *  Sets pages.
+   *
+   *  Syntax:
+   *    array *SetPages* (array pagedefs [, mixed ref])
+   *
+   *  Parameters:
+   *    pagedefs - array of page definitions
+   *    ref - object or array of objects where references to created controls are stored (if ParentReferences is true)
+   *
+   *  Returns:
+   *    Array of objects with references to created controls.
+   */
+  this.SetPages = ngpg_SetPages;
+
+  /*  Function: InsertPage
+   *  Inserts new page.
+   *
+   *  Syntax:
+   *    object *InsertPage* (mixed page, object pagedef [, object ref])
+   *
+   *  Parameters:
+   *    page - position of new page specified by index or ID of the page
+   *    pagedef - page definition
+   *    ref - optional object where references to created controls are stored (if ParentReferences is true)
+   *
+   *  Returns:
+   *    Object with references to created controls or null if page was not created.
+   */
+  this.InsertPage = ngpg_InsertPage;
+
+  /*  Function: DeletePage
+   *  Deletes page.
+   *
+   *  Syntax:
+   *    void *DeletePage* (mixed page)
+   *
+   *  Parameters:
+   *    page - index or ID of the page
+   *
+   *  Returns:
+   *    -
+   */
+  this.DeletePage = ngpg_DeletePage;
+
+  /*  Function: ClearPages
+   *  Deletes all pages.
+   *
+   *  Syntax:
+   *    void *ClearPages* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.ClearPages = ngpg_ClearPages;
+
+  /*  Function: BeginUpdate
+   *  Prevents the updating of the pages until the <EndUpdate> method is called.
+   *
+   *  Syntax:
+   *    void *BeginUpdate* ()
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   *
+   *  See also:
+   *    <EndUpdate>
+   */
+  this.BeginUpdate = ngpg_BeginUpdate;
+
+  /*  Function: EndUpdate
+   *  Performs the repaints deferred by a call <BeginUpdate>.
+   *
+   *  Syntax:
+   *    void *EndUpdate* ()
+   *
+   *  Parameters:
+   *
+   *  Returns:
+   *    -
+   *
+   *  See also:
+   *    <BeginUpdate>
+   */
+  this.EndUpdate = ngpg_EndUpdate;
+
+  this.PagesChanged = ngpg_PagesChanged;
+
   this.row1pages = new Array();
   this.ChangePageState = ngpg_ChangePageState;
   this.DoRelease = ngpg_DoRelease;
@@ -5609,6 +5996,7 @@ function ngPages(id)
   this.DoUpdate = ngpg_DoUpdate;
   this.DoPtrClick = ngpg_DoPtrClick;
   this.DoPtrDblClick = ngpg_DoPtrDblClick;
+  this.DoPagesChanged = ngpg_DoPagesChanged;
 
   /*
    *  Group: Events
@@ -5639,6 +6027,26 @@ function ngPages(id)
    *  Event: OnDblClick
    */
   this.OnDblClick = null;
+  /*
+   *  Event: OnSetPageVisible
+   */
+  this.OnSetPageVisible = null;
+  /*
+   *  Event: OnSetPageEnabled
+   */
+  this.OnSetPageEnabled = null;
+  /*
+   *  Event: OnAddPage
+   */
+  this.OnAddPage = null;
+  /*
+   *  Event: OnDeletePage
+   */
+  this.OnDeletePage = null;
+  /*
+   *  Event: OnPagesChanged
+   */
+  this.OnPagesChanged = null;
 
   ngControlCreated(this);
 }

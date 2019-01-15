@@ -653,7 +653,12 @@ return {
               "RightImg": ng_diType('image', { Level: 'advanced' }),
               "Separator": ng_diType('image', { Level: 'advanced' })
             }, { Level: 'advanced' }), { Level: 'advanced' }),
-            "Frame": ng_diType('img_frame', { Level: 'advanced' })
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }),
+            "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
+            "ControlsPanelDef": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false })
+          },
+          "Methods": {
+            "DoPagesChanged": ng_diFunction('function() { ng_CallParent(this, "DoPagesChanged", arguments); }', { Level: 'advanced' })
           },
           "OverrideEvents": {
             "OnGetText": ng_diEvent('function(c, pg) { return ""; }', { Level: 'basic' }),
@@ -663,7 +668,12 @@ return {
             "OnPageChanging": ng_diEvent('function(c, page) { return true; }', { Level: 'basic' }),
             "OnPageChanged": ng_diEvent('function(c, oldpage) { return true; }', { Level: 'basic' }),
             "OnClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
-            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' })
+            "OnDblClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
+            "OnSetPageVisible": ng_diEvent('function(c, pidx, page) {}', { Level: 'basic' }),
+            "OnSetPageEnabled": ng_diEvent('function(c, pidx, page) {}', { Level: 'basic' }),
+            "OnAddPage": ng_diEvent('function(c, pidx, pdef, ref) { return true; }', { Level: 'basic' }),
+            "OnDeletePage": ng_diEvent('function(c, pidx, page) {}', { Level: 'basic' }),
+            "OnPagesChanged": ng_diEvent('function(c, pages) {}', { Level: 'basic' })
           }
         }),
 
