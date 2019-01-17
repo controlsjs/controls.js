@@ -317,6 +317,15 @@ function ngdbdsc_DoNotifyChange(dbvm, changetype, primarykey)
   }
   if(this.OnDBViewModelChanged) this.OnDBViewModelChanged(this, changetype, primarykey);
 }
+function ngdbdsc_DBVMDoDispose()
+{
+  if(this.DBDataSets)
+  {
+    for(var i=this.DBDataSets.length-1;i>=0;i--)
+      if(this.DBDataSets[i].DBViewModel===this)
+        this.DBDataSets[i].SetDBViewModel(null);
+  }
+}
 
 function ngdbdsc_SetDBViewModel(dbvm)
 {
@@ -335,6 +344,7 @@ function ngdbdsc_SetDBViewModel(dbvm)
           odbvm.DBDataSets.splice(i,1);
           break;
         }
+    odbvm.RemoveEvent('DoDispose',        ngdbdsc_DBVMDoDispose);
     odbvm.RemoveEvent('OnNewRecord',      ngdbdsc_OnNewRecord);
     odbvm.RemoveEvent('OnRecordLoaded',   ngdbdsc_RecordLoaded);
     odbvm.RemoveEvent('OnRecordInserted', ngdbdsc_RecordInserted);
@@ -353,6 +363,7 @@ function ngdbdsc_SetDBViewModel(dbvm)
       if(i<dbvm.DBDataSets.length) return;
       dbvm.DBDataSets.push(this);
     }
+    dbvm.AddEvent('DoDispose',        ngdbdsc_DBVMDoDispose);
     dbvm.AddEvent('OnNewRecord',      ngdbdsc_OnNewRecord);
     dbvm.AddEvent('OnRecordLoaded',   ngdbdsc_RecordLoaded);
     dbvm.AddEvent('OnRecordInserted', ngdbdsc_RecordInserted);
@@ -579,6 +590,11 @@ function ngdbdsc_SetViewModel(ds,vm,ovm)
   }
 }
 
+function ngdbdsc_DoDispose()
+{
+  this.SetDBViewModel(null);
+}
+
 /*  Class: ngDBDataSet
  *  ViewModel dataset control (based on <ngDataSet>).
  */
@@ -671,6 +687,7 @@ function Create_ngDBDataSet(def, ref, parent, basetype)
   if(!c) return c;
 
   c.AddEvent('OnSetViewModel', ngdbdsc_SetViewModel);
+  c.AddEvent('DoDispose', ngdbdsc_DoDispose);
 
   def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
     c.DBViewModel=ngVal(def.DBViewModel,c.DBViewModel);
