@@ -4989,16 +4989,19 @@ function ngpg_SetPage(p)
   {
     if((this.OnPageChanging)&&(!ngVal(this.OnPageChanging(this,p),false))) return;
 
+    var inupdate=(this.update_cnt>0);
+
     var op=this.Page;
     this.Page=p;
+    if(inupdate) this._page_changed=true;
 
     var pg=this.Pages[op];
-    if((typeof pg!=='undefined')&&(pg.ControlsPanel))
+    if((!inupdate)&&(typeof pg!=='undefined')&&(pg.ControlsPanel))
       pg.ControlsPanel.SetVisible(false);
 
     if(this.PagesVisible)
     {
-      if((this.row1pages[p])&&(this.update_cnt>0))
+      if((this.row1pages[p])&&(!inupdate))
       {
         this.ChangePageState(p,1);
         this.ChangePageState(op,0);
@@ -5007,7 +5010,7 @@ function ngpg_SetPage(p)
     }
 
     pg=this.Pages[p];
-    if((typeof pg!=='undefined')&&(pg.ControlsPanel))
+    if((!inupdate)&&(typeof pg!=='undefined')&&(pg.ControlsPanel))
       pg.ControlsPanel.SetVisible(true);
 
     if(this.OnPageChanged) this.OnPageChanged(this,op);
@@ -5228,6 +5231,16 @@ function ngpg_EndUpdate()
       this.DoPagesChanged();
     }
     if(this.need_update) this.Update();
+    if(this._page_changed) {
+      this._page_changed = false;
+      var pg;
+      for(var i=0;i<this.Pages.length;i++)
+      {
+        pg=this.Pages[i];
+        if((typeof pg!=='undefined')&&(pg.ControlsPanel))
+          pg.ControlsPanel.SetVisible(i==this.Page);
+      }
+    }
   }
 }
 
@@ -5603,6 +5616,8 @@ function ngpg_DoCreate(d, ref, elm, parent)
       ngCloneRefs(ref,lref);
     }
   }
+  if(!this.Pages.length) this.Page=-1;
+
   var nd=document.createElement('div');
   nd.id=this.ID+'_F';
   nd.style.position="absolute";
