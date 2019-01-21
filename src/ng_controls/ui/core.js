@@ -5051,7 +5051,7 @@ function ngpg_SetPageEnabled(p, s) {
 
 function ngpg_AddPages(pages, ref)
 {
-  if(!pages) return;
+  if((!pages)||(typeof pages!=='object')) return;
   var refarray=ng_IsArrayVar(ref);
   var ret=[];
   this.BeginUpdate();
@@ -5072,7 +5072,6 @@ function ngpg_SetPages(pages, ref)
   try {
     this.ClearPages();
     ret=this.AddPages(pages, ref);
-    if(this.Pages.length>0) this.SetPage(0);
   } finally {
     this.EndUpdate();
   }
@@ -5109,6 +5108,8 @@ function ngpg_InsertPage(idx, p, ref) {
   delete p.Controls;
   ng_MergeDef(pg,p);
   p.Controls=cntrls;
+
+  var wasempty=(!this.Pages.length);
 
   this.Pages.splice(idx,0,pg);
 
@@ -5147,7 +5148,8 @@ function ngpg_InsertPage(idx, p, ref) {
 
   this.DoPagesChanged();
 
-  if(idx<=this.Page) this.SetPage(this.Page+1);
+  if((wasempty)&&(this.Pages.length>0)) this.SetPage(0);
+  else if(idx<=this.Page) this.SetPage(this.Page+1);
 
   this.Update();
   return ref;
