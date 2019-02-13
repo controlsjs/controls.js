@@ -3285,6 +3285,15 @@ function nge_DoCreate(d, ref, elm, parent)
       this.SetDropDownControl(lref.Control);
     }
   }
+  if(ng_IsArrayVar(this.Buttons)) {
+    var b;
+    for(var i=0;i<this.Buttons.length;i++) {
+      b=this.Buttons[i];
+      if(!b) continue;
+      b.Owner=this;
+      if(b.ID=='') b.Attach(this.ID+'_B'+(this.button_id++));
+    }
+  }
   if(typeof d.Buttons === 'object')
   {
     var ldefs=new Object;
