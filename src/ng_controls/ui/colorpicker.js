@@ -4122,6 +4122,9 @@ function ngcopdd_OnKeyPress(event)
   if(event.keyCode === 13){
     return ngcopdd_ValidateHex(this);
   }
+  else{
+    this.SetInvalid(false);
+  }
   return true;
 }
 
