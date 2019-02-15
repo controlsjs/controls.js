@@ -4305,20 +4305,29 @@ function ngcopdd_ValidateHex(edit)
 {
   var text = edit.GetText();
 
-  var firstL = text.substring(0,1);
-  if(firstL !== '#'){ text = '#'+text; }
+  if(text === ''){
+    var color = {R:0,G:0,B:0,H:0,S:0,V:0,HEX:'#000000'};
+    if(edit.AllowAlpha){
+      color.A = 0;
+      color.HEXA = '#00000000';
+    }
+    ngcopdd_ChangeColor(edit,color);
+    edit.SetInvalid(false);
+    return;
+  }
+
+  var firstChar = text.substring(0,1);
+  if(firstChar !== '#'){ text = '#'+text; }
 
   if(
     (edit.AllowAlpha && (text.length === 9))
     || (!edit.AllowAlpha && (text.length === 7))
   ){
-
     var rgb = (edit.AllowAlpha)
       ? ColorsConverter.HexToRGBA(text)
       : ColorsConverter.HexToRGB(text);
 
     if(rgb){
-
       if(typeof rgb.A === 'undefined'){rgb.A = 1;}
 
       var color = ngcop_RecalculateHSV(rgb);
