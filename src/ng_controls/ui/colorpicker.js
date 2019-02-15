@@ -3162,7 +3162,7 @@ function ngcop_HexToColor(hexColor)
  */
 function ngcop_RemoveColorTransparency(color)
 {
-  if(typeof color !== 'object'){return null;}
+  if((typeof color !== 'object') || !color){return null;}
 
   color.A = 1;
   if(typeof color.HEX === 'string'){
@@ -3235,10 +3235,12 @@ function ngcop_CheckHSV(hue,saturation,value,alpha,defColor)
   var aType = typeof alpha;
   if((alpha !== null) && (aType !== 'undefined') && (aType !== 'number')){return defColor;}
 
-  if(hue === null){hue = defColor.H;}
-  if(saturation === null){saturation = defColor.S;}
-  if(value === null){value = defColor.V;}
-  if(alpha === null || (aType === 'undefined')){alpha = defColor.A;}
+  if(defColor){
+    if(hue === null){hue = defColor.H;}
+    if(saturation === null){saturation = defColor.S;}
+    if(value === null){value = defColor.V;}
+    if(alpha === null || (aType === 'undefined')){alpha = defColor.A;}
+  }
 
   return ngcop_HSVAToColor(hue,saturation,value,alpha);
 }
@@ -3262,10 +3264,12 @@ function ngcop_CheckRGB(red,green,blue,alpha,defColor)
   var aType = typeof alpha;
   if((alpha !== null) && (aType !== 'undefined') && (aType !== 'number')){return defColor;}
 
-  if(red === null){red = defColor.R;}
-  if(green === null){green = defColor.G;}
-  if(blue === null){blue = defColor.B;}
-  if(alpha === null || (aType === 'undefined')){alpha = defColor.A;}
+  if(defColor){
+    if(red === null){red = defColor.R;}
+    if(green === null){green = defColor.G;}
+    if(blue === null){blue = defColor.B;}
+    if(alpha === null || (aType === 'undefined')){alpha = defColor.A;}
+  }
 
   return ngcop_RGBAToColor(red,green,blue,alpha);
 }
@@ -4051,9 +4055,9 @@ function ngColorPickerDropDown(def,ref,parent)
        */
       GetColor: ngcop_GetColor
     },
-  /**
-   *  Group: Events
-   */
+    /**
+     *  Group: Events
+     */
     Events: {
       OnBlur: ngcopdd_OnBlur,
       OnKeyPress: ngcopdd_OnKeyPress,
@@ -4096,7 +4100,7 @@ function ngColorPickerDropDown(def,ref,parent)
   );
   if(!c){return c;}
   c.DropDownButton.AddEvent('OnUpdated',ngcob_AddHTMLContent);
-  c.DropDownButton.AddEvent('GetColor',ngcopdd_GetColor);
+  c.DropDownButton.AddEvent('GetColor',ngcopdd_GetButtonColor);
   c.DropDownButton.AddEvent('ShowColor',ngcob_ShowButtonColor);
   c.DropDownButton.AddEvent('OnClick',ngcopdd_OnUserDrop);
   c.DropDownButton.AllowAlpha = (c.AllowAlpha === false) ? false : true;
@@ -4109,7 +4113,8 @@ function ngColorPickerDropDown(def,ref,parent)
  */
 function ngcopdd_OnBlur()
 {
-  return ngcopdd_ValidateHex(this);
+  ngcopdd_ValidateHex(this);
+  return true;
 }
 
 /**
@@ -4120,7 +4125,7 @@ function ngcopdd_OnBlur()
 function ngcopdd_OnKeyPress(event)
 {
   if(event.keyCode === 13){
-    return ngcopdd_ValidateHex(this);
+    ngcopdd_ValidateHex(this);
   }
   else{
     this.SetInvalid(false);
@@ -4129,9 +4134,9 @@ function ngcopdd_OnKeyPress(event)
 }
 
 /**
- * DROP DOWN PICKER DROP DOWN BUTTON COLOR
+ * GET COLOR PICKER DROP DOWN BUTTON COLOR
  */
-function ngcopdd_GetColor()
+function ngcopdd_GetButtonColor()
 {
   return this.Color;
 }
@@ -4145,11 +4150,8 @@ function ngcopdd_SubmitColor()
   var edit = picker.Owner;
   edit.HideDropDown();
 
-  ngcopdd_ChangeColor(
-    edit,
-    picker.GetColor()
-  );
-
+  ngcopdd_ChangeColor(edit,picker.GetColor());
+  edit.SetInvalid(false);
   return true;
 }
 
@@ -4189,11 +4191,9 @@ function ngcopdd_OnUserDrop()
  */
 function ngcopdd_SetDropDownColor(dropDown,color)
 {
-
   if(!dropDown.AllowAlpha){
     color = ngcop_RemoveColorTransparency(color);
   }
-
   return ngcop_SetColor(dropDown,color);
 }
 
@@ -4288,14 +4288,12 @@ function ngcopdd_ShowDropDownColor()
     this.GetColor()
   );
 
-  var text = (this.AllowAlpha) ? color.HEXA : color.HEX;
+  var text = '';
+  if(color){text = (this.AllowAlpha) ? color.HEXA : color.HEX;}
   this.SetText(text.toUpperCase());
 
   if(this.DropDownControl && this.DropDownControl.Visible){
-    ngcopch_SetPickerColor(
-      this.DropDownControl,
-      color
-    );
+    ngcopch_SetPickerColor(this.DropDownControl,color);
   }
 }
 
@@ -4334,13 +4332,11 @@ function ngcopdd_ValidateHex(edit)
       ){
         edit.SetInvalid(false);
         ngcopdd_ChangeColor(edit,color);
-        return true;
+        return;
       }
     }
   }
-
   edit.SetInvalid(true);
-  return true;
 }
 
 /**
