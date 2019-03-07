@@ -1311,46 +1311,52 @@ function ngControlCreated(obj)
 
 // --- ngCreateControls --------------------------------------------------------
 
+var ngOnUserControlsInitialized = ngOnUserControlsInitialized || null;
+
 if(typeof ngUserControls === 'undefined') ngUserControls = {};
 
 function ngInitUserControls()
 {
-  if(typeof ngUserControls === 'undefined') return;
-  var uc;
-  var oldcl=ngCurrentLib;
-  var olduc=ngCurrentUserControls;
-  var oldcg=ngCurrentControlsGroup;
-  for(var i in ngUserControls)
-  {
-    uc=ngUserControls[i];
-    if((typeof uc === 'undefined')||(uc.initialized)) continue;
-    try
+  var initializedusercontrols={};
+  if(typeof ngUserControls !== 'undefined') {
+    var uc;
+    var oldcl=ngCurrentLib;
+    var olduc=ngCurrentUserControls;
+    var oldcg=ngCurrentControlsGroup;
+    for(var i in ngUserControls)
     {
-      ngCurrentLib=ngVal(uc.Lib,'');
-      ngCurrentUserControls=i;
-      ngCurrentControlsGroup=ngVal(uc.ControlsGroup,ngCurrentLib);
-      if(typeof uc.OnInit === 'function') uc.OnInit();
-      if(typeof uc.ControlImages === 'string')
+      uc=ngUserControls[i];
+      if((typeof uc === 'undefined')||(uc.initialized)) continue;
+      try
       {
-        uc.ControlImages=ngInitUserControlImage(uc.ControlImages, uc.Lib);
-        ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
-      }
-      else if(ng_IsArrayVar(uc.ControlImages))
-      {
-        for(var j=0;j<uc.ControlImages.length;j++)
-          uc.ControlImages[j]=ngInitUserControlImage(uc.ControlImages[j], uc.Lib);
+        ngCurrentLib=ngVal(uc.Lib,'');
+        ngCurrentUserControls=i;
+        ngCurrentControlsGroup=ngVal(uc.ControlsGroup,ngCurrentLib);
+        if(typeof uc.OnInit === 'function') uc.OnInit();
+        if(typeof uc.ControlImages === 'string')
+        {
+          uc.ControlImages=ngInitUserControlImage(uc.ControlImages, uc.Lib);
+          ngUsrCtrlSetImages(uc.Images, uc.ControlImages);
+        }
+        else if(ng_IsArrayVar(uc.ControlImages))
+        {
+          for(var j=0;j<uc.ControlImages.length;j++)
+            uc.ControlImages[j]=ngInitUserControlImage(uc.ControlImages[j], uc.Lib);
 
-        ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
+          ngUsrCtrlSetImagesArray(uc.Images, uc.ControlImages);
+        }
+        uc.initialized=true;
+        initializedusercontrols[i]=uc;
       }
-      uc.initialized=true;
-    }
-    finally
-    {
-      ngCurrentLib=oldcl;
-      ngCurrentUserControls=olduc;
-      ngCurrentControlsGroup=oldcg;
+      finally
+      {
+        ngCurrentLib=oldcl;
+        ngCurrentUserControls=olduc;
+        ngCurrentControlsGroup=oldcg;
+      }
     }
   }
+  if(ngOnUserControlsInitialized) ngOnUserControlsInitialized(initializedusercontrols);
 }
 
 /**
