@@ -1039,7 +1039,7 @@ return {
         Properties: ng_diProperties({
           "L": null,
           "R": null,
-          "W": ng_diTypeVal('bounds', '100%'),
+          "W": ng_diTypeVal('bounds_string', '100%'),
           "CloseBtn": ng_diBoolean(false),
           "DlgCheckBox": ng_diObject({
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
@@ -1075,21 +1075,21 @@ return {
           "ModifyControls": {
             "Title": ng_diControl('weCaption', {
               "ColorScheme": ng_diString(deftheme() ? defscheme() : 'White'),
-              "L": ng_diTypeVal('bounds', '25%'),
+              "L": ng_diTypeVal('bounds_string', '25%'),
               "T": ng_diTypeVal('bounds', 27)
             }),
             "Message": ng_diControl('weText', {
-              "L": ng_diTypeVal('bounds', '25%'),
+              "L": ng_diTypeVal('bounds_string', '25%'),
               "T": ng_diTypeVal('bounds', 67)
             }),
             "Content": ng_diControl('ngPanel', {
-              "L": ng_diTypeVal('bounds', '25%'),
-              "R": ng_diTypeVal('bounds', '25%'),
+              "L": ng_diTypeVal('bounds_string', '25%'),
+              "R": ng_diTypeVal('bounds_string', '25%'),
               "H": ng_diTypeVal('bounds', 15)
             }),
             "Buttons": ng_diControl('ngToolBar', ng_diProperties({
-              "L": ng_diTypeVal('bounds', '25%'),
-              "R": ng_diTypeVal('bounds', '25%'),
+              "L": ng_diTypeVal('bounds_string', '25%'),
+              "R": ng_diTypeVal('bounds_string', '25%'),
               "H": ng_diTypeVal('bounds', 32),
               "Data": {
                 "HAlign": ng_diString('right'),
@@ -1402,7 +1402,7 @@ return {
                   'H': ng_diTypeVal('bounds',32),
                   'ModifyControls': {
                     'Env_H_SV': ng_diControl(undefined, ng_diProperties({
-                      'W': ng_diTypeVal('bounds','33%'),
+                      'W': ng_diTypeVal('bounds_string','33%'),
                       'ModifyControls': {
                         'H_SV': colorpicker_barButtonDef({
                           'R': ng_diTypeVal('bounds',1)
@@ -1410,8 +1410,8 @@ return {
                       }
                     })),
                     'Env_HSV': ng_diControl(undefined, ng_diProperties({
-                      'L': ng_diTypeVal('bounds','33%'),
-                      'R': ng_diTypeVal('bounds','33%'),
+                      'L': ng_diTypeVal('bounds_string','33%'),
+                      'R': ng_diTypeVal('bounds_string','33%'),
                       'ModifyControls': {
                         'HSV': colorpicker_barButtonDef({
                           'L': ng_diTypeVal('bounds',1),
@@ -1420,7 +1420,7 @@ return {
                       }
                     })),
                     'Env_RGB': ng_diControl(undefined, ng_diProperties({
-                      'W': ng_diTypeVal('bounds','33%'),
+                      'W': ng_diTypeVal('bounds_string','33%'),
                       'ModifyControls': {
                         'RGB': colorpicker_barButtonDef({
                           'L': ng_diTypeVal('bounds',1)
@@ -1570,7 +1570,7 @@ return {
                   }
                 })),
                 'PreviewIcon': ng_diControl('ngButton', ng_diProperties({
-                  'L': ng_diTypeVal('bounds','50%'),
+                  'L': ng_diTypeVal('bounds_string','50%'),
                   'T': ng_diTypeVal('bounds',32),
                   'style': {
                     'marginLeft': ng_diTypeVal('css_dim_px', '-16px', { Level: 'advanced' })

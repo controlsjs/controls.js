@@ -1091,20 +1091,20 @@ var WinXP_DesignInfo = {
                   'H': ng_diTypeVal('bounds',23),
                   'ModifyControls': {
                     'Env_H_SV': ng_diControl(undefined, ng_diProperties({
-                      'W': ng_diTypeVal('bounds','33%'),
+                      'W': ng_diTypeVal('bounds_string','33%'),
                       'ModifyControls': {
                         'H_SV': colorpicker_barButtonDef()
                       }
                     })),
                     'Env_HSV': ng_diControl(undefined, ng_diProperties({
-                      'L': ng_diTypeVal('bounds','33%'),
-                      'R': ng_diTypeVal('bounds','33%'),
+                      'L': ng_diTypeVal('bounds_string','33%'),
+                      'R': ng_diTypeVal('bounds_string','33%'),
                       'ModifyControls': {
                         'HSV': colorpicker_barButtonDef()
                       }
                     })),
                     'Env_RGB': ng_diControl(undefined, ng_diProperties({
-                      'W': ng_diTypeVal('bounds','33%'),
+                      'W': ng_diTypeVal('bounds_string','33%'),
                       'ModifyControls': {
                         'RGB': colorpicker_barButtonDef()
                       }
@@ -1209,7 +1209,7 @@ var WinXP_DesignInfo = {
                 })),
                 'HexLabel': ng_diControl('stdLabel', ng_diProperties({
                   'R': ng_diTypeVal('bounds',5),
-                  'L': ng_diTypeVal('bounds','50%'),
+                  'L': ng_diTypeVal('bounds_string','50%'),
                   'T': ng_diTypeVal('bounds',2),
                   'Data': {
                     'TextAlign': ng_diString('right')
@@ -1217,7 +1217,7 @@ var WinXP_DesignInfo = {
                 })),
                 'AHexLabel': ng_diControl('stdLabel', ng_diProperties({
                   'L': ng_diTypeVal('bounds',5),
-                  'R': ng_diTypeVal('bounds','50%'),
+                  'R': ng_diTypeVal('bounds_string','50%'),
                   'T': ng_diTypeVal('bounds',2),
                   'Data': {
                     'TextAlign': ng_diString('left')
@@ -1255,7 +1255,7 @@ var WinXP_DesignInfo = {
                   }
                 })),
                 'PreviewIcon': ng_diControl('ngButton', ng_diProperties({
-                  'L': ng_diTypeVal('bounds','50%'),
+                  'L': ng_diTypeVal('bounds_string','50%'),
                   'T': ng_diTypeVal('bounds',18),
                   'style': {
                     'marginLeft': ng_diTypeVal('css_dim_px', '-5px', { Level: 'advanced' })
@@ -1322,12 +1322,12 @@ var WinXP_DesignInfo = {
                   'Submit': ng_diControl('stdButton', {
                     'L': ng_diTypeVal('bounds',5),
                     'T': ng_diTypeVal('bounds',5),
-                    'W': ng_diTypeVal('bounds','50%')
+                    'W': ng_diTypeVal('bounds_string','50%')
                   }),
                   'Cancel': ng_diControl('stdButton', {
                     'R': ng_diTypeVal('bounds',-5),
                     'T': ng_diTypeVal('bounds',5),
-                    'W': ng_diTypeVal('bounds','50%')
+                    'W': ng_diTypeVal('bounds_string','50%')
                   })
                 }
               }))
@@ -1357,12 +1357,12 @@ var WinXP_DesignInfo = {
                     'Submit': ng_diControl('stdButton', {
                       'L': ng_diTypeVal('bounds',5),
                       'T': ng_diTypeVal('bounds',5),
-                      'W': ng_diTypeVal('bounds','50%')
+                      'W': ng_diTypeVal('bounds_string','50%')
                     }),
                     'Cancel': ng_diControl('stdButton', {
                       'R': ng_diTypeVal('bounds',-5),
                       'T': ng_diTypeVal('bounds',5),
-                      'W': ng_diTypeVal('bounds','50%')
+                      'W': ng_diTypeVal('bounds_string','50%')
                     })
                   }
                 }))
