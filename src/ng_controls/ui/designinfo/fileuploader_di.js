@@ -83,7 +83,7 @@ var FileUploaderControl_DesignInfo = {
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),
             "DragAndDropInfo": ng_diControl('ngText', ng_diProperties({
-              "T": ng_diTypeVal('bounds', '50%'),
+              "T": ng_diTypeVal('bounds_string', '50%'),
               "Data": {
                 "TextAlign": ng_diString('center')
               }

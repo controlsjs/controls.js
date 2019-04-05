@@ -559,9 +559,11 @@ ngUserControls['ngColorControls_designinfo'] = {
                       'Data': { 'ChildHandling': ng_diIntegerIdentifiers('ngChildEnabledParentAware') },
                       'ModifyControls': {
                         'H_SV': ng_diControl('ngRadioButton', ng_diProperties({
-                          'Mode': ng_diString('h_sv'),
-                          'ngTextD': ng_diString('colorpicker_H-SV'),
-                          'Checked': ng_diInteger(1)
+                          'Data': {
+                            'Mode': ng_diString('h_sv', { Level: 'advanced' }),
+                            'ngTextD': ng_diString('colorpicker_H-SV'),
+                            'Checked': ng_diInteger(1)
+                          }
                         }), { Level: 'basic' }, { InheritedFrom: 'ngRadioButton' })
                       }
                     }), { Level: 'basic' }, { InheritedFrom: 'ngPanel' }),

@@ -896,7 +896,7 @@ function ng_diProperties(props,data) {
             }
           })
         }, { Level: 'basic', Order: 0.4 }, { DestroyIfEmpty: true }),
-        "Controls": ng_diControls(undefined, { Level: 'optional', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls' }, {
+        "Controls": ng_diControls(undefined, { Level: 'optional', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls' }, {
           ChildDesignInfo: {
             PropertyGroup: 'Controls',
             Level: 'basic'

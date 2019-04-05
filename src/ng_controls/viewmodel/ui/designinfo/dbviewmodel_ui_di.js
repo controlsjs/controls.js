@@ -117,7 +117,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
           "ModifyControls": {
             "New": ng_diControl('ngButton', ng_diProperties({
               "DataBind": {
-                "Command": ng_diTypeVal('databind_string',"new", { Level: 'basic '}),
+                "Command": ng_diTypeVal('databind_string',"new", { Level: 'basic'}),
                 "Enabled": ng_diTypeVal('databind_expression',"_RecordState() != recStateNewRecord", { Level: 'basic' })
               },
               "Data": {
@@ -127,7 +127,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             "Delete": ng_diControl('ngButton', ng_diProperties({
               "DataBind": {
-                "Command": ng_diTypeVal('databind_string',"delete", { Level: 'basic '}),
+                "Command": ng_diTypeVal('databind_string',"delete", { Level: 'basic'}),
                 "Enabled": ng_diTypeVal('databind_expression',"_RecordState() == recStateLoaded", { Level: 'basic' })
               },
               "Data": {
@@ -137,7 +137,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             "Insert": ng_diControl('ngButton', ng_diProperties({
               "DataBind": {
-                "Command": ng_diTypeVal('databind_string',"insert", { Level: 'basic '}),
+                "Command": ng_diTypeVal('databind_string',"insert", { Level: 'basic'}),
                 "Visible": ng_diTypeVal('databind_expression',"_RecordState() == recStateNewRecord", { Level: 'basic' })
               },
               "Data": {
@@ -147,7 +147,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             "Update": ng_diControl('ngButton', ng_diProperties({
               "DataBind": {
-                "Command": ng_diTypeVal('databind_string',"update", { Level: 'basic '}),
+                "Command": ng_diTypeVal('databind_string',"update", { Level: 'basic'}),
                 "Visible": ng_diTypeVal('databind_expression',"_RecordState() != recStateNewRecord", { Level: 'basic' })
               },
               "Data": {
@@ -157,7 +157,7 @@ ngUserControls['dbviewmodel_ui_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             "Cancel": ng_diControl('ngButton', ng_diProperties({
               "DataBind": {
-                "Command": ng_diTypeVal('databind_string',"cancel", { Level: 'basic '}),
+                "Command": ng_diTypeVal('databind_string',"cancel", { Level: 'basic'}),
                 "Enabled": ng_diTypeVal('databind_expression',"_RecordChanged() || _RecordState() == recStateNewRecord", { Level: 'basic' })
               },
               "Data": {
