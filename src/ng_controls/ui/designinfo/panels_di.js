@@ -71,22 +71,44 @@ ngUserControls['panels_designinfo'] = {
         },
         Properties: ng_diProperties({
           "ParentReferences": { Level: 'advanced' },
-          "Controls1": ng_diControls(undefined, { Level: 'basic', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls' }, {
+          "Controls1": ng_diControls(undefined, { Level: 'basic', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls1'  }, {
             ChildDesignInfo: {
-              PropertyGroup: 'Controls'
+              PropertyGroup: 'Controls',
+              Level: 'basic'
             }
           }),
-          "Controls2": ng_diControls(undefined, { Level: 'basic', Order: 0.66, ContainerProperty: true, PropertyGroup: 'Controls' }, {
+          "Controls2": ng_diControls(undefined, { Level: 'basic', Order: 0.66, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls2'  }, {
             ChildDesignInfo: {
-              PropertyGroup: 'Controls'
+              PropertyGroup: 'Controls',
+              Level: 'basic'
             }
           }),
           "ControlsPanel1": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
           "ControlsPanel2": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
+          "ModifyControls1": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
+            DestroyIfEmpty: true,
+            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+              "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 })
+            }),
+            {
+              PropertyGroup: 'Controls',
+              Level: 'basic'
+            })
+          }),
+          "ModifyControls2": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
+            DestroyIfEmpty: true,
+            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+              "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 })
+            }),
+            {
+              PropertyGroup: 'Controls',
+              Level: 'basic'
+            })
+          }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "PanelAlign": ng_diStringValues('left', ['left','right','top','bottom'], { Level: 'basic' }),
-            "ResizeMode": ng_diTypeVal('bitmask', ngspResizeNone, { Level: 'basic' }, {
+            "ResizeMode": ng_diTypeVal('bitmask', ngspResizeSize, { Level: 'basic' }, {
               EditorOptions: {
                 BitMaskIdentifiers: [
                   {Value: ngspResizeNone,        ID: 'ngspResizeNone'},
