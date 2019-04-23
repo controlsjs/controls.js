@@ -583,8 +583,11 @@ function ng_diControls(references, pdata, tdata) {
  */
 function ng_diControl(ctrltype, properties, pdata, tdata, basetype) {
   var di=((tdata)&&(typeof tdata==='object')) ? tdata : {};
-  if(ctrltype) di.Type=ctrltype;
   if(properties) di.ObjectProperties=properties;
+  if(ctrltype) {
+    if(!di.ObjectProperties) di.ObjectProperties = {};
+    ng_MergeVar(di.ObjectProperties, { Type: ng_diString(ctrltype) });
+  }
   return ng_diType(ngVal(basetype,'control'),pdata,di);
 }
 
