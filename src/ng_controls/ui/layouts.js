@@ -353,7 +353,7 @@ ngUserControls['layouts'] = {
         else s=0;
       }
 
-      if(typeof s==='undefined') s=ngVal(vert ? this.Bounds.H : this.Bounds.W, 0);
+      if(typeof s==='undefined') s=(vert ? this.Bounds.H : this.Bounds.W);
 
       if(typeof s!=='undefined') ngvhlay_setSize(vert, this, s);
 
