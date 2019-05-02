@@ -148,7 +148,7 @@ ngUserControls['layouts'] = {
       var ctrl=c;
       var bound=ngvhlay_getBound(p);
       var vert=((bound==='T')||(bound==='B'));
-      var t=c.Bounds[bound];
+      var t=ngVal(c.Bounds[bound],0);
       var padname=vert ? 'VPadding' : 'HPadding';
       var padding=0,ppadding=ngVal(p[padname],0);
       padname='Layout'+padname;
@@ -211,7 +211,7 @@ ngUserControls['layouts'] = {
             if(!prev) t=0;
             else {
               var po=prev.Elm();
-              t=po ? prev.Bounds[bound]+(vert ? ng_OuterHeight(po)+ngVal(prev.LayoutVPadding,ngVal(p.VPadding,0)) : ng_OuterWidth(po)+ngVal(prev.LayoutHPadding,ngVal(p.HPadding,0)) ) : 0;
+              t=po ? ngVal(prev.Bounds[bound],0)+(vert ? ng_OuterHeight(po)+ngVal(prev.LayoutVPadding,ngVal(p.VPadding,0)) : ng_OuterWidth(po)+ngVal(prev.LayoutHPadding,ngVal(p.HPadding,0)) ) : 0;
             }
           }
           var b={};
@@ -336,7 +336,7 @@ ngUserControls['layouts'] = {
       var prev = ngvhlay_findPrev(cc, reverse ? 0 : cc.length-1, reverse);
       if(!prev) return 0;
       var po=prev.Elm();
-      return po ? prev.Bounds[bound]+(vert ? ng_OuterHeight(po) : ng_OuterWidth(po)) : 0;
+      return po ? ngVal(prev.Bounds[bound],0)+(vert ? ng_OuterHeight(po) : ng_OuterWidth(po)) : 0;
     }
 
     function ngvhlay_Updated()
@@ -353,7 +353,7 @@ ngUserControls['layouts'] = {
         else s=0;
       }
 
-      if(typeof s==='undefined') s=(vert ? this.Bounds.H : this.Bounds.W);
+      if(typeof s==='undefined') s=ngVal(vert ? this.Bounds.H : this.Bounds.W, 0);
 
       if(typeof s!=='undefined') ngvhlay_setSize(vert, this, s);
 
@@ -495,7 +495,8 @@ ngUserControls['layouts'] = {
       var CW={},CH={};
 
       this.getBound = function(v,bound) {
-        if((typeof v==='number')||(typeof v!=='string')) return v;
+        if(typeof v==='number') return isNaN(v) ? 0 : v;
+        if(typeof v!=='string') return v;
         var i,c,sb=v;
         for(i=sb.length-1;i>=0;i--) {
           c=sb.charAt(i);
