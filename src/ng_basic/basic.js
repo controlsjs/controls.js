@@ -283,6 +283,7 @@ var ngDEBUGERROR;
   if((ngDEBUG)&&(typeof console!=='undefined')) {
     var c=console;
     function bind(f, thisArg) {
+      if(!f) return f;
       if ((typeof f.bind === 'undefined') || (typeof f.bind === 'unknown')) { // IE < 10
         if(typeof Function.prototype.bind === 'function') 
           return Function.prototype.bind.call(f, thisArg);
