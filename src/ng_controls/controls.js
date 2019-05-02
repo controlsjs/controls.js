@@ -5493,12 +5493,12 @@ function ng_SetBounds(o,props)
   var width=props.W;
   var height=props.H;
 
-  if(typeof left === 'number')   left+='px';
-  if(typeof right === 'number')  right+='px';
-  if(typeof top === 'number')    top+='px';
-  if(typeof bottom === 'number') bottom+='px';
-  if(typeof width === 'number')  width =(width <=0 ? '0px' : width+'px');
-  if(typeof height === 'number') height=(height<=0 ? '0px' : height+'px');
+  if(typeof left === 'number')   { if(isNaN(left))   left=0;   left+='px'; }
+  if(typeof right === 'number')  { if(isNaN(right))  right=0;  right+='px'; }
+  if(typeof top === 'number')    { if(isNaN(top))    top=0;    top+='px'; }
+  if(typeof bottom === 'number') { if(isNaN(bottom)) bottom=0; bottom+='px'; }
+  if(typeof width === 'number')  { if(isNaN(width))  width=0;  width =(width <=0 ? '0px' : width+'px'); }
+  if(typeof height === 'number') { if(isNaN(height)) height=0; height=(height<=0 ? '0px' : height+'px'); }
 
   if(typeof top !== 'undefined') o.style.top=top;
   else o.style.top='';
