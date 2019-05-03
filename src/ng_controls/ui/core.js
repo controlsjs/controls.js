@@ -2347,7 +2347,7 @@ function nge_KeyUpHint(edit,elm,clsid)
 {
   if(edit.HintVisible)
   {
-    var hint=edit.GetHint();
+    var hint=''+edit.GetHint();
     if(hint!='') {
       var val=elm.value;
       var s=0,ev,eh;
