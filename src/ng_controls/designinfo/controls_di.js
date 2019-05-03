@@ -23,6 +23,7 @@
     IsBasic: false,
     IsViewModel: false,
     NonVisual: false,
+    GridSize: 20,
     Image: {...},
 
     NewControl: {
