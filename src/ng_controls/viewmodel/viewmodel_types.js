@@ -846,12 +846,12 @@ function ngFieldDef_Area(id, attrs, fieldtype)
 
 function ngfd_SIUnitsFormatString(v) {
   var units=ng_toString(this.Attrs['SIUnits']);
-  return ng_formatSIUnits(v, units, null, this.Attrs['SIAllowedPref'], ngVal(this.Precision,2));
+  return ng_Format3Num(ng_formatSIUnits(v, units, null, this.Attrs['SIAllowedPref'], ngVal(this.Precision,2)));
 }
 
-function ngfd_SIUnitsParseString(v) {           
+function ngfd_SIUnitsParseString(v) {
   var units=ng_toString(this.Attrs['SIUnits']);
-  return ng_parseSIUnits(v, units, null, this.Attrs['SIAllowedPref']);
+  return ng_parseSIUnits(ng_Unformat3Num(v), units, null, this.Attrs['SIAllowedPref']);
 }
 
 /*  Class: ngFieldDef_SIUnits
