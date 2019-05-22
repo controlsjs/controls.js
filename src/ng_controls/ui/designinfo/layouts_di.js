@@ -136,7 +136,6 @@ ngUserControls['layouts_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              // TODO: Solve how to disable positioning and use default values
               "L": { Value: 0 },
               "T": { Value: 0 },
               "R": { Value: 0 },
@@ -188,7 +187,6 @@ ngUserControls['layouts_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              // TODO: Solve how to disable positioning and use default values
               "L": { Value: 0 },
               "T": { Value: 0 },
               "R": { Value: 0 },
@@ -230,7 +228,6 @@ ngUserControls['layouts_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              // TODO: Solve how to disable positioning and use default values
               "L": { Value: 0 },
               "T": { Value: 0 },
               "R": { Value: 0 },
@@ -272,7 +269,6 @@ ngUserControls['layouts_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              // TODO: Solve how to disable positioning and use default values
               "L": { Value: 0 },
               "T": { Value: 0 },
               "R": { Value: 0 },
@@ -311,7 +307,6 @@ ngUserControls['layouts_designinfo'] = {
         NewControl: {
           Default: {
             Properties: {
-              // TODO: Solve how to disable positioning and use default values
               "L": { Value: 0 },
               "T": { Value: 0 },
               "R": { Value: 0 },
