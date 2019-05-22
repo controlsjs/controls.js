@@ -381,6 +381,10 @@ return {
                 }
                 return getpropertytext(p);
               }
+              var pprops = FormEditor.GetSelectedControlsProperty(pname);
+              for(var i=0;i<pprops.length;i++) {
+                if (pprops[i] && pprops[i].PropertyType!=='ngListItem') return dispname;
+              }
               var txt='';
               var txtprops = FormEditor.GetSelectedControlsProperty(pname+'.Text');
               var idprops = FormEditor.GetSelectedControlsProperty(pname+'.ID');
