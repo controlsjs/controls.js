@@ -816,7 +816,7 @@ var WinXP_DesignInfo = {
         Properties: ng_diProperties({
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
           "DialogType": ng_diString('stdMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK|mbCancel),
           "DlgHint": ng_diString('', { Level: 'basic' }),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
@@ -889,7 +889,7 @@ var WinXP_DesignInfo = {
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
           "DlgItems": ng_diMixed(['ngListItems','ngListStringItems'], { Level: 'basic', Collapsed: false }),
           "DialogType": ng_diString('stdMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK|mbCancel),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
               "Data": {
@@ -916,7 +916,7 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('dlgProgressBox',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbNone }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbNone),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
               "Data": {
@@ -939,7 +939,7 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('dlgWaitBox',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbNone }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbNone),
           "ModifyControls": {
             "Message": ng_diControl(undefined, {
               "L": ng_diTypeVal('bounds', 40)
