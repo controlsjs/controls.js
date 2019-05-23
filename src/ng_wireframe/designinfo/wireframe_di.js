@@ -226,7 +226,7 @@ var WireframeControls_DesignInfo = {
           "Data": {
             "RightImg": ng_diNull()
           },
-          "DropDown": ng_diControl('wfrListBox', ng_diProperties({ // TODO: Check why ctrl type is ngList?
+          "DropDown": ng_diControl('wfrListBox', ng_diProperties({
             "Data": {
               "Frame": ng_diType('img_frame', {}, {
                 ObjectProperties: {
@@ -989,7 +989,7 @@ var WireframeControls_DesignInfo = {
         Properties: ng_diProperties({
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
           "DialogType": ng_diString('wfrMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK|mbCancel),
           "DlgHint": ng_diString('', { Level: 'basic' }),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
@@ -1076,7 +1076,7 @@ var WireframeControls_DesignInfo = {
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
           "DlgItems": ng_diMixed(['ngListItems','ngListStringItems'], { Level: 'basic', Collapsed: false }),
           "DialogType": ng_diString('wfrMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK|mbCancel),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
               "Data": {
@@ -1104,7 +1104,7 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrDlgProgressBox',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbNone }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbNone),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
               "Data": {
@@ -1128,7 +1128,7 @@ var WireframeControls_DesignInfo = {
     ngRegisterControlDesignInfo('wfrDlgWaitBox',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbNone }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbNone),
           "ModifyControls": {
             "Message": ng_diControl(undefined, {
               "L": ng_diTypeVal('bounds', 45)
