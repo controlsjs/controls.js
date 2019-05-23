@@ -172,13 +172,40 @@ ngUserControls['dialogs_designinfo'] = {
               "T": ng_diTypeVal('bounds', 20),
               "H": ng_diTypeVal('bounds', 90),
               "Data": {
-                "Items": ng_diTypeVal('ngListItems',[ // TODO: How to define default value?
-                  { id: 'SystemInfo',   Collapsed: true },
-                  { id: 'Components',   Collapsed: true },
-                  { id: 'Libraries',    Visible: false },
-                  { id: 'Trademarks',   Visible: false },
-                  { id: 'ReleaseNotes', Visible: false }]
-                )
+                "Items": ng_diType('ngListItems', { Collapsed: false, Level: 'basic' }, {
+                  ObjectProperties: {
+                    0: ng_diType('ngListItem',{ Level: 'basic' }, {
+                      ObjectProperties: {
+                        "id": ng_diString('SystemInfo',{ Level: 'basic' }),
+                        "Collapsed": ng_diTypeVal('boolean', true)
+                      }
+                    }),
+                    1: ng_diType('ngListItem',{ Level: 'basic' }, {
+                      ObjectProperties: {
+                        "id": ng_diString('Components',{ Level: 'basic' }),
+                        "Collapsed": ng_diTypeVal('boolean', true)
+                      }
+                    }),
+                    2: ng_diType('ngListItem',{ Level: 'basic' }, {
+                      ObjectProperties: {
+                        "id": ng_diString('Libraries',{ Level: 'basic' }),
+                        "Visible": ng_diTypeVal('boolean', false)
+                      }
+                    }),
+                    3: ng_diType('ngListItem',{ Level: 'basic' }, {
+                      ObjectProperties: {
+                        "id": ng_diString('Trademarks',{ Level: 'basic' }),
+                        "Visible": ng_diTypeVal('boolean', false)
+                      }
+                    }),
+                    4: ng_diType('ngListItem',{ Level: 'basic' }, {
+                      ObjectProperties: {
+                        "id": ng_diString('ReleaseNotes',{ Level: 'basic' }),
+                        "Visible": ng_diTypeVal('boolean', false)
+                      }
+                    })
+                  }
+                })
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngList' }),
             "Buttons": ng_diControl(undefined, ng_diProperties({

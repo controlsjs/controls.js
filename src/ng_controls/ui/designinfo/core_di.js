@@ -365,7 +365,13 @@ return {
           "H": { Exclude: ['CH'] },
           "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'], Level: 'advanced' }),
           "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
+          "ControlsPanel": ng_diControl('ngPanel', ng_diProperties({
+              "L": ng_diTypeVal('bounds', 0),
+              "T": ng_diTypeVal('bounds', 0),
+              "R": ng_diTypeVal('bounds', 0),
+              "B": ng_diTypeVal('bounds', 0),
+              "ScrollBars": ng_diIntegerIdentifiers('ssAuto')
+            }), { Level: 'advanced', IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "ngText":  { Level: 'advanced' },
@@ -569,7 +575,7 @@ return {
         ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
-        TargetContainer: function(control, target_control, control_elm, target_elm)
+        TargetContainer: function(control, target_control, get_control_elm, get_target_elm)
         {
           if (!control) return 'Pages.0.Controls';
           return 'Pages.' + ngVal(control.Page, 0) + '.Controls';

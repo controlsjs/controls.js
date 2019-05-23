@@ -133,7 +133,7 @@
     OnActionsMenuCreating: function(ActionsMenu) {
     },
 
-    TargetContainer: function(control, target_control, control_elm, target_elm) {
+    TargetContainer: function(control, target_control, get_control_elm, get_target_elm) {
       return null;
     }
 

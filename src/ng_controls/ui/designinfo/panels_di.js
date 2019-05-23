@@ -50,7 +50,7 @@ ngUserControls['panels_designinfo'] = {
       return {
         ControlCategory: 'Container',
         IsContainer: true,
-        TargetContainer: function(control, target_control, control_elm, target_elm)
+        TargetContainer: function(control, target_control, get_control_elm, get_target_elm)
         {
           var id = ngVal(target_control.ID, '');
           var part = id.substring(id.lastIndexOf('_') + 1);
