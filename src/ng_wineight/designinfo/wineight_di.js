@@ -1114,7 +1114,7 @@ return {
       var di=weMessageDlgDI(d,c,ref);
       ng_MergeVar(di, {
         Properties: {
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK }) // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK)
         }
       })
       di.ControlCategory=false;
@@ -1126,7 +1126,7 @@ return {
         Properties: ng_diProperties({
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
           "DialogType": ng_diString('weMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK|mbCancel),
           "DlgHint": ng_diString('', { Level: 'basic' }),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
@@ -1200,7 +1200,7 @@ return {
           "DlgAllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
           "DlgItems": ng_diMixed(['ngListItems','ngListStringItems'], { Level: 'basic', Collapsed: false }),
           "DialogType": ng_diString('weMessageDlg'),
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbOK|mbCancel }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbOK|mbCancel),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
               "Data": {
@@ -1227,7 +1227,7 @@ return {
     ngRegisterControlDesignInfo('weDlgProgressBox',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbNone }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbNone),
           "ModifyControls": {
             "Message": ng_diControl(undefined, ng_diProperties({
               "Data": {
@@ -1250,7 +1250,7 @@ return {
     ngRegisterControlDesignInfo('weDlgWaitBox',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
-          "DlgButtons": ng_diTypeVal('bitmask', { value: mbNone }), // TODO: Check default value
+          "DlgButtons": ng_diTypeVal('bitmask', mbNone),
           "ModifyControls": {
             "Title": undefined,
             "Message": ng_diControl(undefined, {
