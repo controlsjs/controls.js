@@ -1660,7 +1660,7 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdDBToolBar',function(d,c,ref) {
       return {
         ControlCategory: 'Container',
-        //IsContainer: true, // TODO: Check why ModifyControls not work with this
+        IsContainer: true,
         NewControl: {
           Default: {
             Properties: {
