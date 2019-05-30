@@ -168,8 +168,8 @@ function ngLoadApplication(elm, callback, files)
   function exec_script(code)
   {
     if(ishtmlcode.test(code)) return false;
-    if(code.indexOf('/*@BEGIN_SR*/')>=0) {
-      if(code.lastIndexOf('/*@END_SR*/')<0) return false;
+    if(code.indexOf('/*_SR_BEGIN*/')>=0) {
+      if(code.lastIndexOf('/*_SR_END*/')<0) return false;
     }
 
     if(winstoreapp) {
