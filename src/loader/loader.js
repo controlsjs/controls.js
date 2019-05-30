@@ -163,8 +163,15 @@ function ngLoadApplication(elm, callback, files)
     return (cordova && winphone && ((url.indexOf('//')<0) || (url.indexOf('file://')>=0)) ? url_stripparams(url) : url);
   }
 
+  var ishtmlcode=/^\s*\</i;
+
   function exec_script(code)
   {
+    if(ishtmlcode.test(code)) return false;
+    if(code.indexOf('/*@BEGIN_SR*/')>=0) {
+      if(code.lastIndexOf('/*@END_SR*/')<0) return false;
+    }
+
     if(winstoreapp) {
       MSApp.execUnsafeLocalFunction(function () {
         window["eval"].call(window, code);
@@ -174,11 +181,13 @@ function ngLoadApplication(elm, callback, files)
       if(window.execScript) window.execScript(code);
       else window["eval"].call(window, code);
     }
+    return true;
   }
 
   function exec_css(code)
   {
     var o = document.createElement('style');
+    if(!o) return false;
     o.setAttribute('type', 'text/css');
     if(o.styleSheet) /* IE */ {
         o.styleSheet.cssText = code;
@@ -188,6 +197,7 @@ function ngLoadApplication(elm, callback, files)
       o.appendChild(document.createTextNode(code));
     }
     head.appendChild(o);
+    return true;
   }
 
   window.ngInitializeAppUnits = function() {
@@ -374,7 +384,7 @@ function ngLoadApplication(elm, callback, files)
 
         if(async){
           if((typeof code!=='undefined')&&(code!=='')) {
-            exec(code);
+            if(!exec(code)) fileerror(isasync);
           }
           if(typeof loadcallback === 'function') loadcallback(data.Type,url,data);
           apppartloaded(data.Type,url,data);
@@ -402,7 +412,9 @@ function ngLoadApplication(elm, callback, files)
           }
           code=li.code;
           if(typeof code==='undefined') break;
-          if(code!=='') exec(code);
+          if(code!=='') {
+            if(!exec(code)) fileerror(li.Async);
+          }
           queue.splice(0,1);
           if(typeof li.LoadCallback === 'function') li.LoadCallback(li.Data.Type,li.URL,li.Data);
           apppartready(li.Data.Type,li.URL,li.Data);
