@@ -3473,8 +3473,6 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
       reqinfo.ReqHeaders['Content-type'] = 'application/x-www-form-URLencoded';
     if(typeof reqinfo.ReqHeaders['Content-length'] === 'undefined')
       reqinfo.ReqHeaders['Content-length'] = reqinfo.PostParams.length;
-    if(typeof reqinfo.ReqHeaders['Connection'] === 'undefined')
-      reqinfo.ReqHeaders['Connection'] = 'close';
   }
   
   if((this.OnHTTPRequest)&&(!ngVal(this.OnHTTPRequest(this,reqinfo),false))) return false;
@@ -3647,7 +3645,19 @@ function ngrpc_sendRequest(url, nocache)
         switch(type)
         {
           case rpcHttpRequestGET:
-          case rpcHttpRequestPOST:    
+          case rpcHttpRequestPOST:
+            var ishtml=/^\s*\</i;
+            if(ishtml.test(response)) {
+              if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
+              break;
+            }
+            if(response.indexOf('/*@BEGIN_SR*/')>=0) {
+              if(response.lastIndexOf('/*@END_SR*/')<0) {
+                if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
+                break;
+              }
+            }
+
             if(ngWinStoreApp) {
               MSApp.execUnsafeLocalFunction(function () {
                   window["eval"].call(window, '(function() {'+response+'})();');
@@ -3664,7 +3674,7 @@ function ngrpc_sendRequest(url, nocache)
             catch(e) 
             { 
               ngDEBUGERROR('ngRPC: JSON parsing failed!',e);
-              if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp);
+              if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
               break;
             }
             if(rpc.OnReceivedJSON) rpc.OnReceivedJSON(rpc, data, xmlhttp); 
