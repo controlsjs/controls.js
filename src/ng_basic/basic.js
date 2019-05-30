@@ -3651,8 +3651,8 @@ function ngrpc_sendRequest(url, nocache)
               if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
               break;
             }
-            if(response.indexOf('/*@BEGIN_SR*/')>=0) {
-              if(response.lastIndexOf('/*@END_SR*/')<0) {
+            if(response.indexOf('/*_SR_BEGIN*/')>=0) {
+              if(response.lastIndexOf('/*_SR_END*/')<0) {
                 if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
                 break;
               }
