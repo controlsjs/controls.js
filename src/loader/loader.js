@@ -13,6 +13,7 @@
 var ngOnAppLoading=(typeof ngOnAppLoading === 'undefined' ? null : ngOnAppLoading);
 var ngOnAppDoLoading=(typeof ngOnAppDoLoading === 'undefined' ? null : ngOnAppDoLoading);
 var ngOnAppLoaded=(typeof ngOnAppLoaded === 'undefined' ? null : ngOnAppLoaded);
+var ngOnAppLoadFailed=(typeof ngOnAppLoadFailed === 'undefined' ? null : ngOnAppLoadFailed);
 var ngOnAppCreated=(typeof ngOnAppCreated === 'undefined' ? null : ngOnAppCreated);
 var ngOnAppLoadProgress=(typeof ngOnAppLoadProgress === 'undefined' ? null : ngOnAppLoadProgress);
 var ngOnAppFileLoad=(typeof ngOnAppFileLoad === 'undefined' ? null : ngOnAppFileLoad);
@@ -48,7 +49,7 @@ function ngLoadApplication(elm, callback, files)
   if(!head) return false;
 
   var device, lastprogress=0, loadorder=0;
-  var apploading=1,appparts=1,loadedparts=0,readyparts=0,apppath='',appdomain='', appimages={};
+  var apploading=1,appparts=1,apperrors=0,loadedparts=0,readyparts=0,apppath='',appdomain='', appimages={};
   var cssqueue=[];
   var scriptsqueue=[];
 
@@ -255,28 +256,31 @@ function ngLoadApplication(elm, callback, files)
 
       if((apploading)&&(readyparts===appparts))
       {
-        var startup = setTimeout(function() {
-          clearTimeout(startup);
+        if(!apperrors) {
+          var startup = setTimeout(function() {
+            clearTimeout(startup);
 
-          if(typeof ngOnAppLoaded === 'function') ngOnAppLoaded();
-          if(readyparts<appparts)
-          {
-            // ngOnAppLoaded added some files, clear callback and wait for files
-            ngOnAppLoaded=null;
-            return;
-          }
-          apploading=0;
+            if(typeof ngOnAppLoaded === 'function') ngOnAppLoaded();
+            if(readyparts<appparts)
+            {
+              // ngOnAppLoaded added some files, clear callback and wait for files
+              ngOnAppLoaded=null;
+              return;
+            }
+            apploading=0;
 
-          if(typeof ngApplication === 'function')
-          {
-            new ngApplication((typeof ngStartParams === 'function' ? new ngStartParams() : {}), (elm && (typeof elm==='object' || elm!='') ? elm : 'ngApp'),false);
-            if((ngApp)&&(apppath!='')) ngApp.AppPath=apppath;
-            if(typeof ngOnAppCreated === 'function') ngOnAppCreated(ngApp);
-          }
+            if(typeof ngApplication === 'function')
+            {
+              new ngApplication((typeof ngStartParams === 'function' ? new ngStartParams() : {}), (elm && (typeof elm==='object' || elm!='') ? elm : 'ngApp'),false);
+              if((ngApp)&&(apppath!='')) ngApp.AppPath=apppath;
+              if(typeof ngOnAppCreated === 'function') ngOnAppCreated(ngApp);
+            }
 
-          if((callback)&&(!callback(ngApp))) return;
-          if(ngApp) ngApp.Run();
-        },100);
+            if((callback)&&(!callback(ngApp))) return;
+            if(ngApp) ngApp.Run();
+          },100);
+        }
+        else if(typeof ngOnAppLoadFailed === 'function') ngOnAppLoadFailed();
       }
     }
   }
@@ -351,6 +355,7 @@ function ngLoadApplication(elm, callback, files)
     {
       function fileerror(isasync)
       {
+        apperrors++;
         isasync=(isasync===true);
         var c=(typeof console!=='undefined' ? console : null);
         if(c){
@@ -484,6 +489,7 @@ function ngLoadApplication(elm, callback, files)
       {
         if(loaded) return;
         loaded = true;
+        apperrors++;
         if(typeof loadfailcallback === 'function') loadfailcallback(2,url,data);;
         if(typeof ngOnAppFileLoadFailed === 'function') ngOnAppFileLoadFailed(2,url,data);
         apppartloaded(-1,url,data);
