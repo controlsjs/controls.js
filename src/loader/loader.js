@@ -256,8 +256,11 @@ function ngLoadApplication(elm, callback, files)
 
       if((apploading)&&(readyparts===appparts))
       {
-        if(!apperrors) {
-          var startup = setTimeout(function() {
+        var startup = null;
+
+        function runfnc() {
+          if(startup) return;
+          startup = setTimeout(function() {
             clearTimeout(startup);
 
             if(typeof ngOnAppLoaded === 'function') ngOnAppLoaded();
@@ -280,7 +283,13 @@ function ngLoadApplication(elm, callback, files)
             if(ngApp) ngApp.Run();
           },100);
         }
-        else if(typeof ngOnAppLoadFailed === 'function') ngOnAppLoadFailed();
+
+        var run;
+        if((apperrors)&&(typeof ngOnAppLoadFailed === 'function')) {
+          run=ngOnAppLoadFailed(runfnc);
+          if(typeof run==='undefined') run=true;
+        } else run=true;
+        if(run) runfnc();
       }
     }
   }
