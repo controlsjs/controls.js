@@ -3649,11 +3649,19 @@ function ngrpc_sendRequest(url, nocache)
             var ishtml=/^\s*\</i;
             if(ishtml.test(response)) {
               if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
+              if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                var c=console;
+                c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'HTML/XML response where JavaScript is expected!');
+              }
               break;
             }
             if(response.indexOf('/*_SR_BEGIN*/')>=0) {
               if(response.lastIndexOf('/*_SR_END*/')<0) {
                 if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
+                if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                  var c=console;
+                  c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Partial response - missing /*_SR_END*/ end tag!');
+                }
                 break;
               }
             }
