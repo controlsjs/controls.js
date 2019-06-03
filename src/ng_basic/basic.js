@@ -3617,6 +3617,7 @@ function ngrpc_sendRequest(url, nocache)
       }
       break;
   }
+  var rpctype;
   switch(type)
   {
     case rpcScript:
@@ -3627,12 +3628,15 @@ function ngrpc_sendRequest(url, nocache)
       return this.sendIFrameRequest(url,this.Params);
 
     case rpcHttpRequestPOST:    
-    case rpcHttpRequestGET:    
+    case rpcHttpRequestGET:
+      rpctype=1;
     case rpcJSONPOST:
     case rpcJSONGET:
+      if(typeof rpctype==='undefined') rpctype=2;
     case rpcDataPOST:
     case rpcDataGET:
-      var ri={ ReqHeaders: { RPC: 1 } };
+      if(typeof rpctype==='undefined') rpctype=3;
+      var ri={ ReqHeaders: { RPC: rpctype } };
       if((type===rpcHttpRequestGET)||(type===rpcJSONGET)||(type===rpcDataGET))
       {
         if(params!='') url=ng_AddURLParam(url, params);
