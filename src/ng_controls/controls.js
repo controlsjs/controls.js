@@ -5278,48 +5278,50 @@ function nga_DoRun()
 {
   if(nga_RunTimer) clearTimeout(nga_RunTimer); nga_RunTimer=null;
 
-  ngApp.State = ngaStateInitializing;
+  if(ngApp.State !== ngaStateInitializing) {
+    ngApp.State = ngaStateInitializing;
 
-  if(typeof ngApp.StartParams.Animation !== 'undefined') ngANIM=parseInt(ngApp.StartParams.Animation,10);
+    if(typeof ngApp.StartParams.Animation !== 'undefined') ngANIM=parseInt(ngApp.StartParams.Animation,10);
 
-  // Language detection
-  ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
-  ngc_SupportedLangsLocked = (ngApp.StartParams.SupportedLangsLocked === true);
-  var li=ngApp.DetectLangEx();
-  var lng=ngGetSupportedLang(li.Lang);
-  if(lng!==li.Lang) {
-    var undefined;
-    ngApp.Lang=lng;
-    ngApp.LangCountry=undefined;
-    ngApp.LangVariant=undefined;
-  }
-  else {
-    ngApp.Lang=li.Lang;
-    ngApp.LangCountry=li.LangCountry;
-    ngApp.LangVariant=li.LangVariant;
-  }
+    // Language detection
+    ngAddSupportedLang(ngVal(ngApp.StartParams.SupportedLangs, ''));
+    ngc_SupportedLangsLocked = (ngApp.StartParams.SupportedLangsLocked === true);
+    var li=ngApp.DetectLangEx();
+    var lng=ngGetSupportedLang(li.Lang);
+    if(lng!==li.Lang) {
+      var undefined;
+      ngApp.Lang=lng;
+      ngApp.LangCountry=undefined;
+      ngApp.LangVariant=undefined;
+    }
+    else {
+      ngApp.Lang=li.Lang;
+      ngApp.LangCountry=li.LangCountry;
+      ngApp.LangVariant=li.LangVariant;
+    }
 
-  // Controls version check
-  var reqver,reqsubver;
-  if(typeof ngApp.StartParams.ReqControlsVer === 'undefined')
-  {
-    reqver=ngControlsVer;
-    reqsubver=ngControlsSubVer;
-  }
-  else
-  {
-    reqver=parseInt(ngApp.StartParams.ReqControlsVer);
-    reqsubver=parseInt(ngVal(ngApp.StartParams.ReqControlsSubVer,0));
-  }
-  if((reqver>ngControlsVer)||((reqver==ngControlsVer)&&(reqsubver>ngControlsSubVer)))
-  {
-    ngApp.State = ngaStateTerminated;
+    // Controls version check
+    var reqver,reqsubver;
+    if(typeof ngApp.StartParams.ReqControlsVer === 'undefined')
+    {
+      reqver=ngControlsVer;
+      reqsubver=ngControlsSubVer;
+    }
+    else
+    {
+      reqver=parseInt(ngApp.StartParams.ReqControlsVer);
+      reqsubver=parseInt(ngVal(ngApp.StartParams.ReqControlsSubVer,0));
+    }
+    if((reqver>ngControlsVer)||((reqver==ngControlsVer)&&(reqsubver>ngControlsSubVer)))
+    {
+      ngApp.State = ngaStateTerminated;
 
-    var o=document.getElementById('ngAppLoading');
-    if(o) o.style.display='none';
+      var o=document.getElementById('ngAppLoading');
+      if(o) o.style.display='none';
 
-    alert(ng_htmlDecode(ng_sprintf(ngTxt('ngAppOldControlsVersion'),reqver,reqsubver,ngControlsVer,ngControlsSubVer)));
-    return;
+      alert(ng_htmlDecode(ng_sprintf(ngTxt('ngAppOldControlsVersion'),reqver,reqsubver,ngControlsVer,ngControlsSubVer)));
+      return;
+    }
   }
 
   var ae=ngApp.Elm();
@@ -5327,6 +5329,11 @@ function nga_DoRun()
     var aw=ng_ClientWidth(ae);
     var ah=ng_ClientHeight(ae);
 
+    if((!aw)&&(!ah)&&(ng_InIFRAME())) {
+      // Cannot measure Application probably because IFRAME is hidden, delay run until IFRAME is shown
+      nga_RunTimer=setTimeout(nga_DoRun, 200);
+      return;
+    }
     ngApp.LastResizeW=aw;
     ngApp.LastResizeH=ah;
 
@@ -5428,16 +5435,14 @@ function nga_DoRun()
     else {
       var timeout=ngVal(ngApp.FontsInitTimeout,3000);
 
-      ng_PreloadImagesBegin();
       if(typeof FontLoader === 'function') { // Test if lib_FontLoader library is available
-
+        ng_PreloadImagesBegin();
         FontLoader.useAdobeBlank=false; // Using AdobeBlank seems to be sometimes buggy (at least in Chrome)
         var fontLoader = new FontLoader(fonts, {
           "complete": function(error) {
             if (error !== null) {
               // Reached the timeout but not all fonts were loaded
-              ngDEBUGERROR(error.message);
-              ngDEBUGERROR(error.notLoadedFonts);
+              ngDEBUGLOG(error.message, error.notLoadedFonts);
             }
             ng_PreloadImagesEnd();
           }
@@ -5447,6 +5452,7 @@ function nga_DoRun()
       else {
         // we don't have anything useful, just try to give it a time
         if(timeout>0) {
+          ng_PreloadImagesBegin();
           var fontloadtimer=setTimeout(function() {
             clearTimeout(fontloadtimer);
             ng_PreloadImagesEnd();
