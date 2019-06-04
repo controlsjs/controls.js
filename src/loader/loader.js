@@ -427,7 +427,18 @@ function ngLoadApplication(elm, callback, files)
           code=li.code;
           if(typeof code==='undefined') break;
           if(code!=='') {
-            if(!exec(code)) fileerror(li.Async);
+            if(!exec(code)) {
+              apperrors++;
+              var c=(typeof console!=='undefined' ? console : null);
+              if(c){
+                switch(data.Type){
+                  case 0: c.error('CSS "'+li.LoadURL+'" was not loaded! Cannot inject.'); break;
+                  case 1: c.error('Script "'+li.LoadURL+'" was not loaded! Cannot execute.'); break;
+                }
+              }
+              if(typeof li.LoadFailCallback === 'function') li.LoadFailCallback(li.Data.Type,li.URL,li.Data);
+              li.LoadCallback=null;
+            }
           }
           queue.splice(0,1);
           if(typeof li.LoadCallback === 'function') li.LoadCallback(li.Data.Type,li.URL,li.Data);
