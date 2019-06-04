@@ -487,6 +487,46 @@ ngUserControls['viewmodel_controls'] = {
       avm.WindowWidth=ko.computed(function() { return vmwinwidth(); }, avm);
       avm.WindowHeight=ko.computed(function() { return vmwinheight(); }, avm);
 
+      avm.Lang=ko.observable(ngApp.Lang);
+      avm.LangCountry=ko.observable(ngApp.LangCountry);
+      avm.LangVariant=ko.observable(ngApp.LangVariant);
+      avm.LangId=ko.observable(ngMakeLangId(ngApp.Lang,ngApp.LangCountry,ngApp.LangVariant));
+
+      var changinglang=false;
+
+      ngApp.AddEvent('OnLangChanged', function(app) {
+        var oldchanginglang=changinglang;
+        changinglang=true;
+        try {
+          avm.Lang(app.Lang);
+          avm.LangCountry(app.LangCountry);
+          avm.LangVariant(app.LangVariant);
+          avm.LangId(ngMakeLangId(app.Lang,app.LangCountry,app.LangVariant));
+        } finally {
+          changinglang=oldchanginglang;
+        }
+      });
+
+      avm.Lang.subscribe(function(val) {
+        if(changinglang) return;
+        ngApp.SetLang(val);
+      });
+
+      avm.LangCountry.subscribe(function(val) {
+        if(changinglang) return;
+        ngApp.SetLang(ngApp.Lang, val);
+      });
+
+      avm.LangVariant.subscribe(function(val) {
+        if(changinglang) return;
+        ngApp.SetLang(ngApp.Lang, ngApp.LangCountry, val);
+      });
+
+      avm.LangId.subscribe(function(val) {
+        if(changinglang) return;
+        ngApp.SetLangById(val);
+      });
+
       if(typeof ngSetDevice==='function') {
         vmdevice=ko.observable(ngDevice);
         vmdeviceprofile=ko.observable(ngDeviceProfile);
