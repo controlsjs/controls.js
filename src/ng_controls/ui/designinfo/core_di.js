@@ -575,7 +575,7 @@ return {
         ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
-        TargetContainer: function(control, target_control, get_control_elm, get_target_elm)
+        TargetContainer: function(control_id, target_id, control, target_control, get_control_elm, get_target_elm)
         {
           if (!control) return 'Pages.0.Controls';
           return 'Pages.' + ngVal(control.Page, 0) + '.Controls';
@@ -878,6 +878,16 @@ return {
         ControlCategory: 'Container',
         IsBasic: true,
         IsContainer: true,
+        TargetContainer: function(control_id, target_id, control, target_control, get_control_elm, get_target_elm)
+        {
+          var tc = { ContainerProperty: 'Controls' };
+          if (control && target_control && target_control.ParentControl === control)
+          {
+            tc.InsertControlID = target_id;
+            tc.InsertPosition = control.HAlign === 'left' ? -1 : 1;
+          }
+          return tc;
+        },
         NewControl: {
           Default: {
             Properties: {
