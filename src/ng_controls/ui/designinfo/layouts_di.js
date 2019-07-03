@@ -183,6 +183,16 @@ ngUserControls['layouts_designinfo'] = {
       return {
         ControlCategory: 'Layout',
         IsContainer: true,
+        TargetContainer: function(control_id, target_id, control, target_control, get_control_elm, get_target_elm)
+        {
+          var tc = { ContainerProperty: 'Controls' };
+          if (control && target_control && target_control.ParentControl === control)
+          {
+            tc.InsertControlID = target_id;
+            tc.InsertPosition = -1;
+          }
+          return tc;
+        },
 
         NewControl: {
           Default: {
@@ -224,6 +234,16 @@ ngUserControls['layouts_designinfo'] = {
       return {
         ControlCategory: 'Layout',
         IsContainer: true,
+        TargetContainer: function(control_id, target_id, control, target_control, get_control_elm, get_target_elm)
+        {
+          var tc = { ContainerProperty: 'Controls' };
+          if (control && target_control && target_control.ParentControl === control)
+          {
+            tc.InsertControlID = target_id;
+            tc.InsertPosition = -1;
+          }
+          return tc;
+        },
 
         NewControl: {
           Default: {

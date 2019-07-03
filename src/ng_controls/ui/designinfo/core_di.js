@@ -884,7 +884,7 @@ return {
           if (control && target_control && target_control.ParentControl === control)
           {
             tc.InsertControlID = target_id;
-            tc.InsertPosition = control.HAlign === 'left' ? -1 : 1;
+            tc.InsertPosition = -1;
           }
           return tc;
         },
