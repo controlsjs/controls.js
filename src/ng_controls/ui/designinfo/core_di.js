@@ -99,7 +99,8 @@ return {
             "Controls": ng_diControls(undefined, { Level: 'basic', ContainerProperty: true }, {
               DestroyIfEmpty: true,
               ChildDesignInfo: {
-                PropertyGroup: 'Controls'
+                PropertyGroup: 'Controls',
+                Level: 'basic'
               }
             })
           }
