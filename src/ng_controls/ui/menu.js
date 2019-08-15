@@ -1055,7 +1055,10 @@ function ngmn_OnKeyDown(e)
 
 function ngmn_DoDrawItemText(html, text, it, col, id, level)
 {
-  var image=this.SubMenuImg;
+  var image;
+  if(this.OnGetSubMenuImg) image=this.OnGetSubMenuImg(this, it, id);
+  else image=this.SubMenuImg;
+
   if((it.SubMenu)&&(image)&&((this.Columns.length<=0)||(col.ID===this.Columns[this.Columns.length-1].ID)))
   {
     var dp=ngl_ItemImgDrawProps(this.ID+'_'+id+'M', (this.Enabled)&&(ngVal(it.Enabled,true)), image);
@@ -1768,7 +1771,7 @@ function ngsbtn_DoUpdate(o)
   var m=this.Menu;
   if((typeof m==='object')&&(m))
   {
-    var oi=document.getElementById(this.ID+'_IR')
+    var oi=document.getElementById(this.ID+'_IR');
     if(oi)
     {
       ngc_ChangeImg(this.ID+'_IR', m.Visible, this.Enabled, this.GetImg(2));
@@ -2513,6 +2516,10 @@ function Create_ngMenu(def, ref, parent)
    *  Event: OnClickOutside
    */
   c.OnClickOutside = null;
+  /*
+   *  Event: OnGetSubMenuImg
+   */
+  this.OnGetSubMenuImg = null;
   /*
    *  Event: OnSubMenuCreated
    */
