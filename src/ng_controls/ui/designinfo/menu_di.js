@@ -164,6 +164,9 @@ ngUserControls['menu_designinfo'] = {
             "OnClickOutside": { Level: 'basic' },
             "OnSubMenuCreated": ng_diEvent('function(c, def, m) {}', { Level: 'basic' }),
             "OnGetScreenRect": ng_diEvent('function(c, rect) {}', { Level: 'basic' })
+          },
+          "OverrideEvents": {
+            "OnGetSubMenuImg": ng_diEvent('function(c, it, id) { return null; }', { Level: 'advanced' })
           }
         })
       }
