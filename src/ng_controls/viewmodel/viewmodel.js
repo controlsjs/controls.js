@@ -462,7 +462,9 @@ function ngfd_TypedValue(v)
                             }
                             break;
       case 'OBJECT':        r=(typeof v==='object' ? (origv===v ? ng_CopyVar(v) : v) : null); break;
-      default:              r=(origv===v ? ng_CopyVar(v) : v); break;
+      default:
+        if((''+this.DataType).substr(0,7)!=='UNKNOWN') r=(origv===v ? ng_CopyVar(v) : v);
+        break;
     }
     if(r===null)
       throw new ngFieldDefException(this, err|FIELDDEF_ERR_TYPE); // type error
