@@ -463,7 +463,8 @@ return {
             "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }', { Level: 'advanced' }),
             "DoBlur": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoBlur", arguments); }', { Level: 'advanced' }),
             "DoUpdateImages": ng_diFunction('function() { ng_CallParent(this, "DoUpdateImages", arguments); }', { Level: 'advanced' }),
-            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }', { Level: 'advanced' })
+            "DoSetInvalid": ng_diFunction('function(state, update) { ng_CallParent(this, "DoSetInvalid", arguments); }', { Level: 'advanced' }),
+            "DoGetSuggestionList": ng_diFunction('function() { return ng_CallParent(this, "DoGetSuggestionList", arguments); }', { Level: 'advanced' })
           },
           "OverrideEvents": {
             "OnSetText": ng_diEvent('function(text, c) { return text; }', { Level: 'advanced' }),

@@ -1909,6 +1909,15 @@ function nge_HintStyle(c)
   return ngHintHideOnInput;
 }
 
+function nge_DoGetSuggestionList()
+{
+  var dd=this.DropDownControl;
+  if(!dd) return null;
+  if(dd.CtrlInheritsFrom('ngList')) return dd;
+  if(dd.CtrlInheritsFrom('ngPageList')) return dd.List;
+  return null;
+}
+
 function nge_SuggestionResults(id,txt,data)
 {
   var ii=ng_Expand2Id(id);
@@ -1917,6 +1926,8 @@ function nge_SuggestionResults(id,txt,data)
 
   if(txt!=c.GetText()) return;
 
+  var lst=c.DoGetSuggestionList();
+  if(!lst) return;
   var dd=c.DropDownControl;
   if(!dd) return;
 
@@ -1930,10 +1941,10 @@ function nge_SuggestionResults(id,txt,data)
 
     if(!ngVal(c.OnSuggestionResults(c,txt,data,res),false)) return;
 
-    if((dd.Visible)&&(res.needupdate)&&(res.found))
+    if((dd.Visible)&&(lst.Visible)&&(res.needupdate)&&(res.found))
     {
-      dd.SetItemFocus(null);
-      dd.Update();
+      lst.SetItemFocus(null);
+      lst.Update();
     }
     c.SuggestionFound=res.found;
   }
@@ -1942,20 +1953,19 @@ function nge_SuggestionResults(id,txt,data)
     if((typeof data==='undefined')||(data.length==0)) c.SuggestionFound=false;
     else
     {
-      dd.Clear();
-      dd.AddItems(data);
-      if(dd.Visible)
+      lst.Clear();
+      lst.AddItems(data);
+      if((dd.Visible)&&(lst.Visible))
       {
-        dd.SetItemFocus(null);
-        dd.Update();
+        lst.SetItemFocus(null);
+        lst.Update();
       }
       c.SuggestionFound=true;
     }
   }
   if(c.SuggestionFound)
   {
-    var dd=c.DropDownControl;
-    if(dd) dd.SetItemFocus(null);
+    lst.SetItemFocus(null);
     c.DropDown();
   }
   else
@@ -1985,8 +1995,8 @@ function nge_Suggestion(id)
     c.SuggestionSearch(txt);
     if(c.SuggestionFound)
     {
-      var dd=c.DropDownControl;
-      if(dd) dd.SetItemFocus(null);
+      var lst=c.DoGetSuggestionList();
+      if(lst) lst.SetItemFocus(null);
       c.DropDown();
     }
     else c.HideDropDown();
@@ -2005,11 +2015,12 @@ function nge_SuggestionSearch(txt)
 
     if(!ngVal(this.OnSuggestionSearch(this,txt,res),false)) return;
 
+    var lst=this.DoGetSuggestionList();
     var dd=this.DropDownControl;
-    if((dd)&&(dd.Visible)&&(res.needupdate)&&(res.found))
+    if((res.needupdate)&&(res.found)&&(dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
     {
-      dd.SetItemFocus(null);
-      dd.Update();
+      lst.SetItemFocus(null);
+      lst.Update();
     }
     this.SuggestionFound=res.found;
     this.SuggestionLastSearch=txt;
@@ -2044,20 +2055,21 @@ function nge_SuggestionSearch(txt)
     {
       var found=false;
       var needupdate=false;
+      var lst=this.DoGetSuggestionList();
       var dd=this.DropDownControl;
-      if(dd)
+      if((lst)&&(dd))
       {
         var emptytxt=((txt=='')&&(this.SuggestionAllowEmpty));
         if(ignorecase) txt=txt.toLowerCase();
         var cid='';
-        if(dd.Columns.length>0) cid=ngVal(this.SuggestionSearchColumn,dd.Columns[0].ID);
+        if(lst.Columns.length>0) cid=ngVal(this.SuggestionSearchColumn,lst.Columns[0].ID);
 
         var t,v;
         if(this.OnSuggestionCompareItem) partial=-1;
         else if(partial==-1) partial=2;
         var self=this;
-        dd.Scan(function(list, it, parent, userdata) {
-          if(dd.Columns.length>0) t=ngVal(it.Text[cid],'');
+        lst.Scan(function(list, it, parent, userdata) {
+          if(lst.Columns.length>0) t=ngVal(it.Text[cid],'');
           else t=it.Text;
           if((ignorecase)&&(typeof t.toLowerCase==='function')) t=t.toLowerCase();
           switch(partial)
@@ -2089,10 +2101,10 @@ function nge_SuggestionSearch(txt)
           if(it.Visible) found=true;
           return true;
         });
-        if((dd.Visible)&&(needupdate)&&(found))
+        if((needupdate)&&(found)&&(dd.Visible)&&(lst.Visible))
         {
-          dd.SetItemFocus(null);
-          dd.Update();
+          lst.SetItemFocus(null);
+          lst.Update();
         }
       }
       this.SuggestionFound=found;
@@ -2231,6 +2243,7 @@ function nge_KeyDown(e,elm)
 
     if(ngVal(edit.Suggestion,false)) // Suggestion keys
     {
+      var lst=edit.DoGetSuggestionList();
       var dd=edit.DropDownControl;
       switch(e.keyCode)
       {
@@ -2238,9 +2251,9 @@ function nge_KeyDown(e,elm)
         case 34: // PgDown
         case 38: // Up
         case 40: // Down
-          if((dd)&&(dd.Visible))
+          if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
           {
-            var o=dd.Elm();
+            var o=lst.Elm();
             if((o)&&(o.onkeydown)) o.onkeydown(e);
             edit=null;
             break;
@@ -2248,13 +2261,13 @@ function nge_KeyDown(e,elm)
           break;
         case 37: // Left
         case 39: // Right
-          if((dd)&&(dd.Visible))
+          if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
           {
-            var it=dd.GetItemFocus();
+            var it=lst.GetItemFocus();
             if((it)&&(typeof it.Items !== 'undefined')&&(it.Items.length>0))
             {
-              if(e.keyCode==37) dd.Collapse(it);
-              else dd.Expand(it);
+              if(e.keyCode==37) lst.Collapse(it);
+              else lst.Expand(it);
               if(e.preventDefault) e.preventDefault();
               e.returnValue = false;
             }
@@ -2386,6 +2399,7 @@ function nge_KeyUp(e,elm)
     nge_TextChanged(e,elm,edit);
     if(ngVal(edit.Suggestion,false)) // Suggestion keys
     {
+      var lst=edit.DoGetSuggestionList();
       var dd=edit.DropDownControl;
       switch(e.keyCode)
       {
@@ -2402,17 +2416,17 @@ function nge_KeyUp(e,elm)
           break;
         case 39: // Right
         case 13: // Enter
-          if((dd)&&(dd.Visible))
+          if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
           {
-            var fi=dd.GetItemFocus();
+            var fi=lst.GetItemFocus();
             if(fi)
             {
               if((e.keyCode==39)&&(fi)&&(typeof fi.Items !== 'undefined')&&(fi.Items.length>0))
                 break;
-              dd.SetItemFocus(null);
+              lst.SetItemFocus(null);
               if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
               edit.SuggestionTimer=null;
-              dd.SelectDropDownItem(fi);
+              lst.SelectDropDownItem(fi);
               edit=null;
             }
           }
@@ -2421,9 +2435,9 @@ function nge_KeyUp(e,elm)
         case 34: // PgDown
         case 38: // Up
         case 40: // Down
-          if((dd)&&(dd.Visible))
+          if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
           {
-            var o=dd.Elm();
+            var o=lst.Elm();
             if((o)&&(o.onkeyup)) o.onkeyup(e);
             edit=null;
             break;
@@ -3685,6 +3699,8 @@ function ngEdit(id, text)
    *    -
    */
   this.HideDropDown = nge_HideDropDown;
+
+  this.DoGetSuggestionList = nge_DoGetSuggestionList;
 
   /*  Function: SuggestionSearch
    *  Searches suggestion.
