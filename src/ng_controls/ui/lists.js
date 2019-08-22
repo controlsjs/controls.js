@@ -4513,7 +4513,7 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
       list.list_maxheight=maxh;
 
       var cnt=0;
-      var i,it,items,tmp_html,ih=0;
+      var i,it,items,tmp_html,ih=0,l;
       list.in_measure=true;
       try {
         for(i=pl.TopIndex;i<list.Items.length;i++)
