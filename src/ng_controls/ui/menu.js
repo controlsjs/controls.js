@@ -1259,8 +1259,14 @@ function ngmn_CreateSubMenu(it,m)
 
   var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
   it.SubMenu=lref.SubMenu;
-  if((lref.SubMenu)&&(p.OnSubMenuCreated)) p.OnSubMenuCreated(p,ld,lref.SubMenu);
-
+  if(it.SubMenu) {
+    if(p.OnSubMenuCreated) p.OnSubMenuCreated(p,ld,it.SubMenu);
+    if((typeof it.submenu_update_cnt !== 'undefined')&&(typeof it.SubMenu.BeginUpdate === 'function')) {
+      var updcnt=it.submenu_update_cnt;
+      delete it.submenu_update_cnt;
+      for(var i=0;i<updcnt;i++) it.SubMenu.BeginUpdate();
+    }
+  }
   return it.SubMenu;
 }
 
@@ -1314,7 +1320,13 @@ function ngmn_BeginUpdate(recursive)
       function(list, item, parent, userdata)
       {
         var m=item.SubMenu;
-        if(m) m.BeginUpdate(true);
+        if(m) {
+          if(typeof m.BeginUpdate==='function') m.BeginUpdate(true);
+          else {
+            if(typeof item.submenu_update_cnt==='undefined') item.submenu_update_cnt=0;
+            item.submenu_update_cnt++;
+          }
+        }
         return true;
       }
     );
@@ -1333,7 +1345,15 @@ function ngmn_EndUpdate()
         function(list, item, parent, userdata)
         {
           var m=item.SubMenu;
-          if(m) m.EndUpdate(true);
+          if(m) {
+            if(typeof m.EndUpdate==='function') m.EndUpdate(true);
+            else {
+              if(typeof item.submenu_update_cnt!=='undefined') {
+                item.submenu_update_cnt--;
+                if(item.submenu_update_cnt<=0) delete item.submenu_update_cnt;
+              }
+            }
+          }
           return true;
         }
       );
