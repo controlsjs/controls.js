@@ -1993,7 +1993,7 @@ function ng_SetControlMenu(c,m)
     if(!m)
     {
       c.RemoveEvent('SetVisible',ngmnb_SetControlVisible);
-      c.RemoveEvent('SetEnable',ngmnb_SetControlVisible);
+      c.RemoveEvent('SetEnabled',ngmnb_SetControlVisible);
       c.RemoveEvent('DoDispose',ngmn_DoMenuDispose);
       if(c.DoMenuClick === ngmn_DefaultClick) delete c.DoMenuClick;
       if(c.OnClick === ngmn_DefaultClick) c.OnClick=null;
@@ -2018,7 +2018,7 @@ function ng_SetControlMenu(c,m)
     if(!om)
     {
       c.AddEvent('SetVisible',ngmnb_SetControlVisible);
-      c.AddEvent('SetEnable',ngmnb_SetControlVisible);
+      c.AddEvent('SetEnabled',ngmnb_SetControlVisible);
       c.AddEvent('DoDispose',ngmn_DoMenuDispose);
 
       if(typeof c.DoMenuClick === 'undefined') c.DoMenuClick=ngmn_DefaultClick;
@@ -2177,7 +2177,7 @@ function ng_SetControlPopup(c,m)
     if(!m)
     {
       c.RemoveEvent('SetVisible',ngmn_SetPopupControlVisible);
-      c.RemoveEvent('SetEnable',ngmn_SetPopupControlVisible);
+      c.RemoveEvent('SetEnabled',ngmn_SetPopupControlVisible);
       c.RemoveEvent('DoAttach',ngmn_DoPopupAttach);
       c.RemoveEvent('DoAcceptGestures',ngmn_DoAcceptGestures);
       c.RemoveEvent('DoGesture',ngmn_DoGesture);
@@ -2197,7 +2197,7 @@ function ng_SetControlPopup(c,m)
     if(!om)
     {
       c.AddEvent('SetVisible',ngmn_SetPopupControlVisible);
-      c.AddEvent('SetEnable',ngmn_SetPopupControlVisible);
+      c.AddEvent('SetEnabled',ngmn_SetPopupControlVisible);
       c.AddEvent('DoAttach',ngmn_DoPopupAttach);
       c.AddEvent('DoAcceptGestures',ngmn_DoAcceptGestures);
       c.AddEvent('DoGesture',ngmn_DoGesture);
