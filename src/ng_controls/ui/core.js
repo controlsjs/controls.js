@@ -2646,10 +2646,13 @@ function nge_BeginMobileKeyboard()
     ngApp.SavedAppHeight=ae.style.height;
     ngApp.SavedAppBottom=ae.style.bottom;
     ngApp.SavedAppMarginBottom=ae.style.marginBottom;
+    ngApp.SavedAppScrollTop=ae.scrollTop;
+    ngApp.SavedDocScrollTop=document.body.scrollTop;
 
-    ng_SetClientHeight(ae,ng_ClientHeight(ae));
+    var apph=ng_ClientHeight(ae);
+    ng_SetClientHeight(ae,apph);
     ae.style.bottom='';
-    ae.style.marginBottom=ng_WindowHeight()+'px';
+    ae.style.marginBottom=apph+'px';
 
     ng_IE7RedrawFix(document.body);
 
@@ -2681,17 +2684,21 @@ function nge_EndMobileKeyboard()
 function nge_FinishMobileKeyboard() {
   ngMobileKeyboardActive=0;
   var ae=((typeof ngApp === 'object')&&(ngApp) ? ngApp.Elm() : null);
-  if((ae)&&(typeof ngApp.SavedAppHeight!=='undefined'))
+  if((ae)&&((typeof ngApp.SavedAppHeight!=='undefined')||(typeof ngApp.SavedAppBottom!=='undefined')))
   {
     ae.style.bottom=ngApp.SavedAppBottom;
     ae.style.height=ngApp.SavedAppHeight;
     ae.style.marginBottom=ngApp.SavedAppMarginBottom;
+    ae.scrollTop=ngApp.SavedAppScrollTop;
+    document.body.scrollTop=ngApp.SavedDocScrollTop;
 
     ng_IE7RedrawFix(document.body);
 
     delete ngApp.SavedAppBottom;
     delete ngApp.SavedAppHeight;
     delete ngApp.SavedAppMarginBottom;
+    delete ngApp.SavedAppScrollTop;
+    delete ngApp.SavedDocScrollTop;
 
     var aw=ng_ClientWidth(ae);
     var ah=ng_ClientHeight(ae);
