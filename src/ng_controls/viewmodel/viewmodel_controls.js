@@ -95,6 +95,7 @@ function ngBindingDeferUpdates(type, allBindingsAccessor, setstate) {
 function ngApplyBindings(ctrl, viewModel, databind)
 {
   if((!ctrl)||(ngVal(databind,'')=='')||(typeof ctrl.InDesignMode !== 'undefined')) return false;
+  if(ng_IsObjVar(databind)){databind = ng_Bindings(databind);}
 
   if(ng_typeString(viewModel))
   {
