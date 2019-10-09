@@ -677,7 +677,7 @@ function ng_isDate(v,format) {
  *    TRUE if variable can be NVARCHAR
  */       
 function ng_isNVARCHAR(v,size) {
-  v=ng_toNVARCHAR(v,undefined,null);
+  v=ng_toNVARCHAR(v,void 0,null);
   if(v===null) return false;
   if(!ng_isEmpty(size)) {
     size=ngVal(size,0);
@@ -1037,26 +1037,28 @@ function ng_toBool(v)
  */       
 function ng_toString(v,def)
 {
-  if(ng_isEmptyOrNull(v)) return ngVal(def,'');
-  if(ng_typeDate(v))
+  switch(typeof v)
   {
-    return ng_FormatDateTime(v,undefined,ngVal(def,''));
-  }
-  if(ng_typeObject(v))
-  {
-    if(typeof v.FormatString === 'function') return v.FormatString(v,def);
-    if((typeof JSON !== "undefined")&&(typeof JSON.stringify === "function"))
-    {
-      try {
-        return JSON.stringify(v);
+    case 'undefined': return ngVal(def,'');
+    case 'boolean': return (''+v); // (v ? 'true' : 'false')
+    case 'object':
+      if(v===null) return ngVal(def,'');
+      if(ng_typeDate(v)) return ng_FormatDateTime(v,void 0,ngVal(def,''));
+      if(typeof v.FormatString === 'function') return v.FormatString(v,def);
+      if((typeof JSON !== 'undefined')&&(typeof JSON.stringify === 'function'))
+      {
+        try {
+          return JSON.stringify(v);
+        }
+        catch(e) { }
       }
-      catch(e) { }
-    }
-    return ngVal(def,''); 
-  }
-  if(ng_isNumber(v))
-  {
-    return ((''+v).replace('.',ng_DecimalSeparator())); 
+      return ngVal(def,'');
+    case 'number':
+      return ((''+v).replace('.',ng_DecimalSeparator()));
+    case 'string':
+      var n = (+v);
+      if(!isNaN(n)) return v.replace('.',ng_DecimalSeparator());
+      return v;
   }
   return ''+v;
 }
@@ -1124,8 +1126,8 @@ function ng_toNumber(v,def)
   if(ng_isEmptyOrNull(v)) return ngVal(def,NaN);
   if(ng_typeString(v)) 
   {
-    v=(''+v).replace(ng_DecimalSeparator(), '.');
-    if(v=='') return ngVal(def,NaN);
+    if(v==='') return ngVal(def,NaN);
+    v=v.replace(ng_DecimalSeparator(), '.');
   } 
   v = (+v);
   return(isNaN(v) ? ngVal(def,NaN) : v);
@@ -1394,7 +1396,7 @@ function ng_toDateOnly(v,def,format)
  */       
 function ng_toNVARCHAR(v,size,def)
 {
-  if((!ng_typeDate(v))&&(ng_typeObject(v))) return ngVal(def,'');
+  if((ng_typeObject(v))&&(!ng_typeDate(v))) return ngVal(def,'');
   v=ng_toString(v,null);
   if(ng_isInvalid(v)) return ngVal(def,'');
   v=ng_RTrim(v);
