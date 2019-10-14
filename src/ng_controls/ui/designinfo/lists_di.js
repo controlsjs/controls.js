@@ -853,6 +853,7 @@ return {
             ], { InitType: 'integer', Level: 'basic' }),
             "MaxLength": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'optional' }),
             "CacheData": ng_diBoolean(true, { Level: 'basic' }),
+            "LoadFullPage": ng_diBoolean(false, { Level: 'basic' }),
             "MinDataBatch": ng_diMixed([
               ng_diUndefined(),
               ng_diInteger(undefined, undefined, { InitValue: 50 })

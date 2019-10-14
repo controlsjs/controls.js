@@ -4522,6 +4522,7 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
 
           if(!pl.IsDataLoaded(i+1))
           {
+            var lfrom=i+1;
             var aih=ngVal(pl.GetAverageItemHeight(),0);
             if((aih<=0)&&(cnt)) aih=(ih/cnt);
             var lcnt=(aih>0 ? Math.floor(maxh/aih) : 0);
@@ -4530,9 +4531,15 @@ function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
             if(lcnt<1) lcnt=1;
             lcnt+=2;
 
-            if(pl.IsAsyncLoadingBlock(i+1,lcnt)) list.Loading=true;
-            else pl.DoLoadData(i+1,lcnt);
-            if(i+1+lcnt>list.measure_loadto) list.measure_loadto=i+1+lcnt;
+            if(pl.IsAsyncLoadingBlock(lfrom,lcnt)) list.Loading=true;
+            else {
+              if(pl.LoadFullPage) {
+                lcnt+=(lfrom-pl.TopIndex);
+                lfrom=pl.TopIndex;
+              }
+              pl.DoLoadData(lfrom,lcnt);
+            }
+            if(lfrom+lcnt>list.measure_loadto) list.measure_loadto=lfrom+lcnt;
           }
 
           it=list.Items[i];
@@ -5150,13 +5157,28 @@ function npgl_NeedData(idx,cnt)
 
   if(idx>=list.Items.length)
   {
+    if(this.LoadFullPage) {
+      if(idx>this.TopIndex) {
+        cnt+=idx-this.TopIndex;
+        idx=this.TopIndex;
+      }
+    }
     return this.DoLoadData(idx,cnt);
   }
+  var lfrom,lcnt;
   for(var i=0;(i<cnt)&&(idx+i<=list.Items.length);i++)
   {
     if(!this.IsDataLoaded(idx+i))
     {
-      if(!this.DoLoadData(idx+i,cnt-i)) return false;
+      lfrom=idx+i;
+      lcnt=cnt-i;
+      if(this.LoadFullPage) {
+        if(lfrom>this.TopIndex) {
+          lcnt+=lfrom-this.TopIndex;
+          lfrom=this.TopIndex;
+        }
+      }
+      if(!this.DoLoadData(lfrom,lcnt)) return false;
       if(this.AsyncData) break;
     }
   }
@@ -5180,8 +5202,8 @@ function npgl_IsDataLoaded(idx)
   if(idx<0) return true;
   if(idx>=list.Items.length) return false;
 
-  // if caching is disabled, anything outside current view is not loaded (up-to-date)
-  if((!this.CacheData)
+  // if caching is disabled or loading of full pages is enabled, anything outside current view is not loaded (up-to-date)
+  if(((!this.CacheData)||(this.LoadFullPage))
     &&((idx<this.TopIndex)
      ||(idx>=(typeof list.measure_loadto!=='undefined' ? list.measure_loadto :
              (this.DisplayMode==plDisplayFit ? 0 :
@@ -5797,6 +5819,12 @@ function Create_ngPageList(def, ref, parent)
    *  Default value: *true*
    */
   c.CacheData = true;
+  /*  Variable: LoadFullPage
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  c.LoadFullPage = false;
 
   /*  Variable: MinDataBatch
    *  ...
