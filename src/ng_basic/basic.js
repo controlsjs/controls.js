@@ -3492,7 +3492,6 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   }
   if(!xmlhttp) return false;
   reqinfo.XMLHttp=xmlhttp;
-  reqinfo.RequestURL=ng_URL(reqinfo.URL);
   var rpc=this;
   xmlhttp.onreadystatechange=function()
   {
@@ -3524,6 +3523,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   }
   
   if((this.OnHTTPRequest)&&(!ngVal(this.OnHTTPRequest(this,reqinfo),false))) return false;
+  reqinfo.RequestURL=ng_URL(reqinfo.URL);
   xmlhttp.open(reqinfo.Method,reqinfo.RequestURL,(callback ? true : false));
   if(reqinfo.ReqHeaders)
   {
