@@ -5807,7 +5807,7 @@ function nga_sendRPCRequest(url,nocache)
       dbgmodified=true;
     }
   }
-  var ret=this.sendRequestDefault(url, nocache);
+  var ret=ng_CallParent(this,'sendRequest',arguments,false);
   if(lngmodified) delete this.Params.lang;
   if(devmodified) delete this.Params.appdevice;
   if(dbgmodified) delete this.Params.appdebug;
@@ -5817,11 +5817,9 @@ function nga_sendRPCRequest(url,nocache)
 
 function nga_AddRPCLang(rpc)
 {
-  rpc.sendRequestDefault = rpc.sendRequest;
-  rpc.sendRequest = nga_sendRPCRequest;
+  ng_OverrideMethod(rpc,'sendRequest',nga_sendRPCRequest);
   return true;
 }
-
 
 function nga_BuildURLParams(url, type)
 {
