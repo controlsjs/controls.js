@@ -199,15 +199,15 @@ function ngTimer(callback,interval,repeat) {
 
 function ngstm_DoSetEnabled(e) {
   this.Enabled=e;
-  if(e) this.Start.original.apply(this);
-  else this.Stop.original.apply(this);
+  if(e) ng_CallParent(this,'Start',[]);
+  else ng_CallParent(this,'Stop',[]);
 }
 
 function ngstm_DoCreate(def,ref) {
   var e;
   if((typeof def.Data === 'object')&&(def.Data)) e=ngVal(def.Data.Enabled,this.Enabled);
   else e=this.Enabled;
-  if(ngVal(e,true)) this.Start.original.apply(this);
+  if(ngVal(e,true)) ng_CallParent(this,'Start',[]);
 }
 
 function ngstm_DoDispose() {
@@ -243,14 +243,8 @@ function ngSysTimer(id)
   this.DoSetEnabled = ngstm_DoSetEnabled;
   this.DoCreate = ngstm_DoCreate;
   this.DoDispose = ngstm_DoDispose;
-  var orig=this.Start;
-  this.Start = ngstm_Start;
-  this.Start.original=orig;
-
-  var orig=this.Stop;
-  this.Stop = ngstm_Stop;
-  this.Stop.original=orig;
-
+  ng_OverrideMethod(this,'Start',ngstm_Start);
+  ng_OverrideMethod(this,'Stop',ngstm_Stop);
   ngControlCreated(this);
 }
 
@@ -259,9 +253,8 @@ function ngsrpc_DoDispose() {
   return true;
 }
 
-function ngsrpc_sendRequest(url, nocache) {
-  if(!this.Enabled) return false;
-  return this.sendRequest.original.apply(this,[url,nocache]);
+function ngsrpc_sendRequest() {
+  return this.Enabled ? ng_CallParent(this,'sendRequest',arguments,false) : false;
 }
 /**
  *  Class: ngSysRPC
@@ -280,10 +273,8 @@ function ngSysRPC(id)
 {
   ngSysControl(this, id, 'ngSysRPC');
   ngRPC.apply(this, [id]);
-  var orig=this.sendRequest;
   this.DoDispose = ngsrpc_DoDispose;
-  this.sendRequest = ngsrpc_sendRequest;
-  this.sendRequest.original=orig;
+  ng_OverrideMethod(this,'sendRequest',ngsrpc_sendRequest);
   ngControlCreated(this);
 }
 
