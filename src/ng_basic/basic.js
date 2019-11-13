@@ -3379,6 +3379,7 @@ function ngrpc_sendScriptRequest(url, reqinfo)
   o.setAttribute("id",sid);
 
   rpcHeadElement.appendChild(o);
+  reqinfo.RequestSent=true;
   if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
   return true;
 }
@@ -3455,6 +3456,7 @@ function ngrpc_sendIFrameRequest(url, params, reqinfo)
   if(frm) 
   { 
     frm.submit(); 
+    reqinfo.RequestSent=true;
     if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
     return true; 
   }
@@ -3539,6 +3541,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   }
 
   xmlhttp.send(reqinfo.PostParams);
+  reqinfo.RequestSent=true;
   if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
   if(!callback) {
     if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
@@ -3594,32 +3597,25 @@ function ngrpc_domain(url)
   return url;
 }
 
-function ngrpc_sendRequest(url, nocache)
+function ngrpc_sendRequest(url, nocache, reqinfo)
 {
-  if(this.Type == rpcNone) return false;
-
+  if(!ng_IsObjVar(reqinfo)) reqinfo={};
   url=ngVal(url, this.URL);
-  nocache=ngVal(nocache, this.nocache);
-  var req_time=new Date().getTime();
+  reqinfo.URL=url
+  reqinfo.nocache=ngVal(nocache, this.nocache);
+  reqinfo.RequestTime=new Date().getTime();
+  reqinfo.Type=this.Type;
 
-  if((this.OnRequest)||(ngOnAnyRPCRequest))
-  {
-    var reqinfo = {
-      URL: url,
-      RequestTime: req_time,
-      nocache: nocache
-    };
-    if((this.OnRequest)&&(!ngVal(this.OnRequest(this,reqinfo),false))) return false;
-    if((ngOnAnyRPCRequest)&&(!ngVal(ngOnAnyRPCRequest(this,reqinfo),false))) return false;
-    url=reqinfo.URL;
-    nocache=reqinfo.nocache;
-    req_time=reqinfo.RequestTime;
-  }
-  if(nocache) url=ng_AddURLParam(url,'_t='+req_time);
+  if((this.OnRequest)&&(!ngVal(this.OnRequest(this,reqinfo),false))) return false;
+  if((ngOnAnyRPCRequest)&&(!ngVal(ngOnAnyRPCRequest(this,reqinfo),false))) return false;
+  if(reqinfo.Type == rpcNone) return false;
+
+  url=reqinfo.URL;
+  if(reqinfo.nocache) url=ng_AddURLParam(url,'_t='+reqinfo.RequestTime);
 
   var v,params='';
-  var type=this.Type;
-  switch(this.Type)
+  var type=reqinfo.Type;
+  switch(type)
   {
     case rpcAuto:
     case rpcScript:
@@ -3651,7 +3647,7 @@ function ngrpc_sendRequest(url, nocache)
           }
           if(params.length>rpcMaxGetLength) 
           {
-            switch(this.Type)
+            switch(reqinfo.Type)
             {
               case rpcAuto:
               case rpcHttpRequest:
@@ -3667,7 +3663,7 @@ function ngrpc_sendRequest(url, nocache)
           }
           else
           {
-            switch(this.Type)
+            switch(reqinfo.Type)
             {
               case rpcAuto:
               case rpcHttpRequest:
@@ -3686,15 +3682,16 @@ function ngrpc_sendRequest(url, nocache)
       break;
   }
   var rpctype;
-  this.RequestTime=req_time;
+  this.RequestTime=reqinfo.RequestTime;
+  this.RequestInfo=reqinfo;
   switch(type)
   {
     case rpcScript:
       if(params!='') url=ng_AddURLParam(url, params);
-      return this.sendScriptRequest(url, { RequestTime: req_time });
+      return this.sendScriptRequest(url, reqinfo);
 
     case rpcIFrame:
-      return this.sendIFrameRequest(url,this.Params, { RequestTime: req_time });
+      return this.sendIFrameRequest(url,this.Params, reqinfo);
 
     case rpcHttpRequestPOST:    
     case rpcHttpRequestGET:
@@ -3705,12 +3702,12 @@ function ngrpc_sendRequest(url, nocache)
     case rpcDataPOST:
     case rpcDataGET:
       if(typeof rpctype==='undefined') rpctype=3;
-      var ri={ ReqHeaders: { RPC: rpctype }, RequestTime: req_time };
+      reqinfo.ReqHeaders={ RPC: rpctype };
       if((type===rpcHttpRequestGET)||(type===rpcJSONGET)||(type===rpcDataGET))
       {
         if(params!='') url=ng_AddURLParam(url, params);
       }
-      else ri.PostParams=params;
+      else reqinfo.PostParams=params;
       return this.sendHttpRequest(url, function(rpc, response, xmlhttp, reqinfo) {
         if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false))) 
           return;
@@ -3768,22 +3765,19 @@ function ngrpc_sendRequest(url, nocache)
           case rpcDataPOST:
             break;
         }
-      }, ri);
+      }, reqinfo);
       
     case rpcUser:
       if(!this.OnSendRequest) return false;
       var rpc=this;
       function sent() {
-        if(rpc.OnRequestSent) rpc.OnRequestSent(rpc, ri.URL, ri);
+        if(rpc.OnRequestSent) rpc.OnRequestSent(rpc, reqinfo.URL, reqinfo);
       }
-      var ri={
-        URL: url,
-        Type: rpcUser,
-        RequestTime: req_time,
-        Sent: sent
-      };
-      if(!ngVal(this.OnSendRequest(this, url, ri),false)) return false;
-      if(ri.Sent) ri.Sent();
+      reqinfo.URL=url;
+      reqinfo.Type=rpcUser;
+      reqinfo.Sent=sent;
+      if(!ngVal(this.OnSendRequest(this, url, reqinfo),false)) return false;
+      if(reqinfo.Sent) reqinfo.Sent();
       else sent();
       return true;
   }
