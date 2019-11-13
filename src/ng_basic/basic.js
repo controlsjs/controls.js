@@ -3348,7 +3348,7 @@ var rpcHeadElement = null;
 
 function ngrpc_sendScriptRequest(url, reqinfo)
 {
-  if((typeof reqinfo!=='object')||(!reqinfo)) reqinfo={};
+  if(!ng_IsObjVar(reqinfo)) reqinfo={};
   reqinfo.URL=url;
   reqinfo.Type=rpcScript;
   if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
@@ -3386,7 +3386,7 @@ function ngrpc_sendScriptRequest(url, reqinfo)
 
 function ngrpc_sendIFrameRequest(url, params, reqinfo)
 {
-  if((typeof reqinfo!=='object')||(!reqinfo)) reqinfo={};
+  if(!ng_IsObjVar(reqinfo)) reqinfo={};
   reqinfo.URL=url;
   reqinfo.Type=rpcIFrame;
   reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? 'POST' : this.HttpMethod));
@@ -3465,7 +3465,7 @@ function ngrpc_sendIFrameRequest(url, params, reqinfo)
 
 function ngrpc_sendHttpRequest(url, callback, reqinfo)
 {
-  if((typeof reqinfo!=='object')||(!reqinfo)) reqinfo={};
+  if(!ng_IsObjVar(reqinfo)) reqinfo={};
   reqinfo.URL=url;
   reqinfo.Type=rpcHttpRequest;
   if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
@@ -3581,6 +3581,7 @@ function ngrpc_GetURLParams()
 }
 
 function ngrpc_DoError(reqinfo) {
+  if(ng_IsObjVar(reqinfo)) reqinfo.RequestFailed=true;
   if(this.OnError) this.OnError(this, reqinfo);
 }
 
