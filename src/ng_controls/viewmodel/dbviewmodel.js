@@ -492,6 +492,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
   });
 
   c.AddEvent('OnCommand', function(vm,cmd,options) {
+    var cmderr;
     switch(cmd)
     {
       case 'new':
@@ -500,9 +501,17 @@ function Create_ngSysDBViewModel(def,ref,parent)
       case 'cancel':
         options.ValueNames=[];
         break;
+      case 'insert':
+        cmderr='dbviewmodel_err_cmd_insert';
+        break;
+      case 'update':
+        cmderr='dbviewmodel_err_cmd_update';
+        break;
       case 'load':
         if(ngVal(options.ResetRecordOnLoad,vm.ResetRecordOnLoad)) vm.ResetRecord();
+        cmderr='dbviewmodel_err_cmd_load';
       case 'delete':
+        if(cmd==='delete') cmderr='dbviewmodel_err_cmd_delete';
         var pk=vm.PrimaryKeyNames();
         if(pk.length>0)
         {
@@ -527,6 +536,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
         }
         break;
     }
+    if((typeof options.CommandErrorMessage==='undefined')&&(cmderr)) options.CommandErrorMessage=ngTxt(cmderr);
     if(!ng_isEmpty(options.ValueNames)) // Add _OriginalRecord values if not included
     {
       var val,path,vn=options.ValueNames, newvn=[];

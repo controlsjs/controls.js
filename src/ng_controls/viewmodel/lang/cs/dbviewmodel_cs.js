@@ -23,3 +23,7 @@ ngc_Lang['cs']['dbviewmodel_err_notexists']='Chyba: Záznam nebyl nalezen.';
 ngc_Lang['cs']['dbviewmodel_err_datachanged']='Od poslední aktualizace došlo ke změně dat. Opakujte změny, které jste provedli, a následně je uložte.';
 ngc_Lang['cs']['dbviewmodel_err_internal']='Chyba: Interní chyba.';
 ngc_Lang['cs']['dbviewmodel_err_unknown']='Chyba: Neznámá chyba.';
+ngc_Lang['cs']['dbviewmodel_err_cmd_load']='Požadavek na načtení dat záznamu selhal.';
+ngc_Lang['cs']['dbviewmodel_err_cmd_insert']='Požadavek na vložení nového záznamu selhal.';
+ngc_Lang['cs']['dbviewmodel_err_cmd_update']='Požadavek na aktualizaci záznamu selhal.';
+ngc_Lang['cs']['dbviewmodel_err_cmd_delete']='Požadavek na smazání záznamu selhal.';

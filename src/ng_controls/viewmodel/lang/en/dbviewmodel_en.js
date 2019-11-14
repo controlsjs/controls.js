@@ -23,3 +23,7 @@ ngc_Lang['en']['dbviewmodel_err_notexists']='Error: Record not found.';
 ngc_Lang['en']['dbviewmodel_err_datachanged']='Data changed since last update. Redo changes and save again.';
 ngc_Lang['en']['dbviewmodel_err_internal']='Error: Internal error.';
 ngc_Lang['en']['dbviewmodel_err_unknown']='Error: Unknown error.';
+ngc_Lang['en']['dbviewmodel_err_cmd_load']='Request to load record data failed.';
+ngc_Lang['en']['dbviewmodel_err_cmd_insert']='Request to insert new record failed.';
+ngc_Lang['en']['dbviewmodel_err_cmd_update']='Request to update record failed.';
+ngc_Lang['en']['dbviewmodel_err_cmd_delete']='Request to delete record failed.';
