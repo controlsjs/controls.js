@@ -293,6 +293,22 @@ function ngdsc_LoadData(ds, list, idx, cnt)
   return; // undefined
 }
 
+function ngdsc_OnCommand(vm,cmd,options)
+{
+  if(typeof options.CommandErrorMessage==='undefined') {
+    switch(cmd)
+    {
+      case 'getrecords':
+      case 'recordcount':
+      case 'applyfilters':
+      case 'resetfilters':
+        options.CommandErrorMessage=ngTxt('viewmodel_err_cmd_data');
+        break;
+    }
+  }
+  return true;
+}
+
 function ngdsc_DataLoaded(vm,cmd)
 {
   var ds=vm.DataSetControl;
@@ -397,6 +413,7 @@ function ngdsc_SetViewModel(vm)
     this.RemoveEvent('OnLoadData',ngdsc_LoadData);
     if(typeof ovm.RemoveEvent === 'function') {
       ovm.RemoveEvent('OnGetValues', ngdsc_GetValues);
+      ovm.RemoveEvent('OnCommand', ngdsc_OnCommand);
       ovm.RemoveEvent('OnCommandData', ngdsc_DataLoaded);
       ovm.RemoveEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
     }
@@ -428,6 +445,7 @@ function ngdsc_SetViewModel(vm)
       }
     }
     vm.AddEvent('OnGetValues', ngdsc_GetValues);
+    vm.AddEvent('OnCommand', ngdsc_OnCommand);
     vm.AddEvent('OnCommandData', ngdsc_DataLoaded);
     vm.AddEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
   }

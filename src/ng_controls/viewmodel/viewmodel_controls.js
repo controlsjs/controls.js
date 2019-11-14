@@ -954,6 +954,7 @@ ngUserControls['viewmodel_controls'] = {
         }
       }
       var noserver=(ngVal(options.URL,this.ServerURL)=='') || c.HasDataSet(); // no server
+      var cmderr;
       switch(cmd)
       {
         case 'getrecords':
@@ -964,6 +965,7 @@ ngUserControls['viewmodel_controls'] = {
           if(noserver) {
             if(getrecords()) return true;
           }
+          cmderr='viewmodel_err_cmd_data';
           break;
         case 'recordcount':
           if(c.OnGetTotalCount) {
@@ -979,6 +981,7 @@ ngUserControls['viewmodel_controls'] = {
               return true;
             }
           }
+          cmderr='viewmodel_err_cmd_data';
           break;
         case 'applyfilters':
           if(c.OnApplyFilters) {
@@ -990,6 +993,7 @@ ngUserControls['viewmodel_controls'] = {
             getrecords();
             return true;
           }
+          cmderr='viewmodel_err_cmd_data';
           break;
         case 'resetfilters':
           if(c.OnResetFilters) {
@@ -1015,8 +1019,10 @@ ngUserControls['viewmodel_controls'] = {
             getrecords();
             return true;
           }
+          cmderr='viewmodel_err_cmd_data';
           break;
       }
+      if((typeof options.CommandErrorMessage==='undefined')&&(cmderr)) options.CommandErrorMessage=ngTxt(cmderr);
       return ng_CallParent(c,'OnDoCommand',arguments,false);
     }
 
