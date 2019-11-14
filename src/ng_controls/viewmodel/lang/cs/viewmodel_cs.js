@@ -33,3 +33,5 @@ ngc_Lang['cs']['viewmodel_err_enum']           = 'Tato hodnota není povolena.';
 ngc_Lang['cs']['viewmodel_err_len']            = 'Hodnota je moc dlouhá (max %d).';
 ngc_Lang['cs']['viewmodel_err_len_unknown']    = 'Hodnota je moc dlouhá.';
 ngc_Lang['cs']['viewmodel_err_format']         = 'Hodnota není v požadovaném tvaru.';
+ngc_Lang['cs']['viewmodel_err_cmd']            = 'Příkaz "%s" selhal.';
+ngc_Lang['cs']['viewmodel_err_cmd_data']       = 'Žádost o data selhala.';

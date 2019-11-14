@@ -33,4 +33,5 @@ ngc_Lang['en']['viewmodel_err_enum']           = 'This value is not allowed.';
 ngc_Lang['en']['viewmodel_err_len']            = 'Value is too long (max %d).';
 ngc_Lang['en']['viewmodel_err_len_unknown']    = 'Value is too long.';
 ngc_Lang['en']['viewmodel_err_format']         = 'Value is not in required format.';
-
+ngc_Lang['en']['viewmodel_err_cmd']            = 'Command "%s" failed.';
+ngc_Lang['en']['viewmodel_err_cmd_data']       = 'The data request failed.';

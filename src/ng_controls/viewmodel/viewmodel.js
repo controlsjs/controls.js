@@ -1597,8 +1597,15 @@ function ngvm_GetRPC()
 {
   if(!this.rpc) 
   {
-    this.rpc=new ngRPC(this.ID);
-    this.rpc.nocache=true;
+    var vm=this;
+    var rpc=new ngRPC(this.ID);
+    rpc.nocache=true;
+    rpc.OnError=function(rpc, reqinfo) {
+      if((reqinfo.ViewModel===vm)&&(reqinfo.vmCommand===vm.ActiveCommand)&&(reqinfo.vmRequestID==vm.rpc_reqid)) {
+        vm.DoCommandError(reqinfo.vmCommand,reqinfo.vmCommandOptions);
+      }
+    };
+    this.rpc=rpc;
   }
   return this.rpc;
 }
@@ -1642,7 +1649,10 @@ function ngvm_recievedata(results)
    
   // Check request id
   if(reqid!=vm.rpc_reqid) return;
-                   
+
+  if(vm.CommandTimer) clearTimeout(vm.CommandTimer);
+  delete vm.CommandTimer;
+
   var sresults;
   if(vm.OnResults)
   {
@@ -1782,8 +1792,25 @@ function ngvm_GetCommandValueNames(cmd,options,exactmatch)
   else return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch);
 }
 
+function ngvm_DoCommandError(cmd, options)
+{
+  ngDEBUGERROR('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
+
+  this.CancelCommand();
+  var msg=ngVal(options.CommandErrorMessage,'');
+  if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage.'+cmd,'');
+  if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage','');
+  if(msg==='') msg=ngTxt('viewmodel_err_cmd');
+  msg=ng_sprintf(msg,cmd);
+  if(this.OnCommandError) this.OnCommandError(this, msg, cmd, options);
+//  else if(msg!='') alert(msg);
+}
+
 function ngvm_CancelCommand()
 {
+  if(this.CommandTimer) clearTimeout(this.CommandTimer);
+  delete this.CommandTimer;
+
   if(this.ActiveCommand!='')
   {
     this.rpc_reqid++;
@@ -1851,7 +1878,17 @@ function ngvm_Command(cmd,options)
 
   if((this.OnCommandRequest)&&(!ngVal(this.OnCommandRequest(this,rpc),false))) return false;
 
-  rpc.sendRequest();
+  var self=this;
+  var reqid=this.rpc_reqid;
+  var timeout=ngVal(options.CommandTimeout,this.CommandTimeout);
+  if(this.CommandTimer) clearTimeout(this.CommandTimer);
+  if(timeout>0) {
+    this.CommandTimer=setTimeout(function() {
+      if((self.ActiveCommand===cmd)&&(self.rpc_reqid==reqid)) self.DoCommandError(cmd, options);
+    },timeout);
+  } else delete this.CommandTimer;
+
+  rpc.sendRequest(void 0, void 0, { ViewModel: this, vmCommand: cmd, vmCommandOptions: options, vmRequestID: reqid });
   return true;
 }
 
@@ -2163,6 +2200,13 @@ function ngViewModel(id,namespace,vmodel,url)
    */
   this.ServerURL = ngVal(url,'');
 
+  /*  Variable: CommandTimeout
+   *  Default command timeout.
+   *  Type: integer
+   *  Default value: *3*60000*
+   */
+  this.CommandTimeout=3*60000; // 3 mins
+
   /*  Variable: ActiveCommand
    *  Current running server-side command.   
    *  Type: string
@@ -2423,6 +2467,18 @@ function ngViewModel(id,namespace,vmodel,url)
   this.CancelCommand = ngvm_CancelCommand;
 
   /**
+   *  Function: DoCommandError
+   *  Handles command error.
+   *
+   *  Syntax:
+   *    void *DoCommandError* ()
+   *
+   *  Returns:
+   *    -
+   */
+  this.DoCommandError = ngvm_DoCommandError;
+
+  /**
    *  Function: GetCommandValueNames
    *  Gets value names for specified command.
    *  
@@ -2520,6 +2576,10 @@ function ngViewModel(id,namespace,vmodel,url)
    *  Event: OnCommandCancel
    */   
   this.OnCommandCancel = null;
+  /*
+   *  Event: OnCommandError
+   */
+  this.OnCommandError = null;
   /*
    *  Event: OnCommandData
    */   
