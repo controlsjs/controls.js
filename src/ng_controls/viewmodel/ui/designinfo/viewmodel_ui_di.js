@@ -282,6 +282,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
               "OnShowErrorMsg": ng_diEvent('function(c, msg) { alert(msg); }',{ Level: 'basic' }),
 
               "OnCommand": ng_diEvent('function(c, cmd, options) { return true; }',{ Level: 'basic' }),
+              "OnCommandError": ng_diEvent('function(c, msg, cmd, options) { }',{ Level: 'basic' }),
               "OnCommandRequest": ng_diEvent('function(c, rpc) { return true; }',{ Level: 'basic' }),
               "OnCommandResults": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
               "OnCommandFinished": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),

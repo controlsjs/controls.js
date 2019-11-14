@@ -243,6 +243,19 @@ function ngvmf_OnCommandCancel(vm)
   }
 }
 
+function ngvmf_OnCommandError(vm,msg,cmd,options)
+{
+  var form=vm.ViewModelForm;
+  if(form)
+  {
+    if(form.OnCommandError) form.OnCommandError(form,msg,cmd,options);
+    else {
+      if(form.OnShowErrorMsg) form.OnShowErrorMsg(this,msg);
+      else alert(msg);
+    }
+  }
+}
+
 function ngvmf_OnCommandResults(vm,cmd,sresults)
 {
   var form=vm.ViewModelForm;
@@ -668,6 +681,7 @@ function ngvmf_SetViewModel(vm)
       ovm.RemoveEvent('OnCommandResults',ngvmf_OnCommandResults);
       ovm.RemoveEvent('OnCommandFinished',ngvmf_OnCommandFinished);
       ovm.RemoveEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+      ovm.RemoveEvent('OnCommandError',ngvmf_OnCommandError);
     }
     delete ovm.ViewModelForm;
   }
@@ -682,6 +696,7 @@ function ngvmf_SetViewModel(vm)
       vm.AddEvent('OnCommandResults',ngvmf_OnCommandResults);
       vm.AddEvent('OnCommandFinished',ngvmf_OnCommandFinished);
       vm.AddEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+      vm.AddEvent('OnCommandError',ngvmf_OnCommandError);
     }
   }
   if(this.OnSetViewModel) this.OnSetViewModel(this,vm,ovm);
@@ -804,6 +819,7 @@ function Create_ngViewModelForm(def, ref, parent)
   c.OnCommandResults = null;
   c.OnCommandFinished = null;
   c.OnCommandCancel = null;
+  c.OnCommandError = null;
 
   return c;
 }
