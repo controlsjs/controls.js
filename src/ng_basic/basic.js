@@ -3754,7 +3754,7 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
             } 
             catch(e) 
             { 
-              ngDEBUGERROR('ngRPC: JSON parsing failed!',e);
+              ngDEBUGERROR('ngRPC: JSON parsing failed! Data: "'+response+'"',e);
               reqinfo.ParseError=true;
               if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
               rpc.DoError(reqinfo);
