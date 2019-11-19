@@ -265,7 +265,11 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
             }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngHint' }),
             "Data": {
               "DefaultFindFieldControlsBindings": ng_diTypeVal('array_strings', ["'Data'","'Value'","'Checked'","'Selected'","'Lookup'","'Error'","'Link'"], { Level: 'advanced' }),
-              "DisableOnCommand": ng_diBoolean(true, { Level: 'basic' })
+              "DisableOnCommand": ng_diMixed([
+                ng_diBoolean(true),
+                ng_diArrayOf('string')
+              ], { Level: 'basic' }),
+              "DisableDelay":  ng_diInteger(1, { Level: 'basic' })
             },
             "Events": {
               "OnSetViewModel": ng_diEvent('function(c, vm, ovm) {}',{ Level: 'basic' }),
@@ -280,6 +284,10 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
               "OnShowLoading": ng_diEvent('function(c) {}',{ Level: 'basic' }),
               "OnHideLoading": ng_diEvent('function(c) {}',{ Level: 'basic' }),
               "OnShowErrorMsg": ng_diEvent('function(c, msg) { alert(msg); }',{ Level: 'basic' }),
+
+              "OnDisableControlsCommand": ng_diEvent('function(c, cmd) { return true; }',{ Level: 'advanced' }),
+              "OnDisableControls": ng_diEvent('function(c) { return true; }',{ Level: 'advanced' }),
+              "OnEnableControls": ng_diEvent('function(c) { return true; }',{ Level: 'advanced' }),
 
               "OnCommand": ng_diEvent('function(c, cmd, options) { return true; }',{ Level: 'basic' }),
               "OnCommandError": ng_diEvent('function(c, msg, cmd, options) { }',{ Level: 'basic' }),

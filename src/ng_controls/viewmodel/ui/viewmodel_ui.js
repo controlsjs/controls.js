@@ -195,7 +195,8 @@ function ngvmf_DisableControls()
   if(this.disablectrlscnt<=0)
   {
     this.disablectrlscnt=0;
-    this.SetChildControlsEnabled(false);
+    if((!this.OnDisableControls)||(ngVal(this.OnDisableControls(this),false)))
+      this.SetChildControlsEnabled(false);
   }
   this.disablectrlscnt++;
 }
@@ -204,7 +205,10 @@ function ngvmf_EnableControls()
 {
   if(this.disablectrlscnt<=0) return;
   this.disablectrlscnt--;
-  if(!this.disablectrlscnt) this.SetChildControlsEnabled(true);
+  if(!this.disablectrlscnt) {
+    if((!this.OnEnableControls)||(ngVal(this.OnEnableControls(this),false)))
+      this.SetChildControlsEnabled(true);
+  }
 }
 
 function ngvmf_OnCommandRequest(vm,rpc)
@@ -217,13 +221,20 @@ function ngvmf_OnCommandRequest(vm,rpc)
     form.ShowLoading(true);
 
     if(form.DisableOnCommand) {
+      var delay = form.DisableDelay;
+      if(delay<=0) delay=1;
       if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
       form.disable_ctrls_timer=setTimeout(function() {
         if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
         delete form.disable_ctrls_timer;
 
-        if(form.DisableOnCommand) form.DisableControls();
-      },1);
+        if((form.DisableOnCommand===true)||(ng_inArray(vm.ActiveCommand, form.DisableOnCommand))) {
+          if((!form.OnDisableControlsCommand)||(ngVal(form.OnDisableControlsCommand(form,vm.ActiveCommand),true))) {
+            form.controls_disabled=true;
+            form.DisableControls();
+          }
+        }
+      },delay);
     }
   }
   return true;
@@ -239,7 +250,10 @@ function ngvmf_OnCommandCancel(vm, cmd)
       clearTimeout(form.disable_ctrls_timer);
       delete form.disable_ctrls_timer;
     }
-    else if(form.DisableOnCommand) form.EnableControls();
+    else {
+      if((form.controls_disabled)&&(form.DisableOnCommand)) form.EnableControls();
+    }
+    delete form.controls_disabled;
   }
 }
 
@@ -266,7 +280,8 @@ function ngvmf_OnCommandResults(vm,cmd,sresults)
       clearTimeout(form.disable_ctrls_timer);
       delete form.disable_ctrls_timer;
     }
-    else if(form.DisableOnCommand) form.EnableControls();
+    else if((form.controls_disabled)&&(form.DisableOnCommand)) form.EnableControls();
+    delete form.controls_disabled;
   }
   return true;
 }
@@ -771,6 +786,7 @@ function Create_ngViewModelForm(def, ref, parent)
   c.ErrorHint = null;
 
   c.DisableOnCommand = true;
+  c.DisableDelay = 1;
 
   c.ChildHandling = 1; // ngChildEnabledParentAware
   /*
@@ -813,6 +829,10 @@ function Create_ngViewModelForm(def, ref, parent)
   c.OnShowLoading = null;
   c.OnHideLoading = null;
   c.OnShowErrorMsg = null;
+
+  c.OnDisableControlsCommand = null;
+  c.OnDisableControls = null;
+  c.OnEnableControls = null;
 
   c.OnCommand = null;
   c.OnCommandRequest = null;
