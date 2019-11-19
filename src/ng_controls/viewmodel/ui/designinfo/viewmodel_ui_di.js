@@ -286,7 +286,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
               "OnCommandRequest": ng_diEvent('function(c, rpc) { return true; }',{ Level: 'basic' }),
               "OnCommandResults": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
               "OnCommandFinished": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
-              "OnCommandCancel": ng_diEvent('function(c) {}',{ Level: 'basic' })
+              "OnCommandCancel": ng_diEvent('function(c, cmd) {}',{ Level: 'basic' })
             },
             "OverrideEvents": {
               "OnFindFieldControls": ng_diEvent('function(c, fid, visibleonly, bindings, parentfielddef) { return null; }',{ Level: 'basic' })

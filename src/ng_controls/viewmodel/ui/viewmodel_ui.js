@@ -229,12 +229,12 @@ function ngvmf_OnCommandRequest(vm,rpc)
   return true;
 }
 
-function ngvmf_OnCommandCancel(vm)
+function ngvmf_OnCommandCancel(vm, cmd)
 {
   var form=vm.ViewModelForm;
   if(form)
   {
-    if(form.OnCommandCancel) form.OnCommandCancel(form);
+    if(form.OnCommandCancel) form.OnCommandCancel(form, cmd);
     if(form.disable_ctrls_timer) {
       clearTimeout(form.disable_ctrls_timer);
       delete form.disable_ctrls_timer;
