@@ -1811,12 +1811,13 @@ function ngvm_CancelCommand()
   if(this.CommandTimer) clearTimeout(this.CommandTimer);
   delete this.CommandTimer;
 
-  if(this.ActiveCommand!='')
+  var cmd=this.ActiveCommand;
+  if(cmd!='')
   {
+    this.ActiveCommand='';
     this.rpc_reqid++;
-    if(this.OnCommandCancel) this.OnCommandCancel(this);
+    if(this.OnCommandCancel) this.OnCommandCancel(this, cmd);
   }
-  this.ActiveCommand='';
 }
 
 function ngvm_Command(cmd,options)
