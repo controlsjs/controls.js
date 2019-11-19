@@ -18,6 +18,7 @@ var DBVM_ERROR_ACCESSDENIED=-3;
 var DBVM_ERROR_NOTEXISTS=-4;
 var DBVM_ERROR_DATACHANGED=-5;
 var DBVM_ERROR_FAILED_SILENT=-6;
+var DBVM_ERROR_REQUEST_FAILED=-7;
 var DBVM_ERROR_INTERNAL=-101;
 
 var DBVM_COMMANDS = ['new','load','insert','update','delete','cancel'];  
@@ -659,6 +660,21 @@ function Create_ngSysDBViewModel(def,ref,parent)
     }
     return true;
   });
+  c.AddEvent('OnCommandCancel', function(vm, cmd) {
+    // Restore Record State
+    if(typeof vm._recordstate!=='undefined') vm.ViewModel._RecordState(vm._recordstate);
+    delete vm._recordstate;
+
+    var sresults = { DBError: DBVM_ERROR_REQUEST_FAILED };
+    switch(cmd)
+    {
+      case 'load':   if(vm.OnLoadFailed)   vm.OnLoadFailed(vm,sresults); break;
+      case 'insert': if(vm.OnInsertFailed) vm.OnInsertFailed(vm,sresults); break;
+      case 'update': if(vm.OnUpdateFailed) vm.OnUpdateFailed(vm,sresults); break;
+      case 'delete': if(vm.OnDeleteFailed) vm.OnDeleteFailed(vm,sresults); break;
+    }
+  });
+
   return c;
 }
 
