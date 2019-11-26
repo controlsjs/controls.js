@@ -255,6 +255,9 @@ ngUserControls['window_designinfo'] = {
           "Events": {
             "OnCheckPlacement": ng_diEvent('function(c, p) {}', { Level: 'basic' }),
             "OnPopup": ng_diEvent('function(c, info) { return true; }', { Level: 'basic' })
+          },
+          "OverrideEvents": {
+            "OnGetAnchors": ng_diEvent('function(c, a) { return a; }', { Level: 'basic' })
           }
         }, {
           "Controls": { Level: 'basic' },

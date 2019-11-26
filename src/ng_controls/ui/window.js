@@ -1605,10 +1605,16 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
   if(typeof popupx==='undefined') popupx=ngVal(this.Bounds.L,0);
   if(typeof popupy==='undefined') popupy=ngVal(this.Bounds.T,0);
 
+  var adefs=(typeof this.OnGetAnchors==='function')
+    ? this.OnGetAnchors(this,this.Anchors)
+    : this.Anchors;
+
   var dp,x,y;
   var o=this.Elm();
-  if((!o)||(typeof popupx==='undefined')||(typeof popupy==='undefined'))
-  {
+  if(
+    (!o)||(typeof popupx==='undefined')||(typeof popupy==='undefined')
+    ||(typeof adefs !== 'object')||!(adefs)
+  ){
     return { Anchor: '', AnchorObj: null, AffectedArea: -1 };
   }
   if((typeof w==='undefined')||(typeof h==='undefined'))
@@ -1634,11 +1640,12 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
 
   var anchor=null,anchorid='';
   if(typeof anchors==='string') anchors=[anchors];
+
   if(ng_IsArrayVar(anchors)) {
     var a,ixan=anchors;
-    anchors={}
+    anchors={};
     for(var i=0;i<ixan.length;i++) {
-      a=this.Anchors[ixan[i]];
+      a=adefs[ixan[i]];
       if((a)&&(typeof a==='object')) anchors[ixan[i]]=a;
     }
     if(ng_EmptyVar(anchors)) anchors=null;
@@ -1651,16 +1658,16 @@ function ngh_FindAnchor(w,h,anchors,popupx,popupy,pw,ph)
       anchors=new Object;
       for(var i in this.PreferredAnchors)
       {
-        a=this.Anchors[this.PreferredAnchors[i]];
+        a=adefs[this.PreferredAnchors[i]];
         if((a)&&(typeof a==='object')) anchors[this.PreferredAnchors[i]]=a;
       }
-      for(var i in this.Anchors)
+      for(var i in adefs)
       {
-        a=this.Anchors[i];
+        a=adefs[i];
         if((a)&&(typeof a==='object')&&(typeof anchors[i] === 'undefined')) anchors[i]=a;
       }
     }
-    else anchors=this.Anchors;
+    else anchors=adefs;
   }
 
   var noimg={L:0,T:0,aL:0,aT:0,oT:0,oL:0,W:0,H:0};
@@ -1739,7 +1746,11 @@ function ngh_DoUpdate(o)
 
   if((typeof this.PopupX === 'undefined')||(this.InDesignMode)) this.PopupX=ngVal(this.Bounds.L,0);
   if((typeof this.PopupY === 'undefined')||(this.InDesignMode)) this.PopupY=ngVal(this.Bounds.T,0);
-  
+
+  var adefs=(typeof this.OnGetAnchors === 'function')
+    ? this.OnGetAnchors(this,this.Anchors)
+    : this.Anchors;
+
   delete this.PopupAnchor;
   
   ng_BeginMeasureElement(o);
@@ -1755,29 +1766,29 @@ function ngh_DoUpdate(o)
   }  
   else
   {
-    if((typeof this.Anchors === 'object')&&(this.Anchors))
+    if((typeof adefs === 'object')&&(adefs))
     {
-      anchor=ngVal(this.Anchors[this.Anchor],null);
+      anchor=ngVal(adefs[this.Anchor],null);
       if(anchor) anchorid=this.Anchor;
     }
   }
   if((typeof anchor!=='object')||(!anchor)) // take first
   {
-    if((typeof this.Anchors === 'object')&&(this.Anchors))
+    if((typeof adefs === 'object')&&(adefs))
     {
       if(this.PreferredAnchors)
       {
         var a;
         for(var i in this.PreferredAnchors)
         {
-          a=this.Anchors[this.PreferredAnchors[i]];
+          a=adefs[this.PreferredAnchors[i]];
           if((a)&&(typeof a==='object')) { anchor=a; anchorid=this.PreferredAnchors[i]; break; }
         }
       }
       if(!anchor)
-        for(var i in this.Anchors)
+        for(var i in adefs)
         {
-          anchor=this.Anchors[i];
+          anchor=adefs[i];
           anchorid=i;
           if((anchor)&&(typeof anchor==='object')) break;
         }
@@ -2343,6 +2354,10 @@ function ngHint(id)
    *  Group: Events
    */   
   /*
+   *  Event: OnGetAnchors
+   */
+  this.OnGetAnchors = null;
+  /*
    *  Event: OnCheckPlacement
    */     
   this.OnCheckPlacement = null;
@@ -2550,13 +2565,18 @@ function nghtxt_DoHintUpdate(o)
         try
         {
           var anchors,p_anchors;
+
+          var adefs = (typeof this.OnGetAnchors==='function')
+           ? this.OnGetAnchors(this,this.Anchors)
+           : this.Anchors;
+
           if(anchor!=='auto')
           {
             p_anchors=new Object;
             anchors=new Object;
-            if((typeof this.Anchors === 'object')&&(this.Anchors))
+            if((typeof adefs==='object')&&(adefs))
             {
-              p_anchors[this.Anchor]=this.Anchors[this.Anchor];
+              p_anchors[this.Anchor]=adefs[this.Anchor];
             }
           }
           else
@@ -2566,18 +2586,22 @@ function nghtxt_DoHintUpdate(o)
               var a;
               anchors=new Object;
               p_anchors=new Object;
-              for(var i in this.PreferredAnchors)
+
+              if((typeof adefs==='object')&&(adefs))
               {
-                a=this.Anchors[this.PreferredAnchors[i]];
-                if((a)&&(typeof a==='object')) p_anchors[this.PreferredAnchors[i]]=a;
-              }
-              for(var i in this.Anchors)
-              {
-                a=this.Anchors[i];
-                if((a)&&(typeof a==='object')&&(typeof p_anchors[i] === 'undefined')) anchors[i]=a;
+                for(var i in this.PreferredAnchors)
+                {
+                  a=adefs[this.PreferredAnchors[i]];
+                  if((a)&&(typeof a==='object')) p_anchors[this.PreferredAnchors[i]]=a;
+                }
+                for(var i in adefs)
+                {
+                  a=adefs[i];
+                  if((a)&&(typeof a==='object')&&(typeof p_anchors[i] === 'undefined')) anchors[i]=a;
+                }
               }
             }
-            else anchors=this.Anchors;
+            else anchors=adefs;
           }
   
           // Draw non-wrapped
