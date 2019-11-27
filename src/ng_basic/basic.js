@@ -3389,7 +3389,7 @@ function ngrpc_sendIFrameRequest(url, params, reqinfo)
   if(!ng_IsObjVar(reqinfo)) reqinfo={};
   reqinfo.URL=url;
   reqinfo.Type=rpcIFrame;
-  reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? 'POST' : this.HttpMethod));
+  reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? 'POST' : this.HTTPMethod));
   if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
   if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
 
@@ -3476,7 +3476,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   }
   reqinfo.PostParams=ngVal(reqinfo.PostParams,null);
   reqinfo.ReqHeaders=ngVal(reqinfo.ReqHeaders,null);
-  reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? (typeof reqinfo.PostParams === 'string' ? 'POST' : 'GET') : this.HttpMethod));
+  reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? (typeof reqinfo.PostParams === 'string' ? 'POST' : 'GET') : this.HTTPMethod));
   var xmlhttp=null;
   try {
     if (window.XMLHttpRequest) xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari      
