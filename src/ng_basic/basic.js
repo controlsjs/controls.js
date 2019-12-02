@@ -3389,7 +3389,7 @@ function ngrpc_sendIFrameRequest(url, params, reqinfo)
   if(!ng_IsObjVar(reqinfo)) reqinfo={};
   reqinfo.URL=url;
   reqinfo.Type=rpcIFrame;
-  reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? 'POST' : this.HTTPMethod));
+  reqinfo.Method='POST';
   if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
   if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
 
