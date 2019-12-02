@@ -3419,10 +3419,11 @@ function ngrpc_sendIFrameRequest(url, params, reqinfo)
   }
 
   reqinfo.RequestURL=ng_URL(reqinfo.URL);
+  reqinfo.Method='POST';
   try
   {
     doc.open();
-    doc.write('<html><body><form action="'+reqinfo.RequestURL+'" method="'+reqinfo.Method+'" id="'+this.id+'">');
+    doc.write('<html><body><form action="'+reqinfo.RequestURL+'" method="POST" id="'+this.id+'">');
     var v;
     if(ng_IsObjVar(params))
     {
@@ -3687,6 +3688,19 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
   this.RequestInfo=reqinfo;
   switch(type)
   {
+    case rpcHttpRequestPOST:
+    case rpcJSONPOST:
+    case rpcDataPOST:
+      reqinfo.Method='POST';
+      break;
+    case rpcHttpRequestGET:
+    case rpcDataGET:
+    case rpcJSONGET:
+      reqinfo.Method='GET';
+      break;
+  }
+  switch(type)
+  {
     case rpcScript:
       if(params!='') url=ng_AddURLParam(url, params);
       return this.sendScriptRequest(url, reqinfo);
@@ -3708,7 +3722,16 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
       {
         if(params!='') url=ng_AddURLParam(url, params);
       }
-      else reqinfo.PostParams=params;
+      else {
+        var i=url.indexOf('?');
+        if(i>=0)
+        {
+          params=ng_AddURLParam(url.substr(i,url.length),params);
+          if((params.length)&&(params.charAt(0)==='?')) params=params.substr(1,params.length);
+          url=url.substr(0,i);
+        }
+        reqinfo.PostParams=params;
+      }
       return this.sendHttpRequest(url, function(rpc, response, xmlhttp, reqinfo) {
         if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false))) 
           return;
