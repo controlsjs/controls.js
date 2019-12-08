@@ -2615,13 +2615,23 @@ function ngl_DoUpdate(o)
     var text,hascaptions=false,captions=new Array();
     var width100=-1;
     var d,md=this.Columns.length;
-    var col,cl2=this.Columns.length/2;
+    var col,cl2,visiblecolumns,cn=0;
     for(var i=0;i<this.Columns.length;i++)
     {
       col=this.Columns[i];
+      if(!ngVal(col.Visible,true)) continue;
+      cn++;
+
       if(typeof col.Width === 'undefined')
       {
-        d=Math.abs(cl2-i);
+        if(typeof cl2 === 'undefined') {
+          visiblecolumns=cn;
+          for(var j=i+1;j<this.Columns.length;j++) {
+            if(ngVal(this.Columns[j].Visible,true)) visiblecolumns++;
+          }
+          cl2=visiblecolumns/2;
+        }
+        d=Math.abs(cl2-cn);
         if(d<md)
         {
           md=d;
@@ -2714,7 +2724,7 @@ function ngl_DoUpdate(o)
       if(!ngVal(col.Visible,true)) continue;
 
       th_append('<td');
-      if(i==width100) th_append(' width="'+(this.Columns.length==1 ? 1 : 100)+'%"'); // strange fix, 100% will not work if one column
+      if(i==width100) th_append(' width="'+(visiblecolumns==1 ? 1 : 100)+'%"'); // strange fix, 100% will not work if one column
       th_append(' align="'+ngVal(col.Align,'left')+'"');
       if(!showheader) html.append(' style="visibility: hidden"');
       th_append('>');
