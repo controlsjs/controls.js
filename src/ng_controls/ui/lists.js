@@ -1280,6 +1280,7 @@ function ngl_FindItemCallback(list, it, parent, fi)
     for(var i=0;i<fi.cols.length;i++)
     {
       col=fi.cols[i];
+      if((fi.visibleonly)&&(!ngVal(col.Visible,true))) continue;
       if(fi.ongetsearchtext) text=ngVal(fi.ongetsearchtext(list, it, col),'');
       else if(list.OnGetText) text=ngVal(list.OnGetText(list, it, col),'');
       else text=(typeof it.Text==='object' ? ngVal(it.Text[col.ID],'') : '');
@@ -1300,26 +1301,31 @@ function ngl_FindItemCallback(list, it, parent, fi)
 
 function ngl_FindItem(key, partial, ignorecase, visibleonly, fromitem, ongetsrchtext)
 {
-  var fi=new Object;
-  fi.ignorecase=ngVal(ignorecase,true);
-  fi.ongetsearchtext=ngVal(ongetsrchtext,null);
+  var fi={
+    found: null,
+    partial: ngVal(partial,0),
+    ignorecase: ngVal(ignorecase,true),
+    visibleonly: ngVal(visibleonly,false),
+    fromitem: fromitem,
+    ongetsearchtext: ngVal(ongetsrchtext,null)
+  };
   if(typeof key === 'object')
   {
-    if(this.Columns.length<=0) return null;
+    if((this.Columns.length<=0)||(!key)) return null;
 
-    var newkey=new Array();
-    var cols=new Array();
+    var newkey=[];
+    var cols=[];
     var i,j,col;
     for(var i in key)
     {
       for(j=0;j<this.Columns.length;j++)
       {
         col=this.Columns[j];
-        if((typeof col === 'object')&&(col.ID == i))
+        if((typeof col === 'object')&&(col.ID == i)&&((!fi.visibleonly)||(ngVal(col.Visible,true))))
         {
-          if(fi.ignorecase) newkey[newkey.length]=(''+key[i]).toLowerCase();
-          else newkey[newkey.length]=key[i];
-          cols[cols.length]=col;
+          if(fi.ignorecase) newkey.push((''+key[i]).toLowerCase());
+          else newkey.push(key[i]);
+          cols.push(col);
         }
       }
     }
@@ -1336,10 +1342,7 @@ function ngl_FindItem(key, partial, ignorecase, visibleonly, fromitem, ongetsrch
       fi.cols=[this.Columns[0]];
     }
   }
-  fi.found=null;
-  fi.fromitem=fromitem;
-  fi.partial=ngVal(partial,0);
-  if(ngVal(visibleonly,false)) this.ScanVisible(ngl_FindItemCallback, null, fi);
+  if(fi.visibleonly) this.ScanVisible(ngl_FindItemCallback, null, fi);
   else this.Scan(ngl_FindItemCallback, null, fi);
   return fi.found;
 }
