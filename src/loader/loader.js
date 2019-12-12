@@ -244,6 +244,10 @@ function ngLoadApplication(elm, callback, files)
     if(!notready) apppartready(type, url, data);
   }
 
+  function hasapp() {
+    return ((typeof ngApp === 'object') && (ngApp) && (typeof ngApp.Run === 'function'));
+  }
+
   function apppartready(type, url, data)
   {
     readyparts++;
@@ -272,15 +276,17 @@ function ngLoadApplication(elm, callback, files)
             }
             apploading=0;
 
-            if(typeof ngApplication === 'function')
+            var app=hasapp() ? ngApp : null;
+            if((typeof ngApplication === 'function')&&(!app))
             {
-              new ngApplication((typeof ngStartParams === 'function' ? new ngStartParams() : {}), (elm && (typeof elm==='object' || elm!='') ? elm : 'ngApp'),false);
-              if((ngApp)&&(apppath!='')) ngApp.AppPath=apppath;
-              if(typeof ngOnAppCreated === 'function') ngOnAppCreated(ngApp);
+              app=new ngApplication((typeof ngStartParams === 'function' ? new ngStartParams() : {}), (elm && (typeof elm==='object' || elm!='') ? elm : 'ngApp'),false);
+              if(hasapp()) app=ngApp;
+              if((app)&&(apppath!='')) app.AppPath=apppath;
+              if(typeof ngOnAppCreated === 'function') ngOnAppCreated(app);
             }
 
-            if((callback)&&(!callback(ngApp))) return;
-            if(ngApp) ngApp.Run();
+            if((callback)&&(!callback(app))) return;
+            if((app)&&(typeof app.Run === 'function')) app.Run();
           },100);
         }
 
@@ -379,6 +385,7 @@ function ngLoadApplication(elm, callback, files)
             loadfailcallback2(data.Type,url,data);
             loadcallback=null;
           }
+          if(data.IgnoreError) apperrors--;
         }
         else {
           var li=queue[0];
@@ -386,6 +393,7 @@ function ngLoadApplication(elm, callback, files)
             if(typeof li.LoadFailCallback === 'function') li.LoadFailCallback(li.Data.Type,li.URL,li.Data);
             li.LoadCallback=null;
           }
+          if(li.Data.IgnoreError) apperrors--;
         }
         fileloaded(isasync);
       }
