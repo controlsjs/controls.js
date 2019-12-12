@@ -450,7 +450,7 @@ function ngLoadApplication(elm, callback, files)
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function(){
           if(xmlhttp.readyState == 4){
-            if((xmlhttp.status == 200)||(xmlhttp.status == 304)||(xmlhttp.status == 0)){
+            if((xmlhttp.status == 200)||(xmlhttp.status == 304)||((xmlhttp.status == 0)&&(!cordova))) {
               if(!async) filedata.code=xmlhttp.responseText;
               fileloaded(true,xmlhttp.responseText);
             }
