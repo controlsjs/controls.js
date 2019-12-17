@@ -593,6 +593,7 @@ function ng_SetLibsURL(path)
 { 
   if(path!='')
   {
+    if(path.charAt(path.length-1)!=='/') path+='/';
     if(ngEmptyURL.substring(0,ngLibsURL.length)==ngLibsURL) {
       ngEmptyURL=ng_URL(path+ngEmptyURL.substring(ngLibsURL.length,ngEmptyURL.length));
     }
