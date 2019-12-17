@@ -90,48 +90,56 @@ function ngLoadApplication(elm, callback, files)
     if(apppath.charAt(apppath.length-1)!='/') apppath+='/';
   }
 
-  window.ngLoadAppFiles = function(f)
+  window.ngLoadAppFiles = function(f, fapppath, fappdomain)
   {
     var url,p,e,ext;
-
-    // load CSS and images first
-    for(var i in f)
-    {
-      if(typeof f[i] === 'string') f[i]={ File: f[i] };
-      if(typeof f[i].Type === 'undefined')
+    var oldapppath=apppath;
+    var oldappdomain=appdomain;
+    if(typeof fapppath!=='undefined') apppath=fapppath;
+    if(typeof fappdomain!=='undefined') appdomain=fappdomain;
+    try {
+      // load CSS and images first
+      for(var i in f)
       {
-        url=url_stripparams(f[i].File);
-        p=url.lastIndexOf('/');
-        if(p<0) p=url.lastIndexOf("\\");
-        e=url.lastIndexOf('.');
-        if(e>p)
+        if(typeof f[i] === 'string') f[i]={ File: f[i] };
+        if(typeof f[i].Type === 'undefined')
         {
-          ext=url.substring(e+1).toLowerCase();
-          switch(ext)
+          url=url_stripparams(f[i].File);
+          p=url.lastIndexOf('/');
+          if(p<0) p=url.lastIndexOf("\\");
+          e=url.lastIndexOf('.');
+          if(e>p)
           {
-            case 'js':  f[i].Type=1; break;
-            case 'css': f[i].Type=0; break;
-            case 'png':
-            case 'jpg':
-            case 'gif':
-            case 'jpeg':
-            case 'bmp':
-                        f[i].Type=2; break;
+            ext=url.substring(e+1).toLowerCase();
+            switch(ext)
+            {
+              case 'js':  f[i].Type=1; break;
+              case 'css': f[i].Type=0; break;
+              case 'png':
+              case 'jpg':
+              case 'gif':
+              case 'jpeg':
+              case 'bmp':
+                          f[i].Type=2; break;
+            }
           }
         }
+        switch(f[i].Type)
+        {
+          case 0: ngLoadAppFile(f[i].File, f[i], null, typeof f[i].Async === 'undefined' ? false : f[i].Async); break;
+          case 2: ngLoadAppImg(f[i].File, f[i]); break;
+        }
       }
-      switch(f[i].Type)
-      {
-        case 0: ngLoadAppFile(f[i].File, f[i], null, typeof f[i].Async === 'undefined' ? false : f[i].Async); break;
-        case 2: ngLoadAppImg(f[i].File, f[i]); break;
-      }
-    }
 
-    // Load scripts
-    for(var i in f)
-      if(f[i].Type === 1){
-        ngLoadAppFile(f[i].File, f[i], null, f[i].Async);
-      }
+      // Load scripts
+      for(var i in f)
+        if(f[i].Type === 1){
+          ngLoadAppFile(f[i].File, f[i], null, f[i].Async);
+        }
+    } finally {
+      apppath=oldapppath;
+      appdomain=oldappdomain;
+    }
   }
 
   function url_domain(url)
