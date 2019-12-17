@@ -3504,7 +3504,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
       if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
       delete reqinfo._timeout_timer;
 
-      if((xmlhttp.status==200)||(xmlhttp.status==304)||(xmlhttp.status==0)) {
+      if((xmlhttp.status==200)||(xmlhttp.status==304)||((xmlhttp.status==0)&&(!ngCordova))) {
         if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, xmlhttp.responseText, xmlhttp, reqinfo);
       }
       else {
