@@ -90,7 +90,7 @@ function ngLoadApplication(elm, callback, files)
     if(apppath.charAt(apppath.length-1)!='/') apppath+='/';
   }
 
-  function loadappfiles(f)
+  window.ngLoadAppFiles = function(f)
   {
     var url,p,e,ext;
 
@@ -538,41 +538,51 @@ function ngLoadApplication(elm, callback, files)
     return i;
   };
 
+  window.ngLoaderBeginLoad = function() {
+    appparts++;
+  }
+
+  window.ngLoaderEndLoad = function(data) {
+    apppartloaded(-1, void 0, data);
+  }
+
+  window.ngGetAppFiles = function() {
+    var files=[];
+    if(ngAppFiles)
+    {
+      for(var i in ngAppFiles)
+        files.push(ngAppFiles[i]);
+    }
+    if((typeof ngDevice !== 'undefined')&&(typeof ngAppDeviceFiles !== 'undefined'))
+    {
+      function loaddevicefiles(dev) {
+        var devfiles=ngAppDeviceFiles[dev];
+        if(typeof devfiles !== 'undefined')
+        {
+          for(var i in devfiles)
+            files.push(devfiles[i]);
+        }
+      }
+      loaddevicefiles(ngDevice);
+      if(typeof ngDeviceProfile==='object') {
+        for(var p in ngDeviceProfile) {
+          if(ngDeviceProfile[p]) {
+            loaddevicefiles('*.'+p);
+            loaddevicefiles(ngDevice+'.'+p);
+          }
+        }
+      }
+    }
+    return files;
+  }
+
   function doloading() {
     if((!files)&&(!window.ngLoaderAppFilesUsed))
     {
       window.ngLoaderAppFilesUsed=true;
-      files=[];
-      if(ngAppFiles)
-      {
-        for(var i in ngAppFiles)
-          files.push(ngAppFiles[i]);
-      }
-
       if(typeof ngSetDevice === 'function') // Devices present
-      {
         ngSetDevice(ngDevice);
-        if((typeof ngDevice !== 'undefined')&&(typeof ngAppDeviceFiles !== 'undefined'))
-        {
-          function loaddevicefiles(dev) {
-            var devfiles=ngAppDeviceFiles[dev];
-            if(typeof devfiles !== 'undefined')
-            {
-              for(var i in devfiles)
-                files.push(devfiles[i]);
-            }
-          }
-          loaddevicefiles(ngDevice);
-          if(typeof ngDeviceProfile==='object') {
-            for(var p in ngDeviceProfile) {
-              if(ngDeviceProfile[p]) {
-                loaddevicefiles('*.'+p);
-                loaddevicefiles(ngDevice+'.'+p);
-              }
-            }
-          }
-        }
-      }
+      files=window.ngGetAppFiles();
     }
 
     if(typeof ngOnAppDoLoading === 'function') {
@@ -591,7 +601,7 @@ function ngLoadApplication(elm, callback, files)
       callback = options.callback;
     }
 
-    if(files) loadappfiles(files);
+    if(files) ngLoadAppFiles(files);
     apppartloaded(-1);
   }
 
