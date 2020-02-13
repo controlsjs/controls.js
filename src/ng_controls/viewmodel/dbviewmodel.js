@@ -173,19 +173,20 @@ function ngdbvm_DBDataSetsNotifyChange(type, primarykey)
     this.DBDataSets[i].DoNotifyChange(this, type, primarykey);
 }
 
-function ngdbvm_IsChanged()
+function ngdbvm_GetChangedFields()
 {
+  var fields=[];
+
   var vm=this.ViewModel;
-  if((!vm)||(!ng_typeObject(vm._OriginalRecord))) return false;
-  
-  var changed=false;
+  if((!vm)||(!ng_typeObject(vm._OriginalRecord))) return fields;
+
   this.ScanValues(function(vmodel,val,instance,path,userdata)
   {
     if(path.substring(0,15)=='_OriginalRecord') return true;
-    
+
     var oval=vmodel.GetFieldByID('_OriginalRecord.'+path);
     if(ng_isEmpty(oval)) return true;
-    
+
     if(ko.isObservable(val)) val=val();
     if(ngIsFieldDef(instance))
     {
@@ -197,16 +198,18 @@ function ngdbvm_IsChanged()
         oval=instance.TypedValue(oval);
       } catch(e) { }
     }
-    if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);        
-    if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);        
-    if(!ng_VarEquals(val,oval)) 
-    {
-      changed=true; 
-      return false; 
-    }      
+    if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
+    if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
+    if(!ng_VarEquals(val,oval)) fields.push(path);
     return true;
   });
-  return changed;
+  return fields;
+}
+
+function ngdbvm_IsChanged()
+{
+  var fields=this.GetChangedFields();
+  return fields && fields.length>0 ? true : false;
 }
 
 function ngdbvm_BeginRecordUpdate() 
@@ -226,24 +229,28 @@ function ngdbvm_EndRecordUpdate()
 
 function ngdbvm_Reset(callback)
 {
+  var ret;
   this.BeginRecordUpdate();
   try {
-    this.__origDBVMReset(callback);
+     ret=ng_CallParent(this,'Reset',arguments);
   }
   finally {
     this.EndRecordUpdate();
   }
+  return ret;
 }
 
 function ngdbvm_SetValues(values,deserialize)
 {
+  var ret;
   this.BeginRecordUpdate();
   try {
-    this.__origDBVMSetValues(values,deserialize);
+    ret=ng_CallParent(this,'SetValues',arguments);
   } 
   finally {
     this.EndRecordUpdate();
   }
+  return ret;
 }
   
 function ngdbvm_DBFieldNames(notprimarykey)
@@ -371,6 +378,7 @@ function Create_ngSysDBViewModel(def,ref,parent)
 
   c.PrimaryKeyNames = ngdbvm_PrimaryKeyNames;
   c.GetPrimaryKeyValues = ngdbvm_GetPrimaryKeyValues;
+  c.GetChangedFields = ngdbvm_GetChangedFields;
   c.IsChanged = ngdbvm_IsChanged;
   
   c.BeginRecordUpdate = ngdbvm_BeginRecordUpdate;
@@ -378,10 +386,8 @@ function Create_ngSysDBViewModel(def,ref,parent)
   
   c.DBDataSetsNotifyChange = ngdbvm_DBDataSetsNotifyChange;
 
-  c.__origDBVMReset=c.Reset;
-  c.__origDBVMSetValues=c.SetValues;
-  c.Reset = ngdbvm_Reset;
-  c.SetValues = ngdbvm_SetValues;
+  ng_OverrideMethod(c,'Reset',ngdbvm_Reset);
+  ng_OverrideMethod(c,'SetValues',ngdbvm_SetValues);
 
   c.DBFieldNames = ngdbvm_DBFieldNames;
   c.AllDBFields = ngdbvm_AllDBFields;

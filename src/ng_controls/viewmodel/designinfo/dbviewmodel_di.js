@@ -31,6 +31,10 @@ var DBViewModel_DesignInfo = {
               "recStateDeleted": ng_diBoolean(false, { Level: 'basic' })
             }, { Level: 'basic', Collapsed: false }, { ChildDesignInfo: ng_diBoolean(false, { Level:'basic' }) })
           },
+          "Methods": {
+            "GetChangedFields": ng_diFunction('function() { return ng_CallParent(this, "GetChangedFields", arguments, []); }', { Level: 'advanced' }),
+            "IsChanged": ng_diFunction('function() { return ng_CallParent(this, "IsChanged", arguments, false); }', { Level: 'advanced' })
+          },
           "Events": {
             "OnNewRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
             "OnInsertRecord": ng_diEvent('function(c, options) {}',{ Level: 'basic' }),
