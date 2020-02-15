@@ -1899,7 +1899,40 @@ ngUserControls['viewmodel_ui'] = {
       switch(c.CtrlType)
       {
         case 'ngEdit':
-          if((typeof c.DoUp === 'function')&&(c.CtrlInheritsFrom('ngEditNum')))
+          if(typeof c.GetDate === 'function')
+          {
+            if((typeof c.GetTimeFormat === 'function')&&(c.CtrlInheritsFrom('ngEditTime'))) {
+              var v=valueAccessor();
+              if((v)&&(typeof v.FieldDef !== 'undefined'))
+              {
+                var fd=v.FieldDef;
+                if(ngVal(c.TimeFormat,'')=='') {
+                  if(!ng_isEmpty(fd.Attrs['TimeFormat'])) c.TimeFormat=fd.Attrs['TimeFormat'];
+                  else if(!ng_isEmpty(fd.Attrs['DateTimeFormat'])) c.TimeFormat=fd.Attrs['DateTimeFormat'];
+                }
+                if(ngVal(c.ParseTimeFormat,'')=='') {
+                  if(!ng_isEmpty(fd.Attrs['ParseTimeFormat'])) c.ParseTimeFormat=fd.Attrs['ParseTimeFormat'];
+                  else if(!ng_isEmpty(fd.Attrs['ParseDateTimeFormat'])) c.ParseTimeFormat=fd.Attrs['ParseDateTimeFormat'];
+                }
+              }
+            }
+            else if(c.CtrlInheritsFrom('ngEditDate')) {
+              var v=valueAccessor();
+              if((v)&&(typeof v.FieldDef !== 'undefined'))
+              {
+                var fd=v.FieldDef;
+                if(ngVal(c.DateFormat,'')=='') {
+                  if(!ng_isEmpty(fd.Attrs['DateFormat'])) c.DateFormat=fd.Attrs['DateFormat'];
+                  else if(!ng_isEmpty(fd.Attrs['DateTimeFormat'])) c.DateFormat=fd.Attrs['DateTimeFormat'];
+                }
+                if(ngVal(c.ParseDateFormat,'')=='') {
+                  if(!ng_isEmpty(fd.Attrs['ParseDateFormat'])) c.ParseDateFormat=fd.Attrs['ParseDateFormat'];
+                  else if(!ng_isEmpty(fd.Attrs['ParseDateTimeFormat'])) c.ParseDateFormat=fd.Attrs['ParseDateTimeFormat'];
+                }
+              }
+            }
+          }
+          else if((typeof c.DoUp === 'function')&&(c.CtrlInheritsFrom('ngEditNum')))
           {
             if(c.OnGetText === ngedn_GetText)
               delete c.OnGetText; // Remove ngEditNum GetText handler, ViewModel do all check stuff itself
@@ -2022,6 +2055,19 @@ ngUserControls['viewmodel_ui'] = {
           });
           break;
         case 'ngCalendar':
+          var v=valueAccessor();
+          if((v)&&(typeof v.FieldDef !== 'undefined'))
+          {
+            var fd=v.FieldDef;
+            if(ngVal(c.DateFormat,'')=='') {
+              if(!ng_isEmpty(fd.Attrs['DateFormat'])) c.DateFormat=fd.Attrs['DateFormat'];
+              else if(!ng_isEmpty(fd.Attrs['DateTimeFormat'])) c.DateFormat=fd.Attrs['DateTimeFormat'];
+            }
+            if(ngVal(c.ParseDateFormat,'')=='') {
+              if(!ng_isEmpty(fd.Attrs['ParseDateFormat'])) c.ParseDateFormat=fd.Attrs['ParseDateFormat'];
+              else if(!ng_isEmpty(fd.Attrs['ParseDateTimeFormat'])) c.ParseDateFormat=fd.Attrs['ParseDateTimeFormat'];
+            }
+          }
           c.AddEvent(function(c) {
             var val=c.GetSelected();
             if((c.SelectType==ngcalSelectSingle)&&(val.length==1)) val=val[0];
