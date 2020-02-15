@@ -187,10 +187,18 @@ function ngdbvm_GetChangedFields()
     var oval=vmodel.GetFieldByID('_OriginalRecord.'+path);
     if(ng_isEmpty(oval)) return true;
 
+    var chinfo = {
+      Path: path,
+      _Value: val,
+      _OriginalValue: oval
+    };
+
+    var privatefld=false;
     if(ko.isObservable(val)) val=val();
     if(ngIsFieldDef(instance))
     {
-      if(instance.PrivateField) return true;
+      chinfo.FieldDef = instance;
+      if(instance.PrivateField) privatefld=true;
       try {
         val=instance.TypedValue(val);
       } catch(e) { }
@@ -198,9 +206,18 @@ function ngdbvm_GetChangedFields()
         oval=instance.TypedValue(oval);
       } catch(e) { }
     }
-    if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
-    if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
-    if(!ng_VarEquals(val,oval)) fields.push(path);
+    chinfo.Value=val;
+    chinfo.OriginalValue=oval;
+
+    if(!privatefld) {
+      if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
+      if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
+      chinfo.Changed=(!ng_VarEquals(val,oval));
+    }
+    else chinfo.Changed=false;
+
+    if(vmodel.OnCheckFieldChanged) vmodel.OnCheckFieldChanged(vmodel, chinfo);
+    if(chinfo.Changed) fields.push(chinfo.Path);
     return true;
   });
   return fields;
@@ -416,6 +433,8 @@ function Create_ngSysDBViewModel(def,ref,parent)
   
   c.OnDBSuccess = null;
   c.OnDBError = null;
+
+  c.OnCheckFieldChanged = null;
 
   c.AddEvent('OnViewModelChanged', function(vm) {
     if(ng_typeObject(vm.ViewModel._OriginalRecord))

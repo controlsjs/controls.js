@@ -54,7 +54,9 @@ var DBViewModel_DesignInfo = {
             "OnRecordDeleted": ng_diEvent('function(c, sresults) {}',{ Level: 'basic' }),
 
             "OnDBSuccess": ng_diEvent('function(c, cmd, sresults) {}',{ Level: 'basic' }),
-            "OnDBError": ng_diEvent('function(c, cmd,sresults) {}',{ Level: 'basic' })
+            "OnDBError": ng_diEvent('function(c, cmd,sresults) {}',{ Level: 'basic' }),
+
+            "OnCheckFieldChanged": ng_diEvent('function(c, chinfo) {}',{ Level: 'basic' })
           }
         })
       };
