@@ -282,7 +282,19 @@ function ngcal_SelectDate(date, state, ctrl)
     var dd=ngVal(this.DropDownOwner,null);        
     if((dd)&&(this.SelectType==1))
     { 
-      if(typeof dd.SetDate === 'function') dd.SetDate(date);
+      if(typeof dd.SetDate === 'function') {
+        if(typeof dd.GetDate === 'function')
+        {
+          var origdate=dd.GetDate();
+          if(ng_type_date(origdate)) {
+            date.setHours(origdate.getHours());
+            date.setMinutes(origdate.getMinutes());
+            date.setSeconds(origdate.getSeconds());
+            date.setMilliseconds(origdate.getMilliseconds());
+          }
+        }
+        dd.SetDate(date);
+      }
       else if(typeof dd.SetText === 'function') dd.SetText(this.FormatDate(date));
       if(dd.HideDropDown) dd.HideDropDown();
       dd.SetFocus();
@@ -825,13 +837,18 @@ function ngcal_FormatDate(d)
 function ngcal_ParseDate(d)
 {
   if(this.OnParseDate) return this.OnParseDate(this, d);
-  var format=this.DateFormat;
-  if(format=='') 
+  var format=ngVal(this.ParseDateFormat,'');
+  if(format=='') format=ngVal(this.DateFormat,'');
+  if(format=='')
   {
     var dd=ngVal(this.DropDownOwner,null);        
-    if(dd) format=ngVal(dd.DateFormat,'');
+    if(dd) {
+      format=ngVal(dd.ParseDateFormat,'');
+      if(format=='') format=ngVal(dd.DateFormat,'');
+    }
   }
-  return ng_ParseDate(d,format);
+  if(format=='') format=ng_ParseDate(true);
+  return ng_ParseDateTime(d,format);
 }
 
 function ngcal_DoCreate(def, ref, elm, parent)
@@ -982,7 +999,13 @@ function ngCalendar(id)
    *  Type: string
    */
   this.DateFormat = '';
-  
+
+  /*  Variable: ParseDateFormat
+   *  ...
+   *  Type: string
+   */
+  this.ParseDateFormat = '';
+
   /*  Variable: ImgWeekDay
    *  ...
    *  Type: object
@@ -1461,6 +1484,11 @@ function Create_ngEditDate(def, ref, parent)
    *  Type: string
    */
   c.DateFormat = '';        
+  /*  Variable: ParseDateFormat
+   *  ...
+   *  Type: string
+   */
+  c.ParseDateFormat = '';
   /*
    *  Group: Methods
    */
@@ -1494,7 +1522,10 @@ function Create_ngEditDate(def, ref, parent)
   c.ParseDate = function(d)
   {
     if(this.OnParseDate) return this.OnParseDate(this, d);
-    return ng_ParseDate(d,this.DateFormat);
+    var format=ngVal(this.ParseDateFormat,'');
+    if(format=='') format=ngVal(this.DateFormat,'');
+    if(format=='') format=ng_DateFormat(true);
+    return ng_ParseDateTime(d,format);
   }
   /*  Function: GetDate
    *  Gets edited date.
@@ -1558,6 +1589,11 @@ function Create_ngEditTime(def, ref, parent)
    *  Type: string
    */
   c.TimeFormat = '';        
+  /*  Variable: ParseTimeFormat
+   *  ...
+   *  Type: string
+   */
+  c.ParseTimeFormat = '';
   /*
    *  Group: Methods
    */
@@ -1574,7 +1610,12 @@ function Create_ngEditTime(def, ref, parent)
    */
   c.GetTimeFormat = function(parse)
   {
-    return c.TimeFormat;
+    var format;
+    if(parse) format=ngVal(c.ParseTimeFormat,'');
+    else format=='';
+    if(format=='') format=ngVal(c.TimeFormat,'');
+    if(format=='') format=ng_TimeFormat(parse);
+    return format;
   };
   /*  Function: FormatTime
    *  Formats date to string.
@@ -1606,7 +1647,7 @@ function Create_ngEditTime(def, ref, parent)
   c.ParseTime = function(d)
   {
     if(c.OnParseTime) return c.OnParseTime(c, d);
-    return ng_ParseTime(d,c.GetTimeFormat(true));
+    return ng_ParseDateTime(d,c.GetTimeFormat(true));
   };
   /*  Function: GetDate
    *  Gets edited date.

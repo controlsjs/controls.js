@@ -62,6 +62,7 @@ ngUserControls['calendar_designinfo'] = {
                                          },
                                          { Level: 'basic' },{ Add: false }),
             "DateFormat": ng_diString('', { Level: 'basic' }),
+            "ParseDateFormat": ng_diString('', { Level: 'basic' }),
             "ImgWeekDay": ng_diType('image', { Level: 'advanced' }),
             "ImgDay": ng_diType('image', { Level: 'advanced' }),
             "ImgNow": ng_diType('image', { Level: 'advanced' }),
@@ -118,6 +119,7 @@ ngUserControls['calendar_designinfo'] = {
         Properties: ng_diProperties({
           "Data": {
             "DateFormat": ng_diString('', { Level: 'basic' }),
+            "ParseDateFormat": ng_diString('', { Level: 'basic' }),
             "Text": { OnPropertyInit: null }
           },
           "OverrideEvents": {
@@ -141,6 +143,7 @@ ngUserControls['calendar_designinfo'] = {
         Properties: ng_diProperties({
           "Data": {
             "TimeFormat": ng_diString('', { Level: 'basic' }),
+            "ParseTimeFormat": ng_diString('', { Level: 'basic' }),
             "Text": { OnPropertyInit: null }
           },
           "OverrideEvents": {
