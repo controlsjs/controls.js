@@ -61,6 +61,7 @@ ngUserControls['calendar_designinfo'] = {
                                             6: ng_diBoolean(false, { DisplayName: 'Saturday (6)', Level: 'basic' })
                                          },
                                          { Level: 'basic' },{ Add: false }),
+            "ClickAllDays": ng_diBoolean(false, { Level: 'basic' }),
             "DateFormat": ng_diString('', { Level: 'basic' }),
             "ParseDateFormat": ng_diString('', { Level: 'basic' }),
             "ImgWeekDay": ng_diType('image', { Level: 'advanced' }),

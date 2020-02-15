@@ -176,7 +176,7 @@ function ngcal_MD(e,elm)
   if((c.SelectType==3)&&(!ctrl)) // Single
     c.SelectedDates = new Array();
 
-  if((c.CurrentDate.getMonth()!=date.getMonth())||(!c.IsDayEnabled(date))) return; // Select only enabled
+  if(((!c.ClickAllDays)&&(c.CurrentDate.getMonth()!=date.getMonth()))||(!c.IsDayEnabled(date))) return; // Select only enabled
   var changed=false;
   c.BeginUpdate();
   try {
@@ -246,6 +246,7 @@ function ngcal_SelectDate(date, state, ctrl)
   if(!date) return;
   state=ngVal(state,true);
   date=ng_ExtractDate(date);
+  if(!this.IsDayEnabled(date)) return;
 
   if(this.SelectType==ngcalSelectRange)
   {
@@ -560,7 +561,7 @@ function ngcal_UpdateCalendar()
         selected=(display_date>=this.SelectFrom)&&(display_date<=this.SelectTo);
       else 
         selected=(typeof this.SelectedDates[ngcal_DateStrKey(display_date)]!=='undefined');
-      if((!this.Enabled)||(display_month != cur_month)) enabled=false;
+      if((!this.Enabled)||((!this.ClickAllDays)&&(display_month != cur_month))) enabled=false;
       else enabled=this.IsDayEnabled(display_date);
       now=((display_date-now_date)==0);
       cn=cclass+'Days '+cclass+(now ? 'Now' : 'Day');
@@ -993,6 +994,13 @@ function ngCalendar(id)
    *  Default value: *{0:true}*   
    */
   this.HiliteWeekDays = {0: true};
+
+  /*  Variable: ClickAllDays
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.ClickAllDays = true;
 
   /*  Variable: DateFormat
    *  ...
