@@ -448,6 +448,29 @@ function ngdsc_SetViewModel(vm)
     vm.AddEvent('OnCommand', ngdsc_OnCommand);
     vm.AddEvent('OnCommandData', ngdsc_DataLoaded);
     vm.AddEvent('OnViewModelChanged', ngdsc_ViewModelChanged);
+
+    if(vm.CtrlInheritsFrom('ngSysDataSetViewModel')) {
+      var ds=vm.ViewModel.DataSet;
+      if(ds) {
+        if(ngIsFieldDef(ds)) ds=ds.Value;
+        if(ko.isObservable(ds)) {
+          var self=this;
+          var updtimer=null;
+
+          ds.subscribe(function(v) {
+            if(vm.DataSetControl!==self) return;
+            if((v)||(typeof self.GetLength !== 'function')||((!v)&&(self.GetLength()))) {
+              if(updtimer) clearTimeout(updtimer);
+              updtimer=setTimeout(function() {
+                if(updtimer) clearTimeout(updtimer);
+                updtimer=null;
+                if(typeof self.ReloadDataSet === 'function') self.ReloadDataSet();
+              }, 1);
+            }
+          });
+        }
+      }
+    }
   }
   if(this.OnSetViewModel) this.OnSetViewModel(this,vm,ovm);
 }
