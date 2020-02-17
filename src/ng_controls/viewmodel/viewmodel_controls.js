@@ -359,7 +359,7 @@ function ngSysViewModel(id, namespace)
       if(ngViewModels[this.ID] === this) delete ngViewModels[this.ID];
     }
   },'Dispose');
-  ngViewModel.apply(this,[id]);
+  ngViewModel.apply(this,[id, namespace]);
   ngControlCreated(this);
 }
 
