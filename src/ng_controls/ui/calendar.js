@@ -1000,7 +1000,7 @@ function ngCalendar(id)
    *  Type: bool
    *  Default value: *false*
    */
-  this.ClickAllDays = true;
+  this.ClickAllDays = false;
 
   /*  Variable: DateFormat
    *  ...
