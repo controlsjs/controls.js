@@ -350,6 +350,9 @@ ngUserControls['auth_controls'] = {
             if(ngNullVal(data.Login,'')!='') { ctrls.Login.SetText(data.Login); rememberme=1; }
           }
           ctrls.RememberMe.Check(rememberme);
+          ctrls.RememberMe.OnCheckChanged=ngAddEvent(ctrls.RememberMe.OnCheckChanged, function(cc) {
+            if(!cc.Checked) c.DoSetSettings(void 0);
+          });
         }
       });
       if(compact) {
