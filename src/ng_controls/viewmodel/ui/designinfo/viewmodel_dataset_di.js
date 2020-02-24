@@ -34,6 +34,7 @@ var ViewModel_Dataset_DesignInfo = {
               Exclude: ['ModifyControls.List.Data.Columns', 'Controls.List.Data.Columns']
             }),
             "GetRecordsCommand": ng_diString('resetfilters', { Level: 'advanced' }),
+            "IgnoreCommands": ng_diArrayOf('string', { Level: 'basic' }),
             "SortByVMField": ng_diString('SortBy', { Level: 'basic' }),
             "AllowedSortByVMField": ng_diString('AllowedSortBy', { Level: 'basic' })
           },

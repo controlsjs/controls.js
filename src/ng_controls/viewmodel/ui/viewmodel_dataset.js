@@ -313,6 +313,8 @@ function ngdsc_DataLoaded(vm,cmd)
 {
   var ds=vm.DataSetControl;
   if(!ds) return;
+
+  if((ds.IgnoreCommands)&&(ng_inArray(cmd, ds.IgnoreCommands))) return;
   
   var totslcnt=ko.ng_getvalue(vm.ViewModel.TotalCount);
   if(ng_typeNumber(totslcnt))
@@ -528,6 +530,7 @@ function Create_ngDataSet(def, ref, parent,basetype)
 
   c.AutoDataSetColumns   = false;
   c.GetRecordsCommand    = 'resetfilters';
+  c.IgnoreCommands       = [];
 
   c.SortByVMField        = 'SortBy';
   c.AllowedSortByVMField = 'AllowedSortBy';
