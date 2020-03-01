@@ -187,7 +187,14 @@ function ngdsc_GetRecord(it)
   var rec=it.Record;
   if(this.OnGetRecord) rec=this.OnGetRecord(this,it);
   if(!ng_typeObject(rec)) return null;
-  return ng_CopyVar(rec);
+  rec=ng_CopyVar(rec);
+  var vm=this.ViewModel;
+  if(vm) {
+    for(var i in vm.DefaultValues.Columns) {
+      if(typeof rec[i]==='undefined') { rec[i]=ng_CopyVar(vm.DefaultValues.Columns[i]); }
+    }
+  }
+  return rec;
 }
 
 function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
@@ -198,8 +205,13 @@ function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
   if(!vm) return true;
   var rec=it.Record;
   if(ds.OnGetRecord) rec=ds.OnGetRecord(this,it);
+  var defvals;
+  for(var i in vm.DefaultValues.Columns) {
+    if(typeof rec[i]==='undefined') { if(!defvals) defvals={ Columns: {} }; defvals.Columns[i]=vm.DefaultValues.Columns[i]; }
+  }
   var vals={ Columns: rec };
-  vm.SetValues(vals);    
+  vm.SetValues(vals);
+  if(defvals) vm.SetValues(defvals);
   return true;
 }
 
