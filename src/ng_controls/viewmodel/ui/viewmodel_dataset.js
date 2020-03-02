@@ -205,6 +205,7 @@ function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
   if(!vm) return true;
   var rec=it.Record;
   if(ds.OnGetRecord) rec=ds.OnGetRecord(this,it);
+  if(!ng_typeObject(rec)) rec={};
   var defvals;
   for(var i in vm.DefaultValues.Columns) {
     if(typeof rec[i]==='undefined') { if(!defvals) defvals={ Columns: {} }; defvals.Columns[i]=vm.DefaultValues.Columns[i]; }
