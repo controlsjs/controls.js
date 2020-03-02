@@ -1442,7 +1442,10 @@ function ngvm_SetValues(values,deserialize)
       else 
       {    
         if(typeof val==='function') continue;
-        if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) setvalues(val,d[i],valpath);
+        if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
+          if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) { val=o[i]={}; }
+          setvalues(val,d[i],valpath);
+        }
         else 
         {
           setval=d[i];
