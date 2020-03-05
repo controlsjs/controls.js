@@ -1620,7 +1620,7 @@ function Create_ngEditTime(def, ref, parent)
   {
     var format;
     if(parse) format=ngVal(c.ParseTimeFormat,'');
-    else format=='';
+    else format='';
     if(format=='') format=ngVal(c.TimeFormat,'');
     if(format=='') format=ng_TimeFormat(parse);
     return format;
