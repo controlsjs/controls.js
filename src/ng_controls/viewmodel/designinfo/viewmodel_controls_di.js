@@ -1246,7 +1246,7 @@ var ViewModel_Controls_DesignInfo = (function()
               "OnGetTotalCount": ng_diEvent('function(c) { return false; }',{ Level: 'basic' }),
               "OnApplyFilters": ng_diEvent('function(c) { return false; }',{ Level: 'basic' }),
               "OnResetFilters": ng_diEvent('function(c) { return false; }',{ Level: 'basic' }),
-              "OnSortCompare": ng_diEvent('function(c, v1, v2, fid, dir) { return 0; }',{ Level: 'basic' }),
+              "OnSortCompare": ng_diEvent('function(c, v1, v2, fid, dir, a, b) { return 0; }',{ Level: 'basic' }),
               "OnFilterDataSetField": ng_diEvent('function(c, fd, fid, val, filterval, filtertype) { return true; }',{ Level: 'basic' })
             }
           })

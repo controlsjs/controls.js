@@ -769,7 +769,7 @@ ngUserControls['viewmodel_controls'] = {
 
     function ngdsvm_DoSortDataSet(ds, sortby) {
       if((ng_IsArrayVar(sortby))&&(ng_IsArrayVar(ds))&&(typeof ds.sort==='function')) {
-        var oncompare=ds.OnSortCompare;
+        var oncompare=this.OnSortCompare;
         ds.sort(function (a,b) {
           var v1,v2,f,d,r;
           for(var i=0;i<sortby.length;i++) {
@@ -779,10 +779,15 @@ ngUserControls['viewmodel_controls'] = {
             v1=(ng_typeObject(a) ? a[f] : void 0);
             v2=(ng_typeObject(b) ? b[f] : void 0);
             if(oncompare) {
-              r=ngVal(oncompare(ds,v1,v2,f,d),0);
-              if(r!==0) {
-                if(d) {
-                  r=r<0 ? 1 : -1;
+              r=oncompare(ds,v1,v2,f,d,a,b);
+              if(typeof r==='undefined') {
+                if(v1<v2) return d ? 1 : -1;
+                if(v1>v2) return d ? -1 : 1;
+              }
+              else {
+                if(r!==0) {
+                  if(d) r=r<0 ? 1 : -1;
+                  return r;
                 }
               }
             }
