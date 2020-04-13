@@ -4136,7 +4136,7 @@ function ngEditNum_Create(def, ref, parent)
       if((!e)||(e.ReadOnly)) return;
       if((e.OnUp)&&(!ngVal(e.OnUp(ci, e.GetNum()),false))) return;
       e.DoUp();
-      if(!ci.Owner.Touching) e.SetFocus();
+      if((!ci.Owner.PointerInfo)||(!ci.Owner.PointerInfo.Touch)) e.SetFocus();
     }
     c.ButtonDown=new ngButton();
     if((align=='left')||(align=='both')) c.ButtonDown.ButtonAlign='left';
@@ -4147,7 +4147,7 @@ function ngEditNum_Create(def, ref, parent)
       if((!e)||(e.ReadOnly)) return;
       if((e.OnDown)&&(!ngVal(e.OnDown(ci, e.GetNum()),false))) return;
       e.DoDown();
-      if(!ci.Owner.Touching) e.SetFocus();
+      if((!ci.Owner.PointerInfo)||(!ci.Owner.PointerInfo.Touch)) e.SetFocus();
     }
     if(align=='left') c.Buttons=new Array(c.ButtonDown,c.ButtonUp);
     else              c.Buttons=new Array(c.ButtonUp,c.ButtonDown);
