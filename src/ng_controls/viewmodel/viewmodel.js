@@ -1797,7 +1797,7 @@ function ngvm_GetCommandValueNames(cmd,options,exactmatch)
 
 function ngvm_DoCommandError(cmd, options)
 {
-  ngDEBUGERROR('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
+  ngDEBUGWARN('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
 
   this.CancelCommand();
   var msg=ngVal(options.CommandErrorMessage,'');
@@ -1806,7 +1806,6 @@ function ngvm_DoCommandError(cmd, options)
   if(msg==='') msg=ngTxt('viewmodel_err_cmd');
   msg=ng_sprintf(msg,cmd);
   if(this.OnCommandError) this.OnCommandError(this, msg, cmd, options);
-//  else if(msg!='') alert(msg);
 }
 
 function ngvm_CancelCommand()
