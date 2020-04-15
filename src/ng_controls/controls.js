@@ -1099,6 +1099,7 @@ function ngInitUserControlImage(imagePath, lib)
       if(typeof imgpath!=='string') continue;
       imgpath=ng_URL(ng_ToAbsPath(imgpath, lib));
       if((ngInitAllHiResImages)&&(canpreload(imgpath))) ng_PreloadImage(imgpath);
+      imagePath[i]=imgpath;
     }
     if(!ngInitAllHiResImages) {
       var img=ng_SelectHiResImage(imagePath);
