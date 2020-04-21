@@ -34,7 +34,7 @@ var WinEightControls = {
   },
 
   ControlImages: [
-    'img/we_base.png?4',
+    'img/we_base.png?5',
     'img/we_hbox.png?3',
     'img/we_vbox.png?3',
     'img/we_icons.png?14',
@@ -49,6 +49,8 @@ var WinEightControls = {
   ],
 
   Images: {
+    SwitchLight: { L: 0, T: 310, W: 44, H: 20, SL: 45, DL: 180, DSL: 225 },
+    SwitchDark: { L: 90, T: 310, W: 44, H: 20, SL: 135, DL: 180, DSL: 225 },
     ToggleSwitchLight: { L: 0, T: 122, W: 50, H: 19, SL: 102, DL: 204, DSL: 255, oL: 51, oSL: 153 },
     ToggleSwitchDark: { L: 0, T: 147, W: 50, H: 19, SL: 102, DL: 204, DSL: 255, oL: 51, oSL: 153 },
     CheckBoxLeftLight: { L: 0, T: 5, W: 31, H: 32, SL: 64, DL: 0, DSL: 128, GL: 160, oL: 32, oSL: 96, oGL: 193 },
@@ -811,6 +813,30 @@ var WinEightControls = {
       return skinfnc.Create_weCheckBox(def,ref,parent,(th ? winimages.RadioLeftLight : winimages.RadioLeftDark),(th ? winimages.RadioRightLight : winimages.RadioRightDark), 'ngRadioButton');
     });
 
+    /*  Class: weSwitch
+     *  Standard check box control (based on <ngCheckBox>).
+     */
+    ngRegisterControlType('weSwitch', function(def,ref,parent) {
+      var th=theme(def);
+      if(typeof def.className === 'undefined') def.className=(th ? 'weSwitchLight' : 'weSwitchDark');
+      var img=(th ? winimages.SwitchLight : winimages.SwitchDark);
+      var c=skinfnc.Create_weCheckBox(def,ref,parent,img,img);
+      if(c)
+      {
+        c.OnGetText=function(c) { return ''; };
+        c.AddEvent('DoAcceptGestures',function(o,gestures) {
+          gestures.swipeleft=true;
+          gestures.swiperight=true;
+        });
+        c.AddEvent('DoGesture',function(pi) {
+          if(pi.Gesture==='swipeleft')  { c.Check(0); delete pi.Gestures.tap; return true; }
+          if(pi.Gesture==='swiperight') { c.Check(1); delete pi.Gestures.tap; return true; }
+          return false;
+        });
+      }
+      return c;
+    });
+
     /*  Class: weToggleSwitch
      *  Standard check box control (based on <ngCheckBox>).
      */
@@ -1543,7 +1569,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlType('weSections', function(def,ref,parent) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weSectionsLight' : 'weSectionsDark')+' we'+colorscheme(def)+'Text';
+      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weSectionsLight' : 'weSectionsDark')+' we'+colorscheme(def)+'Sections';
       var c=ngCreateControlAsType(def, 'ngPages', ref, parent);
       if(c) c.PageImages=winimages.Sections;
       return c;

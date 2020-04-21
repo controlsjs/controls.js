@@ -26,6 +26,7 @@
   background-color:#FFFFFF !important;
   color:#FFFFFF;
 }
+.weWhiteSections .weSectionsLightPageSelected .weSectionsLightPageText, .weWhiteSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weWhiteSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weWhiteSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#FFFFFF !important; }
 .weWhiteMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weWhiteMenuBar .weMenuBarLightButtonBtnChecked, .weWhiteMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#FFFFFF;
   color:#FFFFFF;
@@ -63,6 +64,7 @@
   background-color:#004D91 !important;
   color:#FFFFFF;
 }
+.weBlueSections .weSectionsLightPageSelected .weSectionsLightPageText, .weBlueSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weBlueSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weBlueSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#004D91 !important; }
 .weBlueMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weBlueMenuBar .weMenuBarLightButtonBtnChecked, .weBlueMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#004D91;
   color:#FFFFFF;
@@ -100,6 +102,7 @@
   background-color:#00A300 !important;
   color:#FFFFFF;
 }
+.weGreenSections .weSectionsLightPageSelected .weSectionsLightPageText, .weGreenSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weGreenSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weGreenSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#00A300 !important; }
 .weGreenMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weGreenMenuBar .weMenuBarLightButtonBtnChecked, .weGreenMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#00A300;
   color:#FFFFFF;
@@ -137,6 +140,7 @@
   background-color:#FFC40D !important;
   color:#FFFFFF;
 }
+.weYellowSections .weSectionsLightPageSelected .weSectionsLightPageText, .weYellowSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weYellowSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weYellowSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#FFC40D !important; }
 .weYellowMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weYellowMenuBar .weMenuBarLightButtonBtnChecked, .weYellowMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#FFC40D;
   color:#FFFFFF;
@@ -174,6 +178,7 @@
   background-color:#525252 !important;
   color:#FFFFFF;
 }
+.weGraySections .weSectionsLightPageSelected .weSectionsLightPageText, .weGraySections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weGraySections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weGraySections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#525252 !important; }
 .weGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weGrayMenuBar .weMenuBarLightButtonBtnChecked, .weGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#525252;
   color:#FFFFFF;
@@ -211,6 +216,7 @@
   background-color:#BABABA !important;
   color:#FFFFFF;
 }
+.weLtGraySections .weSectionsLightPageSelected .weSectionsLightPageText, .weLtGraySections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weLtGraySections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weLtGraySections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#BABABA !important; }
 .weLtGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weLtGrayMenuBar .weMenuBarLightButtonBtnChecked, .weLtGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#BABABA;
   color:#FFFFFF;
@@ -248,6 +254,7 @@
   background-color:#1F1F1F !important;
   color:#FFFFFF;
 }
+.weDkGraySections .weSectionsLightPageSelected .weSectionsLightPageText, .weDkGraySections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weDkGraySections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weDkGraySections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#1F1F1F !important; }
 .weDkGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weDkGrayMenuBar .weMenuBarLightButtonBtnChecked, .weDkGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#1F1F1F;
   color:#FFFFFF;
@@ -285,6 +292,7 @@
   background-color:#B91D47 !important;
   color:#FFFFFF;
 }
+.weMaroonSections .weSectionsLightPageSelected .weSectionsLightPageText, .weMaroonSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weMaroonSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weMaroonSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#B91D47 !important; }
 .weMaroonMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weMaroonMenuBar .weMenuBarLightButtonBtnChecked, .weMaroonMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#B91D47;
   color:#FFFFFF;
@@ -322,6 +330,7 @@
   background-color:#2D89EF !important;
   color:#FFFFFF;
 }
+.weLtBlueSections .weSectionsLightPageSelected .weSectionsLightPageText, .weLtBlueSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weLtBlueSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weLtBlueSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#2D89EF !important; }
 .weLtBlueMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weLtBlueMenuBar .weMenuBarLightButtonBtnChecked, .weLtBlueMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#2D89EF;
   color:#FFFFFF;
@@ -426,6 +435,18 @@
 }
 .weCheckBoxLightBtnDisabled, .weCheckBoxLightBtnDisabled_Focus, .weCheckBoxDarkBtnDisabled, .weCheckBoxDarkBtnDisabled_Focus { color:#BABABA; }
 .weRadioLightBtnDisabled, .weRadioLightBtnDisabled_Focus, .weRadioDarkBtnDisabled, .weRadioDarkBtnDisabled_Focus { color:#BABABA; }
+.weSwitchLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#1F1F1F;
+  margin:7px 0px 6px 0px;
+}
+.weSwitchDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  color:#FFFFFF;
+  margin:7px 0px 6px 0px;
+}
 .weToggleSwitchLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
@@ -681,17 +702,34 @@
   padding-left:15px;
   padding-right:15px;
 }
-.weSectionsDarkSectionselected_Focus .weSectionsDarkPageText, .weSectionsDarkSectionselected .weSectionsDarkPageText { color:#1F1F1F; }
-.weSectionsDarkPage_Focus .weSectionsDarkPageText {
-  color:#FFFFFF;
-  text-decoration:underline;
+.weSectionsDarkPageSelected_Focus .weSectionsDarkPageText {
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+  border-bottom:3px solid #FFFFFF;
 }
-.weSectionsDarkPage .weSectionsDarkPageText { color:#FFFFFF; }
+.weSectionsDarkPageSelected .weSectionsDarkPageText {
+  color:#FFFFFF;
+  border-bottom:3px solid #FFFFFF;
+}
+.weSectionsDarkPage_Focus .weSectionsDarkPageText {
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+}
+.weSectionsDarkPage .weSectionsDarkPageText { color:#C0C0C0; }
 .weSectionsLightPage_Focus .weSectionsLightPageText {
   color:#1F1F1F;
-  text-decoration:underline;
+  background-color:#E8E8E8;
 }
-.weSectionsLightPage .weSectionsLightPageText { color:#1F1F1F; }
+.weSectionsLightPage .weSectionsLightPageText { color:#A0A0A0; }
+.weSectionsLightPageSelected .weSectionsLightPageText {
+  color:#1F1F1F;
+  border-bottom:3px solid #1F1F1F;
+}
+.weSectionsLightPageSelected_Focus .weSectionsLightPageText {
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+  border-bottom:3px solid #1F1F1F;
+}
 .weSectionsLightPageDisabled .weSectionsLightPageText, .weSectionsLightPageDisabled_Focus .weSectionsLightPageText, .weSectionsDarkPageDisabled .weSectionsDarkPageText, .weSectionsDarkPageDisabled_Focus .weSectionsDarkPageText { color:#BABABA; }
 .weSplitPanelLight, .weSplitPanelLightControlsPanel {
   color:#1F1F1F;

@@ -275,6 +275,20 @@ return {
       return di;
     });
     
+    ngRegisterControlDesignInfo('weSwitch',function(d,c,ref) {
+      var di = {
+        Properties: ng_diProperties({
+          "className": defThemeClassName('Switch'),
+          "ColorScheme": undefined,
+          "Data": {
+            "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.Switch'+defthemetxt())
+          }
+        })
+      };
+      ng_MergeVar(di,weCheckBoxDI(d,c,ref));
+      return di;
+    });
+
     ngRegisterControlDesignInfo('weToggleSwitch',function(d,c,ref) {
       var di = {
         Properties: ng_diProperties({
