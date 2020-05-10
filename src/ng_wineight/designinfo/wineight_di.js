@@ -733,6 +733,33 @@ return {
       return di;
     });
 
+    function weCompactListDI(d,c,ref) {
+      return themeSchemeDI({
+        ControlCategory: 'List',
+        Properties: ng_diProperties({
+          "className": deftheme() ? defThemeSchemeClassName('CompactListBox','CompactListBox') : ng_diString('weCompactListBoxDark')
+        })
+      });
+    }
+    ngRegisterControlDesignInfo('weCompactList',weCompactListDI);
+    ngRegisterControlDesignInfo('weCompactListBox',function(d,c,ref) {
+      var di=weCompactListDI(d,c,ref);
+      di.ControlCategory=false;
+      return di;
+    });
+    ngRegisterControlDesignInfo('weCompactTreeList',function(d,c,ref) {
+      var di={
+        Properties: ng_diProperties({
+          "Data": {
+            "DefaultIndent" : ng_diInteger(27),
+            "TreeImg": ng_diTypeVal('image', 'WinEightControls.Images.CompactTreeImg'+defthemetxt())
+          }
+        })
+      };
+      ng_MergeVar(di, weCompactListDI(d,c,ref));
+      return di;
+    });
+
     function wePageListDI(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'List',
@@ -825,6 +852,34 @@ return {
       return di;
     });
     
+    ngRegisterControlDesignInfo('weCompactPageList',function(d,c,ref) {
+      var di={
+        ControlCategory: 'List',
+        IsContainer: true,
+        Properties: ng_diProperties({
+          "ModifyControls": {
+            "List": ng_diControl('weCompactList')
+          }
+        })
+      };
+      ng_MergeVar(di,wePageListDI(d,c,ref));
+      return di;
+    });
+
+    ngRegisterControlDesignInfo('weCompactPageTreeList',function(d,c,ref) {
+      var di={
+        ControlCategory: 'List',
+        IsContainer: true,
+        Properties: ng_diProperties({
+          "ModifyControls": {
+            "List": ng_diControl('weCompactTreeList')
+          }
+        })
+      };
+      ng_MergeVar(di,wePageListDI(d,c,ref));
+      return di;
+    });
+
     ngRegisterControlDesignInfo('weSplitPanel',function(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'Container',
@@ -2031,7 +2086,20 @@ return {
       return di;
     });
 
-    ngRegisterControlDesignInfo('weDBDataSet',function(d,c,ref) {
+    ngRegisterControlDesignInfo('weCompactDataSet',function(d,c,ref) {
+      var di={
+        ControlCategory: 'Dataset',
+        Properties: ng_diProperties({
+          "ModifyControls": {
+            "List": ng_diControl('weCompactList')
+          }
+        })
+      };
+      ng_MergeVar(di,wePageListDI(d,c,ref));
+      return di;
+    });
+
+    function weDBDataSetDI(d,c,ref) {
       var di = {
         ControlCategory: 'Dataset',
         Properties: ng_diProperties({
@@ -2061,8 +2129,22 @@ return {
       };
       ng_MergeVar(di,wePageListDI(d,c,ref));
       return di;
-    });
+    }
+
+    ngRegisterControlDesignInfo('weDBDataSet', weDBDataSetDI);
     
+    ngRegisterControlDesignInfo('weCompactDBDataSet',function(d,c,ref) {
+      var di={
+        ControlCategory: 'Dataset',
+        Properties: ng_diProperties({
+          "ModifyControls": {
+            "List": ng_diControl('weCompactList')
+          }
+        })
+      };
+      ng_MergeVar(di,weDBDataSetDI(d,c,ref));
+      return di;
+    });
   }
 };
 })();

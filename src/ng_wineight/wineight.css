@@ -26,6 +26,10 @@
   background-color:#FFFFFF !important;
   color:#FFFFFF;
 }
+.weWhiteCompactListBox .weCompactListBoxLightSelected, .weWhiteCompactListBox .weCompactListBoxLightSelected TD {
+  background-color:#FFFFFF !important;
+  color:#FFFFFF;
+}
 .weWhiteSections .weSectionsLightPageSelected .weSectionsLightPageText, .weWhiteSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weWhiteSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weWhiteSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#FFFFFF !important; }
 .weWhiteMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weWhiteMenuBar .weMenuBarLightButtonBtnChecked, .weWhiteMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#FFFFFF;
@@ -61,6 +65,10 @@
   padding:2px 15px 2px 15px;
 }
 .weBlueListBox .weListBoxLightSelected, .weBlueListBox .weListBoxLightSelected TD {
+  background-color:#004D91 !important;
+  color:#FFFFFF;
+}
+.weBlueCompactListBox .weCompactListBoxLightSelected, .weBlueCompactListBox .weCompactListBoxLightSelected TD {
   background-color:#004D91 !important;
   color:#FFFFFF;
 }
@@ -102,6 +110,10 @@
   background-color:#00A300 !important;
   color:#FFFFFF;
 }
+.weGreenCompactListBox .weCompactListBoxLightSelected, .weGreenCompactListBox .weCompactListBoxLightSelected TD {
+  background-color:#00A300 !important;
+  color:#FFFFFF;
+}
 .weGreenSections .weSectionsLightPageSelected .weSectionsLightPageText, .weGreenSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weGreenSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weGreenSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#00A300 !important; }
 .weGreenMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weGreenMenuBar .weMenuBarLightButtonBtnChecked, .weGreenMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#00A300;
@@ -137,6 +149,10 @@
   padding:2px 15px 2px 15px;
 }
 .weYellowListBox .weListBoxLightSelected, .weYellowListBox .weListBoxLightSelected TD {
+  background-color:#FFC40D !important;
+  color:#FFFFFF;
+}
+.weYellowCompactListBox .weCompactListBoxLightSelected, .weYellowCompactListBox .weCompactListBoxLightSelected TD {
   background-color:#FFC40D !important;
   color:#FFFFFF;
 }
@@ -178,6 +194,10 @@
   background-color:#525252 !important;
   color:#FFFFFF;
 }
+.weGrayCompactListBox .weCompactListBoxLightSelected, .weGrayCompactListBox .weCompactListBoxLightSelected TD {
+  background-color:#525252 !important;
+  color:#FFFFFF;
+}
 .weGraySections .weSectionsLightPageSelected .weSectionsLightPageText, .weGraySections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weGraySections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weGraySections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#525252 !important; }
 .weGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weGrayMenuBar .weMenuBarLightButtonBtnChecked, .weGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#525252;
@@ -213,6 +233,10 @@
   padding:2px 15px 2px 15px;
 }
 .weLtGrayListBox .weListBoxLightSelected, .weLtGrayListBox .weListBoxLightSelected TD {
+  background-color:#BABABA !important;
+  color:#FFFFFF;
+}
+.weLtGrayCompactListBox .weCompactListBoxLightSelected, .weLtGrayCompactListBox .weCompactListBoxLightSelected TD {
   background-color:#BABABA !important;
   color:#FFFFFF;
 }
@@ -254,6 +278,10 @@
   background-color:#1F1F1F !important;
   color:#FFFFFF;
 }
+.weDkGrayCompactListBox .weCompactListBoxLightSelected, .weDkGrayCompactListBox .weCompactListBoxLightSelected TD {
+  background-color:#1F1F1F !important;
+  color:#FFFFFF;
+}
 .weDkGraySections .weSectionsLightPageSelected .weSectionsLightPageText, .weDkGraySections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weDkGraySections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weDkGraySections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#1F1F1F !important; }
 .weDkGrayMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weDkGrayMenuBar .weMenuBarLightButtonBtnChecked, .weDkGrayMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#1F1F1F;
@@ -292,6 +320,10 @@
   background-color:#B91D47 !important;
   color:#FFFFFF;
 }
+.weMaroonCompactListBox .weCompactListBoxLightSelected, .weMaroonCompactListBox .weCompactListBoxLightSelected TD {
+  background-color:#B91D47 !important;
+  color:#FFFFFF;
+}
 .weMaroonSections .weSectionsLightPageSelected .weSectionsLightPageText, .weMaroonSections .weSectionsLightPageSelected_Focus .weSectionsLightPageText, .weMaroonSections .weSectionsDarkPageSelected_Focus .weSectionsDarkPageText, .weMaroonSections .weSectionsDarkPageSelected .weSectionsDarkPageText { border-bottom-color:#B91D47 !important; }
 .weMaroonMenuBar .weMenuBarLightButtonBtn_Focus .weMenuBarLightButtonText, .weMaroonMenuBar .weMenuBarLightButtonBtnChecked, .weMaroonMenuBar .weMenuBarLightButtonBtnChecked_Focus .weMenuBarLightButtonText {
   background-color:#B91D47;
@@ -327,6 +359,10 @@
   padding:2px 15px 2px 15px;
 }
 .weLtBlueListBox .weListBoxLightSelected, .weLtBlueListBox .weListBoxLightSelected TD {
+  background-color:#2D89EF !important;
+  color:#FFFFFF;
+}
+.weLtBlueCompactListBox .weCompactListBoxLightSelected, .weLtBlueCompactListBox .weCompactListBoxLightSelected TD {
   background-color:#2D89EF !important;
   color:#FFFFFF;
 }
@@ -882,6 +918,89 @@
 .weTextListBoxLightRowDisabled, .weTextListBoxLightRowDisabled TD, .weTextListBoxLightRowDisabled_Focus, .weTextListBoxLightRowDisabled_Focus TD, .weTextListBoxDarkRowDisabled, .weTextListBoxDarkRowDisabled TD, .weTextListBoxDarkRowDisabled_Focus, .weTextListBoxDarkRowDisabled_Focus TD {
   color:#BABABA;
   padding:2px 0px 2px 0px;
+}
+.weCompactListBoxLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#1F1F1F;
+  background-color:inherit;
+}
+.weCompactListBoxDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:15px;
+  -moz-outline:0px;
+  outline:none;
+  color:#FFFFFF;
+  background-color:inherit;
+}
+.weCompactListBoxLightText, .weCompactListBoxDarkText {
+  line-height:28px;
+  cursor:default;
+}
+.weCompactListBoxLightCaption {
+  font-size:20px;
+  padding:0px 5px 0px 5px;
+  cursor:default;
+}
+.weCompactListBoxDarkCaption {
+  font-size:20px;
+  padding:0px 5px 0px 5px;
+  cursor:default;
+}
+.weCompactListBoxLightHeader, .weCompactListBoxDarkHeader { padding-bottom:2px; }
+.weCompactListBoxLightHeader THEAD TD {
+  line-height:28px;
+  vertical-align:top;
+  background-color:inherit;
+  border-bottom:1px solid #1F1F1F;
+  padding-bottom:0px !important;
+}
+.weCompactListBoxLight THEAD TD {
+  line-height:28px;
+  vertical-align:top;
+  background-color:inherit;
+  border-bottom:1px solid #1F1F1F;
+  padding-bottom:0px !important;
+}
+.weCompactListBoxDark THEAD TD {
+  line-height:28px;
+  vertical-align:top;
+  background-color:inherit;
+  border-bottom:1px solid #FFFFFF;
+  padding-bottom:2px;
+}
+.weCompactListBoxLightDisabled THEAD TD, .weCompactListBoxDarkDisabled THEAD TD {
+  line-height:28px;
+  vertical-align:top;
+  background-color:inherit;
+  color:#BABABA !important;
+  border-bottom:1px solid #BABABA !important;
+  padding-bottom:2px;
+}
+.weCompactListBoxLightSelected {
+  background-color:#1F1F1F;
+  color:#FFFFFF;
+}
+.weCompactListBoxDarkSelected, .weCompactListBoxDarkSelected TD {
+  background-color:#FFFFFF !important;
+  color:#1F1F1F !important;
+}
+.weCompactListBoxLightRow, .weCompactListBoxLightRow TD, .weCompactListBoxLightRowChecked, .weCompactListBoxLightRowChecked TD, .weCompactListBoxLightRowGrayed, .weCompactListBoxLightRowGrayed TD, .weCompactListBoxDarkRow, .weCompactListBoxDarkRow TD, .weCompactListBoxDarkRowChecked, .weCompactListBoxDarkRowChecked TD, .weCompactListBoxDarkRowGrayed, .weCompactListBoxDarkRowGrayed TD { padding:0px 5px 0px 5px; }
+.weCompactListBoxLightRow_Focus, .weCompactListBoxLightRowChecked_Focus, .weCompactListBoxLightRowGrayed_Focus, .weCompactListBoxLightRow_Focus TD, .weCompactListBoxLightRowChecked_Focus TD, .weCompactListBoxLightRowGrayed_Focus TD {
+  padding:0px 5px 0px 5px;
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+}
+.weCompactListBoxDarkRow_Focus, .weCompactListBoxDarkRowChecked_Focus, .weCompactListBoxDarkRowGrayed_Focus, .weCompactListBoxDarkRow_Focus TD, .weCompactListBoxDarkRowChecked_Focus TD, .weCompactListBoxDarkRowGrayed_Focus TD {
+  padding:0px 5px 0px 5px;
+  color:#1F1F1F;
+  background-color:#E8E8E8;
+}
+.weCompactListBoxLightRowDisabled, .weCompactListBoxLightRowDisabled TD, .weCompactListBoxLightRowDisabled_Focus, .weCompactListBoxLightRowDisabled_Focus TD, .weCompactListBoxDarkRowDisabled, .weCompactListBoxDarkRowDisabled TD, .weCompactListBoxDarkRowDisabled_Focus, .weCompactListBoxDarkRowDisabled_Focus TD {
+  color:#BABABA;
+  padding:0px 5px 0px 5px;
 }
 .weDropDownLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;

@@ -59,16 +59,24 @@ var WinEightControls = {
     CheckBoxRightDark: { L: 214, T: 5, W: 31, H: 32, SL: 278, DL: 214, DSL: 343, GL: 375, oL: 246, oSL: 310, oGL: 407 },
     ListCheckBoxLight: { L: 0, T: 4, W: 27, H: 34, SL: 64, DL: 0, DSL: 128, GL: 160 },
     ListCheckBoxDark: { L: 224, T: 4, W: 27, H: 34, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 0, oSL: 64, oGL: 160 },
+    CompactListCheckBoxLight: { L: 0, T: 7, W: 27, H: 28, SL: 64, DL: 0, DSL: 128, GL: 160 },
+    CompactListCheckBoxDark: { L: 224, T: 7, W: 27, H: 28, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 0, oSL: 64, oGL: 160 },
     RadioLeftLight: { L: 0, T: 39, W: 32, H: 32, SL: 68, DL: 0, DSL: 136, oL: 34, oSL: 102 },
     RadioLeftDark: { L: 170, T: 39, W: 32, H: 32, SL: 238, DL: 170, DSL: 306, oL: 204, oSL: 272 },
     RadioRightLight: { L: -9, T: 39, W: 32, H: 32, SL: 59, DL: -9, DSL: 127, oL: 25, oSL: 93 },
     RadioRightDark: { L: 161, T: 39, W: 32, H: 32, SL: 229, DL: 161, DSL: 297, oL: 195, oSL: 263 },
     ListRadioLight: { L: 0, T: 38, W: 28, H: 34, SL: 68, DL: 0, DSL: 136 },
     ListRadioDark: { L: 170, T: 38, W: 28, H: 34, SL: 238, DL: 170, DSL: 306, oL: 0, oSL: 68 },
+    CompactListRadioLight: { L: 0, T: 41, W: 28, H: 28, SL: 68, DL: 0, DSL: 136 },
+    CompactListRadioDark: { L: 170, T: 41, W: 28, H: 28, SL: 238, DL: 170, DSL: 306, oL: 0, oSL: 68 },
 
     TreeImgDark: { ST: 768, W: 22, H: 34, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 865, DT: 865, DST: 768, oL: 11, oSL: 9, oST: 768 },
     TreeImgLight: { ST: 768, W: 22, H: 34, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 865, DT: 865, DST: 768 },
     TreeImgSelLight: { ST: 768, W: 22, H: 34, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 865, DT: 865, DST: 768 },
+
+    CompactTreeImgDark: { ST: 771, W: 19, H: 28, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 868, DT: 868, DST: 771, oL: 11, oSL: 9, oST: 771 },
+    CompactTreeImgLight: { ST: 771, W: 19, H: 28, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 868, DT: 868, DST: 771 },
+    CompactTreeImgSelLight: { ST: 771, W: 19, H: 28, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 868, DT: 868, DST: 771 },
 
     DropDownTreeImgDark: { ST: 768, W: 22, H: 34, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 865, DT: 865, DST: 768, oL: 11, oSL: 9, oST: 768 },
     DropDownTreeImgLight: { ST: 768, W: 22, H: 34, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 865, DT: 865, DST: 768, oL: 44, oSL: 43, oST: 768 },
@@ -1656,8 +1664,14 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weList=function(def,ref,parent) {
+        var istree=(def.Type.toLowerCase().indexOf('tree')>=0);
+        var iscompact=(def.Type.toLowerCase().indexOf('compact')>=0);
+
         var th=theme(def);
-        if(typeof def.className === 'undefined') def.className=(th ? 'weListBoxLight we'+colorscheme(def)+'ListBox': 'weListBoxDark');
+        if(typeof def.className === 'undefined') {
+          if(iscompact) def.className=(th ? 'weCompactListBoxLight we'+colorscheme(def)+'CompactListBox': 'weCompactListBoxDark');
+          else          def.className=(th ? 'weListBoxLight we'+colorscheme(def)+'ListBox': 'weListBoxDark');
+        }
         var c=ngCreateControlAsType(def, 'ngList', ref, parent);
         if(!c) return c;
 
@@ -1679,22 +1693,40 @@ var WinEightControls = {
           return true;
         });
 
-        var istree=(def.Type === 'weTreeList');
-
         delete c.CheckImg; // make it undefined
         delete c.TreeImg; // make it undefined
 
+        var img_cblight,img_cbdark,img_rlight,img_rdark,img_tlight,img_tsellight,img_tdark;
+
+        if(iscompact) {
+          img_cblight=winimages.CompactListCheckBoxLight;
+          img_cbdark=winimages.CompactListCheckBoxDark;
+          img_rlight=winimages.CompactListRadioLight;
+          img_rdark=winimages.CompactListRadioDark;
+          img_tlight=winimages.CompactTreeImgLight;
+          img_tsellight=winimages.CompactTreeImgSelLight;
+          img_tdark=winimages.CompactTreeImgDark;
+        }
+        else {
+          img_cblight=winimages.ListCheckBoxLight;
+          img_cbdark=winimages.ListCheckBoxDark;
+          img_rlight=winimages.ListRadioLight;
+          img_rdark=winimages.ListRadioDark;
+          img_tlight=winimages.TreeImgLight;
+          img_tsellight=winimages.TreeImgSelLight;
+          img_tdark=winimages.TreeImgDark;
+        }
         c.OnGetCheckImg=function(list,item,id) {
           if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
           if(typeof list.CheckImg !== 'undefined') return list.CheckImg;
-          if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return ((th) || (list.Enabled && list.selected[id]) ? winimages.ListRadioLight : winimages.ListRadioDark);
-          return((th)||(list.Enabled && list.selected[id]) ? winimages.ListCheckBoxLight : winimages.ListCheckBoxDark);
+          if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return ((th) || (list.Enabled && list.selected[id]) ? img_rlight : img_rdark);
+          return((th)||(list.Enabled && list.selected[id]) ? img_cblight : img_cbdark);
         };
 
         if(istree) {
           c.DefaultIndent=27;
           c.OnGetTreeImg=function(list,item,id) {
-            return (typeof list.TreeImg !== 'undefined' ? list.TreeImg : (th ? (list.selected[id] ? winimages.TreeImgSelLight : winimages.TreeImgLight) : ( list.selected[id] ? winimages.TreeImgLight : winimages.TreeImgDark)));
+            return (typeof list.TreeImg !== 'undefined' ? list.TreeImg : (th ? (list.selected[id] ? img_tsellight : img_tlight) : ( list.selected[id] ? img_tlight : img_tdark)));
           };
         }
 
@@ -1706,14 +1738,14 @@ var WinEightControls = {
           if((!th)&&((typeof item.Checked!=='undefined')||(list.ShowCheckboxes)))
           {
             var img;
-            if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) img=(list.selected[id] ? winimages.ListRadioLight : winimages.ListRadioDark);
-            else img=(list.selected[id] ? winimages.ListCheckBoxLight : winimages.ListCheckBoxDark);
+            if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) img=(list.selected[id] ? img_rlight : img_rdark);
+            else img=(list.selected[id] ? img_cblight : img_cbdark);
             if(img) ngc_ChangeImage(ngl_CheckImgDrawProps(list.ID+'_'+id+'C', item.Checked, list.Enabled, img));
           }
 
           if(istree)
           {
-            var timg = (th ? (list.selected[id] ? winimages.TreeImgSelLight : winimages.TreeImgLight) : ( list.selected[id] ? winimages.TreeImgLight : winimages.TreeImgDark));
+            var timg = (th ? (list.selected[id] ? img_tsellight : img_tlight) : ( list.selected[id] ? img_tlight : img_tdark));
             if(timg)
             {
               var collapsed=false;
@@ -1731,8 +1763,26 @@ var WinEightControls = {
         return c;
       };
       ngRegisterControlType('weList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
-      ngRegisterControlType('weListBox', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
+      ngRegisterControlType('weListBox', 'weList');
+      /*  Class: weTreeList
+       *  Standard list control (based on <ngList>).
+       */
+      /*<>*/
       ngRegisterControlType('weTreeList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
+
+      /*  Class: weCompactList
+       *  Standard list control (based on <ngList>).
+       */
+      /*<>*/
+
+      ngRegisterControlType('weCompactList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
+      ngRegisterControlType('weCompactListBox', 'weCompactList');
+
+      /*  Class: weCompactTreeList
+       *  Standard list control (based on <ngList>).
+       */
+      /*<>*/
+      ngRegisterControlType('weCompactTreeList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
 
 
       /*  Class: wePageList
@@ -1806,11 +1856,14 @@ var WinEightControls = {
 
       skinfnc.Create_wePageList=function(def,ref,parent,controltype,listtype)
       {
+        listtype=ngVal(listtype,'weList');
+        var iscompact=(listtype.toLowerCase().indexOf('compact')>=0);
+
         var th=theme(def);
         ng_MergeDef(def, {
           className: (th ? 'weListBoxLight' : 'weListBoxDark'),
           Data: {
-            AverageItemHeight: 38
+            AverageItemHeight: iscompact ? 28 : 38
           },
           /*
            *  Group: Controls
@@ -1820,7 +1873,7 @@ var WinEightControls = {
              *  <weList>
              */
             List: {
-              Type: ngVal(listtype,'weList'),
+              Type: listtype,
               Theme: th
             },
             /*  Object: Loading
@@ -1877,7 +1930,23 @@ var WinEightControls = {
         return ngCreateControlAsType(def, ngVal(controltype,'ngPageList'), ref, parent);
       };
       ngRegisterControlType('wePageList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList'); });
+
+      /*  Class: wePageTreeList
+       *  Standard list control (based on <ngPageList>).
+       */
+      /*<>*/
       ngRegisterControlType('wePageTreeList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList','weTreeList'); });
+
+      /*  Class: weCompactPageList
+       *  Standard list control (based on <ngPageList>).
+       */
+      /*<>*/
+      ngRegisterControlType('weCompactPageList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList','weCompactList'); });
+      /*  Class: weCompactPageTreeList
+       *  Standard list control (based on <ngPageList>).
+       */
+      /*<>*/
+      ngRegisterControlType('weCompactPageTreeList', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngPageList','weCompactTreeList'); });
     }
 
     /**
@@ -4094,11 +4163,17 @@ var WinEightControls = {
       /*<>*/
       ngRegisterControlType('weDataSet', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngDataSet'); });
 
+      /*  Class: weCompactDataSet
+       *  Standard dataset control (based on <ngDataSet>).
+       */
+      /*<>*/
+      ngRegisterControlType('weCompactDataSet', function (def,ref,parent) { return skinfnc.Create_wePageList(def,ref,parent,'ngDataSet','weCompactList'); });
+
       /*  Class: weDBDataSet
        *  Standard dataset control (based on <ngDBDataSet>).
        */
       /*<>*/
-      skinfnc.Create_weDBDataSet=function(def,ref,parent) {
+      skinfnc.Create_weDBDataSet=function(def,ref,parent, listtype) {
         var th=theme(def);
         ng_MergeDef(def, {
           Controls: {
@@ -4136,10 +4211,16 @@ var WinEightControls = {
             }
           }
         });
-        return skinfnc.Create_wePageList(def,ref,parent,'ngDBDataSet');
+        return skinfnc.Create_wePageList(def,ref,parent,'ngDBDataSet',ngVal(listtype,'weList'));
       };
 
       ngRegisterControlType('weDBDataSet', function (def,ref,parent) { return skinfnc.Create_weDBDataSet(def,ref,parent); });
+
+      /*  Class: weCompactDBDataSet
+       *  Standard dataset control (based on <ngDBDataSet>).
+       */
+      /*<>*/
+      ngRegisterControlType('weCompactDBDataSet', function (def,ref,parent) { return skinfnc.Create_weDBDataSet(def,ref,parent,'weCompactList'); });
     }
   }
 };
