@@ -74,9 +74,9 @@ var WinEightControls = {
     TreeImgLight: { ST: 768, W: 22, H: 34, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 865, DT: 865, DST: 768 },
     TreeImgSelLight: { ST: 768, W: 22, H: 34, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 865, DT: 865, DST: 768 },
 
-    CompactTreeImgDark: { ST: 771, W: 19, H: 28, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 868, DT: 868, DST: 771, oL: 11, oSL: 9, oST: 771 },
-    CompactTreeImgLight: { ST: 771, W: 19, H: 28, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 868, DT: 868, DST: 771 },
-    CompactTreeImgSelLight: { ST: 771, W: 19, H: 28, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 868, DT: 868, DST: 771 },
+    CompactTreeImgDark: { ST: 770, W: 19, H: 28, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 867, DT: 867, DST: 770, oL: 11, oSL: 9, oST: 770 },
+    CompactTreeImgLight: { ST: 770, W: 19, H: 28, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 867, DT: 867, DST: 770 },
+    CompactTreeImgSelLight: { ST: 770, W: 19, H: 28, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 867, DT: 867, DST: 770 },
 
     DropDownTreeImgDark: { ST: 768, W: 22, H: 34, SL: 43, DL: 77, DSL: 76, Src: 3, L: 44, T: 865, DT: 865, DST: 768, oL: 11, oSL: 9, oST: 768 },
     DropDownTreeImgLight: { ST: 768, W: 22, H: 34, SL: 10, DL: 77, DSL: 76, Src: 3, L: 11, T: 865, DT: 865, DST: 768, oL: 44, oSL: 43, oST: 768 },
