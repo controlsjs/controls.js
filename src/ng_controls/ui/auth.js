@@ -135,11 +135,11 @@ ngUserControls['auth_controls'] = {
           },
           ShowProgress: function(s) {
             c.SetEnabled(!s);
-            if((v)&&(c.OnShowProgress)) {
+            if((s)&&(c.OnShowProgress)) {
               c.OnShowProgress(c);
               return;
             }
-            if((!v)&&(c.OnHideProgress)) {
+            if((!s)&&(c.OnHideProgress)) {
               c.OnHideProgress(c);
               return;
             }
