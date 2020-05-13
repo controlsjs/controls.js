@@ -194,8 +194,8 @@ ngUserControls['layouts'] = {
 
 
     function ngvhlay_CtrlUpdate(c) {
-      var p=c.ParentControl;
-      if((p)&&(!c.IgnoreLayout)) {
+      var p=c.IgnoreLayout ? null : c.ParentControl;
+      if(p) {
         var cc=p.ChildControls;
         if((cc)&&(cc.length)) {
           var chidx=ngvhlay_findChild(cc, c, p.Reverse, p._layout_updating ? p._layout_child_idx : c._layout_child);
@@ -231,13 +231,39 @@ ngUserControls['layouts'] = {
     }
 
     function ngvhlay_CtrlUpdated(c,o) {
-      var p=c.ParentControl;
+      var p=c.IgnoreLayout ? null : c.ParentControl;
       if((!p)||(p._layout_updating)||(typeof c._layout_child === 'undefined')) return;
 
       var cc=p.ChildControls;
       if((!cc)||(!cc.length)) return;
 
       ngvhlay_reflowChildren(cc, c, c._layout_child, p);
+    }
+
+    function ngvhlay_CtrlDisposed() {
+      if((!this.Visible)||(this.IgnoreLayout)) return true;
+      var p=this.ParentControl;
+      if((!p)||(p._layout_updating)) return true;
+      var cc=p.ChildControls;
+      if((!cc)||(!cc.length)) return true;
+      var fidx=-1;
+      for(var i=cc.length-1;i>=0;i--) {
+        if(cc[i]===this) {
+          fidx=i;
+          cc.splice(i,1);
+          break;
+        }
+      }
+      if(fidx>=0) {
+        var chidx=fidx;
+        if(p.Reverse) {
+          chidx--;
+          if(chidx<0) chidx=cc.length-1;
+        }
+        ngvhlay_reflowChildren(cc, this, chidx, p);
+        cc.splice(fidx,0,this);
+      }
+      return true;
     }
 
     function ngvhlay_CtrlVisibleChanged(c) {
@@ -256,12 +282,14 @@ ngUserControls['layouts'] = {
       ctrl.AddEvent(ngvhlay_CtrlUpdate,'OnUpdate');
       ctrl.AddEvent('OnUpdated',ngvhlay_CtrlUpdated);
       ctrl.AddEvent('OnVisibleChanged',ngvhlay_CtrlVisibleChanged);
+      ctrl.AddEvent('DoDispose',ngvhlay_CtrlDisposed);
     }
 
     function ngvhlay_RemoveChildControl(ctrl) {
       ctrl.RemoveEvent('OnUpdate',ngvhlay_CtrlUpdate);
       ctrl.RemoveEvent('OnUpdated',ngvhlay_CtrlUpdated);
       ctrl.RemoveEvent('OnVisibleChanged',ngvhlay_CtrlVisibleChanged);
+      ctrl.RemoveEvent('DoDispose',ngvhlay_CtrlDisposed);
     }
 
     function ngvhlay_UpdateChildren(recursively)
@@ -431,7 +459,7 @@ ngUserControls['layouts'] = {
     ngRegisterControlType('ngHLayout', Create_HLayout);
 
     function ngclay_CtrlUpdate(c) {
-      var p=this.IgnoreLayout ? null : this.ParentControl;
+      var p=c.IgnoreLayout ? null : c.ParentControl;
       if(p) {
         var bounds={};
         if(p.HCenter) {
@@ -442,19 +470,19 @@ ngUserControls['layouts'] = {
           bounds.T='50%';
           bounds.B=void 0;
         }
-        this.SetBounds(bounds);
+        c.SetBounds(bounds);
       }
       return true;
     }
 
     function ngclay_CtrlUpdated(c,o) {
-      var p=this.IgnoreLayout ? null : this.ParentControl;
+      var p=c.IgnoreLayout ? null : c.ParentControl;
       if(!p) return;
       if(p.HCenter) {
-        o.style.marginLeft=-Math.round(ng_OuterWidth(o)/2-ngVal(this.CenterOffsetX,0)-ngVal(p.CenterOffsetX,0))+'px';
+        o.style.marginLeft=-Math.round(ng_OuterWidth(o)/2-ngVal(c.CenterOffsetX,0)-ngVal(p.CenterOffsetX,0))+'px';
       }
       if(p.VCenter) {
-        o.style.marginTop=-Math.round(ng_OuterHeight(o)/2-ngVal(this.CenterOffsetY,0)-ngVal(p.CenterOffsetY,0))+'px';
+        o.style.marginTop=-Math.round(ng_OuterHeight(o)/2-ngVal(c.CenterOffsetY,0)-ngVal(p.CenterOffsetY,0))+'px';
       }
     }
 
@@ -767,6 +795,63 @@ ngUserControls['layouts'] = {
       if(typeof cache!=='undefined') cache.invalidate();
     }
 
+    function ngconst_CtrlDisposed()
+    {
+      if((!this.Visible)||(typeof this._layout_dependent === 'undefined')) return true;
+
+      var p=this.ParentControl;
+      if(!p) return true;
+
+      var cc=p.ChildControls;
+      if((!cc)||(!cc.length)) return true;
+      var dispconst=ngVal(this.RemoveConstraintsOnDispose,true);
+      var lc,fidx=-1;
+      for(var i=cc.length-1;i>=0;i--) {
+        if(cc[i]===this) {
+          fidx=i;
+          cc.splice(i,1);
+          break;
+        }
+        else {
+          lc=cc[i].LayoutConstraints;
+          if(ng_IsObjVar(lc)) {
+            for(var j in lc) {
+              if(lc[j]===this) {
+                if(dispconst) delete lc[j];
+                else lc[j]=this.LayoutID;
+              }
+              else {
+                if(ng_IsArrayVar(lc[j])) {
+                  var lcc=lc[j];
+                  for(var k=lcc.length-1;k>=0;k--)
+                    if(lcc[k]===this) {
+                      if(dispconst) lcc.splice(k,1);
+                      else lcc[k]=this.LayoutID;
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+      if(fidx>=0) {
+        var cache=p._layout_cache;
+        if(typeof cache!=='undefined') cache.invalidate();
+        var v=this.Visible;
+        try {
+          this.Visible=false;
+          ngconst_CtrlUpdateDependent(this);
+        } finally {
+          this.Visible=v;
+          cache=p._layout_cache;
+          if(typeof cache!=='undefined') cache.invalidate();
+          cc.splice(fidx,0,this);
+        }
+      }
+      if(dispconst) p.UpdateConstraints();
+      return true;
+    }
+
     function ngconst_CtrlVisibleChanged(c) {
       if((c.Visible)||(typeof c._layout_dependent === 'undefined')) return;
 
@@ -835,6 +920,7 @@ ngUserControls['layouts'] = {
       if((!lc)||(typeof lc!=='object')) return false;
       var cc=p.ChildControls;
       if((!cc)||(!cc.length)) return false;
+      var ret=false;
 
       function find(id) {
         for(var i=cc.length-1;i>=0;i--) if(cc[i].LayoutID===id) return cc[i];
@@ -858,7 +944,6 @@ ngUserControls['layouts'] = {
           ctrl=find(cc);
           if(ctrl) { lc[it]=ctrl; ret=true; }
         }
-        return true;
       }
 
       resolve(lc,'LtoL');
@@ -1156,7 +1241,12 @@ ngUserControls['layouts'] = {
             break;
         }
       }
-      if(!changed) return false;
+      if(!changed) {
+        for(var i in lc) {
+          if(!(i in cons)) { changed=true; delete lc[i]; }
+        }
+        if(!changed) return false;
+      }
 
       this.LayoutConstraints=lc;
       if(!exists) {
@@ -1164,7 +1254,10 @@ ngUserControls['layouts'] = {
         if(ngHASDEBUG()) ngconst_debugCheck(p);
       }
       else {
-        if(ng_EmptyVar(lc)) ngconst_removeConst(p,this);
+        if(ng_EmptyVar(lc)) {
+          ngconst_removeConst(p,this);
+          delete this.LayoutConstraints;
+        }
         else p.UpdateConstraints();
       }
       return true;
@@ -1177,6 +1270,7 @@ ngUserControls['layouts'] = {
       ctrl.AddEvent(ngconst_CtrlUpdate,'OnUpdate');
       ctrl.AddEvent('OnUpdated',ngconst_CtrlUpdated);
       ctrl.AddEvent('OnVisibleChanged',ngconst_CtrlVisibleChanged);
+      ctrl.AddEvent('DoDispose',ngconst_CtrlDisposed);
     }
 
     function ngconst_RemoveChildControl(ctrl) {
@@ -1186,6 +1280,7 @@ ngUserControls['layouts'] = {
       ctrl.RemoveEvent('OnUpdate',ngconst_CtrlUpdate);
       ctrl.RemoveEvent('OnUpdated',ngconst_CtrlUpdated);
       ctrl.RemoveEvent('OnVisibleChanged',ngconst_CtrlVisibleChanged);
+      ctrl.RemoveEvent('DoDispose',ngconst_CtrlDisposed);
     }
 
     function ngconst_debugCheck(c)

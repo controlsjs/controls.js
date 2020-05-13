@@ -347,7 +347,8 @@ ngUserControls['layouts_designinfo'] = {
               "id": { Level: 'basic' },
               "Data": {
                 "LayoutID": ng_diStringRefName({ Level: 'basic', Order: 0.8 }),
-                "LayoutConstraints": ng_diType('ngLayoutConstraints', { Level: 'basic', Order: 0.81 })
+                "LayoutConstraints": ng_diType('ngLayoutConstraints', { Level: 'basic', Order: 0.81 }),
+                "RemoveConstraintsOnDispose": ng_diBoolean(true, { Level: 'advanced', Order: 0.82 })
               }
             }))
           })
