@@ -1215,38 +1215,34 @@ ngUserControls['layouts'] = {
       return false;
     }
 
-    function ngconst_CtrlSetLayoutConstraints(cons) {
+    function ngconst_CtrlAddLayoutConstraints(cons) {
+      if(!ng_IsObjVar(cons)) return false;
       var p=this.ParentControl;
       var lc=this.LayoutConstraints;
-      if(typeof lc!=='undefined') {
-        ngconst_ResolveAll(cons,p);
-        ngconst_ResolveAll(lc,p);
-      }
       var exists=(typeof lc!=='undefined');
-      if(!exists) lc={};
-      var changed=false;
-      for(var i in cons)
-      {
-        switch(i)
+      ngconst_ResolveAll(cons,p);
+      if(exists) {
+        ngconst_ResolveAll(lc,p);
+        var changed=false;
+        for(var i in cons)
         {
-          case 'LtoL':
-          case 'LtoR':
-          case 'RtoL':
-          case 'RtoR':
-          case 'TtoT':
-          case 'TtoB':
-          case 'BtoT':
-          case 'BtoB':
-            if((lc[i]!=cons[i])||(typeof lc[i]!==typeof cons[i])) { lc[i]=cons[i]; changed=true; }
-            break;
-        }
-      }
-      if(!changed) {
-        for(var i in lc) {
-          if(!(i in cons)) { changed=true; delete lc[i]; }
+          switch(i)
+          {
+            case 'LtoL':
+            case 'LtoR':
+            case 'RtoL':
+            case 'RtoR':
+            case 'TtoT':
+            case 'TtoB':
+            case 'BtoT':
+            case 'BtoB':
+              if((lc[i]!=cons[i])||(typeof lc[i]!==typeof cons[i])) { lc[i]=cons[i]; changed=true; }
+              break;
+          }
         }
         if(!changed) return false;
       }
+      else lc=cons;
 
       this.LayoutConstraints=lc;
       if(!exists) {
@@ -1263,10 +1259,31 @@ ngUserControls['layouts'] = {
       return true;
     }
 
+    function ngconst_CtrlSetLayoutConstraints(cons) {
+      var p=this.ParentControl;
+
+      var lc=this.LayoutConstraints;
+      var exists=(typeof lc!=='undefined');
+      ngconst_ResolveAll(cons,p);
+      this.LayoutConstraints=cons;
+      if(!exists) {
+        ngconst_addConst(p,this);
+        if(ngHASDEBUG()) ngconst_debugCheck(p);
+      }
+      else {
+        if(ng_EmptyVar(cons)) {
+          ngconst_removeConst(p,this);
+          delete this.LayoutConstraints;
+        }
+        else p.UpdateConstraints();
+      }
+    }
+
     function ngconst_AddChildControl(ctrl) {
       ngconst_addConst(this,ctrl);
       ng_OverrideMethod(ctrl,'UpdateBounds',ngconst_CtrlUpdateBounds);
       ng_OverrideMethod(ctrl,'SetLayoutConstraints',ngconst_CtrlSetLayoutConstraints);
+      ng_OverrideMethod(ctrl,'AddLayoutConstraints',ngconst_CtrlAddLayoutConstraints);
       ctrl.AddEvent(ngconst_CtrlUpdate,'OnUpdate');
       ctrl.AddEvent('OnUpdated',ngconst_CtrlUpdated);
       ctrl.AddEvent('OnVisibleChanged',ngconst_CtrlVisibleChanged);
@@ -1277,6 +1294,7 @@ ngUserControls['layouts'] = {
       ngconst_removeConst(this,ctrl);
       if(ng_IsOverriden(ctrl.UpdateBounds)) ctrl.UpdateBounds.removeOverride(ngconst_CtrlUpdateBounds);
       if(ng_IsOverriden(ctrl.SetLayoutConstraints)) ctrl.SetLayoutConstraints.removeOverride(ngconst_CtrlSetLayoutConstraints);
+      if(ng_IsOverriden(ctrl.AddLayoutConstraints)) ctrl.AddLayoutConstraints.removeOverride(ngconst_CtrlAddLayoutConstraints);
       ctrl.RemoveEvent('OnUpdate',ngconst_CtrlUpdate);
       ctrl.RemoveEvent('OnUpdated',ngconst_CtrlUpdated);
       ctrl.RemoveEvent('OnVisibleChanged',ngconst_CtrlVisibleChanged);
