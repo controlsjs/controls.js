@@ -123,6 +123,8 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
             {
               id=name.substr(0,idx);
               name=name.substr(idx+1,name.length-idx);
+              if(name.charAt(0)=='$') { ngname=true; name=name.substr(1,name.length-1); }
+              else ngname=false;
             }
             else { id=name; name=''; }
 
@@ -150,6 +152,8 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
             {
               at=name.substr(1,idx-1);
               name=name.substr(idx+1,name.length-idx);
+              if(name.charAt(0)=='$') { ngname=true; name=name.substr(1,name.length-1); }
+              else ngname=false;
               if(at.length>0)
               {
                 var after=(at.charAt(at.length-1)=='-' ? 0 : 1);
