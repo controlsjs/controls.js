@@ -24,6 +24,7 @@ var WE_LIGHT = 1;
 var WinEightControls = {
   Lib: 'ng_wineight',
   ControlsGroup: 'WinEight Skin',
+  GridSize: 10,
 
   Theme: WE_LIGHT,
   ColorScheme: 'Green',
