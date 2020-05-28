@@ -194,15 +194,15 @@ function ng_CreateBoxHTML(id, url, left, top, width, height, innersize, images, 
 
   var noimg = {L:0,T:0,W:0,H:0};
   style='position:absolute;'+style;
-  var dp=new Object;
-  dp.Left =(typeof images.Left === 'undefined' ? noimg : images.Left);
-  dp.Top =(typeof images.Top === 'undefined' ? noimg : images.Top);
-  dp.Right =(typeof images.Right === 'undefined' ? noimg : images.Right);
-  dp.Bottom =(typeof images.Bottom === 'undefined' ? noimg : images.Bottom);
-  dp.LeftTop =(typeof images.LeftTop === 'undefined' ? noimg : images.LeftTop);
-  dp.RightTop =(typeof images.RightTop === 'undefined' ? noimg : images.RightTop);
-  dp.LeftBottom =(typeof images.LeftBottom === 'undefined' ? noimg : images.LeftBottom);
-  dp.RightBottom =(typeof images.RightBottom === 'undefined' ? noimg : images.RightBottom);
+  var dp={};
+  dp.Left        = (images.Left ? images.Left : noimg);
+  dp.Top         = (images.Top ? images.Top : noimg);
+  dp.Right       = (images.Right ? images.Right : noimg);
+  dp.Bottom      = (images.Bottom ? images.Bottom : noimg);
+  dp.LeftTop     = (images.LeftTop ? images.LeftTop : noimg);
+  dp.RightTop    = (images.RightTop ? images.RightTop : noimg);
+  dp.LeftBottom  = (images.LeftBottom ? images.LeftBottom : noimg);
+  dp.RightBottom = (images.RightBottom ? images.RightBottom : noimg);
 
   if(innersize)
   {
@@ -304,22 +304,15 @@ function ngc_ChangeImgS(id,state,enabled,image)
 function ngc_ChangeBox(id,state,enabled,images)
 {
   if(!images) return;
-  if(typeof images.Left !== 'undefined')
-    ngc_ChangeImgS(id+'_L',state,enabled,images.Left);
-  if(typeof images.Top !== 'undefined')
-    ngc_ChangeImgS(id+'_T',state,enabled,images.Top);
-  if(typeof images.Right !== 'undefined')
-    ngc_ChangeImgS(id+'_R',state,enabled,images.Right);
-  if(typeof images.Bottom !== 'undefined')
-    ngc_ChangeImgS(id+'_B',state,enabled,images.Bottom);
-  if(typeof images.LeftTop !== 'undefined')
-    ngc_ChangeImg(id+'_LT',state,enabled,images.LeftTop);
-  if(typeof images.RightTop !== 'undefined')
-    ngc_ChangeImg(id+'_RT',state,enabled,images.RightTop);
-  if(typeof images.LeftBottom !== 'undefined')
-    ngc_ChangeImg(id+'_LB',state,enabled,images.LeftBottom);
-  if(typeof images.RightBottom !== 'undefined')
-    ngc_ChangeImg(id+'_RB',state,enabled,images.RightBottom);
+  if(images.Left)        ngc_ChangeImgS(id+'_L',state,enabled,images.Left);
+  if(images.Top)         ngc_ChangeImgS(id+'_T',state,enabled,images.Top);
+  if(images.Right)       ngc_ChangeImgS(id+'_R',state,enabled,images.Right);
+  if(images.Bottom)      ngc_ChangeImgS(id+'_B',state,enabled,images.Bottom);
+
+  if(images.LeftTop)     ngc_ChangeImg(id+'_LT',state,enabled,images.LeftTop);
+  if(images.RightTop)    ngc_ChangeImg(id+'_RT',state,enabled,images.RightTop);
+  if(images.LeftBottom)  ngc_ChangeImg(id+'_LB',state,enabled,images.LeftBottom);
+  if(images.RightBottom) ngc_ChangeImg(id+'_RB',state,enabled,images.RightBottom);
 }
 
 function ngc_EnterImg(id)
@@ -438,15 +431,15 @@ function ngc_ImgBox(html, id, type, s, enabled, left, top, width, height, inners
   }
   else ltattrs=tattrs=rtattrs=lattrs=rattrs=lbattrs=battrs=rbattrs=cattrs='';
 
-  if(typeof dp==='undefined') dp=new Object;
-  dp.Left =(typeof images.Left === 'undefined' ? noimg : ngc_ImgProps(id+'_L', s, enabled, images.Left));
-  dp.Top =(typeof images.Top === 'undefined' ? noimg : ngc_ImgProps(id+'_T', s, enabled, images.Top));
-  dp.Right =(typeof images.Right === 'undefined' ? noimg : ngc_ImgProps(id+'_R', s, enabled, images.Right));
-  dp.Bottom =(typeof images.Bottom === 'undefined' ? noimg : ngc_ImgProps(id+'_B', s, enabled, images.Bottom));
-  dp.LeftTop =(typeof images.LeftTop === 'undefined' ? noimg : ngc_ImgProps(id+'_LT', s, enabled, images.LeftTop));
-  dp.RightTop =(typeof images.RightTop === 'undefined' ? noimg : ngc_ImgProps(id+'_RT', s, enabled, images.RightTop));
-  dp.LeftBottom =(typeof images.LeftBottom === 'undefined' ? noimg : ngc_ImgProps(id+'_LB', s, enabled, images.LeftBottom));
-  dp.RightBottom =(typeof images.RightBottom === 'undefined' ? noimg : ngc_ImgProps(id+'_RB', s, enabled, images.RightBottom));
+  if(typeof dp==='undefined') dp={};
+  dp.Left        =(images.Left ? ngc_ImgProps(id+'_L', s, enabled, images.Left) : noimg);
+  dp.Top         =(images.Top ? ngc_ImgProps(id+'_T', s, enabled, images.Top) : noimg);
+  dp.Right       =(images.Right ? ngc_ImgProps(id+'_R', s, enabled, images.Right) : noimg);
+  dp.Bottom      =(images.Bottom ? ngc_ImgProps(id+'_B', s, enabled, images.Bottom) : noimg);
+  dp.LeftTop     =(images.LeftTop ? ngc_ImgProps(id+'_LT', s, enabled, images.LeftTop) : noimg);
+  dp.RightTop    =(images.RightTop ? ngc_ImgProps(id+'_RT', s, enabled, images.RightTop) : noimg);
+  dp.LeftBottom  =(images.LeftBottom ? ngc_ImgProps(id+'_LB', s, enabled, images.LeftBottom) : noimg);
+  dp.RightBottom =(images.RightBottom ? ngc_ImgProps(id+'_RB', s, enabled, images.RightBottom) : noimg);
 
   if(innersize)
   {
