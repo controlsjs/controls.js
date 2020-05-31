@@ -35,7 +35,7 @@ var WinEightControls = {
   },
 
   ControlImages: [
-    'img/we_base.png?5',
+    'img/we_base.png?6',
     'img/we_hbox.png?3',
     'img/we_vbox.png?3',
     'img/we_icons.png?14',
@@ -94,12 +94,12 @@ var WinEightControls = {
       MenuRightBtnImg: { L: 0, T: 243, W: 28, H: 32, SL: 88, DL: 58, oL: 28, oSL: 118 }
     },
     ButtonDark: {
-      LeftImg: { L: 0, T: 198, W: 2, H: 32, DT: 264, Src: 1, oT: 198, ST: 198, oST: 463 },
-      MiddleImg: { L: 0, T: 363, H: 32, DT: 264, Src: 1, oT: 396, ST: 198, oST: 463 },
-      RightImg: { L: 0, T: 198, W: 2, H: 32, DT: 264, Src: 1, oT: 198, ST: 198, oST: 463 },
+      LeftImg: { L: 234, T: 243, W: 2, H: 32, oL: 234, SL: 234, DL: 443, oSL: 263, DSL: 84 },
+      MiddleImg: { L: 0, T: 363, H: 32, DT: 726, DST: 264, Src: 1, oT: 396, ST: 198, oST: 463 },
+      RightImg: { L: 234, T: 243, W: 2, H: 32, oL: 234, SL: 234, DL: 443, oSL: 263, DSL: 84 },
 
-      MenuRightImg: { L: 149, T: 243, W: 27, H: 32, DL: 59, oL: 179, SL: 209, oSL: 239 },
-      MenuRightBtnImg: { L: 148, T: 243, W: 28, H: 32, DL: 58, oL: 178, SL: 208, oSL: 238 }
+      MenuRightImg: { L: 149, T: 243, W: 27, H: 32, DL: 418, oL: 179, SL: 209, oSL: 239, DSL: 59 },
+      MenuRightBtnImg: { L: 148, T: 243, W: 28, H: 32, DL: 417, oL: 178, SL: 208, oSL: 238, DSL: 58 }
     },
 
     GroupBox: {
