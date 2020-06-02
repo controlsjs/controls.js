@@ -68,7 +68,19 @@ var WinXP_DesignInfo = {
           "Data": {
             "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.LeftImg'),
             "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.MiddleImg'),
-            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.RightImg')
+            "RightImg": ng_diTypeVal('image', 'WinXPControls.Images.Button.RightImg'),
+            "Frame": ng_diType('img_frame', {}, {
+              ObjectProperties: {
+                "LeftTop": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.LeftTop'),
+                "Top": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.Top'),
+                "RightTop": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.RightTop'),
+                "Left": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.Left'),
+                "Right": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.Right'),
+                "LeftBottom": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.LeftBottom'),
+                "Bottom": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.Bottom'),
+                "RightBottom": ng_diTypeVal('image', 'WinXPControls.Images.ButtonMultiLine.RightBottom')
+              }
+            })
           }
         })
       };

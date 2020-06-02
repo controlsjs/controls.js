@@ -26,9 +26,9 @@ var WinXPControls = {
   GridSize: 8,
 
   ControlImages: [
-    'winxp_base.png?9',
-    'winxp_hbox.png?6',
-    'winxp_vbox.png?5',
+    'winxp_base.png?10',
+    'winxp_hbox.png?7',
+    'winxp_vbox.png?6',
     'loading.gif?1'
   ],
 
@@ -51,10 +51,32 @@ var WinXPControls = {
       MenuRightBtnImg: { L: 1, T: 42, oL: 18, SL: 35, oSL: 53, DL: 71, W: 16, H: 23 }
     },
 
+    ButtonMultiLine: {
+      LeftTop: { L: 0, T: 194, W: 9, H: 12, DL: 40, oL: 60, SL: 20, oSL: 80 },
+      Top: { L: 0, T: 624, H: 12, DT: 682, Src: 1, oT: 712, ST: 652, oST: 742 },
+      RightTop: { L: 10, T: 194, W: 9, H: 12, DL: 50, oL: 70, SL: 30, oSL: 90 },
+      Left: { L: 110, T: 0, W: 9, DL: 148, Src: 2, oL: 168, SL: 129, oSL: 188 },
+      Right: { L: 120, T: 0, W: 9, DL: 158, Src: 2, oL: 178, SL: 139, oSL: 198 },
+      LeftBottom: { L: 0, T: 207, W: 9, H: 12, DL: 40, oL: 60, SL: 20, oSL: 80 },
+      Bottom: { L: 0, T: 637, H: 12, DT: 695, Src: 1, oT: 725, ST: 665, oST: 755 },
+      RightBottom: { L: 10, T: 207, W: 9, H: 12, DL: 50, oL: 70, SL: 30, oSL: 90 }
+    },
+
     DefButton: {
       LeftImg: { L: 58, T: 1, oL: 12, SL: 24, DL: 47, W: 4, H: 23, oSL: 36 },
       MiddleImg: { L: 0, T: 374, oT: 326, ST: 277, oST: 350, DT: 301, H: 23, Src: 1 },
       RightImg: { L: 65, T: 1, oL: 19, SL: 31, DL: 54, W: 4, H: 23, oSL: 43 }
+    },
+
+    DefButtonMultiLine: {
+      LeftTop: { L: 100, T: 194, W: 9, H: 12, DL: 40, oL: 60, SL: 20, oSL: 80 },
+      Top: { L: 0, T: 772, H: 12, DT: 682, Src: 1, oT: 712, ST: 652, oST: 742 },
+      RightTop: { L: 110, T: 194, W: 9, H: 12, DL: 50, oL: 70, SL: 30, oSL: 90 },
+      Left: { L: 208, T: 0, W: 9, DL: 148, Src: 2, oL: 168, SL: 129, oSL: 188 },
+      Right: { L: 218, T: 0, W: 9, DL: 158, Src: 2, oL: 178, SL: 139, oSL: 198 },
+      LeftBottom: { L: 100, T: 207, W: 9, H: 12, DL: 40, oL: 60, SL: 20, oSL: 80 },
+      Bottom: { L: 0, T: 785, H: 12, DT: 695, Src: 1, oT: 725, ST: 665, oST: 755 },
+      RightBottom: { L: 110, T: 207, W: 9, H: 12, DL: 50, oL: 70, SL: 30, oSL: 90 }
     },
 
     Edit: {
@@ -534,17 +556,22 @@ var WinXPControls = {
       if(typeof def.className === 'undefined') def.className='wxpButton';
       var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
       if(c) {
-        if((ngVal(c.Default,false))&&(typeof def.Menu !== 'object'))
-        {
-          c.LeftImg=winimages.DefButton.LeftImg;
-          c.MiddleImg=winimages.DefButton.MiddleImg;
-          c.RightImg=winimages.DefButton.RightImg;
+        if(c.MultiLine) {
+          c.Frame=ngVal(c.Default,false) ? winimages.DefButtonMultiLine : winimages.ButtonMultiLine;
         }
-        else
-        {
-          c.LeftImg=winimages.Button.LeftImg;
-          c.MiddleImg=winimages.Button.MiddleImg;
-          c.RightImg=(typeof def.Menu === 'object' ? winimages.Button.MenuRightImg : winimages.Button.RightImg);
+        else {
+          if((ngVal(c.Default,false))&&(typeof def.Menu !== 'object'))
+          {
+            c.LeftImg=winimages.DefButton.LeftImg;
+            c.MiddleImg=winimages.DefButton.MiddleImg;
+            c.RightImg=winimages.DefButton.RightImg;
+          }
+          else
+          {
+            c.LeftImg=winimages.Button.LeftImg;
+            c.MiddleImg=winimages.Button.MiddleImg;
+            c.RightImg=(typeof def.Menu === 'object' ? winimages.Button.MenuRightImg : winimages.Button.RightImg);
+          }
         }
       }
       return c;

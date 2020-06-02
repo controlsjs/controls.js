@@ -95,7 +95,32 @@
   margin-right: 5px;
 }
 
-.wxpButtonBtn_Focus .wxpButtonText
+.wxpButtonMultiLineText
+{
+}
+
+.wxpButtonBack,
+.wxpButtonBack_Focus
+{
+  background-color: #F3F3EF;
+}
+
+.wxpButtonBackChecked,
+.wxpButtonBackChecked_Focus
+{
+  background-color: #E2E1D9;
+}
+
+.wxpButtonBackDisabled,
+.wxpButtonBackDisabled_Focus,
+.wxpButtonBackCheckedDisabled,
+.wxpButtonBackCheckedDisabled_Focus
+{
+  background-color: #F5F4EA;
+}
+
+.wxpButtonBtn_Focus .wxpButtonText,
+.wxpButtonBtn_Focus .wxpButtonMultiLineText
 {
   text-decoration: underline;
 }
@@ -105,7 +130,8 @@
   color: #a0a0a0;
 }
 
-.wxpButtonBtnGrayed_Focus .wxpButtonText
+.wxpButtonBtnGrayed_Focus .wxpButtonText,
+.wxpButtonBtnGrayed_Focus .wxpButtonMultiLineText
 {
   color: #a0a0a0;
   text-decoration: underline;
@@ -115,7 +141,8 @@
 {
 }
 
-.wxpButtonBtnChecked_Focus .wxpButtonText
+.wxpButtonBtnChecked_Focus .wxpButtonText,
+.wxpButtonBtnChecked_Focus .wxpButtonMultiLineText
 {
   text-decoration: underline;
 }

@@ -24,7 +24,7 @@ var WireframeControls = {
   ControlImages: [
     'images/wireframe_base.png?5',
     'images/wireframe_h.png?5',
-    'images/wireframe_v.png?5',
+    'images/wireframe_v.png?6',
     'images/wireframe_dot.gif?3'
   ],
   Images: {
@@ -42,10 +42,32 @@ var WireframeControls = {
       RightImg: { L: 8, T: 1, oL: 22, W: 6, H: 27, SL: 36, DL: 64, oSL: 50 }
     },
 
+    ButtonMultiLine: {
+      LeftTop: { L: 1, T: 1, oL: 15, W: 6, H: 13, SL: 29, DL: 57, oSL: 43 },
+      Top: { L: 0, T: 0, ST: 56, oT: 28, DT: 112, oST: 84, H: 5, Src: 1 },
+      RightTop: { L: 8, T: 1, oL: 22, W: 6, H: 13, SL: 36, DL: 64, oSL: 50 },
+      Left: { L: 189, T: 0, W: 4, DL: 249, Src: 2, oL: 204, SL: 219, oSL: 234 },
+      Right: { L: 198, T: 0, W: 5, DL: 258, Src: 2, oL: 213, SL: 228, oSL: 243 },
+      LeftBottom: { L: 1, T: 15, oL: 15, W: 6, H: 13, SL: 29, DL: 57, oSL: 43 },
+      Bottom: { L: 0, T: 22, ST: 78, oT: 50, DT: 134, oST: 106, H: 5, Src: 1 },
+      RightBottom: { L: 8, T: 15, oL: 22, W: 6, H: 13, SL: 36, DL: 64, oSL: 50 }
+    },
+
     DefButton: {
       LeftImg: { L: 71, T: 1, oL: 15, SL: 29, DL: 57, W: 6, H: 27, oSL: 43 },
       MiddleImg: { L: 0, T: 140, oT: 28, ST: 56, DT: 112, oST: 84, H: 27, Src: 1 },
       RightImg: { L: 78, T: 1, oL: 22, SL: 36, DL: 64, W: 6, H: 27, oSL: 50 }
+    },
+
+    DefButtonMultiLine: {
+      LeftTop: { L: 71, T: 1, oL: 15, W: 6, H: 13, SL: 29, DL: 57, oSL: 43 },
+      Top: { L: 0, T: 140, ST: 56, oT: 28, DT: 112, oST: 84, H: 5, Src: 1 },
+      RightTop: { L: 78, T: 1, oL: 22, W: 6, H: 13, SL: 36, DL: 64, oSL: 50 },
+      Left: { L: 264, T: 0, W: 4, DL: 249, Src: 2, oL: 204, SL: 219, oSL: 234 },
+      Right: { L: 273, T: 0, W: 5, DL: 258, Src: 2, oL: 213, SL: 228, oSL: 243 },
+      LeftBottom: { L: 71, T: 14, oL: 15, W: 6, H: 13, SL: 29, DL: 57, oSL: 43 },
+      Bottom: { L: 0, T: 162, ST: 78, oT: 50, DT: 134, oST: 106, H: 5, Src: 1 },
+      RightBottom: { L: 78, T: 15, oL: 22, W: 6, H: 13, SL: 36, DL: 64, oSL: 50 }
     },
 
     Edit: {
@@ -542,20 +564,25 @@ var WireframeControls = {
       if(typeof def.className === 'undefined') def.className='wfrButton';
       var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
       if(c){
-        if((ngVal(c.Default,false))){
-          c.LeftImg = WFRImages.DefButton.LeftImg;
-          c.MiddleImg = WFRImages.DefButton.MiddleImg;
-          c.RightImg = WFRImages.DefButton.RightImg;
+        if(c.MultiLine) {
+          c.Frame=ngVal(c.Default,false) ? WFRImages.DefButtonMultiLine : WFRImages.ButtonMultiLine;
         }
-        else{
-          c.LeftImg = WFRImages.Button.LeftImg;
-          c.MiddleImg = WFRImages.Button.MiddleImg;
-          c.RightImg = WFRImages.Button.RightImg;
-        }
+        else {
+          if((ngVal(c.Default,false))){
+            c.LeftImg = WFRImages.DefButton.LeftImg;
+            c.MiddleImg = WFRImages.DefButton.MiddleImg;
+            c.RightImg = WFRImages.DefButton.RightImg;
+          }
+          else{
+            c.LeftImg = WFRImages.Button.LeftImg;
+            c.MiddleImg = WFRImages.Button.MiddleImg;
+            c.RightImg = WFRImages.Button.RightImg;
+          }
 
-        if(typeof def.Menu === 'object'){
-          c.Img = WFRImages.Menu.MenuButton;
-          c.ImgAlign = 'right';
+          if(typeof def.Menu === 'object'){
+            c.Img = WFRImages.Menu.MenuButton;
+            c.ImgAlign = 'right';
+          }
         }
       }
       return c;
@@ -2553,5 +2580,3 @@ var WireframeControls = {
 };
 
 ngUserControls['wfs'] = WireframeControls;
-
-

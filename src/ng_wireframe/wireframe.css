@@ -74,13 +74,35 @@
   color: #000000;
 }
 
-.wfrButtonText
+.wfrButtonText,
+.wfrButtonMultiLineText
 {
   margin-left: 6px;
   margin-right: 6px;
 }
 
-.wfrButtonBtn_Focus .wfrButtonText
+.wfrButtonBack,
+.wfrButtonBack_Focus
+{
+  background-color: #CCCCCC;
+}
+
+.wfrButtonBackChecked,
+.wfrButtonBackChecked_Focus
+{
+  background-color: #AAAAAA;
+}
+
+.wfrButtonBackDisabled,
+.wfrButtonBackDisabled_Focus,
+.wfrButtonBackCheckedDisabled,
+.wfrButtonBackCheckedDisabled_Focus
+{
+  background-color: #F5F5F5;
+}
+
+.wfrButtonBtn_Focus .wfrButtonText,
+.wfrButtonBtn_Focus .wfrButtonMultiLineText
 {
   color: #404040;
 }
@@ -90,7 +112,8 @@
   color: #808080;
 }
 
-.wfrButtonBtnGrayed_Focus .wfrButtonText
+.wfrButtonBtnGrayed_Focus .wfrButtonText,
+.wfrButtonBtnGrayed_Focus .wfrButtonMultiLineText
 {
   color: #a0a0a0;
 }

@@ -496,61 +496,83 @@
   color:#FFFFFF;
   margin:7px 0px 6px 0px;
 }
-.weButtonLight {
+.weButtonLight, .weButtonDefaultLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#1F1F1F;
-  line-height:32px;
   background-color:#CCCCCC;
 }
+.weButtonLightBack_Focus, .weButtonDefaultLightBack_Focus {
+  background-color:#1F1F1F;
+  opacity:0.25;
+  -moz-opacity:0.25;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=25);
+}
+.weButtonLightBackChecked, .weButtonDefaultLightBackChecked { background-color:#1F1F1F; }
+.weButtonLightBackChecked_Focus, .weButtonDefaultLightBackChecked_Focus { background-color:#575757; }
+.weButtonLightBackDisabled, .weButtonLightBackDisabled_Focus, .weButtonDefaultLightBackDisabled, .weButtonDefaultLightBackDisabled_Focus, .weButtonLightBackCheckedDisabled, .weButtonLightBackCheckedDisabled_Focus, .weButtonDefaultLightBackCheckedDisabled, .weButtonDefaultLightBackCheckedDisabled_Focus { background-color:#EAEAEA; }
 .weButtonLightText {
   margin-left:15px;
   margin-right:15px;
 }
-.weButtonLightBtnChecked, .weButtonLightBtnChecked_Focus { color:#FFFFFF; }
-.weButtonLightBtnDisabled, .weButtonLightBtnDisabled_Focus { color:#BABABA; }
-.weButtonDefaultLight {
-  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
-  font-size:15px;
-  color:#1F1F1F;
-  line-height:32px;
-  background-color:#CCCCCC;
+.weButtonLightMultiLineText {
+  margin-top:12px;
+  margin-bottom:12px;
+  margin-left:15px;
+  margin-right:15px;
 }
 .weButtonDefaultLightText {
   margin-left:15px;
   margin-right:15px;
   font-weight:bold;
 }
-.weButtonDefaultLightBtnChecked, .weButtonDefaultLightBtnChecked_Focus { color:#FFFFFF; }
-.weButtonDefaultLightBtnDisabled, .weButtonDefaultLightBtnDisabled_Focus { color:#BABABA; }
-.weButtonDark {
+.weButtonDefaultLightMultiLineText {
+  margin-top:12px;
+  margin-bottom:12px;
+  margin-left:15px;
+  margin-right:15px;
+  font-weight:bold;
+}
+.weButtonLightBtnChecked, .weButtonLightBtnChecked_Focus, .weButtonDefaultLightBtnChecked, .weButtonDefaultLightBtnChecked_Focus { color:#FFFFFF; }
+.weButtonLightBtnDisabled, .weButtonLightBtnDisabled_Focus, .weButtonDefaultLightBtnDisabled, .weButtonDefaultLightBtnDisabled_Focus { color:#BABABA; }
+.weButtonDark, .weButtonDefaultDark {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#FFFFFF;
-  line-height:32px;
 }
+.weButtonDarkBack_Focus, .weButtonDefaultDarkBack_Focus {
+  background-color:#FFFFFF;
+  opacity:0.25;
+  -moz-opacity:0.25;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=25);
+}
+.weButtonDarkBackChecked, .weButtonDefaultDarkBackChecked { background-color:#FFFFFF; }
+.weButtonDarkBackCheckedDisabled, .weButtonDarkBackCheckedDisabled_Focus, .weButtonDefaultDarkBackCheckedDisabled, .weButtonDefaultDarkBackCheckedDisabled_Focus { background-color:#EAEAEA; }
+.weButtonDarkBackChecked_Focus, .weButtonDefaultDarkBackChecked_Focus { background-color:#C7C7C7; }
 .weButtonDarkText {
   margin-left:13px;
   margin-right:13px;
 }
-.weButtonDarkBtnChecked, .weButtonDarkBtnChecked_Focus { color:#1F1F1F; }
-.weButtonDarkBtnDisabled, .weButtonDarkBtnDisabled_Focus { color:#BABABA; }
-.weButtonDefaultDark {
-  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
-  font-size:15px;
-  color:#FFFFFF;
-  line-height:32px;
+.weButtonDarkMultiLineText {
+  margin-top:12px;
+  margin-bottom:12px;
+  margin-left:15px;
+  margin-right:15px;
 }
 .weButtonDefaultDarkText {
   margin-left:13px;
   margin-right:13px;
   font-weight:bold;
 }
-.weButtonDefaultDarkBtnChecked, .weButtonDefaultDarkBtnChecked_Focus {
-  background-color:#FFFFFF;
-  color:#1F1F1F;
+.weButtonDefaultDarkMultiLineText {
+  margin-top:12px;
+  margin-bottom:12px;
+  margin-left:15px;
+  margin-right:15px;
+  font-weight:bold;
 }
-.weButtonDefaultDarkBtnDisabled, .weButtonDefaultDarkBtnDisabled_Focus { color:#BABABA; }
+.weButtonDarkBtnChecked, .weButtonDarkBtnChecked_Focus, .weButtonDefaultDarkBtnChecked, .weButtonDefaultDarkBtnChecked_Focus { color:#1F1F1F; }
+.weButtonDarkBtnDisabled, .weButtonDarkBtnDisabled_Focus, .weButtonDefaultDarkBtnDisabled, .weButtonDefaultDarkBtnDisabled_Focus { color:#BABABA; }
 .weAppButtonLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:20px;

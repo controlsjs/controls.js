@@ -310,8 +310,20 @@ return {
           "className": defThemeClassName('Button'),
           "Data": {
             "LeftImg": deftheme() ? ng_diNull() : ng_diTypeVal('image', 'WinEightControls.Images.Button'+defthemetxt()+'.LeftImg'),
-            "MiddleImg": deftheme() ? ng_diNull() : ng_diTypeVal('image', 'WinEightControls.Images.Button'+defthemetxt()+'.MiddleImg'),
-            "RightImg": deftheme() ? ng_diNull() : ng_diTypeVal('image', 'WinEightControls.Images.Button'+defthemetxt()+'.RightImg')
+            "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.Button'+defthemetxt()+'.MiddleImg'),
+            "RightImg": deftheme() ? ng_diNull() : ng_diTypeVal('image', 'WinEightControls.Images.Button'+defthemetxt()+'.RightImg'),
+            "Frame": deftheme() ? ng_diNull() : ng_diType('img_frame', {}, {
+              ObjectProperties: {
+                "LeftTop": ng_diNull(),
+                "Top": ng_diTypeVal('image', 'WinEightControls.Images.ButtonMultiLineDark.Top'),
+                "RightTop": ng_diNull(),
+                "Left": ng_diTypeVal('image', 'WinEightControls.Images.ButtonMultiLineDark.Left'),
+                "Right": ng_diTypeVal('image', 'WinEightControls.Images.ButtonMultiLineDark.Right'),
+                "LeftBottom": ng_diNull(),
+                "Bottom": ng_diTypeVal('image', 'WinEightControls.Images.ButtonMultiLineDark.Bottom'),
+                "RightBottom": ng_diNull()
+              }
+            })
           }
         })
       });

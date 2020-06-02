@@ -37,7 +37,7 @@ var WinEightControls = {
   ControlImages: [
     'img/we_base.png?6',
     'img/we_hbox.png?3',
-    'img/we_vbox.png?3',
+    'img/we_vbox.png?4',
     'img/we_icons.png?14',
 
     // pre-load
@@ -100,6 +100,12 @@ var WinEightControls = {
 
       MenuRightImg: { L: 149, T: 243, W: 27, H: 32, DL: 418, oL: 179, SL: 209, oSL: 239, DSL: 59 },
       MenuRightBtnImg: { L: 148, T: 243, W: 28, H: 32, DL: 417, oL: 178, SL: 208, oSL: 238, DSL: 58 }
+    },
+    ButtonMultiLineDark: {
+      Top: { L: 0, T: 363, H: 2, DT: 726, DST: 264, Src: 1, oT: 396, ST: 198, oST: 463 },
+      Bottom: { L: 0, T: 363, H: 2, DT: 726, DST: 264, Src: 1, oT: 396, ST: 198, oST: 463 },
+      Left: { L: 0, T: 0, W: 2, Src: 2, oL: 0, SL: 0, oSL: 206, DL: 15, DSL: 94 },
+      Right: { L: 0, T: 0, W: 2, Src: 2, oL: 0, SL: 0, oSL: 206, DL: 15, DSL: 94 }
     },
 
     GroupBox: {
@@ -895,17 +901,24 @@ var WinEightControls = {
 
       var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
       if(c) {
-        if(!th) {
-          c.LeftImg=winimages.ButtonDark.LeftImg;
-          c.MiddleImg=winimages.ButtonDark.MiddleImg;
-          c.RightImg=(typeof def.Menu === 'object' ? winimages.ButtonDark.MenuRightImg : winimages.ButtonDark.RightImg);
+        if(c.MultiLine) {
+          if(!th) {
+            c.Frame=winimages.ButtonMultiLineDark;
+          }
         }
-        else
-        {
-          c.MiddleImg=winimages.ButtonLight.MiddleImg;
-          if(typeof def.Menu === 'object')
+        else {
+          if(!th) {
+            c.LeftImg=winimages.ButtonDark.LeftImg;
+            c.MiddleImg=winimages.ButtonDark.MiddleImg;
+            c.RightImg=(typeof def.Menu === 'object' ? winimages.ButtonDark.MenuRightImg : winimages.ButtonDark.RightImg);
+          }
+          else
           {
-            c.RightImg=winimages.ButtonLight.MenuRightImg;
+            c.MiddleImg=winimages.ButtonLight.MiddleImg;
+            if(typeof def.Menu === 'object')
+            {
+              c.RightImg=winimages.ButtonLight.MenuRightImg;
+            }
           }
         }
       }

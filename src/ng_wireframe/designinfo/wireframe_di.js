@@ -47,7 +47,19 @@ var WireframeControls_DesignInfo = {
           "Data": {
             "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Button.LeftImg'),
             "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Button.MiddleImg'),
-            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.Button.RightImg')
+            "RightImg": ng_diTypeVal('image', 'WireframeControls.Images.Button.RightImg'),
+            "Frame": ng_diType('img_frame', {}, {
+              ObjectProperties: {
+                "LeftTop": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.LeftTop'),
+                "Top": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.Top'),
+                "RightTop": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.RightTop'),
+                "Left": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.Left'),
+                "Right": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.Right'),
+                "LeftBottom": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.LeftBottom'),
+                "Bottom": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.Bottom'),
+                "RightBottom": ng_diTypeVal('image', 'WireframeControls.Images.ButtonMultiLine.RightBottom')
+              }
+            })
            }
         })
        };
