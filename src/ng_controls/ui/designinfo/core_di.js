@@ -274,7 +274,6 @@ return {
           }
         },
         Properties: ng_diProperties({
-          "H": null,
           "style": {
             "color": { Level: 'advanced' },
             "fontFamily": { Level: 'advanced' },
@@ -290,7 +289,8 @@ return {
                 Items: editor_actionids
               }
             }),
-            "TextAlign": ng_diStringValues('center', ['left','right','center'], { Level: 'basic' }),
+            "TextAlign": ng_diStringValues('center', ['left','right','center','justify','left-right','left-center','left-none','center-left','center-right','center-none','right-left','right-center','right-none'], { Level: 'basic' }),
+            "TextVAlign": ng_diStringValues('center', ['top','bottom','center'], { Level: 'basic' }),
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'basic' },
             "Text": ng_diStringRefName({ Level: 'basic' }),
@@ -298,8 +298,11 @@ return {
             "ngAltD": { Level: 'basic' },
             "Alt": ng_diString('', { Level: 'basic' }),
             "HTMLEncode": ng_diBoolean(ngVal(ngDefaultHTMLEncoding,false), { Level: 'basic' }),
+            "MultiLine": ng_diBoolean(false, { Level: 'basic' }),
             "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
+            "AutoSizeMode": ng_diStringValues('auto', ['auto','horizontal','vertical'], { Level: 'advanced' }),
             "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
+            "MinHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
             "Checked": ng_diTypeValues('integer', 0, ['Unchecked','Checked','Grayed'], { Level: 'basic' }, { InitValue: 1 }),
             "RadioGroup": ng_diMixed(['undefined', ng_diString('',{},{
               Editor: 'ngfeEditor_DropDown',
@@ -310,7 +313,7 @@ return {
             "Cursor": ng_diTypeVal('css_cursor', 'pointer', { Level: 'advanced' }),
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "Img": ng_diType('image', { Level: 'basic' }),
-            "ImgAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
+            "ImgAlign": ng_diStringValues('left', ['left','right','top','bottom','left-top','left-bottom','right-top','right-bottom','top-left','top-right','bottom-left','bottom-right'], { Level: 'basic' }),
             "ImgIndent": ng_diInteger(0, { Level: 'basic' }),
             "LeftImg": ng_diType('image', { Level: 'advanced' }),
             "MiddleImg": ng_diType('image', { Level: 'advanced' }, {
@@ -319,6 +322,7 @@ return {
               }
             }),
             "RightImg": ng_diType('image', { Level: 'advanced' }),
+            "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "Default": ng_diBoolean(false, { Level: 'basic' }),
             "Cancel": ng_diBoolean(false, { Level: 'basic' })
           },

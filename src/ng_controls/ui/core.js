@@ -816,14 +816,25 @@ function ngb_GetClassName(cls)
     var c=this.OnGetClassName(this, cls, text);
     if(ngVal(c,'')!='') cls=c;
   }
-  if(!this.Enabled) cls+='Disabled';
-  else
-  {
+  if((cls==='Back')&&(this.MultiLine)) {
     switch(this.Checked)
     {
       case true:
       case 1: cls+='Checked'; break;
       case 2: cls+='Grayed'; break;
+    }
+    if(!this.Enabled) cls+='Disabled';
+  }
+  else {
+    if(!this.Enabled) cls+='Disabled';
+    else
+    {
+      switch(this.Checked)
+      {
+        case true:
+        case 1: cls+='Checked'; break;
+        case 2: cls+='Grayed'; break;
+      }
     }
   }
   return this.BaseClassName+cls;
@@ -889,8 +900,17 @@ function ngb_GetImg(idx)
 
 function ngb_DoCreate(d, ref, elm, parent)
 {
-  if(((typeof d.W !== 'undefined')||((typeof d.L !== 'undefined')&&(typeof d.R !== 'undefined')))&&((typeof d.Data === 'undefined')||(typeof d.Data.AutoSize === 'undefined')))
-    this.AutoSize=false;
+  var as='';
+  if((typeof d.W === 'undefined')&&((typeof d.L === 'undefined')||(typeof d.R === 'undefined')))
+    as='horizontal';
+  if((this.MultiLine)&&(typeof d.H === 'undefined')&&((typeof d.T === 'undefined')||(typeof d.B === 'undefined')))
+    as=(as == 'horizontal' ? 'auto' : 'vertical');
+
+  if(as!='')
+  {
+    if((!d.Data)||(typeof d.Data.AutoSizeMode === 'undefined')) this.AutoSizeMode=as;
+  }
+  if((!d.Data)||(typeof d.Data.AutoSize === 'undefined')) this.AutoSize=(as!='');
 }
 
 function ngb_SetAction(ac)
@@ -942,94 +962,42 @@ function ngb_DoUpdate(o)
   var cclass=this.BaseClassName;
 
   var state=ngVal(this.Checked,0);
-  var imgstate=state;
   if(action) action.CheckRadioGroup();
   else
     if((typeof this.RadioGroup !== 'undefined')&&(state)&&(ngb_RadioGroups[this.RadioGroup]!=this))
     {
       var uncheck=ngb_RadioGroups[this.RadioGroup];
       ngb_RadioGroups[this.RadioGroup]=this;
-      if(uncheck && typeof uncheck.Check=='function') uncheck.Check(0);
+      if(uncheck && typeof uncheck.Check==='function') uncheck.Check(0);
     }
 
-  var html=new ngStringBuilder;
-  var image,dp,bdp,event;
   if((ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
-  var w=ng_ClientWidth(o),aw=-1,tw=0,ctw=0,th=0,lw=0,rw=0;
+
+  var html=new ngStringBuilder;
+  var w=ng_ClientWidth(o),bdp,tw=0,th=0,ctw=0;
 
   var text=this.GetText();
   var alt=this.GetAlt();
   if(this.HTMLEncode) text=ng_htmlEncode(text);
 
   var btnimage=this.GetImg(-1);
-  if(btnimage)
-  {
-    bdp=ngc_ImgProps(this.ID+'_I', imgstate, this.Enabled, btnimage);
-    if(bdp.H>th) th=bdp.H;
-  }
+  if(btnimage) bdp=ngc_ImgProps(this.ID+'_I', state, this.Enabled, btnimage);
 
   var txtclass=this.GetClassName('Btn');
 
   // Measure text
   if(text!='')
   {
-    ng_SetInnerHTML(o,'<div id="'+this.ID+'_T" class="'+txtclass+'" style="position:absolute; visibility: hidden; white-space: nowrap;"><div class="'+cclass+'Text">'+text+'</div></div>');
+    ng_SetInnerHTML(o,'<div id="'+this.ID+'_T" class="'+txtclass+'" style="white-space: nowrap;position:absolute; visibility: hidden;"><div class="'+cclass+(this.MultiLine ? 'MultiLine' : '')+'Text">'+text+'</div></div>');
     var o2=document.getElementById(this.ID+'_T');
     if(o2)
     {
       ng_BeginMeasureElement(o2);
-      ctw=ng_ClientWidth(o2)
+      if(!this.MultiLine) ctw=ng_ClientWidth(o2)
       tw=ng_OuterWidth(o2);
-      var mh=ng_OuterHeight(o2);
+      th=ng_OuterHeight(o2);
       ng_EndMeasureElement(o2);
-      if(mh>th) th=mh;
     }
-  }
-  if(this.AutoSize)
-  {
-    aw=tw;
-    if(btnimage) aw+=this.ImgIndent+bdp.W;
-  }
-
-  var images=null;
-  image=this.GetImg(0);
-  if(image)
-  {
-    if(!images) images=new ngStringBuilder;
-    dp=ngc_ImgProps(this.ID+'_IL', imgstate, this.Enabled, image);
-    ngc_Img(images,dp,"position:absolute; left: 0px;",ngVal(image.Attrs,''));
-    lw=dp.W;
-    if(dp.H>th) th=dp.H;
-  }
-
-  image=this.GetImg(2);
-  if(image)
-  {
-    if(!images) images=new ngStringBuilder;
-    dp=ngc_ImgProps(this.ID+'_IR', imgstate, this.Enabled, image);
-    rw=dp.W;
-  }
-
-  var bw=(aw>=0 ? aw+lw+rw : w);
-  if((typeof this.MinWidth !== 'undefined')&&(bw<this.MinWidth))
-  {
-    bw=this.MinWidth;
-    if(aw>=0) aw=bw-lw-rw;
-  }
-
-  if(image)
-  {
-    ngc_Img(images,dp,"position:absolute; left: "+(aw>=0 ? lw+aw : (bw-rw))+"px;",ngVal(image.Attrs,''));
-    if(dp.H>th) th=dp.H;
-  }
-
-  image=this.GetImg(1);
-  if(image)
-  {
-    if(!images) images=new ngStringBuilder;
-    dp=ngc_ImgProps(this.ID+'_IM', imgstate, this.Enabled, image);
-    ngc_ImgSW(images,dp,lw,(aw>=0 ? aw : bw-lw-rw),'',ngVal(image.Attrs,''));
-    if(dp.H>th) th=dp.H;
   }
 
   var hasclick=(this.Enabled)&&(!this.ReadOnly)&&(action ? (action.OnClick)||(this.OnClick) : this.OnClick);
@@ -1041,61 +1009,449 @@ function ngb_DoUpdate(o)
     if(gestures!='') gestures+=' ';
     gestures+='doubletap';
   }
-  html.append('<span '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+bw+'px;height:'+th+'px;');
-  if(typeof this.Cursor !== 'undefined')
+
+  var images=null;
+  if(this.MultiLine)
   {
-    if(this.Cursor!='') html.append('cursor:'+this.Cursor+';');
-  }
-  else html.append(hasclick || hasdblclick ? 'cursor:pointer;' : 'cursor:default;');
-  html.append('">');
-  if(btnimage)
-  {
-    var l=0,il;
+    var dp={};
+    var frame=this.Frame;
+    if(frame) {
+      dp.Left = (frame.Left ? ngc_ImgProps(this.ID+'_F_L', state, this.Enabled, frame.Left) : {W:0});
+      dp.Top = (frame.Top ? ngc_ImgProps(this.ID+'_F_T', state, this.Enabled, frame.Top) : {H:0});
+      dp.Right = (frame.Right ? ngc_ImgProps(this.ID+'_F_R', state, this.Enabled, frame.Right) : {W:0});
+      dp.Bottom = (frame.Bottom ? ngc_ImgProps(this.ID+'_F_B', state, this.Enabled, frame.Bottom) : {H:0});
+    }
+    else {
+      dp.Left=dp.Right={W:0};
+      dp.Top=dp.Bottom={H:0};
+    }
+
+    var etw=0,eth=0;
+    var ew=0,eh=0;
+    if(btnimage)
+    {
+      switch(this.ImgAlign)
+      {
+        case 'left':
+        case 'left-top':
+        case 'left-bottom':
+        case 'right':
+        case 'right-top':
+        case 'right-bottom':
+          ew+=bdp.W+this.ImgIndent;
+          break;
+        case 'top':
+        case 'top-left':
+        case 'top-right':
+        case 'bottom':
+        case 'bottom-left':
+        case 'bottom-right':
+          eh+=bdp.H+this.ImgIndent;
+          break;
+      }
+
+      if((ew)&&(th<bdp.H)) { eth=bdp.H-th; th=bdp.H; }
+      if((eh)&&(tw<bdp.W)) { etw=bdp.W-tw; tw=bdp.W; }
+    }
+
+    var h=ng_ClientHeight(o);
+    var dstyle='white-space: nowrap;';
+
+    if((text!='')&&(o2)) {
+
+      function measure_text()
+      {
+        ng_BeginMeasureElement(o2);
+        tw=ng_OuterWidth(o2);
+        th=ng_OuterHeight(o2);
+        ng_EndMeasureElement(o2);
+        if(btnimage) {
+          if((ew)&&(th<bdp.H)) { eth=bdp.H-th; th=bdp.H; }
+          if((eh)&&(tw<bdp.W)) { etw=bdp.W-tw; tw=bdp.W; }
+        }
+      }
+      function btn_width()  { return tw+ew+dp.Left.W+dp.Right.W; }
+      function btn_height() { return th+eh+dp.Top.H+dp.Bottom.H; }
+
+      var nw=btn_width();
+      var nh=btn_height();
+      if((this.AutoSizeMode==='vertical')||(!this.AutoSize))
+      {
+        if(nw>w) {
+          dstyle='';
+          o2.style.whiteSpace='';
+          o2.style.width=(w-ew-dp.Left.W-dp.Right.W)+'px';
+          measure_text(); nw=btn_width(); nh=btn_height();
+        } else nw=w;
+      }
+      else if((this.AutoSizeMode==='horizontal')||(!this.AutoSize))
+      {
+        if(nh>h) {
+          dstyle='';
+          o2.style.whiteSpace='';
+          o2.style.height=(h-eh-dp.Top.H-dp.Bottom.H)+'px';
+          measure_text(); nw=btn_width(); nh=btn_height();
+        } else nh=h;
+      }
+      if(this.AutoSize) {
+        w=nw; h=nh;
+        if((typeof this.MinWidth !== 'undefined')&&(w<this.MinWidth)
+          &&((this.AutoSizeMode==='auto')||(this.AutoSizeMode==='horizontal')))
+        {
+          w=this.MinWidth;
+          ng_SetOuterWidth(o2,w-ew-dp.Left.W-dp.Right.W);
+          measure_text(); w=btn_width(); h=btn_height();
+        }
+        if((typeof this.MinHeight !== 'undefined')&&(h<this.MinHeight)
+          &&((this.AutoSizeMode==='auto')||(this.AutoSizeMode==='vertical')))
+        {
+          h=this.MinHeight;
+          ng_SetOuterHeight(o2,h-eh-dp.Top.H-dp.Bottom.H);
+          measure_text(); w=btn_width(); h=btn_height();
+        }
+      }
+    }
+
+    if(frame) {
+      if(!images) images=new ngStringBuilder;
+      ngc_ImgBox(images, this.ID+'_F', 'ngButton', state, this.Enabled, 0,0,w,h,false, frame, '', '', void 0, dp);
+    }
+
+    var bl=dp.Left.W;
+    var bt=dp.Top.H;
+    var bw=w-dp.Left.W-dp.Right.W;
+    var bh=h-dp.Top.H-dp.Bottom.H;
+
+    html.append('<div '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+w+'px;height:'+h+'px;');
+    if(typeof this.Cursor !== 'undefined')
+    {
+      if(this.Cursor!='') html.append('cursor:'+this.Cursor+';');
+    }
+    else html.append(hasclick || hasdblclick ? 'cursor:pointer;' : 'cursor:default;');
+    html.append('">');
+
+    var textalign;
     switch(this.TextAlign)
     {
+      case 'justify':
+        textalign='justify';
+        break;
+      case 'left-right':
+      case 'center-right':
+      case 'right-right':
       case 'right':
-        if(this.ImgAlign=='right') { l=bw-rw-tw-bdp.W-this.ImgIndent; il=bw-rw-bdp.W; }
-        else { il=bw-rw-tw-bdp.W-this.ImgIndent; l=bw-rw-tw;  }
+        textalign='right';
         break;
+      case 'left-center':
+      case 'right-center':
+      case 'center-center':
       case 'center':
-        l=Math.round((bw-(tw+this.ImgIndent+bdp.W))/2);
-        if(this.ImgAlign=='right') { il=l+tw+this.ImgIndent; }
-        else { il=l; l+=this.ImgIndent+bdp.W; }
+        textalign='center';
         break;
+      case 'left-none':
+      case 'center-none':
+      case 'right-none':
+        textalign='';
+        break;
+      case 'left-left':
+      case 'center-left':
+      case 'right-left':
       default:
-        if(this.ImgAlign=='right') { l=lw; il=lw+tw+this.ImgIndent; }
-        else { il=lw; l=lw+bdp.W+this.ImgIndent; }
+        textalign='left';
         break;
     }
-    html.append('<span id="'+this.ID+'_T" class="'+txtclass+'" style="white-space: nowrap;position: absolute; z-index:1;left:'+l+'px;top:0px;width:'+(aw-(tw-ctw)-bdp.W-this.ImgIndent)+'px;'+(th>0 ? 'line-height: '+th+'px;' : '')+'"><div class="'+cclass+'Text">'+text+'</div></span>');
-    ngc_Img(html,bdp,"position:absolute;z-index:1;left: "+il+"px;top:"+Math.round((th-bdp.H)/2)+"px;",'');
-  }
-  else html.append('<span id="'+this.ID+'_T" class="'+txtclass+'" style="white-space: nowrap;text-align:'+this.TextAlign+';position: absolute; z-index:1;left:0px;top:0px;width:'+(bw-(tw-ctw))+'px;'+(th>0 ? 'line-height: '+th+'px;' : '')+'"><div class="'+cclass+'Text">'+text+'</div></span>');
-  if(images)
-  {
-    html.append('<span style="position: absolute;z-index:0;left:0px;">');
-    html.append(images);
-    html.append('</span>');
-  }
-  html.append('</span>');
-  ng_SetInnerHTML(o,html.toString());
 
-  var cbw=this.Bounds.W;
-  if(this.AutoSize)
-  {
-    if(ng_ClientWidth(o)!=bw)
+    var t;
+    if(btnimage)
     {
-      ng_SetClientWidth(o,bw);
-      cbw=ng_StyleWidth(o);
+      var il,it;
+      var tl,tt;
+      var rw=tw;
+      var rh=th;
+
+      switch(this.ImgAlign)
+      {
+        case 'left':
+        case 'left-top':
+        case 'left-bottom':
+          tl=bdp.W+this.ImgIndent;
+          tt=0;
+          il=0;
+          break;
+        case 'right':
+        case 'right-top':
+        case 'right-bottom':
+          tl=0;
+          tt=0;
+          il=tw+this.ImgIndent;
+          break;
+        case 'top':
+          tl=0;
+          il=Math.abs((tw-bdp.W)/2);
+          tt=bdp.H+this.ImgIndent;
+          break;
+        case 'top-left':
+          tl=0;
+          il=0;
+          tt=bdp.H+this.ImgIndent;
+          break;
+        case 'top-right':
+          tl=0;
+          il=rw-bdp.W;
+          tt=bdp.H+this.ImgIndent;
+          break;
+        case 'bottom':
+          tl=0;
+          il=Math.abs((tw-bdp.W)/2);
+          tt=0;
+          break;
+        case 'bottom-left':
+          tl=0;
+          il=0;
+          tt=0;
+          break;
+        case 'bottom-right':
+          tl=0;
+          il=rw-bdp.W;
+          tt=0;
+          break;
+      }
+      rw+=ew; rh+=eh;
+
+      switch(this.ImgAlign)
+      {
+        case 'top':
+        case 'top-left':
+        case 'top-right':
+        case 'left-top':
+        case 'right-top':
+          it=0;
+          break;
+        case 'left-bottom':
+        case 'right-bottom':
+        case 'bottom':
+        case 'bottom-left':
+        case 'bottom-right':
+          it=rh-bdp.H;
+          break;
+        default:
+          it=Math.abs((rh-bdp.H)/2);
+          break;
+      }
+
+      var l;
+      switch(this.TextAlign)
+      {
+        case 'right-left':
+        case 'right-none':
+        case 'right-center':
+        case 'right-right':
+        case 'right':  l=bw-rw; break;
+        case 'center-right':
+        case 'center-none':
+        case 'center-left':
+        case 'center-center':
+        case 'center': l=Math.round((bw-rw)/2); break;
+        case 'left-right':
+        case 'left-center':
+        case 'left-none':
+        case 'left-left':
+        case 'justify':
+        default:       l=0; break;
+      }
+      switch(this.TextVAlign)
+      {
+        case 'top':    t=0; break;
+        case 'bottom': t=bh-rh; break;
+        default:       t=Math.round((bh-rh)/2); break;
+      }
+      if(eth) {
+        switch(this.ImgAlign)
+        {
+          case 'top':
+          case 'top-left':
+          case 'top-right':
+            break;
+          case 'bottom':
+          case 'bottom-left':
+          case 'bottom-right':
+            tt+=eth;
+            break;
+          default:
+            tt+=Math.round(eth/2);
+            break;
+        }
+      }
+      if(etw) {
+        switch(this.ImgAlign)
+        {
+          case 'left':
+          case 'left-top':
+          case 'left-bottom':
+            break;
+          case 'right':
+          case 'right-top':
+          case 'right-bottom':
+            tl+=etw;
+            break;
+          default:
+            tl+=Math.round(etw/2);
+            break;
+        }
+      }
+      l+=bl; t+=bt;
+
+      html.append('<div id="'+this.ID+'_T" class="'+txtclass+'" style="'+dstyle+(textalign!='' ? 'text-align:'+textalign+';' : '')+'position: absolute; z-index:1;left:'+(l+tl)+'px;top:'+(t+tt)+'px;width:'+tw+'px;height:'+th+'px;"><div class="'+cclass+'MultiLineText">'+text+'</div></div>');
+      ngc_Img(html,bdp,"position:absolute;z-index:1;left: "+(l+il)+"px;top:"+(t+it)+"px;",'');
+    }
+    else {
+      switch(this.TextVAlign)
+      {
+        case 'top':    t=0; break;
+        case 'bottom': t=bh-th; break;
+        default:       t=Math.round((bh-th)/2); break;
+      }
+      html.append('<div id="'+this.ID+'_T" class="'+txtclass+'" style="'+dstyle+(textalign!='' ? 'text-align:'+textalign+';' : '')+'position: absolute; z-index:1;left:'+bl+'px;top:'+(bt+t)+'px;width:'+bw+'px;height:'+th+'px;"><div class="'+cclass+'MultiLineText">'+text+'</div></div>');
+    }
+    html.append('<div style="position: absolute;z-index:0;left:0px;">');
+    var backclass=this.GetClassName('Back');
+    if(backclass!=='') html.append('<div id="'+this.ID+'_BACK" class="'+backclass+'" style="position: absolute;z-index:0;left:'+dp.Left.W+'px;top:'+dp.Top.H+'px;width:'+(w-dp.Left.W-dp.Right.W)+'px;height:'+(h-dp.Top.H-dp.Bottom.H)+'px"></div>');
+    if(images) html.append(images);
+    html.append('</div>');
+    html.append('</div>');
+    ng_SetInnerHTML(o,html.toString());
+    if(this.AutoSize)
+    {
+      ng_SetStyleWidth(o,w);
+      ng_SetStyleHeight(o,h);
+      var changed=false;
+      if((typeof this.Bounds.T === 'undefined')||(typeof this.Bounds.B === 'undefined'))
+      {
+        var cbh=ng_StyleHeight(o);
+        if(this.Bounds.H!=cbh)
+        {
+          this.Bounds.H=cbh;
+          changed=true;
+        }
+      }
+      if((typeof this.Bounds.L === 'undefined')||(typeof this.Bounds.R === 'undefined'))
+      {
+        var cbw=ng_StyleWidth(o);
+        if(this.Bounds.W!=cbw)
+        {
+          this.Bounds.W=cbw;
+          changed=true;
+        }
+      }
+      if(changed) this.SetBounds();
     }
   }
-  ng_SetClientHeight(o,th);
-  var cbh=ng_StyleHeight(o);
-  if((cbw!=this.Bounds.W)||(cbh!=this.Bounds.H))
+  else
   {
-    this.Bounds.W=cbw;
-    this.Bounds.H=cbh;
-    this.SetBounds();
+    var dp,aw=-1,lw=0,rw=0;
+    if((btnimage)&&(bdp.H>th)) th=bdp.H;
+    if(this.AutoSize)
+    {
+      aw=tw;
+      if(btnimage) aw+=this.ImgIndent+bdp.W;
+    }
+
+    var image=this.GetImg(0);
+    if(image)
+    {
+      if(!images) images=new ngStringBuilder;
+      dp=ngc_ImgProps(this.ID+'_IL', state, this.Enabled, image);
+      ngc_Img(images,dp,"position:absolute; left: 0px;",ngVal(image.Attrs,''));
+      lw=dp.W;
+      if(dp.H>th) th=dp.H;
+    }
+
+    image=this.GetImg(2);
+    if(image)
+    {
+      if(!images) images=new ngStringBuilder;
+      dp=ngc_ImgProps(this.ID+'_IR', state, this.Enabled, image);
+      rw=dp.W;
+    }
+
+    var bw=(aw>=0 ? aw+lw+rw : w);
+    if((typeof this.MinWidth !== 'undefined')&&(bw<this.MinWidth))
+    {
+      bw=this.MinWidth;
+      if(aw>=0) aw=bw-lw-rw;
+    }
+
+    if(image)
+    {
+      ngc_Img(images,dp,"position:absolute; left: "+(aw>=0 ? lw+aw : (bw-rw))+"px;",ngVal(image.Attrs,''));
+      if(dp.H>th) th=dp.H;
+    }
+
+    image=this.GetImg(1);
+    if(image)
+    {
+      if(!images) images=new ngStringBuilder;
+      dp=ngc_ImgProps(this.ID+'_IM', state, this.Enabled, image);
+      ngc_ImgSW(images,dp,lw,(aw>=0 ? aw : bw-lw-rw),'',ngVal(image.Attrs,''));
+      if(dp.H>th) th=dp.H;
+    }
+
+    html.append('<span '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+bw+'px;height:'+th+'px;');
+    if(typeof this.Cursor !== 'undefined')
+    {
+      if(this.Cursor!='') html.append('cursor:'+this.Cursor+';');
+    }
+    else html.append(hasclick || hasdblclick ? 'cursor:pointer;' : 'cursor:default;');
+    html.append('">');
+    if(btnimage)
+    {
+      var l=0,il;
+      switch(this.TextAlign)
+      {
+        case 'right':
+          if(this.ImgAlign==='right') { l=bw-rw-tw-bdp.W-this.ImgIndent; il=bw-rw-bdp.W; }
+          else { il=bw-rw-tw-bdp.W-this.ImgIndent; l=bw-rw-tw;  }
+          break;
+        case 'center':
+          l=Math.round((bw-(tw+this.ImgIndent+bdp.W))/2);
+          if(this.ImgAlign==='right') { il=l+tw+this.ImgIndent; }
+          else { il=l; l+=this.ImgIndent+bdp.W; }
+          break;
+        default:
+          if(this.ImgAlign==='right') { l=lw; il=lw+tw+this.ImgIndent; }
+          else { il=lw; l=lw+bdp.W+this.ImgIndent; }
+          break;
+      }
+      html.append('<span id="'+this.ID+'_T" class="'+txtclass+'" style="white-space: nowrap;position: absolute; z-index:1;left:'+l+'px;top:0px;width:'+(aw-(tw-ctw)-bdp.W-this.ImgIndent)+'px;'+(th>0 ? 'line-height: '+th+'px;' : '')+'"><div class="'+cclass+'Text">'+text+'</div></span>');
+      ngc_Img(html,bdp,"position:absolute;z-index:1;left: "+il+"px;top:"+Math.round((th-bdp.H)/2)+"px;",'');
+    }
+    else html.append('<span id="'+this.ID+'_T" class="'+txtclass+'" style="white-space: nowrap;text-align:'+this.TextAlign+';position: absolute; z-index:1;left:0px;top:0px;width:'+(bw-(tw-ctw))+'px;'+(th>0 ? 'line-height: '+th+'px;' : '')+'"><div class="'+cclass+'Text">'+text+'</div></span>');
+    if(images)
+    {
+      html.append('<span style="position: absolute;z-index:0;left:0px;">');
+      html.append(images);
+      html.append('</span>');
+    }
+    html.append('</span>');
+    ng_SetInnerHTML(o,html.toString());
+
+    var cbw=this.Bounds.W;
+    if(this.AutoSize)
+    {
+      if(ng_ClientWidth(o)!=bw)
+      {
+        ng_SetClientWidth(o,bw);
+        cbw=ng_StyleWidth(o);
+      }
+    }
+    ng_SetClientHeight(o,th);
+    var cbh=ng_StyleHeight(o);
+    if((cbw!=this.Bounds.W)||(cbh!=this.Bounds.H))
+    {
+      this.Bounds.W=cbw;
+      this.Bounds.H=cbh;
+      this.SetBounds();
+    }
   }
   return true;
 }
@@ -1124,9 +1480,22 @@ function ngb_DoMouseEnter(e, mi, elm)
     o.className=cn;
   }
   ngc_EnterImg(this.ID+'_I');
-  ngc_EnterImg(this.ID+'_IL');
-  ngc_EnterImgS(this.ID+'_IM');
-  ngc_EnterImg(this.ID+'_IR');
+  if(this.MultiLine) {
+    o=document.getElementById(this.ID+'_BACK');
+    if(o)
+    {
+      var cn=o.className;
+      var i=cn.indexOf('_Focus');
+      if(i<0) cn=cn+'_Focus';
+      o.className=cn;
+    }
+    ngc_EnterBox(this.ID+'_F');
+  }
+  else {
+    ngc_EnterImg(this.ID+'_IL');
+    ngc_EnterImgS(this.ID+'_IM');
+    ngc_EnterImg(this.ID+'_IR');
+  }
   if(this.OnMouseEnter) this.OnMouseEnter(this);
 }
 
@@ -1143,9 +1512,22 @@ function ngb_DoMouseLeave(e, mi)
     o.className=cn;
   }
   ngc_LeaveImg(this.ID+'_I');
-  ngc_LeaveImg(this.ID+'_IL');
-  ngc_LeaveImgS(this.ID+'_IM');
-  ngc_LeaveImg(this.ID+'_IR');
+  if(this.MultiLine) {
+    o=document.getElementById(this.ID+'_BACK');
+    if(o)
+    {
+      var cn=o.className;
+      var i=cn.indexOf('_Focus');
+      if(i>=0) cn=cn.substring(0,i);
+      o.className=cn;
+    }
+    ngc_LeaveBox(this.ID+'_F');
+  }
+  else {
+    ngc_LeaveImg(this.ID+'_IL');
+    ngc_LeaveImgS(this.ID+'_IM');
+    ngc_LeaveImg(this.ID+'_IR');
+  }
 }
 
 function ngb_DoPtrClick(pi)
@@ -1238,6 +1620,12 @@ function ngButton(id, text)
    *  Default value: 'center'
    */
   this.TextAlign = 'center';
+  /*  Variable: TextVAlign
+   *  ...
+   *  Type: string
+   *  Default value: 'center'
+   */
+  this.TextVAlign = 'center';
 
   /*  Variable: Alt
    *  ...
@@ -1252,18 +1640,37 @@ function ngButton(id, text)
    */
   this.HTMLEncode = ngVal(ngDefaultHTMLEncoding,false);
 
+  /*  Variable: MultiLine
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.MultiLine = false;
+
   /*  Variable: AutoSize
    *  ...
    *  Type: bool
    *  Default value: *true*
    */
   this.AutoSize = true;
+  /*  Variable: AutoSizeMode
+   *  ...
+   *  Type: string
+   *  Default value: *'auto'*
+   */
+  this.AutoSizeMode='auto';
   /*  Variable: MinWidth
    *  ...
    *  Type: integer
    *  Default value: *undefined*
    */
   // this.MinWidth = undefined;
+  /*  Variable: MinHeight
+   *  ...
+   *  Type: integer
+   *  Default value: *undefined*
+   */
+  // this.MinHeight = undefined;
 
   /*  Variable: Checked
    *  ...
@@ -1309,7 +1716,6 @@ function ngButton(id, text)
    *  Default value: *'left'*
    */
   this.ImgAlign = 'left';
-
   /*  Variable: ImgIndent
    *  ...
    *  Type: int
@@ -1334,6 +1740,11 @@ function ngButton(id, text)
    *  Type: object
    */
   this.RightImg = null;
+  /*  Variable: Frame
+   *  ...
+   *  Type: object
+   */
+  this.Frame = null;
 
   /*
    *  Group: Methods
