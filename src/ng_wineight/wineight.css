@@ -514,6 +514,7 @@
 .weButtonLightText {
   margin-left:15px;
   margin-right:15px;
+  line-height:32px;
 }
 .weButtonLightMultiLineText {
   margin-top:12px;
@@ -524,6 +525,7 @@
 .weButtonDefaultLightText {
   margin-left:15px;
   margin-right:15px;
+  line-height:32px;
   font-weight:bold;
 }
 .weButtonDefaultLightMultiLineText {
@@ -552,6 +554,7 @@
 .weButtonDarkText {
   margin-left:13px;
   margin-right:13px;
+  line-height:32px;
 }
 .weButtonDarkMultiLineText {
   margin-top:12px;
@@ -562,6 +565,7 @@
 .weButtonDefaultDarkText {
   margin-left:13px;
   margin-right:13px;
+  line-height:32px;
   font-weight:bold;
 }
 .weButtonDefaultDarkMultiLineText {
