@@ -978,7 +978,7 @@ function ngb_DoUpdate(o)
 
   var text=this.GetText();
   var alt=this.GetAlt();
-  if(this.HTMLEncode) text=ng_htmlEncode(text);
+  if(this.HTMLEncode) text=ng_htmlEncode(text,this.MultiLine);
 
   var btnimage=this.GetImg(-1);
   if(btnimage) bdp=ngc_ImgProps(this.ID+'_I', state, this.Enabled, btnimage);
