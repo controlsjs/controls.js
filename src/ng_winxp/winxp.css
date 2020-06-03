@@ -185,12 +185,19 @@
   margin-right: 5px;
 }
 
+.wxpFlatButtonMultiLineText
+{
+  margin: 3px 5px 3px 5px;
+  line-height: 14px;
+}
+
 .wxpFlatButtonBtn_Focus
 {
   color: #7F9DB9;
 }
 
-.wxpFlatButtonBtn_Focus .wxpFlatButtonText
+.wxpFlatButtonBtn_Focus .wxpFlatButtonText,
+.wxpFlatButtonBtn_Focus .wxpFlatButtonMultiLineText
 {
   color: #FFA615;
   text-decoration: underline;
@@ -201,7 +208,8 @@
   color: #a0a0a0;
 }
 
-.wxpFlatButtonBtnGrayed_Focus .wxpFlatButtonText
+.wxpFlatButtonBtnGrayed_Focus .wxpFlatButtonText,
+.wxpFlatButtonBtnGrayed_Focus .wxpFlatButtonMultiLineText
 {
   color: #a0a0a0;
   text-decoration: underline;
@@ -217,7 +225,8 @@
   color: #FFA615;
 }
 
-.wxpFlatButtonBtnChecked_Focus .wxpFlatButtonText
+.wxpFlatButtonBtnChecked_Focus .wxpFlatButtonText,
+.wxpFlatButtonBtnChecked_Focus .wxpFlatButtonMultiLineText
 {
   text-decoration: underline;
 }
