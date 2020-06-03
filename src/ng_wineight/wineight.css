@@ -577,14 +577,13 @@
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:20px;
   color:#1F1F1F;
-  line-height:32px;
 }
 .weAppButtonDark {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:20px;
   color:#FFFFFF;
-  line-height:32px;
 }
+.weAppButtonLightText, .weAppButtonDarkText { line-height:32px; }
 .weAppButtonLightBtnChecked, .weAppButtonLightBtnChecked_Focus { color:#FFFFFF; }
 .weAppButtonDarkBtnChecked, .weAppButtonDarkBtnChecked_Focus { color:#1F1F1F; }
 .weAppButtonLightBtnDisabled, .weAppButtonLightBtnDisabled_Focus, .weAppButtonDarkBtnDisabled, .weAppButtonDarkBtnDisabled_Focus { color:#BABABA; }
@@ -592,14 +591,13 @@
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#1F1F1F;
-  line-height:32px;
 }
 .weLinkDark {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#FFFFFF;
-  line-height:32px;
 }
+.weLinkLightText, .weLinkDarkText { line-height:32px; }
 .weLinkLightBtn_Focus, .weLinkDarkBtn_Focus { text-decoration:underline; }
 .weLinkLightBtnGrayed, .weLinkDarkBtnGrayed { color:#BABABA; }
 .weLinkLightBtnGrayed_Focus, .weLinkDarkBtnGrayed_Focus {
@@ -616,14 +614,13 @@
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#1F1F1F;
-  line-height:32px;
 }
 .weLabelDark {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#FFFFFF;
-  line-height:32px;
 }
+.weLabelLightText, .weLabelDarkText { line-height:32px; }
 .weLabelLightBtnChecked, .weLabelLightBtnChecked_Focus, .weLabelDarkBtnChecked, .weLabelDarkBtnChecked_Focus { font-weight:bold; }
 .weLabelLightBtnGrayed, .weLabelLightBtnGrayed_Focus, .weLabelLightBtnDisabled, .weLabelLightBtnDisabled_Focus, .weLabelDarkBtnGrayed, .weLabelDarkBtnGrayed_Focus, .weLabelDarkBtnDisabled, .weLabelDarkBtnDisabled_Focus { color:#BABABA; }
 .weEditDark {
