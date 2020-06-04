@@ -334,6 +334,7 @@ ngUserControls['auth_controls'] = {
             Type: 'ngText',
             L: 0, R: 0,
             Data: {
+              Visible: false,
               ToolBarBreak: true
             }
           }
