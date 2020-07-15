@@ -668,10 +668,8 @@ function ngStartModalControl()
         o.style.left=ng_ScrollX(parent)+'px';
         o.style.top=ng_ScrollY(parent)+'px';
         o.style.zIndex=ngModalZIndexDelta;
-        if(!anim) {
-          o.style.display='block';
-          o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
-        }
+        o.style.display='block';
+        o.style.visibility='visible'; // IE7 sometimes don't hide elements if display is none
         ng_IE7RedrawFix(o);
       }
     }
@@ -6665,7 +6663,7 @@ function ngApplication(startparams, elm, autorun)
    *  ...
    *  Type: bool
    */
-  this.MobileKeyboardFix=true;
+  this.MobileKeyboardFix=(!ngIExplorer);
 
   /*  Variable: FontsInitTimeout
    *  ...
