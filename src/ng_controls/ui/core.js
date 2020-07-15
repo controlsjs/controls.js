@@ -2423,18 +2423,19 @@ function nge_SuggestionSearch(txt)
     var res=new Object;
     res.found=false;
     res.needupdate=false;
-
-    if(!ngVal(this.OnSuggestionSearch(this,txt,res),false)) return;
+    res.lastsearch=void 0;
 
     var lst=this.DoGetSuggestionList();
     var dd=this.DropDownControl;
+    if(!ngVal(this.OnSuggestionSearch(this,txt,res,lst,dd),false)) return;
+
     if((res.needupdate)&&(res.found)&&(dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
     {
       lst.SetItemFocus(null);
       lst.Update();
     }
     this.SuggestionFound=res.found;
-    this.SuggestionLastSearch=txt;
+    this.SuggestionLastSearch=(typeof res.lastsearch!=='undefined' ? res.lastsearch : txt);
   }
   else
   {
@@ -2491,11 +2492,13 @@ function nge_SuggestionSearch(txt)
             case 1:
               if(emptytxt) v=true;
               else {
-                if(txt.length>t.length) return false;
-                v=(t.substring(0,txt.length)==txt);
+                t=''+t;
+                if(txt.length>t.length) v=false;
+                else v=(t.substring(0,txt.length)==txt);
               }
               break;
             case 2:
+              t=''+t;
               if(emptytxt) v=true;
               else v=(t.indexOf(txt)>=0)
               break;

@@ -499,7 +499,7 @@ return {
             "OnSetReadOnly": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' }),
             "OnReadOnlyChanged": ng_diEvent('function(c, state) { }', { Level: 'basic' }),
             "OnSuggestionChanged": ng_diEvent('function(c, txt) { return true; }', { Level: 'advanced' }),
-            "OnSuggestionSearch": ng_diEvent('function(c, txt, res) { return true; }', { Level: 'advanced' }),
+            "OnSuggestionSearch": ng_diEvent('function(c, txt, res, list, dd) { return true; }', { Level: 'advanced' }),
             "OnSuggestionCompareItem": ng_diEvent('function(c, txt, itemtxt, list, it, parent) { return (txt==itemtxt); }', { Level: 'advanced' }),
             "OnSuggestionResults": ng_diEvent('function(c, txt, data, res) { return true; }', { Level: 'advanced' }),
             "OnSuggestionData": ng_diEvent('function(c, txt, data) { return true; }', { Level: 'advanced' }),
