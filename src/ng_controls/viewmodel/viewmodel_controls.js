@@ -1439,14 +1439,13 @@ ngUserControls['viewmodel_controls'] = {
       },
       function (c, valueAccessor, allBindingsAccessor,viewModel) {
         if(typeof c.SetBounds === 'function') {
-          var origsetbound=c.SetBounds;
-          c.SetBounds=function(props) {
-            var ret=origsetbound.apply(c,[props]);
+          ng_OverrideMethod(c,'SetBounds', function(props) {
+            var ret=ng_CallParent(c,'SetBounds',arguments,false);
             if(typeof props!=='undefined') {
               value_write('Bounds',props,c, valueAccessor, allBindingsAccessor);
             }
             return ret;
-          };
+          });
           c.AddEvent(function() {
             if(c._vmboundsupdtimer) clearTimeout(c._vmboundsupdtimer);
             c._vmboundsupdtimer=null;
