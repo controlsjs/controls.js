@@ -3507,8 +3507,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
       if((xmlhttp.status==200)||(xmlhttp.status==304)||((xmlhttp.status==0)&&(!ngCordova))) {
         if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, xmlhttp.responseText, xmlhttp, reqinfo);
       }
-      else {
-        if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
+      else if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
         if((xmlhttp.status==408)  // Request Timeout
          ||(xmlhttp.status==504)) // Gateway Timeout
           reqinfo.RequestTimeout=true;
@@ -3742,21 +3741,23 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
           case rpcHttpRequestPOST:
             var ishtml=/^\s*\</i;
             if(ishtml.test(response)) {
-              if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
-              rpc.DoError(reqinfo);
-              if((ngHASDEBUG())&&(typeof console!=='undefined')) {
-                var c=console;
-                c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'HTML/XML response where JavaScript is expected!');
+              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                rpc.DoError(reqinfo);
+                if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                  var c=console;
+                  c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'HTML/XML response where JavaScript is expected!');
+                }
               }
               break;
             }
             if(response.indexOf('/*_SR_BEGIN*/')>=0) {
               if(response.lastIndexOf('/*_SR_END*/')<0) {
-                if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
-                rpc.DoError(reqinfo);
-                if((ngHASDEBUG())&&(typeof console!=='undefined')) {
-                  var c=console;
-                  c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Partial response - missing /*_SR_END*/ end tag!');
+                if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                  rpc.DoError(reqinfo);
+                  if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                    var c=console;
+                    c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Partial response - missing /*_SR_END*/ end tag!');
+                  }
                 }
                 break;
               }
@@ -3779,8 +3780,9 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
             { 
               ngDEBUGERROR('ngRPC: JSON parsing failed! Data: "'+response+'"',e);
               reqinfo.ParseError=true;
-              if(rpc.OnHTTPRequestFailed) rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo);
-              rpc.DoError(reqinfo);
+              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                rpc.DoError(reqinfo);
+              }
               break;
             }
             if(rpc.OnReceivedJSON) rpc.OnReceivedJSON(rpc, data, xmlhttp, reqinfo);
