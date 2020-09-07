@@ -814,9 +814,14 @@ ngUserControls['viewmodel_controls'] = {
           ds=this.DoSortDataSet(ds, sortby);
           if(!ng_IsArrayVar(ds)) return;
           recs=[];
-          var to=offset+count;
-          for(var i=offset;(i<to)&&(i<ds.length);i++)
+
+          if((offset<=0)&&(count<0)) recs=ds;
+          else {
+            var to=offset+(count < 0 ? ds.length : count);
+
+            for(var i=offset;(i<to)&&(i<ds.length);i++)
             recs.push(ds[i]);
+          }
         }
       }
       return recs;
