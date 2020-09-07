@@ -915,13 +915,17 @@ ngUserControls['viewmodel_controls'] = {
       var offset=ko.ng_getvalue(c.ViewModel.Offset);
       var count=ko.ng_getvalue(c.ViewModel.Count);
       offset=ng_toNumber(offset,0);
-      count=ng_toNumber(count,0);
+
       if(offset<0)
       {
-        count+=offset;
+        if((count===null)||(count === void 0)) count+=offset;
         offset=0;
       }
-      if(count<0) count=0;
+      if((count===null)||(count === void 0)) count=-1;
+      else {
+        count=ng_toNumber(count,0);
+        if(count<0) count=0;
+      }
 
       function getrecords() {
         var sortby=ko.ng_getvalue(c.ViewModel.SortBy);
