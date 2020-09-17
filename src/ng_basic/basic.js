@@ -3249,12 +3249,13 @@ function ng_CallParentEx(cls,method,args) {
 
 // --- ngCookies ---------------------------------------------------------------
 
-function ngSetCookie(name, value, expires, path, domain, secure, escapevalue)
+function ngSetCookie(name, value, expires, path, domain, secure, escapevalue, samesite)
 {
   escapevalue = ngVal(escapevalue, true);
   var cookie_string = name+'='+(escapevalue ? ng_URLEncode(value) : value);
   if (typeof expires !== 'undefined') cookie_string+='; expires='+expires.toGMTString();
   if(path) cookie_string += '; path='+escape(path);
+  cookie_string += '; samesite='+escape(ngVal(samesite,'Lax'));
   if(domain) cookie_string += '; domain='+escape(domain);
   if(secure) cookie_string += '; secure';
   document.cookie = cookie_string;
