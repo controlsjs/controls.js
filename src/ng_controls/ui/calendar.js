@@ -848,7 +848,7 @@ function ngcal_ParseDate(d)
       if(format=='') format=ngVal(dd.DateFormat,'');
     }
   }
-  if(format=='') format=ng_ParseDate(true);
+  if(format=='') format=ng_DateFormat(true);
   return ng_ParseDateTime(d,format);
 }
 
