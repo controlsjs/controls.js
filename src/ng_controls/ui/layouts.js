@@ -163,7 +163,7 @@ ngUserControls['layouts'] = {
         c=cc[i];
         if((c)&&(!c.IgnoreLayout)) {
           b[bound]=t;
-          c.SetBounds(b);
+          if(typeof c.SetBounds === 'function') c.SetBounds(b);
         }
       }
       if(p.Reverse) {
