@@ -4208,8 +4208,9 @@ function ngc_ptrevignore(e)
 
 function ngc_ptrevisignored(e)
 {
+  if(!e) return true;
   var ie=ngPtrIgnoredEvent;
-  if((e)&&(e.gesture)) e=e.gesture.srcEvent;
+  if(e.gesture) e=e.gesture.srcEvent;
   if(ie)
   {
     if(ie===e) return true;
