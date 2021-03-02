@@ -1040,7 +1040,7 @@ function ng_toString(v,def)
   switch(typeof v)
   {
     case 'undefined': return ngVal(def,'');
-    case 'boolean': return (''+v); // (v ? 'true' : 'false')
+//    case 'boolean': return (''+v); // (v ? 'true' : 'false')
     case 'object':
       if(v===null) return ngVal(def,'');
       if(ng_typeDate(v)) return ng_FormatDateTime(v,void 0,ngVal(def,''));
@@ -1056,8 +1056,6 @@ function ng_toString(v,def)
     case 'number':
       return ((''+v).replace('.',ng_DecimalSeparator()));
     case 'string':
-      var n = (+v);
-      if(!isNaN(n)) return v.replace('.',ng_DecimalSeparator());
       return v;
   }
   return ''+v;
