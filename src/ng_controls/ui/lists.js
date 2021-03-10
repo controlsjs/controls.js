@@ -1488,7 +1488,7 @@ function ngl_DoPtrDrag(pi)
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
-    if(pi.Touch)
+    if((pi.Touch)&&(pi.StartEvent.listRowObj))
     {
       if(!pi.IsInSrcElement())
       {
@@ -1516,7 +1516,7 @@ function ngl_DoPtrEnd(pi)
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
-    if(pi.Touch)
+    if((pi.Touch)&&(pi.StartEvent.listRowObj))
     {
       if(pi.IsInSrcElement())
       {
@@ -1811,6 +1811,7 @@ function ngl_EnterRow(e,elm,enterleave)
   if((!e)&&(e!==false)) e=window.event;
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
 
+  if(!elm) return;
   var ts=new Date().getTime();
   if((e)&&(ts<ngl_FocusTime+200)) return;
 
