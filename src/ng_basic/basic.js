@@ -3740,6 +3740,27 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
         {
           case rpcHttpRequestGET:
           case rpcHttpRequestPOST:
+          case rpcJSONGET:
+          case rpcJSONPOST:
+            var isempty=/^\s*$/g;
+            if(isempty.test(response)) {
+              reqinfo.EmptyResponse=true;
+              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                rpc.DoError(reqinfo);
+                if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                  var c=console;
+                  c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Empty response!');
+                }
+              }
+            }
+            break;
+        }
+
+        switch(type)
+        {
+          case rpcHttpRequestGET:
+          case rpcHttpRequestPOST:
+            if(reqinfo.EmptyResponse) break;
             var ishtml=/^\s*\</i;
             if(ishtml.test(response)) {
               if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
@@ -3764,16 +3785,26 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
               }
             }
 
-            if(ngWinStoreApp) {
-              MSApp.execUnsafeLocalFunction(function () {
-                  window["eval"].call(window, '(function() {'+response+'})();');
-              });
-            } else {
-              new Function(response)();
+            try {
+              if(ngWinStoreApp) {
+                MSApp.execUnsafeLocalFunction(function () {
+                    window["eval"].call(window, '(function() {'+response+'})();');
+                });
+              } else {
+                new Function(response)();
+              }
+            } catch(e)
+            {
+              reqinfo.ParseError=true;
+              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                rpc.DoError(reqinfo);
+              }
+              throw e;
             }
             break;
           case rpcJSONGET:
           case rpcJSONPOST:
+            if(reqinfo.EmptyResponse) break;
             try {
               var data=JSON.parse(response);
             }
