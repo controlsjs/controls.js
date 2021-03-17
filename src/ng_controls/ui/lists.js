@@ -1421,7 +1421,15 @@ function ngl_SelectDropDownItemWithFocus(it)
 {
   var ret=this.SelectDropDownItem(it);
   var dd=this.DropDownOwner;
-  if((ret)&&(dd)) dd.SetFocus();
+  if((ret)&&(dd)) {
+    var sof=dd.SelectOnFocus;
+    if(dd.DropDownType == ngeDropDownList) dd.SelectOnFocus=false;
+    try {
+      dd.SetFocus();
+    } finally {
+      dd.SelectOnFocus=sof;
+    }
+  }
   return ret;
 }
 

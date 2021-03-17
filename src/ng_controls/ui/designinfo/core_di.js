@@ -447,7 +447,7 @@ return {
             }),
             "RightImg": ng_diType('image', { Level: 'advanced' }),
             "OffsetTop": ng_diInteger(0, { Level: 'basic' }),
-            "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
+            "SelectOnFocus": ng_diBoolean(false, { Level: 'basic' }),
             "DropDownType": ng_diIntegerIdentifiers(0,['ngeDropDownEdit','ngeDropDownList'], { Level: 'advanced' }),
             "DropDownWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer',  Level: 'advanced' }),
             "DropDownAlign": ng_diStringValues('left', ['left','right','fixedleft','fixedright'], { Level: 'advanced' }),
@@ -542,7 +542,7 @@ return {
             "HintStyle": ng_diIntegerIdentifiers(ngVal(ngDefaultHintStyle,1),['ngHintHideOnFocus','ngHintHideOnInput'],{ Level: 'basic' }),
             "ReadOnly": ng_diBoolean(false, { Level: 'basic' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' }),
-            "SelectOnFocus": ng_diBoolean(true, { Level: 'basic' }),
+            "SelectOnFocus": ng_diBoolean(false, { Level: 'basic' }),
             "LockHintCaretPos": ng_diBoolean(true, { Level: 'basic' }),
             "Invalid": ng_diBoolean(false, { Level: 'basic' })
           },

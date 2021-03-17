@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2021 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -3134,6 +3134,15 @@ function nge_DoFocus(e, elm)
   {
     nge_HideHint(this,elm,'')
   }
+
+  if((this.SelectOnFocus)&&(!this.HintVisible)
+   &&(this.Enabled)&&(!this.ReadOnly)&&(this.DropDownType != ngeDropDownList))
+  {
+    try {
+      var o=document.getElementById(this.ID+'_T');
+      if((o)&&(!ng_IsInactiveModalElm(o))) o.select();
+    } catch(e) { }
+  }
 }
 
 function nge_DoSetEnabled(v)
@@ -3633,7 +3642,8 @@ function nge_SetFocus(state)
       {
         if(ng_IsInactiveModalElm(o)) return;
         o.focus();
-        if((this.SelectOnFocus)&&(!this.HintVisible)) o.select();
+        if((this.SelectOnFocus)&&(!this.HintVisible)
+         &&(this.Enabled)&&(!this.ReadOnly)) o.select();
       }
       else o.blur();
     } catch(e) { }
@@ -3752,6 +3762,8 @@ function nge_DoCreate(d, ref, elm, parent)
     }
     if(!this.Buttons.length) this.Buttons=null;
   }
+  if((this.Suggestion)&&(this.DropDownType == ngeDropDownEdit)&&(!this.SelectOnFocus)&&(this.DropDownControl)
+    &&((!ng_IsObjVar(d.Data))||(typeof d.Data.SelectOnFocus === 'undefined'))) this.SelectOnFocus=true;
 }
 
 function nge_DoDispose()
@@ -3880,9 +3892,9 @@ function ngEdit(id, text)
   /*  Variable: SelectOnFocus
    *  ...
    *  Type: bool
-   *  Default value: *true*
+   *  Default value: *false*
    */
-  this.SelectOnFocus=true;
+  this.SelectOnFocus=false;
 
   /*  Variable: Buttons
    *  ...
@@ -4750,6 +4762,14 @@ function ngem_DoFocus(e, elm)
     elm.value='';
     elm.className = this.GetClassName('Input');
   }
+
+  if((this.SelectOnFocus)&&(!this.HintVisible)&&(this.Enabled)&&(!this.ReadOnly))
+  {
+    try {
+      var o=document.getElementById(this.ID+'_T');
+      if((o)&&(!ng_IsInactiveModalElm(o))) o.select();
+    } catch(e) { }
+  }
 }
 
 function ngem_DoBlur(e, elm)
@@ -4998,9 +5018,9 @@ function ngMemo(id, text)
   /*  Variable: SelectOnFocus
    *  ...
    *  Type: bool
-   *  Default value: *true*
+   *  Default value: *false*
    */
-  this.SelectOnFocus=true;
+  this.SelectOnFocus=false;
 
   /*  Variable: LockHintCaretPos
    *  ...
