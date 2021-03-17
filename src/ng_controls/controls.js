@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2008-2018 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2008-2021 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2018 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2021 Position s.r.o.';
 
 /**
  *  Variable: ngApp
