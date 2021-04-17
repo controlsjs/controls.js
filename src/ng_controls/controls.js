@@ -1827,6 +1827,7 @@ function ngCreateControls(defs,ref,parent,options)
       {
         cinfo=cc[i];
         c=cinfo.Control;
+        if(ng_EmptyVar(c)) continue; // disposed control
         if(typeof c.ChildHandling!=='undefined') {
           // Update children
           c.SetChildControlsEnabled(c.Enabled);
