@@ -268,7 +268,6 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
               {
                 var def=new Object;
                 def.Items=new Array(nit);
-                if(ngVal(item.ID,'')!='') def.ID=item.ID;
                 list=list.CreateSubMenu(item, def);
               }
               else
