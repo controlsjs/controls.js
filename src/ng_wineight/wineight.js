@@ -1673,21 +1673,13 @@ var WinEightControls = {
      */
     if(ngUserControls['list'])
     {
-      /*  Class: weList
-       *  Standard list control (based on <ngList>).
-       */
-      /*<>*/
-      skinfnc.Create_weList=function(def,ref,parent) {
-        var istree=(def.Type.toLowerCase().indexOf('tree')>=0);
-        var iscompact=(def.Type.toLowerCase().indexOf('compact')>=0);
-
-        var th=theme(def);
-        if(typeof def.className === 'undefined') {
-          if(iscompact) def.className=(th ? 'weCompactListBoxLight we'+colorscheme(def)+'CompactListBox': 'weCompactListBoxDark');
-          else          def.className=(th ? 'weListBoxLight we'+colorscheme(def)+'ListBox': 'weListBoxDark');
+      this.weList_AddProperties=function(def,c,th,istree,iscompact)
+      {
+        if((typeof istree==='undefined')||(typeof iscompact==='undefined')) {
+          var ltype=def.Type.toLowerCase();
+          if(typeof istree==='undefined')    istree=(ltype.indexOf('tree')>=0);
+          if(typeof iscompact==='undefined') iscompact=(ltype.indexOf('compact')>=0);
         }
-        var c=ngCreateControlAsType(def, 'ngList', ref, parent);
-        if(!c) return c;
 
         c.AddEvent('DoUpdate',function(o) {
           var cn=o.className;
@@ -1773,7 +1765,24 @@ var WinEightControls = {
             }
           }
         });
+      }
 
+      /*  Class: weList
+       *  Standard list control (based on <ngList>).
+       */
+      /*<>*/
+      skinfnc.Create_weList=function(def,ref,parent) {
+        var ltype=def.Type.toLowerCase();
+        var istree=(ltype.indexOf('tree')>=0);
+        var iscompact=(ltype.indexOf('compact')>=0);
+
+        var th=theme(def);
+        if(typeof def.className === 'undefined') {
+          if(iscompact) def.className=(th ? 'weCompactListBoxLight we'+colorscheme(def)+'CompactListBox': 'weCompactListBoxDark');
+          else          def.className=(th ? 'weListBoxLight we'+colorscheme(def)+'ListBox': 'weListBoxDark');
+        }
+        var c=ngCreateControlAsType(def, 'ngList', ref, parent);
+        if(c) wineight.weList_AddProperties(def,c,th,istree,iscompact);
         return c;
       };
       ngRegisterControlType('weList', function(def,ref,parent) { return skinfnc.Create_weList(def,ref,parent); });
