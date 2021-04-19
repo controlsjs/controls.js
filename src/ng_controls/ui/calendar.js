@@ -173,7 +173,7 @@ function ngcal_MD(e,elm)
   var ctrl=ngVal(e.ctrlKey,false);
 
   // Handle select
-  if((c.SelectType==ngcalSelectMultiExt)&&(!ctrl)) // Single
+  if((c.SelectType==3)&&(!ctrl)) // Single
     c.SelectedDates = new Array();
 
   if(((!c.ClickAllDays)&&(c.CurrentDate.getMonth()!=date.getMonth()))||(!c.IsDayEnabled(date))) return; // Select only enabled
@@ -181,9 +181,9 @@ function ngcal_MD(e,elm)
   c.BeginUpdate();
   try {
     var s=(c.SelectType==ngcalSelectRange ? true : !(typeof c.SelectedDates[ngcal_DateStrKey(date)]!=='undefined'));
-    if(((c.SelectType==ngcalSelectMulti)||(c.SelectType==ngcalSelectMultiExt))&&(shift)&&(c.last_selected!=null))
+    if(((c.SelectType==2)||(c.SelectType==3))&&(shift)&&(c.last_selected!=null))
     {
-      if(c.SelectType==ngcalSelectMultiExt) s=true;
+      if(c.SelectType==3) s=true;
       var d=date,dk;
       if(d<=c.last_selected)
       {
