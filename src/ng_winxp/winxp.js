@@ -1145,14 +1145,8 @@ var WinXPControls = {
      */
     if(ngUserControls['list'])
     {
-      /*  Class: stdList
-       *  Standard list control (based on <ngList>).
-       */
-      /*<>*/
-      skinfnc.Create_stdList=function(def,ref,parent) {
-        if(typeof def.className === 'undefined') def.className='wxpListBox';
-        var c=ngCreateControlAsType(def, 'ngList', ref, parent);
-        if(!c) return c;
+      this.stdList_AddProperties=function(def, c)
+      {
         c.AddEvent('DoUpdate',function(o) {
           var cn=o.className;
           var idx=cn.indexOf(' ');
@@ -1187,6 +1181,16 @@ var WinXPControls = {
           case 'folder':    c.TreeImg = winimages.TreeImgFolder; break;
           case 'plusminus': c.TreeImg = winimages.TreeImgPlusMinus; break;
         }
+      }
+
+      /*  Class: stdList
+       *  Standard list control (based on <ngList>).
+       */
+      /*<>*/
+      skinfnc.Create_stdList=function(def,ref,parent) {
+        if(typeof def.className === 'undefined') def.className='wxpListBox';
+        var c=ngCreateControlAsType(def, 'ngList', ref, parent);
+        if(c) winxp.stdList_AddProperties(def,c);
         return c;
       }
       ngRegisterControlType('stdList', skinfnc.Create_stdList);
