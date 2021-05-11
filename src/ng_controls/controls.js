@@ -1568,6 +1568,7 @@ function ngCreateControl(d,ref,parent)
   c.Owner = ref;
 
   if((ngHASDEBUG())&&(d.DebugDef)) {
+    var ddef=d.DebugDef;
     delete d.DebugDef;
 
     function debugdef(d) {
@@ -1588,7 +1589,9 @@ function ngCreateControl(d,ref,parent)
 
     var dd=debugdef(d);
     dd.Type=c.CtrlInheritedFrom;
-    ngDEBUGLOG(c.DefType,dd);
+    if(typeof ddef==='boolean') ddef='';
+    else ddef+=': ';
+    ngDEBUGLOG(ddef+c.DefType,dd);
   }
 
   if(typeof d.Data !== 'undefined')
