@@ -1567,6 +1567,30 @@ function ngCreateControl(d,ref,parent)
   c.DefType = d.Type;
   c.Owner = ref;
 
+  if((ngHASDEBUG())&&(d.DebugDef)) {
+    delete d.DebugDef;
+
+    function debugdef(d) {
+      var v,dd={};
+      for(var i in d) {
+        if(i==='CtrlInheritanceDepth') continue;
+        v=d[i];
+        if((ng_IsObjVar(v))&&(!ng_IsArrayVar(v))&&(typeof v.nodeType === 'undefined')&&(typeof v.DoCreate !== 'function')) {
+          v=debugdef(v);
+          if(!ng_EmptyVar(v)) dd[i]=v;
+        }
+        else {
+          if(typeof v!=='undefined') dd[i]=v;
+        }
+      }
+      return dd;
+    }
+
+    var dd=debugdef(d);
+    dd.Type=c.CtrlInheritedFrom;
+    ngDEBUGLOG(c.DefType,dd);
+  }
+
   if(typeof d.Data !== 'undefined')
     for(var i in d.Data)
       c[i]=d.Data[i];
