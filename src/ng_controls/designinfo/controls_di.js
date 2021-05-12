@@ -881,6 +881,10 @@ function ng_diProperties(props,data) {
       Properties: {
         "ID": ng_diStringRefName({ Level: 'optional', Order: 0.001 }),
         "Type": ng_diString('', { Level: 'basic', Order: 0.01 }, { Editor: 'ngfeEditor_ControlType' }),
+        "DebugDef": ng_diMixed([
+          ng_diBoolean(false, { Level: 'advanced' }),
+          ng_diStringRefName({ Level: 'advanced' })
+        ], { InitType: 'string', Level: 'advanced', Order: 0.02 }),
         "L": ng_diType('bounds', { DisplayName: "Left (L)", Level: 'basic', Order: 0.11 }),
         "T": ng_diType('bounds', { DisplayName: "Top (T)", Level: 'basic', Order: 0.12 }),
         "R": ng_diType('bounds', { DisplayName: "Right (R)", Level: 'basic', Order: 0.15 }),
