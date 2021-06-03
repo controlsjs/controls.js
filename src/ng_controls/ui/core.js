@@ -2606,8 +2606,17 @@ function nge_SelectText(s, e, seldir)
     else {
       if(typeof s==='undefined') s=0;
       if(typeof e==='undefined') e=this.GetText().length;
-      if(typeof to.setSelectionRange!=='function') return false; // IE>=9    
-      to.setSelectionRange(s,e,ngVal(seldir,'none'));
+      if(to.setSelectionRange) to.setSelectionRange(s,e,ngVal(seldir,'none'));
+      else {
+        if (to.createTextRange) {
+          var range = to.createTextRange();
+          range.collapse(true);
+          range.moveEnd('character', e);
+          range.moveStart('character', s);
+          range.select();
+        }
+        else return false;
+      }      
     }    
   } catch(e) {
     return false;
