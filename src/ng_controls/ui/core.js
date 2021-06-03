@@ -2597,6 +2597,24 @@ function nge_SetHintCaret(c)
   c.SetCaretPos((c.TextAlign==='right' ? c.GetHint().length : 0));
 }
 
+function nge_SelectText(s, e, seldir)
+{
+  var to=document.getElementById(this.ID+'_T');
+  if(!to) return false;
+  try {
+    if(!arguments.length) to.select();
+    else {
+      if(typeof s==='undefined') s=0;
+      if(typeof e==='undefined') e=this.GetText().length;
+      if(typeof to.setSelectionRange!=='function') return false; // IE>=9    
+      to.setSelectionRange(s,e,ngVal(seldir,'none'));
+    }    
+  } catch(e) {
+    return false;
+  }
+  return true;
+}
+
 function nge_TextChanged(event, elm, edit)
 {
   if(typeof edit==='undefined') edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
@@ -4092,6 +4110,22 @@ function ngEdit(id, text)
    *    -
    */
   this.SetCaretPos = nge_SetCaretPos;
+    
+  /*  Function: SelectText
+   *  Sets the start and end positions of the current text selection.
+   *
+   *  Syntax:
+   *    bool *SelectText* ([int selectionStart, int selectionEnd, string selectionDirection])
+   *
+   *  Parameters:
+   *    selectionStart - first selected character (optional)
+   *    selectionEnd - last selected character (optional)
+   *    selectionDirection - direction in which the selection is considered (optional)
+   *
+   *  Returns:
+   *    TRUE if text selected.
+   */
+  this.SelectText = nge_SelectText;
 
   this.GetClassName = nge_GetClassName;
   this.DoMouseEnter = nge_DoMouseEnter;
@@ -5118,6 +5152,22 @@ function ngMemo(id, text)
    *    -
    */
   this.SetCaretPos = nge_SetCaretPos;
+
+  /*  Function: SelectText
+   *  Sets the start and end positions of the current text selection.
+   *
+   *  Syntax:
+   *    bool *SelectText* ([int selectionStart, int selectionEnd, string selectionDirection])
+   *
+   *  Parameters:
+   *    selectionStart - first selected character (optional)
+   *    selectionEnd - last selected character (optional)
+   *    selectionDirection - direction in which the selection is considered (optional)
+   *
+   *  Returns:
+   *    TRUE if text selected.
+   */
+  this.SelectText = nge_SelectText;
 
   this.GetClassName = nge_GetClassName;
   this.DoMouseEnter = ngem_DoMouseEnter;
