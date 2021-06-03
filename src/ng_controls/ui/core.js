@@ -2602,7 +2602,10 @@ function nge_SelectText(s, e, seldir)
   var to=document.getElementById(this.ID+'_T');
   if(!to) return false;
   try {
-    if(!arguments.length) to.select();
+    if(!arguments.length) {
+      to.select();
+      if(to.setSelectionRange) to.setSelectionRange(0, 99999); /* For mobile devices */
+    }
     else {
       if(typeof s==='undefined') s=0;
       if(typeof e==='undefined') e=this.GetText().length;
@@ -3167,7 +3170,10 @@ function nge_DoFocus(e, elm)
   {
     try {
       var o=document.getElementById(this.ID+'_T');
-      if((o)&&(!ng_IsInactiveModalElm(o))) o.select();
+      if((o)&&(!ng_IsInactiveModalElm(o))) {
+        o.select();
+        if(o.setSelectionRange) o.setSelectionRange(0, 99999); /* For mobile devices */
+      }
     } catch(e) { }
   }
 }
@@ -3670,7 +3676,10 @@ function nge_SetFocus(state)
         if(ng_IsInactiveModalElm(o)) return;
         o.focus();
         if((this.SelectOnFocus)&&(!this.HintVisible)
-         &&(this.Enabled)&&(!this.ReadOnly)) o.select();
+         &&(this.Enabled)&&(!this.ReadOnly)) {
+           o.select();
+           if(o.setSelectionRange) o.setSelectionRange(0, 99999); /* For mobile devices */
+         }
       }
       else o.blur();
     } catch(e) { }
@@ -4810,7 +4819,10 @@ function ngem_DoFocus(e, elm)
   {
     try {
       var o=document.getElementById(this.ID+'_T');
-      if((o)&&(!ng_IsInactiveModalElm(o))) o.select();
+      if((o)&&(!ng_IsInactiveModalElm(o))) {
+        o.select();
+        if(o.setSelectionRange) o.setSelectionRange(0, 99999); /* For mobile devices */
+      }        
     } catch(e) { }
   }
 }
