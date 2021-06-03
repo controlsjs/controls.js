@@ -9,35 +9,60 @@
  *
  * The commercial license can be purchased at Controls.js website.
  */
+if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
+ngc_Lang['en']['ngClipboardCTRLC']='CTRL+C';
 
-function ngclip_SetTextNone(text)
+function ngclip_SetText(text, onsucc, onfail)
 {
-  // not supported
-  return false;
-}
+  function dofail()
+  {
+    if(onfail) onfail(text);
+    else window.prompt(ngTxt('ngClipboardCTRLC'),text);
+  }
 
-function ngclip_SetTextIE(text)
-{
   try { 
-    window.clipboardData.setData('Text',text);
-    return true;
-  } catch(e) { }
-  return false;  
+    if(!navigator.clipboard) {
+      if(window.clipboardData) {
+        window.clipboardData.setData(ngIExplorer ? 'Text' : 'text/plain', text);
+        if(onsucc) onsucc(text);
+      } else {
+        var tempInput = document.createElement("textarea");
+        try {        
+          tempInput.style.position='absolute';
+          tempInput.style.left='-1000px';
+          tempInput.style.top='-1000px';
+          tempInput.style.width='100px';
+          tempInput.style.height='100px';
+          tempInput.value = text;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          if(tempInput.setSelectionRange) tempInput.setSelectionRange(0, 99999); /* For mobile devices */
+          document.execCommand("copy");
+          document.body.removeChild(tempInput);
+          if(onsucc) onsucc(text);
+        } catch(e) {
+          document.body.removeChild(tempInput);
+          ngApp.InvokeLater(dofail);          
+        }      
+      }
+    } else {
+      navigator.clipboard.writeText(text).then(function() {
+        if(onsucc) onsucc(text);
+      }, function() {
+        dofail();
+      });
+    }    
+  } catch(e) {
+    ngApp.InvokeLater(dofail);          
+  }
+  return true;  
 }
 
 function ngClipboard()
 {
-  
-  if(ngIExplorer)
-  {
-    this.SetText = ngclip_SetTextIE;
-    this.IsSupported = true;
-  }
-  else
-  {
-    this.IsSupported = false;
-    this.SetText = ngclip_SetTextNone;
-  }  
+  this.SetText = ngclip_SetText;
+  this.IsSupported = true;// !!(ngIExplorer || navigator.clipboard);
 }
 
 if(typeof ngUserControls === 'undefined') ngUserControls = {};
