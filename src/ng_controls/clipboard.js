@@ -38,6 +38,8 @@ function ngclip_SetText(text, onsucc, onfail)
           tempInput.style.top='-1000px';
           tempInput.style.width='100px';
           tempInput.style.height='100px';
+          if(typeof ngModalCnt!=='undefined') tempInput.style.zIndex=(ngModalCnt+1)*ngModalZIndexDelta;
+          else tempInput.style.zIndex=10000000;
           tempInput.value = text;
           document.body.appendChild(tempInput);
           tempInput.select();
