@@ -15,6 +15,10 @@ ngc_Lang['en']['ngClipboardCTRLC']='CTRL+C';
 
 function ngclip_SetText(text, onsucc, onfail)
 {
+  function dosucc() {
+    if(onsucc) onsucc(text);
+  }
+  
   function dofail()
   {
     if(onfail) onfail(text);
@@ -25,7 +29,7 @@ function ngclip_SetText(text, onsucc, onfail)
     if(!navigator.clipboard) {
       if(window.clipboardData) {
         window.clipboardData.setData(ngIExplorer ? 'Text' : 'text/plain', text);
-        if(onsucc) onsucc(text);
+        if(onsucc) ngApp.InvokeLater(dosucc);
       } else {
         var tempInput = document.createElement("textarea");
         try {        
@@ -40,18 +44,14 @@ function ngclip_SetText(text, onsucc, onfail)
           if(tempInput.setSelectionRange) tempInput.setSelectionRange(0, 99999); /* For mobile devices */
           document.execCommand("copy");
           document.body.removeChild(tempInput);
-          if(onsucc) onsucc(text);
+          if(onsucc) ngApp.InvokeLater(dosucc);
         } catch(e) {
           document.body.removeChild(tempInput);
           ngApp.InvokeLater(dofail);          
         }      
       }
     } else {
-      navigator.clipboard.writeText(text).then(function() {
-        if(onsucc) onsucc(text);
-      }, function() {
-        dofail();
-      });
+      navigator.clipboard.writeText(text).then(dosucc,dofail);
     }    
   } catch(e) {
     ngApp.InvokeLater(dofail);          
