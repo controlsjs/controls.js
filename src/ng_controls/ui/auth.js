@@ -21,6 +21,20 @@ ngUserControls['auth_controls'] = {
 
   OnInit: function() {
     var undefined;
+    
+    function ngauth_ctrlid()
+    {
+      var id,n,characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      do {
+        id='';
+        n=8+Math.floor(Math.random() * 36)
+        for (var i=0;i<n;i++) {
+          id+=characters.charAt(Math.floor(Math.random() * 52));
+        }
+      }
+      while(ngControlsIDs[id])
+      return id;    
+    }
 
     function ngauth_ShowCapsLockWarning(s) {
       if((this.OnShowCapsLockWarning)&&(!ngVal(this.OnShowCapsLockWarning(this),false))) return;
@@ -57,6 +71,7 @@ ngUserControls['auth_controls'] = {
       var showorganization=ngVal(def.ShowOrganization,false);
       var showrememberme=ngVal(def.ShowRememberMe,false);
       ng_MergeDef(def, {
+        id: ngauth_ctrlid(),
         ParentReferences: false,
         Data: {
           SettingsName: 'ngLoginForm',
@@ -358,15 +373,20 @@ ngUserControls['auth_controls'] = {
             if(!cc.Checked) c.DoSetSettings(void 0);
           });
         }
+        if(c.ErrorMessage!='') c.SetErrorState(true);
       });
       if(compact) {
         delete def.Controls.OrganizationLabel;
         delete def.Controls.LoginLabel;
         delete def.Controls.PasswordLabel;
       }
-      def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-        if(c.ErrorMessage!='') c.SetErrorState(true);
-      });
+      if(ng_IsObjVar(def.Controls)) {
+        var dc;
+        for(var i in def.Controls) {
+          dc=def.Controls[i];
+          if((ng_IsObjVar(dc))&&(typeof dc.id==='undefined')) dc.id=ngauth_ctrlid();
+        }
+      }
       c=ngCreateControlAsType(def, 'ngToolBar', ref, parent);
       return c;
     }
@@ -376,6 +396,7 @@ ngUserControls['auth_controls'] = {
       var showoldpassword=ngVal(def.ShowOldPassword,false);
       var compact=ngVal(def.CompactMode,false);
       ng_MergeDef(def, {
+        id: ngauth_ctrlid(),
         ParentReferences: false,
         Data: {
           NewPasswordStrength: {
@@ -666,6 +687,13 @@ ngUserControls['auth_controls'] = {
         delete def.Controls.NewPasswordLabel;
         delete def.Controls.ConfirmNewPasswordLabel;
       }
+      if(ng_IsObjVar(def.Controls)) {
+        var dc;
+        for(var i in def.Controls) {
+          dc=def.Controls[i];
+          if((ng_IsObjVar(dc))&&(typeof dc.id==='undefined')) dc.id=ngauth_ctrlid();
+        }
+      }
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
         if(c.ErrorMessage!='') c.SetErrorState(true);
       });
@@ -676,11 +704,13 @@ ngUserControls['auth_controls'] = {
     function Create_ngLoginButton(def,ref,parent) {
       var c;
       ng_MergeDef(def, {
+        id: ngauth_ctrlid(),
         Data: {
           HTMLEncode: false,
           UserName: undefined
         },
         Menu: {
+          id: ngauth_ctrlid(),
           Type: 'ngMenu',
           Data: {
             Items: [
