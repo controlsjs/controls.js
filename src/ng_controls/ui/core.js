@@ -3589,6 +3589,10 @@ function nge_DoUpdate(o)
       if(ngIExplorer) this.SetFocus(false);
     }
     else to.removeAttribute("readonly");
+    if(ngVal(this.InputMode,'')!=='') to.setAttribute("inputmode",this.InputMode);
+    else to.removeAttribute("inputmode");
+    if(ngVal(this.AutoComplete,'')!=='') to.setAttribute("inputmode",this.AutoComplete); 
+    else to.removeAttribute("autocomplete");
 
     to.style.textAlign=this.TextAlign;
     if(paddingRight_CF!='') to.style.paddingRight = paddingRight_CF;
@@ -3636,6 +3640,8 @@ function nge_DoUpdate(o)
     if(readonly) html.append("cursor: default;");
     html.append('" value="'+ng_htmlEncode(txt=='' ? hint : txt)+'" ');
     if((this.MaxLength>0)&&(!this.HintVisible)) html.append('maxlength="'+this.MaxLength+'" ');
+    if(ngVal(this.InputMode,'')!=='') html.append('inputmode="'+this.InputMode+'" '); 
+    if(ngVal(this.AutoComplete,'')!=='') html.append('autocomplete="'+this.AutoComplete+'" '); 
     html.append('onkeydown="nge_KeyDown(event,this)" onkeyup="nge_KeyUp(event,this)" onkeypress="nge_KeyPress(event,this)" onchange="nge_TextChanged(event,this)"');
     html.append(' onfocus="ngc_Focus(event,this,\'ngEdit\')" onblur="ngc_Blur(event,this,\'ngEdit\')"');
     html.append(' />');
@@ -3862,6 +3868,18 @@ function ngEdit(id, text)
    *  Default value: *'left'*
    */
   this.TextAlign = 'left';
+  /*  Variable: AutoComplete
+   *  ...
+   *  Type: string
+   *  Default value: *'off'*
+   */
+  this.AutoComplete = 'off';
+  /*  Variable: InputMode
+   *  ...
+   *  Type: string
+   *  Default value: *''*
+   */
+  this.InputMode = '';
   /*  Variable: Alt
    *  ...
    *  Type: string
@@ -4911,6 +4929,11 @@ function ngem_DoUpdate(o)
       if(ngIExplorer) this.SetFocus(false);
     }
     else to.removeAttribute("readonly");
+    if(ngVal(this.InputMode,'')!=='') to.setAttribute("inputmode",this.InputMode);
+    else to.removeAttribute("inputmode");
+    if(ngVal(this.AutoComplete,'')!=='') to.setAttribute("autocomplete",this.AutoComplete); 
+    else to.removeAttribute("autocomplete");
+    
     to.style.textAlign=this.TextAlign;
     to.style.left=l+'px';
     to.style.top=t+'px';
@@ -4932,6 +4955,8 @@ function ngem_DoUpdate(o)
     if(readonly) html.append('readonly="readonly" ');
     html.append('id="'+this.ID+'_T" class="'+this.GetClassName('Input',hint));
     html.append('" style="border:0px; margin:0px 0px 0px 0px; padding: 0px 0px 0px 0px; overflow: auto; text-align:'+this.TextAlign+';position: absolute; z-index:1;left:'+l+'px;top:'+t+'px;width:'+w+'px;height:'+h+'px;" ');
+    if(ngVal(this.InputMode,'')!=='') html.append('inputmode="'+this.InputMode+'" '); 
+    if(ngVal(this.AutoComplete,'')!=='') html.append('autocomplete="'+this.AutoComplete+'" '); 
     html.append('onkeydown="ngem_KeyDown(event,this)" onkeyup="ngem_KeyUp(event,this)" onkeypress="ngem_KeyPress(event,this)" onchange="ngem_TextChanged(event,this)"');
     html.append(' onfocus="ngc_Focus(event,this,\'ngMemo\')" onblur="ngc_Blur(event,this,\'ngMemo\')"');
     html.append('>');
@@ -5036,6 +5061,18 @@ function ngMemo(id, text)
    *  Default value: *'left'*
    */
   this.TextAlign = 'left';
+  /*  Variable: AutoComplete
+   *  ...
+   *  Type: string
+   *  Default value: *'off'*
+   */
+  this.AutoComplete = 'off';
+  /*  Variable: InputMode
+   *  ...
+   *  Type: string
+   *  Default value: *''*
+   */
+  this.InputMode = '';
   /*  Variable: Alt
    *  ...
    *  Type: string
