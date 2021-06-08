@@ -223,6 +223,7 @@ ngUserControls['auth_controls'] = {
             L: 0, R: 0,
             Data: {
               ngHintD: (compact ? 'ngauthOrganization' : undefined),
+              AutoComplete: 'section-ngloginform organization',
               Visible: (showorganization ? true : false)
             },
             Events: {
@@ -246,6 +247,7 @@ ngUserControls['auth_controls'] = {
             Type: 'ngEdit',
             L: 0, R: 0,
             Data: {
+              AutoComplete: 'section-ngloginform username',
               ngHintD: (compact ? 'ngauthLogin' : undefined)
             },
             Events: {
@@ -270,6 +272,7 @@ ngUserControls['auth_controls'] = {
             L: 0, R: 0,
             Data: {
               Password: true,
+              AutoComplete: 'section-ngloginform current-password',
               ngHintD: (compact ? 'ngauthLoginPassword' : undefined)
             },
             Events: {
@@ -524,6 +527,7 @@ ngUserControls['auth_controls'] = {
             L: 0, R: 0,
             Data: {
               Visible: (showoldpassword ? true : false),
+              AutoComplete: 'section-ngpasswdform current-password',
               ngHintD: (compact ? 'ngauthOldPassword' : undefined),
               Password: true
             },
@@ -568,6 +572,7 @@ ngUserControls['auth_controls'] = {
             L: 0, R: 0,
             Data: {
               ngHintD: (compact ? 'ngauthNewPassword' : undefined),
+              AutoComplete: 'section-ngpasswdform new-password',
               Password: true
             },
             Events: {
@@ -612,6 +617,7 @@ ngUserControls['auth_controls'] = {
             L: 0, R: 0,
             Data: {
               ngHintD: (compact ? 'ngauthConfirmNewPassword' : undefined),
+              AutoComplete: 'section-ngpasswdform new-password',
               Password: true
             },
             Events: {

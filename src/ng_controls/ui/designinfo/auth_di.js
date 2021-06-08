@@ -58,14 +58,22 @@ ngUserControls['auth_controls_designinfo'] = {
                 "ngTextD": ng_diString('ngauthOrganization')
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            'Organization': ng_diControl('ngEdit', null, { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
+            'Organization': ng_diControl('ngEdit', ng_diProperties({
+              "Data": {
+                "AutoComplete": ng_diString('section-ngloginform organization')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
             'LoginLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
                 "ngTextD": ng_diString('ngauthLogin')
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
-            'Login': ng_diControl('ngEdit', null, { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
+            'Login': ng_diControl('ngEdit', ng_diProperties({
+              "Data": {
+                "AutoComplete": ng_diString('section-ngloginform username')
+              }
+            }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
             'PasswordLabel': ng_diControl('ngButton', ng_diProperties({
               "Data": {
                 "ToolBarBreak": ng_diBoolean(true),
@@ -73,8 +81,9 @@ ngUserControls['auth_controls_designinfo'] = {
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'Password': ng_diControl('ngEdit', ng_diProperties({
-              "Data": {
-                "Password": ng_diBoolean(true)
+              "Data": {              
+                "Password": ng_diBoolean(true),
+                "AutoComplete": ng_diString('section-ngloginform current-password')
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
             'CapsLockWarn': ng_diControl('ngText', ng_diProperties({
@@ -141,7 +150,8 @@ ngUserControls['auth_controls_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'OldPassword': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
-                "Password": ng_diBoolean(true)
+                "Password": ng_diBoolean(true),
+                "AutoComplete": ng_diString('section-ngpasswdform current-password')
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
             'NewPasswordLabel': ng_diControl('ngButton', ng_diProperties({
@@ -152,7 +162,8 @@ ngUserControls['auth_controls_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'NewPassword': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
-                "Password": ng_diBoolean(true)
+                "Password": ng_diBoolean(true),
+                "AutoComplete": ng_diString('section-ngpasswdform new-password')
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
             'ConfirmNewPasswordLabel': ng_diControl('ngButton', ng_diProperties({
@@ -163,7 +174,8 @@ ngUserControls['auth_controls_designinfo'] = {
             }), { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
             'ConfirmNewPassword': ng_diControl('ngEdit', ng_diProperties({
               "Data": {
-                "Password": ng_diBoolean(true)
+                "Password": ng_diBoolean(true),
+                "AutoComplete": ng_diString('section-ngpasswdform new-password')
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngEdit' }),
             'CapsLockWarn': ng_diControl('ngText', ng_diProperties({
