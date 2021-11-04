@@ -1605,7 +1605,7 @@ function ngvm_GetRPC()
     rpc.nocache=true;
     rpc.OnError=function(rpc, reqinfo) {
       if((reqinfo.ViewModel===vm)&&(reqinfo.vmCommand===vm.ActiveCommand)&&(reqinfo.vmRequestID==vm.rpc_reqid)) {
-        vm.DoCommandError(reqinfo.vmCommand,reqinfo.vmCommandOptions);
+        vm.DoCommandError(reqinfo.vmCommand,reqinfo.vmCommandOptions, { RPC: rpc, ReqInfo: reqinfo });
       }
     };
     this.rpc=rpc;
@@ -1795,17 +1795,37 @@ function ngvm_GetCommandValueNames(cmd,options,exactmatch)
   else return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch);
 }
 
-function ngvm_DoCommandError(cmd, options)
+function ngvm_DoCommandError(cmd, options, errinfo)
 {
   ngDEBUGLOG('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
 
   this.CancelCommand();
+  var info='';  
+
+  function addinfo(type,data) {
+    var msg=ngTxt('viewmodel_err_cmd_'+type);
+    if(typeof data!=='undefined') msg=ng_sprintf(msg,data);
+    if(msg==='') return;
+    if(info!='') info+='; ';
+    info+=msg;
+  }
+  addinfo('command', cmd);
+    
+  var reqinfo=errinfo.ReqInfo;  
+  if(reqinfo) {
+    if(reqinfo.RequestTimeout) addinfo('timeout');
+    if(reqinfo.EmptyResponse) addinfo('emptyresponse');
+    if(reqinfo.ParseError) addinfo('parseerror');    
+    if(reqinfo.XMLHttp) addinfo('httpstatus', reqinfo.XMLHttp.status);
+  }
+  else if(errinfo.CommandTimeout) addinfo('timeout');
+  
   var msg=ngVal(options.CommandErrorMessage,'');
   if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage.'+cmd,'');
   if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage','');
   if(msg==='') msg=ngTxt('viewmodel_err_cmd');
-  msg=ng_sprintf(msg,cmd);
-  if(this.OnCommandError) this.OnCommandError(this, msg, cmd, options);
+  msg=ng_sprintf(msg,info);
+  if(this.OnCommandError) this.OnCommandError(this, msg, cmd, options, info, errinfo);
 }
 
 function ngvm_CancelCommand()
@@ -1887,7 +1907,7 @@ function ngvm_Command(cmd,options)
   if(this.CommandTimer) clearTimeout(this.CommandTimer);
   if(timeout>0) {
     this.CommandTimer=setTimeout(function() {
-      if((self.ActiveCommand===cmd)&&(self.rpc_reqid==reqid)) self.DoCommandError(cmd, options);
+      if((self.ActiveCommand===cmd)&&(self.rpc_reqid==reqid)) self.DoCommandError(cmd, options, {CommandTimeout: true});
     },timeout);
   } else delete this.CommandTimer;
 
@@ -2474,8 +2494,13 @@ function ngViewModel(id,namespace,vmodel,url)
    *  Handles command error.
    *
    *  Syntax:
-   *    void *DoCommandError* ()
+   *    void *DoCommandError* (string cmd, object options, object errinfo)
    *
+   *  Parameters:
+   *    cmd - command id
+   *    options - command options
+   *    errinfo - additional error info
+   *    
    *  Returns:
    *    -
    */
