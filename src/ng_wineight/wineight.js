@@ -2367,8 +2367,11 @@ var WinEightControls = {
             Title: {
               Type: 'weCaption',
               Theme: th,
-              ColorScheme: (th===WE_DARK ? 'White' : undefined),
+              ColorScheme: (th===WE_DARK ? 'White' : undefined),              
               L: margin, T: 27,
+              Data: {
+                HTMLEncode: false
+              },
               Events: {
                 OnGetText: function(c) {
                   return c.Owner.Owner.Text;
