@@ -328,12 +328,13 @@ ngUserControls['dialogs'] = {
         Data: {          
           DialogResult: mbNone,
           
+          HTMLEncode: false,
           AutoSize: true,
           Centered: true,
           Visible: false,
           Sizeable: false,
-          Modal: true,
-          DisposeOnClose: true,
+          Modal: true,          
+          DisposeOnClose: true,          
           
           // override standard dialog functions
           Center: dlgbx_Center,            
@@ -350,6 +351,7 @@ ngUserControls['dialogs'] = {
             Type: 'ngText',
             L: 15, T: 15, 
             Data: {
+              HTMLEncode: false,
               AutoSize: true
             }
           },
@@ -610,6 +612,7 @@ ngUserControls['dialogs'] = {
         Controls: {
           Message: {
             Data: {
+              HTMLEncode: false,
               MinWidth: 260
             },
             Events: {
@@ -633,6 +636,7 @@ ngUserControls['dialogs'] = {
                 Type: 'ngList',
                 L:0, T: 20, R: 0, H: 90,
                 Data: {
+                  HTMLEncode: false,
                   Items: [ 
                     { id: 'SystemInfo',   Text: '<b>'+ngTxt('ngAboutSystemInfo')+'</b>',   Collapsed: true },
                     { id: 'Components',   Text: '<b>'+ngTxt('ngAboutComponents')+'</b>',   Collapsed: true },
