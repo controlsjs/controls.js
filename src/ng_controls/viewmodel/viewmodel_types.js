@@ -846,12 +846,15 @@ function ngFieldDef_Area(id, attrs, fieldtype)
 
 function ngfd_SIUnitsFormatString(v) {
   var units=ng_toString(this.Attrs['SIUnits']);
+  if(typeof this.Attrs['SIExponent']!=='undefined') v=ng_toNumber(v)*ng_toNumber(this.Attrs['SIExponent']);
   return ng_Format3Num(ng_formatSIUnits(v, units, null, this.Attrs['SIAllowedPref'], ngVal(this.Precision,2)));
 }
 
 function ngfd_SIUnitsParseString(v) {
   var units=ng_toString(this.Attrs['SIUnits']);
-  return ng_parseSIUnits(ng_Unformat3Num(v), units, null, this.Attrs['SIAllowedPref']);
+  v=ng_parseSIUnits(ng_Unformat3Num(v), units, null, this.Attrs['SIAllowedPref']);
+  if(typeof this.Attrs['SIExponent']!=='undefined') v=ng_toNumber(v)/ng_toNumber(this.Attrs['SIExponent']);
+  return v;
 }
 
 /*  Class: ngFieldDef_SIUnits
@@ -872,7 +875,7 @@ function ngFieldDef_SIUnits(id, units, attrs, allowedpref, fieldtype)
   attrs=ngVal(attrs,{}); 
   fieldtype=ngVal(fieldtype,'FLOAT');
   attrs['SIUnits']=ngVal(units,'');
-  attrs['SIAllowedPref']=allowedpref;
+  if(typeof allowedpref!=='undefined') attrs['SIAllowedPref']=allowedpref;
   ngFieldDefCreateAs(this,id,fieldtype,attrs);
 
   this.DoFormatString = ngfd_SIUnitsFormatString;
