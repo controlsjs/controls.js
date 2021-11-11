@@ -1809,6 +1809,7 @@ function ngvm_DoCommandError(cmd, options, errinfo)
     if(info!='') info+='; ';
     info+=msg;
   }
+  addinfo('viewmodel', this.ID);
   addinfo('command', cmd);
     
   var reqinfo=errinfo.ReqInfo;  

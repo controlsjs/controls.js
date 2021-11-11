@@ -35,6 +35,7 @@ ngc_Lang['sk']['viewmodel_err_len_unknown']       = 'Hodnota je príliš dlhá.'
 ngc_Lang['sk']['viewmodel_err_format']            = 'Hodnota nie je v požadovanom tvare.';
 ngc_Lang['sk']['viewmodel_err_cmd']               = 'Operácia zlyhala (%s).';
 ngc_Lang['sk']['viewmodel_err_cmd_data']          = 'Žiadosť o data zlyhala (%s).';
+ngc_Lang['sk']['viewmodel_err_cmd_viewmodel']     = '%s';
 ngc_Lang['sk']['viewmodel_err_cmd_command']       = '%s';
 ngc_Lang['sk']['viewmodel_err_cmd_timeout']       = 'timeout';
 ngc_Lang['sk']['viewmodel_err_cmd_emptyresponse'] = 'prázdna odpoveď';

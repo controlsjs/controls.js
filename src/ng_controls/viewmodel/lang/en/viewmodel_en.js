@@ -35,6 +35,7 @@ ngc_Lang['en']['viewmodel_err_len_unknown']       = 'Value is too long.';
 ngc_Lang['en']['viewmodel_err_format']            = 'Value is not in required format.';
 ngc_Lang['en']['viewmodel_err_cmd']               = 'Operation failed (%s).';
 ngc_Lang['en']['viewmodel_err_cmd_data']          = 'The data request failed (%s).';
+ngc_Lang['en']['viewmodel_err_cmd_viewmodel']     = '%s';
 ngc_Lang['en']['viewmodel_err_cmd_command']       = '%s';
 ngc_Lang['en']['viewmodel_err_cmd_timeout']       = 'timeout';
 ngc_Lang['en']['viewmodel_err_cmd_emptyresponse'] = 'empty response';
