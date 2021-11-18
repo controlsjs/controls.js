@@ -1800,6 +1800,9 @@ function ngvm_DoCommandError(cmd, options, errinfo)
   ngDEBUGLOG('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
 
   this.CancelCommand();
+
+  if(options.IgnoreCommandError) return;
+  
   var info='';  
 
   function addinfo(type,data) {
