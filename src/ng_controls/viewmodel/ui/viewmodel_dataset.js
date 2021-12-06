@@ -37,7 +37,7 @@ function ngdsc_UpdateDataSetColumns()
     {
       fd=cols[i];      
       if(!ngIsFieldDef(fd)) {
-        defvals[id]=vmdefvals ? ngVal(vmdefvals[i],null) : mull;
+        defvals[id]=vmdefvals ? ngVal(vmdefvals[i],null) : null;
         continue;
       }
       id=fd.ID;
