@@ -23,24 +23,35 @@ var ADODBVM_FILTERTYPE_EQ         = 'EQ';
 
 function ngdsc_UpdateDataSetColumns()
 {
-  if(!this.AutoDataSetColumns) return;
-  
   var list=this.Controls.List;
   if(!list) return;
 
-  list.Columns=new Array();
+  var defvals={};
+  var listcols=[];
   var vm=this.ViewModel;  
   if((vm)&&(vm.ViewModel)) 
   {
-    var fd,col,cols=vm.ViewModel.Columns;
+    var fd,id,cols=vm.ViewModel.Columns;
+    var vmdefvals = vm.DefaultValues && ng_IsObjVar(vm.DefaultValues.Columns) ? vm.DefaultValues.Columns : null; 
     for(var i in cols)
     {
-      fd=cols[i];
-      if((!ngIsFieldDef(fd))||(ngVal(fd.Attrs['PrimaryKey'],false))) continue;
-      col=new ngListCol(fd.ID, '', fd.Attrs['DataSetColumnAlign'], fd.Attrs['DataSetColumnWidth']);
-      list.Columns.push(col);
+      fd=cols[i];      
+      if(!ngIsFieldDef(fd)) {
+        defvals[id]=vmdefvals ? ngVal(vmdefvals[i],null) : mull;
+        continue;
+      }
+      id=fd.ID;
+      if(id.substr(0,8)==='Columns.') id=id.substring(8,id.length);
+      defvals[id]=ngVal(fd.DefaultValue,null);
+      
+      if(this.AutoDataSetColumns) {
+        if(ngVal(fd.Attrs['PrimaryKey'],false)) continue;
+        listcols.push(new ngListCol(fd.ID, '', fd.Attrs['DataSetColumnAlign'], fd.Attrs['DataSetColumnWidth']));
+      }
     }
-  }      
+  }
+  list.DefaultColumnsValues=defvals;
+  if(this.AutoDataSetColumns) list.Columns=listcols;
   this.Update(); 
 }
 
@@ -187,14 +198,7 @@ function ngdsc_GetRecord(it)
   var rec=it.Record;
   if(this.OnGetRecord) rec=this.OnGetRecord(this,it);
   if(!ng_typeObject(rec)) return null;
-  rec=ng_CopyVar(rec);
-  var vm=this.ViewModel;
-  if(vm) {
-    for(var i in vm.DefaultValues.Columns) {
-      if(typeof rec[i]==='undefined') { rec[i]=ng_CopyVar(vm.DefaultValues.Columns[i]); }
-    }
-  }
-  return rec;
+  return ng_CopyVar(rec);
 }
 
 function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
@@ -202,17 +206,13 @@ function ngdsc_DrawItem(l,ret,html,it,id,level,collapsed)
   var ds=l.Owner.Owner;
   if(!ds) return true;
   var vm=ds.ViewModel;
-  if(!vm) return true;
-  var rec=it.Record;
-  if(ds.OnGetRecord) rec=ds.OnGetRecord(this,it);
-  if(!ng_typeObject(rec)) rec={};
-  var defvals;
-  for(var i in vm.DefaultValues.Columns) {
-    if(typeof rec[i]==='undefined') { if(!defvals) defvals={ Columns: {} }; defvals.Columns[i]=vm.DefaultValues.Columns[i]; }
+  if(vm) {
+    var rec=ds.GetRecord(it);
+    if(!ng_IsObjVar(rec)) rec={};
+    var defvals=l.DefaultColumnsValues;
+    if(defvals) ng_MergeVar(rec,defvals);
+    if(rec) vm.SetValues({ Columns: rec });
   }
-  var vals={ Columns: rec };
-  vm.SetValues(vals);
-  if(defvals) vm.SetValues(defvals);
   return true;
 }
 
