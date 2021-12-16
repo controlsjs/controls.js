@@ -1036,9 +1036,8 @@ return {
         ControlCategory: 'Checkbox & Radio',
         Properties: ng_diProperties({
           "Data": {
-            "RadioGroup": ng_diString('default', { Level: 'basic' }),
             "AllowGrayed": ng_diBoolean(false, { Level: 'basic' }),
-            "RadioAllowUncheck": ng_diBoolean(false, { Level: 'basic' })
+            "RadioAllowUncheck": ng_diBoolean(false, { Level: 'advanced' })
           }
         })
       };
