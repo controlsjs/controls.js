@@ -57,8 +57,6 @@ function ngLoadApplication(elm, callback, files)
   var cordova = (typeof window.cordova !== 'undefined');
   var winphone = (ua.indexOf("windows phone") != -1);
   var winstoreapp = (typeof Windows !== 'undefined');
-  var ios = /macintosh|iphone|ipod|ipad/.test(ua);
-  var safari = (ua.indexOf("safari") != -1);
   var opera = (ua.indexOf("opera") != -1);
   var operaver;
   if(opera) operaver=parseFloat(window.opera.version());
@@ -351,10 +349,16 @@ function ngLoadApplication(elm, callback, files)
     var loadurl=ngAppURL(url);
     var asyncloader=(async!==false)&&(window.XMLHttpRequest)&&
                     ((typeof ngDEBUG === 'undefined')||(!ngDEBUG))&&
-                    (!ios || safari)&&
-                    ((!opera)||((operaver>=11.1)&&(window.location.protocol!='file:')))&&
-                    ((cordova)
-                 || ((window.location.hostname!='')&&(url_domain(loadurl)==window.location.hostname)));
+                    ((!opera)||((operaver>=11.1)&&(window.location.protocol!='file:')));
+
+    if(asyncloader){
+      if(cordova){
+        if(url_domain(url)=='') asyncloader=false;
+      }
+      else{
+        if((window.location.hostname=='')||(url_domain(loadurl)!=window.location.hostname)) asyncloader=false;
+      }
+    }
 
     if((typeof ngOnAppFileLoad === 'function')&&(!ngOnAppFileLoad(data.Type,url,data))) return;
     appparts++;
