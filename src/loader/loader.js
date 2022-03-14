@@ -353,7 +353,7 @@ function ngLoadApplication(elm, callback, files)
 
     if(asyncloader){
       if(cordova){
-        if(url_domain(url)=='') asyncloader=false;
+        if((url_domain(url)=='')&&(window.location.protocol=='file:')) asyncloader=false;
       }
       else{
         if((window.location.hostname=='')||(url_domain(loadurl)!=window.location.hostname)) asyncloader=false;
