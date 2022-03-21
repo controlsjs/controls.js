@@ -3479,6 +3479,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   reqinfo.PostParams=ngVal(reqinfo.PostParams,null);
   reqinfo.ReqHeaders=ngVal(reqinfo.ReqHeaders,null);
   reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? (typeof reqinfo.PostParams === 'string' ? 'POST' : 'GET') : this.HTTPMethod));
+  reqinfo.withCredentials = ngVal(reqinfo.withCredentials, this.withCredentials);
   var xmlhttp=null;
   try {
     if (window.XMLHttpRequest) xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -3527,6 +3528,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
 
   if((this.OnHTTPRequest)&&(!ngVal(this.OnHTTPRequest(this,reqinfo),false))) return false;
   reqinfo.RequestURL=ng_URL(reqinfo.URL);
+  if(typeof reqinfo.withCredentials!=='undefined') xmlhttp.withCredentials=reqinfo.withCredentials;
   xmlhttp.open(reqinfo.Method,reqinfo.RequestURL,(callback ? true : false));
   if(reqinfo.ReqHeaders)
   {
@@ -3913,6 +3915,15 @@ function ngRPC(id,url,nocache)
    *  Default value: *''* (autodetect)
    */
   this.HTTPMethod='';
+  /*  Variable: withCredentials
+   *  Indicates whether or not cross-site Access-Control requests should 
+   *  be made using credentials such as cookies, authorization headers 
+   *  or TLS client certificates. 
+   *
+   *  Type: boolean
+   *  Default value: *undefined*
+   */
+  this.withCredentials = void 0;
   /*  Variable: URL
    *  Default RPC URL.
    *
