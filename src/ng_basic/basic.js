@@ -1239,9 +1239,8 @@ function utf8_strHexToDec(s, i) {
  */
 function ng_UTF8Encode(str,safechars) {
   var len = str.length;
-  var res = new String();
-  var chEn = new String();
-  var charOrd = new Number();
+  var res = '';
+  var chEn,charOrd,i,pi;
   var pos = 0;
 
   if(typeof safechars === 'undefined')
@@ -1252,24 +1251,28 @@ function ng_UTF8Encode(str,safechars) {
     if ((charOrd >= 65 && charOrd <= 90) || (charOrd >= 97 && charOrd <= 122) || (charOrd >= 48 && charOrd <= 57) || (safechars[charOrd]))
       continue;
 
+    pi = i;
     if(charOrd<128) chEn = '%'+ utf8_decToStrHex(charOrd); //reserved chars, percent encoded
     else if(charOrd<2048) { //128 .. 2047 - 11 bit number, 2 byte UTF-8 starting with %C
       chEn = '%'+utf8_decToStrHex((charOrd >> 6) | 0xC0); //First byte: 110x.xxx (C and first 5bits in charOrd)
       chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Second byte: 10xx.xxxx ("10" signature and rest 6 bits in charOrd)
     }
-      else if(charOrd<65536) { //2048 .. 65535 - 16 bit number, 3 byte UTF-8 starting with %E
+      else if(charOrd < 0xd800 || charOrd >= 0xe000) { // 16 bit number, 3 byte UTF-8 starting with %E
         chEn = '%'+utf8_decToStrHex((charOrd >> 12) | 0xE0); //First byte: 1110.xxxx (E and first 4bits in charOrd)
         chEn +='%'+utf8_decToStrHex(((charOrd >> 6) & 0x3F) | 0x80); //Second byte: 10xx.xxxx (following 6 bits)
         chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Third byte: 10xxxxxx (last 6 bits)
       }
-        else { // 65536 .. 4194303 - 22 bit number, 4 byte UTF-8 starting with %F
-          chEn = '%'+utf8_decToStrHex((charOrd >> 18) | 0xF0); //First byte: 1110.xxxx (F and first 4bits in charOrd)
-          chEn +='%'+utf8_decToStrHex(((charOrd >> 12) & 0x3F) | 0x80); //Second byte: 10xx.xxxx (following 6 bits)
-          chEn +='%'+utf8_decToStrHex(((charOrd >> 6) & 0x3F) | 0x80); //Third byte: 10xx.xxxx (following 6 bits)
-          chEn +='%'+utf8_decToStrHex((charOrd & 0x3F) | 0x80); //Fourth byte: 10xxxxxx (last 6 bits)
-        }
+        else { // surrogate pair
+          i++;
+          if(i >= str.length) throw new Error('ng_UTF8Encode: incomplete surrogate pair');
+          charOrd = 0x10000 + ((charOrd&0x3FF)<<10)|(str.charCodeAt(i)&0x3FF)
+          chEn =  '%'+utf8_decToStrHex(0xF0 | (charOrd >>18));
+          chEn += '%'+utf8_decToStrHex(0x80 | ((charOrd>>12) & 0x3F));
+          chEn += '%'+utf8_decToStrHex(0x80 | ((charOrd>>6) & 0x3F));
+          chEn += '%'+utf8_decToStrHex(0x80 | (charOrd & 0x3F));
+        } 
 
-    if(pos<i) res+=str.substring(pos, i);
+    if(pos<pi) res+=str.substring(pos, pi);
     res+=chEn;
     pos=i+1;
   }
@@ -1296,50 +1299,39 @@ function ng_UTF8Encode(str,safechars) {
  */
 function ng_UTF8Decode(str) {
   var len = str.length;
-  var res = new String();
-  var charOrd=0,charCnt=0;
-  var B1=0,B2=0,B3=0,B4=0;
+  var res = '';
+  var charCnt=0;
 
-  var i=0,pos=0;
+  var c,i=0,pos=0;
   while (i<len) {
-    B1=utf8_strHexToDec(str, i);
-    if (B1) { // encoded char
-      charOrd=0;charCnt=0;
-
-      if (B1<128) { charCnt=3;charOrd=B1; } //ASCII encoded char (1 byte UTF-8)
-      else if (B1<192) { charCnt=3; } // char is not UTF-8 (under C0)
-        else if (B1<224) { //C0 .. E0 - 2 byte UTF-8 (f.i. %C2%B0)
+  
+    c=utf8_strHexToDec(str, i);        
+    if (c) { // encoded char
+      charCnt=3;
+      if (c > 127) {
+        if (c > 191 && c < 224) {
           charCnt=6;
-          B2 = utf8_strHexToDec(str, i+3);
-          if ((B2>127) && (B2<192)) charOrd=(((B1 & 0x1F) << 6) | (B2 & 0x3F));
-        }
-          else if (B1<240) { //E0 .. F0 - 3 byte UTF-8
-            charCnt=9;
-            B2 = utf8_strHexToDec(str, i+3);
-            if ((B2>127) && (B2<192)) {
-              B3 = utf8_strHexToDec(str, i+6);
-              if ((B3>127) && (B3<192)) charOrd=(((B1 & 0xF) << 12) | ((B2 & 0x3F) << 6) | (B3 & 0x3F));
-            }
-          }
-            else { //F0 ... - 4 byte UTF-8
-              charCnt=12;
-              B2 = utf8_strHexToDec(str, i+3);
-              if ((B2>127) && (B2<192)) {
-                B3 = utf8_strHexToDec(str, i+6);
-                if ((B3>127) && (B3<192)) {
-                  B4 = utf8_strHexToDec(str, i+9);
-                  if ((B4>127) && (B4<192)) charOrd=(((B1 & 0x7) << 18) | ((B2 & 0x3F) << 12) | ((B3 & 0x3F) << 6) | (B4 & 0x3F));
-                }
-              }
-            }
-
-      if (charOrd) {
-        if(pos<i) res+=str.substring(pos, i);
-        res+=String.fromCharCode(charOrd);
-        i+=charCnt;
-        pos=i;
+          if (i+6 > len) throw new Error('UTF-8 decode: incomplete 2-byte sequence');
+          c = (c & 31) << 6 | utf8_strHexToDec(str, i+3) & 63;
+        } else if (c > 223 && c < 240) {
+          charCnt=9;
+          if (i + 9 > len) throw new Error('UTF-8 decode: incomplete 3-byte sequence');
+          c = (c & 15) << 12 | (utf8_strHexToDec(str, i+3) & 63) << 6 | utf8_strHexToDec(str, i+6) & 63;
+        } else if (c > 239 && c < 248) {
+          charCnt=12;
+          if (i + 12 > len) throw new Error('UTF-8 decode: incomplete 4-byte sequence');
+          c = (c & 7) << 18 | (utf8_strHexToDec(str, i+3) & 63) << 12 | (utf8_strHexToDec(str, i+6) & 63) << 6 | utf8_strHexToDec(str, i+9) & 63;
+        } else throw new Error('UTF-8 decode: unknown multibyte start 0x' + c.toString(16) + ' at index ' + (i - 1));
       }
-      else i+=charCnt;
+      if(pos<i) res+=str.substring(pos, i);
+      if (c <= 0xffff) res += String.fromCharCode(c);
+      else if (c <= 0x10ffff) {
+        c -= 0x10000;
+        res += String.fromCharCode(c >> 10 | 0xd800)
+        res += String.fromCharCode(c & 0x3FF | 0xdc00)
+      } else throw new Error('UTF-8 decode: code point 0x' + c.toString(16) + ' exceeds UTF-16 reach');
+      i+=charCnt;
+      pos=i;
     }
     else i++;
   }
