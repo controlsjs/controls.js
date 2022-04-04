@@ -52,6 +52,7 @@ function ngLoadApplication(elm, callback, files)
   var apploading=1,appparts=1,apperrors=0,loadedparts=0,readyparts=0,apppath='',appdomain='', appimages={};
   var cssqueue=[];
   var scriptsqueue=[];
+  var loadprogress={};
 
   var ua=navigator.userAgent.toLowerCase();
   var cordova = (typeof window.cordova !== 'undefined');
@@ -236,19 +237,27 @@ function ngLoadApplication(elm, callback, files)
         }
     }
   };
+  
+  function updateprogress()
+  {
+    if((!apploading)||(typeof ngOnAppLoadProgress !== 'function')) return;
+
+    var p=appparts>0 ? loadedparts*100/appparts : 0;
+    for(var i in loadprogress) {
+      p+=loadprogress[i];
+    }
+    p=Math.round(p*100)/100;
+    if(p>lastprogress)
+    {
+      ngOnAppLoadProgress(p);
+      lastprogress=p;
+    }  
+  }
 
   function apppartloaded(type, url, data, notready)
   {
     loadedparts++;
-    if((apploading)&&(typeof ngOnAppLoadProgress === 'function'))
-    {
-      var p=appparts>0 ? Math.round(loadedparts*100/appparts) : 0;
-      if(p>lastprogress)
-      {
-        ngOnAppLoadProgress(p);
-        lastprogress=p;
-      }
-    }
+    updateprogress();
     if(!notready) apppartready(type, url, data);
   }
 
@@ -471,8 +480,20 @@ function ngLoadApplication(elm, callback, files)
       if(asyncloader)
       {
         var xmlhttp = new XMLHttpRequest();
+        if(data.withCredentials) xmlhttp.withCredentials=true;
+        xmlhttp.addEventListener("progress", function (e) {
+          if((e.lengthComputable)&&(e.total)&&(typeof loadprogress[url]!=='undefined')) {
+            var p = e.loaded / e.total;
+            if(p<1) {
+              loadprogress[url] = p;
+              updateprogress();
+            }
+          }
+        }, false);
+        loadprogress[url] = 0;
         xmlhttp.onreadystatechange = function(){
           if(xmlhttp.readyState == 4){
+            delete loadprogress[url];
             if((xmlhttp.status == 200)||(xmlhttp.status == 304)||((xmlhttp.status == 0)&&(!cordova)&&(navigator.onLine!==false))) {
               if(!async) filedata.code=xmlhttp.responseText;
               fileloaded(true,xmlhttp.responseText);
