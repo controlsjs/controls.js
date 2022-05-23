@@ -1381,10 +1381,25 @@ function ngFieldDef(id, type, attrs)
   this.SetAttributes(attrs);
 }
 
-function ngvm_SetValues(values,deserialize)
+function ngvm_SetValues(values, deserialize, valuenames, errors)
 {
   deserialize=ngVal(deserialize,false);
-  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize),false))) return;         
+  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors),false))) return;         
+
+  errors=ngVal(errors,{});
+  if(valuenames)
+  {
+    var valnames={};
+    for(var i in valuenames) {
+      valnames[valuenames[i]]=true;
+    }
+    valuenames=valnames;
+  }
+
+  function cansetvalue(valpath) {
+    if((!valuenames)||(valuenames[valpath])) return true;
+    return false;
+  }
 
   var self=this;
   function setvalues(o,d,path)
@@ -1397,7 +1412,7 @@ function ngvm_SetValues(values,deserialize)
     for(var i in o)
     {
       if((o==self.ViewModel)&&(i=='Owner')) continue;
-      if(typeof d[i]==='undefined') continue;
+      if((typeof d[i]==='undefined')&&(!valuenames)) continue;
       val=instance=o[i];
       if(ngIsFieldDef(instance)) 
       {
@@ -1407,63 +1422,97 @@ function ngvm_SetValues(values,deserialize)
       valpath=path+i;
       if(ko.isObservable(val)) 
       {
-        if(ko.isWriteableObservable(val))
+        if((cansetvalue(valpath))&&(ko.isWriteableObservable(val)))
         { 
           instance.__Loading=true;
-          try
-          {
-            setval=d[i];
-            if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
-            if((deserialize)&&(typeof instance.Deserialize === 'function')) {
-              setval=instance.Deserialize(setval);
-              ko.ng_setvalue(val,setval);
-            }
-            else 
+          if(d.hasOwnProperty(i)) {
+            try
             {
-              if(typeof instance.TypedValue === 'function')
-              {
-                try   
-                {
-                  setval=instance.TypedValue(setval);
-                }
-                catch(e)
-                {
-                }
+              setval=d[i];
+              if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
+              if((deserialize)&&(typeof instance.Deserialize === 'function')) {
+                setval=instance.Deserialize(setval);
               }
-              ko.ng_setvalue(val,setval);
+              else 
+              {
+                if(typeof instance.TypedValue === 'function')
+                  setval=instance.TypedValue(setval);
+              }
             }
+            catch(e)
+            {
+              errors[valpath]=e;
+            }
+            ko.ng_setvalue(val,setval);
           }
-          finally
-          {
-            delete instance.__Loading;
+          else {
+/*            try {
+              if(typeof instance.TypedValue === 'function') {
+                setval=instance.TypedValue(ko.ng_getvalue(val));
+              }
+            } 
+            catch(e) {
+              errors[valpath]=e;
+            }*/
           }
+          delete instance.__Loading;
         }
       } 
       else 
       {    
         if(typeof val==='function') continue;
         if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
-          if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) { val=o[i]={}; }
-          setvalues(val,d[i],valpath);
+          if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) {
+            val={};
+            setvalues(val,d[i],valpath);
+            if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
+              o[i]=val;              
+            } 
+          }
+          else setvalues(val,d[i],valpath);
         }
         else 
         {
-          setval=d[i];
-          if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
-          o[i]=setval;
+          if((cansetvalue(valpath))&&(d.hasOwnProperty(i))) {
+            setval=d[i];
+            if(this.OnSetValue) {
+              try {
+                setval=this.OnSetValue(this,setval,instance, valpath);
+              }
+              catch(e) {
+                errors[valpath]=e;
+              }
+            }
+            o[i]=setval;
+          }
         }
-      }
+      }    
     }    
     for(var i in d)
     {
       if(typeof o[i]==='undefined')
       {
         valpath=path+i;
-        if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) { val=o[i]={}; setvalues(val,d[i],valpath); }
+        if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
+          val={}; 
+          setvalues(val,d[i],valpath);
+          if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
+            o[i]=val;
+          } 
+        }
         else {
-          setval=d[i];
-          if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
-          o[i]=setval;
+          if(cansetvalue(valpath)) {
+            setval=d[i];
+            if(this.OnSetValue) {
+              try { 
+                setval=this.OnSetValue(this,setval,instance, valpath);
+              }
+              catch(e) {
+                errors[valpath]=e;
+              }
+            }
+            o[i]=setval;
+          }
         }
       }
     }
@@ -1477,6 +1526,23 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
   convtimestamps=ngVal(convtimestamps,false);
   writableonly=ngVal(writableonly,false);
   errors=ngVal(errors,{});
+  if(valuenames)
+  {
+    var valnames={};
+    for(var i in valuenames) {
+      valnames[valuenames[i]]=true;
+    }
+    valuenames=valnames;
+  }
+
+  function cangetvalue(valpath) {
+    if(!valuenames) return true;
+    if(valuenames[valpath]) {
+       delete valuenames[valpath];
+       return true;
+    }
+    return false;
+  }
 
   var self=this;
   function getvalues(o,d,path)
@@ -1499,7 +1565,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
         if((writableonly)&&(!ko.isWriteableObservable(val))) continue;      
         if((serialize)&&(!val['__serialize'])) continue;
 
-        if((!valuenames)||(ng_inArray(valpath,valuenames)))
+        if(cangetvalue(valpath))
         {
           instance.__Saving=true;
           try
@@ -1518,6 +1584,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
           }
           catch(e)
           {
+            d[i]=val;
             errors[valpath]=e;
           }
           delete instance.__Saving;
@@ -1531,13 +1598,20 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
         {
           var dobj={};
           getvalues(val,dobj,valpath);
-          if(!valuenames||ng_inArray(valpath,valuenames)||!ng_EmptyVar(dobj)) d[i]=dobj;
+          if((cangetvalue(valpath))||!ng_EmptyVar(dobj)) d[i]=dobj;
         }
         else 
         {
-          if((!valuenames)||(ng_inArray(valpath,valuenames)))
+          if(cangetvalue(valpath))
           {
-            if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
+            if(self.OnGetValue) {
+              try {
+                val=self.OnGetValue(self,val,instance, valpath, errors);
+              }
+              catch(e) {
+                errors[valpath]=e;
+              }
+            }
             if((convtimestamps)&&(ng_typeDate(val))) val=ng_toUnixTimestamp(val);
             d[i]=val;
           }
@@ -1548,6 +1622,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
   
   var ret={};           
   getvalues(this.ViewModel,ret,'');
+
   if(this.OnGetValues) {
     try
     {
