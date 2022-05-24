@@ -1197,14 +1197,18 @@ function ngGetControlByElement(elm, type)
  */
 function ngRegisterControlType(type, def)
 {
-  if(typeof type!=='string') return;
-  if ((ngOnRegisterControlType)&&(!ngVal(ngOnRegisterControlType(type,def),false))) return;
+  if(typeof type!=='string') {
+    ngDEBUGERROR('ngRegisterControlType: Invalid type parameter (%s)!',typeof type);
+    return;
+  }
 
   switch(typeof def)
   {
     case 'function':
+      if((ngOnRegisterControlType)&&(!ngVal(ngOnRegisterControlType(type,def),false))) return;
+      
       if(typeof ngRegisteredControlTypes[type] === 'function') {
-        ngDEBUGWARN('Duplicated registration of component type "%s".',ngVal(type,''),def);
+        ngDEBUGWARN('ngRegisterControlType: Duplicated registration of component type "%s".',ngVal(type,''),def);
       }
       if((ngCurrentLib!='')&&(typeof def.Lib === 'undefined')) def.Lib = ngCurrentLib;
       if((ngCurrentControlsGroup!='')&&(typeof def.ControlsGroup === 'undefined')) def.ControlsGroup = ngCurrentControlsGroup;
@@ -1212,12 +1216,21 @@ function ngRegisterControlType(type, def)
       ngRegisteredControlTypes[type]=def;
       break;
     case 'object':
-      if((typeof def.Type==='undefined')||(def.Type==type)) break;
+      if(!def) {
+        ngDEBUGERROR('ngRegisterControlType: Invalid def parameter!');
+        return;
+      }          
+      if(typeof def.Type!=='string') {
+        ngDEBUGERROR('ngRegisterControlType: Invalid def.Type parameter (%s)!',typeof def.Type);
+        return;
+      }
+      if(def.Type==type) return;
+
+      var fdef=ng_CopyVar(def);
+      var newtype=fdef.Type;
+      delete fdef.Type;
 
       ngRegisterControlType(type, function(cdef,ref,parent) {
-        var fdef=ng_CopyVar(def);
-        var newtype=fdef.Type;
-        delete fdef.Type;
         ng_MergeDef(cdef, fdef, true);
         return ngCreateControlAsType(cdef, newtype, ref, parent);
       });
@@ -1228,6 +1241,9 @@ function ngRegisterControlType(type, def)
         return ngCreateControlAsType(cdef, def, ref, parent);
       });
       break;
+    default:
+      ngDEBUGERROR('ngRegisterControlType: Invalid def parameter (%s)!',typeof def);
+      return;
   }
 }
 
