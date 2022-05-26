@@ -606,21 +606,21 @@ function ngfd_Deserialize(v)
   var r;
   try
   {
-    if(this.OnDeserialize) r=this.OnDeserialize(this,v);
-    if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
-    if(ng_isEmpty(r)) r=v;
-    switch(this.DataType)
-    {
-      case 'TIMESTAMP':
-      case 'DATETIME':
-      case 'DATE':
-      case 'TIME':
-      case 'UTCTIMESTAMP':
-      case 'UTCDATETIME':
-        r=ng_toDate(r,r);
-        break;
-    }
-    r=this.TypedValue(r);
+  if(this.OnDeserialize) r=this.OnDeserialize(this,v);
+  if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
+  if(ng_isEmpty(r)) r=v;
+  switch(this.DataType)
+  {
+    case 'TIMESTAMP':
+    case 'DATETIME':
+    case 'DATE':
+    case 'TIME':
+    case 'UTCTIMESTAMP':
+    case 'UTCDATETIME':
+      r=ng_toDate(r,r);
+      break;
+  }
+  r=this.TypedValue(r);
   }
   catch(e)
   {
@@ -1381,12 +1381,13 @@ function ngFieldDef(id, type, attrs)
   this.SetAttributes(attrs);
 }
 
-function ngvm_SetValues(values, deserialize, valuenames, errors)
+function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluenames)
 {
   deserialize=ngVal(deserialize,false);
-  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors),false))) return;         
-
   errors=ngVal(errors,{});
+  strictvaluenames=ngVal(strictvaluenames,false);
+  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors, strictvaluenames),false))) return;         
+
   if(valuenames)
   {
     var valnames={};
@@ -1397,8 +1398,12 @@ function ngvm_SetValues(values, deserialize, valuenames, errors)
   }
 
   function cansetvalue(valpath) {
-    if((!valuenames)||(valuenames[valpath])) return true;
-    return false;
+    if(!valuenames) return true;
+    if(valuenames[valpath]) {
+       delete valuenames[valpath];
+       return true;
+    }
+    return strictvaluenames ? false : true;
   }
 
   var self=this;
@@ -1416,7 +1421,10 @@ function ngvm_SetValues(values, deserialize, valuenames, errors)
       val=instance=o[i];
       if(ngIsFieldDef(instance)) 
       {
-        if(instance.PrivateField) continue;
+        if(instance.PrivateField) {
+          cansetvalue(path+i);
+          continue;
+        }
         val=instance.Value;
       }
       valpath=path+i;
@@ -1446,14 +1454,16 @@ function ngvm_SetValues(values, deserialize, valuenames, errors)
             ko.ng_setvalue(val,setval);
           }
           else {
-/*            try {
-              if(typeof instance.TypedValue === 'function') {
-                setval=instance.TypedValue(ko.ng_getvalue(val));
+            if(valuenames) {
+              try {
+                if(typeof instance.TypedValue === 'function') {
+                  setval=instance.TypedValue(ko.ng_getvalue(val));
+                }
+              } 
+              catch(e) {
+                errors[valpath]=e;
               }
-            } 
-            catch(e) {
-              errors[valpath]=e;
-            }*/
+            }
           }
           delete instance.__Loading;
         }
@@ -1526,6 +1536,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
   convtimestamps=ngVal(convtimestamps,false);
   writableonly=ngVal(writableonly,false);
   errors=ngVal(errors,{});
+  var origvaluenames=valuenames;
   if(valuenames)
   {
     var valnames={};
@@ -1556,7 +1567,10 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
       val=instance=o[i];
       if(ngIsFieldDef(instance)) 
       {
-        if(instance.PrivateField) continue;
+        if(instance.PrivateField) {
+          cangetvalue(valpath);
+          continue;
+        }
         val=instance.Value;
       }
       valpath=path+i;
@@ -1626,7 +1640,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
   if(this.OnGetValues) {
     try
     {
-      this.OnGetValues(this, ret, writableonly, valuenames, errors, convtimestamps, serialize);
+      this.OnGetValues(this, ret, writableonly, origvaluenames, errors, convtimestamps, serialize);
     }
     catch(e)
     {
