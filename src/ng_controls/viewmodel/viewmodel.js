@@ -604,8 +604,7 @@ function ngfd_Serialize(v)
 function ngfd_Deserialize(v)
 {
   var r;
-  try
-  {
+
   if(this.OnDeserialize) r=this.OnDeserialize(this,v);
   if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
   if(ng_isEmpty(r)) r=v;
@@ -621,11 +620,6 @@ function ngfd_Deserialize(v)
       break;
   }
   r=this.TypedValue(r);
-  }
-  catch(e)
-  {
-    r=v;
-  }
   return r;  
 }
 
