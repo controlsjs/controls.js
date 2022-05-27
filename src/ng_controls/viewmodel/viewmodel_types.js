@@ -248,7 +248,7 @@ function ngFieldDef_UTCDateTime(id, attrs) {
   ngFieldDefCreateAs(this,id,'UTCDATETIME',attrs);
 }
 
-function ngfd_ArrayDoTypedValue(v)
+function ngfd_ArrayInternalTypedValue(v, op)
 {
   if(v===null) return null;
   var r;
@@ -272,7 +272,13 @@ function ngfd_ArrayDoTypedValue(v)
         var val=v[k];
         if(ngIsFieldDef(val)) val=val.Value;
         if(ko.isObservable(val)) val=val();
-        val=fd.TypedValue(val);
+        switch(op)
+        {
+          case 0: val=fd.TypedValue(val); break;
+          case 1: val=fd.Serialize(val); break;
+          case 2: val=fd.Deserialize(val); break;
+        }
+        
         if(pack) {
           if(ng_isEmptyOrNull(val)) continue;
           r.push(val);
@@ -311,29 +317,21 @@ function ngfd_ArrayDoTypedValue(v)
   return r;
 }
 
+function ngfd_ArrayDoTypedValue(v)
+{
+  return this.InternalTypedValue(v,0);
+}
+
 function ngfd_ArrayDoSerialize(v)
 {
   if(!ngIsFieldDef(this.ValueFieldDef)) return;
-  var r=this.TypedValue(v);
-  if((typeof r==='object')&&(r)) {
-    var ret=[];
-    for(var k in r) {
-      ret[k]=this.ValueFieldDef.Serialize(r[k]);
-    }
-    return ret;
-  }
+  return this.InternalTypedValue(v,1);
 }
 
 function ngfd_ArrayDoDeserialize(v)
 {
   if(!ngIsFieldDef(this.ValueFieldDef)) return;
-  if((typeof v==='object')&&(v)) {
-    var ret=[];
-    for(var k in v) {
-      ret[k]=this.ValueFieldDef.Deserialize(v[k]);
-    }
-    return ret;
-  }
+  return this.InternalTypedValue(v,2);
 }
 
 function ngfd_ArrayFormatItemError(err)
@@ -380,6 +378,7 @@ function ngFieldDef_Array(id, attrs, valfielddef) {
   ngFieldDefCreateAs(this,id,'ARRAY',attrs);
   this.ValueFieldDef=ngVal(valfielddef,null);
   if(ng_typeObject(this.ValueFieldDef)) ng_SetByRef(this.ValueFieldDef,'Parent',this);
+  this.InternalTypedValue = ngfd_ArrayInternalTypedValue;
   this.DoTypedValue = ngfd_ArrayDoTypedValue;
   this.DoSerialize = ngfd_ArrayDoSerialize;
   this.DoDeserialize = ngfd_ArrayDoDeserialize;
@@ -388,7 +387,7 @@ function ngFieldDef_Array(id, attrs, valfielddef) {
   this.GetChildFieldByID = ngfd_ArrayGetChildFieldByID;
 }
 
-function ngfd_ObjectDoTypedValue(v)
+function ngfd_ObjectInternalTypedValue(v,op)
 {
   if(v===null) return null;
   var r;
@@ -412,7 +411,14 @@ function ngfd_ObjectDoTypedValue(v)
           val=val.Value;
         }
         val=ko.ng_getvalue(val);
-        if(ngIsFieldDef(fd)) val=fd.TypedValue(val);
+        if(ngIsFieldDef(fd)) {
+          switch(op)
+          {
+            case 0: val=fd.TypedValue(val); break;
+            case 1: val=fd.Serialize(val); break;
+            case 2: val=fd.Deserialize(val); break;
+          }
+        }
         if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
         vmSetFieldValueByID(r,k,val);
       }
@@ -441,38 +447,21 @@ function ngfd_ObjectDoTypedValue(v)
   return r;
 }
 
+function ngfd_ObjectDoTypedValue(v)
+{
+  return this.InternalTypedValue(v,0);
+}
+
 function ngfd_ObjectDoSerialize(v)
 {
   if(!ng_typeObject(this.PropsFieldDefs)) return;
-  var r=this.TypedValue(v);
-  if(ng_typeObject(r))
-  {
-    var fd;
-    for(var k in this.PropsFieldDefs)
-    {
-      fd=this.PropsFieldDefs[k];
-      if(!ngIsFieldDef(fd)) continue;
-      vmSetFieldValueByID(r,k,fd.Serialize(vmGetFieldByID(r,k)));
-    }
-  }
-  return r;
+  return this.InternalTypedValue(v,1);
 }
 
 function ngfd_ObjectDoDeserialize(v)
 {
   if(!ng_typeObject(this.PropsFieldDefs)) return;
-  var r;
-  if(ng_typeObject(v))
-  {
-    r={};
-    for(var k in this.PropsFieldDefs)
-    {
-      fd=this.PropsFieldDefs[k];
-      if(!ngIsFieldDef(fd)) continue;
-      vmSetFieldValueByID(r,k,fd.Deserialize(vmGetFieldByID(v,k)));
-    }
-  }
-  return r;
+  return this.InternalTypedValue(v,2);
 }
 
 function ngfd_ObjectDoFormatPropertyError(err)
@@ -554,6 +543,7 @@ function ngFieldDef_Object(id, attrs, propsfielddefs) {
   }
   this.PropsFieldDefs=propsfielddefs;
 
+  this.InternalTypedValue = ngfd_ObjectInternalTypedValue;
   this.DoTypedValue = ngfd_ObjectDoTypedValue;
   this.DoSerialize = ngfd_ObjectDoSerialize;
   this.DoDeserialize = ngfd_ObjectDoDeserialize;
