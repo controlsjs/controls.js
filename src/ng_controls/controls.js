@@ -1226,11 +1226,10 @@ function ngRegisterControlType(type, def)
       }
       if(def.Type==type) return;
 
-      var fdef=ng_CopyVar(def);
-      var newtype=fdef.Type;
-      delete fdef.Type;
-
       ngRegisterControlType(type, function(cdef,ref,parent) {
+        var fdef=ng_CopyVar(def);
+        var newtype=fdef.Type;
+        delete fdef.Type;
         ng_MergeDef(cdef, fdef, true);
         return ngCreateControlAsType(cdef, newtype, ref, parent);
       });
