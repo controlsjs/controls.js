@@ -1122,7 +1122,7 @@ ngUserControls['viewmodel_controls'] = {
           }
         });
         def.OnCreated=ngAddEvent(def.OnCreated, function(c,ref) {
-          var fd,cols=c.GetFilterDefs();
+          var fd,cols=c.GetColumnDefs();
           for(var i in cols) {
             fd=cols[i];
             if(!ngIsFieldDef(fd)) continue;
