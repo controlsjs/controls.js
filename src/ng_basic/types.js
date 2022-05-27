@@ -1421,6 +1421,8 @@ function ng_toNVARCHAR(v,size,def)
  */       
 function ng_toDECIMAL(v, digits, frac_digits, def)
 {
+  if((ng_isInvalid(digits))||(ng_isInvalid(frac_digits))) return def;
+  
   function str_repeat(c,n)
   {
     var s='';
