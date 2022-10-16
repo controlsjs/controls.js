@@ -5366,6 +5366,25 @@ function nga_DoRun()
       return;
     }
   }
+    
+  if(!ng_IsFullURL(ngLibsURL))
+  {
+    // Adjust ngLibsURL to ngApp.AppPath
+    var libsurl;
+    if(ng_IsAbsPath(ngLibsURL)) {
+      var basepath=ngApp.AppPath;      
+      var idx=basepath.indexOf('://');
+      if(idx>=0) {
+        for(idx+=3;idx<basepath.length;idx++) if(basepath.charAt(idx)=='/') {
+          basepath=basepath.substr(0,idx);
+          break;
+        }
+      }
+      libsurl=basepath+ngLibsURL;
+    }
+    else libsurl=ngApp.AppPath+ngLibsURL;
+    ng_SetLibsURL(libsurl);
+  }
 
   var ae=ngApp.Elm();
   if(ae) {
@@ -5936,7 +5955,7 @@ function nga_CallServerURL(url)
 {
   url=this.BuildURLParams(url,APPPARAM_SERVER);
   if(this.OnCallServerURL) url=this.OnCallServerURL(this, url);
-  return url;
+  return ng_ToAbsPath(url);
 }
 
 function nga_CallServer(url, nocache)
