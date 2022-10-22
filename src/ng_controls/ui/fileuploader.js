@@ -1119,17 +1119,21 @@ function ngfup_RegisterDropTarget(t,ondragover,ondragleave,ondrop){
 
   if(o && (t != '') && (('draggable' in o) && (!!window.FormData))){
     if(!this._drop_targets){this._drop_targets = {};}
-    this._drop_targets[t] = {
+    var c = this;
+    var target = {
       elm: o,
       ondrop: ondrop,
       ondragover: ondragover,
-      ondragleave: ondragleave
+      ondragleave: ondragleave,
+      dropevent: function(e){ngfup_FileDrop(c,e);},
+      dragoverevent: function(e){ngfup_FileDragOver(c,e);},
+      dragleaveevent: function(e){ngfup_FileDragLeave(c,e);}
     };
+    this._drop_targets[t] = target;
 
-    var c = this;
-    ngfup_AddDropListener(o, "drop", function(e){ngfup_FileDrop(c,e);});
-    ngfup_AddDropListener(o, "dragover", function(e){ngfup_FileDragOver(c,e);});
-    ngfup_AddDropListener(o, "dragleave", function(e){ngfup_FileDragLeave(c,e);});
+    ngfup_AddDropListener(o, "drop", target.dropevent);
+    ngfup_AddDropListener(o, "dragover", target.dragoverevent);
+    ngfup_AddDropListener(o, "dragleave", target.dragleaveevent);
     return true;
   }
   return false;
@@ -1139,24 +1143,20 @@ function ngfup_UnregisterDropTarget(t){
   if(this.InDesignMode){return;}
 
   var o = null;
-  if(typeof t==='string'){
-    o = document.getElementById(t);
+  if(typeof t!=='string'){
+    if(typeof t.Elm === 'function') t = t.ID;
+    else if(typeof t.id !== 'undefined') t = t.id;
   }
-  else{
-    if(typeof t.Elm === 'function'){o = t.Elm(); t = t.ID;}
-    else if(typeof t.id !== 'undefined'){o = t; t = t.id;}
-  }
-  if(!o && this._drop_targets && this._drop_targets[t]){
-    o = this._drop_targets[t].elm;
+  if((t!=='') && (this._drop_targets) && (this._drop_targets[t])){
+    o = this._drop_targets[t];
   }
 
-  if(o){
-    ngfup_RemoveDropListener(o, "drop");
-    ngfup_RemoveDropListener(o, "dragover");
-    ngfup_RemoveDropListener(o, "dragleave");
+  if(o) {
+    if(o.dropevent)      ngfup_RemoveDropListener(o.elm, "drop", o.dropevent);
+    if(o.dragoverevent)  ngfup_RemoveDropListener(o.elm, "dragover", o.dragoverevent);
+    if(o.dragleaveevent) ngfup_RemoveDropListener(o.elm, "dragleave", o.dragleaveevent);
+    delete this._drop_targets[t];
   }
-
-  delete this._drop_targets[t];
 }
 
 function ngfup_IsDropTarget(t){
@@ -1164,13 +1164,13 @@ function ngfup_IsDropTarget(t){
     if(typeof t.Elm === 'function'){t = t.ID;}
     else if(typeof t.id !== 'undefined'){t = t.id;}
   }
-  return !!this._drop_targets[t];
+  return (t!=='') && !!this._drop_targets[t];
 }
 
 function ngfup_FindTarget(c,e){
   var t = e.target || e.srcElement || e.originalTarget;
   while(t && (t != document)){
-    if((t.id != '') && (typeof c._drop_targets[t.id]!=='undefined')){
+    if((t.id !== '') && (typeof c._drop_targets[t.id]!=='undefined')){
       return c._drop_targets[t.id];
       break;
     }
@@ -1288,9 +1288,9 @@ function ngfup_AddDropListener(o,e,f){
   if(o.addEventListener){o.addEventListener(e,f,false);}
   else if(o.attachEvent){o.attachEvent(e,f);}
 }
-function ngfup_RemoveDropListener(o,e){
-  if(o.removeEventListener){o.removeEventListener(e,o[e],false);}
-  else if(o.detachEvent){o.detachEvent(e,o[e]);}
+function ngfup_RemoveDropListener(o,e,f){
+  if(o.removeEventListener){o.removeEventListener(e,f,false);}
+  else if(o.detachEvent){o.detachEvent(e,f);}
 }
 
 function ngfup_FileDrop(c,e){
