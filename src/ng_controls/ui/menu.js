@@ -2153,6 +2153,23 @@ function nga_SetPopupMenu(m)
   }
 }
 
+function ngmn_ListPopupMenuEnterRow(list, it, id)
+{
+  var m=list.PopupMenu;
+  if(m) m.ListFocusItem=it;
+}
+
+function ngmn_ListPopupMenuLeaveRow(list, it, id)
+{
+  var m=list.PopupMenu;
+  if(m) m.ListFocusItem=null;
+}
+
+function ngmn_ListPopupMenuPopup(c) {
+  c.ListItem=ngVal(c.ListFocusItem,null);
+  return true;
+}
+
 /**
  *  Function: ng_SetControlPopup
  *  Assigns popup <ngMenu> to control.
@@ -2176,6 +2193,7 @@ function ng_SetControlPopup(c,m)
   m=ngVal(m,null);
   var om=ngVal(c.PopupMenu,null);
   if(om == m) return;
+  var islist=c.CtrlInheritsFrom('ngList');
   if(om) // unregister old
   {
     if(typeof om.HideMenu === 'function') om.HideMenu();
@@ -2187,7 +2205,12 @@ function ng_SetControlPopup(c,m)
       c.RemoveEvent('DoAcceptGestures',ngmn_DoAcceptGestures);
       c.RemoveEvent('DoGesture',ngmn_DoGesture);
       c.RemoveEvent('DoDispose',ngmn_DoPopupDispose);
+      if(islist) {
+        c.RemoveEvent('OnEnterRow', ngmn_ListPopupMenuEnterRow);
+        c.RemoveEvent('OnLeaveRow', ngmn_ListPopupMenuLeaveRow);
+      }
     }
+    if(islist) m.RemoveEvent('OnPopup', ngmn_ListPopupMenuPopup);
     om.RemoveEvent('DoDispose',ngmn_DoPopupControlDispose);
     var oc=ngVal(om.Owner,null);
     if(oc==c) om.Owner=null;
@@ -2200,14 +2223,19 @@ function ng_SetControlPopup(c,m)
 
     m.Owner=c;
     if(!om)
-    {
+    {     
       c.AddEvent('SetVisible',ngmn_SetPopupControlVisible);
       c.AddEvent('SetEnabled',ngmn_SetPopupControlVisible);
       c.AddEvent('DoAttach',ngmn_DoPopupAttach);
       c.AddEvent('DoAcceptGestures',ngmn_DoAcceptGestures);
       c.AddEvent('DoGesture',ngmn_DoGesture);
       c.AddEvent('DoDispose',ngmn_DoPopupDispose);
+      if(islist) {
+        c.AddEvent('OnEnterRow', ngmn_ListPopupMenuEnterRow);
+        c.AddEvent('OnLeaveRow', ngmn_ListPopupMenuLeaveRow);
+      }
     }
+    if(islist) m.AddEvent(ngmn_ListPopupMenuPopup, 'OnPopup');
     m.AddEvent(ngmn_DoPopupControlDispose,'DoDispose');
   }
 }
