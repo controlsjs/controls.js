@@ -1437,6 +1437,7 @@ function ng_MergeDef(dst,def,allowundefined,callback)
 
     if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return false;
     if(d._noMerge===true) return false;
+    if(d._noDef===true) return true;
 
     if((typeof d.OnCreating === 'function')&&(typeof o.OnCreating === 'function')) {
       d.OnCreating = ngAddEvent(d.OnCreating, o.OnCreating);
