@@ -321,6 +321,17 @@ var FileUploaderControl = {
        *    -
        */
       c.ClearFiles = ngfup_ClearFiles;
+      
+      /*  Function: UploadFiles
+       *  ...
+       *
+       *  Syntax:
+       *    void *UploadFiles* (array files)
+       *
+       *  Returns:
+       *    -
+       */
+      c.UploadFiles = ngfup_UploadFiles;
 
       /*  Function: GetForm
        *  ...
@@ -1058,6 +1069,35 @@ function ngfup_ClearFiles(){
   }
 }
 
+function ngfup_UploadFiles(files){
+  if((!files)||(!files.length)) return false;
+  if(!this.CheckFiles(files)){return false;}
+
+  var formData = new FormData();
+  for(var i = 0; i < files.length; i++){
+    formData.append('ngfup_File[]', files[i]);
+  }
+
+  var rpc = this.GetRPC();
+  if(rpc){
+    rpc.clearParams();
+    rpc.FileFormData = formData;
+
+    var params = {
+      id: this.ID,
+      fuid: this.FileUploaderID,
+      action: 'upload'
+    };
+
+    if(this.OnGetRequestParams){this.OnGetRequestParams(params);}
+    for(var i in params){rpc.SetParam(i,params[i]);}
+
+    rpc.sendRequest(this.UploadURL);
+    return true;
+  }
+  return false;
+}
+
 function ngfup_ChangeFile(){
   var Form = this.GetForm();
   if(!Form){return false;}
@@ -1305,32 +1345,7 @@ function ngfup_FileDrop(c,e){
       t.ondragleave(c,t.elm);
     }
   }
-
-  var files = e.target.files || e.dataTransfer.files;
-
-  if(!c.CheckFiles(files)){return false;}
-
-  var formData = new FormData();
-  for(var i = 0; i < files.length; i++){
-    formData.append('ngfup_File[]', files[i]);
-  }
-
-  var rpc = c.GetRPC();
-  if(rpc){
-    rpc.clearParams();
-    rpc.FileFormData = formData;
-
-    var params = {
-      id: c.ID,
-      fuid: c.FileUploaderID,
-      action: 'upload'
-    };
-
-    if(c.OnGetRequestParams){c.OnGetRequestParams(params);}
-    for(var i in params){rpc.SetParam(i,params[i]);}
-
-    rpc.sendRequest(c.UploadURL);
-  }
+  c.UploadFiles(e.target.files || e.dataTransfer.files);
   return false;
 }
 
