@@ -2210,7 +2210,7 @@ function ng_SetControlPopup(c,m)
         c.RemoveEvent('OnLeaveRow', ngmn_ListPopupMenuLeaveRow);
       }
     }
-    if(islist) m.RemoveEvent('OnPopup', ngmn_ListPopupMenuPopup);
+    if(islist) om.RemoveEvent('OnPopup', ngmn_ListPopupMenuPopup);
     om.RemoveEvent('DoDispose',ngmn_DoPopupControlDispose);
     var oc=ngVal(om.Owner,null);
     if(oc==c) om.Owner=null;
