@@ -44,7 +44,7 @@ function ngCreateWindow(def,parent)
     for(var i in def) 
     {
       cnt++;
-      if(cnt>1)
+      if((cnt>1)||(!ng_IsObjVar(def[i])))
       {
         var ndef=new Object;
         ndef.Window=ng_CopyVar(def);
