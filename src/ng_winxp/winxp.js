@@ -511,50 +511,50 @@ var WinXPControls = {
      *  Standard panel control (based on <ngPanel>).
      */
     /*<>*/
-    ngRegisterControlType('stdPanel', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngPanel', ref, parent); });
+    ngRegisterControlSkin('stdPanel','ngPanel', function(def,ref,parent,modtype) { return ngCreateControlAsType(def, modtype, ref, parent); });
     /*  Class: stdFrame
      *  Standard frame control (based on <ngFrame>).
      */
     /*<>*/
-    ngRegisterControlType('stdFrame', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngFrame', ref, parent); });
+    ngRegisterControlSkin('stdFrame','ngFrame', function(def,ref,parent,modtype) { return ngCreateControlAsType(def, modtype, ref, parent); });
 
     /*  Class: stdText
      *  Standard text control (based on <ngText>).
      */
     /*<>*/
-    ngRegisterControlType('stdText', function(def,ref,parent) {
+    ngRegisterControlSkin('stdText','ngText', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpText';
-      return ngCreateControlAsType(def, 'ngText', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdImage
      *  Standard image control (based on <ngImage>).
      */
     /*<>*/
-    ngRegisterControlType('stdImage', function(def,ref,parent) {
+    ngRegisterControlSkin('stdImage','ngImage', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpImage';
-      return ngCreateControlAsType(def, 'ngImage', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdCheckBox
      *  Standard check box control (based on <ngCheckBox>).
      */
-    ngRegisterControlType('stdCheckBox', function(def,ref,parent) {
+    ngRegisterControlSkin('stdCheckBox','ngCheckBox', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpCheckBox';
-      return ngCreateControlAsType(def, 'ngCheckBox', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdRadioButton
      *  Standard radio button control (based on <ngRadioButton>).
      */
-    ngRegisterControlType('stdRadioButton', function(def,ref,parent) {
+    ngRegisterControlSkin('stdRadioButton','ngRadioButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpRadio';
-      return ngCreateControlAsType(def, 'ngRadioButton', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdButton
      *  Standard button control (based on <ngButton>).
      */
     /*<>*/
-    ngRegisterControlType('stdButton', function(def,ref,parent) {
+    ngRegisterControlSkin('stdButton','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpButton';
-      var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(c) {
         if(c.MultiLine) {
           c.Frame=ngVal(c.Default,false) ? winimages.DefButtonMultiLine : winimages.ButtonMultiLine;
@@ -580,9 +580,9 @@ var WinXPControls = {
      *  Standard button control (based on <ngButton>).
      */
     /*<>*/
-    ngRegisterControlType('stdFlatButton', function(def,ref,parent) {
+    ngRegisterControlSkin('stdFlatButton','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpFlatButton';
-      var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
       c.AddEvent('DoUpdate',function(o) {
         var cn=o.className;
@@ -618,34 +618,34 @@ var WinXPControls = {
      *  Standard label control (based on <ngButton>).
      */
     /*<>*/
-    ngRegisterControlType('stdLabel', function(def,ref,parent) {
+    ngRegisterControlSkin('stdLabel','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpLabel';
-      return ngCreateControlAsType(def, 'ngButton', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdLink
      *  Standard link control (based on <ngButton>).
      */
     /*<>*/
-    ngRegisterControlType('stdLink', function(def,ref,parent) {
+    ngRegisterControlSkin('stdLink','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpLink';
-      return ngCreateControlAsType(def, 'ngButton', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdGroup
      *  Standard group control (based on <ngGroup>).
      */
     /*<>*/
-    skinfnc.Create_stdGroup=function(def,ref,parent) {
+    skinfnc.Create_stdGroup=function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpGroupBox';
-      return ngCreateControlAsType(def, 'ngGroup', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     }
-    ngRegisterControlType('stdGroup', skinfnc.Create_stdGroup);
-    ngRegisterControlType('stdGroupBox', skinfnc.Create_stdGroup);
+    ngRegisterControlSkin('stdGroup','ngGroup', skinfnc.Create_stdGroup);
+    ngRegisterControlSkin('stdGroupBox', 'stdGroup');
 
     /*  Class: stdEdit
      *  Standard edit control (based on <ngEdit>).
      */
     /*<>*/
-    this.stdEdit_AddProperties=function(c)
+    skinfnc.stdEdit_AddProperties=function(c)
     {
       var req=ngVal(c.Invalid,false);
       c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
@@ -669,26 +669,26 @@ var WinXPControls = {
       }
     }
 
-    skinfnc.Create_stdEdit=function(def,ref,parent) {
+    skinfnc.Create_stdEdit=function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
-      var c=ngCreateControlAsType(def, 'ngEdit', ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(c) {
-        winxp.stdEdit_AddProperties(c);
+        skinfnc.stdEdit_AddProperties(c);
       }
       return c;
     }
-    ngRegisterControlType('stdEdit', skinfnc.Create_stdEdit);
-    ngRegisterControlType('stdEditBox', skinfnc.Create_stdEdit);
+    ngRegisterControlSkin('stdEdit','ngEdit', skinfnc.Create_stdEdit);
+    ngRegisterControlSkin('stdEditBox', 'stdEdit');
 
     /*  Class: stdEditBoxBtn
      *  Standard edit control with elipsis button (based on <stdEdit>).
      */
     /*<>*/
-    skinfnc.Create_stdEditBoxBtn=function(def,ref,parent,basetype) {
+    skinfnc.Create_stdEditBoxBtn=function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
-      var c=ngCreateControlAsType(def, ngVal(basetype,'stdEdit'), ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
       var b=new ngButton();
       b.LeftImg=winimages.Elipsis;
@@ -725,17 +725,17 @@ var WinXPControls = {
       return c;
     }
 
-    ngRegisterControlType('stdEditBoxBtn', function(def,ref,parent) { return skinfnc.Create_stdEditBoxBtn(def,ref,parent); });
+    ngRegisterControlSkin('stdEditBoxBtn','stdEdit', skinfnc.Create_stdEditBoxBtn);
 
     /*  Class: stdSearchBox
      *  Standard search box control (based on <stdEdit>).
      */
     /*<>*/
-    skinfnc.Create_stdSearchBox=function(def,ref,parent,basetype)
+    skinfnc.Create_stdSearchBox=function(def,ref,parent,modtype)
     {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
-      var c=ngCreateControlAsType(def, ngVal(basetype,'stdEdit'), ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
       if(typeof def.DropDown !== 'undefined') c.Suggestion=true;
 
@@ -776,7 +776,7 @@ var WinXPControls = {
       // c.OnSearch=null;
       return c;
     }
-    ngRegisterControlType('stdSearchBox', function(def,ref,parent) { return skinfnc.Create_stdSearchBox(def,ref,parent); });
+    ngRegisterControlSkin('stdSearchBox','stdEdit', skinfnc.Create_stdSearchBox);
 
     /*  Class: stdEditNum
      *  Standard edit number control with spin buttons (based on <ngEditNum>).
@@ -816,13 +816,13 @@ var WinXPControls = {
      *  Returns:
      *    -
      */
-    skinfnc.Create_stdEditNum=function(def,ref,parent, basetype)
+    skinfnc.Create_stdEditNum=function(def,ref,parent, modtype)
     {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
-      var c=ngCreateControlAsType(def, ngVal(basetype,'ngEditNum'), ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
-      winxp.stdEdit_AddProperties(c);
+      skinfnc.stdEdit_AddProperties(c);
       var type=ngVal(def.Arrows,'leftright');
       if(type!='none')
       {
@@ -831,8 +831,8 @@ var WinXPControls = {
       }
       return c;
     }
-    ngRegisterControlType('stdEditNum', function(def,ref,parent) { return skinfnc.Create_stdEditNum(def,ref,parent); });
-    ngRegisterControlType('stdEditBoxNum', function(def,ref,parent) { return skinfnc.Create_stdEditNum(def,ref,parent); });
+    ngRegisterControlSkin('stdEditNum','ngEditNum', skinfnc.Create_stdEditNum);
+    ngRegisterControlSkin('stdEditBoxNum', 'stdEditNum');
     /*  Class: stdColorEdit
      *  Standard color edit control (based on <ngDropDown>).
      */
@@ -859,17 +859,17 @@ var WinXPControls = {
      *  Returns:
      *    -
      */
-    skinfnc.Create_stdColorEdit=function(def,ref,parent,basetype)
+    skinfnc.Create_stdColorEdit=function(def,ref,parent,modtype)
     {
       ng_MergeDef(def, {
         className: 'wxpEdit',
         Data: { TextAlign: 'center' },
         DropDown: null//{ className: 'wxpDropDown', Type: 'stdPanel' }
       });
-      var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngEdit'));
+      var c=ngDropDown_Create(def,ref,parent, modtype);
       if(!c) return c;
 
-      winxp.stdEdit_AddProperties(c);
+      skinfnc.stdEdit_AddProperties(c);
       /*
        *  Group: Methods
        */
@@ -906,15 +906,15 @@ var WinXPControls = {
       }
       return c;
     }
-    ngRegisterControlType('stdColorEdit', function(def,ref,parent) { return skinfnc.Create_stdColorEdit(def,ref,parent); });
-    ngRegisterControlType('stdColorEditBox', function(def,ref,parent) { return skinfnc.Create_stdColorEdit(def,ref,parent); });
+    ngRegisterControlSkin('stdColorEdit','ngEdit', skinfnc.Create_stdColorEdit);
+    ngRegisterControlSkin('stdColorEditBox', 'stdColorEdit');
 
     if (ngUserControls['maskedit'])
     {
       /*  Class: stdMaskEdit
        *  Standard mask edit control (based on <ngMaskEdit>).
        */
-      skinfnc.Create_stdMaskEdit=function(def, ref, parent)
+      skinfnc.Create_stdMaskEdit=function(def, ref, parent, modtype)
       {
         if (typeof(def.Data)==='undefined') def.Data = new Object();
         var invalid = ngVal(def.Data.Invalid, false);
@@ -956,7 +956,7 @@ var WinXPControls = {
           }
         });
 
-        var c = ngCreateControlAsType(def, 'ngMaskEdit', ref, parent);
+        var c = ngCreateControlAsType(def, modtype, ref, parent);
         if (!c) return c;
 
         c.DoSetInvalid = function (ctrl, state, update) {
@@ -990,8 +990,8 @@ var WinXPControls = {
 
         return c;
       }
-      ngRegisterControlType('stdMaskEdit', function(def,ref,parent) { return skinfnc.Create_stdMaskEdit(def,ref,parent); });
-      ngRegisterControlType('stdMaskEditBox', function(def,ref,parent) { return skinfnc.Create_stdMaskEdit(def,ref,parent); });
+      ngRegisterControlSkin('stdMaskEdit','ngMaskEdit', skinfnc.Create_stdMaskEdit);
+      ngRegisterControlSkin('stdMaskEditBox', 'stdMaskEdit');
     }
 
     /*  Class: stdDropDown
@@ -1020,16 +1020,16 @@ var WinXPControls = {
      *  Returns:
      *    -
      */
-    skinfnc.Create_stdDropDown=function(def,ref,parent,basetype,dropdownlist) {
+    skinfnc.Create_stdDropDown=function(def,ref,parent,modtype,dropdownlist) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
-      var c=ngDropDown_Create(def,ref,parent, ngVal(basetype,'ngDropDown'),dropdownlist);
+      var c=ngDropDown_Create(def,ref,parent, modtype,dropdownlist);
       if(!c) return c;
-      winxp.stdEdit_AddProperties(c);
+      skinfnc.stdEdit_AddProperties(c);
       c.DropDownButton.LeftImg=winimages.DropDown;
       if(typeof def.DropDown.className === 'undefined') def.DropDown.className='wxpDropDown';
       return c;
     }
-    ngRegisterControlType('stdDropDown', function(def,ref,parent) { return skinfnc.Create_stdDropDown(def,ref,parent,'ngDropDown',false); });
+    ngRegisterControlSkin('stdDropDown','ngDropDown', function(def,ref,parent,modtype) { return skinfnc.Create_stdDropDown(def,ref,parent,ngVal(modtype,'ngDropDown'),false); });
 
     /*  Class: stdDropDownList
      *  Standard drop down list control (based on <ngDropDownList>).
@@ -1057,16 +1057,16 @@ var WinXPControls = {
      *  Returns:
      *    -
      */
-    ngRegisterControlType('stdDropDownList', function(def,ref,parent) { return skinfnc.Create_stdDropDown(def,ref,parent,'ngDropDownList',true); });
+    ngRegisterControlSkin('stdDropDownList','ngDropDownList', function(def,ref,parent,modtype) { return skinfnc.Create_stdDropDown(def,ref,parent,modtype,true); });
 
 
     /*  Class: stdMemo
      *  Standard memo control (based on <ngMemo>).
      */
     /*<>*/
-    skinfnc.Create_stdMemo=function(def,ref,parent,basetype) {
+    skinfnc.Create_stdMemo=function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpMemo';
-      var c=ngCreateControlAsType(def, ngVal(basetype, 'ngMemo'), ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return;
 
       var req=ngVal(c.Invalid,false);
@@ -1078,37 +1078,37 @@ var WinXPControls = {
       }
       return c;
     }
-    ngRegisterControlType('stdMemo', function(def,ref,parent) { return skinfnc.Create_stdMemo(def,ref,parent); });
+    ngRegisterControlSkin('stdMemo','ngMemo', skinfnc.Create_stdMemo);
     /*  Class: stdPages
      *  Standard pages control (based on <ngPages>).
      */
     /*<>*/
-    ngRegisterControlType('stdPages', function(def,ref,parent) {
+    ngRegisterControlSkin('stdPages','ngPages', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpPages';
-      return ngCreateControlAsType(def, 'ngPages', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdToolBar
      *  Standard toolbar control (based on <ngToolBar>).
      */
     /*<>*/
-    ngRegisterControlType('stdToolBar', function(def,ref,parent) {
+    ngRegisterControlSkin('stdToolBar','ngToolBar', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpToolBar';
-      return ngCreateControlAsType(def, 'ngToolBar', ref, parent);
+      return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
     /*  Class: stdWebBrowser
      *  Standard web browser control (based on <ngWebBrowser>).
      */
     /*<>*/
-    ngRegisterControlType('stdWebBrowser', function(def,ref,parent) { return ngCreateControlAsType(def, 'ngWebBrowser', ref, parent); });
+    ngRegisterControlSkin('stdWebBrowser','ngWebBrowser', function(def,ref,parent,modtype) { return ngCreateControlAsType(def, modtype, ref, parent); });
 
     /*  Class: stdProgressBar
      *  Standard progress bar control (based on <ngProgressBar>).
      */
     /*<>*/
-    ngRegisterControlType('stdProgressBar', function(def,ref,parent) {
+    ngRegisterControlSkin('stdProgressBar','ngProgressBar', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpProgressBar';
-      var c=ngCreateControlAsType(def, 'ngProgressBar', ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
       c.LeftImg=winimages.ProgressBar.LeftImg;
       c.MiddleImg=winimages.ProgressBar.MiddleImg;
@@ -1120,7 +1120,7 @@ var WinXPControls = {
      *  Standard progress dot control (based on <ngText>).
      */
     /*<>*/
-    ngRegisterControlType('stdProgressDot', function(def,ref,parent) {
+    ngRegisterControlSkin('stdProgressDot','ngButton', function(def,ref,parent,modtype) {
       ng_MergeDef(def, {
         className: 'wxpLabel',
         Data: {
@@ -1128,7 +1128,7 @@ var WinXPControls = {
           HTMLEncode: false
         }
       });
-      var c=ngCreateControlAsType(def, 'ngButton', ref, parent);
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(c)
       {
         c.AddEvent(function (b) {
@@ -1145,7 +1145,7 @@ var WinXPControls = {
      */
     if(ngUserControls['list'])
     {
-      this.stdList_AddProperties=function(def, c)
+      skinfnc.stdList_AddProperties=function(def, c)
       {
         c.AddEvent('DoUpdate',function(o) {
           var cn=o.className;
@@ -1187,15 +1187,15 @@ var WinXPControls = {
        *  Standard list control (based on <ngList>).
        */
       /*<>*/
-      skinfnc.Create_stdList=function(def,ref,parent) {
+      skinfnc.Create_stdList=function(def,ref,parent,modtype) {
         if(typeof def.className === 'undefined') def.className='wxpListBox';
-        var c=ngCreateControlAsType(def, 'ngList', ref, parent);
-        if(c) winxp.stdList_AddProperties(def,c);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
+        if(c) skinfnc.stdList_AddProperties(def,c);
         return c;
       }
-      ngRegisterControlType('stdList', skinfnc.Create_stdList);
-      ngRegisterControlType('stdListBox', skinfnc.Create_stdList);
-      ngRegisterControlType('stdTreeList', skinfnc.Create_stdList);
+      ngRegisterControlSkin('stdList','ngList', skinfnc.Create_stdList);
+      ngRegisterControlSkin('stdListBox', 'stdList');
+      ngRegisterControlSkin('stdTreeList', 'stdList');
       /*  Class: stdPageList
        *  Standard list control (based on <ngPageList>).
        */
@@ -1262,7 +1262,7 @@ var WinXPControls = {
         };
       }
 
-      skinfnc.Create_stdPageList=function(def,ref,parent,controltype,listtype)
+      skinfnc.Create_stdPageList=function(def,ref,parent,modtype,isdataset, listtype)
       {
         ng_MergeDef(def, {
           className: 'wxpListBox',
@@ -1285,14 +1285,14 @@ var WinXPControls = {
              */
             Loading: {
               Type: 'stdProgressDot',
-              L: 10, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
+              L: 10, T: (isdataset || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
               Data: {
                 Visible: false
               }
             },
             NoData: {
               Type: 'stdText',
-              L: 10, T: ((controltype==='ngDataSet') || (controltype==='ngDBDataSet') || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
+              L: 10, T: (isdataset || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
               Data: {
                 Visible: false
               }
@@ -1328,7 +1328,7 @@ var WinXPControls = {
           }
         });
 
-        var c=ngCreateControlAsType(def, ngVal(controltype,'ngPageList'), ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
         c.AddEvent('DoUpdate',function(o) {
           var cn=o.className;
@@ -1343,8 +1343,8 @@ var WinXPControls = {
         });
         return c;
       }
-      ngRegisterControlType('stdPageList', function (def,ref,parent) { return skinfnc.Create_stdPageList(def,ref,parent,'ngPageList'); });
-      ngRegisterControlType('stdPageTreeList', function (def,ref,parent) { return skinfnc.Create_stdPageList(def,ref,parent,'ngPageList','stdTreeList'); });
+      ngRegisterControlSkin('stdPageList','ngPageList', function (def,ref,parent,modtype) { return skinfnc.Create_stdPageList(def,ref,parent,modtype,false); });
+      ngRegisterControlSkin('stdPageTreeList','ngPageList', function (def,ref,parent,modtype) { return skinfnc.Create_stdPageList(def,ref,parent,modtype,false,'stdTreeList'); });
     }
 
     /**
@@ -1370,9 +1370,9 @@ var WinXPControls = {
          *    'none' - ...
          */
         /*<>*/
-      ngRegisterControlType('stdSplitPanel', function(def,ref,parent) {
+      ngRegisterControlSkin('stdSplitPanel','ngSplitPanel', function(def,ref,parent,modtype) {
         if(typeof def.className === 'undefined') def.className='wxpSplitPanel';
-        var c=ngCreateControlAsType(def, 'ngSplitPanel', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c)
         {
           var vsplit=(c.PanelAlign=='left')||(c.PanelAlign=='right');
@@ -1391,9 +1391,9 @@ var WinXPControls = {
        *  Drop-down panel control (based on <ngDropPanel>).
        */
       /*<>*/
-      ngRegisterControlType('stdDropPanel', function(def,ref,parent) {
+      ngRegisterControlSkin('stdDropPanel','ngDropPanel', function(def,ref,parent,modtype) {
         if(typeof def.className === 'undefined') def.className='wxpDropPanel';
-        var c=ngCreateControlAsType(def, 'ngDropPanel', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         ng_MergeDef(def, {
           ControlsPanel: {
             Type: 'ngGroup',
@@ -1442,10 +1442,9 @@ var WinXPControls = {
        *  Standard dialog control (based on <ngWindow>).
        */
       /*<>*/
-      skinfnc.Create_stdWindow=function(def,ref,parent) {
-        var dialog=(def.Type == 'stdDialog');
+      skinfnc.Create_stdWindow=function(def,ref,parent,modtype,dialog) {
         if(typeof def.className === 'undefined') def.className=(dialog ? 'wxpDialog' : 'wxpWindow');
-        var c=ngCreateControlAsType(def, 'ngWindow', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
         c.Frame=winimages.Window;
         c.CaptionImg = winimages.WindowCaption;
@@ -1579,16 +1578,16 @@ var WinXPControls = {
         }
         return c;
       }
-      ngRegisterControlType('stdWindow', skinfnc.Create_stdWindow);
-      ngRegisterControlType('stdDialog', skinfnc.Create_stdWindow);
+      ngRegisterControlSkin('stdWindow','ngWindow', function (def,ref,parent,modtype) { return skinfnc.Create_stdWindow(def,ref,parent,modtype,false); });       
+      ngRegisterControlSkin('stdDialog','ngWindow', function (def,ref,parent,modtype) { return skinfnc.Create_stdWindow(def,ref,parent,modtype,true); });
 
       /*  Class: stdHint
        *  Standard hint control (based on <ngHint>).
        */
       /*<>*/
-      ngRegisterControlType('stdHint', function(def,ref,parent) {
+      ngRegisterControlSkin('stdHint','ngHint', function(def,ref,parent,modtype) {
         if(typeof def.className === 'undefined') def.className='wxpHint';
-        var c=ngCreateControlAsType(def, 'ngHint', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c)
         {
           c.Frame=ng_CopyVar(winimages.Hint);
@@ -1601,7 +1600,7 @@ var WinXPControls = {
        *  Standard hint text control (based on <ngTextHint>).
        */
       /*<>*/
-      ngRegisterControlType('stdTextHint', function(def,ref,parent) {
+      ngRegisterControlSkin('stdTextHint','ngTextHint', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           className: 'wxpTextHint',
           /*
@@ -1617,7 +1616,7 @@ var WinXPControls = {
             }
           }
         });
-        var c=ngCreateControlAsType(def, 'ngTextHint', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c)
         {
           c.Frame=ng_CopyVar(winimages.TextHint);
@@ -1636,7 +1635,7 @@ var WinXPControls = {
        *  Standard message box dialog (based on <ngMessageDlg>).
        */
       /*<>*/
-      ngRegisterControlType('stdMessageDlg', function(def,ref,parent) {
+      ngRegisterControlSkin('stdMessageDlg','ngMessageDlg', function(def,ref,parent,modtype) {
 
         /*
          *  Group: Definition
@@ -1732,14 +1731,14 @@ var WinXPControls = {
           def.Controls.Content.H+=25;
         }
         if(def.DialogType=='stdMessageDlg') def.DialogType='stdDialog';
-        return ngCreateControlAsType(def, 'ngMessageDlg', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: dlgMessageBox
        *  Message box dialog (based on <stdMessageDlg>).
        */
       /*<>*/
-      ngRegisterControlType('dlgMessageBox', function(def,ref,parent) {
+      ngRegisterControlSkin('dlgMessageBox','stdMessageDlg', function(def,ref,parent,modtype) {
 
         delete def.DialogType;
         def.DlgButtons=ngVal(def.DlgButtons,mbOK);
@@ -1791,7 +1790,7 @@ var WinXPControls = {
           });
           if(def.Controls.Content.Controls.Check) def.Controls.Content.Controls.Check.L=ic.W+10;
         }
-        return ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: dlgInputBox
@@ -1815,7 +1814,7 @@ var WinXPControls = {
        *  Default value: *''*
        */
       /*<>*/
-      skinfnc.Create_dlgEditBox=function(def,ref,parent) {
+      skinfnc.Create_dlgEditBox=function(def,ref,parent,modtype,type) {
 
         delete def.DialogType;
         def.DlgAllowEmpty=ngVal(def.DlgAllowEmpty,false);
@@ -1857,7 +1856,7 @@ var WinXPControls = {
           }
         };
         var edit=cdef.Controls.Content.Controls.Edit;
-        switch(def.Type)
+        switch(type)
         {
           case 'dlgMemoBox':
             edit.Type='stdMemo';
@@ -1866,7 +1865,7 @@ var WinXPControls = {
             break;
           case 'dlgDropDownBox':
           case 'dlgDropDownListBox':
-            edit.Type=(def.Type=='dlgDropDownBox' ? 'stdDropDown' : 'stdDropDownList');
+            edit.Type=(type=='dlgDropDownBox' ? 'stdDropDown' : 'stdDropDownList');
             edit.DropDown={ Type: 'stdList', Data: {  } };
             if(typeof def.DlgItems!=='undefined') edit.DropDown.Data.Items=def.DlgItems;
             break;
@@ -1881,8 +1880,8 @@ var WinXPControls = {
           cdef.Controls.Buttons.Controls.OK.Data.Enabled=false;
         }
         ng_MergeDef(def, cdef);
-        var c=ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
-        if(def.Type!='dlgDropDownListBox')
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
+        if(type!='dlgDropDownListBox')
         {
           c.AddEvent('OnVisibleChanged', function (c) {
             var hint,edit=c.Controls.Edit;
@@ -1894,7 +1893,7 @@ var WinXPControls = {
         return c;
       };
 
-      ngRegisterControlType('dlgInputBox', skinfnc.Create_dlgEditBox);
+      ngRegisterControlSkin('dlgInputBox','stdMessageDlg', function(def,ref,parent,modtype) { return skinfnc.Create_dlgEditBox(def,ref,parent,modtype,'dlgInputBox');}); 
 
       /*  Class: dlgDropDownBox
        *  Dropdown dialog (based on <stdMessageDlg>).
@@ -1930,7 +1929,7 @@ var WinXPControls = {
       /*  Object: Edit
        *  <stdDropDown>
        */
-      ngRegisterControlType('dlgDropDownBox', skinfnc.Create_dlgEditBox);
+      ngRegisterControlSkin('dlgDropDownBox','stdMessageDlg', function(def,ref,parent,modtype) { return skinfnc.Create_dlgEditBox(def,ref,parent,modtype,'dlgDropDownBox');});
       /*  Class: dlgDropDownListBox
        *  Dropdown list dialog (based on <stdMessageDlg>).
        */
@@ -1965,7 +1964,7 @@ var WinXPControls = {
       /*  Object: Edit
        *  <stdDropDownList>
        */
-      ngRegisterControlType('dlgDropDownListBox', skinfnc.Create_dlgEditBox);
+      ngRegisterControlSkin('dlgDropDownListBox','stdMessageDlg', function(def,ref,parent,modtype) { return skinfnc.Create_dlgEditBox(def,ref,parent,modtype,'dlgDropDownListBox');});
 
       /*  Class: dlgMemoBox
        *  Input memo dialog (based on <stdMessageDlg>).
@@ -1994,7 +1993,7 @@ var WinXPControls = {
       /*  Object: Edit
        *  <stdMemo>
        */
-      ngRegisterControlType('dlgMemoBox', skinfnc.Create_dlgEditBox);
+      ngRegisterControlSkin('dlgMemoBox','stdMessageDlg', function(def,ref,parent,modtype) { return skinfnc.Create_dlgEditBox(def,ref,parent,modtype,'dlgMemoBox');});
 
       /*  Class: dlgListBox
        *  List box dialog (based on <stdMessageDlg>).
@@ -2017,7 +2016,7 @@ var WinXPControls = {
        *  Default value: *''*
        */
       /*<>*/
-      ngRegisterControlType('dlgListBox', function(def,ref,parent) {
+      ngRegisterControlSkin('dlgListBox','stdMessageDlg', function(def,ref,parent,modtype) {
         delete def.DialogType;
         def.DlgAllowEmpty=ngVal(def.DlgAllowEmpty,false);
         var cdef={
@@ -2070,7 +2069,7 @@ var WinXPControls = {
         }
         ng_MergeDef(def, cdef);
 
-        var c=ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         c.AddEvent('OnVisibleChanged', function (c) {
           if(c.Visible) c.Controls.List.SetFocus();
         });
@@ -2081,7 +2080,7 @@ var WinXPControls = {
        *  Progress box dialog (based on <stdMessageDlg>).
        */
       /*<>*/
-      ngRegisterControlType('dlgProgressBox', function(def,ref,parent) {
+      ngRegisterControlSkin('dlgProgressBox','stdMessageDlg', function(def,ref,parent,modtype) {
 
         delete def.DialogType;
         ng_MergeDef(def, {
@@ -2111,14 +2110,14 @@ var WinXPControls = {
             }
           }
         });
-        return ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: dlgWaitBox
        *  Wait box dialog (based on <stdMessageDlg>).
        */
       /*<>*/
-      ngRegisterControlType('dlgWaitBox', function(def,ref,parent) {
+      ngRegisterControlSkin('dlgWaitBox','stdMessageDlg', function(def,ref,parent,modtype) {
 
         delete def.DialogType;
         ng_MergeDef(def, {
@@ -2148,13 +2147,13 @@ var WinXPControls = {
             }
           }
         });
-        return ngCreateControlAsType(def, 'stdMessageDlg', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
       /*  Class: dlgAbout
        *  Application about dialog (based on <ngAboutDlg>).
        */
       /*<>*/
-      ngRegisterControlType('dlgAbout', function(def,ref,parent) {
+      ngRegisterControlSkin('dlgAbout','ngAboutDlg', function(def,ref,parent,modtype) {
         var cdef={
           DialogType: 'dlgMessageBox',
           DlgIcon: null,
@@ -2196,7 +2195,7 @@ var WinXPControls = {
           cdef.Controls.Message.Data.MinWidth-=(def.DlgIcon.W+10);
         }
         ng_MergeDef(def, cdef);
-        return ngCreateControlAsType(def, 'ngAboutDlg', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
     }
 
@@ -2209,9 +2208,9 @@ var WinXPControls = {
        *  Standard calendar control (based on <ngCalendar>).
        */
       /*<>*/
-      ngRegisterControlType('stdCalendar', function(def,ref,parent) {
+      ngRegisterControlSkin('stdCalendar','ngCalendar', function(def,ref,parent,modtype) {
         if(typeof def.className === 'undefined') def.className='wxpCalendar';
-        var c=ngCreateControlAsType(def, 'ngCalendar', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
         c.PrevMonBtn.LeftImg=winimages.ArrowLeft;
         c.PrevMonBtn.Text='';
@@ -2238,7 +2237,7 @@ var WinXPControls = {
        *  Standard edit date control (based on <ngEditDate>).
        */
       /*<>*/
-      skinfnc.Create_stdEditDate=function(def,ref,parent,basetype) {
+      skinfnc.Create_stdEditDate=function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           className: 'wxpEdit',
           DropDown: {
@@ -2247,22 +2246,22 @@ var WinXPControls = {
             style: { padding: '10px' }
           }
         });
-        var c=skinfnc.Create_stdDropDown(def,ref,parent, ngVal(basetype,'ngEditDate'),false);
+        var c=skinfnc.Create_stdDropDown(def,ref,parent, modtype,false);
         if(!c) return c;
-        winxp.stdEdit_AddProperties(c);
+        skinfnc.stdEdit_AddProperties(c);
         c.DropDownButton.LeftImg=winimages.Calendar;
         c.DropDownButton.Alt = ngTxt('calendar');
         c.DropDownButton.Default = false;
         return c;
       }
 
-      ngRegisterControlType('stdEditDate', function(def,ref,parent) { return skinfnc.Create_stdEditDate(def,ref,parent); });
+      ngRegisterControlSkin('stdEditDate','ngEditDate', skinfnc.Create_stdEditDate);
 
       /*  Class: stdEditTime
        *  Standard edit date control (based on <ngEditTime>).
        */
       /*<>*/
-      skinfnc.Create_stdEditTime=function(def,ref,parent,basetype) {
+      skinfnc.Create_stdEditTime=function(def,ref,parent,modtype) {
         var div=1;
         ng_MergeDef(def, {
           className: 'wxpEdit',
@@ -2301,20 +2300,20 @@ var WinXPControls = {
         div=ngVal(def.DropDown.HourDivider,2);
         if(div<=0) div=1;
         div=60/div;
-        var c=ngCreateControlAsType(def, ngVal(basetype,'ngEditTime'), ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
 
         if(def.Type == 'ngDropDownList') c.DropDownType=ngeDropDownList;
         ngDropDown_Add(c);
 
-        winxp.stdEdit_AddProperties(c);
+        skinfnc.stdEdit_AddProperties(c);
         c.DropDownButton.LeftImg=winimages.DropDown;
         c.DropDownButton.Default = false;
         if(typeof def.DropDown.className === 'undefined') def.DropDown.className='wxpDropDown';
         return c;
       };
 
-      ngRegisterControlType('stdEditTime', function(def,ref,parent) { return skinfnc.Create_stdEditTime(def,ref,parent); });
+      ngRegisterControlSkin('stdEditTime','ngEditTime', skinfnc.Create_stdEditTime);
     }
 
         /**
@@ -2326,7 +2325,7 @@ var WinXPControls = {
       /**  Class: stdColorPickerBox
        *  Standard color picker box control (based on <ngColorPickerBox>).
        */
-      this.colorpicker_doUpdateSlider = function(o){
+      skinfnc.colorpicker_doUpdateSlider = function(o){
         var cn = o.className;
         var idx = cn.indexOf(' ');
         if(this.Enabled) {
@@ -2338,7 +2337,7 @@ var WinXPControls = {
         return true;
       };
 
-      this.colorpicker_barButtonDef = function(def){
+      skinfnc.colorpicker_barButtonDef = function(def){
         if(!def){def = {};}
         ng_MergeDef(def,{
           L:0, T:0, R:0,
@@ -2350,7 +2349,7 @@ var WinXPControls = {
         return def;
       };
 
-      this.colorpicker_sliderDef = function(def){
+      skinfnc.colorpicker_sliderDef = function(def){
         if(!def){def = {};}
         ng_MergeDef(def,{
           L:5,T:18,R:5,H:19,
@@ -2360,13 +2359,13 @@ var WinXPControls = {
             WithoutEditBounds: { R:5 }
           },
           Events: {
-            DoUpdate: winxp.colorpicker_doUpdateSlider
+            DoUpdate: skinfnc.colorpicker_doUpdateSlider
           }
         });
         return def;
       };
 
-      this.colorpicker_editDef = function(def){
+      skinfnc.colorpicker_editDef = function(def){
         if(!def){def = {};}
         ng_MergeDef(def,{
           Type: 'stdEdit',
@@ -2375,7 +2374,7 @@ var WinXPControls = {
         return def;
       };
 
-      this.colorpicker_labelDef = function(def){
+      skinfnc.colorpicker_labelDef = function(def){
         if(!def){def = {};}
         ng_MergeDef(def,{
           Type: 'stdLabel',
@@ -2385,7 +2384,7 @@ var WinXPControls = {
         return def;
       };
 
-      this.colorpicker_addSliderCursor = function(slider,horizontal,vertical){
+      skinfnc.colorpicker_addSliderCursor = function(slider,horizontal,vertical){
         ng_MergeDef(slider,{
           Controls: {
             Cursor: {
@@ -2398,7 +2397,7 @@ var WinXPControls = {
         });
       };
 
-      ngRegisterControlType('stdColorPickerBox', function(def,ref,parent) {
+      ngRegisterControlSkin('stdColorPickerBox','ngColorPickerBox', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           className: 'wxpColorPicker',
           Data: {
@@ -2416,19 +2415,19 @@ var WinXPControls = {
                     Env_H_SV: {
                       L:0, T:0, W:'33%', B:0,
                       Controls: {
-                        H_SV: winxp.colorpicker_barButtonDef()
+                        H_SV: skinfnc.colorpicker_barButtonDef()
                       }
                     },
                     Env_HSV: {
                       L:'33%', R:'33%', T:0, B:0,
                       Controls: {
-                        HSV: winxp.colorpicker_barButtonDef()
+                        HSV: skinfnc.colorpicker_barButtonDef()
                       }
                     },
                     Env_RGB: {
                       R:0,T:0, W:'33%', B:0,
                       Controls: {
-                        RGB: winxp.colorpicker_barButtonDef()
+                        RGB: skinfnc.colorpicker_barButtonDef()
                       }
                     }
                   }
@@ -2464,63 +2463,63 @@ var WinXPControls = {
             Hue_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Hue: winxp.colorpicker_sliderDef(),
-                HueEdit: winxp.colorpicker_editDef(),
-                HueLabel: winxp.colorpicker_labelDef()
+                Hue: skinfnc.colorpicker_sliderDef(),
+                HueEdit: skinfnc.colorpicker_editDef(),
+                HueLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Saturation_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Saturation: winxp.colorpicker_sliderDef(),
-                SaturationEdit: winxp.colorpicker_editDef(),
-                SaturationLabel: winxp.colorpicker_labelDef()
+                Saturation: skinfnc.colorpicker_sliderDef(),
+                SaturationEdit: skinfnc.colorpicker_editDef(),
+                SaturationLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Value_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Value: winxp.colorpicker_sliderDef(),
-                ValueEdit: winxp.colorpicker_editDef(),
-                ValueLabel: winxp.colorpicker_labelDef()
+                Value: skinfnc.colorpicker_sliderDef(),
+                ValueEdit: skinfnc.colorpicker_editDef(),
+                ValueLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Red_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Red: winxp.colorpicker_sliderDef(),
-                RedEdit: winxp.colorpicker_editDef(),
-                RedLabel: winxp.colorpicker_labelDef()
+                Red: skinfnc.colorpicker_sliderDef(),
+                RedEdit: skinfnc.colorpicker_editDef(),
+                RedLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Green_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Green: winxp.colorpicker_sliderDef(),
-                GreenEdit: winxp.colorpicker_editDef(),
-                GreenLabel: winxp.colorpicker_labelDef()
+                Green: skinfnc.colorpicker_sliderDef(),
+                GreenEdit: skinfnc.colorpicker_editDef(),
+                GreenLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Blue_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Blue: winxp.colorpicker_sliderDef(),
-                BlueEdit: winxp.colorpicker_editDef(),
-                BlueLabel: winxp.colorpicker_labelDef()
+                Blue: skinfnc.colorpicker_sliderDef(),
+                BlueEdit: skinfnc.colorpicker_editDef(),
+                BlueLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Alpha_Panel: {
               L:0,R:0,H:39,
               Controls: {
-                Alpha: winxp.colorpicker_sliderDef({
+                Alpha: skinfnc.colorpicker_sliderDef({
                   Controls: {
                     Plane: {
                       Data: { Img: winimages.ColorPicker.AlphaSliderBackground }
                     }
                   }
                 }),
-                AlphaEdit: winxp.colorpicker_editDef(),
-                AlphaLabel: winxp.colorpicker_labelDef()
+                AlphaEdit: skinfnc.colorpicker_editDef(),
+                AlphaLabel: skinfnc.colorpicker_labelDef()
               }
             },
             SatVal_Panel: {
@@ -2536,10 +2535,10 @@ var WinXPControls = {
                     }
                   },
                   Events: {
-                    DoUpdate: winxp.colorpicker_doUpdateSlider
+                    DoUpdate: skinfnc.colorpicker_doUpdateSlider
                   }
                 },
-                SatValLabel: winxp.colorpicker_labelDef()
+                SatValLabel: skinfnc.colorpicker_labelDef()
               }
             },
             Hex_Panel: {
@@ -2602,15 +2601,15 @@ var WinXPControls = {
         var hs = winimages.ColorPicker.HorizontalSliderCursor;
         var vs = winimages.ColorPicker.VerticalSliderCursor;
 
-        winxp.colorpicker_addSliderCursor(def.Controls.Hue_Panel.Controls.Hue,hs,vs);
-        winxp.colorpicker_addSliderCursor(def.Controls.Saturation_Panel.Controls.Saturation,hs,vs);
-        winxp.colorpicker_addSliderCursor(def.Controls.Value_Panel.Controls.Value,hs,vs);
-        winxp.colorpicker_addSliderCursor(def.Controls.Red_Panel.Controls.Red,hs,vs);
-        winxp.colorpicker_addSliderCursor(def.Controls.Green_Panel.Controls.Green,hs,vs);
-        winxp.colorpicker_addSliderCursor(def.Controls.Blue_Panel.Controls.Blue,hs,vs);
-        winxp.colorpicker_addSliderCursor(def.Controls.Alpha_Panel.Controls.Alpha,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Hue_Panel.Controls.Hue,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Saturation_Panel.Controls.Saturation,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Value_Panel.Controls.Value,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Red_Panel.Controls.Red,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Green_Panel.Controls.Green,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Blue_Panel.Controls.Blue,hs,vs);
+        skinfnc.colorpicker_addSliderCursor(def.Controls.Alpha_Panel.Controls.Alpha,hs,vs);
 
-        var c = ngCreateControlAsType(def, 'ngColorPickerBox', ref, parent);
+        var c = ngCreateControlAsType(def, modtype, ref, parent);
         if(c){
           c.DoAutoHeight = function(height){return height+5;};
         }
@@ -2620,7 +2619,7 @@ var WinXPControls = {
       /**  Class: stdColorButton
        *  Standard color button control (based on <ngColorButton>).
        */
-      ngRegisterControlType('stdColorButton', function(def,ref,parent) {
+      ngRegisterControlSkin('stdColorButton','ngColorButton', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           Data: {
             BackgroundImg: winimages.ColorButton.Background,
@@ -2630,13 +2629,13 @@ var WinXPControls = {
           }
         });
 
-        return ngCreateControlAsType(def, 'ngColorButton', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /**  Class: stdColorPickerDropDown
        *  Standard color picker drop down control (based on <ngColorPickerDropDown>).
        */
-      ngRegisterControlType('stdColorPickerDropDown', function(def,ref,parent) {
+      ngRegisterControlSkin('stdColorPickerDropDown','ngColorPickerDropDown', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           CreateFrom: 'stdDropDown',
           Data: {
@@ -2701,7 +2700,7 @@ var WinXPControls = {
           }
         });
 
-        var c = ngCreateControlAsType(def, 'ngColorPickerDropDown', ref, parent);
+        var c = ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
 
         c.DropDownButton.BackgroundImg = winimages.ColorPickerDropDownButton.Background;
@@ -2721,7 +2720,7 @@ var WinXPControls = {
       /**  Class: stdColorPickerHint
        *  Standard color picker hint control (based on <ngColorPickerHint>).
        */
-      ngRegisterControlType('stdColorPickerHint', function(def,ref,parent) {
+      ngRegisterControlSkin('stdColorPickerHint','ngColorPickerHint', function(def,ref,parent,modtype) {
         var layout = ngCopLayout_Default | ngColorPickerHex | ngColorPickerAHex;
         if(def.Data && (def.Data.AllowAlpha) !== false){ layout = layout | ngColorPickerA; }
 
@@ -2764,13 +2763,13 @@ var WinXPControls = {
           }
         });
 
-        return ngCreateControlAsType(def, 'ngColorPickerHint', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /**  Class: stdColorPickerButton
        *  Standard color picker button control (based on <stdColorButton>).
        */
-      ngRegisterControlType('stdColorPickerButton', function(def,ref,parent) {
+      ngRegisterControlSkin('stdColorPickerButton','ngColorPickerButton', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           CreateFrom: 'stdColorButton',
           Data: {
@@ -2780,7 +2779,7 @@ var WinXPControls = {
           }
         });
 
-        return ngCreateControlAsType(def, 'ngColorPickerButton', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
     }
 
@@ -2793,7 +2792,7 @@ var WinXPControls = {
        *  Standard menu control (based on <ngMenu>).
        */
       /*<>*/
-      ngRegisterControlType('stdMenu', function(def,ref,parent) {
+      ngRegisterControlSkin('stdMenu','ngMenu', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           className: 'wxpMenu',
           Data: {
@@ -2801,7 +2800,7 @@ var WinXPControls = {
             SubMenuDef: { Type: 'stdMenu' }
           }
         });
-        var c=ngCreateControlAsType(def, 'ngMenu', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c)
         {
           c.OnGetCheckImg = function(list,item) {
@@ -2816,29 +2815,29 @@ var WinXPControls = {
        *  Standard menu bar control (based on <ngMenuBar>).
        */
       /*<>*/
-      ngRegisterControlType('stdMenuBar', function(def,ref,parent) {
+      ngRegisterControlSkin('stdMenuBar','ngMenuBar', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
           className: 'wxpMenuBar',
           Data: {
             SubMenuDef: { Type: 'stdMenu' }
           }
         });
-        return ngCreateControlAsType(def, 'ngMenuBar', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
       /*  Class: stdMenuBarButton
        *  Standard menu bar button control (based on <ngMenuBarButton>).
        */
       /*<>*/
-      ngRegisterControlType('stdMenuBarButton', function(def,ref,parent) {
-        return ngCreateControlAsType(def, 'ngMenuBarButton', ref, parent);
+      ngRegisterControlSkin('stdMenuBarButton','ngMenuBarButton', function(def,ref,parent,modtype) {
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
       /*  Class: stdSplitButton
        *  Button with menu control (based on <ngSplitButton>).
        */
       /*<>*/
-      ngRegisterControlType('stdSplitButton', function(def,ref,parent) {
+      ngRegisterControlSkin('stdSplitButton','ngSplitButton', function(def,ref,parent,modtype) {
         if(typeof def.className === 'undefined') def.className='wxpSplitButton';
-        var c=ngCreateControlAsType(def, 'ngSplitButton', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
         c.LeftImg=winimages.Button.LeftImg;
         c.MiddleImg=winimages.Button.MiddleImg;
@@ -2856,7 +2855,7 @@ var WinXPControls = {
        *  Standard menu control (based on <ngFileUploader>).
        */
       /*<>*/
-      skinfnc.Create_FileUploader=function(def, ref, parent)
+      skinfnc.Create_FileUploader=function(def, ref, parent, modtype)
       {
         ng_MergeDef(def, {
           className: 'wxpFileUploader',
@@ -2945,9 +2944,9 @@ var WinXPControls = {
           });
         }
 
-        return ngCreateControlAsType(def, 'ngFileUploader', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       }
-      ngRegisterControlType('stdFileUploader', function(def,ref,parent) { return skinfnc.Create_FileUploader(def,ref,parent); });
+      ngRegisterControlSkin('stdFileUploader','ngFileUploader', skinfnc.Create_FileUploader);
     }
 
     /**
@@ -2959,124 +2958,130 @@ var WinXPControls = {
        *  Standard menu control (based on <ngLoginForm>).
        */
       /*<>*/
-      ngRegisterControlType('stdLoginForm', {
-        Type: 'ngLoginForm',
-        W: 200,
-        Data: {
-          VPadding: 2
-        },
-        Controls: {
-          OrganizationLabel: {
-            Type: 'stdLabel'
+      ngRegisterControlSkin('stdLoginForm','ngLoginForm', function(def,ref,parent,modtype) {
+        ng_MergeDef(def,{
+          W: 200,
+          Data: {
+            VPadding: 2
           },
-          Organization: {
-            Type: 'stdEdit'
-          },
-          LoginLabel: {
-            Type: 'stdLabel'
-          },
-          Login: {
-            Type: 'stdEdit'
-          },
-          PasswordLabel: {
-            Type: 'stdLabel'
-          },
-          Password: {
-            Type: 'stdEdit'
-          },
-          CapsLockWarn: {
-            Type: 'stdText',
-            className: 'wxpLoginFormCapsLogWarn',
-            style: {
-              marginBottom: '5px'
-            }
-          },
-          RememberMe: {
-            Type: 'stdCheckBox'
-          },
-          LoginBtn: {
-            Type: 'stdButton',
-            W: 100,
-            style: {
-              marginTop: '10px'
-            }
-          },
-          Progress: {
-            Type: 'stdProgressDot',
-            style: {
-              marginLeft: '10px',
-              marginTop: '12px'
+          Controls: {
+            OrganizationLabel: {
+              Type: 'stdLabel'
             },
-            Data: {
-              Visible: false
+            Organization: {
+              Type: 'stdEdit'
+            },
+            LoginLabel: {
+              Type: 'stdLabel'
+            },
+            Login: {
+              Type: 'stdEdit'
+            },
+            PasswordLabel: {
+              Type: 'stdLabel'
+            },
+            Password: {
+              Type: 'stdEdit'
+            },
+            CapsLockWarn: {
+              Type: 'stdText',
+              className: 'wxpLoginFormCapsLogWarn',
+              style: {
+                marginBottom: '5px'
+              }
+            },
+            RememberMe: {
+              Type: 'stdCheckBox'
+            },
+            LoginBtn: {
+              Type: 'stdButton',
+              W: 100,
+              style: {
+                marginTop: '10px'
+              }
+            },
+            Progress: {
+              Type: 'stdProgressDot',
+              style: {
+                marginLeft: '10px',
+                marginTop: '12px'
+              },
+              Data: {
+                Visible: false
+              }
+            },
+            Error: {
+              Type: 'stdText',
+              className: 'wxpLoginFormErrorMessage',
+              style: {
+                marginTop: '5px'
+              }
             }
-          },
-          Error: {
-            Type: 'stdText',
-            className: 'wxpLoginFormErrorMessage',
-            style: {
-              marginTop: '5px'
-            }
-          }
-        }
+          }  
+        });
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: stdPasswordForm
        *  Standard menu control (based on <ngPasswordForm>).
        */
       /*<>*/
-      ngRegisterControlType('stdPasswordForm', {
-        Type: 'ngPasswordForm',
-        W: 200,
-        Data: {
-          VPadding: 2
-        },
-        ModifyControls: {
-          OldPasswordLabel: {
-            Type: 'stdLabel'
+      ngRegisterControlSkin('stdPasswordForm','ngPasswordForm', function(def,ref,parent,modtype) {
+        ng_MergeDef(def, {
+          W: 200,
+          Data: {
+            VPadding: 2
           },
-          OldPassword: {
-            Type: 'stdEdit'
-          },
-          NewPasswordLabel: {
-            Type: 'stdLabel'
-          },
-          NewPassword: {
-            Type: 'stdEdit'
-          },
-          ConfirmNewPasswordLabel: {
-            Type: 'stdLabel'
-          },
-          ConfirmNewPassword: {
-            Type: 'stdEdit'
-          },
-          CapsLockWarn: {
-            Type: 'stdText',
-            className: 'wxpLoginFormCapsLogWarn',
-            style: {
-              marginTop: '5px'
-            }
-          },
-          Error: {
-            Type: 'stdText',
-            className: 'wxpLoginFormErrorMessage',
-            style: {
-              marginTop: '5px'
+          ModifyControls: {
+            OldPasswordLabel: {
+              Type: 'stdLabel'
+            },
+            OldPassword: {
+              Type: 'stdEdit'
+            },
+            NewPasswordLabel: {
+              Type: 'stdLabel'
+            },
+            NewPassword: {
+              Type: 'stdEdit'
+            },
+            ConfirmNewPasswordLabel: {
+              Type: 'stdLabel'
+            },
+            ConfirmNewPassword: {
+              Type: 'stdEdit'
+            },
+            CapsLockWarn: {
+              Type: 'stdText',
+              className: 'wxpLoginFormCapsLogWarn',
+              style: {
+                marginTop: '5px'
+              }
+            },
+            Error: {
+              Type: 'stdText',
+              className: 'wxpLoginFormErrorMessage',
+              style: {
+                marginTop: '5px'
+              }
             }
           }
-        }
+        });
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: stdLoginButton
        *  Standard menu control (based on <ngLoginButton>).
        */
       /*<>*/
-      ngRegisterControlType('stdLoginButton', {
-        Type: 'ngLoginButton',
-        className: 'wxpLink',
-        Menu: {
-          Type: 'stdMenu'
-        }
+      ngRegisterControlSkin('stdLoginButton','ngLoginButton', function(def,ref,parent,modtype) {
+        ng_MergeDef(def, {
+          className: 'wxpLink',
+          Menu: {
+            Type: 'stdMenu'
+          }
+        });
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
     }
 
@@ -3089,7 +3094,7 @@ var WinXPControls = {
        *  View model form control (based on <ngViewModelForm>).
        */
       /*<>*/
-      skinfnc.Create_stdViewModelForm=function(def,ref,parent, base_type)
+      skinfnc.Create_stdViewModelForm=function(def,ref,parent, modtype)
       {
         ng_MergeDef(def, {
           ErrorHint: {
@@ -3097,7 +3102,7 @@ var WinXPControls = {
             className: 'wxpEditFieldError'
           }
         });
-        var c=ngCreateControlAsType(def, ngVal(base_type,'ngViewModelForm'), ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c)
         {
           c.AddEvent('OnShowErrorMsg', function(form,msg) {
@@ -3111,7 +3116,7 @@ var WinXPControls = {
         return c;
       }
 
-      ngRegisterControlType('stdViewModelForm', function(def,ref,parent) { return skinfnc.Create_stdViewModelForm(def,ref,parent); } );
+      ngRegisterControlSkin('stdViewModelForm','ngViewModelForm', skinfnc.Create_stdViewModelForm);
 
       /*  Class: stdEditField
        *  Standard drop down control (based on <ngEditField>).
@@ -3131,61 +3136,61 @@ var WinXPControls = {
         });
       }
 
-      skinfnc.Create_stdEditField=function(def,ref,parent) {
+      skinfnc.Create_stdEditField=function(def,ref,parent,modtype) {
         skinfnc.Create_stdEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className='wxpEdit';
         if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
-        var c=ngCreateControlAsType(def, 'ngEditField', ref, parent);
+        var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c) {
-          winxp.stdEdit_AddProperties(c);
+          skinfnc.stdEdit_AddProperties(c);
         }
         return c;
       }
-      ngRegisterControlType('stdEditField', skinfnc.Create_stdEditField);
+      ngRegisterControlSkin('stdEditField','ngEditField', skinfnc.Create_stdEditField);
 
       /*  Class: stdSearchBoxField
        *  Standard search box field control (based on <stdSearchBox>).
        */
       /*<>*/
-      ngRegisterControlType('stdSearchBoxField', function(def,ref,parent) { return skinfnc.Create_stdSearchBox(def,ref,parent,'stdEditField'); });
+      ngRegisterControlSkin('stdSearchBoxField','stdEditField', skinfnc.Create_stdSearchBox);
 
       /*  Class: stdEditBoxBtnField
        *  Standard edit field control with elipsis button (based on <stdEditBoxBtn>).
        */
       /*<>*/
-      ngRegisterControlType('stdEditBoxBtnField', function(def,ref,parent) { return skinfnc.Create_stdEditBoxBtn(def,ref,parent,'stdEditField'); });
+      ngRegisterControlSkin('stdEditBoxBtnField','stdEditField', skinfnc.Create_stdEditBoxBtn);
 
       /*  Class: stdEditNumField
        *  Standard drop down field control (based on <ngEditNumField>).
        */
       /*<>*/
-      ngRegisterControlType('stdEditNumField', function(def,ref,parent) {
+      ngRegisterControlSkin('stdEditNumField','ngEditNumField', function(def,ref,parent,modtype) {
         skinfnc.Create_stdEditFieldDef(def);
-        return skinfnc.Create_stdEditNum(def,ref,parent,'ngEditNumField');
+        return skinfnc.Create_stdEditNum(def,ref,parent,modtype);
       });
 
       /*  Class: stdColorEditField
        *  Standard color edit field control (based on <stdColorEdit>).
        */
-      ngRegisterControlType('stdColorEditField', function(def,ref,parent) {
+      ngRegisterControlSkin('stdColorEditField','ngDropDownField', function(def,ref,parent,modtype) {
         skinfnc.Create_stdEditFieldDef(def);
-        return skinfnc.Create_stdColorEdit(def,ref,parent,'ngDropDownField');
+        return skinfnc.Create_stdColorEdit(def,ref,parent,modtype);
       });
 
       /*  Class: stdDropDownField
        *  Standard drop down field control (based on <ngDropDownField>).
        */
-      ngRegisterControlType('stdDropDownField', function(def,ref,parent) {
+      ngRegisterControlSkin('stdDropDownField','ngDropDownField', function(def,ref,parent,modtype) {
         skinfnc.Create_stdEditFieldDef(def);
-        return skinfnc.Create_stdDropDown(def,ref,parent,'ngDropDownField',false);
+        return skinfnc.Create_stdDropDown(def,ref,parent,modtype,false);
       });
 
       /*  Class: stdDropDownListField
        *  Standard drop down list field control (based on <ngDropDownListField>).
        */
-      ngRegisterControlType('stdDropDownListField', function(def,ref,parent) {
+      ngRegisterControlSkin('stdDropDownListField','ngDropDownListField', function(def,ref,parent,modtype) {
         skinfnc.Create_stdEditFieldDef(def);
-        return skinfnc.Create_stdDropDown(def,ref,parent,'ngDropDownListField',true);
+        return skinfnc.Create_stdDropDown(def,ref,parent,modtype,true);
       });
 
       if(ngUserControls['calendar'])
@@ -3194,18 +3199,18 @@ var WinXPControls = {
          *  Standard edit date field control (based on <ngEditDate>).
          */
         /*<>*/
-        ngRegisterControlType('stdEditDateField', function(def,ref,parent) {
+        ngRegisterControlSkin('stdEditDateField','ngEditDateField', function(def,ref,parent,modtype) {
           skinfnc.Create_stdEditFieldDef(def);
-          return skinfnc.Create_stdEditDate(def,ref,parent,'ngEditDateField');
+          return skinfnc.Create_stdEditDate(def,ref,parent,modtype);
         });
 
         /*  Class: stdEditTimeField
          *  Standard edit date field control (based on <ngEditTime>).
          */
         /*<>*/
-        ngRegisterControlType('stdEditTimeField', function(def,ref,parent) {
+        ngRegisterControlSkin('stdEditTimeField','ngEditTimeField', function(def,ref,parent,modtype) {
           skinfnc.Create_stdEditFieldDef(def);
-          return skinfnc.Create_stdEditTime(def,ref,parent,'ngEditTimeField');
+          return skinfnc.Create_stdEditTime(def,ref,parent,modtype);
         });
       }
 
@@ -3213,9 +3218,9 @@ var WinXPControls = {
        *  Standard memo field control (based on <ngMemoField>).
        */
       /*<>*/
-      ngRegisterControlType('stdMemoField', function(def,ref,parent) {
+      ngRegisterControlSkin('stdMemoField','ngMemoField', function(def,ref,parent,modtype) {
         skinfnc.Create_stdEditFieldDef(def);
-        return skinfnc.Create_stdMemo(def,ref,parent,'ngMemoField');
+        return skinfnc.Create_stdMemo(def,ref,parent,modtype);
       });
     }
 
@@ -3228,7 +3233,7 @@ var WinXPControls = {
        *  Standard dataset control (based on <ngDataSet>).
        */
       /*<>*/
-      ngRegisterControlType('stdDataSet', function (def,ref,parent) { return skinfnc.Create_stdPageList(def,ref,parent,'ngDataSet'); });
+      ngRegisterControlSkin('stdDataSet','ngDataSet', function (def,ref,parent,modtype) { return skinfnc.Create_stdPageList(def,ref,parent,modtype,true); });
     }
 
     /**
@@ -3240,8 +3245,8 @@ var WinXPControls = {
        *  View model form control (based on <ngDBViewModelForm>).
        */
       /*<>*/
-      ngRegisterControlType('stdDBViewModelForm',  function(def,ref,parent) {
-        var c=skinfnc.Create_stdViewModelForm(def,ref,parent,'ngDBViewModelForm');
+      ngRegisterControlSkin('stdDBViewModelForm','ngDBViewModelForm',  function(def,ref,parent,modtype) {
+        var c=skinfnc.Create_stdViewModelForm(def,ref,parent,modtype);
         if(c)
         {
           c.AddEvent('OnDeleteQuery',function(form,querytxt,successfnc,failfnc) {
@@ -3310,7 +3315,7 @@ var WinXPControls = {
       /*  Class: stdDBToolBar
        *  Standard ViewModel database toolbar control (based on <ngDBToolBar>).
        */
-      ngRegisterControlType('stdDBToolBar', function (def,ref,parent) {
+      ngRegisterControlSkin('stdDBToolBar','ngDBToolBar', function (def,ref,parent,modtype) {
         ng_MergeDef(def, {
           W: 260,
           className: 'wxpToolBar',
@@ -3343,14 +3348,14 @@ var WinXPControls = {
             }
           }
         });
-        return ngCreateControlAsType(def, 'ngDBToolBar', ref, parent);
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: stdDBDataSet
        *  Standard dataset control (based on <ngDBDataSet>).
        */
       /*<>*/
-      ngRegisterControlType('stdDBDataSet', function (def,ref,parent) {
+      ngRegisterControlSkin('stdDBDataSet','ngDBDataSet', function (def,ref,parent, modtype) {
         ng_MergeDef(def, {
           Controls: {
             Paging: {
@@ -3383,7 +3388,7 @@ var WinXPControls = {
             }
           }
         });
-        return skinfnc.Create_stdPageList(def,ref,parent,'ngDBDataSet');
+        return skinfnc.Create_stdPageList(def,ref,parent,modtype,true);
       });
 
     }
