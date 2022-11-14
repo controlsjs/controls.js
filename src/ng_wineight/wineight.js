@@ -664,6 +664,12 @@ var WinEightControls = {
       }
     }
   },
+  DefColorScheme: function(def) {
+    return ngVal(def.ColorScheme,this.ColorScheme);
+  },
+  DefTheme: function(def) {
+    return ngVal(def.Theme,this.Theme);
+  },
 
   OnInit: function() {
 
@@ -702,18 +708,6 @@ var WinEightControls = {
       winimages.TextHintAnchors[i].Img=winimages.TextHintAnchorsImg[i];
     }
 
-    function colorscheme(def) {
-      return ngVal(def.ColorScheme,wineight.ColorScheme);
-    }
-    
-    this.DefColorScheme = colorscheme;
-
-    function theme(def) {
-      return ngVal(def.Theme,wineight.Theme);
-    }
-    
-    this.DefTheme = theme;
-    
     /*
      *  Group: Control Types
      */
@@ -741,7 +735,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weColorPanel','ngPanel', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className='we'+colorscheme(def);
+      if(typeof def.className === 'undefined') def.className='we'+wineight.DefColorScheme(def);
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: weColorFrame
@@ -749,7 +743,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weColorFrame','ngFrame', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className='we'+colorscheme(def);
+      if(typeof def.className === 'undefined') def.className='we'+wineight.DefColorScheme(def);
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -758,7 +752,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weText','ngText', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weTextLight' : 'weTextDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weTextLight' : 'weTextDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -767,7 +761,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weSmallText','ngText', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weSmallTextLight' : 'weSmallTextDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weSmallTextLight' : 'weSmallTextDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -776,7 +770,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weCaption','ngButton', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weCaptionLight' : 'weCaptionDark') +' we'+colorscheme(def)+'Text';
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weCaptionLight' : 'weCaptionDark') +' we'+wineight.DefColorScheme(def)+'Text';
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -785,7 +779,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weTitle','ngButton', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weTitleLight' : 'weTitleDark')+' we'+colorscheme(def)+'Text';
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weTitleLight' : 'weTitleDark')+' we'+wineight.DefColorScheme(def)+'Text';
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -799,7 +793,7 @@ var WinEightControls = {
     });
 
     skinfnc.Create_weCheckBox=function(def,ref,parent,imgleft,imgright,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weCheckBoxLight' : 'weCheckBoxDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weCheckBoxLight' : 'weCheckBoxDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
 
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
         if((c.TextAlign=='right')||(c.TextAlign=='center'))
@@ -819,7 +813,7 @@ var WinEightControls = {
      *  Standard check box control (based on <ngCheckBox>).
      */
     ngRegisterControlSkin('weCheckBox','ngCheckBox', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       return skinfnc.Create_weCheckBox(def,ref,parent,(th ? winimages.CheckBoxLeftLight : winimages.CheckBoxLeftDark),(th ? winimages.CheckBoxRightLight : winimages.CheckBoxRightDark),modtype);
     });
 
@@ -827,7 +821,7 @@ var WinEightControls = {
      *  Standard radio button control (based on <ngRadioButton>).
      */
     ngRegisterControlSkin('weRadioButton','ngRadioButton', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weRadioLight' : 'weRadioDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
       return skinfnc.Create_weCheckBox(def,ref,parent,(th ? winimages.RadioLeftLight : winimages.RadioLeftDark),(th ? winimages.RadioRightLight : winimages.RadioRightDark), modtype);
     });
@@ -836,7 +830,7 @@ var WinEightControls = {
      *  Standard check box control (based on <ngCheckBox>).
      */
     ngRegisterControlSkin('weSwitch','ngCheckBox', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weSwitchLight' : 'weSwitchDark');
       var img=(th ? winimages.SwitchLight : winimages.SwitchDark);
       var c=skinfnc.Create_weCheckBox(def,ref,parent,img,img,modtype);
@@ -860,7 +854,7 @@ var WinEightControls = {
      *  Standard check box control (based on <ngCheckBox>).
      */
     ngRegisterControlSkin('weToggleSwitch','ngCheckBox', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weToggleSwitchLight' : 'weToggleSwitchDark');
       var img=(th ? winimages.ToggleSwitchLight : winimages.ToggleSwitchDark);
       var c=skinfnc.Create_weCheckBox(def,ref,parent,img,img,modtype);
@@ -886,7 +880,7 @@ var WinEightControls = {
     /*<>*/
     skinfnc.Create_weButton=function(def,ref,parent,modtype)
     {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined')
         def.className=(th ? 'weButtonLight' : 'weButtonDark') + (typeof def.ColorScheme === 'undefined' ? '' : ' we'+def.ColorScheme);
 
@@ -947,7 +941,7 @@ var WinEightControls = {
      */
     skinfnc.Create_weAppButton=function(def,ref,parent,modtype)
     {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       var img=(th ? winimages.AppButtonLight : winimages.AppButtonDark);
       var appimages=winimages.AppIcons[th];
       ng_MergeDef(def, {
@@ -996,7 +990,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weLabel','ngButton', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weLabelLight' : 'weLabelDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weLabelLight' : 'weLabelDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: weLink
@@ -1004,7 +998,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weLink','ngButton', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weLinkLight' : 'weLinkDark')+' we'+colorscheme(def)+'Text';
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weLinkLight' : 'weLinkDark')+' we'+wineight.DefColorScheme(def)+'Text';
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -1013,7 +1007,7 @@ var WinEightControls = {
      */
     /*<>*/
     skinfnc.Create_weGroup=function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weGroupBoxLight' : 'weGroupBoxDark')+' we'+colorscheme(def)+'Text';
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weGroupBoxLight' : 'weGroupBoxDark')+' we'+wineight.DefColorScheme(def)+'Text';
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
         if((c)&&(ng_EmptyVar(c.Frame))) c.Frame=(c.Text == '' && (!c.OnGetText) ? winimages.GroupBoxNoText : winimages.GroupBox);
@@ -1085,8 +1079,8 @@ var WinEightControls = {
       {
         var defdd=def.DropDown;
         if(typeof defdd.Theme === 'undefined') defdd.Theme=WE_LIGHT;
-        var dth=theme(defdd);
-        if(typeof defdd.className === 'undefined') defdd.className=(dth ? 'weDropDownLight we'+colorscheme(def)+'DropDown' : 'weDropDownDark');
+        var dth=wineight.DefTheme(defdd);
+        if(typeof defdd.className === 'undefined') defdd.className=(dth ? 'weDropDownLight we'+wineight.DefColorScheme(def)+'DropDown' : 'weDropDownDark');
         if(defdd.Type === 'weTreeList')
         {
           if(typeof defdd.OverrideEvents==='undefined') defdd.OverrideEvents={};
@@ -1098,7 +1092,7 @@ var WinEightControls = {
     };
 
     skinfnc.Create_weEdit=function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       skinfnc.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
@@ -1120,7 +1114,7 @@ var WinEightControls = {
      */
     /*<>*/
     skinfnc.Create_weEditBoxBtn=function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       skinfnc.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
@@ -1168,7 +1162,7 @@ var WinEightControls = {
     /*<>*/
     skinfnc.Create_weSearchBox=function(def,ref,parent,modtype)
     {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       skinfnc.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
@@ -1242,7 +1236,7 @@ var WinEightControls = {
      */
     skinfnc.Create_weEditNum=function(def,ref,parent,modtype)
     {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       skinfnc.Prepare_DropDown(def);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
@@ -1287,7 +1281,7 @@ var WinEightControls = {
      */
     skinfnc.Create_weColorEdit=function(def,ref,parent,modtype)
     {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       ng_MergeDef(def, {
         className: (th ? 'weEditLight' : 'weEditDark'),
         Data: { TextAlign: 'center' },
@@ -1347,7 +1341,7 @@ var WinEightControls = {
         if (typeof(def.Data)==='undefined') def.Data = new Object();
         var invalid = ngVal(def.Data.Invalid, false);
 
-        var th  = theme(def);
+        var th  = wineight.DefTheme(def);
         var img = (th ? winimages.EditLight : winimages.EditDark);
 
         delete def.H;
@@ -1452,7 +1446,7 @@ var WinEightControls = {
      *    -
      */
     skinfnc.Create_weDropDown=function(def,ref,parent,modtype,dropdownlist) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
       var c=ngDropDown_Create(def,ref,parent, modtype,dropdownlist);
       if(!c) return c;
@@ -1496,7 +1490,7 @@ var WinEightControls = {
      */
     /*<>*/
     skinfnc.Create_weMemo=function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weMemoLight' : 'weMemoDark');
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return;
@@ -1553,8 +1547,8 @@ var WinEightControls = {
     ngRegisterControlSkin('weMemo','ngMemo', skinfnc.Create_weMemo);
 
     skinfnc.Create_wePages=function(def,ref,parent,modtype) {
-      var th=theme(def);
-      if(typeof def.className === 'undefined') def.className=(th ? 'wePagesLight' : 'wePagesDark')+' we'+colorscheme(def)+'Text';
+      var th=wineight.DefTheme(def);
+      if(typeof def.className === 'undefined') def.className=(th ? 'wePagesLight' : 'wePagesDark')+' we'+wineight.DefColorScheme(def)+'Text';
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return null;
       c.PagesIndent=20;
@@ -1593,7 +1587,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weSections','ngPages', function(def,ref,parent,modtype) {
-      if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weSectionsLight' : 'weSectionsDark')+' we'+colorscheme(def)+'Sections';
+      if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weSectionsLight' : 'weSectionsDark')+' we'+wineight.DefColorScheme(def)+'Sections';
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(c) c.PageImages=winimages.Sections;
       return c;
@@ -1618,7 +1612,7 @@ var WinEightControls = {
       c.Smooth=true;
       c.MiddleImg=winimages.ProgressBar.MiddleImg;
       c.BarImg=ng_CopyVar(winimages.ProgressBar.BarImg);
-      c.BarImg.Attrs='class="we'+(theme(def) ? colorscheme(def) : 'White')+'"';
+      c.BarImg.Attrs='class="we'+(wineight.DefTheme(def) ? wineight.DefColorScheme(def) : 'White')+'"';
       return c;
     });
 
@@ -1650,7 +1644,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weProgressRing','ngButton', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       return skinfnc.Create_weProgressImg(def,ref,parent,modtype,(th ? 6 : 7),40,th);
     });
     /*  Class: weProgressDot
@@ -1658,7 +1652,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weProgressDot','ngButton', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       return skinfnc.Create_weProgressImg(def,ref,parent,modtype,(th ? 8 : 9),22,th);
     });
     /*  Class: weProgressLine
@@ -1666,7 +1660,7 @@ var WinEightControls = {
      */
     /*<>*/
     ngRegisterControlSkin('weProgressLine','ngButton', function(def,ref,parent,modtype) {
-      var th=theme(def);
+      var th=wineight.DefTheme(def);
       return skinfnc.Create_weProgressImg(def,ref,parent,modtype,(th ? 4 : 5),40,th);
     });
 
@@ -1774,10 +1768,10 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weList=function(def,ref,parent,modtype,istree,iscompact) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         if(typeof def.className === 'undefined') {
-          if(iscompact) def.className=(th ? 'weCompactListBoxLight we'+colorscheme(def)+'CompactListBox': 'weCompactListBoxDark');
-          else          def.className=(th ? 'weListBoxLight we'+colorscheme(def)+'ListBox': 'weListBoxDark');
+          if(iscompact) def.className=(th ? 'weCompactListBoxLight we'+wineight.DefColorScheme(def)+'CompactListBox': 'weCompactListBoxDark');
+          else          def.className=(th ? 'weListBoxLight we'+wineight.DefColorScheme(def)+'ListBox': 'weListBoxDark');
         }
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c) skinfnc.weList_AddProperties(def,c,th,istree,iscompact);
@@ -1879,7 +1873,7 @@ var WinEightControls = {
       {
         var iscompact=(listtype.toLowerCase().indexOf('compact')>=0);
 
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
           className: (th ? 'weListBoxLight' : 'weListBoxDark'),
           Data: {
@@ -1994,8 +1988,8 @@ var WinEightControls = {
         /*<>*/
       skinfnc.Create_weSplitPanel=function(def,ref,parent,modtype)
       {
-        var th=theme(def);
-        if(typeof def.className === 'undefined') def.className=(th ? 'weSplitPanelLight' : 'weSplitPanelDark')+' we'+colorscheme(def)+'Split';
+        var th=wineight.DefTheme(def);
+        if(typeof def.className === 'undefined') def.className=(th ? 'weSplitPanelLight' : 'weSplitPanelDark')+' we'+wineight.DefColorScheme(def)+'Split';
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c)
         {
@@ -2014,7 +2008,7 @@ var WinEightControls = {
       skinfnc.Create_weDropPanel=function(def,ref,parent,modtype)
       {
         if(typeof def.Theme === 'undefined') def.Theme=wineight.InvTheme();
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weDropPanelLight' : 'weDropPanelDark') + (typeof def.ColorScheme === 'undefined' ? '' : ' we'+def.ColorScheme);
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         ng_MergeDef(def, {
@@ -2053,8 +2047,8 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weWindow=function(def,ref,parent,modtype,dialog) {
-        var th=theme(def);
-        if(typeof def.className === 'undefined') def.className=(dialog ? 'weDialog' : 'weWindow')+(th ? 'Light' : 'Dark') +' we'+colorscheme(def) +' we'+colorscheme(def)+'Text';
+        var th=wineight.DefTheme(def);
+        if(typeof def.className === 'undefined') def.className=(dialog ? 'weDialog' : 'weWindow')+(th ? 'Light' : 'Dark') +' we'+wineight.DefColorScheme(def) +' we'+wineight.DefColorScheme(def)+'Text';
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
         var closebtn=ngVal(def.CloseBtn,(dialog ? true : false));
@@ -2326,7 +2320,7 @@ var WinEightControls = {
       }
 
       skinfnc.Create_weMessageDlg=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         var po=parent;
         var pw=ng_ClientWidthEx(po);
         var margin=ngIExplorer6 ? Math.round(pw*.25) : '25%';
@@ -2501,7 +2495,7 @@ var WinEightControls = {
       /*<>*/
       skinfnc.Create_dlgEditBox=function(def,ref,parent,modtype,type) {
 
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         delete def.DialogType;
         def.DlgAllowEmpty=ngVal(def.DlgAllowEmpty,false);
         var cdef={
@@ -2704,7 +2698,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_dlgListBox=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         delete def.DialogType;
         def.DlgAllowEmpty=ngVal(def.DlgAllowEmpty,false);
         var cdef={
@@ -2774,7 +2768,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_dlgProgressBox=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         delete def.DialogType;
         ng_MergeDef(def, {
           DlgButtons: mbNone,
@@ -2815,7 +2809,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_dlgWaitBox=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         delete def.DialogType;
         ng_MergeDef(def, {
           DlgButtons: mbNone,
@@ -2850,7 +2844,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_dlgAbout=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         var po=parent;
         var pw=ng_ClientWidthEx(po);
         var margin=ngIExplorer6 ? Math.round(pw*.25) : '25%';
@@ -2864,7 +2858,7 @@ var WinEightControls = {
           Controls: {
             Title: null,
             Message: {
-              className: (th ? 'weAboutMessageLight' : 'weAboutMessageDark')+(th ? ' we'+colorscheme(def)+'Text' : ''),
+              className: (th ? 'weAboutMessageLight' : 'weAboutMessageDark')+(th ? ' we'+wineight.DefColorScheme(def)+'Text' : ''),
               Data: {
                 MinWidth: 260
               }
@@ -2917,8 +2911,8 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weCalendar=function(def,ref,parent,modtype) {
-        var th=theme(def);
-        if(typeof def.className === 'undefined') def.className=(th ? 'weCalendarLight we'+colorscheme(def)+'Calendar' : 'weCalendarDark');
+        var th=wineight.DefTheme(def);
+        if(typeof def.className === 'undefined') def.className=(th ? 'weCalendarLight we'+wineight.DefColorScheme(def)+'Calendar' : 'weCalendarDark');
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
         c.PrevMonBtn.Img=(th ? winimages.CalendarMonPrevLight : winimages.CalendarMonPrevDark);
@@ -2952,7 +2946,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weEditDate=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
           className: (th ? 'weEditLight' : 'weEditDark'),
           DropDown: {
@@ -2961,8 +2955,8 @@ var WinEightControls = {
           }
         });
         skinfnc.Prepare_DropDown(def);
-        var dth=theme(def.DropDown);
-        def.DropDown.className=(dth ? 'weCalendarLight we'+colorscheme(def)+'Calendar ' : 'weCalendarDark ')+def.DropDown.className;
+        var dth=wineight.DefTheme(def.DropDown);
+        def.DropDown.className=(dth ? 'weCalendarLight we'+wineight.DefColorScheme(def)+'Calendar ' : 'weCalendarDark ')+def.DropDown.className;
 
         var c=skinfnc.Create_weDropDown(def,ref,parent,modtype,false);
         if(!c) return c;
@@ -2980,7 +2974,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weEditTime=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         var div=1;
         ng_MergeDef(def, {
           className: (th ? 'weEditLight' : 'weEditDark'),
@@ -3130,7 +3124,7 @@ var WinEightControls = {
       };
 
       ngRegisterControlSkin('weColorPickerBox','ngColorPickerBox', function(def,ref,parent,modtype) {
-        var th = theme(def);
+        var th = wineight.DefTheme(def);
         var images = (th) ? winimages.ColorPickerLight : winimages.ColorPickerDark;
 
         ng_MergeDef(def, {
@@ -3363,7 +3357,7 @@ var WinEightControls = {
        *  Standard color button control (based on <ngColorButton>).
        */
       ngRegisterControlSkin('weColorButton','ngColorButton', function(def,ref,parent,modtype) {
-        var th = theme(def);
+        var th = wineight.DefTheme(def);
         var images = (th) ? winimages.ColorButtonLight
           : winimages.ColorButtonDark;
 
@@ -3384,7 +3378,7 @@ var WinEightControls = {
        *  Standard color picker drop down control (based on <weDropDown>).
        */
       ngRegisterControlSkin('weColorPickerDropDown','ngColorPickerDropDown', function(def,ref,parent,modtype) {
-        var th = theme(def);
+        var th = wineight.DefTheme(def);
 
         ng_MergeDef(def, {
           CreateFrom: 'weDropDown',
@@ -3490,7 +3484,7 @@ var WinEightControls = {
        */
 
       ngRegisterControlSkin('weColorPickerHint','ngColorPickerHint', function(def,ref,parent,modtype) {
-        var th = theme(def);
+        var th = wineight.DefTheme(def);
 
         var layout = ngCopLayout_Default | ngColorPickerHex | ngColorPickerAHex;
         if(def.Data && (def.Data.AllowAlpha) !== false){ layout = layout | ngColorPickerA; }
@@ -3545,7 +3539,7 @@ var WinEightControls = {
        */
 
       ngRegisterControlSkin('weColorPickerButton','ngColorPickerButton', function(def,ref,parent,modtype) {
-        var th = theme(def);
+        var th = wineight.DefTheme(def);
 
         ng_MergeDef(def, {
           CreateFrom: 'weColorButton',
@@ -3572,9 +3566,9 @@ var WinEightControls = {
       /*<>*/
       skinfnc.Create_weMenu=function(def,ref,parent,modtype) {
         if(typeof def.Theme==='undefined') def.Theme=WE_LIGHT;
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
-          className: (th ? 'weMenuLight we'+colorscheme(def)+'Menu' : 'weMenuDark'),
+          className: (th ? 'weMenuLight we'+wineight.DefColorScheme(def)+'Menu' : 'weMenuDark'),
           Data: {
             SubMenuImg: (th ? winimages.SubMenuLight : winimages.SubMenuDark),
             SubMenuDef: { Type: 'weMenu' }
@@ -3618,7 +3612,7 @@ var WinEightControls = {
       /*<>*/
       ngRegisterControlSkin('weMenuBar','ngMenuBar', function(def,ref,parent,modtype) {
         ng_MergeDef(def, {
-          className: (theme(def) ? 'weMenuBarLight we'+colorscheme(def)+'MenuBar' : 'weMenuBarDark'+(typeof def.ColorScheme === 'undefined' ? '': ' we'+def.ColorScheme)),
+          className: (wineight.DefTheme(def) ? 'weMenuBarLight we'+wineight.DefColorScheme(def)+'MenuBar' : 'weMenuBarDark'+(typeof def.ColorScheme === 'undefined' ? '': ' we'+def.ColorScheme)),
           Data: {
             SubMenuDef: { Type: 'weMenu' }
           }
@@ -3638,7 +3632,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weSplitButton=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weSplitButtonLight' : 'weSplitButtonDark');
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
@@ -3662,7 +3656,7 @@ var WinEightControls = {
     {
       skinfnc.Create_weFileUploader=function(def, ref, parent, modtype)
       {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
           Base: 'wePanel',
           className: th ? 'weFileUploaderLight' : 'weFileUploaderDark',
@@ -3769,7 +3763,7 @@ var WinEightControls = {
     if (ngUserControls['auth_controls'])
     {
       ngRegisterControlSkin('weLoginForm','ngLoginForm', function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         var compact=ngVal(def.CompactMode,false);
         ng_MergeDef(def, {
           W: 260,
@@ -3854,7 +3848,7 @@ var WinEightControls = {
         return ngCreateControlAsType(def, modtype, ref, parent);
       });
       ngRegisterControlSkin('wePasswordForm','ngPasswordForm', function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         var compact=ngVal(def.CompactMode,false);
         ng_MergeDef(def, {
           W: 260,
@@ -3913,7 +3907,7 @@ var WinEightControls = {
         return ngCreateControlAsType(def, modtype, ref, parent);
       });
       ngRegisterControlSkin('weLoginButton','ngLoginButton', function(def,ref,parent,modtype) {
-        if(typeof def.className === 'undefined') def.className=(theme(def) ? 'weLinkLight' : 'weLinkDark')+' we'+colorscheme(def)+'Text';
+        if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weLinkLight' : 'weLinkDark')+' we'+wineight.DefColorScheme(def)+'Text';
         ng_MergeDef(def, {
           Menu: {
             Type: 'weMenu'
@@ -3975,7 +3969,7 @@ var WinEightControls = {
       };
 
       skinfnc.Create_weEditField=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         skinfnc.Create_weEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
         skinfnc.Prepare_DropDown(def);
@@ -4141,7 +4135,7 @@ var WinEightControls = {
        *  Standard ViewModel database toolbar control (based on <ngDBToolBar>).
        */
       skinfnc.Create_weDBToolBar=function(def,ref,parent,modtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         if(typeof def.className === 'undefined') def.className='weToolBar' + (typeof def.ColorScheme === 'undefined' ? '' : ' we'+def.ColorScheme);
         ng_MergeDef(def, {
           W: 260,
@@ -4196,7 +4190,7 @@ var WinEightControls = {
        */
       /*<>*/
       skinfnc.Create_weDBDataSet=function(def,ref,parent,modtype,listtype) {
-        var th=theme(def);
+        var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
           Controls: {
             Paging: {
