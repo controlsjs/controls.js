@@ -1198,7 +1198,7 @@ function ngGetControlByElement(elm, type)
 function ngRegisterControlType(type, def)
 {
   if(typeof type!=='string') {
-    ngDEBUGERROR('ngRegisterControlType: Invalid type parameter (%s)!',typeof type);
+    ngDEBUGERROR('ngRegisterControlType: Invalid type parameter!',type);
     return;
   }
 
@@ -1217,11 +1217,11 @@ function ngRegisterControlType(type, def)
       break;
     case 'object':
       if(!def) {
-        ngDEBUGERROR('ngRegisterControlType: Invalid def parameter!');
+        ngDEBUGERROR('ngRegisterControlType: '+type+' - Invalid def parameter!',def);
         return;
       }          
       if(typeof def.Type!=='string') {
-        ngDEBUGERROR('ngRegisterControlType: Invalid def.Type parameter (%s)!',typeof def.Type);
+        ngDEBUGERROR('ngRegisterControlType: '+type+' - Invalid def.Type parameter!',def.Type);
         return;
       }
       if(def.Type==type) return;
@@ -1241,10 +1241,90 @@ function ngRegisterControlType(type, def)
       });
       break;
     default:
-      ngDEBUGERROR('ngRegisterControlType: Invalid def parameter (%s)!',typeof def);
+      ngDEBUGERROR('ngRegisterControlType: '+type+' - Invalid def parameter!',def);
       return;
   }
 }
+
+/**
+ *  Function: ngRegisterControlMod
+ *  Registers new control mod type.
+ *
+ *  Syntax:
+ *    void *ngRegisterControlMod* (string type, [string modtype,] mixed def)
+ *
+ *  Parameters:
+ *    type - unique control type identifier
+ *    modtype - default modtype
+ *    def - definition of control mod
+ *
+ *  Definition of mod:
+ *    string def - alias to existing control mod type
+ *    object def - registration by definition, ancesor is defined by def.ModType
+ *    function def - registration by factory function(def,ref,parent,modtype)
+ *
+ *  Returns:
+ *    -
+ */
+function ngRegisterControlMod(type, modtype, def) {
+  if(typeof type!=='string') {
+    ngDEBUGERROR('ngRegisterControlMod: Invalid type parameter!',type);
+    return;
+  }
+  if(arguments.length===2)
+  {
+    if(typeof modtype==='string') {
+      def=modtype;
+      if(type===def) return;
+      ngRegisterControlMod(type, modtype, function(cdef,ref,parent, modtype) {
+        return ngCreateControlAsType(cdef, ngVal(modtype,def), ref, parent);
+      });
+      return;
+    }
+    def=modtype;
+    modtype=void 0;
+  }
+  else if(type===modtype) {
+    ngDEBUGERROR('ngRegisterControlMod: Invalid type or modtype parameter!',type);
+    return;
+  }
+  
+  switch(typeof def)
+  {
+    case 'function':
+      var mod=function(cdef,ref,parent) {
+        var modtype=ngVal(cdef.ModType,mod.ModType);
+        delete cdef.ModType;
+        if((typeof modtype!=='string')||(modtype==='')) {
+          ngDEBUGERROR('Invalid mod type "%s" of component type "%s".',ngVal(modtype,''),ngVal(cdef.Type,''),cdef);
+          return null;
+        }
+        return def(cdef,ref,parent,modtype);
+      };
+      mod.ModType=modtype;
+      ngRegisterControlType(type, mod);
+      break; 
+    case 'object':
+      if(!def) {
+        ngDEBUGERROR('ngRegisterControlMod: '+type+' - Invalid def parameter!',def);
+        return;
+      }          
+      ngRegisterControlMod(type, modtype, function(cdef,ref,parent,modtype) {
+        ng_MergeDef(cdef, ng_CopyVar(def), true);
+        return ngCreateControlAsType(cdef, modtype, ref, parent);
+      });
+      break;
+    default:
+      ngDEBUGERROR('ngRegisterControlMod: '+type+' - Invalid mod def parameter!',def);
+      break;
+  }
+}
+
+/**
+ *  Function: ngRegisterControlSkin
+ *  Alias to <ngRegisterControlMod>.
+ */
+window.ngRegisterControlSkin=window.ngRegisterControlMod;
 
 /**
  *  Function: ngRegisterControlDesignInfo
