@@ -1154,6 +1154,14 @@ ngUserControls['controls_designinfo'] = {
         });
       }
 
+      var type=ngVal(def.Type,'');
+      if(type!=='') {
+        var r=ngRegisteredControlTypes[type];
+        if((typeof r!=='undefined')&&(typeof r.ModType!=='undefined')) {
+          cdi.Properties["ModType"]=ng_diString(ngVal(r.ModType,''), { Level: typeof r.ModType==='undefined' ? 'basic' : 'advanced', Order: 0.011 }, { Editor: 'ngfeEditor_ControlType' });
+        }
+      }
+
       // define common DesignInfo
       var events = (cdi && cdi.Properties && cdi.Properties.Events) ? cdi.Properties.Events : {},
           eventstype = [{ id: 'Before', order: 0.91 }, { id: 'After', order: 0.93 }, { id: 'Override', order: 0.94 }],
