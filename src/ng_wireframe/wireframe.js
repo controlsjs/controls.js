@@ -2451,7 +2451,7 @@ var WireframeControls = {
         if(c){
           c.AddEvent('OnShowErrorMsg', function(form,msg){
             if(typeof ngMessageDlg==='function') {
-              ngMessageDlg('dlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), null , { DlgIcon: mbIconError });
+              ngMessageDlg('dlgMessageBox',msg,(typeof form.Caption === 'undefined' ? ngTxt('ngAppName') : ngTxt(form.Caption, form.Caption)), null , { });
             }
             else alert(msg);
             return true;
