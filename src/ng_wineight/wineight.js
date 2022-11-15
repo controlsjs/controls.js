@@ -1669,100 +1669,6 @@ var WinEightControls = {
      */
     if(ngUserControls['list'])
     {
-      skinfnc.weList_AddProperties=function(def,c,th,istree,iscompact)
-      {
-        if((typeof istree==='undefined')||(typeof iscompact==='undefined')) {
-          var ltype=def.Type.toLowerCase();
-          if(typeof istree==='undefined')    istree=(ltype.indexOf('tree')>=0);
-          if(typeof iscompact==='undefined') iscompact=(ltype.indexOf('compact')>=0);
-        }
-
-        c.AddEvent('DoUpdate',function(o) {
-          var cn=o.className;
-          var ci=cn.indexOf(' ');
-          var dc=this.BaseClassName+'Disabled';
-          var idx=cn.indexOf(dc);
-          if(this.Enabled) {
-            if(idx>=0)
-            {
-              cn=cn.substring(idx+dc.length,cn.length);
-              o.className=this.BaseClassName+(cn.length>0 ? ' '+cn : '');
-            }
-          }
-          else {
-            if(idx<0) o.className=this.BaseClassName+' '+dc+(ci >= 0 ? cn.substring(ci,cn.length) : '');
-          }
-          return true;
-        });
-
-        delete c.CheckImg; // make it undefined
-        delete c.TreeImg; // make it undefined
-
-        var img_cblight,img_cbdark,img_rlight,img_rdark,img_tlight,img_tsellight,img_tdark;
-
-        if(iscompact) {
-          img_cblight=winimages.CompactListCheckBoxLight;
-          img_cbdark=winimages.CompactListCheckBoxDark;
-          img_rlight=winimages.CompactListRadioLight;
-          img_rdark=winimages.CompactListRadioDark;
-          img_tlight=winimages.CompactTreeImgLight;
-          img_tsellight=winimages.CompactTreeImgSelLight;
-          img_tdark=winimages.CompactTreeImgDark;
-        }
-        else {
-          img_cblight=winimages.ListCheckBoxLight;
-          img_cbdark=winimages.ListCheckBoxDark;
-          img_rlight=winimages.ListRadioLight;
-          img_rdark=winimages.ListRadioDark;
-          img_tlight=winimages.TreeImgLight;
-          img_tsellight=winimages.TreeImgSelLight;
-          img_tdark=winimages.TreeImgDark;
-        }
-        c.OnGetCheckImg=function(list,item,id) {
-          if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
-          if(typeof list.CheckImg !== 'undefined') return list.CheckImg;
-          if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return ((th) || (list.Enabled && list.selected[id]) ? img_rlight : img_rdark);
-          return((th)||(list.Enabled && list.selected[id]) ? img_cblight : img_cbdark);
-        };
-
-        if(istree) {
-          c.DefaultIndent=27;
-          c.OnGetTreeImg=function(list,item,id) {
-            return (typeof list.TreeImg !== 'undefined' ? list.TreeImg : (th ? (list.selected[id] ? img_tsellight : img_tlight) : ( list.selected[id] ? img_tlight : img_tdark)));
-          };
-        }
-
-        c.AddEvent('OnRedrawSelected', function(list, ielm, selected, id) {
-
-          var item=list.ItemById(id);
-          if(!item) return;
-
-          if((!th)&&((typeof item.Checked!=='undefined')||(list.ShowCheckboxes)))
-          {
-            var img;
-            if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) img=(list.selected[id] ? img_rlight : img_rdark);
-            else img=(list.selected[id] ? img_cblight : img_cbdark);
-            if(img) ngc_ChangeImage(ngl_CheckImgDrawProps(list.ID+'_'+id+'C', item.Checked, list.Enabled, img));
-          }
-
-          if(istree)
-          {
-            var timg = (th ? (list.selected[id] ? img_tsellight : img_tlight) : ( list.selected[id] ? img_tlight : img_tdark));
-            if(timg)
-            {
-              var collapsed=false;
-              var p=item;
-              while((!collapsed)&&(p))
-              {
-                collapsed=ngVal(p.Collapsed,false);
-                p=p.Parent;
-              }
-              ngc_ChangeImage(ngl_TreeImgDrawProps(list.ID+'_'+id+'T', collapsed, list.Enabled, timg));
-            }
-          }
-        });
-      }
-
       /*  Class: weList
        *  Standard list control (based on <ngList>).
        */
@@ -1774,7 +1680,92 @@ var WinEightControls = {
           else          def.className=(th ? 'weListBoxLight we'+wineight.DefColorScheme(def)+'ListBox': 'weListBoxDark');
         }
         var c=ngCreateControlAsType(def, modtype, ref, parent);
-        if(c) skinfnc.weList_AddProperties(def,c,th,istree,iscompact);
+        if(c) {
+          c.AddEvent('DoUpdate',function(o) {
+            var cn=o.className;
+            var ci=cn.indexOf(' ');
+            var dc=this.BaseClassName+'Disabled';
+            var idx=cn.indexOf(dc);
+            if(this.Enabled) {
+              if(idx>=0)
+              {
+                cn=cn.substring(idx+dc.length,cn.length);
+                o.className=this.BaseClassName+(cn.length>0 ? ' '+cn : '');
+              }
+            }
+            else {
+              if(idx<0) o.className=this.BaseClassName+' '+dc+(ci >= 0 ? cn.substring(ci,cn.length) : '');
+            }
+            return true;
+          });
+
+          delete c.CheckImg; // make it undefined
+          delete c.TreeImg; // make it undefined
+
+          var img_cblight,img_cbdark,img_rlight,img_rdark,img_tlight,img_tsellight,img_tdark;
+
+          if(iscompact) {
+            img_cblight=winimages.CompactListCheckBoxLight;
+            img_cbdark=winimages.CompactListCheckBoxDark;
+            img_rlight=winimages.CompactListRadioLight;
+            img_rdark=winimages.CompactListRadioDark;
+            img_tlight=winimages.CompactTreeImgLight;
+            img_tsellight=winimages.CompactTreeImgSelLight;
+            img_tdark=winimages.CompactTreeImgDark;
+          }
+          else {
+            img_cblight=winimages.ListCheckBoxLight;
+            img_cbdark=winimages.ListCheckBoxDark;
+            img_rlight=winimages.ListRadioLight;
+            img_rdark=winimages.ListRadioDark;
+            img_tlight=winimages.TreeImgLight;
+            img_tsellight=winimages.TreeImgSelLight;
+            img_tdark=winimages.TreeImgDark;
+          }
+          c.OnGetCheckImg=function(list,item,id) {
+            if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
+            if(typeof list.CheckImg !== 'undefined') return list.CheckImg;
+            if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return ((th) || (list.Enabled && list.selected[id]) ? img_rlight : img_rdark);
+            return((th)||(list.Enabled && list.selected[id]) ? img_cblight : img_cbdark);
+          };
+
+          if(istree) {
+            c.DefaultIndent=27;
+            c.OnGetTreeImg=function(list,item,id) {
+              return (typeof list.TreeImg !== 'undefined' ? list.TreeImg : (th ? (list.selected[id] ? img_tsellight : img_tlight) : ( list.selected[id] ? img_tlight : img_tdark)));
+            };
+          }
+
+          c.AddEvent('OnRedrawSelected', function(list, ielm, selected, id) {
+
+            var item=list.ItemById(id);
+            if(!item) return;
+
+            if((!th)&&((typeof item.Checked!=='undefined')||(list.ShowCheckboxes)))
+            {
+              var img;
+              if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) img=(list.selected[id] ? img_rlight : img_rdark);
+              else img=(list.selected[id] ? img_cblight : img_cbdark);
+              if(img) ngc_ChangeImage(ngl_CheckImgDrawProps(list.ID+'_'+id+'C', item.Checked, list.Enabled, img));
+            }
+
+            if(istree)
+            {
+              var timg = (th ? (list.selected[id] ? img_tsellight : img_tlight) : ( list.selected[id] ? img_tlight : img_tdark));
+              if(timg)
+              {
+                var collapsed=false;
+                var p=item;
+                while((!collapsed)&&(p))
+                {
+                  collapsed=ngVal(p.Collapsed,false);
+                  p=p.Parent;
+                }
+                ngc_ChangeImage(ngl_TreeImgDrawProps(list.ID+'_'+id+'T', collapsed, list.Enabled, timg));
+              }
+            }
+          });
+        }
         return c;
       };
       ngRegisterControlSkin('weList','ngList', function(def,ref,parent,modtype) { return skinfnc.Create_weList(def,ref,parent,modtype,false,false); });
