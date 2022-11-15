@@ -1145,57 +1145,54 @@ var WinXPControls = {
      */
     if(ngUserControls['list'])
     {
-      skinfnc.stdList_AddProperties=function(def, c)
-      {
-        c.AddEvent('DoUpdate',function(o) {
-          var cn=o.className;
-          var idx=cn.indexOf(' ');
-          if(this.Enabled) {
-            if(idx>=0) o.className=cn.substring(0,idx);
-          }
-          else {
-            if(idx<0) o.className=cn+' '+cn+'Disabled';
-          }
-          return true;
-        });
-        c.OnGetCheckImg = function(list,item) {
-          if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
-          if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return winimages.RadioLeft;
-          return winimages.CheckBoxLeft;
-        }
-        /*
-         *  Group: Definition
-         */
-        /*
-         *  Variable: TreeImg
-         *
-         *  Constants:
-         *    'triangle' - ...
-         *    'folder' - ...
-         *    'plusminus' - ...
-         */
-        /*<>*/
-        switch(ngVal(def.TreeImg, (def.Type == 'stdTreeList' ? 'plusminus' : '')))
-        {
-          case 'triangle':  c.TreeImg = winimages.TreeImgTriangle; break;
-          case 'folder':    c.TreeImg = winimages.TreeImgFolder; break;
-          case 'plusminus': c.TreeImg = winimages.TreeImgPlusMinus; break;
-        }
-      }
-
       /*  Class: stdList
        *  Standard list control (based on <ngList>).
        */
       /*<>*/
-      skinfnc.Create_stdList=function(def,ref,parent,modtype) {
+      skinfnc.Create_stdList=function(def,ref,parent,modtype,istree) {
         if(typeof def.className === 'undefined') def.className='wxpListBox';
         var c=ngCreateControlAsType(def, modtype, ref, parent);
-        if(c) skinfnc.stdList_AddProperties(def,c);
+        if(c) {
+          c.AddEvent('DoUpdate',function(o) {
+            var cn=o.className;
+            var idx=cn.indexOf(' ');
+            if(this.Enabled) {
+              if(idx>=0) o.className=cn.substring(0,idx);
+            }
+            else {
+              if(idx<0) o.className=cn+' '+cn+'Disabled';
+            }
+            return true;
+          });
+          c.OnGetCheckImg = function(list,item) {
+            if((typeof item.Checked==='undefined')&&(!list.ShowCheckboxes)) return null;
+            if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) return winimages.RadioLeft;
+            return winimages.CheckBoxLeft;
+          }
+          /*
+           *  Group: Definition
+           */
+          /*
+           *  Variable: TreeImg
+           *
+           *  Constants:
+           *    'triangle' - ...
+           *    'folder' - ...
+           *    'plusminus' - ...
+           */
+          /*<>*/
+          switch(ngVal(def.TreeImg, (istree ? 'plusminus' : '')))
+          {
+            case 'triangle':  c.TreeImg = winimages.TreeImgTriangle; break;
+            case 'folder':    c.TreeImg = winimages.TreeImgFolder; break;
+            case 'plusminus': c.TreeImg = winimages.TreeImgPlusMinus; break;
+          }
+        }
         return c;
       }
-      ngRegisterControlSkin('stdList','ngList', skinfnc.Create_stdList);
+      ngRegisterControlSkin('stdList','ngList', function(def,ref,parent,modtype) { return skinfnc.Create_stdList(def,ref,parent,modtype,false); });
       ngRegisterControlSkin('stdListBox', 'stdList');
-      ngRegisterControlSkin('stdTreeList', 'stdList');
+      ngRegisterControlSkin('stdTreeList', 'ngList', function(def,ref,parent,modtype) { return skinfnc.Create_stdList(def,ref,parent,modtype,true); });
       /*  Class: stdPageList
        *  Standard list control (based on <ngPageList>).
        */
