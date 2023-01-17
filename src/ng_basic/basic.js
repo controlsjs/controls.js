@@ -3488,6 +3488,16 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
     return false;
   }
   if(!xmlhttp) return false;
+
+  function getreponse() {
+    try {
+      return xmlhttp.responseText;
+    }
+    catch(E) {
+      return xmlhttp.response;
+    }
+  }
+
   reqinfo.XMLHttp=xmlhttp;
   var rpc=this;
   xmlhttp.onreadystatechange=function()
@@ -3497,9 +3507,9 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
     {
       if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
       delete reqinfo._timeout_timer;
-
+      
       if((xmlhttp.status==200)||(xmlhttp.status==304)||((xmlhttp.status==0)&&(!ngCordova)&&(navigator.onLine!==false))) {
-        if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, xmlhttp.responseText, xmlhttp, reqinfo);
+        if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, getreponse(), xmlhttp, reqinfo);
       }
       else if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
         if((xmlhttp.status==408)  // Request Timeout
@@ -3541,7 +3551,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
   if(!callback) {
     if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
     delete reqinfo._timeout_timer;
-    return xmlhttp.responseText;
+    return getreponse();
   }
   return true;
 }
