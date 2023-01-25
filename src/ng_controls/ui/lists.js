@@ -515,9 +515,9 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
   if((typeof list === 'undefined')||(list===null)) list=this;
   level=ngVal(level,0);
 
-  if(typeof list.Items === 'undefined') return level;
+  var items=ngVal(list.Items,[]);
   var image,statechanged=false;
-  if((typeof setall !== 'undefined')&&(list!=this)&&(ngVal(it.Collapsed,false)!=setall)&&((list.Items.length>0)||(typeof it.Collapsed !== 'undefined')))
+  if((typeof setall !== 'undefined')&&(list!=this)&&(ngVal(it.Collapsed,false)!=setall)&&((typeof it.Collapsed !== 'undefined')||(items.length>0)))
   {
     statechanged=true;
     if(setall)
@@ -532,16 +532,15 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     }
     if(statechanged) it.Collapsed=setall;
   }
-  if(list.Items.length==0) return level;
 
   if(this.update_cnt>0)
   {
     this.need_update=true;
     if(typeof setall !== 'undefined')
-      for(var i=0;i<list.Items.length;i++)
+      for(var i=0;i<items.length;i++)
       {
-        if(typeof list.Items[i]==='undefined') continue;
-        this.UpdateCollapsed(list.Items[i], true, setall, id+i, level+1, collapsed);
+        if(typeof items[i]==='undefined') continue;
+        this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
       }
     return level;
   }
@@ -570,13 +569,13 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
 
     if(list!=this) id+='_';
 
-    for(var i=0;i<list.Items.length;i++)
+    for(var i=0;i<items.length;i++)
     {
-      if(typeof list.Items[i]==='undefined') continue;
-      l=this.UpdateCollapsed(list.Items[i], true, setall, id+i, level+1, collapsed);
+      if(typeof items[i]==='undefined') continue;
+      l=this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
       if(l>level+1)
       {
-        if((i+1)<list.Items.length)
+        if((i+1)<items.length)
         {
           var o=document.getElementById(this.ID+'_G'+id+(i+1));
           if(o) o.style.display=(collapsed ? 'none' : '');
@@ -594,10 +593,10 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     if(image) ngc_ChangeImage(ngl_TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), this.Enabled, image));
     if(list!=this) id+='_';
     if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
-      for(var i=0;i<list.Items.length;i++)
+      for(var i=0;i<items.length;i++)
       {
-        if(typeof list.Items[i]==='undefined') continue;
-        this.UpdateCollapsed(list.Items[i], true, setall, id+i, level+1, collapsed);
+        if(typeof items[i]==='undefined') continue;
+        this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
       }
   }
   if(statechanged)
