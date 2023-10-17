@@ -174,13 +174,21 @@ function ngLoadApplication(elm, callback, files)
   }
 
   var ishtmlcode=/^\s*\</i;
+  var isempty=/^\s*$/g;
 
-  function exec_script(code)
+  function is_valid_code(code)
   {
+    if((typeof code!=='string')||(isempty.test(code))) return false;
     if(ishtmlcode.test(code)) return false;
     if(code.indexOf('/*_SR_BEGIN*/')>=0) {
       if(code.lastIndexOf('/*_SR_END*/')<0) return false;
     }
+    return true;
+  }
+
+  function exec_script(code)
+  {
+    if(!is_valid_code(code)) return false;
 
     if(winstoreapp) {
       MSApp.execUnsafeLocalFunction(function () {
@@ -196,6 +204,8 @@ function ngLoadApplication(elm, callback, files)
 
   function exec_css(code)
   {
+    if(!is_valid_code(code)) return false;
+
     var o = document.createElement('style');
     if(!o) return false;
     o.setAttribute('type', 'text/css');
@@ -429,9 +439,7 @@ function ngLoadApplication(elm, callback, files)
         loaded = true;
 
         if(async){
-          if((typeof code!=='undefined')&&(code!=='')) {
-            if(!exec(code)) fileerror(isasync);
-          }
+          if((typeof code!=='undefined')&&(!exec(code))) fileerror(isasync);
           if(typeof loadcallback === 'function') loadcallback(data.Type,url,data);
           apppartloaded(data.Type,url,data);
           return;
@@ -458,19 +466,17 @@ function ngLoadApplication(elm, callback, files)
           }
           code=li.code;
           if(typeof code==='undefined') break;
-          if(code!=='') {
-            if(!exec(code)) {
-              apperrors++;
-              var c=(typeof console!=='undefined' ? console : null);
-              if(c){
-                switch(data.Type){
-                  case 0: c.error('CSS "'+li.LoadURL+'" was not loaded! Cannot inject.'); break;
-                  case 1: c.error('Script "'+li.LoadURL+'" was not loaded! Cannot execute.'); break;
-                }
+          if(!exec(code)) {
+            apperrors++;
+            var c=(typeof console!=='undefined' ? console : null);
+            if(c){
+              switch(data.Type){
+                case 0: c.error('CSS "'+li.LoadURL+'" was not loaded! Cannot inject.'); break;
+                case 1: c.error('Script "'+li.LoadURL+'" was not loaded! Cannot execute.'); break;
               }
-              if(typeof li.LoadFailCallback === 'function') li.LoadFailCallback(li.Data.Type,li.URL,li.Data);
-              li.LoadCallback=null;
             }
+            if(typeof li.LoadFailCallback === 'function') li.LoadFailCallback(li.Data.Type,li.URL,li.Data);
+            li.LoadCallback=null;
           }
           queue.splice(0,1);
           if(typeof li.LoadCallback === 'function') li.LoadCallback(li.Data.Type,li.URL,li.Data);
@@ -521,14 +527,14 @@ function ngLoadApplication(elm, callback, files)
             o.setAttribute("rel","stylesheet");
             o.setAttribute("type","text/css");
             o.setAttribute("href",url);
-            fileloaded();
+            fileloaded(false);
             break;
           case 1:
-            o.onload = fileloaded;
-            o.onerror = fileerror;
+            o.onload = function(e) { fileloaded(false); };
+            o.onerror = function(e) { fileerror(false); };
             o.onreadystatechange = function () {
               if(this.readyState != "loaded" && this.readyState != "complete") return;
-              fileloaded();
+              fileloaded(false);
             };
             o.setAttribute("src",url);
             break;
