@@ -690,6 +690,7 @@ ngUserControls['viewmodel_controls'] = {
     window.DBVM_FILTERTYPE_LTE=        'LTE';
     window.DBVM_FILTERTYPE_NOTEQ=      'NOTEQ';
     window.DBVM_FILTERTYPE_EQ=         'EQ';
+    window.DBVM_FILTERTYPE_IN=         'IN';
 
     function ngdsvm_DoFilterDataSetField(fd,fid,val,filterval,filtertype)
     {
@@ -733,6 +734,22 @@ ngUserControls['viewmodel_controls'] = {
         case DBVM_FILTERTYPE_NOTEQ:
           if(val!=filterval) return true;
           break;
+        case DBVM_FILTERTYPE_IN:
+          if(ng_IsArrayVar(filterval)) {
+            var aval, afd=ngIsFieldDef(fd) ? fd.ValueFieldDef : void 0;
+            for(var i=0;i<filterval.length;i++) {
+              aval=filterval[i];
+              if(afd) {
+                try {
+                  aval=afd.TypedValue(aval);
+                } catch(e) {
+                }
+              }
+              if(val==aval) return true;              
+            }
+          }
+          else if(val==filterval) return true;
+          break;  
         default:
         case DBVM_FILTERTYPE_EQ:
           if(val==filterval) return true;
@@ -755,7 +772,10 @@ ngUserControls['viewmodel_controls'] = {
             fd=filterfields[f];
             if(ngIsFieldDef(fd)) {
               ft=ngVal(fd.Attrs['FilterType'],null);
-              if((ft===null)&&((fd.DataType==='STRING')||(fd.DataType==='NVARCHAR'))&&(ng_isEmpty(fd.Enum))) ft=DBVM_FILTERTYPE_STARTSWITH;
+              if(ft===null) {
+                if(((fd.DataType==='STRING')||(fd.DataType==='NVARCHAR'))&&(ng_isEmpty(fd.Enum))) ft=DBVM_FILTERTYPE_STARTSWITH;
+                else if(fd.DataType==='ARRAY') ft=DBVM_FILTERTYPE_IN;
+              }
             }
             else { ft=DBVM_FILTERTYPE_EQ; fd=null; }
             if(!this.DoFilterDataSetField(fd,f,v,filtervals[f],ft)) { m=false; break; }
