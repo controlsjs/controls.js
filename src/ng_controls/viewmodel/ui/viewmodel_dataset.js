@@ -20,6 +20,7 @@ var ADODBVM_FILTERTYPE_LT         = 'LT';
 var ADODBVM_FILTERTYPE_LTE        = 'LTE';
 var ADODBVM_FILTERTYPE_NOTEQ      = 'NOTEQ';
 var ADODBVM_FILTERTYPE_EQ         = 'EQ';
+var ADODBVM_FILTERTYPE_IN         = 'IN';
 
 function ngdsc_UpdateDataSetColumns()
 {
