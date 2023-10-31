@@ -788,7 +788,7 @@ ngUserControls['viewmodel_controls'] = {
     }
 
     function ngdsvm_DoSortDataSet(ds, sortby) {
-      if((ng_IsArrayVar(sortby))&&(ng_IsArrayVar(ds))&&(typeof ds.sort==='function')) {
+      if((ng_IsArrayVar(sortby))&&(sortby.length>0)&&(ng_IsArrayVar(ds))&&(typeof ds.sort==='function')) {
         var oncompare=this.OnSortCompare;
         ds.sort(function (a,b) {
           var v1,v2,f,d,r;
