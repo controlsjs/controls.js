@@ -186,9 +186,11 @@ function ngLoadApplication(elm, callback, files)
     return true;
   }
 
-  function exec_script(code)
+  function exec_script(code, url)
   {
     if(!is_valid_code(code)) return false;
+
+    if(url) code+="\n//# sourceURL="+url+"\n";
 
     if(winstoreapp) {
       MSApp.execUnsafeLocalFunction(function () {
@@ -202,7 +204,7 @@ function ngLoadApplication(elm, callback, files)
     return true;
   }
 
-  function exec_css(code)
+  function exec_css(code, url)
   {
     if(!is_valid_code(code)) return false;
 
@@ -439,7 +441,7 @@ function ngLoadApplication(elm, callback, files)
         loaded = true;
 
         if(async){
-          if((typeof code!=='undefined')&&(!exec(code))) fileerror(isasync);
+          if((typeof code!=='undefined')&&(!exec(code,url))) fileerror(isasync);
           if(typeof loadcallback === 'function') loadcallback(data.Type,url,data);
           apppartloaded(data.Type,url,data);
           return;
@@ -466,7 +468,7 @@ function ngLoadApplication(elm, callback, files)
           }
           code=li.code;
           if(typeof code==='undefined') break;
-          if(!exec(code)) {
+          if(!exec(code,li.LoadURL)) {
             apperrors++;
             var c=(typeof console!=='undefined' ? console : null);
             if(c){
