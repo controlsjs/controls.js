@@ -1373,7 +1373,7 @@ function ng_UTF8ParamEncode(str) {
  */
 function ng_UTF8ParamDecode(str)
 {
-	str=''+str;
+  str=''+str;
   var i=str.indexOf('+');
 	while(i>=0)
 	{
@@ -1381,6 +1381,38 @@ function ng_UTF8ParamDecode(str)
 		i=str.indexOf('+');
 	}
   return ng_UTF8Decode(str);
+}
+
+/**
+ *  Function: ng_UTF8mb3
+ *  Replaces characters encoded as 4-bytes UTF-8. 
+ *
+ *  Syntax:
+ *    string *ng_UTF8mb3* (string s[, string replacewith])
+ *
+ *  Returns:
+ *    String with replaced characters.
+ */
+function ng_UTF8mb3(s, replacewith)
+{
+  if(typeof replacewith==='undefined') replacewith=String.fromCharCode(65533);
+  return (''+s).replace(/[\u{10000}-\u{10FFFF}]/gu, replacewith, s);
+}
+
+/**
+ *  Function: ng_IsUTF8mb3
+ *  Tests whether all characters in string are not encoded as 4-bytes UTF-8.
+ *
+ *  Syntax:
+ *    string *ng_IsUTF8mb3* (string s)
+ *
+ *  Returns:
+ *    TRUE if string has no 4-bytes UTF-8 characters.
+ */
+function ng_IsUTF8mb3(s)
+{
+  s=''+s;
+  return (s===ng_UTF8mb3(s));
 }
 
 /**
