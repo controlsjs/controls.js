@@ -64,7 +64,20 @@ var ng_SIUnits = ng_SIUnits || [
   { name: 'femto', prefix: 'f',  ex: 1e-15, binex: 0},
   { name: 'atto',  prefix: 'a',  ex: 1e-18, binex: 0, notcommon: true  },
   { name: 'zepto', prefix: 'z',  ex: 1e-21, binex: 0, notcommon: true  },
-  { name: 'yokto', prefix: 'y',  ex: 1e-24, binex: 0, notcommon: true  }
+  { name: 'yokto', prefix: 'y',  ex: 1e-24, binex: 0, notcommon: true  },
+  
+  // IEC Binary
+  { name: 'yobi',  prefix: 'Yi',  ex: Math.pow(1024,8),     binex: Math.pow(1024,8), notcommon: true  },
+  { name: 'zebi',  prefix: 'Zi',  ex: Math.pow(1024,7),     binex: Math.pow(1024,7), notcommon: true  },
+  { name: 'exbi',  prefix: 'Ei',  ex: 1152921504606847000,  binex: 1152921504606847000, notcommon: true  },
+  { name: 'pebi',  prefix: 'Pi',  ex: 1125899906842624,  binex: 1125899906842624,    notcommon: true},
+  { name: 'tebi',  prefix: 'Ti',  ex: 1099511627776,     binex: 1099511627776,       notcommon: true},
+  { name: 'gibi',  prefix: 'Gi',  ex: 1073741824,        binex: 1073741824,          notcommon: true},
+  { name: 'mebi',  prefix: 'Mi',  ex: 1048576,           binex: 1048576,             notcommon: true},
+  { name: 'kibi',  prefix: 'ki',  ex: 1024,              binex: 1024,                notcommon: true},
+    
+  // JEDEC Binary
+  { name: 'kilo',  prefix: 'K',  ex: 1e3,   binex: 1024, notcommon: true}  
 ];
 
 function ng_GetDecimalSeparator() {
@@ -202,17 +215,20 @@ function ng_getSIUnits(v,units,def)
 {
   if(ngVal(units,'')!='')
   {
-    var u,id=-1;
+    var baseunit=ng_StripSIUnits(units,'');  
+    var u,l,id=-1;
     v=''+v;
     for(var i=0;i<ng_SIUnits.length;i++)
     {
       if(ng_SIUnits[i].prefix=='') { id=i; continue; }
       u=ng_SIUnits[i].prefix+units;
-      if(ng_CompareSIUnits(v.substr(-u.length,u.length),u)) return ng_SIUnits[i]; 
+      l=v.length-(''+ng_StripSIUnits(v,ng_SIUnits[i].prefix+baseunit)).length;      
+      if((l)&&(ng_CompareSIUnits(v.substr(-l,l),u))) return ng_SIUnits[i]; 
     }
     if(id>=0) {
       u=ng_SIUnits[id].prefix+units;
-      if(ng_CompareSIUnits(v.substr(-u.length,u.length),u)) return ng_SIUnits[id];
+      l=v.length-(''+ng_StripSIUnits(v,ng_SIUnits[id].prefix+baseunit)).length;      
+      if((l)&&(ng_CompareSIUnits(v.substr(-l,l),u))) return ng_SIUnits[id]; 
     } 
   }
   return ngVal(def,null);
@@ -1759,7 +1775,7 @@ function ng_parseSIUnits(v, units, def, allowedpref, binary)
   }
   if((u.prefix!='')&&(allowedpref)&&(!ng_inArray(u.prefix,allowedpref)))
     return ngVal(def,NaN);
-  v=ng_StripSIUnits(v,u.prefix+units);
+  v=ng_StripSIUnits(v,u.prefix+un.units);
   v=ng_toNumber(v);
   if(isNaN(v)) return ngVal(def,NaN);
   if(binary) {
@@ -1852,7 +1868,10 @@ function ng_formatSIUnits(v, units, def, allowedpref, precision, formatfnc, user
  *    Converted value or default value if conversion fails.
  */       
 function ng_parseBytes(v, def) {
-  return ng_parseSIUnits(ng_Unformat3Num(v), 'B', def, false, true);
+  if(ng_typeString(v)) {
+    v=ng_Unformat3Num(v).toUpperCase();
+  }
+  return ng_parseSIUnits(v, 'B', def, false, true);
 }
 
 /**
@@ -2106,7 +2125,7 @@ function ng_formatMinutes(v,def,ms)
 function ng_formatWWW(s,def)
 {
   if(!ng_isWWW(s)) return ngVal(def,'');
-  return (ng_isURL(s) ? s : 'http://'+s);
+  return (ng_isURL(s) ? s : 'https://'+s);
 }
 
 /**
