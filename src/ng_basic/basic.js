@@ -1396,7 +1396,7 @@ function ng_UTF8ParamDecode(str)
 function ng_UTF8mb3(s, replacewith)
 {
   if(typeof replacewith==='undefined') replacewith=String.fromCharCode(65533);
-  return (''+s).replace(/[\u{10000}-\u{10FFFF}]/gu, replacewith, s);
+  return (''+s).replace(/(?:[\uD800-\uDBFF][\uDC00-\uDFFF])/g, replacewith, s);   
 }
 
 /**
