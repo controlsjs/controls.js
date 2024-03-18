@@ -1022,21 +1022,20 @@ var WinEightControls = {
       var img=(th ? winimages.EditLight : winimages.EditDark);
       var req=ngVal(c.Invalid,false);
 
-      var leftimg=(req ? img.LeftImgReq : img.LeftImg);
-      var rightimg=(req ? img.RightImgReq : img.RightImg);
-
-      c.LeftImg=leftimg;
+      c.LeftImg=(req ? img.LeftImgReq : img.LeftImg);
       c.MiddleImg=(req ? img.MiddleImgReq : img.MiddleImg);
-      c.RightImg=rightimg;
+      c.RightImg=(req ? img.RightImgReq : img.RightImg);
 
       var leftbtn=false;
       var rightbtn=false;
 
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+        var req=ngVal(c.Invalid,false);
+        var leftimg=(req ? img.LeftImgReq : img.LeftImg);
+        var rightimg=(req ? img.RightImgReq : img.RightImg);
+
         if((c.LeftImg===leftimg)||(c.RightImg===rightimg))
         {
-          var req=ngVal(c.Invalid,false);
-
           if(c.Buttons)
           {
             var a,b;
