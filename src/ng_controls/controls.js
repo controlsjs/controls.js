@@ -56,7 +56,7 @@ var ngDesignInfoNotInheritedProps = [ 'MissingDI', 'ControlCategory', 'Image', '
  *    DesignInfo state (0=disabled).
  */
 function ngHASDESIGNINFO() {
-  return ((ngHASDEBUG())&&(ngDESIGNINFO)&&(ngDESIGNINFOCnt>0));
+  return ((ngDESIGNINFO)&&(ngDESIGNINFOCnt>0)&&(ngHASDEBUG()));
 }
 
 /**
@@ -536,7 +536,7 @@ function ngRes(rid)
           break;
       }
     }
-    if((ngHASDEBUG())&&(typeof eres==='undefined')&&(warn))
+    if((typeof eres==='undefined')&&(warn)&&(ngHASDEBUG()))
       ngDEBUGWARN('[ngRes] Missing resource for ID "%s"',rid);
     return ng_CopyVar(eres);
   }
@@ -1349,7 +1349,7 @@ window.ngRegisterControlSkin=window.ngRegisterControlMod;
  */
 function ngRegisterControlDesignInfo(type, di)
 {
-  if((!ngHASDEBUG())||(!ngDESIGNINFO)||(typeof type!=='string')) return;
+  if((!ngDESIGNINFO)||(!ngHASDEBUG())||(typeof type!=='string')) return;
   if ((ngOnRegisterControlDesignInfo)&&(!ngVal(ngOnRegisterControlDesignInfo(type,di),false))) return;
 
   switch(typeof di)
@@ -1703,7 +1703,7 @@ function ngCreateControl(d,ref,parent)
   c.DefType = ngVal(deftype,d.Type);
   c.Owner = ref;
 
-  if((ngHASDEBUG())&&(d.DebugDef)) {
+  if((d.DebugDef)&&(ngHASDEBUG())) {
     var ddef=d.DebugDef;
     delete d.DebugDef;
 
@@ -1775,7 +1775,7 @@ function ngCreateControl(d,ref,parent)
 
   if(hasdi) {
     if((typeof c.DesignInfo!=='object')||(!c.DesignInfo)) c.DesignInfo={};
-    else delete c.DesignInfo['IsBasic']; // IsBasis is always not inherited
+    else delete c.DesignInfo['IsBasic']; // IsBasic is always not inherited
 
     var createdifnc=ngRegisteredControlDesignInfos[d.Type];
     if(typeof createdifnc === 'function') {
@@ -1923,7 +1923,7 @@ function ngCreateControls(defs,ref,parent,options)
           celm=c.Create(d, ref);
           d.OnCreated=cinfo.OnCreated;
 
-          if((ngHASDEBUG())&&(typeof ref[i]!=='undefined')&&(ref[i]!==null))
+          if((typeof ref[i]!=='undefined')&&(ref[i]!==null)&&(ngHASDEBUG()))
           {
             ngDEBUGWARN('Reference "%s" was overwritten by %o. References: %o',i,c,ref);
           }
@@ -1960,7 +1960,7 @@ function ngCreateControls(defs,ref,parent,options)
             finally
             {
               if(cinfo.OnCreated) cinfo.Options = ng_CopyVar(options);
-              if((!oldmodify)&&(ngHASDEBUG())&&(options.ModifyControls))
+              if((!oldmodify)&&(options.ModifyControls)&&(ngHASDEBUG()))
               {
                 for(var q in options.ModifyControls) {
                   if(options.ModifyControls[q].IgnoreModifyIfMissing) continue;
@@ -4052,7 +4052,7 @@ function ngSysControl(obj, id, type)
    */
   obj.OnRemoveChildControl = null;
 
-  if ((ngHASDESIGNINFO())&&(typeof ngSysControlDesignInfo === 'function')) ngSysControlDesignInfo(obj);
+  if ((typeof ngSysControlDesignInfo === 'function')&&(ngHASDESIGNINFO())) ngSysControlDesignInfo(obj);
 }
 
 // --- ngControl - children ----------------------------------------------------
