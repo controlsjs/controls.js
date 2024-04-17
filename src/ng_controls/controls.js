@@ -1676,7 +1676,7 @@ function ngCreateControl(d,ref,parent)
     if(!c)
     {
       var createfnc=ngRegisteredControlTypes[d.Type];
-      if(('ModType' in createfnc)&&(typeof createfnc.ModType==='undefined'))
+      if((createfnc)&&('ModType' in createfnc)&&(typeof createfnc.ModType==='undefined'))
       {
         deftype=ng_IsArrayVar(d.ModType) ? d.ModType[d.ModType.length-1] : d.ModType;
       }
