@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2021 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2024 Position s.r.o.';
 
 /**
  *  Variable: ngApp
@@ -1643,6 +1643,7 @@ function ngCreateControl(d,ref,parent)
   {
     if(ng_IsArrayVar(d.Type)) {
       var type=d.Type;      
+      if((d.ModType)&&(ngHASDEBUG())) ngDEBUGWARN('You cannot combine array Type "%s" with ModType ("%s").',ngVal(d.Type,''),ngVal(d.ModType,''),d);
       switch(type.length)
       {
         case 0:
