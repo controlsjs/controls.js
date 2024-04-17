@@ -1293,8 +1293,15 @@ function ngRegisterControlMod(type, modtype, def) {
   {
     case 'function':
       var mod=function(cdef,ref,parent) {
-        var modtype=ngVal(cdef.ModType,mod.ModType);
-        delete cdef.ModType;
+        var modtype=cdef.ModType;
+        if(ng_IsArrayVar(modtype)) {
+          modtype=modtype.shift();
+          if(!cdef.ModType.length) delete cdef.ModType;
+        } else {          
+          delete cdef.ModType;
+        }
+        if(typeof modtype==='undefined') modtype=mod.ModType;
+        if((typeof modtype==='undefined')&&(ngHASDESIGNINFO())) modtype='feGenericControl';
         if((typeof modtype!=='string')||(modtype==='')) {
           ngDEBUGERROR('Invalid mod type "%s" of component type "%s".',ngVal(modtype,''),ngVal(cdef.Type,''),cdef);
           return null;
@@ -1627,11 +1634,39 @@ function ng_MergeDI(dst,def,allowundefined,callback)
  */
 function ngCreateControl(d,ref,parent)
 {
-  var j,uc,c=null;
+  var j,uc,deftype,c=null;
 
+  var hasdi=ngHASDESIGNINFO();
+  if((hasdi)&&(!('InDesignMode' in d))) d.InDesignMode=true;
   d.CtrlInheritanceDepth=ngVal(d.CtrlInheritanceDepth,0)+1;
   try
   {
+    if(ng_IsArrayVar(d.Type)) {
+      var type=d.Type;      
+      switch(type.length)
+      {
+        case 0:
+          delete d.Type;
+          delete d.ModType;
+          break;
+        case 1:
+          d.Type=type[0];
+          delete d.ModType;
+          break;
+        case 2:
+          d.ModType=type[0];
+          d.Type=type[1];
+          break;
+        default:
+          var modtype=[];
+          for(var i=type.length-2;i>=0;i--) modtype.push(type[i]);
+          d.ModType=modtype;
+          d.Type=type[type.length-1];
+          break;
+      }
+    }
+    if((typeof d.Type==='undefined')&&(hasdi)) d.Type='feGenericControl';
+
     for(j in ngUserControls)
     {
       uc=ngUserControls[j];
@@ -1641,6 +1676,10 @@ function ngCreateControl(d,ref,parent)
     if(!c)
     {
       var createfnc=ngRegisteredControlTypes[d.Type];
+      if(('ModType' in createfnc)&&(typeof createfnc.ModType==='undefined'))
+      {
+        deftype=ng_IsArrayVar(d.ModType) ? d.ModType[d.ModType.length-1] : d.ModType;
+      }
       if(typeof createfnc === 'function') c=createfnc(d, ref, parent);
     }
     if(!c)
@@ -1648,6 +1687,7 @@ function ngCreateControl(d,ref,parent)
       if(typeof ngOnCreateUnknownControl === 'function')
         c=ngOnCreateUnknownControl(d,ref,parent);
     }
+    if((hasdi)&&(c)&&(!('InDesignMode' in c))) c.InDesignMode=true;
   }
   finally
   {
@@ -1660,7 +1700,7 @@ function ngCreateControl(d,ref,parent)
   }
 
   c.CtrlInheritedFrom.push(d.Type);
-  c.DefType = d.Type;
+  c.DefType = ngVal(deftype,d.Type);
   c.Owner = ref;
 
   if((ngHASDEBUG())&&(d.DebugDef)) {
@@ -1733,7 +1773,6 @@ function ngCreateControl(d,ref,parent)
       c.OnGetHint = ngc_GetResHint;
   }
 
-  var hasdi=ngHASDESIGNINFO();
   if(hasdi) {
     if((typeof c.DesignInfo!=='object')||(!c.DesignInfo)) c.DesignInfo={};
     else delete c.DesignInfo['IsBasic']; // IsBasis is always not inherited
