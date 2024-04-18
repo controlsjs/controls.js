@@ -967,17 +967,21 @@ function ng_unescape(str,escscheme)
  *  Returns:
  *    Text with encoded special HTML characters.
  */
-function ng_htmlEncode(s, replacecrlf)
-{
-  var str = ''+s;
-  if(str=='') return str;
+function ng_htmlEncode(s, replacecrlf) {
+  s=''+s;
+  if(s==='') return s;
 
-  str = str.replace(/&/g, "&amp;");
-  str = str.replace(/</g, "&lt;");
-  str = str.replace(/>/g, "&gt;");
-  str = str.replace(/"/g, "&quot;");
-  if(ngVal(replacecrlf,false))
-    str = str.replace(/\r\n|[\r\n]/g,"\<br /\>");
+  var ch, str = '', map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;'
+  };
+  for(var i=0;i<s.length;i++) {
+    ch = s[i];
+    str += map[ch] || ch;
+  }
+  if(replacecrlf) str = str.replace(/\r\n|[\r\n]/g, "<br>");
   return str;
 }
 
