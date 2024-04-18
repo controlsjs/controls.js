@@ -659,7 +659,7 @@ function ngcal_DoUpdate(o)
     if(this.OnGetWeekDayText) text=ngVal(this.OnGetWeekDayText(this,w),'');
     else text=days[w];
         
-    html.append('<div class="'+cclass+'WeekDays '+cclass+cn+'" title="'+ng_htmlEncode(alt)+'">'+text+'</div></td>')
+    html.append('<div class="'+cclass+'WeekDays '+cclass+cn+'" title="'+ngHtmlAttr(alt)+'">'+text+'</div></td>')
   }
   html.append('</tr>');
   

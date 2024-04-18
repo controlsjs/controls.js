@@ -118,15 +118,6 @@ if(typeof ngc_SupportedLangsLocked === 'undefined') ngc_SupportedLangsLocked=fal
 if(typeof ngIE6AlignFix === 'undefined') ngIE6AlignFix = true;
 
 /**
- *  Variable: ngDefaultHTMLEncoding
- *  Default setting for HTML encoding.
- *  If TRUE, the components encode HTML special characters by default.
- *
- *  Default value: *false*
- */
-if(typeof ngDefaultHTMLEncoding === 'undefined') ngDefaultHTMLEncoding = false;
-
-/**
  *  Function: ngLang
  *  Defines resource string/object.
  *

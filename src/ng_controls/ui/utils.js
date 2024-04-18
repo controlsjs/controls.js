@@ -2,13 +2,139 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014-2016 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2024 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * The commercial license can be purchased at Controls.js website.
  */
+
+var ngHtmlValCacheMaxSize = 10485760; // 10MB
+var ngHtmlValCacheMaxCount = 5000;
+var ngHtmlValCachePurgeCount = 1000; 
+var ngHtmlValCachePurgeTimeout = 300000; // 5 min
+var ngHtmlValCacheDebug = (typeof ngHtmlValCacheDebug === 'undefined' ? (typeof ngDEBUG === 'undefined' ? 0 : ngDEBUG) : ngHtmlValCacheDebug);
+var ngHtmlValCacheDOMPurifyWarn = (typeof ngHtmlValCacheDOMPurifyWarn === 'undefined' ? true : ngHtmlValCacheDOMPurifyWarn);
+
+var ngHtmlVal = (function() {
+  var cache = {};
+  var cache_old = {};
+  var cache_timer = null;
+  var purify_warn=true;
+  var size=0;
+  var match_cnt=0;
+  var set_cnt=0;
+
+  function cache_info()
+  {
+    var cnt=0;
+    for(var i in cache) cnt++;
+    var cntold=0;
+    for(var i in cache_old) cntold++;
+
+    return {
+      Count: cnt,
+      CountOld: cntold,
+      Size: size,
+      SetCnt: set_cnt,
+      MatchCnt: match_cnt
+    };
+  }
+
+  function flush_cache()
+  {
+    if(cache_timer) clearTimeout(cache_timer);
+    cache_timer=null;
+    cache_old=cache;
+    cache={};
+
+    if(ngHtmlValCacheDebug) {
+      var cnt=0;
+      for(var i in cache_old) cnt++;
+      ngDEBUGLOG('ngHtmlValCache: Match: %d, Set: %d, Count: %d, Size:%d',match_cnt,set_cnt,cnt,size); 
+    }
+    size=0;
+    match_cnt=0; 
+    set_cnt=0;
+  }
+
+  function get_cached(key, s)
+  {
+    var val=cache[key];
+    if(typeof val==='undefined') {
+      val=cache_old[key];
+      if(typeof val==='undefined') return val;
+      delete cache_old[key];
+      if(val===true) size+=key.length-1;
+      else size+=key.length-2+val.length;  
+      cache[key]=val;
+    }
+    match_cnt++;
+    if(val===true) val=s;
+    return val;
+  }
+
+  function set_cached(key, e)
+  {
+    set_cnt++;
+
+    if((!(set_cnt % ngHtmlValCachePurgeCount))&&(!cache_timer)) cache_timer=setTimeout(flush_cache,ngHtmlValCachePurgeTimeout);
+    if((set_cnt>ngHtmlValCacheMaxCount)||(size>ngHtmlValCacheMaxSize)) {
+      flush_cache();
+      set_cnt=1;
+    }
+    if(e===true) size+=key.length+1;
+    else size+=key.length+e.length;
+    cache[key]=e;
+  }
+
+  var f=function(s, encoding, replacecrlf, nocache)
+  {    
+    if((typeof s==='undefined')||(s==='')||(s===null)) return ''+s;
+
+    if(typeof encoding==='undefined') encoding=true; // ngHtmlEncode
+    s=''+s;
+    switch(encoding)
+    {    
+      case 0: // ngHtmlPurify
+        if(typeof window.DOMPurify!=='undefined') {          
+          if(nocache) {
+            e=DOMPurify.sanitize(s);
+          } else {
+            var key='P_'+s;
+            var e=get_cached(key,s);
+            if(typeof e!=='undefined') return e;
+            e=DOMPurify.sanitize(s);
+            set_cached(key,e===s ? true : e);
+          }
+          if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)) {
+            ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);
+          }
+          return e;
+        } else if((purify_warn)&&(encoding===0)) {
+          purify_warn=false;
+          ngDEBUGERROR('DOMPurify not found!');
+        }
+      case false:  // ngHtmlPlain
+        return s;
+    }  
+    if(nocache) return ng_htmlEncode(s, replacecrlf);
+    var key=(replacecrlf ? 'H_' : 'h_')+s;
+    var e=get_cached(key,s);
+    if(typeof e!=='undefined') return e;
+    e=ng_htmlEncode(s, replacecrlf);
+    set_cached(key,e===s ? true : e);
+    return e;
+  };
+  f.flushCache = flush_cache;
+  f.cacheInfo = cache_info;
+  return f;
+})();
+
+function ngHtmlAttr(a, nocache) {
+  return nocache ? ng_htmlEncode(a,false) : ngHtmlVal(a,1/*ngHtmlEncode*/,false);
+}
 
 function ng_Expand2Id(eid)
 {

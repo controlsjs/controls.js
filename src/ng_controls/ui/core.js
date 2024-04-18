@@ -2,13 +2,29 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014-2021 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2024 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * The commercial license can be purchased at Controls.js website.
  */
+
+var ngHtmlPurify = 0;
+var ngHtmlPlain  = false;
+var ngHtmlEncode = true;
+
+/**
+ *  Variable: ngDefaultHTMLEncoding
+ *  Default setting for HTML encoding.
+ *
+ *  ngHtmlPurify - sanitize html to prevent XSS attacs
+ *  ngHtmlEncode - encode all special html characters
+ *  ngHtmlPlain - no html encoding
+ *
+ *  Default value: *ngHtmlPlain*
+ */
+if(typeof ngDefaultHTMLEncoding === 'undefined') ngDefaultHTMLEncoding = false; // ngHtmlPlain
 
 // --- ngPanel -----------------------------------------------------------------
 
@@ -82,7 +98,7 @@ function ngt_DoUpdate(o)
 
   var text=this.GetText();
   var alt=this.GetAlt();
-  if(this.HTMLEncode) text=ng_htmlEncode(text,true);
+  text=ngHtmlVal(text, this.HTMLEncode, true);
 
   if((this.AutoSize)&&(ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
 
@@ -94,7 +110,7 @@ function ngt_DoUpdate(o)
 
   var html=new ngStringBuilder;
   html.append('<span id="'+this.ID+'_T" class="'+cclass+'Text'+(this.Enabled ? '': 'Disabled')+'" style="position:absolute;'+dstyle+'text-align:'+this.TextAlign+';"');
-  if(alt!='') html.append(' title="'+ng_htmlEncode(alt)+'"');
+  if(alt!='') html.append(' title="'+ngHtmlAttr(alt)+'"');
   html.append('>');
   html.append(text);
   html.append('</span>');
@@ -320,7 +336,7 @@ function ngi_DoUpdate(o)
     var dp=ngc_ImgProps(this.ID+'_I', 0, this.Enabled, image);
     if(typeof dp.W === 'undefined')
     {
-      ngc_ImgSW(html,dp,0,ng_ClientWidth(o),"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
+      ngc_ImgSW(html,dp,0,ng_ClientWidth(o),"position:absolute;",(alt!='' ? 'title="'+ngHtmlAttr(alt)+'"' : '')+ngVal(image.Attrs,''));
       if(this.AutoSize)
       {
         ng_SetClientHeight(o,dp.H);
@@ -336,7 +352,7 @@ function ngi_DoUpdate(o)
     {
       if(typeof dp.H === 'undefined')
       {
-        ngc_ImgSH(html,dp,0,ng_ClientHeight(o),"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
+        ngc_ImgSH(html,dp,0,ng_ClientHeight(o),"position:absolute;",(alt!='' ? 'title="'+ngHtmlAttr(alt)+'"' : '')+ngVal(image.Attrs,''));
         if(this.AutoSize)
         {
           ng_SetClientWidth(o,dp.W);
@@ -350,7 +366,7 @@ function ngi_DoUpdate(o)
       }
       else
       {
-        ngc_Img(html,dp,"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
+        ngc_Img(html,dp,"position:absolute;",(alt!='' ? 'title="'+ngHtmlAttr(alt)+'"' : '')+ngVal(image.Attrs,''));
         if(this.AutoSize)
         {
           ng_SetClientWidth(o,dp.W);
@@ -609,7 +625,7 @@ function ngimgmap_DoUpdate(o)
   if(image)
   {
     var dp=ngc_ImgProps(this.ID+'_I', 0, this.Enabled, image);
-    ngc_Img(html,dp,"position:absolute;",(alt!='' ? 'title="'+ng_htmlEncode(alt)+'"' : '')+ngVal(image.Attrs,''));
+    ngc_Img(html,dp,"position:absolute;",(alt!='' ? 'title="'+ngHtmlAttr(alt)+'"' : '')+ngVal(image.Attrs,''));
     if(this.AutoSize)
     {
       ng_SetClientWidth(o,dp.W);
@@ -637,7 +653,7 @@ function ngimgmap_DoUpdate(o)
     else salt=ngVal(s.Alt,'');
 
     var clickev=((this.OnShapeClick)||(s.OnClick))&&(this.Enabled);
-    imgmap.append('<area shape="'+ngVal(s.Shape,'rect')+'" coords="'+s.Coords+'" title="'+ng_htmlEncode(salt)+'"');
+    imgmap.append('<area shape="'+ngVal(s.Shape,'rect')+'" coords="'+s.Coords+'" title="'+ngHtmlAttr(salt)+'"');
     if(clickev)
     {
       imgmap.append(' '+ngc_PtrEventsHTML(this,'shp'+i,'tap drag'));
@@ -648,7 +664,7 @@ function ngimgmap_DoUpdate(o)
   {
     if(ngFireFox1x) imgmap.append('<area href="javascript:imgm_nop();" shape="rect" coords="0,0,'+w+','+h+'" />');
 
-    html.append('<img id="'+this.ID+'_HM" src="'+ngEmptyURL+'" style="position:absolute; width:'+w+'px; height:'+h+'px; z-index: 10;" alt="'+ng_htmlEncode(alt)+'" border="0" usemap="#'+this.ID+'_IMAP" />');
+    html.append('<img id="'+this.ID+'_HM" src="'+ngEmptyURL+'" style="position:absolute; width:'+w+'px; height:'+h+'px; z-index: 10;" alt="'+ngHtmlAttr(alt)+'" border="0" usemap="#'+this.ID+'_IMAP" />');
     html.append('<map id="'+this.ID+'_IM" name="'+this.ID+'_IMAP">');
     html.append(imgmap);
     html.append('</map>');
@@ -978,7 +994,7 @@ function ngb_DoUpdate(o)
 
   var text=this.GetText();
   var alt=this.GetAlt();
-  if(this.HTMLEncode) text=ng_htmlEncode(text,this.MultiLine);
+  text=ngHtmlVal(text, this.HTMLEncode, this.MultiLine);
 
   var btnimage=this.GetImg(-1);
   if(btnimage) bdp=ngc_ImgProps(this.ID+'_I', state, this.Enabled, btnimage);
@@ -1122,7 +1138,7 @@ function ngb_DoUpdate(o)
     var bw=w-dp.Left.W-dp.Right.W;
     var bh=h-dp.Top.H-dp.Bottom.H;
 
-    html.append('<div '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+w+'px;height:'+h+'px;');
+    html.append('<div '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ngHtmlAttr(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+w+'px;height:'+h+'px;');
     if(typeof this.Cursor !== 'undefined')
     {
       if(this.Cursor!='') html.append('cursor:'+this.Cursor+';');
@@ -1396,7 +1412,7 @@ function ngb_DoUpdate(o)
       if(dp.H>th) th=dp.H;
     }
 
-    html.append('<span '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+bw+'px;height:'+th+'px;');
+    html.append('<span '+ngc_PtrEventsHTML(this,'btn',gestures)+(alt!='' ? ' title="'+ngHtmlAttr(alt)+'"' : '')+' style="position:absolute; left:0px;top:0px;width:'+bw+'px;height:'+th+'px;');
     if(typeof this.Cursor !== 'undefined')
     {
       if(this.Cursor!='') html.append('cursor:'+this.Cursor+';');
@@ -1986,8 +2002,7 @@ function ngg_DoUpdate(o)
   var h=ng_ClientHeight(o);
   var l=0,t=0;
 
-  var text=this.GetText();
-  if(this.HTMLEncode) text=ng_htmlEncode(text);
+  var text=ngHtmlVal(this.GetText(), this.HTMLEncode);
 
   var dp=new Object;
   ngc_ImgBox(html, this.ID, 'ngGroup', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', undefined, dp);
@@ -3505,7 +3520,7 @@ function nge_DoUpdate(o)
     if(alt!='') ts.setAttribute("title",alt);
     else        ts.removeAttribute("title");
   }
-  else html.append('<span '+(alt!='' ? ' title="'+ng_htmlEncode(alt)+'"' : '')+'>');
+  else html.append('<span '+(alt!='' ? ' title="'+ngHtmlAttr(alt)+'"' : '')+'>');
 
   if((this.Buttons)&&(this.Buttons.length>0))
   {
@@ -3638,7 +3653,7 @@ function nge_DoUpdate(o)
     html.append('id="'+this.ID+'_T" class="'+this.GetClassName('Input',hint));
     html.append('" style="border:0px; white-space: nowrap;text-align:'+this.TextAlign+';position: absolute; z-index:1;left:'+(lw+bl)+'px;top:'+this.OffsetTop+'px;width:'+(tw)+'px;'+(paddingRight_CF!='' ? 'padding-right:'+paddingRight_CF+';' : ''));
     if(readonly) html.append("cursor: default;");
-    html.append('" value="'+ng_htmlEncode(txt=='' ? hint : txt)+'" ');
+    html.append('" value="'+(txt=='' ? ngHtmlAttr(hint) : ngHtmlAttr(txt,true))+'" ');
     if((this.MaxLength>0)&&(!this.HintVisible)) html.append('maxlength="'+this.MaxLength+'" ');
     if(ngVal(this.InputMode,'')!=='') html.append('inputmode="'+this.InputMode+'" '); 
     if(ngVal(this.AutoComplete,'')!=='') html.append('autocomplete="'+this.AutoComplete+'" '); 
@@ -4951,7 +4966,7 @@ function ngem_DoUpdate(o)
     if((this.InDesignMode)&&(ngVal(this.DesignText,'')!=='')) txt=this.DesignText;
     this.HintVisible=(txt=='')&&(hint!='');
     html.append('<textarea ');
-    if(alt!='') html.append('title="'+ng_htmlEncode(alt)+'" ');
+    if(alt!='') html.append('title="'+ngHtmlAttr(alt)+'" ');
     if(readonly) html.append('readonly="readonly" ');
     html.append('id="'+this.ID+'_T" class="'+this.GetClassName('Input',hint));
     html.append('" style="border:0px; margin:0px 0px 0px 0px; padding: 0px 0px 0px 0px; overflow: auto; text-align:'+this.TextAlign+';position: absolute; z-index:1;left:'+l+'px;top:'+t+'px;width:'+w+'px;height:'+h+'px;" ');
@@ -4960,7 +4975,7 @@ function ngem_DoUpdate(o)
     html.append('onkeydown="ngem_KeyDown(event,this)" onkeyup="ngem_KeyUp(event,this)" onkeypress="ngem_KeyPress(event,this)" onchange="ngem_TextChanged(event,this)"');
     html.append(' onfocus="ngc_Focus(event,this,\'ngMemo\')" onblur="ngc_Blur(event,this,\'ngMemo\')"');
     html.append('>');
-    html.append(ng_htmlEncode(txt == '' ? hint : txt).replace(/\n/g, "&#13;&#10;"));
+    html.append((txt=='' ? ngHtmlVal(hint) : ng_htmlEncode(txt)).replace(/\n/g, "&#13;&#10;"));
     html.append('</textarea>');
 
     ng_SetInnerHTML(o,html.toString());
@@ -5874,7 +5889,7 @@ function ngpg_DoUpdate(o)
 
       if(this.OnGetText) text=ngVal(this.OnGetText(this, i),'');
       else text=ngVal((pg ? pg.Text : ''),'');
-      if(this.HTMLEncode) text=ng_htmlEncode(text);
+      text=ngHtmlVal(text, this.HTMLEncode);
 
       if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, i),'');
       else alt=ngVal((pg ? pg.Alt : ''),'');

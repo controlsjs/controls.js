@@ -2376,20 +2376,14 @@ function ngl_DrawItemText(html, it, id, level)
       if(!i)
       {
         html.append('<div ');
-        if(alt!='') html.append('title="'+ng_htmlEncode(alt)+'" ');
+        if(alt!='') html.append('title="'+ngHtmlAttr(alt)+'" ');
         html.append('style="padding-left: '+indent+'px;'+(typeof height!=='undefined' ? 'height:'+height+'px;' : '')+'">');
         html.append(images);
       }
-      if(this.OnGetText)
-      {
-        text=ngVal(this.OnGetText(this, it, col),'');
-        if(this.HTMLEncode) text=ng_htmlEncode(text,true);
-      }
-      else
-      {
-        text=(typeof it.Text==='object' ? ngVal(it.Text[col.ID],'') : '');
-        if(this.HTMLEncode) text=ng_htmlEncode(text,true);
-      }
+      if(this.OnGetText) text=ngVal(this.OnGetText(this, it, col),'');
+      else text=(typeof it.Text==='object' ? ngVal(it.Text[col.ID],'') : '');
+      text=ngHtmlVal(text, this.HTMLEncode, true);
+
       emptytext=(text=='');
       if(emptytext) text='<div style="width:0px;position:relative;overflow:hidden;">&nbsp;</div>'; // text padding
 
@@ -2398,7 +2392,7 @@ function ngl_DrawItemText(html, it, id, level)
         if(!emptytext)
         {
           html.append('<div class="'+cclass+'Text"'+textevents);
-          if((i)&&(alt!='')) html.append(' title="'+ng_htmlEncode(alt)+'"');
+          if((i)&&(alt!='')) html.append(' title="'+ngHtmlAttr(alt)+'"');
           html.append('>');
           this.DoDrawItemText(html, text, it, col, id, level);
           html.append('</div>');
@@ -2410,7 +2404,7 @@ function ngl_DrawItemText(html, it, id, level)
       else
       {
         html.append('<div class="'+cclass+'Text"'+textevents);
-        if((i)&&(alt!='')) html.append(' title="'+ng_htmlEncode(alt)+'"');
+        if((i)&&(alt!='')) html.append(' title="'+ngHtmlAttr(alt)+'"');
         html.append('>');
         this.DoDrawItemText(html, text, it, col, id, level);
         html.append('</div>');
@@ -2423,16 +2417,9 @@ function ngl_DrawItemText(html, it, id, level)
   }
   else
   {
-    if(this.OnGetText)
-    {
-      text=ngVal(this.OnGetText(this, it),'');
-      if(this.HTMLEncode) text=ng_htmlEncode(text,true);
-    }
-    else
-    {
-      text=ngVal(it.Text,'');
-      if(this.HTMLEncode) text=ng_htmlEncode(text,true);
-    }
+    if(this.OnGetText) text=ngVal(this.OnGetText(this, it),'');
+    else text=ngVal(it.Text,'');
+    text=ngHtmlVal(text, this.HTMLEncode, true);
     emptytext=(text=='');
     if(emptytext) text='<div style="width:0px;position:relative;overflow:hidden;">&nbsp;</div>'; // text padding
 
@@ -2440,7 +2427,7 @@ function ngl_DrawItemText(html, it, id, level)
     else alt=ngVal(it.Alt,'');
 
     html.append('<div class="'+this.GetRowClassName(it, selected, id, level, 0/*nglRowItem*/)+'" ');
-    if(alt!='') html.append('title="'+ng_htmlEncode(alt)+'" ');
+    if(alt!='') html.append('title="'+ngHtmlAttr(alt)+'" ');
     var style=(typeof height!=='undefined' ? 'height:'+height+'px;' : '')+(ngVal(it.Visible,true) ? '' : 'display:none;');
     if(style!='') style=' style="'+style+'"';
     html.append('id="'+this.ID+'_'+id+'"'+style+rowevents+'>');
