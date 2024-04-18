@@ -99,19 +99,26 @@ var ngHtmlVal = (function() {
     {    
       case 0: // ngHtmlPurify
         if(typeof window.DOMPurify!=='undefined') {          
-          if(nocache) {
-            e=DOMPurify.sanitize(s);
+          if(DOMPurify.isSupported) {
+            if(nocache) {
+              e=DOMPurify.sanitize(s);
+            } else {
+              var key='P_'+s;
+              var e=get_cached(key,s);
+              if(typeof e!=='undefined') return e;
+              e=DOMPurify.sanitize(s);
+              set_cached(key,e===s ? true : e);
+            }
+            if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)&&(e.split('').sort().join('')!==s.split('').sort().join(''))) {
+              ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);
+            }
+            return e;
           } else {
-            var key='P_'+s;
-            var e=get_cached(key,s);
-            if(typeof e!=='undefined') return e;
-            e=DOMPurify.sanitize(s);
-            set_cached(key,e===s ? true : e);
+            if(purify_warn) {
+              if(ngHASDEBUG()) ngDEBUGERROR('DOMPurify is not supported!');
+              purify_warn=false;
+            }
           }
-          if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)) {
-            ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);
-          }
-          return e;
         } else if((purify_warn)&&(encoding===0)) {
           purify_warn=false;
           ngDEBUGERROR('DOMPurify not found!');
