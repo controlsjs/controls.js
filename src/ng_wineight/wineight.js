@@ -1320,7 +1320,7 @@ var WinEightControls = {
       b.HTMLEncode=false;
       b.OnGetText = function(e) {
         var c=this.Enabled ? this.Parent.GetColor() : 'D6D6D6';
-        return '<div style="margin:2px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width:28px; height:28px; background-color: #'+ng_htmlEncode(c)+'"></div>';
+        return '<div style="margin:2px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width:28px; height:28px; background-color: #'+ngHtmlAttr(c)+'"></div>';
       };
       c.OnTextChanged = function(e) {
         e.DropDownButton.Update();
@@ -1631,7 +1631,7 @@ var WinEightControls = {
       {
         c.AddEvent(function (b) {
           var txt=ngVal(b.Text,'');
-          if(txt!='') txt='&nbsp;<span style="line-height: '+h+'px">'+ng_htmlEncode(txt)+'</span>';
+          if(txt!='') txt='&nbsp;<span style="line-height: '+h+'px">'+ngHtmlVal(txt)+'</span>';
           return '<img src="'+img+'" align="top" />'+txt;
         }, 'OnGetText');
       }
@@ -3696,10 +3696,7 @@ var WinEightControls = {
           },
           Events: {
             OnError: function (o, error, data) {
-              error = ng_htmlEncode(error);
-              error = error.replace(/\n/g, "<br/>");
-
-              ngMessageDlg('weDlgMessageBox', error);
+              ngMessageDlg('weDlgMessageBox', ngHtmlVal(error, true, true));
             },
             OnUploadProgress: function(c,p) {
               if(c.curDialog) {

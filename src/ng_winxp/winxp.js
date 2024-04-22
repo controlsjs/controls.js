@@ -899,7 +899,7 @@ var WinXPControls = {
       b.HTMLEncode=false;
       b.OnGetText = function(e) {
         var c=this.Enabled ? this.Parent.GetColor() : 'CCCCCC';
-        return '<div style="margin:3px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width: 23px; height:13px; border: 1px solid '+(this.Enabled ? 'black' : '#A0A0A0')+'; background-color: #'+ng_htmlEncode(c)+'"></div>';
+        return '<div style="margin:3px; line-height: 0px; font-size: 0px; position: absolute;left:0px;top:0px;width: 23px; height:13px; border: 1px solid '+(this.Enabled ? 'black' : '#A0A0A0')+'; background-color: #'+ngHtmlAttr(c)+'"></div>';
       }
       c.OnTextChanged = function(e) {
         e.DropDownButton.Update();
@@ -1133,7 +1133,7 @@ var WinXPControls = {
       {
         c.AddEvent(function (b) {
           var txt=ngVal(b.Text,'');
-          if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+ng_htmlEncode(txt)+'</span>';
+          if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+ngHtmlVal(txt)+'</span>';
           return '<img src="' + WinXPControls.ControlImages[3] + '" align="top" />'+txt;
         }, 'OnGetText');
       }
@@ -2895,10 +2895,7 @@ var WinXPControls = {
           },
           Events: {
             OnError: function (o, error, data) {
-              error = ng_htmlEncode(error);
-              error = error.replace(/\n/g, "<br/>");
-
-              ngMessageDlg('dlgMessageBox', error, 'ngfup_AddFile', null, { DlgIcon: mbIconError });
+              ngMessageDlg('dlgMessageBox', ngHtmlVal(error, true, true), 'ngfup_AddFile', null, { DlgIcon: mbIconError });
             },
             OnUploadProgress: function(c,p) {
               if(c.curDialog) {
