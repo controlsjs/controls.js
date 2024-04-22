@@ -777,7 +777,7 @@ var WireframeControls = {
       c.DropDownButton.OnGetText = function(e){
         var col = this.Enabled ? this.Parent.GetColor() : 'cccccc';
         col = (col === '') ? 'ffffff' : col;
-        this.Elm().style.backgroundColor = '#' + ng_htmlEncode(col);
+        this.Elm().style.backgroundColor = '#' + ngHtmlAttr(col);
 
         return '';
       }
@@ -2289,7 +2289,7 @@ var WireframeControls = {
           function (b){
             var txt = ngVal(b.Text, '');
             if(txt !== ''){
-              txt = '&nbsp;<span style="line-height: 22px">' + ng_htmlEncode(txt) + '</span>';
+              txt = '&nbsp;<span style="line-height: 22px">' + ngHtmlVal(txt) + '</span>';
             }
             return '<img src="' + WireframeControls.ControlImages[3] + '" align="top" />' + txt;
           },
