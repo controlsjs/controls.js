@@ -1211,7 +1211,7 @@ function ngRegisterControlType(type, def)
         ngDEBUGERROR('ngRegisterControlType: '+type+' - Invalid def parameter!',def);
         return;
       }          
-      if(typeof def.Type!=='string') {
+      if((typeof def.Type!=='string')&&(!ng_IsArrayVar(def.Type))) {
         ngDEBUGERROR('ngRegisterControlType: '+type+' - Invalid def.Type parameter!',def.Type);
         return;
       }
@@ -1306,10 +1306,17 @@ function ngRegisterControlMod(type, modtype, def) {
       if(!def) {
         ngDEBUGERROR('ngRegisterControlMod: '+type+' - Invalid def parameter!',def);
         return;
-      }          
+      }      
       ngRegisterControlMod(type, modtype, function(cdef,ref,parent,modtype) {
+        var mt=modtype;
+        if(typeof def.Type!=='undefined') {
+          mt=[];
+          mt.push(modtype);
+          if(ng_IsArrayVar(def.Type)) for(var i=0;i<def.Type.length;i++) mt.push(def.Type[i]);
+          else mt.push(def.Type);
+        }
         ng_MergeDef(cdef, ng_CopyVar(def), true);
-        return ngCreateControlAsType(cdef, modtype, ref, parent);
+        return ngCreateControlAsType(cdef, mt, ref, parent);
       });
       break;
     default:
@@ -1633,27 +1640,29 @@ function ngCreateControl(d,ref,parent)
   try
   {
     if(ng_IsArrayVar(d.Type)) {
-      var type=d.Type;      
-      if((d.ModType)&&(ngHASDEBUG())) ngDEBUGWARN('You cannot combine array Type "%s" with ModType ("%s").',ngVal(d.Type,''),ngVal(d.ModType,''),d);
-      switch(type.length)
+      switch(d.Type.length)
       {
         case 0:
           delete d.Type;
-          delete d.ModType;
           break;
         case 1:
-          d.Type=type[0];
-          delete d.ModType;
+          d.Type=d.Type[0];
           break;
         case 2:
-          d.ModType=type[0];
-          d.Type=type[1];
-          break;
+          if(!d.ModType) {
+            d.ModType=d.Type[0];
+            d.Type=d.Type[1];
+            break;
+          }
         default:
           var modtype=[];
-          for(var i=type.length-2;i>=0;i--) modtype.push(type[i]);
+          for(var i=d.Type.length-2;i>=0;i--) modtype.push(d.Type[i]);
+          d.Type=d.Type[d.Type.length-1];
+          if(d.ModType) {
+            if(ng_IsArrayVar(d.ModType)) for(var i=0;i<d.ModType.length;i++) modtype.push(d.ModType[i]);
+            else modtype.push(d.ModType);
+          }    
           d.ModType=modtype;
-          d.Type=type[type.length-1];
           break;
       }
     }
