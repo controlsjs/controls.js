@@ -2382,7 +2382,7 @@ function ngl_DrawItemText(html, it, id, level)
       }
       if(this.OnGetText) text=ngVal(this.OnGetText(this, it, col),'');
       else text=(typeof it.Text==='object' ? ngVal(it.Text[col.ID],'') : '');
-      text=ngHtmlVal(text, this.HTMLEncode, true);
+      text=ngHtmlVal(text, true, this.HTMLEncode);
 
       emptytext=(text=='');
       if(emptytext) text='<div style="width:0px;position:relative;overflow:hidden;">&nbsp;</div>'; // text padding
@@ -2419,7 +2419,7 @@ function ngl_DrawItemText(html, it, id, level)
   {
     if(this.OnGetText) text=ngVal(this.OnGetText(this, it),'');
     else text=ngVal(it.Text,'');
-    text=ngHtmlVal(text, this.HTMLEncode, true);
+    text=ngHtmlVal(text, true, this.HTMLEncode);
     emptytext=(text=='');
     if(emptytext) text='<div style="width:0px;position:relative;overflow:hidden;">&nbsp;</div>'; // text padding
 

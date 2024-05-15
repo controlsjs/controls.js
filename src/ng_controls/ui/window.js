@@ -773,7 +773,7 @@ function ngw_DoUpdate(o)
   var moveable = (this.Moveable && (!maximized));
   var sizeable = (this.Sizeable && (!maximized)&&(!minimized));
 
-  var text=ngHtmlVal(this.GetText(),this.HTMLEncode);
+  var text=ngHtmlVal(this.GetText(),false,this.HTMLEncode);
   
   var cstyle=(moveable ? 'cursor: move;' : '');
   var gestures='';

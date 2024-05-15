@@ -89,7 +89,7 @@ var ngHtmlVal = (function() {
     cache[key]=e;
   }
 
-  var f=function(s, encoding, replacecrlf, nocache)
+  var f=function(s, replacecrlf, encoding, nocache)
   {    
     if((typeof s==='undefined')||(s==='')||(s===null)) return ''+s;
 
@@ -140,7 +140,7 @@ var ngHtmlVal = (function() {
 })();
 
 function ngHtmlAttr(a, nocache) {
-  return nocache ? ng_htmlEncode(a,false) : ngHtmlVal(a,1/*ngHtmlEncode*/,false);
+  return nocache ? ng_htmlEncode(a,false) : ngHtmlVal(a,false);
 }
 
 function ng_Expand2Id(eid)

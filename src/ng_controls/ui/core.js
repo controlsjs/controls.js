@@ -98,7 +98,7 @@ function ngt_DoUpdate(o)
 
   var text=this.GetText();
   var alt=this.GetAlt();
-  text=ngHtmlVal(text, this.HTMLEncode, true);
+  text=ngHtmlVal(text, true, this.HTMLEncode);
 
   if((this.AutoSize)&&(ngIExplorer)&&(ng_GetStylePx(o.style.height)==0)) o.style.height='1px';  // IE7 Measure fix
 
@@ -994,7 +994,7 @@ function ngb_DoUpdate(o)
 
   var text=this.GetText();
   var alt=this.GetAlt();
-  text=ngHtmlVal(text, this.HTMLEncode, this.MultiLine);
+  text=ngHtmlVal(text, this.MultiLine, this.HTMLEncode);
 
   var btnimage=this.GetImg(-1);
   if(btnimage) bdp=ngc_ImgProps(this.ID+'_I', state, this.Enabled, btnimage);
@@ -2002,7 +2002,7 @@ function ngg_DoUpdate(o)
   var h=ng_ClientHeight(o);
   var l=0,t=0;
 
-  var text=ngHtmlVal(this.GetText(), this.HTMLEncode);
+  var text=ngHtmlVal(this.GetText(), false, this.HTMLEncode);
 
   var dp=new Object;
   ngc_ImgBox(html, this.ID, 'ngGroup', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', undefined, dp);
@@ -5889,7 +5889,7 @@ function ngpg_DoUpdate(o)
 
       if(this.OnGetText) text=ngVal(this.OnGetText(this, i),'');
       else text=ngVal((pg ? pg.Text : ''),'');
-      text=ngHtmlVal(text, this.HTMLEncode);
+      text=ngHtmlVal(text, false, this.HTMLEncode);
 
       if(this.OnGetAlt) alt=ngVal(this.OnGetAlt(this, i),'');
       else alt=ngVal((pg ? pg.Alt : ''),'');
