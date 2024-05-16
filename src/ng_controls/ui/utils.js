@@ -89,7 +89,7 @@ var ngHtmlVal = (function() {
     cache[key]=e;
   }
 
-  var f=function(s, replacecrlf, encoding, nocache)
+  var f=function(s, replacecrlf, encoding, nocache, nowarn)
   {    
     if((typeof s==='undefined')||(s==='')||(s===null)) return ''+s;
 
@@ -109,8 +109,13 @@ var ngHtmlVal = (function() {
               e=DOMPurify.sanitize(s);
               set_cached(key,e===s ? true : e);
             }
-            if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)&&(e.split('').sort().join('')!==s.split('').sort().join(''))) {
-              ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);
+            if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)&&(!nowarn)) {
+              var s2 = s.replace(/\s/g, '').toLowerCase();
+              var e2 = e.replace(/\s/g, '').toLowerCase();
+              s2 = s2.replace(/\<(.*?)\/\>/g, "<$1>");
+              if((s2!==e2)&&(e2.split('').sort().join('')!==s2.split('').sort().join(''))) {
+                ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);                
+              }
             }
             return e;
           } else {
