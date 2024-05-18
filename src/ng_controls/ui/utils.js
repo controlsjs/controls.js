@@ -100,24 +100,28 @@ var ngHtmlVal = (function() {
       case 0: // ngHtmlPurify
         if(typeof window.DOMPurify!=='undefined') {          
           if(DOMPurify.isSupported) {
-            if(nocache) {
-              e=DOMPurify.sanitize(s);
-            } else {
-              var key='P_'+s;
-              var e=get_cached(key,s);
-              if(typeof e!=='undefined') return e;
-              e=DOMPurify.sanitize(s);
-              set_cached(key,e===s ? true : e);
-            }
-            if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)&&(!nowarn)) {
-              var s2 = s.replace(/\s/g, '').toLowerCase();
-              var e2 = e.replace(/\s/g, '').toLowerCase();
-              s2 = s2.replace(/\<(.*?)\/\>/g, "<$1>");
-              if((s2!==e2)&&(e2.split('').sort().join('')!==s2.split('').sort().join(''))) {
-                ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);                
+            try {
+              if(nocache) {
+                e=DOMPurify.sanitize(s);
+              } else {
+                var key='P_'+s;
+                var e=get_cached(key,s);
+                if(typeof e!=='undefined') return e;
+                e=DOMPurify.sanitize(s);
+                set_cached(key,e===s ? true : e);
               }
+              if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)&&(!nowarn)) {
+                var s2 = s.replace(/\s/g, '').toLowerCase();
+                var e2 = e.replace(/\s/g, '').toLowerCase();
+                s2 = s2.replace(/\<(.*?)\/\>/g, "<$1>");
+                if((s2!==e2)&&(e2.split('').sort().join('')!==s2.split('').sort().join(''))) {
+                  ngDEBUGWARN('DOMPurify:\n"%s"\n  ->\n"%s"',s,e);                
+                }
+              }
+              return e;
+            } catch(e) {
+              ngDEBUGERROR('[DOMPurify FAILED] '+JSON.stringify(s),e);
             }
-            return e;
           } else {
             if(purify_warn) {
               if(ngHASDEBUG()) ngDEBUGERROR('DOMPurify is not supported!');
