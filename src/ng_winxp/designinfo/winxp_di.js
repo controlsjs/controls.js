@@ -145,6 +145,7 @@ var WinXP_DesignInfo = {
         ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": ng_diString('wxpEdit'),
+          "ClearBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
           "DropDown": ng_diControl(undefined, {
             "className": ng_diString('wxpDropDown')
           }),
@@ -1030,7 +1031,8 @@ var WinXP_DesignInfo = {
         Properties: ng_diProperties({
           "className": ng_diString('wxpEdit'),
           "DropDown": ng_diControl('stdList', ng_diProperties({
-            "className": ng_diString('wxpDropDown')
+            "className": ng_diString('wxpDropDown'),
+            "HourDivider": ng_diInteger(2, { Level: 'basic' })
           }), { Level: 'basic' })
         })
       };
