@@ -419,6 +419,7 @@ return {
         ControlCategory: 'Edit',
         Properties: ng_diProperties({
           "className": defThemeClassName('Edit'),
+          "ClearBtn": ng_diBoolean(false, { Level: 'basic', Order: 0.31 }),
           "DropDown": ng_diControl(undefined, themeSchemeDI({
             "className": ng_diString('weDropDownLight we'+defscheme()+'DropDown')
           }, 1/*WE_LIGHT*/).Properties),
@@ -1410,7 +1411,9 @@ return {
     function weEditTimeDI(d,c,ref) {
       var di={
         Properties: ng_diProperties({
-          "DropDown": ng_diControl('weList', {}, { Level: 'basic' })
+          "DropDown": ng_diControl('weList', ng_diProperties({
+            "HourDivider": ng_diInteger(2, { Level: 'basic' })
+          }), { Level: 'basic' })
         })
       };
       ng_MergeVar(di,weEditDI(d,c,ref));
