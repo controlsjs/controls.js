@@ -388,6 +388,7 @@ var WinXPControls = {
     },
 
     Close: { L: 205, T: 87, oL: 215, SL: 215, DL: 225, W: 10, H: 10 },
+    ClearBtn: { L: 205, T: 81, oL: 215, SL: 215, DL: 225, W: 11, H: 21 },
 
     ColorButton: {
       LeftImg: { L: 70, T: 2, H: 21, W: 1, DL: 86 },
@@ -644,9 +645,9 @@ var WinXPControls = {
     /*  Class: stdEdit
      *  Standard edit control (based on <ngEdit>).
      */
-    /*<>*/
+    /*<>*/    
     skinfnc.stdEdit_AddProperties=function(c)
-    {
+    {        
       var req=ngVal(c.Invalid,false);
       c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
       c.MiddleImg=(req ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
@@ -668,10 +669,68 @@ var WinXPControls = {
         if(update) c.DoUpdateImages();
       }
     }
+    
+    function clearbtn_click(e)
+    {
+      var c=e.Owner ? e.Owner.Owner : null;
+      if(!c) return;
+      if(!ngVal(c.ReadOnly,false)) c.SetText('');
+      c.SetFocus();
+    }
+
+    function clearbtn_textchanged(c)
+    {
+      if((c.Buttons)&&(c.Buttons.length>0)) {
+        var readonly=(c.ReadOnly)||(c.DropDownType === ngeDropDownList);
+        var update=false,b,v=(!readonly)&&(c.Text!=='');
+        for(var i=0;i<c.Buttons.length;i++) {
+          b=c.Buttons[i];
+          if((b)&&(b.OnClick===clearbtn_click)) {
+            if(b.Visible!==v) {
+              b.Visible=v;
+              update=true;
+            }
+          }
+        }
+        if(update) c.UpdateLater();
+      }
+    }
+
+    skinfnc.stdEdit_AddClearBtn=function(def)
+    {
+      if(def.ClearBtn) {
+        def.OnCreated=ngAddEvent(def.OnCreated,function(c,ref) {
+          var i;
+          if(!ng_IsArrayVar(c.Buttons)) c.Buttons=[];
+          for(i=0;i<c.Buttons.length;i++) {
+            if((c.Buttons[i])&&(c.Buttons[i].OnClick===clearbtn_click)) break;
+          }
+        
+          if(i>=c.Buttons.length) {
+            var readonly=(c.ReadOnly)||(c.DropDownType === ngeDropDownList);
+
+            var b=new ngButton();
+            if(c.TextAlign==='right') {            
+              b.RightImg=winimages.ClearBtn;
+              b.ButtonAlign='left';
+            } else {
+              b.LeftImg=winimages.ClearBtn;
+            }
+            b.OnClick = clearbtn_click;
+            b.Visible=(!readonly)&&(c.Text!=='');        
+            b.Owner=c;
+            c.Buttons.push(b);
+            c.AddEvent('OnTextChanged', clearbtn_textchanged);
+            c.AddEvent('OnReadOnlyChanged', clearbtn_textchanged);
+          }
+        });
+      }
+    }
 
     skinfnc.Create_stdEdit=function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
+      skinfnc.stdEdit_AddClearBtn(def);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(c) {
         skinfnc.stdEdit_AddProperties(c);
@@ -820,6 +879,7 @@ var WinXPControls = {
     {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
+      skinfnc.stdEdit_AddClearBtn(def);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
       skinfnc.stdEdit_AddProperties(c);
@@ -866,6 +926,7 @@ var WinXPControls = {
         Data: { TextAlign: 'center' },
         DropDown: null//{ className: 'wxpDropDown', Type: 'stdPanel' }
       });
+      skinfnc.stdEdit_AddClearBtn(def);
       var c=ngDropDown_Create(def,ref,parent, modtype);
       if(!c) return c;
 
@@ -1022,6 +1083,7 @@ var WinXPControls = {
      */
     skinfnc.Create_stdDropDown=function(def,ref,parent,modtype,dropdownlist) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
+      skinfnc.stdEdit_AddClearBtn(def);
       var c=ngDropDown_Create(def,ref,parent, modtype,dropdownlist);
       if(!c) return c;
       skinfnc.stdEdit_AddProperties(c);
@@ -2245,7 +2307,6 @@ var WinXPControls = {
         });
         var c=skinfnc.Create_stdDropDown(def,ref,parent, modtype,false);
         if(!c) return c;
-        skinfnc.stdEdit_AddProperties(c);
         c.DropDownButton.LeftImg=winimages.Calendar;
         c.DropDownButton.Alt = ngTxt('calendar');
         c.DropDownButton.Default = false;
@@ -2297,6 +2358,7 @@ var WinXPControls = {
         div=ngVal(def.DropDown.HourDivider,2);
         if(div<=0) div=1;
         div=60/div;
+        skinfnc.stdEdit_AddClearBtn(def);        
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
 
@@ -3134,6 +3196,7 @@ var WinXPControls = {
         skinfnc.Create_stdEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className='wxpEdit';
         if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
+        skinfnc.stdEdit_AddClearBtn(def);        
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c) {
           skinfnc.stdEdit_AddProperties(c);
