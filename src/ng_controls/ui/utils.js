@@ -89,7 +89,7 @@ var ngHtmlVal = (function() {
     cache[key]=e;
   }
 
-  var f=function(s, replacecrlf, encoding, nocache, nowarn)
+  var f=function(s, replacecrlf, encoding, nocache, nowarn, purifycfg)
   {    
     if((typeof s==='undefined')||(s==='')||(s===null)) return ''+s;
 
@@ -107,7 +107,7 @@ var ngHtmlVal = (function() {
                 var key='P_'+s;
                 var e=get_cached(key,s);
                 if(typeof e!=='undefined') return e;
-                e=DOMPurify.sanitize(s);
+                e=DOMPurify.sanitize(s, purifycfg);
                 set_cached(key,e===s ? true : e);
               }
               if((e!==s)&&(ngHtmlValCacheDOMPurifyWarn)&&(!nowarn)) {
@@ -150,6 +150,10 @@ var ngHtmlVal = (function() {
 
 function ngHtmlAttr(a, nocache) {
   return nocache ? ng_htmlEncode(a,false) : ngHtmlVal(a,false);
+}
+
+function ngHtmlSanitize(s, nocache, purifycfg) {
+  return ngHtmlVal(s, false, 0 /*ngHtmlPurify*/, nocache, true, purifycfg);
 }
 
 function ng_Expand2Id(eid)
