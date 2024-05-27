@@ -151,6 +151,8 @@ var WinEightControls = {
       RightImgBtnReq: { L: 157, T: 207, W: 2, H: 32, DL: 193, oL: 190, SL: 157, oSL: 157 }
     },
 
+    ClearBtn: { L: 0, T: 6*32, SL: 33, DL: 66, W: 33, H: 32, Src: 3 },
+
     DropDown: { L: 0, T: 864, W: 33, H: 32, oL: 0, DL: 67, Src: 3, SL: 34, oSL: 33 },
 
     EditEllipsis: { L: 0, T: 2*32+1, SL: 33, DL: 66, W: 33, H: 32, Src: 3 },
@@ -1017,6 +1019,32 @@ var WinEightControls = {
     ngRegisterControlSkin('weGroup','ngGroup', skinfnc.Create_weGroup);
     ngRegisterControlSkin('weGroupBox', 'weGroup');
 
+    function clearbtn_click(e)
+    {
+      var c=e.Owner ? e.Owner.Owner : null;
+      if(!c) return;
+      if(!ngVal(c.ReadOnly,false)) c.SetText('');
+      c.SetFocus();
+    }
+
+    function clearbtn_textchanged(c)
+    {
+      if((c.Buttons)&&(c.Buttons.length>0)) {
+        var readonly=(c.ReadOnly)||(c.DropDownType === ngeDropDownList);
+        var update=false,b,v=(!readonly)&&(c.Text!=='');
+        for(var i=0;i<c.Buttons.length;i++) {
+          b=c.Buttons[i];
+          if((b)&&(b.OnClick===clearbtn_click)) {
+            if(b.Visible!==v) {
+              b.Visible=v;
+              update=true;
+            }
+          }
+        }
+        if(update) c.UpdateLater();
+      }
+    }
+
     skinfnc.weEdit_AddProperties=function(def,c,th)
     {
       var img=(th ? winimages.EditLight : winimages.EditDark);
@@ -1034,6 +1062,31 @@ var WinEightControls = {
         var leftimg=(req ? img.LeftImgReq : img.LeftImg);
         var rightimg=(req ? img.RightImgReq : img.RightImg);
 
+        if(def.ClearBtn) {
+          var i;
+          if(!ng_IsArrayVar(c.Buttons)) c.Buttons=[];
+          for(i=0;i<c.Buttons.length;i++) {
+            if((c.Buttons[i])&&(c.Buttons[i].OnClick===clearbtn_click)) break;
+          }
+        
+          if(i>=c.Buttons.length) {
+            var readonly=(c.ReadOnly)||(c.DropDownType === ngeDropDownList);
+
+            var b=new ngButton();
+            if(c.TextAlign==='right') {            
+              b.RightImg=winimages.ClearBtn;
+              b.ButtonAlign='left';
+            } else {
+              b.LeftImg=winimages.ClearBtn;
+            }
+            b.OnClick = clearbtn_click;
+            b.Visible=(!readonly)&&(c.Text!=='');        
+            b.Owner=c;
+            c.Buttons.push(b);
+            c.AddEvent('OnTextChanged', clearbtn_textchanged);
+            c.AddEvent('OnReadOnlyChanged', clearbtn_textchanged);
+          }
+        }        
         if((c.LeftImg===leftimg)||(c.RightImg===rightimg))
         {
           if(c.Buttons)
@@ -2950,7 +3003,6 @@ var WinEightControls = {
 
         var c=skinfnc.Create_weDropDown(def,ref,parent,modtype,false);
         if(!c) return c;
-        skinfnc.weEdit_AddProperties(def,c,th);
         c.DropDownButton.LeftImg=winimages.AppIcons[1]['Calendar'];
         c.DropDownButton.Alt = ngTxt('calendar');
         c.DropDownButton.Default = false;
