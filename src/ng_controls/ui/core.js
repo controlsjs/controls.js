@@ -2551,10 +2551,12 @@ function nge_SuggestionRefresh(forcerequery, delay)
   if(ngVal(forcerequery,false)) this.SuggestionLastSearch='';
 
   var o=dd.Elm();
-  if((o)&&(o.style.height!=''))
+
+  if(o)
   {
     o.style.display='none';
-    o.style.height='';
+    if(typeof this._origDDWidth  !== 'undefined') o.style.width =this._origDDWidth;
+    if(typeof this._origDDHeight !== 'undefined') o.style.height=this._origDDHeight;
   }
   if(typeof delay==='undefined') delay=ngVal(this.SuggestionDelay,200);
   this.SuggestionTimer=setTimeout("nge_Suggestion('"+this.ID+"')",delay);
@@ -3307,12 +3309,13 @@ function nge_HideDropDown()
   var l=this.DropDownControl;
   if(l){
     l.SetVisible(false);
-
-    if(typeof this._origDDWidth !== 'undefined'){
-      var o=l.Elm();
-      if(o) o.style.width=this._origDDWidth;
-      delete this._origDDWidth;
+    var o=l.Elm();
+    if(o) {
+      if(typeof this._origDDWidth  !== 'undefined') o.style.width =this._origDDWidth;
+      if(typeof this._origDDHeight !== 'undefined') o.style.height=this._origDDHeight;
     }
+    delete this._origDDWidth;
+    delete this._origDDHeight;
   }
 }
 
@@ -3368,7 +3371,8 @@ function nge_DropDown()
 
     var op=o.parentNode;
     var pos=ng_ParentPosition(po,op,true);
-    this._origDDWidth=o.style.width;
+    if(typeof this._origDDWidth ==='undefined') this._origDDWidth =o.style.width;
+    if(typeof this._origDDHeight==='undefined') this._origDDHeight=o.style.height;
 
     if(typeof this.DropDownWidth !== 'undefined')
     {
