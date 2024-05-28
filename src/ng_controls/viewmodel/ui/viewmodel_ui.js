@@ -2410,18 +2410,21 @@ ngUserControls['viewmodel_ui'] = {
           ngCtrlBindingRead('Lookup',c,valueAccessor,function(val) {
             var list=c.DropDownControl;
             if(!list) return;
+            if((list.CtrlType!=='ngList')&&(ng_IsObjVar(list.Controls))&&(ng_IsObjVar(list.Controls.List))&&(list.Controls.List.CtrlType==='ngList')) list=list.Controls.List;
             var found=null;
             var keyfield=ngVal(c.LookupKeyField, 'Value');
             if(!ng_isEmpty(val))
             {
-              list.Scan(function(list,it,parent,userdata) {
-                if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),val))
-                {
-                  found=it;
-                  return false;
-                }
-                return true;
-              });
+              if(typeof list.Scan==='function') {
+                list.Scan(function(list,it,parent,userdata) {
+                  if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),val))
+                  {
+                    found=it;
+                    return false;
+                  }
+                  return true;
+                });
+              }
             }
             if(!found)
             {
@@ -2456,17 +2459,20 @@ ngUserControls['viewmodel_ui'] = {
 
             var keyfield=ngVal(e.LookupKeyField, 'Value');
             var list=e.DropDownControl;
+            if((list.CtrlType!=='ngList')&&(ng_IsObjVar(list.Controls))&&(ng_IsObjVar(list.Controls.List))&&(list.Controls.List.CtrlType==='ngList')) list=list.Controls.List;
             var selval=(e.ListItem ? vmGetFieldValueByID(e.ListItem,keyfield) : undefined);
             if(!ng_isEmpty(selval))
             {
-              list.Scan(function(list,it,parent,userdata) {
-                if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),selval))
-                {
-                  list.SelectDropDownItem(it);
-                  return false;
-                }
-                return true;
-              });
+              if(typeof list.Scan==='function') {
+                list.Scan(function(list,it,parent,userdata) {
+                  if(ng_VarEquals(vmGetFieldValueByID(it,keyfield),selval))
+                  {
+                    list.SelectDropDownItem(it);
+                    return false;
+                  }
+                  return true;
+                });
+              }
             }
             return true;
           },'OnDropDown');

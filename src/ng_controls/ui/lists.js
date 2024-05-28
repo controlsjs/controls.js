@@ -5618,6 +5618,46 @@ function npgl_ScanVisiblePageItems(fnc, recursive, userdata)
   return true;
 }
 
+function npgl_DoDropDown(edit)
+{
+  this.SetVisible(true);
+  var l=this.List;
+  if(l) {
+    l.DropDownOwner=this.DropDownOwner;
+    l.DoDropDown.apply(l,arguments);
+
+    var it=l.DropDownOwnerListItem;
+    if((it)&&(l.Items)&&(l.Items.length)) {
+      var idx=-1;
+      for(var i=0;i<l.Items.length;i++) {
+        if(l.Items[i]===it) { idx=i; break; }
+        if(ng_IsArrayVar(l.Items[i].Items)) {
+          l.Scan(function(l, lit, items) {
+            if(lit===it) { idx=i; return false; }
+            return (idx<0);
+          });
+          if(idx>=0) break;
+        }
+      }
+      if(idx>=0) {
+        this.SetPage(this.PageByIndex(idx));
+      }
+    }
+  }
+}
+
+function npgl_DoDropDownFinished(edit) {
+  if(this.List) return this.List.DoDropDownFinished.apply(this.List,arguments);
+}
+
+function npgl_SelectDropDownItem(it) {
+  if(this.List) return this.List.SelectDropDownItem.apply(this.List,arguments);
+}
+
+function npgl_SelectDropDownItemWithFocus(it) {
+  if(this.List) return this.List.SelectDropDownItemWithFocus.apply(this.List,arguments);
+}
+
 /**
  *  Class: ngPageList
  *  This class implements <ngPageList> control (based on component <ngFrame>)
@@ -6164,6 +6204,14 @@ function Create_ngPageList(def, ref, parent)
 
   c.AsyncWaiting = npgl_AsyncWaiting;
 
+  c.DoDropDown = npgl_DoDropDown;
+  c.DoDropDownFinished = npgl_DoDropDownFinished;
+  c.SelectDropDownItem = npgl_SelectDropDownItem;
+  c.SelectDropDownItemWithFocus = npgl_SelectDropDownItemWithFocus;
+  c.SetDropDownOwner = function(owner) {
+    c.DropDownOwner=owner;
+    if(c.List) c.List.DropDownOwner=owner;
+  }
 
   /*
    *  Group: Events
@@ -6345,6 +6393,8 @@ function Create_ngPageList(def, ref, parent)
     c.List=ngVal(l,null);
     if(l)
     {
+      if(c.DropDownOwner) l.DropDownOwner=c.DropDownOwner;
+
       l.draw_page=-1;
       l.draw_length=-1;
       l.draw_height=0;
@@ -6355,7 +6405,7 @@ function Create_ngPageList(def, ref, parent)
       l.displayed_items=c.DisplayedItems;
       l.max_displayed_items=0;
       l.display_mode=c.DisplayMode;
-      l.ListPagingChanged=npgl_ListPagingChanged;
+      l.ListPagingChanged=npgl_ListPagingChanged;      
       l.ListPagingChanged();
 
       ng_OverrideMethod(l,'IndexOf',npgl_IndexOf);
