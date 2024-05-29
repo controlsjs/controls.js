@@ -4787,9 +4787,21 @@ function ngc_HandleScrollGesture(c,pi,elm)
 {
   if(pi.Gesture==='drag')
   {
+    if(pi.DragSelect) return false;
+
     var dx=Math.round(pi.X-pi.StartX);
     var dy=Math.round(pi.Y-pi.StartY);
     if((dx)||(dy)) {
+      var scroll=pi.Scroll || (Math.abs(dx)>20)||(Math.abs(dy)>20);
+
+      if(!pi.PreventSelect) {
+        if(scroll) pi.DragSelect=false;
+        else if((typeof pi.DragSelect==='undefined')&&(new Date().getTime()-pi.StartTime>500))
+        {          
+          pi.DragSelect=true;
+          return false;
+        }
+      }
 
       if(typeof pi.ScrollControl === 'undefined')
       {
@@ -4837,10 +4849,12 @@ function ngc_HandleScrollGesture(c,pi,elm)
           pi.ScrollTop  = ost;
           pi.ScrollLeft = osl;
           pi.ScrollType=st;
+          if(pi.DragSelect===false) ng_DocumentDeselect();
           return true;
         }
       }
       else
+        if(pi.DragSelect===false) ng_DocumentDeselect();
         if(pi.ScrollControl === c)
         {
           var st=pi.ScrollType;
@@ -4865,7 +4879,7 @@ function ngc_HandleScrollGesture(c,pi,elm)
             },1);
           }
 
-          if((Math.abs(dx)>20)||(Math.abs(dy)>20))
+          if(scroll)
           {
             delete pi.Gestures.tap;
             delete pi.Gestures.doubletap;
