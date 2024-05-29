@@ -1476,6 +1476,12 @@ function ngl_DoPtrStart(pi)
 {
   var eid=pi.EventID;
   var eidp=eid.substr(0,4);
+  if(this.CanSelectText)
+  {
+    pi.PreventDefault=false;
+    pi.DocumentDeselect=false;
+    pi.PreventSelect=false;
+  }
   if(eidp==='item')
   {
     var cid=parseInt(eid.substring(4,eid.length),10);
@@ -1539,12 +1545,12 @@ function ngl_DoPtrClick(pi)
   if((!this.MouseEvents)||(this.ReadOnly)) return;
 
   if((typeof pi.ScrollTop!=='undefined')&&(Math.abs(pi.Y-pi.StartY)>10)) return;
+  if((pi.EndTime-pi.StartTime>200)&&((this.CanSelectText)||(!pi.IsInSrcElement()))) return;
 
   var eid=pi.EventID;
   var eidp=eid.substr(0,4);
   if(eidp==='item')
   {
-    if((pi.EndTime-pi.StartTime>200)&&(!pi.IsInSrcElement())) return;
     var e=pi.StartEvent;
     var cid=parseInt(eid.substring(4,eid.length),10);
     ngl_GetClickInfo(e,pi.StartElement,cid);
@@ -3477,6 +3483,13 @@ function ngList(id)
    *  Type: object
    */
   this.Frame = new Object;
+  /*
+   *  Variable: CanSelectText
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.CanSelectText = false;
 
   this.do_add = ngl_do_add;
   this.do_remove = ngl_do_remove;

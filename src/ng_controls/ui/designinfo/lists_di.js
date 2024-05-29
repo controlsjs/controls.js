@@ -671,7 +671,8 @@ return {
             "CheckedChangedDelay": ng_diInteger(0, { Level: 'advanced' }),
             "ItemsControls": ng_diArrayOfControls(undefined, { Level: 'hidden' }),
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
-            "Frame": ng_diType( 'img_frame', { Level: 'advanced' })
+            "Frame": ng_diType( 'img_frame', { Level: 'advanced' }),
+            "CanSelectText": ng_diBoolean(false, { Level: 'basic' })
           },
           "Methods": {
             "DoItemsChanged": ng_diFunction('function() { ng_CallParent(this, "DoLoadData", arguments); }', { Level: 'advanced' }),
