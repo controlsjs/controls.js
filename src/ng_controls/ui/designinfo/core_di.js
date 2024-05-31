@@ -324,7 +324,8 @@ return {
             "RightImg": ng_diType('image', { Level: 'advanced' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "Default": ng_diBoolean(false, { Level: 'basic' }),
-            "Cancel": ng_diBoolean(false, { Level: 'basic' })
+            "Cancel": ng_diBoolean(false, { Level: 'basic' }),
+            "CanSelectText": ng_diBoolean(false, { Level: 'basic' })
           },
           "Events": {
             "OnCheckChanged": ng_diEvent('function(c) { }', { Level: 'basic' }),

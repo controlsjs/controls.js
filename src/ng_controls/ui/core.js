@@ -1546,15 +1546,27 @@ function ngb_DoMouseLeave(e, mi)
   }
 }
 
+function ngb_DoPtrStart(pi)
+{
+  if(this.CanSelectText)
+  {
+    pi.PreventDefault=false;
+    pi.DocumentDeselect=false;
+    pi.PreventSelect=false;
+  }
+}
+
 function ngb_DoPtrClick(pi)
 {
   if(pi.EventID!=='btn') return;
+  if((this.CanSelectText)&&(pi.EndTime-pi.StartTime>200)) return;
+
   ngb_GetClickInfo(pi.Event,pi.StartElement);
   this.Click(pi.Event);
 }
 
 function ngb_DoPtrDblClick(pi)
-{
+{  
   if(pi.EventID!=='btn') return;
   ngb_GetClickInfo(pi.Event,pi.StartElement);
   if(this.OnDblClick) this.OnDblClick(pi.Event);
@@ -1716,8 +1728,16 @@ function ngButton(id, text)
    */
   this.ReadOnly = false;
 
+  /*  Variable: CanSelectText
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  this.CanSelectText = false;
+
   this.DoMouseEnter = ngb_DoMouseEnter;
   this.DoMouseLeave = ngb_DoMouseLeave;
+  this.DoPtrStart = ngb_DoPtrStart;
   this.DoPtrClick = ngb_DoPtrClick;
   this.DoPtrDblClick = ngb_DoPtrDblClick;
 
