@@ -637,6 +637,7 @@ ngUserControls['dialogs'] = {
                 L:0, T: 20, R: 0, H: 90,
                 Data: {
                   HTMLEncode: false,
+                  CanSelectText: true,
                   Items: [ 
                     { id: 'SystemInfo',   Text: '<b>'+ngTxt('ngAboutSystemInfo')+'</b>',   Collapsed: true },
                     { id: 'Components',   Text: '<b>'+ngTxt('ngAboutComponents')+'</b>',   Collapsed: true },

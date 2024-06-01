@@ -172,6 +172,7 @@ ngUserControls['dialogs_designinfo'] = {
               "T": ng_diTypeVal('bounds', 20),
               "H": ng_diTypeVal('bounds', 90),
               "Data": {
+                "CanSelectText": ng_diBoolean(true),
                 "Items": ng_diType('ngListItems', { Collapsed: false, Level: 'basic' }, {
                   ObjectProperties: {
                     0: ng_diType('ngListItem',{ Level: 'basic' }, {
