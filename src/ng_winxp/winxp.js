@@ -621,6 +621,8 @@ var WinXPControls = {
     /*<>*/
     ngRegisterControlSkin('stdLabel','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wxpLabel';
+      if(typeof def.Data === 'undefined') def.Data = {};
+      if(typeof def.Data.CanSelectText === 'undefined') def.Data.CanSelectText = true;
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: stdLink

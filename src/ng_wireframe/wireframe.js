@@ -609,6 +609,8 @@ var WireframeControls = {
      */
     ngRegisterControlSkin('wfrLabel','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className='wfrLabel';
+      if(typeof def.Data === 'undefined') def.Data = {};
+      if(typeof def.Data.CanSelectText === 'undefined') def.Data.CanSelectText = true;
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 

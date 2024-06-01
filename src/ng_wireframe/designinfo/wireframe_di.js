@@ -92,7 +92,10 @@ var WireframeControls_DesignInfo = {
       return {
         ControlCategory: 'Label',
         Properties: {
-          "className": ng_diString('wfrLabel')
+          "className": ng_diString('wfrLabel'),
+          "Data": {
+            "CanSelectText": ng_diBoolean(true)
+          }          
         }
       };
     });

@@ -97,7 +97,10 @@ var WinXP_DesignInfo = {
       return {
         ControlCategory: 'Label',
         Properties: {
-          "className": ng_diString('wxpLabel')
+          "className": ng_diString('wxpLabel'),
+          "Data": {
+            "CanSelectText": ng_diBoolean(true)
+          }
         }
       };
     });

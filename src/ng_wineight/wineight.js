@@ -993,6 +993,8 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlSkin('weLabel','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weLabelLight' : 'weLabelDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'Text' : '');
+      if(typeof def.Data === 'undefined') def.Data = {};
+      if(typeof def.Data.CanSelectText === 'undefined') def.Data.CanSelectText = true;
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
     /*  Class: weLink

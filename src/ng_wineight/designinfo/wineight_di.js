@@ -377,7 +377,10 @@ return {
       return themeSchemeDI({
         ControlCategory: 'Label',
         Properties: {
-          "className": defThemeClassName('Label')
+          "className": defThemeClassName('Label'),
+          "Data": {
+            "CanSelectText": ng_diBoolean(true)
+          }          
         }
       });
     });
