@@ -773,6 +773,8 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlSkin('weCaption','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weCaptionLight' : 'weCaptionDark') +' we'+wineight.DefColorScheme(def)+'Text';
+      if(typeof def.Data === 'undefined') def.Data = {};
+      if(typeof def.Data.CanSelectText === 'undefined') def.Data.CanSelectText = true;
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
@@ -782,6 +784,8 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlSkin('weTitle','ngButton', function(def,ref,parent,modtype) {
       if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weTitleLight' : 'weTitleDark')+' we'+wineight.DefColorScheme(def)+'Text';
+      if(typeof def.Data === 'undefined') def.Data = {};
+      if(typeof def.Data.CanSelectText === 'undefined') def.Data.CanSelectText = true;
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 

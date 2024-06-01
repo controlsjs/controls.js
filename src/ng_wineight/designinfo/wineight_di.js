@@ -225,7 +225,10 @@ return {
       return themeSchemeDI({
         ControlCategory: 'Label',
         Properties: {
-          "className": defThemeSchemeClassName('Caption','Text')
+          "className": defThemeSchemeClassName('Caption','Text'),
+          "Data": {
+            "CanSelectText": ng_diBoolean(true)
+          }
         }
       });
     });
@@ -234,7 +237,10 @@ return {
       return themeSchemeDI({
         ControlCategory: 'Label',
         Properties: {
-          "className": defThemeSchemeClassName('Title','Text')
+          "className": defThemeSchemeClassName('Title','Text'),
+          "Data": {
+            "CanSelectText": ng_diBoolean(true)
+          }          
         }
       });
     });
