@@ -1165,6 +1165,7 @@ var WireframeControls = {
             }
           }
         });
+        if((def.className === 'wfrDropDown')&&(typeof def.Controls.List.className === 'undefined')) def.Controls.List.className='wfrDropDown';
 
         var c = ngCreateControlAsType(def, modtype, ref, parent);
         if(!c){return c;}

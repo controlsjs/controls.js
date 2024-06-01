@@ -1989,6 +1989,7 @@ var WinEightControls = {
             }
           }
         });
+        if(((''+def.className).substr(0,10) === 'weDropDown')&&(typeof def.Controls.List.className === 'undefined')) def.Controls.List.className=def.className;
 
         return ngCreateControlAsType(def, modtype, ref, parent);
       };

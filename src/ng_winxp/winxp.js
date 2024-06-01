@@ -1388,6 +1388,7 @@ var WinXPControls = {
             }
           }
         });
+        if((def.className === 'wxpDropDown')&&(typeof def.Controls.List.className === 'undefined')) def.Controls.List.className='wxpDropDown';        
 
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
