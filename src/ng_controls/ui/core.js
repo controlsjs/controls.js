@@ -2691,6 +2691,21 @@ function nge_TextChanged(event, elm, edit)
   }
 }
 
+function nge_IsMetaKey(keycode)
+{
+  switch(keycode)
+  {
+    case 16: // KEY_SHIFT
+    case 17: // KEY_CONTROL
+    case 18: // KEY_MENU
+    case 91: // KEY_LWIN
+    case 92: // KEY_RWIN
+    case 93: // KEY_APPS
+      return true;
+  }
+  return false;
+}
+
 function nge_KeyDown(e,elm)
 {
   if(!e) e=window.event;
@@ -2701,7 +2716,16 @@ function nge_KeyDown(e,elm)
     if((et)&&(et!==edit)) return;
 
     e.Owner=edit;
-    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
+    e.StartTime=new Date().getTime();
+
+    var metakey=nge_IsMetaKey(e.keyCode);
+    if((!metakey)&&(edit.KeyDownEvent)&&(e.keyCode!==edit.KeyDownEvent.keyCode)) {
+      nge_KeyUp(edit.KeyDownEvent,elm);
+    }
+    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;    
+    if(metakey) return;
+
+    edit.KeyDownEvent=e;
     if((edit.LockHintCaretPos)&&(edit.HintVisible))
     {
       switch(e.keyCode)
@@ -2728,6 +2752,12 @@ function nge_KeyDown(e,elm)
       var dd=edit.DropDownControl;
       switch(e.keyCode)
       {
+        case 9:  // Tab
+          if(!dd) break;
+          if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
+          edit.SuggestionTimer=null;
+          edit.HideDropDown();
+          break;        
         case 33: // PgUp
         case 34: // PgDown
         case 38: // Up
@@ -2867,143 +2897,161 @@ function nge_KeyUp(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngEdit');
-  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
+  if(edit)
   {
-    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
-    if((et)&&(et!==edit)) return;
-
-    e.Owner=edit;
-    nge_KeyUpHint(edit,elm,'Input');
-
-    if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
-
-    nge_TextChanged(e,elm,edit);
-    if(ngVal(edit.Suggestion,false)) // Suggestion keys
+    if(nge_IsMetaKey(e.keyCode))
     {
-      var lst=edit.DoGetSuggestionList();
-      var dd=edit.DropDownControl;
-      switch(e.keyCode)
+      e.Owner=edit;
+      if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
+      return;
+    }
+
+    var de=edit.KeyDownEvent;
+    if(de) {
+      if(e.keyCode!==de.keyCode) return;
+      var etarget=e.target || e.srcElement || e.originalTarget;
+      var et=ngGetControlByElement(etarget);
+      if((et)&&(et!==edit)) return;
+      var dtarget=de.target || de.srcElement || de.originalTarget;
+      var st=(dtarget!==etarget ? ngGetControlByElement(dtarget) : et);
+      if((st)&&(st!==edit)) return;
+
+      delete edit.KeyDownEvent;
+      if((edit.Enabled)&&(!edit.ReadOnly))
       {
-        case 35: // End
-        case 36: // Home
-        case 37: // Left
-          break;
-        case 9:  // Tab
-          if(!dd) break;
-        case 27: // Esc
-          if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
-          edit.SuggestionTimer=null;
-          edit.HideDropDown();
-          break;
-        case 39: // Right
-        case 13: // Enter
-          if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
+        e.Owner=edit;
+        e.KeyDownEvent=de;
+        nge_KeyUpHint(edit,elm,'Input');
+
+        if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
+
+        nge_TextChanged(e,elm,edit);
+        if(ngVal(edit.Suggestion,false)) // Suggestion keys
+        {
+          var lst=edit.DoGetSuggestionList();
+          var dd=edit.DropDownControl;
+          switch(e.keyCode)
           {
-            var fi=lst.GetItemFocus();
-            if(fi)
-            {
-              if((e.keyCode==39)&&(fi)&&(typeof fi.Items !== 'undefined')&&(fi.Items.length>0))
-                break;
-              lst.SetItemFocus(null);
+            case 35: // End
+            case 36: // Home
+            case 37: // Left
+              break;
+            case 27: // Esc
               if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
               edit.SuggestionTimer=null;
-              lst.SelectDropDownItem(fi);
-              edit=null;
+              edit.HideDropDown();
+              break;
+            case 39: // Right
+            case 13: // Enter
+              if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
+              {
+                var fi=lst.GetItemFocus();
+                if(fi)
+                {
+                  if((e.keyCode==39)&&(fi)&&(typeof fi.Items !== 'undefined')&&(fi.Items.length>0))
+                    break;
+                  lst.SetItemFocus(null);
+                  if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
+                  edit.SuggestionTimer=null;
+                  lst.SelectDropDownItem(fi);
+                  edit=null;
+                }
+              }
+              break;
+            case 33: // PgUp
+            case 34: // PgDown
+            case 38: // Up
+            case 40: // Down
+              if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
+              {
+                var o=lst.Elm();
+                if((o)&&(o.onkeyup)) o.onkeyup(e);
+                edit=null;
+                break;
+              }
+              if(e.keyCode!=40) break;
+            default:
+              if((elm.value=='')&&(!edit.SuggestionAllowEmpty))
+              {
+                if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
+                edit.SuggestionTimer=null;
+                edit.HideDropDown();
+              }
+              else
+              {
+                edit.SuggestionRefresh(e.keyCode===40 || e.keyCode===9 ? true : false);
+              }
+              if(e.keyCode==40) edit=null;
+              break;
+          }
+        }
+        if((e.keyCode==40)&&(edit)) edit.DropDown(); // Down
+        if((e.keyCode==13)&&(edit)) // Enter
+        {
+          var handled=false;
+          if(edit.Buttons)
+          {
+            var btn;
+            for(var i=0;i<edit.Buttons.length;i++)
+            {
+              btn=edit.Buttons[i];
+              if((ngVal(btn.Default,false))&&(typeof btn.Click === 'function'))
+              {
+                var timer=setTimeout(function () { // Fire Click later
+                  clearTimeout(timer);
+                  if(typeof btn.Click==='function') btn.Click(e);
+                },10);
+                handled=true;
+                break;
+              }
             }
           }
-          break;
-        case 33: // PgUp
-        case 34: // PgDown
-        case 38: // Up
-        case 40: // Down
-          if((dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
+          if((!handled)&&(nge_DefFormButton(edit, 1))) handled=true;
+          if((!handled)&&(edit.Buttons)&&(edit.Buttons.length>0)&&(edit.Buttons[0].Default!==false)&&(typeof edit.Buttons[0].Click === 'function'))
           {
-            var o=lst.Elm();
-            if((o)&&(o.onkeyup)) o.onkeyup(e);
-            edit=null;
-            break;
-          }
-          if(e.keyCode!=40) break;
-        default:
-          if((elm.value=='')&&(!edit.SuggestionAllowEmpty))
-          {
-            if(edit.SuggestionTimer) clearTimeout(edit.SuggestionTimer);
-            edit.SuggestionTimer=null;
-            edit.HideDropDown();
-          }
-          else
-          {
-            edit.SuggestionRefresh();
-          }
-          if(e.keyCode==40) edit=null;
-          break;
-      }
-    }
-    if((e.keyCode==40)&&(edit)) edit.DropDown(); // Down
-    if((e.keyCode==13)&&(edit)) // Enter
-    {
-      var handled=false;
-      if(edit.Buttons)
-      {
-        var btn;
-        for(var i=0;i<edit.Buttons.length;i++)
-        {
-          btn=edit.Buttons[i];
-          if((ngVal(btn.Default,false))&&(typeof btn.Click === 'function'))
-          {
+            btn=edit.Buttons[0];
             var timer=setTimeout(function () { // Fire Click later
               clearTimeout(timer);
               if(typeof btn.Click==='function') btn.Click(e);
             },10);
             handled=true;
-            break;
           }
-        }
-      }
-      if((!handled)&&(nge_DefFormButton(edit, 1))) handled=true;
-      if((!handled)&&(edit.Buttons)&&(edit.Buttons.length>0)&&(edit.Buttons[0].Default!==false)&&(typeof edit.Buttons[0].Click === 'function'))
-      {
-        btn=edit.Buttons[0];
-        var timer=setTimeout(function () { // Fire Click later
-          clearTimeout(timer);
-          if(typeof btn.Click==='function') btn.Click(e);
-        },10);
-        handled=true;
-      }
 
-      if(handled)
-      {
-        edit.SetFocus(false);
-        if(e.stopPropagation) e.stopPropagation();
-        else e.cancelBubble = true;
-      }
-    }
-    if((e.keyCode==27)&&(edit)) // Escape
-    {
-      var handled=false;
-      if(edit.Buttons)
-      {
-        var btn;
-        for(var i=0;i<edit.Buttons.length;i++)
-        {
-          btn=edit.Buttons[i];
-          if((ngVal(btn.Cancel,false))&&(typeof btn.Click === 'function'))
+          if(handled)
           {
-            var timer=setTimeout(function () { // Fire Click later
-              clearTimeout(timer);
-              if(typeof btn.Click==='function') btn.Click(e);
-            },10);
-            handled=true;
-            break;
+            edit.SetFocus(false);
+            if(e.stopPropagation) e.stopPropagation();
+            else e.cancelBubble = true;
           }
         }
-      }
-      if((!handled)&&(nge_DefFormButton(edit, 0))) handled=true;
-      if(handled)
-      {
-        edit.SetFocus(false);
-        if(e.stopPropagation) e.stopPropagation();
-        else e.cancelBubble = true;
+        if((e.keyCode==27)&&(edit)) // Escape
+        {
+          var handled=false;
+          if(edit.Buttons)
+          {
+            var btn;
+            for(var i=0;i<edit.Buttons.length;i++)
+            {
+              btn=edit.Buttons[i];
+              if((ngVal(btn.Cancel,false))&&(typeof btn.Click === 'function'))
+              {
+                var timer=setTimeout(function () { // Fire Click later
+                  clearTimeout(timer);
+                  if(typeof btn.Click==='function') btn.Click(e);
+                },10);
+                handled=true;
+                break;
+              }
+            }
+          }
+          if((!handled)&&(nge_DefFormButton(edit, 0))) handled=true;
+          if(handled)
+          {
+            edit.SetFocus(false);
+            if(e.stopPropagation) e.stopPropagation();
+            else e.cancelBubble = true;
+          }
+        }
       }
     }
   }
@@ -4773,8 +4821,16 @@ function ngem_KeyDown(e,elm)
     if((et)&&(et!==edit)) return;
 
     e.Owner=edit;
-    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
+    e.StartTime=new Date().getTime();
 
+    var metakey=nge_IsMetaKey(e.keyCode);
+    if((!metakey)&&(edit.KeyDownEvent)&&(e.keyCode!==edit.KeyDownEvent.keyCode)) {
+      ngem_KeyUp(edit.KeyDownEvent,elm);
+    }
+    if((edit.OnKeyDown)&&(!ngVal(edit.OnKeyDown(e,elm),false))) return false;
+    if(metakey) return;
+
+    edit.KeyDownEvent=e;
     if((edit.LockHintCaretPos)&&(edit.HintVisible))
     {
       switch(e.keyCode)
@@ -4813,19 +4869,39 @@ function ngem_KeyUp(e,elm)
 {
   if(!e) e=window.event;
   var edit=ngGetControlById(elm.id.substring(0,elm.id.length-2), 'ngMemo');
-  if((edit)&&(edit.Enabled)&&(!edit.ReadOnly))
+  if(edit)
   {
-    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
-    if((et)&&(et!==edit)) return;
+    if(nge_IsMetaKey(e.keyCode))
+    {  
+      e.Owner=edit;
+      if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
+      return;
+    }
 
-    e.Owner=edit;
-    nge_KeyUpHint(edit,elm,'Input');
-
-    if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
-    ngem_TextChanged(e,elm,edit);
-    if((e.keyCode==27)&&(edit))
+    var de=edit.KeyDownEvent;
+    if(de)
     {
-      nge_DefFormButton(edit, 0);
+      if(e.keyCode!==de.keyCode) return;
+      var etarget=e.target || e.srcElement || e.originalTarget;
+      var et=ngGetControlByElement(etarget);
+      if((et)&&(et!==edit)) return;
+      var dtarget=de.target || de.srcElement || de.originalTarget;
+      var st=(dtarget!==etarget ? ngGetControlByElement(dtarget) : et);
+      if((st)&&(st!==edit)) return;
+      delete edit.KeyDownEvent;
+      if((edit.Enabled)&&(!edit.ReadOnly))
+      {
+        e.Owner=edit;
+        e.KeyDownEvent=de;
+        nge_KeyUpHint(edit,elm,'Input');
+
+        if((edit.OnKeyUp)&&(!ngVal(edit.OnKeyUp(e,elm),false))) return false;
+        ngem_TextChanged(e,elm,edit);
+        if((e.keyCode==27)&&(edit))
+        {
+          nge_DefFormButton(edit, 0);
+        }
+      }
     }
   }
 }

@@ -2047,6 +2047,21 @@ function ngl_PrevVisibleItem(it,subitems,enabledonly)
   return (curvisible ? null : this.LastVisibleItem(null,enabledonly)); //return null;
 }
 
+function ngl_IsMetaKey(keycode)
+{
+  switch(keycode)
+  {
+    case 16: // KEY_SHIFT
+    case 17: // KEY_CONTROL
+    case 18: // KEY_MENU
+    case 91: // KEY_LWIN
+    case 92: // KEY_RWIN
+    case 93: // KEY_APPS
+      return true;
+  }
+  return false;
+}
+
 function ngl_KeyDown(e)
 {
   if(!e) e=window.event;
@@ -2060,8 +2075,16 @@ function ngl_KeyDown(e)
     if((et)&&(et!==l)&&(et!=edit)) return;
 
     e.Owner=l;
-    if((l.OnKeyDown)&&(!ngVal(l.OnKeyDown(e),false))) return false;
+    e.StartTime=new Date().getTime();
 
+    var metakey=ngl_IsMetaKey(e.keyCode);
+    if((!metakey)&&(l.KeyDownEvent)&&(e.keyCode!==l.KeyDownEvent.keyCode)) {
+      ngl_KeyUp.apply(this,[l.KeyDownEvent]);
+    }
+    if((l.OnKeyDown)&&(!ngVal(l.OnKeyDown(e),false))) return false;
+    if(metakey) return;
+
+    l.KeyDownEvent=e;
     var ieKey=e.keyCode;
     switch(ieKey)
     {
@@ -2174,13 +2197,34 @@ function ngl_KeyUp(e)
 {
   if(!e) e=window.event;
   var l=ngGetControlById(this.id, 'ngList');
-  if((l)&&(l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
+  if(l)
   {
-    var edit=l.DropDownOwner;
-    var et=ngGetControlByElement(e.target || e.srcElement || e.originalTarget);
-    if((et)&&(et!==l)&&(et!=edit)) return;
-    e.Owner=l;
-    if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
+    if(ngl_IsMetaKey(e.keyCode))
+    {
+      e.Owner=l;
+      if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
+      return;
+    }
+  
+    var de=l.KeyDownEvent;
+    if(de)
+    {
+      if(e.keyCode!==de.keyCode) return;
+      var edit=l.DropDownOwner;
+      var etarget=e.target || e.srcElement || e.originalTarget;
+      var et=ngGetControlByElement(etarget);
+      if((et)&&(et!==l)&&(et!==edit)) return;
+      var dtarget=de.target || de.srcElement || de.originalTarget;
+      var st=(dtarget!==etarget ? ngGetControlByElement(dtarget) : et);
+      if((st)&&(st!==l)&&(st!==edit)) return;
+      delete l.KeyDownEvent;
+      if((l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
+      {   
+        e.Owner=l;
+        e.KeyDownEvent=de;
+        if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
+      }    
+    }
   }
 }
 
