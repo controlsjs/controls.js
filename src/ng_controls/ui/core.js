@@ -2981,7 +2981,7 @@ function nge_KeyUp(e,elm)
               }
               else
               {
-                edit.SuggestionRefresh(e.keyCode===40 || e.keyCode===9 ? true : false);
+                edit.SuggestionRefresh(e.keyCode===40 ? true : false);
               }
               if(e.keyCode==40) edit=null;
               break;
