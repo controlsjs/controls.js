@@ -2399,20 +2399,21 @@ function nge_SuggestionResults(id,txt,data)
     if((typeof data==='undefined')||(data.length==0)) c.SuggestionFound=false;
     else
     {
-      lst.Clear();
-      lst.AddItems(data);
-      if((dd.Visible)&&(lst.Visible))
-      {
-        lst.SetItemFocus(null);
-        lst.Update();
+      lst.BeginUpdate();
+      try {
+        lst.Clear();
+        lst.AddItems(data);
+      } finally {
+        lst.EndUpdate();
       }
+      lst.SetItemFocus(null);
       c.SuggestionFound=true;
     }
   }
   if(c.SuggestionFound)
   {
     lst.SetItemFocus(null);
-    c.DropDown();
+    if(c.ControlHasFocus) c.DropDown();
   }
   else
   {
@@ -2443,7 +2444,7 @@ function nge_Suggestion(id)
     {
       var lst=c.DoGetSuggestionList();
       if(lst) lst.SetItemFocus(null);
-      c.DropDown();
+      if(c.ControlHasFocus) c.DropDown();
     }
     else c.HideDropDown();
   }
@@ -2496,6 +2497,7 @@ function nge_SuggestionSearch(txt)
     {
       if(!this.SuggestionRPC) this.SuggestionRPC=new ngRPC(this.ID);
       this.SuggestionRPC.sendRequest(url);
+      this.SuggestionFound=false;
       return;
     }
     else // Client suggestions
@@ -2507,7 +2509,7 @@ function nge_SuggestionSearch(txt)
       if((lst)&&(dd))
       {
         var emptytxt=((txt=='')&&(this.SuggestionAllowEmpty));
-        if(ignorecase) txt=txt.toLowerCase();
+        if((ignorecase)&&(typeof txt.toLowerCase==='function')) txt=txt.toLowerCase();
         var cid='';
         if(lst.Columns.length>0) cid=ngVal(this.SuggestionSearchColumn,lst.Columns[0].ID);
 
