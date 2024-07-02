@@ -3089,18 +3089,30 @@ function nge_SetText(text)
 function nge_DoAcceptGestures(o,gestures)
 {
   gestures.tap=true;
+  gestures.swipedown=true;
+  gestures.swipeup=true;
 }
 
 function nge_DoGesture(pi)
 {
-  if((pi.Owner===this)&&(pi.Gesture==='drag'))
+  if(pi.Owner===this)
   {
-    if(this.HasFocus)
-      return true;
+    switch(pi.Gesture)
+    {
+      case 'drag':
+        if(this.HasFocus) return true;
+        break;
+      case 'swipedown':
+      case 'swipeup':
+        if(ngVal(this.Suggestion,false)) {
+          this.SuggestionRefresh(true);
+          return true;      
+        }
+        break;
+    }
   }
   return false;
 }
-
 
 function nge_DoPtrStart(pi)
 {
