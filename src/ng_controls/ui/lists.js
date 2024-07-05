@@ -1401,7 +1401,7 @@ function ngl_SelectDropDownItem(it)
     if(it)
     {
       if(typeof it.Text === 'string') t=it.Text;
-      else if((this.Columns.length>0)&&(typeof it.Text==='object')) t=it.Text[this.Columns[0]];
+      else if((this.Columns.length>0)&&(typeof it.Text==='object')) t=it.Text[this.Columns[0].ID];
       if((ngVal(dd.Suggestion,false))&&(dd.OnSuggestionSetText))
       {
         var undefined;
