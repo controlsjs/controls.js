@@ -485,6 +485,7 @@ var ViewModel_Controls_DesignInfo = (function()
         "FormatNumber": ng_diBoolean(false, { Level: 'basic' }),
         "DecimalSeparator": ng_diString('', { Level: 'basic' }),
         "ThousandsSeparator": ng_diString('', { Level: 'basic' }),
+        "ItemSeparator": ng_diString(',', { Level: 'basic' }),
 
         "EditNumStep": ng_diInteger(1, { Level: 'optional' }),
         "EditNumStepRound": ng_diBoolean(false, { Level: 'optional' })
@@ -541,7 +542,8 @@ var ViewModel_Controls_DesignInfo = (function()
           "InvalidChars": { Level: 'optional' },
           "DateTimeFormat": { Level: 'optional' },
           "DateFormat": { Level: 'optional' },
-          "TimeFormat": { Level: 'optional' }
+          "TimeFormat": { Level: 'optional' },
+          "ItemSeparator": { Level: 'optional' }
         };
         switch(type) {
           case 'integer':
@@ -955,7 +957,8 @@ var ViewModel_Controls_DesignInfo = (function()
         // ngFieldDef_Array
         fdtype('ngFieldDef_Array', 'ARR', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('array', {
-            'RemoveEmptyItems': { Level: 'basic' }
+            'RemoveEmptyItems': { Level: 'basic' },
+            'ItemSeparator':  { Level: 'basic' }
           })),
           ng_diMixed(['undefined','vmfielddef'], { DisplayName: 'ValueFieldDef', InitType: 'ngFieldDef_String', Level: 'basic' })
         ]),

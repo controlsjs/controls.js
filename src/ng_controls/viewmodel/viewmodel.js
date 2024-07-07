@@ -697,7 +697,7 @@ function ngfd_FormatString(v)
         break;
       case 'ARRAY':
         if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
-          r=v.join(',');
+          r=v.join(ngVal(this.Attrs['ItemSeparator'],','));
         else
           r=null;
         break;
@@ -791,7 +791,7 @@ function ngfd_ParseString(v)
             r=ng_ParseTime(v,fmt,null);
             break;
           case 'ARRAY':
-            r=v.split(','); 
+            v=v.split(ngVal(this.Attrs['ItemSeparator'],',')); 
             break;
         }
 
