@@ -457,11 +457,18 @@ var ViewModel_Controls_DesignInfo = (function()
         "PrivateField": ng_diBoolean(false, { Level: 'basic' }),
         "DisplayName": ng_diMixed(['undefined','string'], { Level: 'basic', InitType: 'string' }),
         "Size": ng_diMixed(['undefined','integer'], { Level: 'basic', InitType: 'integer' }),
+        "MinSize": ng_diMixed(['undefined','integer'], { Level: 'basic', InitType: 'integer' }),
         "Precision": ng_diMixed(['undefined','integer'], { Level: 'basic' }),
         "Required": ng_diBoolean(false, { Level: 'basic' }),
         "NullIfEmpty": ng_diBoolean(true, { Level: 'basic' }),
         "AllowEmpty": ng_diBoolean(false, { Level: 'basic' }),
         "AutoTrim": ng_diIntegerIdentifiers(1,['fdNoTrim','fdTrim','fdLeftTrim','fdRightTrim'],{ Level: 'basic' }),
+        "LowerCase": ng_diBoolean(false, { Level: 'basic' }),
+        "UpperCase": ng_diBoolean(false, { Level: 'basic' }),
+        "UTF8mb3Replace": ng_diMixed(['undefined','boolean','string'], { Level: 'basic' }),
+        "UTF8mb3": ng_diBoolean(false, { Level: 'basic' }),
+        "ValidChars": ng_diString('', { Level: 'basic' }),
+        "InvalidChars": ng_diString('', { Level: 'basic' }),
         "ReadOnly": ng_diMixed(['undefined',ng_diBoolean(true)], { Level: 'basic', InitType: 'boolean' }),
         "MinValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
         "MaxValue": ng_diType('jstypes', { Level: 'basic', DefaultType: 'undefined' }),
@@ -525,9 +532,13 @@ var ViewModel_Controls_DesignInfo = (function()
         if(!prop) prop={};
         var di={ 
           "Size": { Level: 'optional' },
+          "MinSize": { Level: 'optional' },
           "Precision": { Level: 'optional' },
           "DefaultValue": { DefaultType: type },
           "Enum": { Types: { array: { ChildDesignInfo: { DefaultType: type }} } },
+          "UTF8mb3": { Level: 'optional' },
+          "ValidChars": { Level: 'optional' },
+          "InvalidChars": { Level: 'optional' },
           "DateTimeFormat": { Level: 'optional' },
           "DateFormat": { Level: 'optional' },
           "TimeFormat": { Level: 'optional' }
@@ -567,7 +578,8 @@ var ViewModel_Controls_DesignInfo = (function()
       function fdattrvalstring(prop,nominmax) {
         if(!prop) prop={};
         ng_MergeVar(prop,{
-          "Size": { Level: 'basic' }
+          "Size": { Level: 'basic' },
+          "MinSize": { Level: 'basic' }
         });
         return fdattrvaltype('string',prop,nominmax)
       }

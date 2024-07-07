@@ -201,6 +201,14 @@ function ng_ViewModelFormatError(err)
       msg.push(ng_sprintf(ngTxt('viewmodel_err_len'),err.FieldDef.Size));
   }
 
+  if(err.Error & FIELDDEF_ERR_MINLEN)
+  {
+    if((!isfielddef)||(ng_isEmpty(err.FieldDef.Attrs['MinSize'])))
+      msg.push(ngTxt('viewmodel_err_minlen_unknown'));
+    else
+      msg.push(ng_sprintf(ngTxt('viewmodel_err_minlen'),err.FieldDef.Attrs['MinSize']));
+  }
+  
   if((msg.length==0) && (err.Error & FIELDDEF_ERR)) {
     msg.push(ngTxt('viewmodel_err_unknown'));
   }
@@ -214,13 +222,14 @@ function ng_ViewModelFormatError(err)
  *  Class: ngFieldDefException
  *  This class implements <ngFieldDef> type exception. 
  */
-var FIELDDEF_ERR       = 1;
-var FIELDDEF_ERR_TYPE  = 2;
-var FIELDDEF_ERR_EMPTY = 4;
-var FIELDDEF_ERR_MIN   = 8;
-var FIELDDEF_ERR_MAX   = 16;
-var FIELDDEF_ERR_ENUM  = 32;
-var FIELDDEF_ERR_LEN   = 64;
+var FIELDDEF_ERR        = 1;
+var FIELDDEF_ERR_TYPE   = 2;
+var FIELDDEF_ERR_EMPTY  = 4;
+var FIELDDEF_ERR_MIN    = 8;
+var FIELDDEF_ERR_MAX    = 16;
+var FIELDDEF_ERR_ENUM   = 32;
+var FIELDDEF_ERR_LEN    = 64;
+var FIELDDEF_ERR_MINLEN = 128;
 
 function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 {
@@ -487,11 +496,10 @@ function ngfd_TypedValue(v)
       case 'LONG':
       case 'ULONG':
         typefnc=ng_toNumber;
-        c=typefnc(r);
+        c=ng_toNumber(r);
         break;
       case 'DECIMAL':
         checkminmax=false;
-        c=r;
         if((!ng_isEmpty(this.MinValue))&&(ng_toNumber(c)<ng_toNumber(this.MinValue))) err|=FIELDDEF_ERR_MIN;
         if((!ng_isEmpty(this.MaxValue))&&(ng_toNumber(c)>ng_toNumber(this.MaxValue))) err|=FIELDDEF_ERR_MAX;
 
@@ -499,8 +507,23 @@ function ngfd_TypedValue(v)
         break;
       case 'STRING':
       case 'NVARCHAR':
+        if(r!='')
+        {
+          if((this.Attrs['UTF8mb3'])&&(!ng_IsUTF8mb3(r))) {
+            throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+          }
+          if(typeof this.Attrs['ValidChars']!=='undefined') {
+            if((this.Attrs['ValidChars']=='')||(new RegExp('[^'+this.Attrs['ValidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+          }
+          if(typeof this.Attrs['InvalidChars']!=='undefined') {
+            if((this.Attrs['InvalidChars']!='')&&(new RegExp('['+this.Attrs['InvalidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+          }
+        }
         typefnc=ng_toString;
         if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+        if((typeof this.Attrs['MinSize']!=='undefined')&&(c.length<this.Attrs['MinSize'])) {
+          throw new ngFieldDefException(this, err|FIELDDEF_ERR_MINLEN);
+        }
         break;
       case 'TIMESTAMP':
       case 'DATETIME':
@@ -712,6 +735,16 @@ function ngfd_ParseString(v)
       case 1: v=ng_Trim(v); break;
       case 2: v=ng_LTrim(v); break;
       case 3: v=ng_RTrim(v); break;
+    }
+    if(v!=='') {
+      if(typeof this.Attrs['UTF8mb3Replace']!=='undefined')
+      {
+        var replacewith=this.Attrs['UTF8mb3Replace'];
+        if(replacewith===true) replacewith=void 0;
+        if(replacewith!==false) v=ng_UTF8mb3(v, replacewith);
+      }
+      if(this.Attrs['LowerCase']) v=v.toLowerCase();
+      if(this.Attrs['UpperCase']) v=v.toUpperCase();
     }
     if(this.OnParseString) v=this.OnParseString(this,v);
     if(this.DoParseString) v=this.DoParseString(v);
