@@ -3726,18 +3726,21 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
   var rpctype;
   this.RequestTime=reqinfo.RequestTime;
   this.RequestInfo=reqinfo;
-  switch(type)
+  if((typeof reqinfo.Method==='undefined')&&(ng_EmptyVar(this.HTTPMethod)))
   {
-    case rpcHttpRequestPOST:
-    case rpcJSONPOST:
-    case rpcDataPOST:
-      reqinfo.Method='POST';
-      break;
-    case rpcHttpRequestGET:
-    case rpcDataGET:
-    case rpcJSONGET:
-      reqinfo.Method='GET';
-      break;
+    switch(type)
+    {
+      case rpcHttpRequestPOST:
+      case rpcJSONPOST:
+      case rpcDataPOST:
+        reqinfo.Method='POST';
+        break;
+      case rpcHttpRequestGET:
+      case rpcDataGET:
+      case rpcJSONGET:
+        reqinfo.Method='GET';
+        break;
+    }
   }
   switch(type)
   {
