@@ -3599,6 +3599,79 @@ ngUserControls['viewmodel'] = {
         owner: this})); 
     };
 
+    /*  Function: ko.ng_array_merge
+     *  Merge one or more array.
+     *
+     *  Syntax:
+     *    function *ko.ng_array_merge* (mixed arr1, mixed arr2, ...)
+     *
+     *  Parameters:
+     *    arr1 - an array
+     *    arr2 - an array
+     *    ...
+     *
+     *  Returns:
+     *    Computed viewmodel property.
+     */
+    ko.ng_array_merge=function() {
+      var merge=[];;
+      for(var i=0;i<arguments.length;i++) merge.push(arguments[i]);
+      return ko.ng_noserialize(ko.computed(function() {
+        var a,n=[];
+        for(var i=0;i<merge.length;i++) {
+          a=merge[i];
+          if(ko.isObservable(a)) a=a();
+          if(ng_typeArray(a)) for(var j=0;j<a.length;j++) n.push(a[j]);          
+        }
+        return n;
+      },this));
+    };
+
+    /*  Function: ko.ng_array_splice
+     *  Remove a portion of the array and replace it with something else.
+     *
+     *  Syntax:
+     *    function *ko.ng_array_splice* (observable arr, mixed start [, mixed delcount=0, mixed item1, mixed item2, ...])
+     *
+     *  Parameters:
+     *    arr - input array
+     *    start - index at which to start changing the array (can be observable)
+     *    delcount - number of elements to remove from array (can be observable)
+     *    item1...itemn - elements added to the array, beginning from start
+     *
+     *  Returns:
+     *    Computed viewmodel property.
+     */
+
+    ko.ng_array_splice=function(arr,start,delcount) {
+      var ins;
+      if(arguments.length>3) {
+        ins=[];
+        for(var i=3;i<arguments.length;i++) ins.push(arguments[i]);
+      }
+
+      return ko.ng_noserialize(ko.computed(function() {
+        var a=arr();
+        if(!ng_typeArray(a)) a=[];
+        var s=start,d=delcount;
+        if(ko.isObservable(s)) s=s();
+        if(ko.isObservable(d)) d=d();
+        s=ng_toNumber(s,0);
+        d=ng_toNumber(d,0);
+
+        if(s<0) s=s+a.length;
+        if(s<0) s=0;
+        if(s>=a.length) { d=0; s=a.length; }
+        if(d<0) d=0;
+
+        var n=[];
+        for(var i=0;i<s;i++) n.push(a[i]);
+        if(typeof ins!=='undefined') for(var i=0;i<ins.length;i++) n.push(ins[i]);
+        for(var i=s+d;i<a.length;i++) n.push(a[i]);
+        return n;
+      },this));
+    };
+
     /*  Function: ko.ng_array_item
      *  Creates computed indexed array item accessor.
      *  Allows binding of non-observable array items.
@@ -3640,6 +3713,86 @@ ngUserControls['viewmodel'] = {
           else arr(a);
         },
         owner: this}));
+    };
+
+    /*  Function: ko.ngTxt
+     *  Computed viewmodel property which convert value(s) to text resource.
+     *
+     *  Syntax:
+     *    function *ko.ngTxt* (observable o, string prefix [, mixed props, string defaultvalue])
+     *
+     *  Parameters:
+     *    o - input array or string
+     *    prefix - resource prefix used with value as text identificator
+     *    props - list of properties when input is object or array
+     *    defaultvalue - used when resource text is not found
+     *
+     *  Returns:
+     *    Computed readonly viewmodel property.
+     */
+    ko.ngTxt=function(v, prefix, props, defaultvalue) {
+      prefix=''+ngVal(prefix,'');
+      if(typeof props!=='undefined')
+      {      
+        if(typeof props==='object')
+        {
+          if(!props) props=void 0;
+          else if(ng_IsArrayVar(props)) {
+            var o={};
+            for(var i=0;i<props.length;i++) o[props[i]]=true;
+            props=o;
+          }
+        }
+        else 
+        {
+          props=''+props;
+          if(props==='') props=void 0;
+          else {
+            var o={};
+            o[''+props]=true;
+            props=o;
+          }
+        }
+      }
+
+      function kotxt(val) {
+        if(ko.isObservable(val)) val=val();
+        switch(typeof val)
+        {
+          case 'undefiend':
+            break;
+          case 'object':
+            if(val===null) break;
+            var o;
+            if(ng_IsArrayVar(val))
+            {
+              o=[]; 
+              for(var i=0;i<val.length;i++) {
+                if((typeof props!=='undefined')&&(!props[i])) o.push(val[i]);
+                else o.push(kotxt(val[i]));
+              }
+            }
+            else {
+              o={};
+              for(var i in val) {
+                if((typeof props!=='undefined')&&(!props[i])) o[i]=val[i];
+                else o[i]=kotxt(val[i]);
+              } 
+            }
+            return o;
+          case 'boolean': val = val ? 'true' : 'false';
+          default:
+            return ngTxt(prefix+val, defaultvalue);
+        }
+        return defaultvalue;
+      }
+
+      return ko.ng_noserialize(ko.computed(function() {
+        if((typeof ngApp==='object')&&(ngApp)&&(typeof ngApp.ViewModel==='object')&&(ngApp.ViewModel.LangId)) {
+          ngApp.ViewModel.LangId(); // add dependency on language change
+        }
+        return kotxt(v);
+      }, this));
     };
 
     /*  Function: ko.ng_unwrapobservable
