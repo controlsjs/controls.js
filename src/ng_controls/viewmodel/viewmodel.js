@@ -3767,12 +3767,10 @@ ngUserControls['viewmodel'] = {
             if(ng_IsArrayVar(val))
             {
               o=[]; 
-              for(var i=0;i<val.length;i++) {
-                if((typeof props!=='undefined')&&(!props[i])) o.push(val[i]);
-                else o.push(kotxt(val[i]));
-              }
+              for(var i=0;i<val.length;i++) o.push(kotxt(val[i]));
             }
             else {
+              if(ng_typeString(val)) return ngTxt(prefix+val, defaultvalue);
               o={};
               for(var i in val) {
                 if((typeof props!=='undefined')&&(!props[i])) o[i]=val[i];
