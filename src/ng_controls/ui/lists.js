@@ -2432,7 +2432,7 @@ function ngl_DrawItemText(html, it, id, level)
       }
       if(this.OnGetText) text=ngVal(this.OnGetText(this, it, col),'');
       else text=(typeof it.Text==='object' ? ngVal(it.Text[col.ID],'') : '');
-      text=ngHtmlVal(text, true, this.HTMLEncode);
+      text=ngHtmlVal(text, true, ngVal(col.HTMLEncode,this.HTMLEncode));
 
       emptytext=(text=='');
       if(emptytext) text='<div style="width:0px;position:relative;overflow:hidden;">&nbsp;</div>'; // text padding

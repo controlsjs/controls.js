@@ -147,7 +147,11 @@ return {
               ng_diUndefined(),
               ng_diInteger(0, undefined, { InitValue: 100 })
             ], { InitType: 'integer', Level: 'basic' }),
-            "Visible": ng_diBoolean(true, { Level: 'basic' })
+            "Visible": ng_diBoolean(true, { Level: 'basic' }),
+            "HTMLEncode": ng_diMixed([
+              ng_diUndefined(),
+              ng_diBoolean(false),
+            ], { InitType: 'undefined', Level: 'basic' })
           }
         }
       },
