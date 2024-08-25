@@ -150,7 +150,7 @@ return {
             "Visible": ng_diBoolean(true, { Level: 'basic' }),
             "HTMLEncode": ng_diMixed([
               ng_diUndefined(),
-              ng_diBoolean(false),
+              ng_diBoolean(false)
             ], { InitType: 'undefined', Level: 'basic' })
           }
         }
