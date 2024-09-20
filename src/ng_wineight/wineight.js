@@ -267,6 +267,15 @@ var WinEightControls = {
       BarImg:    { L:0, T:-6, H:6, Src:1 }
     },
 
+    ProgressRingLight: { L:0, T:0, W:40, H:40, Src:6 },
+    ProgressRingDark: { L:0, T:0, W:40, H:40, Src:7 },
+
+    ProgressDotLight: { L:0, T:0, W:22, H:22, Src:8 },
+    ProgressDotDark: { L:0, T:0, W:22, H:22, Src:9 },
+
+    ProgressLineLight: { L:0, T:0, W:110, H:10, Src:4 },
+    ProgressLineDark: { L:0, T:0, W:110, H:10, Src:5 },
+
     VSplitLight: { L: 383, T: 74, W: 16, H: 36, oL: 318, DL: -16 },
     VSplitDark: { L: 383, T: 112, W: 16, H: 36, oL: 318, DL: -16 },
 
