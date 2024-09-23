@@ -1692,15 +1692,15 @@ var WinEightControls = {
           HTMLEncode: false
         }
       });
-      var img=ctrlimages[img];
-      ng_PreloadImage(img);
+
+      ng_PreloadImage(img.Src);
       var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(c)
       {
         c.AddEvent(function (b) {
           var txt=ngVal(b.Text,'');
           if(txt!='') txt='&nbsp;<span style="line-height: '+h+'px">'+ngHtmlVal(txt)+'</span>';
-          return '<img src="'+img+'" align="top" />'+txt;
+          return '<img src="'+img.Src+'" align="top" width="'+img.W+'" height="'+img.H+'" />'+txt;
         }, 'OnGetText');
       }
       return c;
@@ -1712,7 +1712,8 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlSkin('weProgressRing','ngButton', function(def,ref,parent,modtype) {
       var th=wineight.DefTheme(def);
-      return skinfnc.Create_weProgressImg(def,ref,parent,modtype,(th ? 6 : 7),40,th);
+      var img=(th ? winimages.ProgressRingLight : winimages.ProgressRingDark);
+      return skinfnc.Create_weProgressImg(def,ref,parent,modtype,img,40,th);
     });
     /*  Class: weProgressDot
      *  Standard progress dot control (based on <ngText>).
@@ -1720,7 +1721,8 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlSkin('weProgressDot','ngButton', function(def,ref,parent,modtype) {
       var th=wineight.DefTheme(def);
-      return skinfnc.Create_weProgressImg(def,ref,parent,modtype,(th ? 8 : 9),22,th);
+      var img=(th ? winimages.ProgressDotLight : winimages.ProgressDotDark);
+      return skinfnc.Create_weProgressImg(def,ref,parent,modtype,img,22,th);
     });
     /*  Class: weProgressLine
      *  Standard progress dot control (based on <ngText>).
@@ -1728,7 +1730,8 @@ var WinEightControls = {
     /*<>*/
     ngRegisterControlSkin('weProgressLine','ngButton', function(def,ref,parent,modtype) {
       var th=wineight.DefTheme(def);
-      return skinfnc.Create_weProgressImg(def,ref,parent,modtype,(th ? 4 : 5),40,th);
+      var img=(th ? winimages.ProgressLineLight : winimages.ProgressLineDark);
+      return skinfnc.Create_weProgressImg(def,ref,parent,modtype,img,40,th);
     });
 
     /**
