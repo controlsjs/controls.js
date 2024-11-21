@@ -1536,6 +1536,7 @@ TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
   border-style:dashed;
 }
 .weFileUploaderLight .weListBoxLight, .weFileUploaderDark .weListBoxLight { background-color:#FFFFFF; }
+.weFileUploaderLight .weCompactListBoxLight, .weFileUploaderDark .weCompactListBoxLight { background-color:#FFFFFF; }
 .weLoginFormErrorMessage {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
