@@ -720,7 +720,7 @@ function ngfup_OnAddFileButtonUpdated(){
           + 'onchange="ngfup_action(\''+uploader.ID+'\', \'ChangeFile\');" '
           + 'style="'
             + 'position:absolute;left:-100%;top:0px;width:200%;height:100%;margin:0px;padding:0px;'
-            + 'font-size:10000px;cursor:pointer !important;'
+            + 'font-size:10000px;cursor:pointer !important;z-index:4;'
           + '"/>'
         + (useLabel
           ? '<label for="'+id+'_FO_I" style="'
