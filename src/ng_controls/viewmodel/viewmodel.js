@@ -17,16 +17,16 @@ var ngViewModelNamespaces = {};
 var fdNoTrim=0;
 var fdTrim=1;
 var fdLeftTrim=2;
-var fdRightTrim=3;        
+var fdRightTrim=3;
 
 /**
  *  Function: getViewModelById
  *  Get ViewModel instance by its ID.
- *  
+ *
  *  Syntax: object *getViewModelById* (string id)
- *  
- *  Returns: 
- *  ViewModel instance or null if viewmodel not found.        
+ *
+ *  Returns:
+ *  ViewModel instance or null if viewmodel not found.
  */
 function getViewModelById(id)
 {
@@ -51,30 +51,30 @@ function ngvm_setnsfields(scriptid,nsfields)
 /**
  *  Function: ng_ViewModelFormatError
  *  Formats ViewModel error object to one or more text messages.
- *  
+ *
  *  Syntax: array *ng_ViewModelFormatError* (object error)
- *  
+ *
  *  Parameters:
  *    error - ViewModel error object (<ngFieldDefException> or array of <ngFieldDefException>s)
- *        
- *  Returns: 
- *  Array of formated string messages.        
+ *
+ *  Returns:
+ *  Array of formated string messages.
  */
 function ng_ViewModelFormatError(err)
 {
   if(!ng_typeObject(err)) return '';
-  
+
   if(!(err instanceof ngFieldDefException))
   {
     var emsg,m,dn,msg=new Array();
     for(var i in err)
     {
       if(err[i] instanceof ngFieldDefException)
-      {        
+      {
         emsg=ng_ViewModelFormatError(err[i]);
         if(emsg==='') continue;
 
-        if(ngIsFieldDef(err[i].FieldDef)) 
+        if(ngIsFieldDef(err[i].FieldDef))
         {
           dn=ng_Trim(err[i].FieldDef.GetDisplayName());
           if(dn.length>0)
@@ -83,12 +83,12 @@ function ng_ViewModelFormatError(err)
             else dn+=' ';
           }
         }
-        else 
+        else
         {
           if(ng_typeString(err[i].FieldDef)) dn=err[i].FieldDef+': ';
           else dn='';
-        }        
-        if(ng_typeString(emsg)) 
+        }
+        if(ng_typeString(emsg))
         {
           m=dn+emsg;
           if(!ng_inArray(m,msg)) msg.push(m);
@@ -101,11 +101,11 @@ function ng_ViewModelFormatError(err)
             if(!ng_inArray(m,msg)) msg.push(m);
           }
         }
-      }    
+      }
     }
     return msg;
   }
-  
+
   var msg;
   var isfielddef=ngIsFieldDef(err.FieldDef);
   if((isfielddef)&&(!err.FieldDef.__formatingerror))
@@ -122,7 +122,7 @@ function ng_ViewModelFormatError(err)
     if(!ng_isEmpty(msg)) return msg;
   }
   msg=new Array();
-  
+
   if(ng_typeObject(err.ErrorMessage))
   {
     for(var i in err.ErrorMessage)
@@ -131,25 +131,25 @@ function ng_ViewModelFormatError(err)
   else if(err.ErrorMessage!='') msg.push(ngTxt(err.ErrorMessage));
 
   if(err.Error & FIELDDEF_ERR_TYPE)
-  {  
+  {
     if(isfielddef)
     {
       switch(err.FieldDef.Type)
       {
         case 'BOOL':          msg.push(ngTxt('viewmodel_err_type_bool')); break;
-        case 'SBYTE':         
-        case 'BYTE':          
-        case 'SHORT':         
-        case 'USHORT':        
-        case 'LONG':          
-        case 'ULONG':         
+        case 'SBYTE':
+        case 'BYTE':
+        case 'SHORT':
+        case 'USHORT':
+        case 'LONG':
+        case 'ULONG':
         case 'INTEGER':       msg.push(ngTxt('viewmodel_err_type_integer')); break;
-        case 'FLOAT':         
+        case 'FLOAT':
         case 'DECIMAL':       msg.push(ngTxt('viewmodel_err_type_decimal')); break;
-        case 'NVARCHAR':       
+        case 'NVARCHAR':
         case 'STRING':        msg.push(ngTxt('viewmodel_err_type_string')); break;
         case 'TIMESTAMP':
-        case 'DATETIME':      
+        case 'DATETIME':
         case 'UTCTIMESTAMP':
         case 'UTCDATETIME':   msg.push(ngTxt('viewmodel_err_type_datetime')); break;
         case 'DATE':          msg.push(ngTxt('viewmodel_err_type_date')); break;
@@ -157,7 +157,7 @@ function ng_ViewModelFormatError(err)
         case 'ARRAY':         msg.push(ngTxt('viewmodel_err_type_array')); break;
         default:              msg.push(ngTxt('viewmodel_err_type')); break;
       }
-    } 
+    }
     else msg.push(ngTxt('viewmodel_err_type'));
   }
 
@@ -208,7 +208,7 @@ function ng_ViewModelFormatError(err)
     else
       msg.push(ng_sprintf(ngTxt('viewmodel_err_minlen'),err.FieldDef.Attrs['MinSize']));
   }
-  
+
   if((msg.length==0) && (err.Error & FIELDDEF_ERR)) {
     msg.push(ngTxt('viewmodel_err_unknown'));
   }
@@ -220,7 +220,7 @@ function ng_ViewModelFormatError(err)
 
 /**
  *  Class: ngFieldDefException
- *  This class implements <ngFieldDef> type exception. 
+ *  This class implements <ngFieldDef> type exception.
  */
 var FIELDDEF_ERR        = 1;
 var FIELDDEF_ERR_TYPE   = 2;
@@ -242,20 +242,20 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
    *  Type: object
    */
   this.FieldDef = fd;
-  
+
   /*  Variable: Error
    *  Exception error type flags.
    *  Type: object
-   *     
+   *
    *  Constants:
-   *    FIELDDEF_ERR - unspecified error 
-   *    FIELDDEF_ERR_TYPE - type conversion exception 
-   *    FIELDDEF_ERR_EMPTY - field is empty 
-   *    FIELDDEF_ERR_MIN - value is lower than minimal allowed 
-   *    FIELDDEF_ERR_MAX - value is lower than maximum allowed                                     
+   *    FIELDDEF_ERR - unspecified error
+   *    FIELDDEF_ERR_TYPE - type conversion exception
+   *    FIELDDEF_ERR_EMPTY - field is empty
+   *    FIELDDEF_ERR_MIN - value is lower than minimal allowed
+   *    FIELDDEF_ERR_MAX - value is lower than maximum allowed
    *    FIELDDEF_ERR_ENUM - value is not one of allowed
-   *    FIELDDEF_ERR_LEN - length of value exceeds allowed 
-   */        
+   *    FIELDDEF_ERR_LEN - length of value exceeds allowed
+   */
   this.Error = err;
 
   /*  Variable: ErrorMessage
@@ -263,7 +263,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
    *  Type: string
    */
   this.ErrorMessage = ngVal(msg,'');
-  
+
   /*  Variable: ExtendedInfo
    *  Exception extended error information (optional).
    *  Type: mixed
@@ -306,7 +306,7 @@ function ngfd_Validate(v)
 
 function ngfd_FormatError(err)
 {
-  if(this.OnFormatError) 
+  if(this.OnFormatError)
   {
     var msg=this.OnFormatError(this, err);
     if(!ng_isEmpty(msg)) return msg;
@@ -328,7 +328,7 @@ function ngfd_GetDisplayName(substid)
 
 function ngfd_GetTypedDefaultValue()
 {
-  try   
+  try
   {
     return this.TypedValue(this.DefaultValue);
   }
@@ -386,9 +386,9 @@ function ngfd_TypedValue(v)
   try
   {
     if(ng_typeString(v)) v=this.ParseString(v);
-  
+
     var err=0;
-    if(this.OnTypedValue) 
+    if(this.OnTypedValue)
     {
       try
       {
@@ -399,38 +399,39 @@ function ngfd_TypedValue(v)
       {
         if(e instanceof ngFieldDefException)
           err=e.Error;
-        else 
+        else
           throw e;
       }
     }
-    
+
     var origv=v;
-    if(this.DoTypedValue) v=this.DoTypedValue(v); 
-  
+    if(this.DoTypedValue) v=this.DoTypedValue(v);
+
     if((this.NullIfEmpty)&&
       ((ng_isEmpty(v))
      ||((ng_typeString(v))&&(v.length==0))
      ||((ng_typeDate(v))&&(v.getTime()===0))
-     ||((ng_typeArray(v))&&(v.length==0))))
+     ||((ng_typeArray(v))&&(v.length==0))
+     ||((ng_typeObject(v))&&(ng_isEmptyObject(v)))))
       v=null;
-  
-    if(ng_isEmptyOrNull(v)) 
+
+    if(ng_isEmptyOrNull(v))
     {
       if(this.Required) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
       return v;
     }
-    
+
     function cast_numberwithlimit(fd,v,min,max)
     {
       v=parseInt(v,10);
       if(!ng_typeNumberInt(v)) return null;
-      if((ng_isEmpty(fd.MinValue))||(parseInt(fd.MinValue,10)<min)) fd.MinValue=min; 
+      if((ng_isEmpty(fd.MinValue))||(parseInt(fd.MinValue,10)<min)) fd.MinValue=min;
       if((ng_isEmpty(fd.MaxValue))||(parseInt(fd.MaxValue,10)>max)) fd.MaxValue=max;
-      return v;     
+      return v;
     }
-  
-    var r=null;  
-    switch(this.DataType) 
+
+    var r=null;
+    switch(this.DataType)
     {
       // boolean
       case 'BOOL':          r=ng_toBool(v,null); break;
@@ -451,7 +452,7 @@ function ngfd_TypedValue(v)
                             break;
       // string
       case 'STRING':        r=ng_toString(v,null); break;
-      case 'NVARCHAR':      r=ng_toNVARCHAR(v,undefined,null); 
+      case 'NVARCHAR':      r=ng_toNVARCHAR(v,undefined,null);
                             if((r!==null)&&(!ng_isEmpty(this.Size))&&(r.length>this.Size))
                               throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
                             break;
@@ -477,12 +478,12 @@ function ngfd_TypedValue(v)
     }
     if(r===null)
       throw new ngFieldDefException(this, err|FIELDDEF_ERR_TYPE); // type error
-  
+
     // Test value limits
     var c=r;
     var typefnc=null;
     var checkminmax=true;
-    switch(this.DataType) 
+    switch(this.DataType)
     {
       case 'BOOL':
         typefnc=ng_toBool;
@@ -503,7 +504,7 @@ function ngfd_TypedValue(v)
         if((!ng_isEmpty(this.MinValue))&&(ng_toNumber(c)<ng_toNumber(this.MinValue))) err|=FIELDDEF_ERR_MIN;
         if((!ng_isEmpty(this.MaxValue))&&(ng_toNumber(c)>ng_toNumber(this.MaxValue))) err|=FIELDDEF_ERR_MAX;
 
-        typefnc=null;        
+        typefnc=null;
         break;
       case 'STRING':
       case 'NVARCHAR':
@@ -534,7 +535,7 @@ function ngfd_TypedValue(v)
         typefnc=ng_toDateOnly;
         if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
-      case 'TIME':          
+      case 'TIME':
         typefnc=ng_toDate;
         if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
         break;
@@ -545,20 +546,20 @@ function ngfd_TypedValue(v)
         break;
       case 'ARRAY':
         if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-  
+
         checkminmax=false;
         if((!ng_isEmpty(this.MinValue))&&(c.length<parseInt(this.MinValue,10))) err|=FIELDDEF_ERR_MIN;
         if((!ng_isEmpty(this.MaxValue))&&(c.length>parseInt(this.MaxValue,10))) err|=FIELDDEF_ERR_MAX;
-  
+
         typefnc=function(n) { return n; };
-        break;      
+        break;
       case 'OBJECT':
         typefnc=function(n) { return n; };
         checkminmax=false;
-        break;        
+        break;
       default:
         typefnc=function(n) { return n; };
-        c=r;               
+        c=r;
         break;
     }
     if(typefnc!==null)
@@ -595,15 +596,15 @@ function ngfd_TypedValueAs(v,field)
   {
     if(e.FieldDef==field) e.FieldDef=this;
     throw e;
-  }   
-  return v;   
+  }
+  return v;
 }
 
 function ngfd_Serialize(v)
 {
   var r;
 
-  if(this.OnSerialize) r=this.OnSerialize(this,v);  
+  if(this.OnSerialize) r=this.OnSerialize(this,v);
   if((ng_isEmpty(r))&&(this.DoSerialize)) r=this.DoSerialize(v);
   if(ng_isEmpty(r)) r=this.TypedValue(v);
   switch(this.DataType)
@@ -643,7 +644,7 @@ function ngfd_Deserialize(v)
       break;
   }
   r=this.TypedValue(r);
-  return r;  
+  return r;
 }
 
 function ngfd_FormatString(v)
@@ -651,18 +652,18 @@ function ngfd_FormatString(v)
   if(this.__formatingstring) return v;
   this.__formatingstring=true;
   try
-  {  
-    try   
+  {
+    try
     {
       v=this.TypedValue(v);
     }
     catch(e)
     {
-    }   
+    }
     var s;
     if(this.OnFormatString) s=this.OnFormatString(this,v);
-    if(ng_typeString(s)) return s; 
-    if(this.DoFormatString) s=this.DoFormatString(v);  
+    if(ng_typeString(s)) return s;
+    if(this.DoFormatString) s=this.DoFormatString(v);
     if(ng_typeString(s)) return s;
     var r=null;
     switch(this.DataType)
@@ -688,7 +689,7 @@ function ngfd_FormatString(v)
       case 'DATE':
         r=ng_FormatDate(ng_toDate(v),ngVal(this.Attrs['DateFormat'],''),null);
         break;
-      case 'TIME':          
+      case 'TIME':
         r=ng_FormatTime(ng_toDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
         break;
       case 'UTCTIMESTAMP':
@@ -708,7 +709,7 @@ function ngfd_FormatString(v)
   finally
   {
     delete this.__formatingstring;
-  } 
+  }
   return v;
 }
 
@@ -716,8 +717,8 @@ function ngfd_EditString(v)
 {
   var s;
   if(this.OnEditString) s=this.OnEditString(this,v);
-  if(ng_typeString(s)) return s; 
-  if(this.DoEditString) s=this.DoEditString(v);  
+  if(ng_typeString(s)) return s;
+  if(this.DoEditString) s=this.DoEditString(v);
   if(ng_typeString(s)) return s;
   return this.FormatString(v);
 }
@@ -727,7 +728,7 @@ function ngfd_ParseString(v)
   if(this.__parsingstring) return v;
   this.__parsingstring=true;
   try
-  {  
+  {
     v=''+v;
     var trim=ngVal(this.AutoTrim,1);
     switch(trim)
@@ -748,7 +749,7 @@ function ngfd_ParseString(v)
     }
     if(this.OnParseString) v=this.OnParseString(this,v);
     if(this.DoParseString) v=this.DoParseString(v);
-    if(ng_typeString(v)) 
+    if(ng_typeString(v))
     {
       if((this.NullIfEmpty)&&(v.length==0)) v=null;
       else
@@ -785,13 +786,13 @@ function ngfd_ParseString(v)
             if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateFormat'],'');
             r=ng_ParseDate(v,fmt,null);
             break;
-          case 'TIME':          
+          case 'TIME':
             var fmt=this.Attrs['ParseTimeFormat'];
             if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['TimeFormat'],'');
             r=ng_ParseTime(v,fmt,null);
             break;
           case 'ARRAY':
-            v=v.split(ngVal(this.Attrs['ItemSeparator'],',')); 
+            v=v.split(ngVal(this.Attrs['ItemSeparator'],','));
             break;
         }
 
@@ -810,7 +811,7 @@ function ngfd_ParseString(v)
         }
       }
     }
-    try   
+    try
     {
       v=this.TypedValue(v);
     }
@@ -821,7 +822,7 @@ function ngfd_ParseString(v)
   finally
   {
     delete this.__parsingstring;
-  }   
+  }
   return v;
 }
 
@@ -831,7 +832,7 @@ function ngfd_SetAttribute(attr,val)
   {
     case 'PrivateField': this.PrivateField=val; break;
     case 'DisplayName':  this.DisplayName=val; break;
-    case 'Size':         this.Size=val; break; 
+    case 'Size':         this.Size=val; break;
     case 'Precision':    this.Precision=val; break;
 
     case 'Required':     this.Required=val; break;
@@ -853,7 +854,7 @@ function ngfd_GetAttribute(attr)
   {
     case 'PrivateField': return this.PrivateField;
     case 'DisplayName':  return this.DisplayName;
-    case 'Size':         return this.Size; 
+    case 'Size':         return this.Size;
     case 'Precision':    return this.Precision;
 
     case 'Required':     return this.Required;
@@ -915,15 +916,15 @@ function ngfd_GetAttributes(attrs)
 
 function ngFieldDefCreateAs(fd, id, type, attrs)
 {
-  try 
-  {          
+  try
+  {
     if(typeof type==='function')
     {
       fd.__fielddef = type;
       var args=Array.prototype.slice.apply(arguments);
       args.splice(2,1);
       args.splice(0,1);
-      fd.__fielddef.apply(fd,args)          
+      fd.__fielddef.apply(fd,args)
     }
     else
     {
@@ -942,12 +943,12 @@ function ngIsFieldDef(v)
 
 /**
  *  Class: ngFieldDef
- *  This class implements ViewModel field type description object.   
+ *  This class implements ViewModel field type description object.
  */
 function ngFieldDef(id, type, attrs)
 {
   attrs=ngVal(attrs,{});
-  
+
   /*
    *  Group: Properties
    */
@@ -962,15 +963,15 @@ function ngFieldDef(id, type, attrs)
    *  Type: mixed
    */
   //this.Parent    = undefined;
-  
+
   /*  Variable: ID
-   *  Field identifier.   
+   *  Field identifier.
    *  Type: string
    */
   this.ID       = ngVal(id,'');
-  
+
   /*  Variable: Type
-   *  Basic field type.   
+   *  Basic field type.
    *  Type: string
    *
    *  Constants:
@@ -983,69 +984,69 @@ function ngFieldDef(id, type, attrs)
    *    'USHORT' - unsigned short (0-65535)
    *    'LONG' - signed long (-2147483647..2147483647)
    *    'ULONG' - unsigned long (0..4294967295)
-   *    'DECIMAL' - number with fixed decimal   
-   *    'STRING' - string type 
+   *    'DECIMAL' - number with fixed decimal
+   *    'STRING' - string type
    *    'NVARCHAR' - string type with limited length
-   *    'TIMESTAMP' - date and time type 
+   *    'TIMESTAMP' - date and time type
    *    'DATETIME' - date and time type
    *    'DATE' - date only type
-   *    'TIME' - time only type           
+   *    'TIME' - time only type
    *    'UTCTIMESTAMP' - date and time type (UTC)
-   *    'UTCDATETIME' - date and time type (UTC) 
+   *    'UTCDATETIME' - date and time type (UTC)
    *    'ARRAY' - array type
    */
   this.Type     = ngVal(this.Type, type);
-  
+
   /*  Variable: DataType
-   *  Field type identifier.   
+   *  Field type identifier.
    *  Type: string
    */
   this.DataType = ngVal(type,'');
 
   /*  Variable: PrivateField
-   *  Determines if field is private. Private fields are never sent to server.   
+   *  Determines if field is private. Private fields are never sent to server.
    *  Type: boolean
-   *  Default value: *false*   
+   *  Default value: *false*
    */
   this.PrivateField = false;
-  
+
   /*  Variable: Attrs
-   *  Field extended attributes.   
+   *  Field extended attributes.
    *  Type: object
    *  Default value: *{}*
    */
   this.Attrs = {};
 
   /*  Variable: DisplayName
-   *  Textual description of field.   
+   *  Textual description of field.
    *  Type: string
    *  Default value: *undefined*
    */
   // this.DisplayName=undefined;
 
   /*  Variable: Size
-   *  Field size.   
+   *  Field size.
    *  Type: integer
    *  Default value: *undefined*
    */
   // this.Size=undefined;
-  
+
   /*  Variable: Precision
-   *  Field precision.   
+   *  Field precision.
    *  Type: integer
    *  Default value: *undefined*
    */
   // this.Precision=undefined;
 
   /*  Variable: Required
-   *  If TRUE, the value of field is required.   
+   *  If TRUE, the value of field is required.
    *  Type: boolean
    *  Default value: *false*
    */
   this.Required=false;
 
   /*  Variable: NullIfEmpty
-   *  If TRUE, the empty value of field is considered as null.   
+   *  If TRUE, the empty value of field is considered as null.
    *  Type: boolean
    *  Default value: *true*
    */
@@ -1059,55 +1060,55 @@ function ngFieldDef(id, type, attrs)
   this.AllowEmpty=false;
 
   /*  Variable: AutoTrim
-   *  Type of automatic string trim.   
+   *  Type of automatic string trim.
    *  Type: integer
    *  Default value: *fdTrim*
-   *     
+   *
    *  Constants:
-   *    fdNoTrim - don't trim    
+   *    fdNoTrim - don't trim
    *    fdTrim - trim leading and trailing spaces
    *    fdLeftTrim - trim leading spaces
-   *    fdRightTrim - trim trailing spaces        
+   *    fdRightTrim - trim trailing spaces
    */
   // this.AutoTrim=undefined;
 
   /*  Variable: ReadOnly
-   *  If TRUE, the value cannot be modified.   
+   *  If TRUE, the value cannot be modified.
    *  Type: string
    *  Default value: *undefined*
    */
   // this.ReadOnly=undefined;
 
   /*  Variable: MinValue
-   *  Minimal allowed value.   
+   *  Minimal allowed value.
    *  Type: mixed
    *  Default value: *undefined*
    */
   // this.MinValue=undefined;
 
   /*  Variable: MaxValue
-   *  Maximum allowed value.   
+   *  Maximum allowed value.
    *  Type: mixed
    *  Default value: *undefined*
    */
   // this.MaxValue=undefined;
 
   /*  Variable: Enum
-   *  Enumeration of allowed values.   
+   *  Enumeration of allowed values.
    *  Type: array
    *  Default value: *undefined*
    */
   // this.Enum=undefined;
 
   /*  Variable: DefaultValue
-   *  Default value of field.   
+   *  Default value of field.
    *  Type: mixed
    *  Default value: *undefined*
    */
   // this.DefaultValue=undefined;
 
   /*  Variable: Value
-   *  Value of field.   
+   *  Value of field.
    *  Type: mixed
    *  Default value: *undefined*
    */
@@ -1118,31 +1119,31 @@ function ngFieldDef(id, type, attrs)
    */
 
   /*  Function: GetDisplayName
-   *  Gets field DisplayName.   
-   *   
+   *  Gets field DisplayName.
+   *
    *  Syntax:
    *    string *GetDisplayName* ([bool substid=true])
-   *     
+   *
    *  Parameters:
-   *    substid - if TRUE, returns field ID if display name is not defined 
-   *             
+   *    substid - if TRUE, returns field ID if display name is not defined
+   *
    *  Returns:
-   *    The field display name.     
+   *    The field display name.
    */
   this.GetDisplayName = ngfd_GetDisplayName;
 
   /*  Function: GetTypedValue
-   *  Gets field *typed* value.   
-   *   
+   *  Gets field *typed* value.
+   *
    *  Syntax:
    *    mixed *GetTypedValue* ([bool exception=true, mixed defval])
    *
    *  Parameters:
    *    exception - if false field's DefaultValue is returned instead of throwing exception
    *    defval - if defined this value is returned instead of field's DefaultValue if execption is false
-   *     
+   *
    *  Returns:
-   *    The field value.     
+   *    The field value.
    */
   this.GetTypedValue = ngfd_GetTypedValue;
 
@@ -1163,42 +1164,42 @@ function ngFieldDef(id, type, attrs)
   this.SetTypedValue = ngfd_SetTypedValue;
 
   /*  Function: GetTypedDefaultValue
-   *  Gets field *typed* default value.   
-   *   
+   *  Gets field *typed* default value.
+   *
    *  Syntax:
    *    mixed *GetTypedDefaultValue* ()
-   *     
+   *
    *  Returns:
-   *    The field default value.     
+   *    The field default value.
    */
   this.GetTypedDefaultValue = ngfd_GetTypedDefaultValue;
 
   /*  Function: GetAttribute
-   *  Gets field attribute.   
-   *   
+   *  Gets field attribute.
+   *
    *  Syntax:
    *    mixed *GetAttribute* (string attr)
-   *     
+   *
    *  Parameters:
    *    attr - attribute id
-   *             
+   *
    *  Returns:
-   *    The value of specified attribute.     
+   *    The value of specified attribute.
    */
   this.GetAttribute = ngfd_GetAttribute;
 
   /*  Function: SetAttribute
-   *  Sets field attribute.   
-   *   
+   *  Sets field attribute.
+   *
    *  Syntax:
    *    void *SetAttribute* (string attr, mixed value)
-   *     
+   *
    *  Parameters:
    *    attr - attribute id
-   *    value - attribute value   
-   *             
+   *    value - attribute value
+   *
    *  Returns:
-   *    -     
+   *    -
    */
   this.SetAttribute = ngfd_SetAttribute;
 
@@ -1231,144 +1232,144 @@ function ngFieldDef(id, type, attrs)
   this.SetAttributes = ngfd_SetAttributes;
 
   /*  Function: TypedValue
-   *  Converts given value according to field type.   
-   *   
+   *  Converts given value according to field type.
+   *
    *  Syntax:
    *    mixed *TypedValue* (mixed value)
-   *     
+   *
    *  Parameters:
-   *    value - value to convert   
-   *             
+   *    value - value to convert
+   *
    *  Returns:
-   *    Converted value or throws <ngFieldDefException> if convert fails.      
+   *    Converted value or throws <ngFieldDefException> if convert fails.
    */
   this.TypedValue = ngfd_TypedValue;
 
   /*  Function: TypedValueAs
-   *  Converts given value according to external field type.   
-   *   
+   *  Converts given value according to external field type.
+   *
    *  Syntax:
    *    mixed *TypedValueAs* (mixed value, ngFieldDef field)
-   *     
+   *
    *  Parameters:
    *    value - value to convert
-   *    field - field to which type value should be converted       
-   *             
+   *    field - field to which type value should be converted
+   *
    *  Returns:
-   *    Converted value or throws <ngFieldDefException> if convert fails. 
-   *    Thrown exception has reference to this field, not external.       
+   *    Converted value or throws <ngFieldDefException> if convert fails.
+   *    Thrown exception has reference to this field, not external.
    */
   this.TypedValueAs = ngfd_TypedValueAs;
-  
+
   /*  Function: Clear
-   *  Sets field value to undefined.   
-   *   
+   *  Sets field value to undefined.
+   *
    *  Syntax:
    *    void *Clear* (void)
-   *     
+   *
    *  Returns:
-   *    -     
-   */   
+   *    -
+   */
   this.Clear = ngfd_Clear;
-  
+
   /*  Function: Validate
-   *  Validates if given value can be converted according to field type.   
-   *   
+   *  Validates if given value can be converted according to field type.
+   *
    *  Syntax:
    *    mixed *Validate* (mixed value)
-   *     
+   *
    *  Parameters:
-   *    value - value to test   
-   *             
+   *    value - value to test
+   *
    *  Returns:
-   *    TRUE if value can be converted or <ngFieldDefException> object with description of conversion failure.     
-   */   
+   *    TRUE if value can be converted or <ngFieldDefException> object with description of conversion failure.
+   */
   this.Validate    = ngfd_Validate;
-  
+
   /*  Function: FormatError
    *  Formats ViewModel error object to one or more text messages.
-   *   
+   *
    *  Syntax:
    *    array *FormatError* (object error)
-   *     
+   *
    *  Parameters:
-   *    error - ViewModel error object (<ngFieldDefException> or array of <ngFieldDefException>s)   
-   *             
-   *  Returns: 
-   *  Array of formated string messages.        
+   *    error - ViewModel error object (<ngFieldDefException> or array of <ngFieldDefException>s)
+   *
+   *  Returns:
+   *  Array of formated string messages.
    */
   this.FormatError = ngfd_FormatError;
 
-  this.DoFormatError = ngfd_DoFormatError;  
-  
+  this.DoFormatError = ngfd_DoFormatError;
+
   /*  Function: Serialize
-   *  Exports (and converts) given value from ViewModel.      
-   *   
+   *  Exports (and converts) given value from ViewModel.
+   *
    *  Syntax:
    *    mixed *Serialize* (mixed value)
-   *     
+   *
    *  Parameters:
-   *    value - value to serialize   
-   *             
+   *    value - value to serialize
+   *
    *  Returns:
-   *    Exported value or throws <ngFieldDefException> if convert fails.      
-   */   
+   *    Exported value or throws <ngFieldDefException> if convert fails.
+   */
   this.Serialize   = ngfd_Serialize;
-  
+
   /*  Function: Deserialize
-   *  Imports (and converts) given value to ViewModel.      
-   *   
+   *  Imports (and converts) given value to ViewModel.
+   *
    *  Syntax:
    *    mixed *Deserialize* (mixed value)
-   *     
+   *
    *  Parameters:
-   *    value - value to deserialize   
-   *             
+   *    value - value to deserialize
+   *
    *  Returns:
-   *    Imported value or throws <ngFieldDefException> if convert fails.      
-   */   
+   *    Imported value or throws <ngFieldDefException> if convert fails.
+   */
   this.Deserialize = ngfd_Deserialize;
 
   /*  Function: FormatString
-   *  Converts given value to string according to field type.      
-   *   
+   *  Converts given value to string according to field type.
+   *
    *  Syntax:
    *    string *FormatString* (mixed value)
-   *     
+   *
    *  Parameters:
-   *    value - value to convert   
-   *             
+   *    value - value to convert
+   *
    *  Returns:
-   *    String value.      
-   */   
+   *    String value.
+   */
   this.FormatString = ngfd_FormatString;
 
   /*  Function: EditString
-   *  Converts given value to string suitable for editation according to field type.      
-   *   
+   *  Converts given value to string suitable for editation according to field type.
+   *
    *  Syntax:
    *    string *EditString* (mixed value)
-   *     
+   *
    *  Parameters:
-   *    value - value to convert   
-   *             
+   *    value - value to convert
+   *
    *  Returns:
-   *    String value for edit.      
-   */   
+   *    String value for edit.
+   */
   this.EditString = ngfd_EditString;
-  
+
   /*  Function: ParseString
-   *  Converts given string value to value according to field type.      
-   *   
+   *  Converts given string value to value according to field type.
+   *
    *  Syntax:
    *    mixed *ParseString* (string str)
-   *     
+   *
    *  Parameters:
-   *    str - string value    
-   *             
+   *    str - string value
+   *
    *  Returns:
-   *    Value according to field type.      
-   */   
+   *    Value according to field type.
+   */
   this.ParseString  = ngfd_ParseString;
 
   /*
@@ -1377,32 +1378,32 @@ function ngFieldDef(id, type, attrs)
 
   /*
    *  Event: OnFormatError
-   */   
-  this.OnFormatError = null;  
+   */
+  this.OnFormatError = null;
   /*
    *  Event: OnSerialize
-   */   
+   */
   this.OnSerialize   = null;
   /*
    *  Event: OnDeserialize
-   */   
+   */
   this.OnDeserialize = null;
   /*
    *  Event: OnTypedValue
-   */   
+   */
   this.OnTypedValue  = null;
-  
+
   /*
    *  Event: OnFormatString
-   */   
+   */
   this.OnFormatString = null;
   /*
    *  Event: OnEditString
-   */   
+   */
   this.OnEditString = null;
   /*
    *  Event: OnParseString
-   */   
+   */
   this.OnParseString = null;
 
   this.SetAttributes(attrs);
@@ -1413,7 +1414,7 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
   deserialize=ngVal(deserialize,false);
   errors=ngVal(errors,{});
   strictvaluenames=ngVal(strictvaluenames,false);
-  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors, strictvaluenames),false))) return;         
+  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors, strictvaluenames),false))) return;
 
   if(valuenames)
   {
@@ -1446,7 +1447,7 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
       if((o==self.ViewModel)&&(i=='Owner')) continue;
       if((typeof d[i]==='undefined')&&(!valuenames)) continue;
       val=instance=o[i];
-      if(ngIsFieldDef(instance)) 
+      if(ngIsFieldDef(instance))
       {
         if(instance.PrivateField) {
           cansetvalue(path+i);
@@ -1455,10 +1456,10 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
         val=instance.Value;
       }
       valpath=path+i;
-      if(ko.isObservable(val)) 
+      if(ko.isObservable(val))
       {
         if((cansetvalue(valpath))&&(ko.isWriteableObservable(val)))
-        { 
+        {
           instance.__Loading=true;
           if(d.hasOwnProperty(i)) {
             try
@@ -1468,7 +1469,7 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
               if((deserialize)&&(typeof instance.Deserialize === 'function')) {
                 setval=instance.Deserialize(setval);
               }
-              else 
+              else
               {
                 if(typeof instance.TypedValue === 'function')
                   setval=instance.TypedValue(setval);
@@ -1486,7 +1487,7 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
                 if(typeof instance.TypedValue === 'function') {
                   setval=instance.TypedValue(ko.ng_getvalue(val));
                 }
-              } 
+              }
               catch(e) {
                 errors[valpath]=e;
               }
@@ -1494,21 +1495,21 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
           }
           delete instance.__Loading;
         }
-      } 
-      else 
-      {    
+      }
+      else
+      {
         if(typeof val==='function') continue;
         if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
           if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) {
             val={};
             setvalues(val,d[i],valpath);
             if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
-              o[i]=val;              
-            } 
+              o[i]=val;
+            }
           }
           else setvalues(val,d[i],valpath);
         }
-        else 
+        else
         {
           if((cansetvalue(valpath))&&(d.hasOwnProperty(i))) {
             setval=d[i];
@@ -1523,25 +1524,25 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
             o[i]=setval;
           }
         }
-      }    
-    }    
+      }
+    }
     for(var i in d)
     {
       if(typeof o[i]==='undefined')
       {
         valpath=path+i;
         if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
-          val={}; 
+          val={};
           setvalues(val,d[i],valpath);
           if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
             o[i]=val;
-          } 
+          }
         }
         else {
           if(cansetvalue(valpath)) {
             setval=d[i];
             if(this.OnSetValue) {
-              try { 
+              try {
                 setval=this.OnSetValue(this,setval,instance, valpath);
               }
               catch(e) {
@@ -1554,7 +1555,7 @@ function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluename
       }
     }
   }
-  setvalues(this.ViewModel,values,'');  
+  setvalues(this.ViewModel,values,'');
 }
 
 function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serialize)
@@ -1592,7 +1593,7 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
     {
       if((o==self.ViewModel)&&(i=='Owner')) continue;
       val=instance=o[i];
-      if(ngIsFieldDef(instance)) 
+      if(ngIsFieldDef(instance))
       {
         if(instance.PrivateField) {
           cangetvalue(valpath);
@@ -1601,9 +1602,9 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
         val=instance.Value;
       }
       valpath=path+i;
-      if(ko.isObservable(val)) 
+      if(ko.isObservable(val))
       {
-        if((writableonly)&&(!ko.isWriteableObservable(val))) continue;      
+        if((writableonly)&&(!ko.isWriteableObservable(val))) continue;
         if((serialize)&&(!val['__serialize'])) continue;
 
         if(cangetvalue(valpath))
@@ -1613,13 +1614,13 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
           {
             val=ko.ng_getvalue(val);
             if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
-            if((serialize)&&(typeof instance.Serialize === 'function')) 
-              d[i]=instance.Serialize(val);              
-            else 
+            if((serialize)&&(typeof instance.Serialize === 'function'))
+              d[i]=instance.Serialize(val);
+            else
             {
               if(typeof instance.TypedValue === 'function')
                 d[i]=instance.TypedValue(val);
-              else 
+              else
                 d[i]=val;
             }
           }
@@ -1632,16 +1633,16 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
           if((convtimestamps)&&(ng_typeDate(d[i]))) d[i]=ng_toUnixTimestamp(d[i]);
         }
       }
-      else 
-      {    
+      else
+      {
         if(typeof val==='function') continue;
-        if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val))) 
+        if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val)))
         {
           var dobj={};
           getvalues(val,dobj,valpath);
           if((cangetvalue(valpath))||!ng_EmptyVar(dobj)) d[i]=dobj;
         }
-        else 
+        else
         {
           if(cangetvalue(valpath))
           {
@@ -1657,11 +1658,11 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
             d[i]=val;
           }
         }
-      }      
-    }    
+      }
+    }
   }
-  
-  var ret={};           
+
+  var ret={};
   getvalues(this.ViewModel,ret,'');
 
   if(this.OnGetValues) {
@@ -1674,8 +1675,8 @@ function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serial
       if((ng_typeObject(e.FieldDef))&&(e.FieldDef.ID!='')) errors[e.FieldDef.ID]=e;
       else throw e;
     }
-  }         
-  return ret;  
+  }
+  return ret;
 }
 
 function ngvm_IsValid(writableonly, valuenames)
@@ -1699,9 +1700,9 @@ function ngvm_ShowErrors(errors)
   if(!ng_typeObject(errors)) return false;
 
   for(var i in errors)
-  {                   
+  {
     if(this.OnShowErrors) this.OnShowErrors(this,ng_ViewModelFormatError(errors),errors);
-    else 
+    else
     {
       var errmsg=ng_ViewModelFormatError(errors);
       if(ng_IsArrayVar(errmsg)) errmsg=errmsg.join("\n");
@@ -1714,7 +1715,7 @@ function ngvm_ShowErrors(errors)
 
 function ngvm_GetRPC()
 {
-  if(!this.rpc) 
+  if(!this.rpc)
   {
     var vm=this;
     var rpc=new ngRPC(this.ID);
@@ -1736,16 +1737,16 @@ function ngvm_makeobservable(o,serializeable)
   for(var i in o)
   {
     isarray=ng_IsArrayVar(o[i]);
-    if((typeof o[i]!=='function')&&((isarray)||(typeof o[i]!=='object')||(ng_typeDate(o[i])))) 
+    if((typeof o[i]!=='function')&&((isarray)||(typeof o[i]!=='object')||(ng_typeDate(o[i]))))
     {
       if(isarray) o[i]=ko.observableArray(o[i]);
       else o[i]=ko.observable(o[i]);
       if(serializeable) ko.ng_serialize(o[i]);
       continue;
-    } 
+    }
     ngvm_makeobservable(o[i],serializeable);
-  }  
-}                            
+  }
+}
 
 function ngvm_recievedata(results)
 {
@@ -1761,11 +1762,11 @@ function ngvm_recievedata(results)
     reqid=reqid.substring(i+1,reqid.length);
   }
   if(vmid=='') return;
- 
+
   // Get ngViewModel
   var vm=getViewModelById(vmid);
   if(!vm) return;
-   
+
   // Check request id
   if(reqid!=vm.rpc_reqid) return;
 
@@ -1776,7 +1777,7 @@ function ngvm_recievedata(results)
   if(vm.OnResults)
   {
     sresults = vm.OnResults(vm, results);
-    if(!sresults) return;     
+    if(!sresults) return;
   }
   else sresults=results;
 
@@ -1794,7 +1795,7 @@ function ngvm_recievedata(results)
     }
     vm.SetViewModel(vmodel);
   }
-  
+
   vm.ActiveCommand='';
   if(vm.OnCommandFinished) vm.OnCommandFinished(vm,cmd,sresults);
 
@@ -1857,7 +1858,7 @@ function ngvm_recievedata(results)
     vm.SetValues(sresults.Values,true);
   }
   if(vm.OnCommandData) vm.OnCommandData(vm,cmd,sresults);
-  
+
   // Fire callback
   if(typeof sresults.Callback === 'function') {
     vm.ViewModel.__servercallback=sresults.Callback;
@@ -1867,7 +1868,7 @@ function ngvm_recievedata(results)
     finally {
       delete vm.ViewModel.__servercallback;
     }
-  }      
+  }
 }
 
 function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
@@ -1879,7 +1880,7 @@ function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
     if(ngIsFieldDef(instance))
     {
       var forcmd=instance.Attrs['Command'];
-      if(forcmd!=='') 
+      if(forcmd!=='')
       {
         if(ng_isEmpty(forcmd))
         {
@@ -1888,8 +1889,8 @@ function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
         else
         {
           attrfound=true;
-          if((forcmd===cmd)||(ng_inArray(cmd,forcmd))) 
-            valuenames.push(valpath); 
+          if((forcmd===cmd)||(ng_inArray(cmd,forcmd)))
+            valuenames.push(valpath);
         }
       }
       else attrfound=true;
@@ -1903,9 +1904,9 @@ function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
 
 function ngvm_GetCommandValueNames(cmd,options,exactmatch)
 {
-  if(this.OnGetCommandValueNames) 
+  if(this.OnGetCommandValueNames)
   {
-    if(typeof options === 'undefined') options={};  
+    if(typeof options === 'undefined') options={};
     return this.OnGetCommandValueNames(this,cmd,options);
   }
   else return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch);
@@ -1918,8 +1919,8 @@ function ngvm_DoCommandError(cmd, options, errinfo)
   this.CancelCommand();
 
   if(options.IgnoreCommandError) return;
-  
-  var info='';  
+
+  var info='';
 
   function addinfo(type,data) {
     var msg=ngTxt('viewmodel_err_cmd_'+type);
@@ -1930,16 +1931,16 @@ function ngvm_DoCommandError(cmd, options, errinfo)
   }
   addinfo('viewmodel', this.ID);
   addinfo('command', cmd);
-    
-  var reqinfo=errinfo.ReqInfo;  
+
+  var reqinfo=errinfo.ReqInfo;
   if(reqinfo) {
     if(reqinfo.RequestTimeout) addinfo('timeout');
     if(reqinfo.EmptyResponse) addinfo('emptyresponse');
-    if(reqinfo.ParseError) addinfo('parseerror');    
+    if(reqinfo.ParseError) addinfo('parseerror');
     if(reqinfo.XMLHttp) addinfo('httpstatus', reqinfo.XMLHttp.status);
   }
   else if(errinfo.CommandTimeout) addinfo('timeout');
-  
+
   var msg=ngVal(options.CommandErrorMessage,'');
   if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage.'+cmd,'');
   if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage','');
@@ -1998,11 +1999,11 @@ function ngvm_Command(cmd,options)
     if((this.OnErrors)&&(!ngVal(this.OnErrors(this,err),false))) return false;
     if(!ng_EmptyVar(err))
     {
-      this.ShowErrors(err); 
+      this.ShowErrors(err);
       return false;
     }
-  }                
-  
+  }
+
   var url=ngVal(options.URL,this.ServerURL);
   if(url=='') return false;
 
@@ -2013,9 +2014,9 @@ function ngvm_Command(cmd,options)
   rpc.clearParams();
   if(ngVal(this.Namespace,'')!='') rpc.Params.ns=this.Namespace;
   rpc.Params.cmd=cmd;
-  rpc.Params.data=ko.toJSON(vals);  
+  rpc.Params.data=ko.toJSON(vals);
   rpc.Params.reqid=this.ID+'_'+this.rpc_reqid;
-  if(options.Params) ng_MergeVar(rpc.Params,options.Params);  
+  if(options.Params) ng_MergeVar(rpc.Params,options.Params);
   rpc.URL = url;
   this.ActiveCommand=cmd;
 
@@ -2044,9 +2045,9 @@ function ngvm_SetViewModel(vmodel)
     if(!vmodel) return;
   }
   this.ViewModel.Owner=this;
-  if(typeof vmodel === 'function') 
-  {                                     
-    this.viewmodel_history.push(vmodel);    
+  if(typeof vmodel === 'function')
+  {
+    this.viewmodel_history.push(vmodel);
     if(typeof this.InDesignMode!=='undefined') {
       try {
         vmodel.apply(this.ViewModel,[this]);
@@ -2056,9 +2057,9 @@ function ngvm_SetViewModel(vmodel)
       vmodel.apply(this.ViewModel,[this]);
     }
   }
-  else 
-  { 
-    this.viewmodel_history.push(ng_CopyVar(vmodel));    
+  else
+  {
+    this.viewmodel_history.push(ng_CopyVar(vmodel));
     ngvm_makeobservable(vmodel,false);
     ng_MergeVar(this.ViewModel,vmodel);
   }
@@ -2091,19 +2092,19 @@ function ngvm_ScanValues(callback)
       {
         if(typeof val === 'function') continue;
         if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val)))
-        { 
+        {
           if(!scanvalues(val,valpath)) return false;
         }
         else if(!callback(self,val,instance,valpath)) return false;
       }
-    }   
-    return true; 
+    }
+    return true;
   }
   if(typeof callback!=='function') return;
-  scanvalues(this.ViewModel,'');  
+  scanvalues(this.ViewModel,'');
 }
 
-function ngvm_Reset(callback) 
+function ngvm_Reset(callback)
 {
   var undefined;
   var self=this;
@@ -2119,7 +2120,7 @@ function ngvm_Reset(callback)
       val=instance=o[i];
       valpath=path+i;
       if(ngIsFieldDef(instance))
-      { 
+      {
         if(instance.Attrs['NoReset']===true) continue;
         val=instance.Value;
         defaultval=instance.GetTypedDefaultValue();
@@ -2131,7 +2132,7 @@ function ngvm_Reset(callback)
       }
       if((typeof callback==='function')&&(!callback(this,val,instance,valpath,defaultval))) continue;
 
-      if(ko.isObservable(val)) 
+      if(ko.isObservable(val))
       {
          instance.__Loading=true;
         try {
@@ -2140,26 +2141,26 @@ function ngvm_Reset(callback)
         finally {
            delete instance.__Loading;
         }
-      } 
-      else 
-      {    
+      }
+      else
+      {
         if(typeof val === 'function') continue;
-        if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i]))) 
+        if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i])))
         {
           resetvalues(val,valpath);
           var found=false;
           for(var j in val) { found=true; break; }
           if(!found) delete o[i];
         }
-        else 
+        else
         {
           if(typeof defaultval!=='undefined') o[i]=defaultval;
           else delete o[i];
         }
       }
-    }    
+    }
   }
-  resetvalues(this.ViewModel,'');  
+  resetvalues(this.ViewModel,'');
 }
 
 function vmGetFieldByID(vm,propid)
@@ -2255,16 +2256,16 @@ function vmSetFieldValueByID(vm,propid,val)
 
 function ngvm_SetFieldValueByID(propid,val)
 {
-  vmSetFieldValueByID(this.ViewModel,propid,val); 
+  vmSetFieldValueByID(this.ViewModel,propid,val);
 }
 
 function ngvm_Assign(src)
 {
-  this.viewmodel_history = [];    
+  this.viewmodel_history = [];
 
   this.ViewModel={ };
   this.DefaultValues = { };
-  
+
   this.Namespace=this.ID;
   this.ServerURL = '';
   this.ViewModel={ };
@@ -2279,7 +2280,7 @@ function ngvm_Assign(src)
     var values=src.GetValues(false);
     this.SetValues(values);
   }
-  if(this.OnAssign) this.OnAssign(this,src); 
+  if(this.OnAssign) this.OnAssign(this,src);
 }
 
 function ngvm_SetNamespace(ns)
@@ -2293,51 +2294,51 @@ function ngvm_SetNamespace(ns)
       if(this.ServerURL=='') this.ServerURL=ngVal(nsdef.ServerURL,'');
       if((ng_typeObject(nsdef.ViewModel))||(typeof nsdef.ViewModel==='function')) this.SetViewModel(nsdef.ViewModel);
     }
-  } 
+  }
 }
 
 /**
  *  Class: ngViewModel
- *  This class implements ViewModel object.   
+ *  This class implements ViewModel object.
  */
 function ngViewModel(id,namespace,vmodel,url)
 {
   id=ngVal(id,'');
   this.ID = id;
-  if(id!='') { 
+  if(id!='') {
     ngViewModels[id] = this;
   }
   this.rpc = null;
   this.rpc_reqid = 0;
-  this.viewmodel_history = [];    
+  this.viewmodel_history = [];
 
   /*
    *  Group: Properties
    */
 
   /*  Variable: Namespace
-   *  ViewModel namespace.   
+   *  ViewModel namespace.
    *  Type: string
    *  Default value: *''*
    */
   this.Namespace = '';
 
   /*  Variable: ViewModel
-   *  ViewModel properties.   
+   *  ViewModel properties.
    *  Type: object
    *  Default value: *{ }*
    */
   this.ViewModel={ };
 
   /*  Variable: DefaultValues
-   *  Holds default values for non-<ngFieldDef> properties.   
+   *  Holds default values for non-<ngFieldDef> properties.
    *  Type: object
    *  Default value: *{ }*
    */
   this.DefaultValues = { };
-  
+
   /*  Variable: ServerURL
-   *  ViewModel's server script URL.   
+   *  ViewModel's server script URL.
    *  Type: string
    *  Default value: *''*
    */
@@ -2351,247 +2352,247 @@ function ngViewModel(id,namespace,vmodel,url)
   this.CommandTimeout=3*60000; // 3 mins
 
   /*  Variable: ActiveCommand
-   *  Current running server-side command.   
+   *  Current running server-side command.
    *  Type: string
    *  Default value: *''*
    */
   this.ActiveCommand = '';
-  
+
   /*
    *  Group: Methods
    */
 
   /*  Function: Assign
-   *  Assigns settings and values from another ViewModel.   
-   *   
+   *  Assigns settings and values from another ViewModel.
+   *
    *  Syntax:
    *    void *Assign* (<ngViewModel> vm)
-   *     
+   *
    *  Parameters:
-   *    vm - source viewmodel    
-   *             
+   *    vm - source viewmodel
+   *
    *  Returns:
-   *    -     
-   */   
+   *    -
+   */
   this.Assign = ngvm_Assign;
 
   /*  Function: SetNamespace
-   *  Sets ViewModel namespace. 
-   *  If specified namespace is registered, the settings of viewmodel is copied 
-   *  from registered namespace.   
-   *   
+   *  Sets ViewModel namespace.
+   *  If specified namespace is registered, the settings of viewmodel is copied
+   *  from registered namespace.
+   *
    *  Syntax:
    *    void *SetNamespace* (string ns)
-   *     
+   *
    *  Parameters:
-   *    ns - namespace   
-   *             
+   *    ns - namespace
+   *
    *  Returns:
-   *    -     
-   */   
+   *    -
+   */
   this.SetNamespace = ngvm_SetNamespace;
-  
+
   /*  Function: SetViewModel
-   *  Sets ViewModel *modification*.   
-   *   
+   *  Sets ViewModel *modification*.
+   *
    *  Syntax:
    *    void *SetViewModel* (mixed vm)
-   *     
+   *
    *  Parameters:
-   *    vm - object containing new properties of viewmodel or function which adds new properties to viewmodel   
-   *             
+   *    vm - object containing new properties of viewmodel or function which adds new properties to viewmodel
+   *
    *  Returns:
-   *    -     
-   */   
+   *    -
+   */
   this.SetViewModel = ngvm_SetViewModel;
-   
+
   /*  Function: SetValues
-   *  Sets values to ViewModel.   
-   *   
+   *  Sets values to ViewModel.
+   *
    *  Syntax:
    *    void *SetValues* (object values)
-   *     
+   *
    *  Parameters:
-   *    values - object containing new values   
-   *             
+   *    values - object containing new values
+   *
    *  Returns:
-   *    -     
-   */   
+   *    -
+   */
   this.SetValues = ngvm_SetValues;
 
   /*  Function: GetValues
-   *  Gets values from ViewModel.   
-   *   
+   *  Gets values from ViewModel.
+   *
    *  Syntax:
    *    void *GetValues* ([bool writableonly=false, array valuenames=undefined, object errors={}, bool convtimestamps=false])
-   *     
+   *
    *  Parameters:
-   *    writableonly - if TRUE, return only values of non-read-only properties 
-   *    valuenames - optional list of property names, returned values are only from properties specified on this list 
-   *    errors - all errors which occured during serialization (including type conversion erros) are recorded into this object as name-value pairs "property path":"exception"    
-   *    convtimestamps - if TRUE, values of type Date are returned as timestamps (integer)            
-   *             
+   *    writableonly - if TRUE, return only values of non-read-only properties
+   *    valuenames - optional list of property names, returned values are only from properties specified on this list
+   *    errors - all errors which occured during serialization (including type conversion erros) are recorded into this object as name-value pairs "property path":"exception"
+   *    convtimestamps - if TRUE, values of type Date are returned as timestamps (integer)
+   *
    *  Returns:
-   *    Object containing values.     
-   */   
+   *    Object containing values.
+   */
   this.GetValues = ngvm_GetValues;
-  
+
   /*  Function: ScanValues
-   *  Scans all ViewModel values.   
-   *   
+   *  Scans all ViewModel values.
+   *
    *  Syntax:
    *    void *ScanValues* (function callback)
-   *     
+   *
    *  Parameters:
-   *    callback - function which is called on each ViewModel value   
-   *             
+   *    callback - function which is called on each ViewModel value
+   *
    *  Returns:
-   *    -     
-   *    
+   *    -
+   *
    *  Callback:
    *    function *callback* (<ngViewModel> vm, mixed value, <ngFieldDef> instance, string propid)
-   *    
+   *
    *  Callback parameters:
    *    vm - ViewModel on which is scan performed
-   *    value - observable or value 
+   *    value - observable or value
    *    instance - <ngFieldDef> or same as value
    *    propid - property ID (including path) in ViewModel
-   *    
+   *
    *  Callback returns:
-   *    TRUE, if continue scan.                                      
-   */   
+   *    TRUE, if continue scan.
+   */
   this.ScanValues = ngvm_ScanValues;
 
   /*  Function: GetFieldByID
-   *  Gets field in ViewModel based on property ID.   
-   *   
+   *  Gets field in ViewModel based on property ID.
+   *
    *  Syntax:
    *    mixed *GetFieldByID* (string propid)
-   *     
+   *
    *  Parameters:
-   *    propid - property ID (including path) in ViewModel   
-   *             
+   *    propid - property ID (including path) in ViewModel
+   *
    *  Returns:
-   *    ViewModel property.     
-   */      
+   *    ViewModel property.
+   */
   this.GetFieldByID = ngvm_GetFieldByID;
 
   /*  Function: GetFieldValueByID
-   *  Gets ViewModel value based on property ID.   
-   *   
+   *  Gets ViewModel value based on property ID.
+   *
    *  Syntax:
    *    mixed *GetFieldValueByID* (string propid)
-   *     
+   *
    *  Parameters:
-   *    propid - property ID (including path) in ViewModel   
-   *             
+   *    propid - property ID (including path) in ViewModel
+   *
    *  Returns:
-   *    Value of property.     
-   */      
+   *    Value of property.
+   */
   this.GetFieldValueByID = ngvm_GetFieldValueByID;
 
   /*  Function: SetFieldValueByID
-   *  Sets ViewModel value based on property ID.   
-   *   
+   *  Sets ViewModel value based on property ID.
+   *
    *  Syntax:
    *    void *SetFieldValueByID* (string propid, mixed value)
-   *     
+   *
    *  Parameters:
    *    propid - property ID (including path) in ViewModel
-   *    value - property value      
-   *             
+   *    value - property value
+   *
    *  Returns:
-   *    -     
-   */      
+   *    -
+   */
   this.SetFieldValueByID = ngvm_SetFieldValueByID;
 
   /*  Function: Reset
-   *  Resets ViewModel to initial state.   
-   *   
+   *  Resets ViewModel to initial state.
+   *
    *  Syntax:
    *    void *Reset* ([function callback])
-   *     
+   *
    *  Parameters:
-   *    callback - optional callback function which is called before value is reset   
-   *             
+   *    callback - optional callback function which is called before value is reset
+   *
    *  Returns:
    *    -
-   *            
+   *
    *  Callback:
    *    function *callback* (<ngViewModel> vm, mixed value, <ngFieldDef> instance, string propid)
-   *    
+   *
    *  Callback parameters:
    *    vm - ViewModel on which is scan performed
-   *    value - observable or value 
+   *    value - observable or value
    *    instance - <ngFieldDef> or same as value
    *    propid - property ID (including path) in ViewModel
-   *    
+   *
    *  Callback returns:
-   *    If FALSE, reset of the property will be skipped                                        
-   */   
+   *    If FALSE, reset of the property will be skipped
+   */
   this.Reset = ngvm_Reset;
 
   /*  Function: IsValid
-   *  Tests if all (or selected) ViewModel's properties are valid.   
-   *   
+   *  Tests if all (or selected) ViewModel's properties are valid.
+   *
    *  Syntax:
    *    mixed *IsValid* ([bool writableonly=false, array valuenames=undefined])
-   *     
+   *
    *  Parameters:
-   *    writableonly - if TRUE, return only values of non-read-only properties 
-   *    valuenames - optional list of property names, returned values are only from properties specified on this list 
-   *             
+   *    writableonly - if TRUE, return only values of non-read-only properties
+   *    valuenames - optional list of property names, returned values are only from properties specified on this list
+   *
    *  Returns:
-   *    TRUE if ViewModel's properties are valid or object with errors as name-value pairs "property path":"exception".    
-   */      
+   *    TRUE if ViewModel's properties are valid or object with errors as name-value pairs "property path":"exception".
+   */
   this.IsValid = ngvm_IsValid;
 
   /*  Function: Errors
-   *  Gets textual description of ViewModel's errors.   
-   *   
+   *  Gets textual description of ViewModel's errors.
+   *
    *  Syntax:
    *    array *Errors* ([bool writableonly=false, array valuenames=undefined])
-   *     
+   *
    *  Parameters:
-   *    writableonly - if TRUE, return only values of non-read-only properties 
-   *    valuenames - optional list of property names, returned values are only from properties specified on this list 
-   *             
+   *    writableonly - if TRUE, return only values of non-read-only properties
+   *    valuenames - optional list of property names, returned values are only from properties specified on this list
+   *
    *  Returns:
-   *    Array of formated string messages.    
-   */      
+   *    Array of formated string messages.
+   */
   this.Errors = ngvm_Errors;
 
   /*  Function: ShowErrors
-   *  Displays ViewModel errors.   
-   *   
+   *  Displays ViewModel errors.
+   *
    *  Syntax:
    *    void *ShowErrors* ([object errors])
-   *     
+   *
    *  Parameters:
    *    errors - optional error object, if not specified the <ngViewModel.IsValid> is used for getting errors
-   *             
+   *
    *  Returns:
-   *    TRUE is one or more error present and displayed.     
-   */      
+   *    TRUE is one or more error present and displayed.
+   */
   this.ShowErrors = ngvm_ShowErrors;
-  
+
   /**
    *  Function: Command
    *  Sends command to the server.
-   *  
+   *
    *  Syntax:
    *    void *Command* (string cmd[, object options])
-   *    
+   *
    *  Parameters:
    *    cmd - command id
    *    options - command options
-   *     
+   *
    *  Returns:
    *    TRUE if command was sent.
-   *    
+   *
    *  Command options:
    *    ValueNames - optional list of property names; values, which are send to server, are only from properties specified on this list
-   *    Values - optional object with values which are send to server (ViewModel values are ignored) 
+   *    Values - optional object with values which are send to server (ViewModel values are ignored)
    *    URL - optional server URL, default is <ServerURL>
    *    Params - optional request <ngRPC> parameters
    */
@@ -2600,13 +2601,13 @@ function ngViewModel(id,namespace,vmodel,url)
   /**
    *  Function: CancelCommand
    *  Cancels running command.
-   *  
+   *
    *  Syntax:
    *    void *CancelCommand* ()
-   *    
+   *
    *  Returns:
    *    -
-   */   
+   */
   this.CancelCommand = ngvm_CancelCommand;
 
   /**
@@ -2620,7 +2621,7 @@ function ngViewModel(id,namespace,vmodel,url)
    *    cmd - command id
    *    options - command options
    *    errinfo - additional error info
-   *    
+   *
    *  Returns:
    *    -
    */
@@ -2629,15 +2630,15 @@ function ngViewModel(id,namespace,vmodel,url)
   /**
    *  Function: GetCommandValueNames
    *  Gets value names for specified command.
-   *  
+   *
    *  Syntax:
    *    mixed *GetCommandValueNames* (string cmd[, object options, bool exactmatch=false])
-   *    
+   *
    *  Parameters:
    *    cmd - command id
    *    options - command options (see <Command>)
    *    exactmatch - return only value names which are exactly defined for specified command
-   *     
+   *
    *  Returns:
    *    Array of value names to be passed together with command or undefined if no specific value names defined for command (all values are sent to server).
    */
@@ -2646,10 +2647,10 @@ function ngViewModel(id,namespace,vmodel,url)
   /**
    *  Function: GetCommandValueNamesByFieldAttrs
    *  Gets value names for specified command based on field attribute 'Command'.
-   *  
+   *
    *  Syntax:
    *    mixed *GetCommandValueNamesByFieldAttrs* (string cmd [, bool exactmatch=false])
-   *    
+   *
    *  Parameters:
    *    cmd - command id
    *    exactmatch - return only value names which are exactly defined for specified command
@@ -2661,17 +2662,17 @@ function ngViewModel(id,namespace,vmodel,url)
 
   /*  Function: GetRPC
    *  Gets current <ngRPC> for ViewModel requests.
-   *   
+   *
    *  Syntax:
    *    <ngRPC> *GetRPC* ()
-   *     
+   *
    *  Returns:
-   *    Instance of <ngRPC>.     
-   */   
+   *    Instance of <ngRPC>.
+   */
   this.GetRPC = ngvm_GetRPC;
 
   this.AddEvent = ngObjAddEvent;
-  this.RemoveEvent = ngObjRemoveEvent; 
+  this.RemoveEvent = ngObjRemoveEvent;
 
   /*
    *  Group: Events
@@ -2679,50 +2680,50 @@ function ngViewModel(id,namespace,vmodel,url)
 
   /*
    *  Event: OnSetValues
-   */   
+   */
   this.OnSetValues = null;
   /*
    *  Event: OnSetValue
-   */   
+   */
   this.OnSetValue = null;
   /*
    *  Event: OnGetValues
-   */   
+   */
   this.OnGetValues = null;
   /*
    *  Event: OnGetValue
-   */   
+   */
   this.OnGetValue = null;
-  
+
   /*
    *  Event: OnCommand
-   */   
+   */
   this.OnCommand = null;
-  
+
   /*
    *  Event: OnGetCommandValueNames
-   */   
+   */
   this.OnGetCommandValueNames = null;
-  
+
   /*
    *  Event: OnDoCommand
-   */   
+   */
   this.OnDoCommand = null;
   /*
    *  Event: OnCommandRequest
-   */   
+   */
   this.OnCommandRequest = null;
   /*
    *  Event: OnCommandResults
-   */   
+   */
   this.OnCommandResults = null;
   /*
    *  Event: OnCommandFinished
-   */   
+   */
   this.OnCommandFinished = null;
   /*
    *  Event: OnCommandCancel
-   */   
+   */
   this.OnCommandCancel = null;
   /*
    *  Event: OnCommandError
@@ -2730,39 +2731,39 @@ function ngViewModel(id,namespace,vmodel,url)
   this.OnCommandError = null;
   /*
    *  Event: OnCommandData
-   */   
+   */
   this.OnCommandData = null;
-  
+
   /*
    *  Event: OnSetViewModel
-   */   
+   */
   this.OnSetViewModel = null;
   /*
    *  Event: OnViewModelChanged
-   */   
+   */
   this.OnViewModelChanged = null;
-  
+
   /*
    *  Event: OnResults
-   */   
+   */
   this.OnResults = null;
-  
+
   /*
    *  Event: OnErrors
-   */   
+   */
   this.OnErrors = null;
   /*
    *  Event: OnShowErrors
-   */   
+   */
   this.OnShowErrors = null;
-  
+
   /*
    *  Event: OnAssign
-   */   
+   */
   this.OnAssign = null;
 
   this.SetNamespace(ngVal(namespace,id));
-  if(vmodel) this.SetViewModel(vmodel);   
+  if(vmodel) this.SetViewModel(vmodel);
 }
 
 function ngfd_DataSetFieldSerialize(v)
@@ -2789,24 +2790,24 @@ function ngfd_InvalidateDataSet()
 
 /*  Class: ngDataSetFieldDef
  *  <ngViewModel> DataSet field (based on <ngFieldDef> ARRAY).
- *  
+ *
  *  Syntax:
  *    new *ngDataSetFieldDef* (string id [, object attrs={}])
- *    
+ *
  *  Parameters:
  *    id - field id
  *    attrs - field attributes
- */    
+ */
 function ngDataSetFieldDef(id, attrs)
 {
   ngFieldDefCreateAs(this,id,'ARRAY',attrs);
-  
+
   /*
    *  Group: Properties
    */
 
   /*  Variable: DataSetNeedUpdate
-   *  Indicates if fresh data is requested from server on data update.   
+   *  Indicates if fresh data is requested from server on data update.
    *  Type: bool
    *  Default value: *true*
    */
@@ -2817,30 +2818,30 @@ function ngDataSetFieldDef(id, attrs)
    */
 
   /*  Function: InvalidateDataSet
-   *  Indicated that fresh data is requested from server on data update.        
-   *   
+   *  Indicated that fresh data is requested from server on data update.
+   *
    *  Syntax:
    *    void *InvalidateDataSet* ()
-   *     
+   *
    *  Returns:
-   *    -      
-   */   
+   *    -
+   */
   this.InvalidateDataSet = ngfd_InvalidateDataSet;
-  
+
   this.DoSerialize = ngfd_DataSetFieldSerialize;
   this.DoDeserialize = ngfd_DataSetFieldDeserialize;
 }
 
 /*  Class: ngLookupFieldDef
  *  <ngViewModel> Lookup field (based on <ngFieldDef> ARRAY).
- *  
+ *
  *  Syntax:
  *    new *ngLookupFieldDef* (string id [, object attrs={}])
- *    
+ *
  *  Parameters:
  *    id - field id
  *    attrs - field attributes
- */    
+ */
 function ngLookupFieldDef(id, attrs)
 {
   ngFieldDefCreateAs(this,id,'ARRAY',attrs);
@@ -2849,7 +2850,7 @@ function ngLookupFieldDef(id, attrs)
    *  Group: Properties
    */
   /*  Variable: DataSetNeedUpdate
-   *  Indicates if fresh data is requested from server on data update.   
+   *  Indicates if fresh data is requested from server on data update.
    *  Type: bool
    *  Default value: *true*
    */
@@ -2860,14 +2861,14 @@ function ngLookupFieldDef(id, attrs)
    */
 
   /*  Function: InvalidateDataSet
-   *  Indicated that fresh data is requested from server on data update.        
-   *   
+   *  Indicated that fresh data is requested from server on data update.
+   *
    *  Syntax:
    *    void *InvalidateDataSet* ()
-   *     
+   *
    *  Returns:
-   *    -      
-   */   
+   *    -
+   */
   this.InvalidateDataSet = ngfd_InvalidateDataSet;
 
   this.DoSerialize = ngfd_DataSetFieldSerialize;
@@ -2907,42 +2908,42 @@ ngUserControls['viewmodel'] = {
     ngvm_InitServerNamespaces();
 
     /**
-     *  Class: Knockout extensions 
-     *  This extends Knockout functions for viewmodel definition.   
+     *  Class: Knockout extensions
+     *  This extends Knockout functions for viewmodel definition.
      */
-     
+
     /*  Function: ko.ng_noserialize
-     *  Marks viewmodel property as non-serializable. 
+     *  Marks viewmodel property as non-serializable.
      *  Non-serializable properties is not send to server.
-     *   
+     *
      *  Syntax:
      *    object *ko.ng_noserialize* (object vmprop)
-     *     
+     *
      *  Parameters:
-     *    vmprop - viewmodel property   
-     *             
+     *    vmprop - viewmodel property
+     *
      *  Returns:
-     *    vmprop - this simplifies function chaining.     
-     */   
+     *    vmprop - this simplifies function chaining.
+     */
     ko.ng_noserialize = function (v)
     {
       if(typeof v==='function') delete v['__serialize'];
       return v;
-    }                   
+    }
 
     /*  Function: ko.ng_serialize
-     *  Marks viewmodel property as serializable. 
-     *  Only serializable properties can be send to server.   
-     *   
+     *  Marks viewmodel property as serializable.
+     *  Only serializable properties can be send to server.
+     *
      *  Syntax:
      *    object *ko.ng_serialize* (object vmprop)
-     *     
+     *
      *  Parameters:
-     *    vmprop - viewmodel property   
-     *             
+     *    vmprop - viewmodel property
+     *
      *  Returns:
-     *    vmprop - this simplifies function chaining.     
-     */   
+     *    vmprop - this simplifies function chaining.
+     */
     ko.ng_serialize = function (v)
     {
       if(typeof v==='function') v['__serialize']=true;
@@ -2974,33 +2975,33 @@ ngUserControls['viewmodel'] = {
       vm=getViewModelById(vm);
       return (vm ? vm.ViewModel : null);
     }
-    
+
     /*  Function: ko.ng_delegate
-     *  Creates computed viewmodel property which value is gathered from another model. 
-     *   
+     *  Creates computed viewmodel property which value is gathered from another model.
+     *
      *  Syntax:
      *    function *ko.ng_delegate* (mixed viewmodel, string propname [, bool readonly])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
      *    propname - viewmodel property name in reference viewmodel
-     *    readonly - if TRUE, the value in current viewmodel is read-only                  
-     *             
+     *    readonly - if TRUE, the value in current viewmodel is read-only
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_delegate = function (viewModel,propName,readonly)
-    {      
+    {
       return ko.ng_noserialize(ko.computed({
         read: function() {
           return vmGetFieldValueByID(viewmodel(viewModel),propName);
-        }, 
+        },
         write: function(val) {
           if(ngVal(readonly,false)) return;
           vmSetFieldValueByID(viewmodel(viewModel),propName,val);
         },
-        owner: this})); 
-    };     
+        owner: this}));
+    };
 
     /*  Function: ko.ng_linkvalue
      *  Sets one-way synchronization of value from one viewmodel property to other.
@@ -3073,28 +3074,28 @@ ngUserControls['viewmodel'] = {
 
     /*  Function: ko.ng_bool2val
      *  Creates computed viewmodel property which translates boolean to other viewmodel
-     *  property value (or values).       
-     *   
+     *  property value (or values).
+     *
      *  Syntax:
      *    function *ko.ng_bool2val* (mixed viewmodel, string propname, mixed trueValue [, mixed falseValue])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
      *    propname - viewmodel property name in reference viewmodel
-     *    trueValue - value which is translated as TRUE                   
-     *    falseValue - value which is translated as FALSE                   
-     *             
+     *    trueValue - value which is translated as TRUE
+     *    falseValue - value which is translated as FALSE
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_bool2val = function (viewModel,propName,trueValue,falseValue)
-    {      
+    {
       var hasFalse=(arguments.length>3);
-      
+
       return ko.ng_noserialize(ko.computed({
         read: function() {
           var vm=viewmodel(viewModel);
-          var pval=vmGetFieldValueByID(vm,propName);                
+          var pval=vmGetFieldValueByID(vm,propName);
           var val=cmpval(vm,trueValue);
           if(ng_VarEquals(pval,val)) return true;
           if(hasFalse)
@@ -3102,25 +3103,25 @@ ngUserControls['viewmodel'] = {
             val=cmpval(vm,falseValue);
             if(ng_VarEquals(pval,val)) return false;
             return; // undefined
-          }                
-          else return false;          
-        }, 
+          }
+          else return false;
+        },
         write: function(val) {
           var vm=viewmodel(viewModel);
           val=ng_toBool(val,false);
           if(val===true)
           {
-            var v=cmpval(vm,trueValue);                  
+            var v=cmpval(vm,trueValue);
             vmSetFieldValueByID(vm,propName,v);
           }
           else if((hasFalse)&&(val===false))
           {
-            var v=cmpval(vm,falseValue);                  
+            var v=cmpval(vm,falseValue);
             vmSetFieldValueByID(vm,propName,v);
           }
         },
-        owner: this})); 
-    };     
+        owner: this}));
+    };
 
     function vmvaluesfromarray(vm,cargs,from,to)
     {
@@ -3129,10 +3130,10 @@ ngUserControls['viewmodel'] = {
       from=ngVal(from,0);
       to=ngVal(to,cargs.length-1);
       for(var i=from;i<=to;i++)
-        sargs.push(vmGetFieldValueByID(vm,cargs[i]));            
+        sargs.push(vmGetFieldValueByID(vm,cargs[i]));
       return sargs;
     }
-    
+
     function expand_args(args)
     {
       var a,ret=[];
@@ -3150,25 +3151,25 @@ ngUserControls['viewmodel'] = {
     }
 
     /*  Function: ko.ng_sprintf
-     *  Creates computed viewmodel property which formats string (PHP like sprintf function) based on values of other viewmodel properties. 
-     *   
+     *  Creates computed viewmodel property which formats string (PHP like sprintf function) based on values of other viewmodel properties.
+     *
      *  Syntax:
      *    function *ko.ng_sprintf* (mixed viewmodel, string format [, string propname1, string propname2, ...])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
      *    format - text with format characters
      *    propname1..N - viewmodel property names, values of these properties are used as arguments for string formating
-     *    
-     *    If any of parameters is indexed array the array items are expanded inline as function parameters.                 
-     *             
+     *
+     *    If any of parameters is indexed array the array items are expanded inline as function parameters.
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_sprintf = function ()
     {
       var fargs=expand_args(arguments);
-    
+
       return ko.ng_noserialize(ko.computed(
         function() {
           if(!fargs || fargs.length < 2) return;
@@ -3177,30 +3178,30 @@ ngUserControls['viewmodel'] = {
             if((ng_isEmptyOrNull(vals[i]))||(typeof vals[i]==='function')) vals[i]='';
           vals.splice(0,0,fargs[1]);
           return ng_sprintf.apply(window,vals);
-        },this)); 
+        },this));
     };
 
     /*  Function: ko.ng_changed
-     *  Creates computed viewmodel property which detects value changes of enumerated properties. 
-     *   
+     *  Creates computed viewmodel property which detects value changes of enumerated properties.
+     *
      *  Syntax:
      *    function *ko.ng_changed* (mixed viewmodel, [, string propname1, string propname2, ...])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
      *    propname1..N - viewmodel property names on which change state is maintained
-     *               
-     *    If any of parameters is indexed array the array items are expanded inline as function parameters.                 
-     *             
+     *
+     *    If any of parameters is indexed array the array items are expanded inline as function parameters.
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_changed = function ()
     {
       var fargs=expand_args(arguments);
       var initialized=false;
       var changed = ko.observable(false);
-      
+
       return ko.ng_noserialize(ko.computed({
         read: function() {
           if(!fargs || fargs.length < 1) return changed();
@@ -3218,35 +3219,35 @@ ngUserControls['viewmodel'] = {
             initialized=true;
           }
           return changed();
-        }, 
+        },
         write: function(val) {
           changed(val ? true : false);
         },
-        owner: this})); 
+        owner: this}));
     }
 
     /*  Function: ko.ng_dataversion
-     *  Creates computed viewmodel property, similar to <ko.ng_changed>, which detects value 
-     *  changes of enumerated properties and increases it's value every time the change occurs. 
-     *   
+     *  Creates computed viewmodel property, similar to <ko.ng_changed>, which detects value
+     *  changes of enumerated properties and increases it's value every time the change occurs.
+     *
      *  Syntax:
      *    function *ko.ng_dataversion* (mixed viewmodel, [, string propname1, string propname2, ...])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
      *    propname1..N - viewmodel property names on which change state is maintained
-     *               
-     *    If any of parameters is indexed array the array items are expanded inline as function parameters.                 
-     *             
+     *
+     *    If any of parameters is indexed array the array items are expanded inline as function parameters.
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_dataversion = function ()
     {
       var fargs=expand_args(arguments);
       var initialized=false;
       var version = ko.observable(1);
-      
+
       return ko.ng_noserialize(ko.computed({
         read: function() {
           if(!fargs || fargs.length < 1) return version();
@@ -3264,13 +3265,13 @@ ngUserControls['viewmodel'] = {
             initialized=true;
           }
           return version();
-        }, 
+        },
         write: function(val) {
           val=parseInt(val);
           if(isNaN(val)) return;
           version(val);
         },
-        owner: this})); 
+        owner: this}));
     }
 
     function cmpprop(vm,propid)
@@ -3279,7 +3280,7 @@ ngUserControls['viewmodel'] = {
       {
         switch(propid.charAt(0))
         {
-          case '$': 
+          case '$':
             var p=vmGetFieldByID(vm,propid.substring(1,propid.length));
             if(p) return p;
             break;
@@ -3293,16 +3294,16 @@ ngUserControls['viewmodel'] = {
             break;
         }
       }
-      return cmpval(vm,propid);                
+      return cmpval(vm,propid);
     }
-    
+
     function cmpval(vm,propid)
     {
       if((ng_typeString(propid))&&(propid.length>1))
       {
         switch(propid.charAt(0))
         {
-          case '$': 
+          case '$':
             return vmGetFieldValueByID(vm,propid.substring(1,propid.length));
           case '!':
             if((propid.length>2)&&(propid.charAt(1)=='$'))
@@ -3317,47 +3318,47 @@ ngUserControls['viewmodel'] = {
       if(typeof propid==='function') return propid(vm);
       return propid;
     }
-    
+
     /*  Function: ko.ng_matches
-     *  Creates computed viewmodel property which is set to TRUE if all enumerated 
+     *  Creates computed viewmodel property which is set to TRUE if all enumerated
      *  properties equals to specified values.
-     *   
+     *
      *  Syntax:
      *    function *ko.ng_matches* (mixed viewmodel, string propname1, mixed val1 [, string propname2, mixed val2, ...])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
-     *    propname1..N - viewmodel property names which values are compared 
-     *    val1..N - values for comparsion, $ can be used to reference other viewmodel property 
-     *    
+     *    propname1..N - viewmodel property names which values are compared
+     *    val1..N - values for comparsion, $ can be used to reference other viewmodel property
+     *
      *    If any of parameters is indexed array the array items are expanded inline as function parameters.
-     *             
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_matches = function ()
     {
       var fargs=expand_args(arguments);
       var initialized=false;
       var matches = ko.observable(false);
-      
-      function cmpmatches(vm) 
-      { 
+
+      function cmpmatches(vm)
+      {
         var pval,val;
         var m=false;
         for(var i=1;i<fargs.length-1;i+=2)
         {
-          pval=vmGetFieldValueByID(vm,fargs[i]);                
-          val=cmpval(vm,fargs[i+1]);                
+          pval=vmGetFieldValueByID(vm,fargs[i]);
+          val=cmpval(vm,fargs[i+1]);
           if(i==1) m=ng_VarEquals(pval,val);
           else if(!ng_VarEquals(pval,val)) m=false;
           if(!m) break;
         }
         matches(m);
       }
-              
+
       return ko.ng_noserialize(ko.computed(
-        function() {          
+        function() {
           if(!fargs || fargs.length < 1) return matches();
           var vm=viewmodel(fargs[0]);
           if(!vm) return matches();
@@ -3369,10 +3370,10 @@ ngUserControls['viewmodel'] = {
             {
               (function() {
                 var p=vmGetObservableByID(vm,fargs[i]);
-                if(typeof p==='undefined') p=vmGetFieldValueByID(vm,fargs[i]);                
+                if(typeof p==='undefined') p=vmGetFieldValueByID(vm,fargs[i]);
                 var v=cmpprop(vm,fargs[i+1]);
-                if(typeof v==='undefined') v=cmpval(vm,fargs[i+1]);                
-                                      
+                if(typeof v==='undefined') v=cmpval(vm,fargs[i+1]);
+
                 if((p)&&(typeof p.subscribe === 'function'))
                   p.subscribe(function (newValue) {
                     val=(typeof v === 'function' ? v() : v);
@@ -3395,47 +3396,47 @@ ngUserControls['viewmodel'] = {
             initialized=true;
           }
           return matches();
-        }, this)); 
+        }, this));
     }
 
     /*  Function: ko.ng_matches_one
-     *  Creates computed viewmodel property which is set to TRUE if at least one of enumerated 
+     *  Creates computed viewmodel property which is set to TRUE if at least one of enumerated
      *  properties equal to specified value.
-     *   
+     *
      *  Syntax:
      *    function *ko.ng_matches_one* (mixed viewmodel, string propname1, mixed val1 [, string propname2, mixed val2, ...])
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
-     *    propname1..N - viewmodel property names which values are compared 
-     *    val1..N - values for comparsion, $ can be used to reference other viewmodel property 
-     *    
+     *    propname1..N - viewmodel property names which values are compared
+     *    val1..N - values for comparsion, $ can be used to reference other viewmodel property
+     *
      *    If any of parameters is indexed array the array items are expanded inline as function parameters.
-     *         
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_matches_one = function ()
     {
       var fargs=expand_args(arguments);
       var initialized=false;
       var matches = ko.observable(false);
-      
-      function cmpmatches(vm) 
-      { 
+
+      function cmpmatches(vm)
+      {
         var pval,val;
         var m=false;
         for(var i=1;i<fargs.length-1;i+=2)
         {
-          pval=vmGetFieldValueByID(vm,fargs[i]);                
-          val=cmpval(vm,fargs[i+1]);                
+          pval=vmGetFieldValueByID(vm,fargs[i]);
+          val=cmpval(vm,fargs[i+1]);
           if(i==1) m=ng_VarEquals(pval,val);
           else if(ng_VarEquals(pval,val)) m=true;
           if(m) break;
         }
         matches(m);
       }
-              
+
       return ko.ng_noserialize(ko.computed(
         function() {
           if(!fargs || fargs.length < 1) return matches();
@@ -3449,10 +3450,10 @@ ngUserControls['viewmodel'] = {
             {
               (function() {
                 var p=vmGetObservableByID(vm,fargs[i]);
-                if(typeof p==='undefined') p=vmGetFieldValueByID(vm,fargs[i]);                
+                if(typeof p==='undefined') p=vmGetFieldValueByID(vm,fargs[i]);
                 var v=cmpprop(vm,fargs[i+1]);
-                if(typeof v==='undefined') v=cmpval(vm,fargs[i+1]);                
-                                      
+                if(typeof v==='undefined') v=cmpval(vm,fargs[i+1]);
+
                 if((p)&&(typeof p.subscribe === 'function'))
                   p.subscribe(function (newValue) {
                     val=(typeof v === 'function' ? v() : v);
@@ -3475,74 +3476,74 @@ ngUserControls['viewmodel'] = {
             initialized=true;
           }
           return matches();
-        }, this)); 
+        }, this));
     }
 
     /*  Function: ko.ng_timer
      *  Creates computed viewmodel property which is repeatedly updated on specified interval.
-     *  The value of this property is date and time of last update.      
-     *   
+     *  The value of this property is date and time of last update.
+     *
      *  Syntax:
      *    function *ko.ng_timer* (int interval)
-     *     
+     *
      *  Parameters:
-     *    interval - update interval in milliseconds 
-     *             
+     *    interval - update interval in milliseconds
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_timer = function (interval)
     {
       var val = ko.observable(new Date());
       var timer_interval=0;
-      
+
       function inittimer(interval) {
         interval=parseInt(interval);
         if(isNaN(interval)) return;
 
         var timer = null;
         if(timer_interval==interval) return;
-        
-        if(interval>0) 
+
+        if(interval>0)
         {
           if(timer) clearInterval(timer);
           timer=setInterval(function () {
             val(new Date());
           },interval);
         }
-        else 
+        else
         {
-          clearInterval(timer); 
-          timer=null; 
+          clearInterval(timer);
+          timer=null;
         }
         timer_interval=interval;
       }
-      
+
       inittimer(interval);
-      
+
       return ko.ng_noserialize(ko.computed({
-        read:  function()  { return val(); }, 
+        read:  function()  { return val(); },
         write: function(i) { inittimer(i); },
-        owner: this})); 
+        owner: this}));
     };
 
     /*  Function: ko.ng_lookup
-     *  Creates computed viewmodel property which transforms value of given property to value in lookup table. 
-     *   
+     *  Creates computed viewmodel property which transforms value of given property to value in lookup table.
+     *
      *  Syntax:
      *    function *ko.ng_lookup* (mixed viewmodel, string propname, mixed lookupviewmodel, string lookuppropname, string lookupkeyfield='Value', lookupdatafield='Text')
-     *     
+     *
      *  Parameters:
      *    viewmodel - string ID or instance of viewmodel
-     *    propname - viewmodel property to be transformed 
-     *    lookupviewmodel - string ID or instance of lookup viewmodel  
+     *    propname - viewmodel property to be transformed
+     *    lookupviewmodel - string ID or instance of lookup viewmodel
      *    lookuppropname - lookup viewmodel property where lookup table is stored
-     *    lookupkeyfield - property name where key is stored in lookup table 
-     *    lookupdatafield - property name where transformed value is stored in lookup table, if null or undefined the transformed value is whole lookup table item                
-     *         
+     *    lookupkeyfield - property name where key is stored in lookup table
+     *    lookupdatafield - property name where transformed value is stored in lookup table, if null or undefined the transformed value is whole lookup table item
+     *
      *  Returns:
-     *    Computed viewmodel property.      
-     */   
+     *    Computed viewmodel property.
+     */
     ko.ng_lookup = function (viewModel, propname, lookupviewmodel, lookuppropname, lookupkeyfield, lookupdatafield)
     {
       lookupkeyfield=ngVal(lookupkeyfield,'Value');
@@ -3555,36 +3556,36 @@ ngUserControls['viewmodel'] = {
 
           var lvm=viewmodel(lookupviewmodel);
           var lpval=vmGetFieldValueByID(lvm,lookuppropname);
-          
+
           if(!ng_typeArray(lpval)) return; // undefined
-          
+
           for(var i=0;i<lpval.length;i++)
           {
             if((lpval[i]!==null)&&(ng_typeObject(lpval[i]))
              &&(ng_VarEquals(lpval[i][lookupkeyfield],pval)))
             {
-              if((typeof lookupdatafield === 'undefined')||(lookupdatafield === null)) return lpval[i]; // if lookupdatafield is not defined, return whole object 
+              if((typeof lookupdatafield === 'undefined')||(lookupdatafield === null)) return lpval[i]; // if lookupdatafield is not defined, return whole object
               return lpval[i][lookupdatafield];
             }
           }
-          // not found, undefined          
-        }, 
+          // not found, undefined
+        },
         write: function(val) {
           var vm=viewmodel(viewModel);
 
           var lvm=viewmodel(lookupviewmodel);
           var lpval=vmGetFieldValueByID(lvm,lookuppropname);
-          
-          if(!ng_typeArray(lpval)) return; 
 
-          var cmpval;          
+          if(!ng_typeArray(lpval)) return;
+
+          var cmpval;
           for(var i=0;i<lpval.length;i++)
           {
             if((lpval[i]!==null)&&(ng_typeObject(lpval[i])))
             {
-              if((typeof lookupdatafield === 'undefined')||(lookupdatafield === null)) 
+              if((typeof lookupdatafield === 'undefined')||(lookupdatafield === null))
                 cmpval=lpval[i]; // if lookupdatafield is not defined, compare whole object
-              else 
+              else
                 cmpval=lpval[i][lookupdatafield];
               if(ng_VarEquals(cmpval,val))
               {
@@ -3594,9 +3595,9 @@ ngUserControls['viewmodel'] = {
             }
           }
           var undefined;
-          vmSetFieldValueByID(vm,propname,undefined);        
+          vmSetFieldValueByID(vm,propname,undefined);
         },
-        owner: this})); 
+        owner: this}));
     };
 
     /*  Function: ko.ng_array_merge
@@ -3621,7 +3622,7 @@ ngUserControls['viewmodel'] = {
         for(var i=0;i<merge.length;i++) {
           a=merge[i];
           if(ko.isObservable(a)) a=a();
-          if(ng_typeArray(a)) for(var j=0;j<a.length;j++) n.push(a[j]);          
+          if(ng_typeArray(a)) for(var j=0;j<a.length;j++) n.push(a[j]);
         }
         return n;
       },this));
@@ -3733,7 +3734,7 @@ ngUserControls['viewmodel'] = {
     ko.ngTxt=function(v, prefix, props, defaultvalue) {
       prefix=''+ngVal(prefix,'');
       if(typeof props!=='undefined')
-      {      
+      {
         if(typeof props==='object')
         {
           if(!props) props=void 0;
@@ -3743,7 +3744,7 @@ ngUserControls['viewmodel'] = {
             props=o;
           }
         }
-        else 
+        else
         {
           props=''+props;
           if(props==='') props=void 0;
@@ -3766,7 +3767,7 @@ ngUserControls['viewmodel'] = {
             var o;
             if(ng_IsArrayVar(val))
             {
-              o=[]; 
+              o=[];
               for(var i=0;i<val.length;i++) o.push(kotxt(val[i]));
             }
             else {
@@ -3775,7 +3776,7 @@ ngUserControls['viewmodel'] = {
               for(var i in val) {
                 if((typeof props!=='undefined')&&(!props[i])) o[i]=val[i];
                 else o[i]=kotxt(val[i]);
-              } 
+              }
             }
             return o;
           case 'boolean': val = val ? 'true' : 'false';
@@ -4075,18 +4076,18 @@ ngUserControls['viewmodel'] = {
 
     /*  Function: ko.ng_fielddef
      *  Encapsulates <ngFieldDef> into viewmodel.
-     *   
+     *
      *  Syntax:
      *    <ngFieldDef> *ko.ng_fielddef* (mixed viewmodel, <ngFieldDef> fielddef [, mixed value])
-     *     
+     *
      *  Parameters:
      *    viewmodel - instance of viewmodel
      *    fielddef - <ngFieldDef> which schould be part of the viewmodel
-     *    value - optional initial value of <ngFieldDef>             
-     *             
+     *    value - optional initial value of <ngFieldDef>
+     *
      *  Returns:
-     *    Encapsulated <ngFieldDef> as viewmodel property.      
-     */   
+     *    Encapsulated <ngFieldDef> as viewmodel property.
+     */
     ko.ng_fielddef = function(vm,fd,value) {
 
       if((!ng_typeObject(vm))||(!ng_typeObject(fd))||(ngVal(fd.ID,'')=='')) return;
@@ -4099,7 +4100,7 @@ ngUserControls['viewmodel'] = {
         parent=p[pids[i]];
         if(ng_isEmpty(parent)) parent=vm[pids[i]]={};
         if((!ng_typeObject(parent))||(ngIsFieldDef(parent))) return; // invalid path
-        p=parent;        
+        p=parent;
       }
       var fid=pids[pids.length-1];
 
@@ -4121,7 +4122,7 @@ ngUserControls['viewmodel'] = {
         isarray = isarray || ng_IsArrayVar(defaultval);
         val=value;
       }
-      else 
+      else
       {
         if(typeof value==='undefined') defaultval=fd.GetTypedDefaultValue();
         else defaultval=ng_CopyVar(value);
@@ -4271,7 +4272,7 @@ ngUserControls['viewmodel'] = {
       {
         return (ko.isWriteableObservable(val))&&((!ngVal(fd.ReadOnly,false))||(ngVal(fd.__Loading,false)));
       }
-      
+
       function array_writeallowed(reqarray)
       {
         if(writeallowed())
@@ -4280,13 +4281,13 @@ ngUserControls['viewmodel'] = {
           if((reqarray)&&(!isarray))
           {
             isarray=true;
-            val([]);  
-          } 
+            val([]);
+          }
           return isarray;
         }
         return false;
       }
-      
+
       if(isobject) {
         fd.Value=ko.computed({
           read: function() {
@@ -4359,7 +4360,7 @@ ngUserControls['viewmodel'] = {
 
       if(ngVal(fd.Attrs['Serialize'],true)) ko.ng_serialize(fd.Value);
       if(isarray)
-      {      
+      {
         fd.Value.count= ko.computed(function() {
             var v=val();
             if(ng_typeArray(v)) return v.length;
@@ -4367,7 +4368,7 @@ ngUserControls['viewmodel'] = {
           },vm);
 
         fd.Value.valueWillMutate = function() {
-          val.valueWillMutate(); 
+          val.valueWillMutate();
         }
         fd.Value.valueHasMutated = function() {
           val.valueHasMutated();
@@ -4381,7 +4382,7 @@ ngUserControls['viewmodel'] = {
           if(array_writeallowed(true)) return val.removeAll();
           else return [];
         }
-        
+
         fd.Value.indexOf = function(v) { return (ng_typeArray(val()) ? val.indexOf(v) : -1); }
         fd.Value.lastIndexOf = function(v) { return (ng_typeArray(val()) ? val.lastIndexOf(v) : -1); }
 
@@ -4389,7 +4390,7 @@ ngUserControls['viewmodel'] = {
           if(array_writeallowed()) return val.pop.apply(val,arguments);
           else return; // undefined
         }
-        fd.Value.push= function() {          
+        fd.Value.push= function() {
           if(array_writeallowed(true)) return val.push.apply(val,arguments);
           else return (ng_typeArray(val()) ? val().length : 0);
         }
@@ -4416,10 +4417,10 @@ ngUserControls['viewmodel'] = {
         fd.Value.slice= function() {
           if(!ng_typeArray(val())) return [];
           return val.slice.apply(val,arguments);
-        }        
-      } 
+        }
+      }
       fd.Value.FieldDef = fd;
-            
+
       // Make description observable
       if(!ko.isObservable(fd.DisplayName))
       {
@@ -4439,7 +4440,7 @@ ngUserControls['viewmodel'] = {
             if(dn!='') fd.DisplayName=dn;
           }
           else fd.DisplayName=nameid;
-        } 
+        }
         var displayname=ko.observable(fd.DisplayName);
         fd.DisplayName=ko.ng_serialize(
          ko.computed({
@@ -4449,7 +4450,7 @@ ngUserControls['viewmodel'] = {
                dn=ngTxt('VM.'+pvm.Owner.Namespace+'.'+nameid,nameid);
              }
              return dn;
-           }, 
+           },
            write: function(v) {
              displayname(v);
            },
@@ -4465,13 +4466,13 @@ ngUserControls['viewmodel'] = {
       fd.IsValid=ko.ng_noserialize(
         ko.computed(function() { return (error()===''); },vm)
       );
-      return fd; 
+      return fd;
     };
 
 /*    ko.ng_timestamp = function ()
     {
     };*/
-    
+
 /*    ko.ng_md5 = function ()
     {
     };*/
