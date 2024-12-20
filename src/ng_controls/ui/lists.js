@@ -94,7 +94,7 @@ function ngl_Add(it, parent)
 
   var idx=list.Items.length;
   list.Items[idx]=it;
-  
+
   this.DoItemsChanged();
 
   if(typeof it.Items!=='undefined')
@@ -167,9 +167,9 @@ function ngl_Replace(idx, it, parent)
   }
 
   list.Items[idx]=it;
-  
+
   this.DoItemsChanged();
-  
+
   if(typeof it.Items!=='undefined')
   {
     var items=it.Items;
@@ -263,7 +263,7 @@ function ngl_Remove(it, parent)
   {
     this.do_remove(it, parent);
     list.Items.splice(idx,1);
-    
+
     this.DoItemsChanged();
   }
   return idx;
@@ -279,7 +279,7 @@ function ngl_Delete(idx, parent)
   this.do_remove(it, parent);
 
   list.Items.splice(idx,1);
-  
+
   this.DoItemsChanged();
   return it;
 }
@@ -438,7 +438,7 @@ function ngl_Clear(parent)
     delete list.Items;
   }
   if(list==this) this.Items=new Array();
-  
+
   this.DoItemsChanged();
 }
 
@@ -2205,7 +2205,7 @@ function ngl_KeyUp(e)
       if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
       return;
     }
-  
+
     var de=l.KeyDownEvent;
     if(de)
     {
@@ -2219,11 +2219,11 @@ function ngl_KeyUp(e)
       if((st)&&(st!==l)&&(st!==edit)) return;
       delete l.KeyDownEvent;
       if((l.Enabled)&&(l.KeyEvents)&&(!l.ReadOnly))
-      {   
+      {
         e.Owner=l;
         e.KeyDownEvent=de;
         if((l.OnKeyUp)&&(!ngVal(l.OnKeyUp(e),false))) return false;
-      }    
+      }
     }
   }
 }
@@ -6462,7 +6462,7 @@ function Create_ngPageList(def, ref, parent)
       l.displayed_items=c.DisplayedItems;
       l.max_displayed_items=0;
       l.display_mode=c.DisplayMode;
-      l.ListPagingChanged=npgl_ListPagingChanged;      
+      l.ListPagingChanged=npgl_ListPagingChanged;
       l.ListPagingChanged();
 
       ng_OverrideMethod(l,'IndexOf',npgl_IndexOf);
@@ -6486,7 +6486,174 @@ ngUserControls['list'] = {
   ControlsGroup: 'Core',
 
   OnInit: function() {
+
+    function ngcl_GetItemsCheckState(it)
+    {
+      var list=it;
+      if((typeof list === 'undefined')||(list===null)) list=this;
+      if((typeof it==='undefined')||(it===null)) it={ };
+
+      var state;
+      if(typeof it.RadioGroup === 'undefined') state=ngVal(it.Checked,0);
+      if((typeof list.Items !== 'undefined')&&(list.Items.length>0))
+      {
+        var s,gstate;
+        for(var i=0;i<list.Items.length;i++)
+        {
+          if(typeof list.Items[i] === 'undefined') continue;
+          s=this.GetItemsCheckState(list.Items[i]);
+          if(typeof gstate === 'undefined') gstate=s;
+          else if((typeof s!=='undefined')&&(s!=gstate)) return 2;
+        }
+        if(typeof gstate!=='undefined') {
+          if(list!==this) {
+            var checkgroup=ngVal(it.CheckGroup,false);
+            if((!checkgroup)&&(typeof state!=='undefined')&&(state!==gstate)) return 2;
+          }
+          state=gstate;
+        }
+      }
+      return state;
+    }
+
+    function ngcl_UpdateChecked(it,recursion,setall,id,level)
+    {
+      var ret=ng_CallParent(this,'UpdateChecked',arguments,0);
+      if(this.update_cnt<=0)
+      {
+        var o=document.getElementById(this.ID+'_CAI');
+        var it=this.CheckAllItem;
+        it.Checked=this.GetItemsCheckState();
+        if(o)
+        {
+          var cn=this.GetRowClassName(it, false, 'CAI', 0, 0/*nglRowItem*/);
+          var i=o.className.indexOf('_Focus');
+          if(i>=0) cn+='_Focus';
+          o.className=cn;
+        }
+        var image;
+        if(this.OnGetCheckImg) image=this.OnGetCheckImg(this, it, 'CAI');
+        else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
+        if(image)
+        {
+          ngc_ChangeImage(ngl_CheckImgDrawProps(this.ID+'_CAIC', it.Checked, this.Enabled, image));
+        }
+      }
+      return ret;
+    }
+
+    function ngcl_DoCheckAll()
+    {
+      this.CheckAll();
+    }
+
+    function ngcl_DoUncheckAll()
+    {
+      this.UncheckAll();
+    }
+
+    function ngcl_ClickItem(it, e)
+    {
+      if(!it) {
+        var pelm=e.target || e.srcElement || e.originalTarget;
+        while(pelm)
+        {
+          if(pelm.id==this.ID+'_CAI')
+          {
+            var it=this.CheckAllItem;
+            e.listItem=it;
+            if((it.OnClick)&&(!ngVal(it.OnClick(e),false)))
+            {
+              if((e.listIgnoreSelect)&&(e.listPart)) this.ignore_select=new Date().getTime();
+              return;
+            }
+
+            switch(e.listPart)
+            {
+              case 0:
+              case 2:
+                if((e.listPart==0)&&(e.listIgnoreSelect)) break;
+                if((e.listPart==2)||(this.SelectType==5)) {
+
+                  var s=this.GetItemsCheckState()
+                  if(!s) this.DoCheckAll();
+                  else this.DoUncheckAll();
+                  e.listIgnoreSelect=true;
+                }
+                break;
+            }
+
+            var clickitem=false;
+            if(e.listPart)
+            {
+              if(e.listIgnoreSelect)
+              {
+                this.ignore_select=new Date().getTime();
+                clickitem=true;
+              }
+            }
+            else
+              if(!e.listIgnoreSelect)
+                clickitem=true;
+
+            if(clickitem)
+            {
+              if(it.OnClickItem) it.OnClickItem(e);
+            }
+            return;
+          }
+          pelm=pelm.parentNode;
+        }
+      }
+      ng_CallParent(this,'ClickItem',arguments);
+    }
+
+    function ngcl_DrawItem(html, it, id, level,pcollapsed)
+    {
+      if((!level)&&(!id)) {
+        this.CheckAllItem.Checked=this.GetItemsCheckState();
+        ng_CallParent(this,'DrawItem',[html, this.CheckAllItem,'CAI',level,pcollapsed]);
+      }
+      return ng_CallParent(this,'DrawItem',arguments,false);
+    }
+
+    function Create_ngCheckList(def,ref,parent) {
+      ng_MergeDef(def,{
+        Data: {
+          ShowCheckboxes: true,
+          SelectType: nglSelectCheck,
+          CheckAllItem: {
+            Text: ngTxt('ngCheckListSelectAll')
+          }
+        },
+        Methods: {
+          GetItemsCheckState: ngcl_GetItemsCheckState,
+          DoCheckAll: ngcl_DoCheckAll,
+          DoUncheckAll: ngcl_DoUncheckAll,
+          DrawItem: ngcl_DrawItem,
+          ClickItem: ngcl_ClickItem,
+          UpdateChecked: ngcl_UpdateChecked
+        }
+      });
+      var c=ngCreateControlAsType(def, 'ngList', ref, parent);
+      if(c) {
+        if(!ng_IsObjVar(c.CheckAllItem)) c.CheckAllItem={};
+        if(c.Columns.length>0)
+        {
+          var it=c.CheckAllItem;
+          var cid=ngVal(c.Columns[0].ID,'');
+          if((!ng_IsObjVar(it.Text))&&(cid!=='')) {
+            var txt=it.Text;
+            it.Text={};
+            it.Text[cid]=txt;
+          }
+        }
+      }
+      return c;
+    }
+
     ngRegisterControlType('ngList', function() { return new ngList; });
+    ngRegisterControlType('ngCheckList', Create_ngCheckList);
     ngRegisterControlType('ngPageList', Create_ngPageList);
   }
 };

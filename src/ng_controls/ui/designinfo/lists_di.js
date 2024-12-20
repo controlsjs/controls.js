@@ -737,6 +737,46 @@ return {
       };
     });
 
+    ngRegisterControlDesignInfo('ngCheckList',function(d,c,ref) {
+      return {
+        ControlCategory: 'List',
+        NewControl: {
+          Default: {
+            Properties: {
+              "W": { Value: 100 },
+              "H": { Value: 200 },
+              "Data": {
+                ObjectProperties: {
+                  "HTMLEncode": { Value: true },
+                  "Items": { Type: 'ngListItems',
+                    ObjectProperties: {
+                      0: {
+                        Type: 'ngListItem',
+                        Value: {
+                          Text: "'Item 1'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+        },
+        Properties: ng_diProperties({
+          "Data": {
+            "CheckAllItem": ng_diType('ngListItem', { Level: 'basic' }),
+            "ShowCheckboxes": ng_diBoolean(true),
+            "SelectType": ng_diInteger(5)
+          },
+          "Methods": {
+            "DoCheckAll": ng_diFunction('function() { ng_CallParent(this, "DoCheckAll", arguments); }', { Level: 'advanced' }),
+            "DoUncheckAll": ng_diFunction('function() { ng_CallParent(this, "DoUncheckAll", arguments); }', { Level: 'advanced' })
+          }
+        })
+      };
+    });
+
     ngRegisterControlDesignInfo('ngPageList',function(d,c,ref) {
       return {
         ControlCategory: 'List',
