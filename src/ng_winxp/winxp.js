@@ -647,9 +647,9 @@ var WinXPControls = {
     /*  Class: stdEdit
      *  Standard edit control (based on <ngEdit>).
      */
-    /*<>*/    
+    /*<>*/
     skinfnc.stdEdit_AddProperties=function(c)
-    {        
+    {
       var req=ngVal(c.Invalid,false);
       c.LeftImg=(req ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg);
       c.MiddleImg=(req ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg);
@@ -671,7 +671,7 @@ var WinXPControls = {
         if(update) c.DoUpdateImages();
       }
     }
-    
+
     function clearbtn_click(e)
     {
       var c=e.Owner ? e.Owner.Owner : null;
@@ -707,19 +707,19 @@ var WinXPControls = {
           for(i=0;i<c.Buttons.length;i++) {
             if((c.Buttons[i])&&(c.Buttons[i].OnClick===clearbtn_click)) break;
           }
-        
+
           if(i>=c.Buttons.length) {
             var readonly=(c.ReadOnly)||(c.DropDownType === ngeDropDownList);
 
             var b=new ngButton();
-            if(c.TextAlign==='right') {            
+            if(c.TextAlign==='right') {
               b.RightImg=winimages.ClearBtn;
               b.ButtonAlign='left';
             } else {
               b.LeftImg=winimages.ClearBtn;
             }
             b.OnClick = clearbtn_click;
-            b.Visible=(!readonly)&&(c.Text!=='');        
+            b.Visible=(!readonly)&&(c.Text!=='');
             b.Owner=c;
             c.Buttons.push(b);
             c.AddEvent('OnTextChanged', clearbtn_textchanged);
@@ -1257,6 +1257,13 @@ var WinXPControls = {
       ngRegisterControlSkin('stdList','ngList', function(def,ref,parent,modtype) { return skinfnc.Create_stdList(def,ref,parent,modtype,false); });
       ngRegisterControlSkin('stdListBox', 'stdList');
       ngRegisterControlSkin('stdTreeList', 'ngList', function(def,ref,parent,modtype) { return skinfnc.Create_stdList(def,ref,parent,modtype,true); });
+
+      /*  Class: stdCheckList
+       *  Standard check list control (based on <ngCheckList>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('stdCheckList','ngCheckList', { Type: 'stdList' });
+
       /*  Class: stdPageList
        *  Standard list control (based on <ngPageList>).
        */
@@ -1388,7 +1395,7 @@ var WinXPControls = {
             }
           }
         });
-        if((def.className === 'wxpDropDown')&&(typeof def.Controls.List.className === 'undefined')) def.Controls.List.className='wxpDropDown';        
+        if((def.className === 'wxpDropDown')&&(typeof def.Controls.List.className === 'undefined')) def.Controls.List.className='wxpDropDown';
 
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
@@ -1640,7 +1647,7 @@ var WinXPControls = {
         }
         return c;
       }
-      ngRegisterControlSkin('stdWindow','ngWindow', function (def,ref,parent,modtype) { return skinfnc.Create_stdWindow(def,ref,parent,modtype,false); });       
+      ngRegisterControlSkin('stdWindow','ngWindow', function (def,ref,parent,modtype) { return skinfnc.Create_stdWindow(def,ref,parent,modtype,false); });
       ngRegisterControlSkin('stdDialog','ngWindow', function (def,ref,parent,modtype) { return skinfnc.Create_stdWindow(def,ref,parent,modtype,true); });
 
       /*  Class: stdHint
@@ -1955,7 +1962,7 @@ var WinXPControls = {
         return c;
       };
 
-      ngRegisterControlSkin('dlgInputBox','stdMessageDlg', function(def,ref,parent,modtype) { return skinfnc.Create_dlgEditBox(def,ref,parent,modtype,'dlgInputBox');}); 
+      ngRegisterControlSkin('dlgInputBox','stdMessageDlg', function(def,ref,parent,modtype) { return skinfnc.Create_dlgEditBox(def,ref,parent,modtype,'dlgInputBox');});
 
       /*  Class: dlgDropDownBox
        *  Dropdown dialog (based on <stdMessageDlg>).
@@ -2361,7 +2368,7 @@ var WinXPControls = {
         div=ngVal(def.DropDown.HourDivider,2);
         if(div<=0) div=1;
         div=60/div;
-        skinfnc.stdEdit_AddClearBtn(def);        
+        skinfnc.stdEdit_AddClearBtn(def);
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(!c) return c;
 
@@ -3076,7 +3083,7 @@ var WinXPControls = {
                 marginTop: '5px'
               }
             }
-          }  
+          }
         });
         return ngCreateControlAsType(def, modtype, ref, parent);
       });
@@ -3199,7 +3206,7 @@ var WinXPControls = {
         skinfnc.Create_stdEditFieldDef(def);
         if(typeof def.className === 'undefined') def.className='wxpEdit';
         if((typeof def.DropDown !== 'undefined')&&(typeof def.DropDown.className === 'undefined')) def.DropDown.className='wxpDropDown';
-        skinfnc.stdEdit_AddClearBtn(def);        
+        skinfnc.stdEdit_AddClearBtn(def);
         var c=ngCreateControlAsType(def, modtype, ref, parent);
         if(c) {
           skinfnc.stdEdit_AddProperties(c);
