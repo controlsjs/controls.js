@@ -522,7 +522,7 @@ var WireframeControls = {
     for(var i in WFRImages.TextHint.Anchors) {
       WFRImages.TextHint.Anchors[i].Img=WFRImages.TextHint.AnchorsImg[i];
     }
-    
+
     /**
      *  Group: Control Types
      */
@@ -1061,11 +1061,16 @@ var WireframeControls = {
 
       ngRegisterControlSkin('wfrList','ngList', function(def,ref,parent,modtype){
         return skinfnc.Create_wfrList(def,ref,parent,modtype,false);
-      });    
+      });
       ngRegisterControlSkin('wfrListBox', 'wfrList');
       ngRegisterControlSkin('wfrTreeList','ngList', function(def,ref,parent,modtype){
         return skinfnc.Create_wfrList(def,ref,parent,modtype,true);
       });
+
+      /** Class: wfrCheckList
+       *  Standard check list control (based on <ngCheckList>).
+       */
+      ngRegisterControlSkin('wfrCheckList','ngCheckList', { Type: 'wfrList' });
 
       /** Class: wfrPageList
        *  Standard list control (based on <ngPageList>).
@@ -1349,7 +1354,7 @@ var WireframeControls = {
       ngRegisterControlSkin('wfrWindow','ngWindow', function(def,ref,parent,modtype){
         return skinfnc.Create_wfrWindow(def,ref,parent,modtype,false);
       });
-      
+
       ngRegisterControlSkin('wfrDialog','ngWindow', function(def,ref,parent,modtype){
         return skinfnc.Create_wfrWindow(def,ref,parent,modtype,true);
       });
@@ -2312,7 +2317,7 @@ var WireframeControls = {
        */
       /*<>*/
       ngRegisterControlSkin('wfrLoginForm','ngLoginForm', function(def,ref,parent,modtype){
-        ng_MergeDef(def, { 
+        ng_MergeDef(def, {
           W: 200,
           Data: {
             VPadding: 2
@@ -2370,7 +2375,7 @@ var WireframeControls = {
             }
           }
         });
-        return ngCreateControlAsType(def, modtype, ref, parent);        
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: wfrPasswordForm
@@ -2378,7 +2383,7 @@ var WireframeControls = {
        */
       /*<>*/
       ngRegisterControlSkin('wfrPasswordForm','ngPasswordForm', function(def,ref,parent,modtype){
-        ng_MergeDef(def, { 
+        ng_MergeDef(def, {
           W: 200,
           Data: {
             VPadding: 2
@@ -2416,7 +2421,7 @@ var WireframeControls = {
             }
           }
         });
-        return ngCreateControlAsType(def, modtype, ref, parent);        
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
 
       /*  Class: wfrLoginButton
@@ -2430,7 +2435,7 @@ var WireframeControls = {
             Type: 'wfrMenu'
           }
         });
-        return ngCreateControlAsType(def, modtype, ref, parent);        
+        return ngCreateControlAsType(def, modtype, ref, parent);
       });
     }
 
