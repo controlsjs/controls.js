@@ -266,6 +266,20 @@ var FileUploaderControl = {
        */
       c.AddUploadedFile = ngfup_AddUploadedFile;
 
+      /*  Function: DoAddUploadedFile
+       *  ...
+       *
+       *  Syntax:
+       *    void *DoAddUploadedFile* (object data)
+       *
+       *  Parameters:
+       *    data - ...
+       *
+       *  Returns:
+       *    -
+       */
+      c.DoAddUploadedFile = ngfup_DoAddUploadedFile;
+
 
       /*  Function: ChangeFile
        *  ...
@@ -628,9 +642,15 @@ function ngfup_AddUploadedFile(data){
   if(data.Error){ return { Name: data.Name, Error: data.Error }; }
   if(!this.CheckMaxFiles()){return { Name: data.Name, Error: { Message: 'ngfup_Error_MaxFiles', Data: this.MaxFilesCount } };}
 
-  this.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
+  this.DoAddUploadedFile(data);
   if(this.OnFileAdded){this.OnFileAdded(this, data.Name, data);}
   return null;
+}
+
+function ngfup_DoAddUploadedFile(data){
+  if((typeof data !== 'object') || (data === null)){return;}
+
+  this.Controls.ListFiles.Add({ Text: { File: data.Name }, Hash: data.Hash });
 }
 
 function ngfup_OnCreated(c){
