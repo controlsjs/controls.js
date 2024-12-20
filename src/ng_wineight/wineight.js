@@ -1083,25 +1083,25 @@ var WinEightControls = {
           for(i=0;i<c.Buttons.length;i++) {
             if((c.Buttons[i])&&(c.Buttons[i].OnClick===clearbtn_click)) break;
           }
-        
+
           if(i>=c.Buttons.length) {
             var readonly=(c.ReadOnly)||(c.DropDownType === ngeDropDownList);
 
             var b=new ngButton();
-            if(c.TextAlign==='right') {            
+            if(c.TextAlign==='right') {
               b.RightImg=winimages.ClearBtn;
               b.ButtonAlign='left';
             } else {
               b.LeftImg=winimages.ClearBtn;
             }
             b.OnClick = clearbtn_click;
-            b.Visible=(!readonly)&&(c.Text!=='');        
+            b.Visible=(!readonly)&&(c.Text!=='');
             b.Owner=c;
             c.Buttons.push(b);
             c.AddEvent('OnTextChanged', clearbtn_textchanged);
             c.AddEvent('OnReadOnlyChanged', clearbtn_textchanged);
           }
-        }        
+        }
         if((c.LeftImg===leftimg)||(c.RightImg===rightimg))
         {
           if(c.Buttons)
@@ -1860,6 +1860,17 @@ var WinEightControls = {
       /*<>*/
       ngRegisterControlSkin('weCompactTreeList','ngList', function(def,ref,parent,modtype) { return skinfnc.Create_weList(def,ref,parent,modtype,true,true); });
 
+      /*  Class: weCheckList
+       *  Standard check list control (based on <ngCheckList>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('weCheckList','ngCheckList', { Type: 'weList' });
+
+      /*  Class: weCompactCheckList
+       *  Standard check list control (based on <ngCheckList>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('weCompactCheckList','ngCheckList', { Type: 'weCompactList' });
 
       /*  Class: wePageList
        *  Standard list control (based on <ngPageList>).
@@ -2419,7 +2430,7 @@ var WinEightControls = {
             Title: {
               Type: 'weCaption',
               Theme: th,
-              ColorScheme: (th===WE_DARK ? 'White' : undefined),              
+              ColorScheme: (th===WE_DARK ? 'White' : undefined),
               L: margin, T: 27,
               Data: {
                 HTMLEncode: false
@@ -4288,13 +4299,13 @@ var WinEightControls = {
         return skinfnc.Create_wePageList(def,ref,parent,modtype,true,listtype);
       };
 
-      ngRegisterControlSkin('weDBDataSet','ngDBDataSet', function (def,ref,parent,modtype) { return skinfnc.Create_weDBDataSet(def,ref,parent,modtype,'weList'); }); 
+      ngRegisterControlSkin('weDBDataSet','ngDBDataSet', function (def,ref,parent,modtype) { return skinfnc.Create_weDBDataSet(def,ref,parent,modtype,'weList'); });
 
       /*  Class: weCompactDBDataSet
        *  Standard dataset control (based on <ngDBDataSet>).
        */
       /*<>*/
-      ngRegisterControlSkin('weCompactDBDataSet','ngDBDataSet', function (def,ref,parent,modtype) { return skinfnc.Create_weDBDataSet(def,ref,parent,modtype,'weCompactList'); }); 
+      ngRegisterControlSkin('weCompactDBDataSet','ngDBDataSet', function (def,ref,parent,modtype) { return skinfnc.Create_weDBDataSet(def,ref,parent,modtype,'weCompactList'); });
     }
   }
 };
