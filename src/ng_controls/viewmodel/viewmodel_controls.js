@@ -116,7 +116,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
   var bindingContext = (viewModel && (viewModel instanceof ko.bindingContext)
                         ? viewModel
                         : new ko.bindingContext(viewModel));
-    
+
   function add_ctrl_binding(c,type,valueAccessor,allBindingsAccessor,viewModel)
   {
     if(typeof c.DataBindings!=='object') c.DataBindings={};
@@ -152,7 +152,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
 //        return makeAccessorsFromFunction(this['getBindings'].bind(this, node, context));
       return makeAccessorsFromFunction(this['parseBindingsString'].bind(this, databind, context, ctrl, {'valueAccessors':false}));
   }
-  
+
   function topologicalSortBindings(bindings) {
     // Depth-first sort
     var result = [],                // The list of key/handler pairs that we will return
@@ -188,16 +188,16 @@ function ngApplyBindings(ctrl, viewModel, databind)
 
     return result;
   }
-  
+
 
   var oldhandler = ko['getBindingHandler'];
   var olddefer = ko.options['deferUpdates'];
   try
-  {  
+  {
     ko['getBindingHandler'] = function(bindingKey) {
         return (ngBindingsHandlers ? ngBindingsHandlers[bindingKey] : null);
     };
-  
+
     // Use bindings if given, otherwise fall back on asking the bindings provider to give us some bindings
     var bindings;
   /*  if (sourceBindings && typeof sourceBindings !== 'function') {
@@ -219,7 +219,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
                 },
                 null, { disposeWhenNodeIsRemoved: false/*node*/ }
             );
-                              
+
             if (!bindings || !bindingsUpdater.isActive())
                 bindingsUpdater = null;
 
@@ -234,7 +234,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
             bindings = ko.dependencyDetection.ignore(getBindings, provider, [ctrl, bindingContext]);
         }
   //  }
-  
+
   //  var bindingHandlerThatControlsDescendantBindings;
     if (bindings) {
         // Return the value accessor for a given binding. When bindings are static (won't be updated because of a binding
@@ -248,7 +248,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
             } : function(bindingKey) {
                 return bindings[bindingKey];
             };
-  
+
         // Use of allBindings as a function is maintained for backwards compatibility, but its use is deprecated
         function allBindings() {
             return ko.utils.objectMap(bindingsUpdater ? bindingsUpdater() : bindings, evaluateValueAccessor);
@@ -266,7 +266,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
 
         // First put the bindings into the right order
         var orderedBindings = topologicalSortBindings(bindings);
-  
+
         // Go through the sorted bindings, calling init and update for each
         ko.utils.arrayForEach(orderedBindings, function(bindingKeyAndHandler) {
             // Note that topologicalSortBindings has already filtered out any nonexistent binding handlers,
@@ -274,13 +274,13 @@ function ngApplyBindings(ctrl, viewModel, databind)
             var handlerInitFn = bindingKeyAndHandler.handler["Init"],
                 handlerUpdateFn = bindingKeyAndHandler.handler["Update"],
                 bindingKey = bindingKeyAndHandler.key;
-  
+
             add_ctrl_binding(ctrl, bindingKey, getValueAccessor(bindingKey), allBindings, bindingContext['$data']);
-  
+
   //          if (node.nodeType === 8) {
   //              validateThatBindingIsAllowedForVirtualElements(bindingKey);
   //          }
-  
+
             try {
                 // Run init, ignoring any dependencies
                 if ((typeof handlerInitFn === "function")||(ctrl.OnDataBindingInit)) {
@@ -288,7 +288,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
                       if((ctrl.OnDataBindingInit)&&(!ngVal(ctrl.OnDataBindingInit(ctrl,bindingKey,getValueAccessor(bindingKey), allBindings, bindingContext['$data']),false))) return;
                       if(typeof handlerInitFn === "function") {
                         var initResult = handlerInitFn(ctrl, getValueAccessor(bindingKey), allBindings, bindingContext['$data'], bindingContext);
-    
+
     /*                      // If this binding handler claims to control descendant bindings, make a note of this
                           if (initResult && initResult['controlsDescendantBindings']) {
                               if (bindingHandlerThatControlsDescendantBindings !== undefined)
@@ -298,7 +298,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
                       }
                     });
                 }
-  
+
                 // Run update in its own computed wrapper
                 if ((typeof handlerUpdateFn === "function")||(ctrl.OnDataBindingUpdate)) {
                     var deferupdates=allBindings.get('DeferUpdates');
@@ -336,7 +336,7 @@ function ngApplyBindings(ctrl, viewModel, databind)
     ko.options['deferUpdates']=olddefer;
     ko['getBindingHandler']=oldhandler;
   }
-  
+
   return true;
 }
 
@@ -526,6 +526,22 @@ ngUserControls['viewmodel_controls'] = {
       avm.LangId.subscribe(function(val) {
         if(changinglang) return;
         ngApp.SetLangById(val);
+      });
+
+      avm.FullScreenMode=ko.observable(ngVal(ngApp.InFullScreenMode,false));
+      ngApp.AddEvent('OnEnterFullScreenMode',function() {
+        avm.FullScreenMode(true);
+      });
+      ngApp.AddEvent('OnExitFullScreenMode',function() {
+        avm.FullScreenMode(false);
+      });
+
+      avm.FullScreenControl=ko.observable(ngVal(ngApp.FullScreenControl,null));
+      ngApp.AddEvent('OnEnterFullScreen',function(c, options) {
+        avm.FullScreenControl(c);
+      });
+      ngApp.AddEvent('OnExitFullScreen',function(c, options) {
+        if(avm.FullScreenControl()===c) avm.FullScreenControl(null);
       });
 
       if(typeof ngSetDevice==='function') {
@@ -745,11 +761,11 @@ ngUserControls['viewmodel_controls'] = {
                 } catch(e) {
                 }
               }
-              if(val==aval) return true;              
+              if(val==aval) return true;
             }
           }
           else if(val==filterval) return true;
-          break;  
+          break;
         default:
         case DBVM_FILTERTYPE_EQ:
           if(val==filterval) return true;
@@ -953,7 +969,7 @@ ngUserControls['viewmodel_controls'] = {
         {
           if(ngIsFieldDef(c.ViewModel.SortBy)) sortby=c.ViewModel.SortBy.GetTypedDefaultValue();
         }
-        
+
         var recs=c.DoGetRecords(offset, count, c.GetColumnDefs(), sortby);
         if((ng_IsArrayVar(recs))&&(c.ViewModel)) {
           var vm=c.ViewModel;
@@ -1215,7 +1231,7 @@ ngUserControls['viewmodel_controls'] = {
     if(ngUserControls['settings'])
     {
       function ngsvmset_DoCreate(def,ref) {
-      
+
         if((!this._settings)&&(typeof ngApp === 'object')&&(ngApp)&&(ng_typeObject(ngApp.Settings))) {
           this._settings=ngApp.Settings;
         }
