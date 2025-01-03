@@ -183,7 +183,17 @@ var ngSupportsHiResImages = (ngChromeVersion>=15) || (ngIExplorerVersion>=9) || 
     };
     return supported;
 })();
-
+/**
+ *  Variable: ngDefaultBackgroundColor
+ *  Default background color for current browser, typically "rgba(0, 0, 0, 0)"
+ */
+var ngDefaultBackgroundColor=(function() {
+  var div = document.createElement("div")
+  document.body.appendChild(div);
+  var bg = ng_GetCurrentStyle(div,'background-color');
+  document.body.removeChild(div);
+  return bg;
+})();
 /**
  *  Variable: ngFirebug
  *  TRUE if Firebug present (useful for debug informations).
@@ -1274,7 +1284,7 @@ function ng_UTF8Encode(str,safechars) {
           chEn += '%'+utf8_decToStrHex(0x80 | ((charOrd>>12) & 0x3F));
           chEn += '%'+utf8_decToStrHex(0x80 | ((charOrd>>6) & 0x3F));
           chEn += '%'+utf8_decToStrHex(0x80 | (charOrd & 0x3F));
-        } 
+        }
 
     if(pos<pi) res+=str.substring(pos, pi);
     res+=chEn;
@@ -1308,8 +1318,8 @@ function ng_UTF8Decode(str) {
 
   var c,i=0,pos=0;
   while (i<len) {
-  
-    c=utf8_strHexToDec(str, i);        
+
+    c=utf8_strHexToDec(str, i);
     if (c) { // encoded char
       charCnt=3;
       if (c > 127) {
@@ -1389,7 +1399,7 @@ function ng_UTF8ParamDecode(str)
 
 /**
  *  Function: ng_UTF8mb3
- *  Replaces characters encoded as 4-bytes UTF-8. 
+ *  Replaces characters encoded as 4-bytes UTF-8.
  *
  *  Syntax:
  *    string *ng_UTF8mb3* (string s[, string replacewith])
@@ -1400,7 +1410,7 @@ function ng_UTF8ParamDecode(str)
 function ng_UTF8mb3(s, replacewith)
 {
   if(typeof replacewith==='undefined') replacewith=String.fromCharCode(65533);
-  return (''+s).replace(/(?:[\uD800-\uDBFF][\uDC00-\uDFFF])/g, replacewith, s);   
+  return (''+s).replace(/(?:[\uD800-\uDBFF][\uDC00-\uDFFF])/g, replacewith, s);
 }
 
 /**
@@ -1835,6 +1845,31 @@ function ng_GetCurrentStyle(o,s)
     val = o.currentStyle[s];
   }
   return val;
+}
+
+/**
+ *  Function: ng_GetBackgroundColor
+ *  Gets background (computed) color of element.
+ *
+ *  Syntax:
+ *    string *ng_GetBackgroundColor* (object elm)
+ *
+ *  Parameters:
+ *    elm - object element
+ *
+ *  Returns:
+ *    Computed background color.
+ *
+ */
+function ng_GetBackgroundColor(el)
+{
+  while(el)
+  {
+    var backgroundColor = ng_GetCurrentStyle(el,'background-color');
+    if (backgroundColor != ngDefaultBackgroundColor) return backgroundColor;
+    el=el.parentNode;
+  }
+  return ngDefaultBackgroundColor;
 }
 
 /**
@@ -3543,7 +3578,7 @@ function ngrpc_sendHttpRequest(url, callback, reqinfo)
     {
       if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
       delete reqinfo._timeout_timer;
-      
+
       if((xmlhttp.status==200)||(xmlhttp.status==304)||((xmlhttp.status==0)&&(!ngCordova)&&(navigator.onLine!==false))) {
         if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, getreponse(), xmlhttp, reqinfo);
       }
@@ -3957,9 +3992,9 @@ function ngRPC(id,url,nocache)
    */
   this.HTTPMethod='';
   /*  Variable: withCredentials
-   *  Indicates whether or not cross-site Access-Control requests should 
-   *  be made using credentials such as cookies, authorization headers 
-   *  or TLS client certificates. 
+   *  Indicates whether or not cross-site Access-Control requests should
+   *  be made using credentials such as cookies, authorization headers
+   *  or TLS client certificates.
    *
    *  Type: boolean
    *  Default value: *undefined*
