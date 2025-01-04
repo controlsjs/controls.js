@@ -1383,8 +1383,26 @@ function ngRegisterControlDesignInfo(type, di)
 }
 
 /**
+ *  Function: ngIsControl
+ *  Tests if object is control.
+ *
+ *  Syntax:
+ *    bool *ngIsControl* (object c)
+ *
+ *  Parameters:
+ *    c - control instance
+ *
+ *  Returns:
+ *    TRUE if object is control.
+ */
+function ngIsControl(c)
+{
+  return (ng_IsObjVar(c))&&(typeof c.CtrlType!=='undefined');
+}
+
+/**
  *  Function: ngIsSysControl
- *  Tests if control is non-visual.
+ *  Tests if object is non-visual control.
  *
  *  Syntax:
  *    bool *ngIsSysControl* (object c)
@@ -1397,7 +1415,9 @@ function ngRegisterControlDesignInfo(type, di)
  */
 function ngIsSysControl(c)
 {
-  return (ng_IsObjVar(c))&&(typeof c.Elm==='function')&&((typeof c.Update === 'undefined')||(!c.Elm())); // sys controls have no Update method or not attached to any element
+  if(!ngIsControl(c)) return false;
+  if((ngHASDESIGNINFO())&&(ng_IsObjVar(c.DesignInfo))) return c.DesignInfo.NonVisual ? true : false;
+  return ((typeof c.SetVisible === 'undefined')||(!c.Elm())); // sys controls have no SetVisible method or not attached to any element
 }
 
 // --- Control creation --------------------------------------------------------
