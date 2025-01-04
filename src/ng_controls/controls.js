@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2008-2021 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2008-2025 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2024 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2025 Position s.r.o.';
 
 /**
  *  Variable: ngApp
@@ -1380,6 +1380,24 @@ function ngRegisterControlDesignInfo(type, di)
       });
       break;
   }
+}
+
+/**
+ *  Function: ngIsSysControl
+ *  Tests if control is non-visual.
+ *
+ *  Syntax:
+ *    bool *ngIsSysControl* (object c)
+ *
+ *  Parameters:
+ *    c - control instance
+ *
+ *  Returns:
+ *    TRUE if control is non-visual.
+ */
+function ngIsSysControl(c)
+{
+  return (ng_IsObjVar(c))&&(typeof c.Elm==='function')&&((typeof c.Update === 'undefined')||(!c.Elm())); // sys controls have no Update method or not attached to any element
 }
 
 // --- Control creation --------------------------------------------------------
