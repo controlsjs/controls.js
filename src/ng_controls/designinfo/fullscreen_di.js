@@ -14,8 +14,8 @@ if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['fullscreen_designinfo'] = {
   OnControlCreated: function(def,c)
   {
-    if((ngHASDESIGNINFO())&&(c)&&(!def.CtrlInheritanceDepth))
-    {
+    if((ngHASDESIGNINFO())&&(c)&&(!def.CtrlInheritanceDepth)&&(!ngIsSysControl(c)))
+    {      
       ng_MergeVar(c.DesignInfo, {
         Properties: ng_diProperties({
           "Events": {
