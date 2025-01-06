@@ -761,7 +761,7 @@ return {
                 }
               }
             }
-          },
+          }
         },
         Properties: ng_diProperties({
           "Data": {
