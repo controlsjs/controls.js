@@ -19,7 +19,7 @@ var Hammer = function(element, options) {
   return new Hammer.Instance(element, options || {});
 };
 
-Hammer.VERSION = '1.0.10';
+Hammer.VERSION = '1';
 
 // default settings
 Hammer.defaults = {
