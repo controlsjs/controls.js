@@ -42,11 +42,12 @@ var ngHtmlVal = (function() {
     };
   }
 
-  function flush_cache()
+  function flush_cache(all)
   {
     if(cache_timer) clearTimeout(cache_timer);
     cache_timer=null;
-    cache_old=cache;
+    if(all) cache_old={};
+    else cache_old=cache;
     cache={};
 
     if(ngHtmlValCacheDebug) {
