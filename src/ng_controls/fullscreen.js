@@ -70,12 +70,16 @@ ngUserControls['fullscreen'] = {
       if((ngApp.FullScreenModeElm)&&(ngApp.FullScreenModeElm!==elm)) {
         ngApp.DoExitFullScreenMode();
       }
+      if(typeof ngApp.FullScreenMobileKeyboardFix==='undefined') ngApp.FullScreenMobileKeyboardFix=ngApp.MobileKeyboardFix;
+      ngApp.MobileKeyboardFix=false;
       ngApp.FullScreenModeElm=elm;
       if(ngApp.OnEnterFullScreenMode) ngApp.OnEnterFullScreenMode(elm);
     };
 
     ngApp.DoExitFullScreenMode = function() {
       var elm=ngApp.FullScreenModeElm;
+      if(typeof ngApp.FullScreenMobileKeyboardFix!=='undefined') ngApp.MobileKeyboardFix=ngApp.FullScreenMobileKeyboardFix;
+      delete ngApp.FullScreenMobileKeyboardFix;
       delete ngApp.FullScreenModeElm;
       if(ngApp.FullScreenControl) ngApp.ExitFullScreen();
       if(ngApp.OnExitFullScreenMode) ngApp.OnExitFullScreenMode(elm);
@@ -257,6 +261,12 @@ ngUserControls['fullscreen'] = {
       if(ngApp.OnEnterFullScreen) ngApp.OnEnterFullScreen(c, options);
 
       if(options.FullScreenMode) ngApp.RequestFullScreenMode(null, options.OnEnterFullScreenMode, options.OnEnterFullScreenModeFailed);
+      if(ngVal(options.SetFocus,true)) {
+        ngApp.InvokeLater(function() {
+          if((ng_IsObjVar(options.SetFocus))&&(typeof options.SetFocus.SetFocus === 'function')) options.SetFocus.SetFocus();
+          else if(typeof c.SetFocus === 'function') c.SetFocus();
+        });
+      }
       return true;
     };
 
