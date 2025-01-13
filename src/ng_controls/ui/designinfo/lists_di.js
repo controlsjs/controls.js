@@ -766,6 +766,7 @@ return {
         Properties: ng_diProperties({
           "Data": {
             "CheckAllItem": ng_diType('ngListItem', { Level: 'basic' }),
+            "CheckAllVisibleOnly": ng_diBoolean(true, { Level: 'basic' }),
             "ShowCheckboxes": ng_diBoolean(true),
             "SelectType": ng_diInteger(5)
           },

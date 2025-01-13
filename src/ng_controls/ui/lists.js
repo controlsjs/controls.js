@@ -741,7 +741,7 @@ function ngl_CheckChanged()
   }
 }
 
-function ngl_UpdateChecked(it,recursion,setall,id,level)
+function ngl_UpdateChecked(it,recursion,setall,visibleonly,id,level)
 {
   var list=it;
   if((typeof list === 'undefined')||(list===null)) list=this;
@@ -749,13 +749,11 @@ function ngl_UpdateChecked(it,recursion,setall,id,level)
   if(typeof id==='undefined') id=(list==this ? '' : this.ItemId(it));
 
   level=ngVal(level,0);
-  if(((this.ShowCheckboxes)||(typeof it.Checked!=='undefined'))&&(typeof setall !== 'undefined')&&(ngVal(it.Checked,0)!=setall))
+  if((typeof setall !== 'undefined')&&((this.ShowCheckboxes)||(typeof it.Checked!=='undefined'))&&(ngVal(it.Checked,0)!=setall)&&((!visibleonly)||(ngVal(it.Visible,true))))
   {
     it.Checked=setall;
     this.do_checked(it);
   }
-
-  var undefined;
   var state=ngVal(it.Checked,0);
   if((typeof list.Items !== 'undefined')&&(list.Items.length>0))
   {
@@ -763,18 +761,25 @@ function ngl_UpdateChecked(it,recursion,setall,id,level)
     var checkgroup=ngVal(it.CheckGroup,false);
     if((checkgroup)||(typeof setall !== 'undefined')||(recursion))
     {
-      if((!level)&&(checkgroup)&&(state!=2)) setall=state;
-      if(!checkgroup) setall=undefined;
+      if(!checkgroup) setall=void 0;
+      else if(!level) {
+        if((state!=2)&&((!visibleonly)||(ngVal(it.Visible,true)))) setall=state;
+      }
       var s,gstate;
       for(var i=0;i<list.Items.length;i++)
       {
         if(typeof list.Items[i] === 'undefined') continue;
-        s=this.UpdateChecked(list.Items[i],recursion,setall,(id!='' ? id+'_'+i : undefined),level+1);
+        s=this.UpdateChecked(list.Items[i],recursion,setall,visibleonly,(id!='' ? id+'_'+i : void 0),level+1);
         if((this.ShowCheckboxes)||(typeof list.Items[i].Checked!=='undefined'))
         {
           if(typeof gstate === 'undefined') gstate=s;
           else if(s!=gstate) gstate=2;
         }
+      }
+      if((visibleonly)&&(checkgroup)&&((this.ShowCheckboxes)||(typeof it.Checked!=='undefined'))&&(ngVal(it.Checked,0)!=gstate))
+      {
+        it.Checked=gstate;
+        this.do_checked(it);
       }
       if((checkgroup)&&(typeof gstate!=='undefined')) state=gstate;
     }
@@ -819,7 +824,7 @@ function ngl_UpdateChecked(it,recursion,setall,id,level)
           {
             it.Checked=pstate;
             this.do_checked(it);
-            this.UpdateChecked(it,false);
+            this.UpdateChecked(it,false,void 0,visibleonly);
           }
           it=it.Parent;
         }
@@ -848,13 +853,13 @@ function ngl_CheckItem(it, state)
   }
 }
 
-function ngl_CheckAllItems(it,state,respectcheckgroup)
+function ngl_CheckAllItems(it,state,respectcheckgroup,visibleonly)
 {
   state=ngVal(state,1);
   if(ngVal(respectcheckgroup,false))
   {
     if((typeof it==='undefined')||(it===null)) it={ Checked: state, CheckGroup: true, Items: this.Items };
-    this.UpdateChecked(it,true,state,'');
+    this.UpdateChecked(it,true,state,visibleonly,'');
   }
   else
   {
@@ -863,7 +868,9 @@ function ngl_CheckAllItems(it,state,respectcheckgroup)
     {
       var list=it;
       if((typeof list==='undefined')||(list===null)) list=self;
-      else self.CheckItem(it,state);
+      else {
+        if((!visibleonly)||(ngVal(it.Visible,true))) self.CheckItem(it,state);
+      }
       if((typeof list.Items !== 'undefined')&&(list.Items.length>0))
       {
         for(var i=0;i<list.Items.length;i++)
@@ -877,14 +884,14 @@ function ngl_CheckAllItems(it,state,respectcheckgroup)
   }
 }
 
-function ngl_CheckAll(it,respectcheckgroup)
+function ngl_CheckAll(it,respectcheckgroup,visibleonly)
 {
-  this.CheckAllItems(it,1,respectcheckgroup);
+  this.CheckAllItems(it,1,respectcheckgroup,visibleonly);
 }
 
-function ngl_UncheckAll(it,respectcheckgroup)
+function ngl_UncheckAll(it,respectcheckgroup,visibleonly)
 {
-  this.CheckAllItems(it,0,respectcheckgroup);
+  this.CheckAllItems(it,0,respectcheckgroup,visibleonly);
 }
 
 function ngl_GetChecked()
@@ -3712,7 +3719,7 @@ function ngList(id)
    *  Checks all subitems of item.
    *
    *  Syntax:
-   *    void *CheckAllItems* ([object parent=null, enum state=nglChecked, bool respectcheckgroup=false])
+   *    void *CheckAllItems* ([object parent=null, enum state=nglChecked, bool respectcheckgroup=false, bool visibleonly=false])
    *
    *  Returns:
    *    -
@@ -3722,7 +3729,7 @@ function ngList(id)
    *  Checks all items in tree.
    *
    *  Syntax:
-   *    void *CheckAll* ([object parent=null, bool respectcheckgroup=false])
+   *    void *CheckAll* ([object parent=null, bool respectcheckgroup=false, bool visibleonly=false])
    *
    *  Returns:
    *    -
@@ -3732,7 +3739,7 @@ function ngList(id)
    *  Unchecks all items in tree.
    *
    *  Syntax:
-   *    void *UncheckAll* ([object parent=null, bool respectcheckgroup=false])
+   *    void *UncheckAll* ([object parent=null, bool respectcheckgroup=false, bool visibleonly=false])
    *
    *  Returns:
    *    -
@@ -3988,7 +3995,7 @@ function ngList(id)
    *  Update() method.
    *
    *  Syntax:
-   *    void *UpdateChecked* (object item [, bool recursion=false, bool setall=undefined])
+   *    void *UpdateChecked* (object item [, bool recursion=false, bool setall=undefined, bool visibleonly=false])
    *
    *    void *UpdateChecked* ()
    *
@@ -6489,19 +6496,20 @@ ngUserControls['list'] = {
 
     function ngcl_GetItemsCheckState(it)
     {
-      var list=it;
-      if((typeof list === 'undefined')||(list===null)) list=this;
-      if((typeof it==='undefined')||(it===null)) it={ };
+      var list;
+      if((typeof it ==='undefined')||(it===null)) { it={ }; list=this; }
+      else list=it;
 
       var state;
       if(typeof it.RadioGroup === 'undefined') state=ngVal(it.Checked,0);
       if((typeof list.Items !== 'undefined')&&(list.Items.length>0))
       {
-        var s,gstate;
+        var s,gstate,subit;
         for(var i=0;i<list.Items.length;i++)
         {
-          if(typeof list.Items[i] === 'undefined') continue;
-          s=this.GetItemsCheckState(list.Items[i]);
+          subit=list.Items[i];
+          if((typeof subit === 'undefined')||((this.CheckAllVisibleOnly)&&(!ngVal(subit.Visible,true))))  continue;
+          s=this.GetItemsCheckState(subit);
           if(typeof gstate === 'undefined') gstate=s;
           else if((typeof s!=='undefined')&&(s!=gstate)) return 2;
         }
@@ -6516,10 +6524,10 @@ ngUserControls['list'] = {
       return state;
     }
 
-    function ngcl_UpdateChecked(it,recursion,setall,id,level)
+    function ngcl_UpdateChecked(it,recursion,setall,visibleonly,id,level)
     {
       var ret=ng_CallParent(this,'UpdateChecked',arguments,0);
-      if(this.update_cnt<=0)
+      if((this.update_cnt<=0)&&(!level)&&(!id))
       {
         var o=document.getElementById(this.ID+'_CAI');
         var it=this.CheckAllItem;
@@ -6544,12 +6552,12 @@ ngUserControls['list'] = {
 
     function ngcl_DoCheckAll()
     {
-      this.CheckAll();
+      this.CheckAll(void 0, void 0, this.CheckAllVisibleOnly);
     }
 
     function ngcl_DoUncheckAll()
     {
-      this.UncheckAll();
+      this.UncheckAll(void 0, void 0, this.CheckAllVisibleOnly);
     }
 
     function ngcl_ClickItem(it, e)
@@ -6622,6 +6630,7 @@ ngUserControls['list'] = {
         Data: {
           ShowCheckboxes: true,
           SelectType: nglSelectCheck,
+          CheckAllVisibleOnly: true,
           CheckAllItem: {
             Text: ngTxt('ngCheckListSelectAll')
           }
