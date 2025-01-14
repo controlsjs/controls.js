@@ -365,7 +365,7 @@ function ngfd_SetTypedValue(v, exception, defval)
     try {
       v=this.TypedValue(v);
     } catch(e) {
-      if(arguments.length===2) {
+      if(arguments.length===3) {
         try {
           v=this.TypedValue(defval);
         } catch(e) {
