@@ -451,6 +451,13 @@ var WinXP_DesignInfo = {
       ng_MergeVar(di,stdListDI(d,c,ref));
       return di;
     });
+    
+    function stdCheckListDI(d,c,ref) {
+      return {
+        ControlCategory: 'List',
+      };
+    }    
+    ngRegisterControlDesignInfo('stdCheckList',stdCheckListDI);    
 
     function stdPageListDI(d,c,ref) {
       return {
