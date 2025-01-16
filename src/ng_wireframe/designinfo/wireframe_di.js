@@ -361,6 +361,13 @@ var WireframeControls_DesignInfo = {
     });
     ngRegisterControlDesignInfo('wfrTreeList',wfrListDI);
 
+    function wfrCheckListDI(d,c,ref) {
+      return {
+        ControlCategory: 'List',
+      };
+    }    
+    ngRegisterControlDesignInfo('wfrCheckList',wfrCheckListDI);
+
     function wfrPageListDI(d,c,ref) {
       return {
         ControlCategory: 'List',
