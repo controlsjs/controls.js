@@ -782,6 +782,14 @@ return {
       return di;
     });
 
+    function weCheckListDI(d,c,ref) {
+      return {
+        ControlCategory: 'List',
+      };
+    }    
+    ngRegisterControlDesignInfo('weCheckList',weCheckListDI);    
+    ngRegisterControlDesignInfo('weCompactCheckList',weCheckListDI);    
+
     function wePageListDI(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'List',
