@@ -203,6 +203,8 @@ var WinXPControls = {
       BarImg: { L: 123, T: 2, W: 8, H: 17 }
     },
 
+    ProgressDot: { L:0, T:0, W:16, H:16, Src:3 },
+
     TreeImgPlusMinus: { L: 242, T: 26, W: 17, H: 16, SL: 226 },
 
     TreeImgTriangle: { L: 260, T: 26, W: 15, H: 16, SL: 276 },
@@ -1185,6 +1187,9 @@ var WinXPControls = {
      */
     /*<>*/
     ngRegisterControlSkin('stdProgressDot','ngButton', function(def,ref,parent,modtype) {
+      var img = winimages.ProgressDot;
+      ng_PreloadImage(img.Src);
+
       ng_MergeDef(def, {
         className: 'wxpLabel',
         Data: {
@@ -1198,7 +1203,7 @@ var WinXPControls = {
         c.AddEvent(function (b) {
           var txt=ngVal(b.Text,'');
           if(txt!='') txt='&nbsp;<span style="line-height: 16px">'+ngHtmlVal(txt)+'</span>';
-          return '<img src="' + WinXPControls.ControlImages[3] + '" align="top" />'+txt;
+          return '<img src="'+img.Src+'" align="top" width="'+img.W+'" height="'+img.H+'" />'+txt;
         }, 'OnGetText');
       }
       return c;
