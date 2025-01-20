@@ -1678,6 +1678,7 @@ function ngCreateControl(d,ref,parent)
   try
   {
     if(ng_IsArrayVar(d.Type)) {
+      if((typeof d.id==='undefined')&&(d.Type.length)) d.id=ngCreateControlId(d.Type[0]);
       switch(d.Type.length)
       {
         case 0:
@@ -1704,6 +1705,7 @@ function ngCreateControl(d,ref,parent)
           break;
       }
     }
+    else if((typeof d.ModType!=='undefined')&&(typeof d.id==='undefined')) d.id=ngCreateControlId(d.ModType);
     if((typeof d.Type==='undefined')&&(hasdi)) d.Type='feGenericControl';
 
     for(j in ngUserControls)
