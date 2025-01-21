@@ -882,7 +882,11 @@ function ng_diProperties(props,data) {
         "ID": ng_diStringRefName({ Level: 'optional', Order: 0.001 }),
         "Type": ng_diMixed([
           ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_ControlType' }),
-          ng_diArrayOf(ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_ControlType' }), { Level: 'basic', Collapsed: false })
+          ng_diArrayOf(ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_ControlModType' }), { Level: 'basic', Collapsed: false }, {
+            ObjectProperties: {
+              0: ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_ControlType' })
+            }
+          })
         ], { InitType: 'string', Level: 'basic', Order: 0.01 }),
         "DebugDef": ng_diMixed([
           ng_diBoolean(false, { Level: 'advanced' }),
@@ -1164,7 +1168,11 @@ ngUserControls['controls_designinfo'] = {
           var lvl=typeof r.ModType==='undefined' ? 'basic' : 'advanced';
           cdi.Properties["ModType"]=ng_diMixed([
             ng_diString(ngVal(r.ModType,''), { Level: lvl }, { Editor: 'ngfeEditor_ControlType' }),
-            ng_diArrayOf(ng_diString('', { Level: lvl }, { Editor: 'ngfeEditor_ControlType' }), { Level: 'basic', Collapsed: false })
+            ng_diArrayOf(ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_ControlModType' }), { Level: 'basic', Collapsed: false }, {
+              ObjectProperties: {
+                0: ng_diString('', { Level: 'basic' }, { Editor: 'ngfeEditor_ControlType' })
+              }
+            })
           ], { InitType: 'string', Level: lvl, Order: 0.011 });
         }
       }
