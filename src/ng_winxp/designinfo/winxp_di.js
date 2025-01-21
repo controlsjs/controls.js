@@ -454,7 +454,7 @@ var WinXP_DesignInfo = {
     
     function stdCheckListDI(d,c,ref) {
       return {
-        ControlCategory: 'List',
+        ControlCategory: 'List'
       };
     }    
     ngRegisterControlDesignInfo('stdCheckList',stdCheckListDI);    
