@@ -89,7 +89,7 @@ ngUserControls['mods_designinfo'] = {
 
             "HMin": ng_diInteger(0, { Level: 'basic' }),
             "HMax": ng_diInteger(100, { Level: 'basic' }),
-            "HAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
+            "HAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' })
           }
         })
       };
