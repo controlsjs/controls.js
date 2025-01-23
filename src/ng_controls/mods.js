@@ -147,10 +147,7 @@ ngUserControls['mods'] = {
         },
         Methods: {
           GetRealBounds: function(bounds) {
-            if(typeof bounds==='undefined') {
-              if(this.OriginalBounds) bounds=this.OriginalBounds;
-              else bounds=this.Bounds;
-            }
+            if(typeof bounds==='undefined') bounds=this.Bounds;
             var elm=this.Elm();
             var ret={ W: void 0, H: void 0 };
             if(!elm) return ret;
@@ -194,31 +191,31 @@ ngUserControls['mods'] = {
             return ret;
           },
           SetBounds: function(props) {
-            var ret;
-            if(this.OriginalBounds)
+            if(this.SizeLimitBounds)
             {
-              var curbounds=this.Bounds;
-              var setboundsfnc=ng_SetBounds;
+              var self=this;
+              var ret,setboundsfnc=ng_SetBounds;
               try {
-                ng_SetBounds=function() {};
-                this.Bounds=this.OriginalBounds;
+                ng_SetBounds=function(o, props) {
+                  var lprops={};
+                  for(var i in self.SizeLimitBounds) lprops[i]=self.SizeLimitBounds[i];
+                  for(var i in props) if(!(i in lprops)) lprops[i]=props[i];
+                  setboundsfnc.apply(this,[o,lprops]);
+                };
                 ret=ng_CallParent(this, 'SetBounds', arguments, false);
-                this.OriginalBounds=this.Bounds;
               } finally {
                 ng_SetBounds=setboundsfnc;
-                this.Bounds=curbounds;
               }
+              return ret;
             }
-            else ret=ng_CallParent(this, 'SetBounds', arguments, false);
-            return ret;
+            else return ng_CallParent(this, 'SetBounds', arguments, false);
           }
         },
         BeforeEvents: {
           OnUpdate: function(c) {
             var props;
             if((c.WMin)||(c.WMax)||(c.HMin)||(c.HMax)) {
-              var bounds=c.OriginalBounds ? c.OriginalBounds : c.Bounds;
-              var rb=c.GetRealBounds(bounds);
+              var rb=c.GetRealBounds();
               var props,lw,lh;
               if(typeof rb.W!=='undefined')
               {
@@ -233,7 +230,7 @@ ngUserControls['mods'] = {
               if(typeof lw!=='undefined') {
                 if(!props) props={};
                 props.W=lw;
-                if((typeof bounds.L!=='undefined')&&(typeof bounds.R!=='undefined')) {
+                if((typeof this.Bounds.L!=='undefined')&&(typeof this.Bounds.R!=='undefined')) {
                   if(c.WAlign==='right') props.L=void 0;
                   else                   props.R=void 0;
                 }
@@ -241,37 +238,15 @@ ngUserControls['mods'] = {
               if(typeof lh!=='undefined') {
                 if(!props) props={};
                 props.H=lh;
-                if((typeof bounds.T!=='undefined')&&(typeof bounds.B!=='undefined')) {
+                if((typeof this.Bounds.T!=='undefined')&&(typeof this.Bounds.B!=='undefined')) {
                   if(c.HAlign==='bottom') props.T=void 0;
                   else                    props.B=void 0;
                 }
               }
             }
-            if(props) {
-              if(!c.OriginalBounds) {
-                var origbounds=ng_CopyVar(c.Bounds);
-                if((typeof origbounds.W==='undefined')&&(typeof props.W!=='undefined')) origbounds.W=void 0;
-                if((typeof origbounds.H==='undefined')&&(typeof props.H!=='undefined')) origbounds.H=void 0;
-                c.SetBounds(props);
-                c.OriginalBounds=origbounds;
-              } else {
-                if(((typeof props.W!=='undefined')&&(props.W!==c.Bounds.W))
-                 ||((typeof props.H!=='undefined')&&(props.H!==c.Bounds.H))) {
-                  var origbounds=c.OriginalBounds;
-                  try {
-                    delete c.OriginalBounds;
-                    c.SetBounds(props);
-                  } finally {
-                    c.OriginalBounds=origbounds;
-                  }
-                 }
-              }
-            } else {
-              if(c.OriginalBounds) {
-                var origbounds=c.OriginalBounds;
-                delete c.OriginalBounds;
-                c.SetBounds(origbounds);
-              }
+            if(typeof props!==typeof c.SizeLimitBounds) {
+              c.SizeLimitBounds=props;
+              c.SetBounds();
             }
             return true;
           }
