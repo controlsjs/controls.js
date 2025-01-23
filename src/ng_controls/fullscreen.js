@@ -156,19 +156,29 @@ ngUserControls['fullscreen'] = {
 
     function fullscreensetbound(props)
     {
-      var ret;
-      var curbounds=this.Bounds;
-      var setboundsfnc=ng_SetBounds;
-      try {
-        ng_SetBounds=function() {};
-        this.Bounds=this._FullScreenBounds;
-        ret=ng_CallParent(this, 'SetBounds', arguments, false);
-        this._FullScreenBounds=this.Bounds;
-      } finally {
-        ng_SetBounds=setboundsfnc;
-        this.Bounds=curbounds;
+      // just update bounds but don't set them
+      if(typeof props!=='undefined')
+      {
+        if(typeof this.Bounds === 'undefined') this.Bounds=new Object;
+        for(var i in props)
+        {
+          switch(i)
+          {
+            case 'L':
+            case 'T':
+            case 'R':
+            case 'B':
+            case 'W':
+            case 'H':
+              this.Bounds[i]=props[i];
+              break;
+            case 'IE6AlignFix':
+              this.IE6AlignFix=props.IE6AlignFix;
+              break;
+          }
+        }
       }
-      return ret;
+      return false;
     }
 
     ngApp.FullScreen = function(c, options)
@@ -247,15 +257,18 @@ ngUserControls['fullscreen'] = {
       fo.appendChild(o);
       c.Attach();
       c._FullScreenParentElm=parent;
-      if(ng_IsObjVar(options.Bounds)) {
-        c._FullScreenBounds=ng_CopyVar(c.Bounds);
-        c.UpdateBounds(options.Bounds);
-      }
       c.InFullScreen=true;
       c.AddEvent(disposefullscr, 'Dispose');
       ng_OverrideMethod(c,'SetBounds',fullscreensetbound);
       ngApp.FullScreenControl = c;
       ngApp.FullScreenOptions = options;
+
+      if(ng_IsObjVar(options.Bounds)) {
+        c._FullScreenBounds=ng_CopyVar(options.Bounds);
+        ng_SetBounds(o, options.Bounds);
+        c.Update();
+      }
+      else delete c._FullScreenBounds;
 
       if(c.OnEnterFullScreen) c.OnEnterFullScreen(c, options);
       if(ngApp.OnEnterFullScreen) ngApp.OnEnterFullScreen(c, options);
@@ -298,11 +311,11 @@ ngUserControls['fullscreen'] = {
       c.Attach();
       c._FullScreenParentElm=parent;
 
-      var bounds=c._FullScreenBounds;
-
       fo.style.display='none';
       fo.style.visibility='hidden'; // IE7 sometimes don't hide elements if display is none
       ng_IE7RedrawFix(fo);
+
+      var bounds=c._FullScreenBounds;
 
       delete c._FullScreenBounds;
       delete c._FullScreenParentElm;
@@ -310,13 +323,12 @@ ngUserControls['fullscreen'] = {
       c.RemoveEvent('Dispose',disposefullscr);
       c.SetBounds.removeOverride(fullscreensetbound);
 
-      if(ng_IsObjVar(bounds)) {
-        ng_MergeVar(bounds,{L:void 0, T: void 0, R: void 0, B: void 0, W: void 0, H: void 0})
-        c.UpdateBounds(bounds);
-      }
-
       ngApp.FullScreenOptions=void 0;
       ngApp.FullScreenControl=null;
+
+      if(ng_IsObjVar(bounds)) {
+        if(c.SetBounds()) c.Update();
+      }
 
       if(c.OnExitFullScreen) c.OnExitFullScreen(c, options);
       if(ngApp.OnExitFullScreen) ngApp.OnExitFullScreen(c, options);
