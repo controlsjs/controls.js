@@ -13,59 +13,61 @@ if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 ngc_Lang['en']['ngClipboardCTRLC']='CTRL+C';
 
-function ngclip_SetText(text, onsucc, onfail)
-{
-  function dosucc() {
-    if(onsucc) onsucc(text);
-  }
-  
-  function dofail()
+(function(window) {
+  function ngclip_SetText(text, onsucc, onfail)
   {
-    if(onfail) onfail(text);
-    else window.prompt(ngTxt('ngClipboardCTRLC'),text);
-  }
+    function dosucc() {
+      if(onsucc) onsucc(text);
+    }
 
-  try { 
-    if(!navigator.clipboard) {
-      if(window.clipboardData) {
-        window.clipboardData.setData(ngIExplorer ? 'Text' : 'text/plain', text);
-        if(onsucc) ngApp.InvokeLater(dosucc);
-      } else {
-        var tempInput = document.createElement("textarea");
-        try {        
-          tempInput.style.position='absolute';
-          tempInput.style.left='-1000px';
-          tempInput.style.top='-1000px';
-          tempInput.style.width='100px';
-          tempInput.style.height='100px';
-          if(typeof ngModalCnt!=='undefined') tempInput.style.zIndex=(ngModalCnt+1)*ngModalZIndexDelta;
-          else tempInput.style.zIndex=10000000;
-          tempInput.value = text;
-          document.body.appendChild(tempInput);
-          tempInput.select();
-          if(tempInput.setSelectionRange) tempInput.setSelectionRange(0, 99999); /* For mobile devices */
-          document.execCommand("copy");
-          document.body.removeChild(tempInput);
+    function dofail()
+    {
+      if(onfail) onfail(text);
+      else window.prompt(ngTxt('ngClipboardCTRLC'),text);
+    }
+
+    try {
+      if(!navigator.clipboard) {
+        if(window.clipboardData) {
+          window.clipboardData.setData(ngIExplorer ? 'Text' : 'text/plain', text);
           if(onsucc) ngApp.InvokeLater(dosucc);
-        } catch(e) {
-          document.body.removeChild(tempInput);
-          ngApp.InvokeLater(dofail);          
-        }      
+        } else {
+          var tempInput = document.createElement("textarea");
+          try {
+            tempInput.style.position='absolute';
+            tempInput.style.left='-1000px';
+            tempInput.style.top='-1000px';
+            tempInput.style.width='100px';
+            tempInput.style.height='100px';
+            if(typeof ngModalCnt!=='undefined') tempInput.style.zIndex=(ngModalCnt+1)*ngModalZIndexDelta;
+            else tempInput.style.zIndex=10000000;
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            if(tempInput.setSelectionRange) tempInput.setSelectionRange(0, 99999); /* For mobile devices */
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            if(onsucc) ngApp.InvokeLater(dosucc);
+          } catch(e) {
+            document.body.removeChild(tempInput);
+            ngApp.InvokeLater(dofail);
+          }
+        }
+      } else {
+        navigator.clipboard.writeText(text).then(dosucc,dofail);
       }
-    } else {
-      navigator.clipboard.writeText(text).then(dosucc,dofail);
-    }    
-  } catch(e) {
-    ngApp.InvokeLater(dofail);          
+    } catch(e) {
+      ngApp.InvokeLater(dofail);
+    }
+    return true;
   }
-  return true;  
-}
 
-function ngClipboard()
-{
-  this.SetText = ngclip_SetText;
-  this.IsSupported = true;// !!(ngIExplorer || navigator.clipboard);
-}
+  window.ngClipboard = function()
+  {
+    this.SetText = ngclip_SetText;
+    this.IsSupported = true;// !!(ngIExplorer || navigator.clipboard);
+  }
+})(window);
 
 if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['clipboard'] = {
