@@ -124,7 +124,7 @@ ngUserControls['settings_cookies'] = {
     window.ngset_do_load = function(id,data)
     {
       if(typeof data === 'undefined') return;
-      var s=getSettingsByID(id);
+      var s=ng_IsObjVar(window.ngSettingsByID) ? window.ngSettingsByID[id] : null;
       if(s) s.DataLoaded(this,data);
     };
 
