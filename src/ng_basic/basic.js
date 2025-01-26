@@ -3398,7 +3398,6 @@ var rpcMaxGetLength    = 2000;
 var ngOnRPCCreated     = null;
 var ngOnAnyRPCRequest  = null;
 
-var ngRPCLastID = 0;
 var ngRPCByID = {};
 
 function getRPCByID(rpcid)
@@ -3408,313 +3407,401 @@ function getRPCByID(rpcid)
   return ngVal(ngRPCByID[rpcid],null);
 }
 
-var rpcHeadElement = null;
+(function(window) {
+  var ngRPCLastID = 0;
+  var rpcHeadElement = null;
 
-function ngrpc_sendScriptRequest(url, reqinfo)
-{
-  if(!ng_IsObjVar(reqinfo)) reqinfo={};
-  reqinfo.URL=url;
-  reqinfo.Type=rpcScript;
-  if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
-  if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
-
-  if((this.OnSendRequest)&&(!ngVal(this.OnSendRequest(this, url, reqinfo),false))) return true;
-
-  if(ngVal(reqinfo.Timeout,0)>0) {
-    ngDEBUGERROR('ngRPC: Timeout is not supported in rpcScript type!');
-  }
-
-  if(!rpcHeadElement)
+  function ngrpc_sendScriptRequest(url, reqinfo)
   {
-    rpcHeadElement = document.getElementsByTagName("head").item(0);
-    if(!rpcHeadElement) return false;
-  }
-  var rpc=this;
+    if(!ng_IsObjVar(reqinfo)) reqinfo={};
+    reqinfo.URL=url;
+    reqinfo.Type=rpcScript;
+    if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
+    if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
 
-  var sid=this.id+'S';
-  var o = document.getElementById(sid);
-  if(o) rpcHeadElement.removeChild(o);
-  o = document.createElement("script");
-  o.onerror=function() {
-    rpc.DoError(reqinfo);
-  };
-  reqinfo.RequestURL=ng_URL(reqinfo.URL);
-  o.setAttribute("src",reqinfo.RequestURL);
-  o.setAttribute("id",sid);
+    if((this.OnSendRequest)&&(!ngVal(this.OnSendRequest(this, url, reqinfo),false))) return true;
 
-  rpcHeadElement.appendChild(o);
-  reqinfo.RequestSent=true;
-  if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
-  return true;
-}
-
-function ngrpc_sendIFrameRequest(url, params, reqinfo)
-{
-  if(!ng_IsObjVar(reqinfo)) reqinfo={};
-  reqinfo.URL=url;
-  reqinfo.Type=rpcIFrame;
-  reqinfo.Method='POST';
-  if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
-  if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
-
-  var fid=this.id+'F';
-  var ifrm = document.getElementById(fid);
-  if(!ifrm)
-  {
-    ifrm = document.createElement('iframe');
-    ifrm.id = fid;
-    ifrm.style.visibility = "hidden";
-    document.body.appendChild(ifrm);
-    ng_IE7RedrawFix(document.body);
-  }
-
-  var doc = (ifrm.contentDocument ? ifrm.contentDocument : ifrm.contentWindow.document);
-  if (!doc) return false;
-
-  reqinfo.Document = doc;
-
-  if((this.OnSendRequest)&&(!ngVal(this.OnSendRequest(this, url, reqinfo),false))) return true;
-
-  if(ngVal(reqinfo.Timeout,0)>0) {
-    ngDEBUGERROR('ngRPC: Timeout is not supported in rpcIFrame type!');
-  }
-  if(this.OnError) {
-    ngDEBUGWARN('ngRPC: OnError event is not supported in rpcIFrame type!');
-  }
-
-  reqinfo.RequestURL=ng_URL(reqinfo.URL);
-  reqinfo.Method='POST';
-  try
-  {
-    doc.open();
-    doc.write('<html><body><form action="'+reqinfo.RequestURL+'" method="POST" id="'+this.id+'">');
-    var v;
-    if(ng_IsObjVar(params))
-    {
-      // In URL_ESCAPING_UTF8 iframe encodes values itself, so no standard encoding is required
-      if(ngURLDefaultEscaping==0) /* URL_ESCAPING_UTF8 */ ngURLDefaultEscaping=-1; // None
-      try
-      {
-        for(var i in params)
-        {
-          v=this.EncodeParam(i,params[i]);
-          if(typeof v === 'undefined') continue;
-          doc.write('<input type="hidden" name="'+ng_htmlEncode(i)+'" value="'+ng_htmlEncode(v)+'" />');
-        }
-      }
-      finally
-      {
-        if(ngURLDefaultEscaping==-1) /* URL_ESCAPING_UTF8 */ ngURLDefaultEscaping=0; // None
-      }
+    if(ngVal(reqinfo.Timeout,0)>0) {
+      ngDEBUGERROR('ngRPC: Timeout is not supported in rpcScript type!');
     }
-    if((this.OnIFrameRequest)&&(!ngVal(this.OnIFrameRequest(this,doc,reqinfo.URL,reqinfo),false))) return false;
-    doc.write('</form></body></html>');
-    doc.close();
-  }
-  catch(e)
-  {
-    ngDEBUGERROR('ngRPC: Failed to create IFRAME form!',e);
-    return false;
-  }
 
-  var frm=doc.getElementById(this.id);
-  if(frm)
-  {
-    frm.submit();
+    if(!rpcHeadElement)
+    {
+      rpcHeadElement = document.getElementsByTagName("head").item(0);
+      if(!rpcHeadElement) return false;
+    }
+    var rpc=this;
+
+    var sid=this.id+'S';
+    var o = document.getElementById(sid);
+    if(o) rpcHeadElement.removeChild(o);
+    o = document.createElement("script");
+    o.onerror=function() {
+      rpc.DoError(reqinfo);
+    };
+    reqinfo.RequestURL=ng_URL(reqinfo.URL);
+    o.setAttribute("src",reqinfo.RequestURL);
+    o.setAttribute("id",sid);
+
+    rpcHeadElement.appendChild(o);
     reqinfo.RequestSent=true;
     if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
     return true;
   }
-  return false;
-}
 
-function ngrpc_sendHttpRequest(url, callback, reqinfo)
-{
-  if(!ng_IsObjVar(reqinfo)) reqinfo={};
-  reqinfo.URL=url;
-  reqinfo.Type=rpcHttpRequest;
-  if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
-  if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
-  if(this.OnSendRequest)
+  function ngrpc_sendIFrameRequest(url, params, reqinfo)
   {
-    if(!ngVal(this.OnSendRequest(this, url, reqinfo),false)) return true;
-  }
-  reqinfo.PostParams=ngVal(reqinfo.PostParams,null);
-  reqinfo.ReqHeaders=ngVal(reqinfo.ReqHeaders,null);
-  reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? (typeof reqinfo.PostParams === 'string' ? 'POST' : 'GET') : this.HTTPMethod));
-  reqinfo.withCredentials = ngVal(reqinfo.withCredentials, this.withCredentials);
-  var xmlhttp=null;
-  try {
-    if (window.XMLHttpRequest) xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
-    else
+    if(!ng_IsObjVar(reqinfo)) reqinfo={};
+    reqinfo.URL=url;
+    reqinfo.Type=rpcIFrame;
+    reqinfo.Method='POST';
+    if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
+    if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
+
+    var fid=this.id+'F';
+    var ifrm = document.getElementById(fid);
+    if(!ifrm)
     {
-      try { xmlhttp=new ActiveXObject('Msxml2.XMLHTTP'); }   // code for IE6, IE5
-      catch (e) { xmlhttp=new ActiveXObject('Microsoft.XMLHTTP'); }
+      ifrm = document.createElement('iframe');
+      ifrm.id = fid;
+      ifrm.style.visibility = "hidden";
+      document.body.appendChild(ifrm);
+      ng_IE7RedrawFix(document.body);
     }
-    if((!xmlhttp)&&(window.createRequest)) xmlhttp = window.createRequest();
-  }
-  catch(e)
-  {
-    ngDEBUGERROR('ngRPC: Failed to create XMLHttpRequest!',e);
+
+    var doc = (ifrm.contentDocument ? ifrm.contentDocument : ifrm.contentWindow.document);
+    if (!doc) return false;
+
+    reqinfo.Document = doc;
+
+    if((this.OnSendRequest)&&(!ngVal(this.OnSendRequest(this, url, reqinfo),false))) return true;
+
+    if(ngVal(reqinfo.Timeout,0)>0) {
+      ngDEBUGERROR('ngRPC: Timeout is not supported in rpcIFrame type!');
+    }
+    if(this.OnError) {
+      ngDEBUGWARN('ngRPC: OnError event is not supported in rpcIFrame type!');
+    }
+
+    reqinfo.RequestURL=ng_URL(reqinfo.URL);
+    reqinfo.Method='POST';
+    try
+    {
+      doc.open();
+      doc.write('<html><body><form action="'+reqinfo.RequestURL+'" method="POST" id="'+this.id+'">');
+      var v;
+      if(ng_IsObjVar(params))
+      {
+        // In URL_ESCAPING_UTF8 iframe encodes values itself, so no standard encoding is required
+        if(ngURLDefaultEscaping==0) /* URL_ESCAPING_UTF8 */ ngURLDefaultEscaping=-1; // None
+        try
+        {
+          for(var i in params)
+          {
+            v=this.EncodeParam(i,params[i]);
+            if(typeof v === 'undefined') continue;
+            doc.write('<input type="hidden" name="'+ng_htmlEncode(i)+'" value="'+ng_htmlEncode(v)+'" />');
+          }
+        }
+        finally
+        {
+          if(ngURLDefaultEscaping==-1) /* URL_ESCAPING_UTF8 */ ngURLDefaultEscaping=0; // None
+        }
+      }
+      if((this.OnIFrameRequest)&&(!ngVal(this.OnIFrameRequest(this,doc,reqinfo.URL,reqinfo),false))) return false;
+      doc.write('</form></body></html>');
+      doc.close();
+    }
+    catch(e)
+    {
+      ngDEBUGERROR('ngRPC: Failed to create IFRAME form!',e);
+      return false;
+    }
+
+    var frm=doc.getElementById(this.id);
+    if(frm)
+    {
+      frm.submit();
+      reqinfo.RequestSent=true;
+      if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
+      return true;
+    }
     return false;
   }
-  if(!xmlhttp) return false;
 
-  function getreponse() {
-    try {
-      return xmlhttp.responseText;
-    }
-    catch(E) {
-      return xmlhttp.response;
-    }
-  }
-
-  reqinfo.XMLHttp=xmlhttp;
-  var rpc=this;
-  xmlhttp.onreadystatechange=function()
+  function ngrpc_sendHttpRequest(url, callback, reqinfo)
   {
-    if((rpc.OnHTTPReadyStateChanged)&&(!ngVal(rpc.OnHTTPReadyStateChanged(rpc,xmlhttp,reqinfo),false))) return;
-    if(xmlhttp.readyState==4)
+    if(!ng_IsObjVar(reqinfo)) reqinfo={};
+    reqinfo.URL=url;
+    reqinfo.Type=rpcHttpRequest;
+    if(typeof reqinfo.RequestTime==='undefined') reqinfo.RequestTime=new Date().getTime();
+    if(typeof reqinfo.Timeout==='undefined') reqinfo.Timeout=this.Timeout;
+    if(this.OnSendRequest)
     {
+      if(!ngVal(this.OnSendRequest(this, url, reqinfo),false)) return true;
+    }
+    reqinfo.PostParams=ngVal(reqinfo.PostParams,null);
+    reqinfo.ReqHeaders=ngVal(reqinfo.ReqHeaders,null);
+    reqinfo.Method = ngVal(reqinfo.Method, (ng_EmptyVar(this.HTTPMethod) ? (typeof reqinfo.PostParams === 'string' ? 'POST' : 'GET') : this.HTTPMethod));
+    reqinfo.withCredentials = ngVal(reqinfo.withCredentials, this.withCredentials);
+    var xmlhttp=null;
+    try {
+      if (window.XMLHttpRequest) xmlhttp=new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
+      else
+      {
+        try { xmlhttp=new ActiveXObject('Msxml2.XMLHTTP'); }   // code for IE6, IE5
+        catch (e) { xmlhttp=new ActiveXObject('Microsoft.XMLHTTP'); }
+      }
+      if((!xmlhttp)&&(window.createRequest)) xmlhttp = window.createRequest();
+    }
+    catch(e)
+    {
+      ngDEBUGERROR('ngRPC: Failed to create XMLHttpRequest!',e);
+      return false;
+    }
+    if(!xmlhttp) return false;
+
+    function getreponse() {
+      try {
+        return xmlhttp.responseText;
+      }
+      catch(E) {
+        return xmlhttp.response;
+      }
+    }
+
+    reqinfo.XMLHttp=xmlhttp;
+    var rpc=this;
+    xmlhttp.onreadystatechange=function()
+    {
+      if((rpc.OnHTTPReadyStateChanged)&&(!ngVal(rpc.OnHTTPReadyStateChanged(rpc,xmlhttp,reqinfo),false))) return;
+      if(xmlhttp.readyState==4)
+      {
+        if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
+        delete reqinfo._timeout_timer;
+
+        if((xmlhttp.status==200)||(xmlhttp.status==304)||((xmlhttp.status==0)&&(!ngCordova)&&(navigator.onLine!==false))) {
+          if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, getreponse(), xmlhttp, reqinfo);
+        }
+        else if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+          if((xmlhttp.status==408)  // Request Timeout
+          ||(xmlhttp.status==504)) // Gateway Timeout
+            reqinfo.RequestTimeout=true;
+          rpc.DoError(reqinfo);
+        }
+      }
+    }
+    if(typeof reqinfo.PostParams === 'string')
+    {
+      if(!reqinfo.ReqHeaders) reqinfo.ReqHeaders=new Object;
+      if(typeof reqinfo.ReqHeaders['Content-type'] === 'undefined')
+        reqinfo.ReqHeaders['Content-type'] = 'application/x-www-form-URLencoded';
+  //    if(typeof reqinfo.ReqHeaders['Content-length'] === 'undefined')
+  //      reqinfo.ReqHeaders['Content-length'] = reqinfo.PostParams.length;
+    }
+
+    if((this.OnHTTPRequest)&&(!ngVal(this.OnHTTPRequest(this,reqinfo),false))) return false;
+    reqinfo.RequestURL=ng_URL(reqinfo.URL);
+    if(typeof reqinfo.withCredentials!=='undefined') xmlhttp.withCredentials=reqinfo.withCredentials;
+    xmlhttp.open(reqinfo.Method,reqinfo.RequestURL,(callback ? true : false));
+    if(reqinfo.ReqHeaders)
+    {
+      for(var i in reqinfo.ReqHeaders)
+        xmlhttp.setRequestHeader(i,reqinfo.ReqHeaders[i]);
+    }
+
+    if(ngVal(reqinfo.Timeout,0)>0) {
+      reqinfo._timeout_timer=setTimeout(function() {
+        reqinfo.RequestTimeout=true;
+        rpc.DoError(reqinfo);
+      }, Math.floor(reqinfo.Timeout));
+    }
+
+    xmlhttp.send(reqinfo.PostParams);
+    reqinfo.RequestSent=true;
+    if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
+    if(!callback) {
       if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
       delete reqinfo._timeout_timer;
-
-      if((xmlhttp.status==200)||(xmlhttp.status==304)||((xmlhttp.status==0)&&(!ngCordova)&&(navigator.onLine!==false))) {
-        if((callback)&&(!reqinfo.RequestTimeout)) callback(rpc, getreponse(), xmlhttp, reqinfo);
-      }
-      else if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
-        if((xmlhttp.status==408)  // Request Timeout
-         ||(xmlhttp.status==504)) // Gateway Timeout
-          reqinfo.RequestTimeout=true;
-        rpc.DoError(reqinfo);
-      }
+      return getreponse();
     }
+    return true;
   }
-  if(typeof reqinfo.PostParams === 'string')
+
+  function ngrpc_EncodeParam(n,v)
   {
-    if(!reqinfo.ReqHeaders) reqinfo.ReqHeaders=new Object;
-    if(typeof reqinfo.ReqHeaders['Content-type'] === 'undefined')
-      reqinfo.ReqHeaders['Content-type'] = 'application/x-www-form-URLencoded';
-//    if(typeof reqinfo.ReqHeaders['Content-length'] === 'undefined')
-//      reqinfo.ReqHeaders['Content-length'] = reqinfo.PostParams.length;
-  }
-
-  if((this.OnHTTPRequest)&&(!ngVal(this.OnHTTPRequest(this,reqinfo),false))) return false;
-  reqinfo.RequestURL=ng_URL(reqinfo.URL);
-  if(typeof reqinfo.withCredentials!=='undefined') xmlhttp.withCredentials=reqinfo.withCredentials;
-  xmlhttp.open(reqinfo.Method,reqinfo.RequestURL,(callback ? true : false));
-  if(reqinfo.ReqHeaders)
-  {
-    for(var i in reqinfo.ReqHeaders)
-      xmlhttp.setRequestHeader(i,reqinfo.ReqHeaders[i]);
-  }
-
-  if(ngVal(reqinfo.Timeout,0)>0) {
-    reqinfo._timeout_timer=setTimeout(function() {
-      reqinfo.RequestTimeout=true;
-      rpc.DoError(reqinfo);
-    }, Math.floor(reqinfo.Timeout));
-  }
-
-  xmlhttp.send(reqinfo.PostParams);
-  reqinfo.RequestSent=true;
-  if(this.OnRequestSent) this.OnRequestSent(this, reqinfo.URL, reqinfo);
-  if(!callback) {
-    if(reqinfo._timeout_timer) clearTimeout(reqinfo._timeout_timer);
-    delete reqinfo._timeout_timer;
-    return getreponse();
-  }
-  return true;
-}
-
-function ngrpc_EncodeParam(n,v)
-{
-  if(typeof v === 'undefined') return v;
-  if(this.OnEncodeParam) v=this.OnEncodeParam(this,n,v);
-  else
-  {
-    if((typeof v === 'object')&&(v))
+    if(typeof v === 'undefined') return v;
+    if(this.OnEncodeParam) v=this.OnEncodeParam(this,n,v);
+    else
     {
-      if(typeof v.GetText === 'function') v=v.GetText();
-      else if(typeof v.toString === 'function') v=v.toString();
-    }
-    v=ng_URLEncode(v);
-  }
-  return v;
-}
-
-function ngrpc_GetURLParams()
-{
-  var v,urlparams='';
-  for(var i in this.Params)
-  {
-    v=this.EncodeParam(i,this.Params[i]);
-    if(typeof v === 'undefined') continue;
-    if(urlparams!='') urlparams+='&'
-    urlparams+=i+'='+v;
-  }
-  return urlparams;
-}
-
-function ngrpc_DoError(reqinfo) {
-  if(ng_IsObjVar(reqinfo)) reqinfo.RequestFailed=true;
-  if(this.OnError) this.OnError(this, reqinfo);
-}
-
-function ngrpc_domain(url)
-{
-  url=ng_StripURLParams(url);
-  var idx=url.indexOf('//');
-  if(idx<0) return window.location.hostname;
-  url=url.substring(idx+2,url.length);
-  idx=url.indexOf('/');
-  if(idx>=0) url=url.substring(0,idx);
-  idx=url.indexOf(':');
-  if(idx>=0) url=url.substring(0,idx);
-  return url;
-}
-
-function ngrpc_sendRequest(url, nocache, reqinfo)
-{
-  if(!ng_IsObjVar(reqinfo)) reqinfo={};
-  url=ngVal(url, this.URL);
-  reqinfo.URL=url
-  reqinfo.nocache=ngVal(nocache, this.nocache);
-  reqinfo.RequestTime=new Date().getTime();
-  reqinfo.Type=this.Type;
-
-  if((this.OnRequest)&&(!ngVal(this.OnRequest(this,reqinfo),false))) return false;
-  if((ngOnAnyRPCRequest)&&(!ngVal(ngOnAnyRPCRequest(this,reqinfo),false))) return false;
-  if(reqinfo.Type == rpcNone) return false;
-
-  url=reqinfo.URL;
-  if(reqinfo.nocache) url=ng_AddURLParam(url,'_t='+reqinfo.RequestTime);
-
-  var v,params='';
-  var type=reqinfo.Type;
-  switch(type)
-  {
-    case rpcAuto:
-    case rpcScript:
-    case rpcHttpRequest:
-    case rpcHttpRequestPOST:
-    case rpcHttpRequestGET:
-    case rpcJSON:
-    case rpcJSONPOST:
-    case rpcJSONGET:
-    case rpcData:
-    case rpcDataPOST:
-    case rpcDataGET:
-      params=this.GetURLParams();
-      if((type===rpcAuto)||(type===rpcHttpRequest)||(type===rpcJSON)||(type===rpcData)) // determine req. type by params length
+      if((typeof v === 'object')&&(v))
       {
-        if((type===rpcAuto)&&(!ngCordova)&&(ngrpc_domain(url)!=window.location.hostname))
+        if(typeof v.GetText === 'function') v=v.GetText();
+        else if(typeof v.toString === 'function') v=v.toString();
+      }
+      v=ng_URLEncode(v);
+    }
+    return v;
+  }
+
+  function ngrpc_GetURLParams()
+  {
+    var v,urlparams='';
+    for(var i in this.Params)
+    {
+      v=this.EncodeParam(i,this.Params[i]);
+      if(typeof v === 'undefined') continue;
+      if(urlparams!='') urlparams+='&'
+      urlparams+=i+'='+v;
+    }
+    return urlparams;
+  }
+
+  function ngrpc_DoError(reqinfo) {
+    if(ng_IsObjVar(reqinfo)) reqinfo.RequestFailed=true;
+    if(this.OnError) this.OnError(this, reqinfo);
+  }
+
+  function ngrpc_domain(url)
+  {
+    url=ng_StripURLParams(url);
+    var idx=url.indexOf('//');
+    if(idx<0) return window.location.hostname;
+    url=url.substring(idx+2,url.length);
+    idx=url.indexOf('/');
+    if(idx>=0) url=url.substring(0,idx);
+    idx=url.indexOf(':');
+    if(idx>=0) url=url.substring(0,idx);
+    return url;
+  }
+
+  function ngrpc_sendRequest(url, nocache, reqinfo)
+  {
+    if(!ng_IsObjVar(reqinfo)) reqinfo={};
+    url=ngVal(url, this.URL);
+    reqinfo.URL=url
+    reqinfo.nocache=ngVal(nocache, this.nocache);
+    reqinfo.RequestTime=new Date().getTime();
+    reqinfo.Type=this.Type;
+
+    if((this.OnRequest)&&(!ngVal(this.OnRequest(this,reqinfo),false))) return false;
+    if((window.ngOnAnyRPCRequest)&&(!ngVal(window.ngOnAnyRPCRequest(this,reqinfo),false))) return false;
+    if(reqinfo.Type == rpcNone) return false;
+
+    url=reqinfo.URL;
+    if(reqinfo.nocache) url=ng_AddURLParam(url,'_t='+reqinfo.RequestTime);
+
+    var params='';
+    var type=reqinfo.Type;
+    switch(type)
+    {
+      case rpcAuto:
+      case rpcScript:
+      case rpcHttpRequest:
+      case rpcHttpRequestPOST:
+      case rpcHttpRequestGET:
+      case rpcJSON:
+      case rpcJSONPOST:
+      case rpcJSONGET:
+      case rpcData:
+      case rpcDataPOST:
+      case rpcDataGET:
+        params=this.GetURLParams();
+        if((type===rpcAuto)||(type===rpcHttpRequest)||(type===rpcJSON)||(type===rpcData)) // determine req. type by params length
         {
-          type=rpcScript;
+          if((type===rpcAuto)&&(!ngCordova)&&(ngrpc_domain(url)!=window.location.hostname))
+          {
+            type=rpcScript;
+          }
+          else
+          {
+            type=rpcHttpRequest;
+            var i=url.indexOf('?');
+            if(i>=0)
+            {
+              params=ng_AddURLParam(url.substr(i,url.length),params);
+              if((params.length)&&(params.charAt(0)==='?')) params=params.substr(1,params.length);
+              url=url.substr(0,i);
+            }
+            if(params.length>rpcMaxGetLength)
+            {
+              switch(reqinfo.Type)
+              {
+                case rpcAuto:
+                case rpcHttpRequest:
+                  type=rpcHttpRequestPOST;
+                  break;
+                case rpcJSON:
+                  type=rpcJSONPOST;
+                  break;
+                case rpcData:
+                  type=rpcDataPOST;
+                  break;
+              }
+            }
+            else
+            {
+              switch(reqinfo.Type)
+              {
+                case rpcAuto:
+                case rpcHttpRequest:
+                  type=rpcHttpRequestGET;
+                  break;
+                case rpcJSON:
+                  type=rpcJSONGET;
+                  break;
+                case rpcData:
+                  type=rpcDataGET;
+                  break;
+              }
+            }
+          }
         }
-        else
+        break;
+    }
+    var rpctype;
+    this.RequestTime=reqinfo.RequestTime;
+    this.RequestInfo=reqinfo;
+    if((typeof reqinfo.Method==='undefined')&&(ng_EmptyVar(this.HTTPMethod)))
+    {
+      switch(type)
+      {
+        case rpcHttpRequestPOST:
+        case rpcJSONPOST:
+        case rpcDataPOST:
+          reqinfo.Method='POST';
+          break;
+        case rpcHttpRequestGET:
+        case rpcDataGET:
+        case rpcJSONGET:
+          reqinfo.Method='GET';
+          break;
+      }
+    }
+    switch(type)
+    {
+      case rpcScript:
+        if(params!='') url=ng_AddURLParam(url, params);
+        return this.sendScriptRequest(url, reqinfo);
+
+      case rpcIFrame:
+        return this.sendIFrameRequest(url,this.Params, reqinfo);
+
+      case rpcHttpRequestPOST:
+      case rpcHttpRequestGET:
+        rpctype=1;
+      case rpcJSONPOST:
+      case rpcJSONGET:
+        if(typeof rpctype==='undefined') rpctype=2;
+      case rpcDataPOST:
+      case rpcDataGET:
+        if(typeof rpctype==='undefined') rpctype=3;
+        reqinfo.ReqHeaders={ RPC: rpctype };
+        if((type===rpcHttpRequestGET)||(type===rpcJSONGET)||(type===rpcDataGET))
         {
-          type=rpcHttpRequest;
+          if(params!='') url=ng_AddURLParam(url, params);
+        }
+        else {
           var i=url.indexOf('?');
           if(i>=0)
           {
@@ -3722,530 +3809,412 @@ function ngrpc_sendRequest(url, nocache, reqinfo)
             if((params.length)&&(params.charAt(0)==='?')) params=params.substr(1,params.length);
             url=url.substr(0,i);
           }
-          if(params.length>rpcMaxGetLength)
+          reqinfo.PostParams=params;
+        }
+        return this.sendHttpRequest(url, function(rpc, response, xmlhttp, reqinfo) {
+          if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false)))
+            return;
+
+          switch(type)
           {
-            switch(reqinfo.Type)
-            {
-              case rpcAuto:
-              case rpcHttpRequest:
-                type=rpcHttpRequestPOST;
-                break;
-              case rpcJSON:
-                type=rpcJSONPOST;
-                break;
-              case rpcData:
-                type=rpcDataPOST;
-                break;
-            }
-          }
-          else
-          {
-            switch(reqinfo.Type)
-            {
-              case rpcAuto:
-              case rpcHttpRequest:
-                type=rpcHttpRequestGET;
-                break;
-              case rpcJSON:
-                type=rpcJSONGET;
-                break;
-              case rpcData:
-                type=rpcDataGET;
-                break;
-            }
-          }
-        }
-      }
-      break;
-  }
-  var rpctype;
-  this.RequestTime=reqinfo.RequestTime;
-  this.RequestInfo=reqinfo;
-  if((typeof reqinfo.Method==='undefined')&&(ng_EmptyVar(this.HTTPMethod)))
-  {
-    switch(type)
-    {
-      case rpcHttpRequestPOST:
-      case rpcJSONPOST:
-      case rpcDataPOST:
-        reqinfo.Method='POST';
-        break;
-      case rpcHttpRequestGET:
-      case rpcDataGET:
-      case rpcJSONGET:
-        reqinfo.Method='GET';
-        break;
-    }
-  }
-  switch(type)
-  {
-    case rpcScript:
-      if(params!='') url=ng_AddURLParam(url, params);
-      return this.sendScriptRequest(url, reqinfo);
-
-    case rpcIFrame:
-      return this.sendIFrameRequest(url,this.Params, reqinfo);
-
-    case rpcHttpRequestPOST:
-    case rpcHttpRequestGET:
-      rpctype=1;
-    case rpcJSONPOST:
-    case rpcJSONGET:
-      if(typeof rpctype==='undefined') rpctype=2;
-    case rpcDataPOST:
-    case rpcDataGET:
-      if(typeof rpctype==='undefined') rpctype=3;
-      reqinfo.ReqHeaders={ RPC: rpctype };
-      if((type===rpcHttpRequestGET)||(type===rpcJSONGET)||(type===rpcDataGET))
-      {
-        if(params!='') url=ng_AddURLParam(url, params);
-      }
-      else {
-        var i=url.indexOf('?');
-        if(i>=0)
-        {
-          params=ng_AddURLParam(url.substr(i,url.length),params);
-          if((params.length)&&(params.charAt(0)==='?')) params=params.substr(1,params.length);
-          url=url.substr(0,i);
-        }
-        reqinfo.PostParams=params;
-      }
-      return this.sendHttpRequest(url, function(rpc, response, xmlhttp, reqinfo) {
-        if((rpc.OnReceivedData)&&(!ngVal(rpc.OnReceivedData(rpc, response, xmlhttp, reqinfo),false)))
-          return;
-
-        switch(type)
-        {
-          case rpcHttpRequestGET:
-          case rpcHttpRequestPOST:
-          case rpcJSONGET:
-          case rpcJSONPOST:
-            var isempty=/^\s*$/g;
-            if(isempty.test(response)) {
-              reqinfo.EmptyResponse=true;
-              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
-                rpc.DoError(reqinfo);
-                if((ngHASDEBUG())&&(typeof console!=='undefined')) {
-                  var c=console;
-                  c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Empty response!');
-                }
-              }
-            }
-            break;
-        }
-
-        switch(type)
-        {
-          case rpcHttpRequestGET:
-          case rpcHttpRequestPOST:
-            if(reqinfo.EmptyResponse) break;
-            var ishtml=/^\s*\</i;
-            if(ishtml.test(response)) {
-              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
-                rpc.DoError(reqinfo);
-                if((ngHASDEBUG())&&(typeof console!=='undefined')) {
-                  var c=console;
-                  c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'HTML/XML response where JavaScript is expected!');
-                }
-              }
-              break;
-            }
-            if(response.indexOf('/*_SR_BEGIN*/')>=0) {
-              if(response.lastIndexOf('/*_SR_END*/')<0) {
+            case rpcHttpRequestGET:
+            case rpcHttpRequestPOST:
+            case rpcJSONGET:
+            case rpcJSONPOST:
+              var isempty=/^\s*$/g;
+              if(isempty.test(response)) {
+                reqinfo.EmptyResponse=true;
                 if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
                   rpc.DoError(reqinfo);
                   if((ngHASDEBUG())&&(typeof console!=='undefined')) {
                     var c=console;
-                    c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Partial response - missing /*_SR_END*/ end tag!');
+                    c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Empty response!');
+                  }
+                }
+              }
+              break;
+          }
+
+          switch(type)
+          {
+            case rpcHttpRequestGET:
+            case rpcHttpRequestPOST:
+              if(reqinfo.EmptyResponse) break;
+              var ishtml=/^\s*\</i;
+              if(ishtml.test(response)) {
+                if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                  rpc.DoError(reqinfo);
+                  if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                    var c=console;
+                    c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'HTML/XML response where JavaScript is expected!');
                   }
                 }
                 break;
               }
-            }
+              if(response.indexOf('/*_SR_BEGIN*/')>=0) {
+                if(response.lastIndexOf('/*_SR_END*/')<0) {
+                  if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                    rpc.DoError(reqinfo);
+                    if((ngHASDEBUG())&&(typeof console!=='undefined')) {
+                      var c=console;
+                      c.error((type === rpcHttpRequestPOST ? 'POST' : 'GET') + ' '+url, 'Partial response - missing /*_SR_END*/ end tag!');
+                    }
+                  }
+                  break;
+                }
+              }
 
-            try {
-              if(ngWinStoreApp) {
-                MSApp.execUnsafeLocalFunction(function () {
-                    window["eval"].call(window, '(function() {'+response+'})();');
-                });
-              } else {
-                new Function(response)();
-              }
-            } catch(e)
-            {
-              reqinfo.ParseError=true;
-              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
-                rpc.DoError(reqinfo);
-              }
-              throw e;
-            }
-            break;
-          case rpcJSONGET:
-          case rpcJSONPOST:
-            if(reqinfo.EmptyResponse) break;
-            try {
-              var data=JSON.parse(response);
-            }
-            catch(e)
-            {
-              ngDEBUGERROR('ngRPC: JSON parsing failed! Data: "'+response+'"',e);
-              reqinfo.ParseError=true;
-              if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
-                rpc.DoError(reqinfo);
+              try {
+                if(ngWinStoreApp) {
+                  MSApp.execUnsafeLocalFunction(function () {
+                      window["eval"].call(window, '(function() {'+response+'})();');
+                  });
+                } else {
+                  new Function(response)();
+                }
+              } catch(e)
+              {
+                reqinfo.ParseError=true;
+                if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                  rpc.DoError(reqinfo);
+                }
+                throw e;
               }
               break;
-            }
-            if(rpc.OnReceivedJSON) rpc.OnReceivedJSON(rpc, data, xmlhttp, reqinfo);
-            break;
-          case rpcDataGET:
-          case rpcDataPOST:
-            break;
+            case rpcJSONGET:
+            case rpcJSONPOST:
+              if(reqinfo.EmptyResponse) break;
+              try {
+                var data=JSON.parse(response);
+              }
+              catch(e)
+              {
+                ngDEBUGERROR('ngRPC: JSON parsing failed! Data: "'+response+'"',e);
+                reqinfo.ParseError=true;
+                if((!rpc.OnHTTPRequestFailed)||(ngVal(rpc.OnHTTPRequestFailed(rpc,xmlhttp,reqinfo),true))){
+                  rpc.DoError(reqinfo);
+                }
+                break;
+              }
+              if(rpc.OnReceivedJSON) rpc.OnReceivedJSON(rpc, data, xmlhttp, reqinfo);
+              break;
+            case rpcDataGET:
+            case rpcDataPOST:
+              break;
+          }
+        }, reqinfo);
+
+      case rpcUser:
+        if(!this.OnSendRequest) return false;
+        var rpc=this;
+        function sent() {
+          if(rpc.OnRequestSent) rpc.OnRequestSent(rpc, reqinfo.URL, reqinfo);
         }
-      }, reqinfo);
-
-    case rpcUser:
-      if(!this.OnSendRequest) return false;
-      var rpc=this;
-      function sent() {
-        if(rpc.OnRequestSent) rpc.OnRequestSent(rpc, reqinfo.URL, reqinfo);
-      }
-      reqinfo.URL=url;
-      reqinfo.Type=rpcUser;
-      reqinfo.Sent=sent;
-      if(!ngVal(this.OnSendRequest(this, url, reqinfo),false)) return false;
-      if(reqinfo.Sent) reqinfo.Sent();
-      else sent();
-      return true;
+        reqinfo.URL=url;
+        reqinfo.Type=rpcUser;
+        reqinfo.Sent=sent;
+        if(!ngVal(this.OnSendRequest(this, url, reqinfo),false)) return false;
+        if(reqinfo.Sent) reqinfo.Sent();
+        else sent();
+        return true;
+    }
+    return false;
   }
-  return false;
-}
 
-function ngrpc_clearParams()
-{
-  this.Params=new Object;
-}
-
-function ngrpc_SetParam(n,v)
-{
-  if((typeof n==='undefined')||(n=='')) return;
-  this.Params[n]=v;
-}
-
-function ngrpc_GetParam(n)
-{
-  return this.Params[n];
-}
-
-/**
- *  Class: ngRPC
- *  Remote Procedure Call.
- *
- *  This class is used for asynchronous communication with server.
- *
- *  Syntax:
- *    new *ngRPC* ([string id='', string url='', bool nocache=false])
- *
- *  Parameters:
- *    id - unique ID of RPC class
- *    url - request URL
- *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results
- */
-function ngRPC(id,url,nocache)
-{
-  if(ngVal(id,'')=='')
+  function ngrpc_clearParams()
   {
-    ngRPCLastID++;
-    id='ngRPC'+ngRPCLastID;
+    this.Params=new Object;
   }
-  this.id=id+'_RPC';
-  ngRPCByID[id]=this;
 
-  this.sendScriptRequest = ngrpc_sendScriptRequest;
-  this.sendIFrameRequest = ngrpc_sendIFrameRequest;
-  this.sendHttpRequest = ngrpc_sendHttpRequest;
-  this.GetURLParams = ngrpc_GetURLParams;
-  this.EncodeParam = ngrpc_EncodeParam;
-  this.DoError = ngrpc_DoError;
-
-  /*
-   *  Group: Properties
-   */
-  /*  Variable: nocache
-   *  If TRUE, unique timestamp is added to every request to prevent caching
-   *  of results.
-   *
-   *  Default value: *false*
-   */
-  this.nocache=ngVal(nocache,false);
-  /*  Variable: Type
-   *  Type of RPC call.
-   *
-   *  Type: integer
-   *  Default value: *rpcAuto*
-   */
-  this.Type=rpcAuto;
-  /*  Variable: HTTPMethod
-   *  Used http method (if http request). If empty, autodetect.
-   *
-   *  Type: string
-   *  Default value: *''* (autodetect)
-   */
-  this.HTTPMethod='';
-  /*  Variable: withCredentials
-   *  Indicates whether or not cross-site Access-Control requests should
-   *  be made using credentials such as cookies, authorization headers
-   *  or TLS client certificates.
-   *
-   *  Type: boolean
-   *  Default value: *undefined*
-   */
-  this.withCredentials = void 0;
-  /*  Variable: URL
-   *  Default RPC URL.
-   *
-   *  Type: string
-   *  Default value: *''*
-   */
-  this.URL=ngVal(url,'');
-  /*  Variable: Params
-   *  RPC Parameters.
-   *
-   *  Type: object
-   *  Default value: *{ }*
-   */
-  this.Params=new Object;
-  /*  Variable: Timeout
-   *  Request timeout.
-   *
-   *  Type: int
-   *  Default value: *undefined*
-   */
-  this.Timeout=void 0;
-  /*  Variable: RequestTime
-   *  Request timestamp.
-   *
-   *  Type: int
-   *  Default value: *undefined*
-   */
-  this.RequestTime=void 0;
-
-  /*
-   *  Group: Methods
-   */
-  /*  Function: SetParam
-   *  Sets request parameter.
-   *
-   *  Syntax:
-   *    void *SetParam* (string name, mixed value)
-   *
-   *  Parameters:
-   *    name - parameter name
-   *    value - parameter value
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetParam = ngrpc_SetParam;
-  /*  Function: GetParam
-   *  Gets value of request parameter.
-   *
-   *  Syntax:
-   *    mixed *GetParam* (string name)
-   *
-   *  Parameters:
-   *    name - parameter name
-   *
-   *  Returns:
-   *    Value of parameter.
-   */
-  this.GetParam = ngrpc_GetParam;
-  /*  Function: sendRequest
-   *  Sends request to the server.
-   *
-   *  Syntax:
-   *    void *sendRequest* (string url)
-   *
-   *  Parameters:
-   *    url - URL with parameters
-   *
-   *  Returns:
-   *    -
-   */
-  this.sendRequest = ngrpc_sendRequest;
-  /*  Function: clearParams
-   *  Clears RPC parameters.
-   *
-   *  Syntax:
-   *    void *clearParams* ()
-   *
-   *  Returns:
-   *    -
-   */
-  this.clearParams = ngrpc_clearParams;
-
-  /*
-   *  Group: Events
-   */
-  /*  Function: AddEvent
-   *  Adds new function to the event handler (callback).
-   *
-   *  Syntax:
-   *    void *AddEvent* (string event, function handler)
-   *
-   *    void *AddEvent* (function handler, string event)
-   *
-   *  Parameters:
-   *
-   *  Returns:
-   *    -
-   */
-  this.AddEvent = ngObjAddEvent;
-  /*  Function: RemoveEvent
-   *  Removes function from the event handler (callback).
-   *
-   *  Syntax:
-   *    void *RemoveEvent* (string event, function handler)
-   *
-   *  Parameters:
-   *
-   *  Returns:
-   *    -
-   */
-  this.RemoveEvent = ngObjRemoveEvent;
-  /*
-   *  Event: OnEncodeParam
-   */
-  this.OnEncodeParam = null;
-  /*
-   *  Event: OnRequest
-   */
-  this.OnRequest = null;
-  /*
-   *  Event: OnSendRequest
-   */
-  this.OnSendRequest = null;
-  /*
-   *  Event: OnRequestSent
-   */
-  this.OnSendRequest = null;
-  /*
-   *  Event: OnError
-   */
-  this.OnError = null;
-  /*
-   *  Event: OnIFrameRequest
-   */
-  this.OnIFrameRequest = null;
-  /*
-   *  Event: OnHTTPRequest
-   */
-  this.OnHTTPRequest = null;
-  /*
-   *  Event: OnHTTPReadyStateChanged
-   */
-  this.OnHTTPReadyStateChanged = null;
-  /*
-   *  Event: OnHTTPRequestFailed
-   */
-  this.OnHTTPRequestFailed = null;
-  /*
-   *  Event: OnReceivedJSON
-   */
-  this.OnReceivedJSON = null;
-  /*
-   *  Event: OnReceivedData
-   */
-  this.OnReceivedData = null;
-
-  if(ngOnRPCCreated) ngOnRPCCreated(this);
-}
-
-/**
- *  Class: ngRDS
- *  Remote Data Service based on <ngRPC> class.
- *
- *  This class is used for getting asynchronous data from server.
- *
- *  Syntax:
- *    new *ngRDS* ([string id='', string url='', function callback = null, bool nocache=false])
- *
- *  Parameters:
- *    id - unique ID of RPC class
- *    url - request URL
- *    callback - function which is called after data was received
- *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results
- */
-function ngRDS(id,url,callback,nocache)
-{
-  this.__rpc=ngRPC;
-  this.__rpc(id,url,nocache);
-  delete this.__rpc;
-
-  this.Type=rpcJSON;
-  if(typeof callback === 'function')
+  function ngrpc_SetParam(n,v)
   {
-    this.OnReceivedJSON = function(rpc, response, xmlhttp) {
-      callback(rpc, response, xmlhttp);
-    };
-    this.OnReceivedData = function(rpc, response, xmlhttp) {
-      if((rpc.Type===rpcJSON)||(rpc.Type===rpcJSONGET)||(rpc.Type===rpcJSONPOST)) return true;
-      callback(rpc, response, xmlhttp);
-    };
+    if((typeof n==='undefined')||(n=='')) return;
+    this.Params[n]=v;
   }
-}
 
-// --- ngStringBuilder ---------------------------------------------------------
+  function ngrpc_GetParam(n)
+  {
+    return this.Params[n];
+  }
 
-/**
- *  Class: ngStringBuilder
- *  This class realizes fast concatenation of strings.
- *
- *  Standard JavaScript string concatenation is quite slow. This class utilizes
- *  the fact that array joining is much faster than standard string
- *  concatenation.
- *
- *  Syntax:
- *    new *ngStringBuilder* (mixed value)
- *
- *  The statement:
- *    > s = s1 + s2 + s3;
- *
- *  can be replaced with:
- *    > var sb = new ngStringBuilder(s1);
- *    > sb.append(s2);
- *    > sb.append(s3);
- *    > s = sb.toString();
- *
- */
-// Initializes a new instance of the StringBuilder class
-// and appends the given value if supplied
-function ngStringBuilder(value)
-{
-  this.strings = new Array("");
+  function ngrpc_Dispose()
+  {
+    if(ngVal(this.id,'')==='') return true;
+    delete ngRPCByID[this.id];
+    var o = rpcHeadElement ? document.getElementById(this.id+'S') : null;
+    if(o) rpcHeadElement.removeChild(o);
+    var ifrm = document.getElementById(this.id+'F');
+    if(ifrm) document.body.removeChild(ifrm);
+    return true;
+  }
 
   /**
-   *  Function: append
-   *  Appends the given value to the end of this instance.
+   *  Class: ngRPC
+   *  Remote Procedure Call.
+   *
+   *  This class is used for asynchronous communication with server.
    *
    *  Syntax:
-   *    <ngStringBuilder> *append* (mixed value)
+   *    new *ngRPC* ([string id='', string url='', bool nocache=false])
    *
    *  Parameters:
-   *    value - string, array or other ngStringBuilder class
-   *
-   *  Returns:
-   *    This instance of ngStringBuilder.
-   *    Helps function chaining - sb.append('a').append('b').append('c').
+   *    id - unique ID of RPC class
+   *    url - request URL
+   *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results
    */
-  this.append = function (value)
+  window.ngRPC = function(id,url,nocache)
+  {
+    if(ngVal(id,'')=='')
+    {
+      ngRPCLastID++;
+      id='ngRPC'+ngRPCLastID;
+    }
+    this.id=id+'_RPC';
+    ngRPCByID[id]=this;
+
+    this.sendScriptRequest = ngrpc_sendScriptRequest;
+    this.sendIFrameRequest = ngrpc_sendIFrameRequest;
+    this.sendHttpRequest = ngrpc_sendHttpRequest;
+    this.GetURLParams = ngrpc_GetURLParams;
+    this.EncodeParam = ngrpc_EncodeParam;
+    this.DoError = ngrpc_DoError;
+    this.Dispose = ngrpc_Dispose;
+
+    /*
+    *  Group: Properties
+    */
+    /*  Variable: nocache
+    *  If TRUE, unique timestamp is added to every request to prevent caching
+    *  of results.
+    *
+    *  Default value: *false*
+    */
+    this.nocache=ngVal(nocache,false);
+    /*  Variable: Type
+    *  Type of RPC call.
+    *
+    *  Type: integer
+    *  Default value: *rpcAuto*
+    */
+    this.Type=rpcAuto;
+    /*  Variable: HTTPMethod
+    *  Used http method (if http request). If empty, autodetect.
+    *
+    *  Type: string
+    *  Default value: *''* (autodetect)
+    */
+    this.HTTPMethod='';
+    /*  Variable: withCredentials
+    *  Indicates whether or not cross-site Access-Control requests should
+    *  be made using credentials such as cookies, authorization headers
+    *  or TLS client certificates.
+    *
+    *  Type: boolean
+    *  Default value: *undefined*
+    */
+    this.withCredentials = void 0;
+    /*  Variable: URL
+    *  Default RPC URL.
+    *
+    *  Type: string
+    *  Default value: *''*
+    */
+    this.URL=ngVal(url,'');
+    /*  Variable: Params
+    *  RPC Parameters.
+    *
+    *  Type: object
+    *  Default value: *{ }*
+    */
+    this.Params=new Object;
+    /*  Variable: Timeout
+    *  Request timeout.
+    *
+    *  Type: int
+    *  Default value: *undefined*
+    */
+    this.Timeout=void 0;
+    /*  Variable: RequestTime
+    *  Request timestamp.
+    *
+    *  Type: int
+    *  Default value: *undefined*
+    */
+    this.RequestTime=void 0;
+
+    /*
+    *  Group: Methods
+    */
+    /*  Function: SetParam
+    *  Sets request parameter.
+    *
+    *  Syntax:
+    *    void *SetParam* (string name, mixed value)
+    *
+    *  Parameters:
+    *    name - parameter name
+    *    value - parameter value
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetParam = ngrpc_SetParam;
+    /*  Function: GetParam
+    *  Gets value of request parameter.
+    *
+    *  Syntax:
+    *    mixed *GetParam* (string name)
+    *
+    *  Parameters:
+    *    name - parameter name
+    *
+    *  Returns:
+    *    Value of parameter.
+    */
+    this.GetParam = ngrpc_GetParam;
+    /*  Function: sendRequest
+    *  Sends request to the server.
+    *
+    *  Syntax:
+    *    void *sendRequest* (string url)
+    *
+    *  Parameters:
+    *    url - URL with parameters
+    *
+    *  Returns:
+    *    -
+    */
+    this.sendRequest = ngrpc_sendRequest;
+    /*  Function: clearParams
+    *  Clears RPC parameters.
+    *
+    *  Syntax:
+    *    void *clearParams* ()
+    *
+    *  Returns:
+    *    -
+    */
+    this.clearParams = ngrpc_clearParams;
+
+    /*
+    *  Group: Events
+    */
+    /*  Function: AddEvent
+    *  Adds new function to the event handler (callback).
+    *
+    *  Syntax:
+    *    void *AddEvent* (string event, function handler)
+    *
+    *    void *AddEvent* (function handler, string event)
+    *
+    *  Parameters:
+    *
+    *  Returns:
+    *    -
+    */
+    this.AddEvent = ngObjAddEvent;
+    /*  Function: RemoveEvent
+    *  Removes function from the event handler (callback).
+    *
+    *  Syntax:
+    *    void *RemoveEvent* (string event, function handler)
+    *
+    *  Parameters:
+    *
+    *  Returns:
+    *    -
+    */
+    this.RemoveEvent = ngObjRemoveEvent;
+    /*
+    *  Event: OnEncodeParam
+    */
+    this.OnEncodeParam = null;
+    /*
+    *  Event: OnRequest
+    */
+    this.OnRequest = null;
+    /*
+    *  Event: OnSendRequest
+    */
+    this.OnSendRequest = null;
+    /*
+    *  Event: OnRequestSent
+    */
+    this.OnSendRequest = null;
+    /*
+    *  Event: OnError
+    */
+    this.OnError = null;
+    /*
+    *  Event: OnIFrameRequest
+    */
+    this.OnIFrameRequest = null;
+    /*
+    *  Event: OnHTTPRequest
+    */
+    this.OnHTTPRequest = null;
+    /*
+    *  Event: OnHTTPReadyStateChanged
+    */
+    this.OnHTTPReadyStateChanged = null;
+    /*
+    *  Event: OnHTTPRequestFailed
+    */
+    this.OnHTTPRequestFailed = null;
+    /*
+    *  Event: OnReceivedJSON
+    */
+    this.OnReceivedJSON = null;
+    /*
+    *  Event: OnReceivedData
+    */
+    this.OnReceivedData = null;
+
+    if(window.ngOnRPCCreated) window.ngOnRPCCreated(this);
+  }
+
+  /**
+   *  Class: ngRDS
+   *  Remote Data Service based on <ngRPC> class.
+   *
+   *  This class is used for getting asynchronous data from server.
+   *
+   *  Syntax:
+   *    new *ngRDS* ([string id='', string url='', function callback = null, bool nocache=false])
+   *
+   *  Parameters:
+   *    id - unique ID of RPC class
+   *    url - request URL
+   *    callback - function which is called after data was received
+   *    nocache - if TRUE, unique timestamp is added to every request to prevent caching results
+   */
+  window.ngRDS = function(id,url,callback,nocache)
+  {
+    ngRPC.apply(this,[id,url,nocache]);
+    this.Type=rpcJSON;
+    if(typeof callback === 'function')
+    {
+      this.OnReceivedJSON = function(rpc, response, xmlhttp) {
+        callback(rpc, response, xmlhttp);
+      };
+      this.OnReceivedData = function(rpc, response, xmlhttp) {
+        if((rpc.Type===rpcJSON)||(rpc.Type===rpcJSONGET)||(rpc.Type===rpcJSONPOST)) return true;
+        callback(rpc, response, xmlhttp);
+      };
+    }
+  }
+
+  // --- ngStringBuilder ---------------------------------------------------------
+
+  function sb_append(value)
   {
     switch(typeof value)
     {
       case 'object':
         if(value)
         {
-          if(value.strings)  for(var i=0;i<value.strings.length;i++) this.strings.push(value.strings[i]);
-          else               for(var i=0;i<value.length;i++) this.strings.push(value[i]);
+          if(value.strings) value=value.strings;
+          for(var i=0;i<value.length;i++) this.strings.push(value[i]);
         }
         break;
       case 'undefined':
@@ -4257,66 +4226,111 @@ function ngStringBuilder(value)
     return this;
   }
 
-  /**
-   *  Function: clear
-   *  Clears the string buffer.
-   *
-   *  Syntax:
-   *    void *clear* ()
-   *
-   *  Returns:
-   *    -
-   */
-  this.clear = function ()
-  {
+  function sb_clear() {
     this.strings.length = 1;
   }
 
-  /**
-   *  Function: empty
-   *  Tests if string buffer is empty.
-   *
-   *  Syntax:
-   *    bool *empty* ()
-   *
-   *  Returns:
-   *    TRUE if string buffer is empty.
-   */
-  this.empty = function ()
-  {
+  function sb_empty() {
     return (this.strings.length <= 1);
   }
 
-  /**
-   *  Function: toString
-   *  Converts this instance to a String.
-   *
-   *  Syntax:
-   *    string *toString* ()
-   *
-   *  Returns:
-   *    String with concatenated values.
-   *
-   *  See also:
-   *    <append>
-   */
-  this.toString = function ()
-  {
+  function sb_tostring() {
     return this.strings.join("");
   }
 
-  this.append(value);
-}
+  /**
+   *  Class: ngStringBuilder
+   *  This class realizes fast concatenation of strings.
+   *
+   *  Standard JavaScript string concatenation is quite slow. This class utilizes
+   *  the fact that array joining is much faster than standard string
+   *  concatenation.
+   *
+   *  Syntax:
+   *    new *ngStringBuilder* (mixed value)
+   *
+   *  The statement:
+   *    > s = s1 + s2 + s3;
+   *
+   *  can be replaced with:
+   *    > var sb = new ngStringBuilder(s1);
+   *    > sb.append(s2);
+   *    > sb.append(s3);
+   *    > s = sb.toString();
+   *
+   */
+  // Initializes a new instance of the StringBuilder class
+  // and appends the given value if supplied
+  window.ngStringBuilder = function(value)
+  {
+    this.strings = new Array("");
 
-(function() {
+    /**
+     *  Function: append
+     *  Appends the given value to the end of this instance.
+     *
+     *  Syntax:
+     *    <ngStringBuilder> *append* (mixed value)
+     *
+     *  Parameters:
+     *    value - string, array or other ngStringBuilder class
+     *
+     *  Returns:
+     *    This instance of ngStringBuilder.
+     *    Helps function chaining - sb.append('a').append('b').append('c').
+     */
+    this.append = sb_append;
+
+    /**
+     *  Function: clear
+     *  Clears the string buffer.
+     *
+     *  Syntax:
+     *    void *clear* ()
+     *
+     *  Returns:
+     *    -
+     */
+    this.clear = sb_clear;
+
+    /**
+     *  Function: empty
+     *  Tests if string buffer is empty.
+     *
+     *  Syntax:
+     *    bool *empty* ()
+     *
+     *  Returns:
+     *    TRUE if string buffer is empty.
+     */
+    this.empty = sb_empty;
+
+    /**
+     *  Function: toString
+     *  Converts this instance to a String.
+     *
+     *  Syntax:
+     *    string *toString* ()
+     *
+     *  Returns:
+     *    String with concatenated values.
+     *
+     *  See also:
+     *    <append>
+     */
+    this.toString = sb_tostring;
+
+    this.append(value);
+  }
+
   var url=document.location.href;
   var idx=url.indexOf("://");
   if(idx>=0)
   {
-    ngHTTPProtocol=url.substring(0,idx+3);
-    if(ngHTTPProtocol=='file://') ngHTTPProtocol='http://';
+    window.ngHTTPProtocol=url.substring(0,idx+3);
+    if(window.ngHTTPProtocol=='file://') window.ngHTTPProtocol='http://';
   }
-})();
+})(window);
 
 ng_DetectLibsURL();
 
