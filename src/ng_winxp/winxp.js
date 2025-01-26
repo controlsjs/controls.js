@@ -2940,10 +2940,10 @@ var WinXPControls = {
             DragAndDropPanel: {
               Events: {
                 OnFilesDragOver: function(c,elm) {
-                  ngfup_AddDragBox(c.Owner.Owner,1);
+                  FileUploaderControl.AddDragBox(c.Owner.Owner,1);
                 },
                 OnFilesDragLeave: function(c,elm) {
-                  ngfup_RemoveDragBox(c.Owner.Owner);
+                  FileUploaderControl.RemoveDragBox(c.Owner.Owner);
                 }
               },
               Controls: {
