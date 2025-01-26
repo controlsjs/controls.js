@@ -1457,7 +1457,7 @@ ngUserControls['viewmodel_ui'] = {
         if(ismenu) psubmenu='SubMenu';
       }
 
-      var ex={}; 
+      var ex={};
       // Don't touch original Items/SubMenu
       if(pitems) ex[pitems]=true;
       if((ismenu)&&(psubmenu)) ex[psubmenu]=true;
@@ -2390,6 +2390,12 @@ ngUserControls['viewmodel_ui'] = {
         case 'ngCalendar':
           ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             c.SetSelected(ng_toDate(val));
+          });
+          break;
+        case 'ngFileUploader':
+        case 'ngSysFileUploader':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
+            c.UploadFiles(val);
           });
           break;
         default:

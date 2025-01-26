@@ -11,7 +11,7 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-var FileUploaderControl_DesignInfo = {
+ngUserControls['fileuploader_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
@@ -32,10 +32,6 @@ var FileUploaderControl_DesignInfo = {
           "FileUploaderID": ng_diString('Main', { Level: 'basic' }),
           "ButtonsAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' }),
           "ListFiles": ng_diBoolean(true, { Level: 'basic' }),
-          "AllowedExtensions": ng_diMixed([
-            ng_diUndefined(),
-            ng_diBoolean()
-          ], { InitType: 'boolean', Level: 'basic' }),
           "SelectFileType":ng_diIntegerIdentifiers('ngFupSelect_CheckItem',['ngFupSelect_None','ngFupSelect_Select','ngFupSelect_CheckBox','ngFupSelect_CheckItem'],{ Level: 'optional' }),
           "Data": {
             "MaxFilesCount": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
@@ -104,6 +100,31 @@ var FileUploaderControl_DesignInfo = {
         })
       };
     });
+
+    ngRegisterControlDesignInfo('ngSysFileUploader',function(d,c,ref) {
+      return {
+        ControlCategory: 'System',
+        IsBasic: true,
+        Properties: ng_diProperties({
+          "FileUploaderID": ng_diString('Main', { Level: 'basic' }),
+          "Data": {
+            "MaxFilesCount": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "MaxFileSize": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "MaxBatchSize": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'basic' }),
+            "AllowedExtensions": ng_diMixed(['undefined','array_strings'], { InitType: 'array_strings', Level: 'basic' }),
+            "UploadURL": ng_diType('url', { Level: 'basic' })
+          },
+          "Events": {
+            "OnError": ng_diEvent('function(c, errmsg, data) {}', { Level: 'basic' }),
+            "OnFileAdding": ng_diEvent('function(c, fname) { return true; }', { Level: 'basic' }),
+            "OnFileAdded": ng_diEvent('function(c, fname, data) {}', { Level: 'basic' }),
+            "OnUploadProgress": ng_diEvent('function(c, p) { return true; }', { Level: 'basic' }),
+            "OnShowWaiting": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnHideWaiting": ng_diEvent('function(c) {}', { Level: 'basic' }),
+            "OnGetRequestParams": ng_diEvent('function(params) {}', { Level: 'basic' })
+          }
+        })
+      };
+    });
   }
 };
-ngUserControls['fileuploader_designinfo'] = FileUploaderControl_DesignInfo;
