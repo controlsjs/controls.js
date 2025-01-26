@@ -1836,6 +1836,11 @@ ngUserControls['viewmodel_controls'] = {
             }
           });
           break;
+        case 'ngSysFileDownloader':
+          ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
+            c.Download(val);
+          });
+          break;
         case 'ngSysURLParams':
           ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
             if(ng_typeObject(val)) c.SetValues(val);
