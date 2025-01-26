@@ -108,6 +108,26 @@ ngUserControls['system_designinfo'] = {
       }
     });
 
+    ngRegisterControlDesignInfo('ngSysFileDownloader',function(d,c,ref) {
+      return {
+        ControlCategory: 'System',
+        IsBasic: true,
+        Properties: ng_diProperties({
+          "Data": {
+            "URL": ng_diType('url', { Level: 'basic' }),
+            "Params": ng_diObject(undefined, { Level: 'basic' }, {
+              ChildDesignInfo: ng_diString('', { Level: 'basic' })
+            }),
+            "NoCache": ng_diBoolean(true, { Level: 'basic' }),
+            "Type": ng_diIntegerIdentifiers('rpcAuto',['rpcScript','rpcIFrame'],{ Level: 'advanced' })
+          },
+          "Events": {
+            "OnDownload": ng_diEvent('function(c, opts) { return true; }',{ Level: 'basic' })
+          }
+        })
+      }
+    });
+
     ngRegisterControlDesignInfo('ngSysURLParams',function(d,c,ref) {
       return {
         ControlCategory: 'System',

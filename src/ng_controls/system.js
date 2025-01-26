@@ -240,11 +240,6 @@
     ngControlCreated(this);
   }
 
-  function ngsrpc_DoDispose() {
-    if(ngVal(this.id,'')!='') delete ngRPCByID[this.id];
-    return true;
-  }
-
   function ngsrpc_sendRequest() {
     return this.Enabled ? ng_CallParent(this,'sendRequest',arguments,false) : false;
   }
@@ -264,9 +259,212 @@
   window.ngSysRPC = function(id)
   {
     ngSysControl(this, id, 'ngSysRPC');
+    var dispose=this.Dispose;
     ngRPC.apply(this, [id]);
-    this.DoDispose = ngsrpc_DoDispose;
+    this.DoDispose = this.Dispose;
+    this.Dispose=dispose;
     ng_OverrideMethod(this,'sendRequest',ngsrpc_sendRequest);
+    ngControlCreated(this);
+  }
+
+  // --- ngFileDownloader --------------------------------------------------------
+
+  function ngfdw_GetRPC()
+  {
+    if(!this.rpc) this.rpc=new ngRPC(this.ID);
+    return this.rpc;
+  }
+
+  function ngfdw_Download(optsorurl, onrequestsent)
+  {
+    var opts;
+    if(!ng_IsObjVar(optsorurl)) opts={ URL: optsorurl };
+    else opts=optsorurl;
+    if((this.OnDownload)&&(!ngVal(this.OnDownload(this, opts),false))) return false;
+    var url=ngVal(opts.URL,this.URL);
+    if(ngVal(url,'')==='') return false;
+
+    var rpc=this.GetRPC();
+    if(!rpc) return false;
+    rpc.nocache=ngVal(opts.NoCache,this.NoCache);
+    var params=ng_EmptyVar(this.Params) ? void 0 : ng_CopyVar(this.Params);
+    if(ng_IsObjVar(opts.Params)) {
+      for(var i in opts.Params) {
+        if(!ng_IsObjVar(params)) params={};
+        params[i]=opts.Params[i];
+      }
+    }
+    if(ng_IsObjVar(params)) rpc.Params=params;
+    else rpc.clearParams();
+
+    var type=ngVal(opts.Type, this.Type);
+    if(type === rpcAuto) {
+      if(typeof opts.FileName!=='undefined') type=rpcScript;
+      else type=rpcIFrame;
+    }
+
+    var origurl=url;
+    var self=this;
+    rpc.Type=type;
+    rpc.OnSendRequest = function(rpc, url, reqinfo)
+    {
+      var proto=url.substr(0,5).toLowerCase();
+      if((proto==='blob:')||(proto==='data:')) {
+        url=origurl;
+        if(typeof opts.FileName==='undefined') opts.FileName='file';
+        reqinfo.Type=rpcScript;
+      }
+
+      switch(reqinfo.Type)
+      {
+        case rpcScript:
+          // replace SCRIPT with A link
+          var link = document.createElement("a");
+          if(typeof opts.FileName==='undefined') {
+            var fname=url;
+            var i=fname.indexOf('?');
+            if(i>=0) fname=fname.substr(0,i);
+            i=fname.lastIndexOf('/');
+            if(i>=0) fname=fname.substr(i+1);
+            opts.FileName=fname;
+          }
+          link.setAttribute('download', opts.FileName);
+          link.setAttribute('href', url);
+          link.style.position = 'absolute';
+          link.style.left='-10000px';
+          link.style.top='-10000px';
+
+          document.body.appendChild(link);
+          link.click();
+          reqinfo.RequestSent=true;
+          var tm=setTimeout(function() {
+            clearTimeout(tm);
+            if(link) document.body.removeChild(link);
+            if(rpc.OnRequestSent) rpc.OnRequestSent(rpc, url, reqinfo);
+          }, 100);
+          return false;
+        case rpcIFrame:
+          return true;
+        default:
+          rpc.Type=rpcIFrame;
+          rpc.sendRequest(url);
+          return false;
+      }
+    };
+    rpc.OnRequestSent = function(rpc, url, reqinfo) {
+      if(onrequestsent) onrequestsent(self, opts);
+    }
+    rpc.sendRequest(url);
+    return true;
+  }
+
+  function ngfdw_IsDownloadDataSupported() {
+    return (('Blob' in window)&&('URL' in window));
+  }
+
+  function ispureobject(o) {
+    return (typeof o === 'object')&&(o)&& (Object.prototype.toString.call(o) === '[object Object]');
+  }
+
+  function ngfdw_DownloadData(filename, data, opts, onrequestsent)
+  {
+    if(ngVal(filename,'')==='') return false;
+    if(('Blob' in window)&&('URL' in window)) {
+      if(ispureobject(data)) return false;
+
+      var self=this;
+      if(!ng_IsObjVar(opts)) opts={};
+
+      var blob = new Blob([data], {type: ngVal(opts.MimeType, 'application/octet-binary') });
+      if(typeof navigator.msSaveOrOpenBlob==='function') {
+        if(!navigator.msSaveOrOpenBlob(blob, filename)) {
+          return false;
+        }
+        var tm=setTimeout(function() {
+          clearTimeout(tm);
+          if(onrequestsent) onrequestsent(self, filename, data, opts);
+        },100);
+      }
+      else {
+        var url=window.URL.createObjectURL(blob);
+        opts.URL=url;
+        opts.FileName=filename;
+        opts.Type=rpcScript;
+        this.Download(opts, function(downloader, opts) {
+          window.URL.revokeObjectURL(url);
+          if(onrequestsent) onrequestsent(self, filename, data, opts);
+        });
+      }
+      return true;
+    }
+    return false;
+  }
+
+  var filedownloader_lastid=0;
+
+  /**
+   *  Class: ngFileDownloader
+   *  This class implements file downloader object.
+   *
+   *  Syntax:
+   *    new *ngFileDownloader* ()
+   */
+  window.ngFileDownloader = function() {
+    filedownloader_lastid++;
+    this.ID = 'ngFileDownloader'+filedownloader_lastid;
+
+    this.URL = '';
+    this.NoCache = true;
+    this.Type = rpcAuto;
+    this.Params = {};
+
+    this.rpc = null;
+    this.GetRPC = ngfdw_GetRPC;
+
+    this.IsDownloadDataSupported = ngfdw_IsDownloadDataSupported;
+
+    this.Download = ngfdw_Download;
+    this.DownloadData = ngfdw_DownloadData;
+
+    this.AddEvent = ngObjAddEvent;
+    this.RemoveEvent = ngObjRemoveEvent;
+
+    this.OnDownload = null;
+  }
+
+  function ngsysdwr_DoDispose() {
+    if(this.rpc) this.rpc.Dispose();
+    return true;
+  }
+
+  function ngsysdwr_Download() {
+    return this.Enabled ? ng_CallParent(this,'Download',arguments,false) : false;
+  }
+
+  function ngsysdwr_DownloadData(filename, data, opts, onrequestsent) {
+    return this.Enabled ? ng_CallParent(this,'DownloadData',arguments,false) : false;
+  }
+
+  /**
+   *  Class: ngSysFileDownloader
+   *  This class implements ngSysFileDownloader non-visual control.
+   *
+   *  Syntax:
+   *    new *ngSysFileDownloader* ([string id])
+   *
+   *  Parameters:
+   *    id - control ID
+   *
+   *  See also:
+   *    Abstract class <ngSysControl> class.
+   */
+  window.ngSysFileDownloader = function(id)
+  {
+    ngSysControl(this, id, 'ngSysFileDownloader');
+    ngFileDownloader.apply(this);
+    this.DoDispose = ngsysdwr_DoDispose;
+    ng_OverrideMethod(this,'Download',ngsysdwr_Download);
+    ng_OverrideMethod(this,'DownloadData',ngsysdwr_DownloadData);
     ngControlCreated(this);
   }
 
@@ -625,6 +823,25 @@ ngUserControls['system'] = {
     ngRegisterControlType('ngSysContainer', ngSysContainer_Create);
     ngRegisterControlType('ngSysTimer', function() { return new ngSysTimer; });
     ngRegisterControlType('ngSysRPC', function() { return new ngSysRPC; });
+    ngRegisterControlType('ngSysFileDownloader', function() { return new ngSysFileDownloader; });
     ngRegisterControlType('ngSysURLParams', function() { return new ngSysURLParams; });
+
+    ngApp.DownloadFile = function() {
+      var d=ngApp.FileDownloader;
+      if(!d) {
+        d=new ngFileDownloader;
+        ngApp.FileDownloader=d;
+      }
+      return d.Download.apply(d,arguments);
+    };
+
+    ngApp.DownloadData = function() {
+      var d=ngApp.FileDownloader;
+      if(!d) {
+        d=new ngFileDownloader;
+        ngApp.FileDownloader=d;
+      }
+      return d.DownloadData.apply(d,arguments);
+    };
   }
 };
