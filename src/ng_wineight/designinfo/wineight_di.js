@@ -784,7 +784,7 @@ return {
 
     function weCheckListDI(d,c,ref) {
       return {
-        ControlCategory: 'List',
+        ControlCategory: 'List'
       };
     }    
     ngRegisterControlDesignInfo('weCheckList',weCheckListDI);    

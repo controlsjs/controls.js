@@ -363,7 +363,7 @@ var WireframeControls_DesignInfo = {
 
     function wfrCheckListDI(d,c,ref) {
       return {
-        ControlCategory: 'List',
+        ControlCategory: 'List'
       };
     }    
     ngRegisterControlDesignInfo('wfrCheckList',wfrCheckListDI);
