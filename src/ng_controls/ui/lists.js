@@ -6562,14 +6562,27 @@ ngUserControls['list'] = {
 
     function ngcl_ClickItem(it, e)
     {
-      if(!it) {
-        var pelm=e.target || e.srcElement || e.originalTarget;
+      if(typeof e === 'undefined') e=new Object;
+      if(((!it)||(it===this.CheckAllItem))&&(this.CheckAllItem)&&(this.Enabled)&&(ngVal(this.CheckAllItem.Enabled,true))&&(!ngVal(this.ReadOnly,false))) {
+        var pelm;
+        if(it===this.CheckAllItem) pelm={ id: this.ID+'_CAI' };
+        else pelm=e.listObj || e.target || e.srcElement || e.originalTarget;
         while(pelm)
         {
           if(pelm.id==this.ID+'_CAI')
           {
             var it=this.CheckAllItem;
+            e.Owner=this;
+            e.list=this;
             e.listItem=it;
+            if((e.listPart != 0)&&(this.Columns.length>0))
+            {
+              var td = e.listObj;
+              while (td && (typeof td.cellIndex === 'undefined'))
+                td = td.parentNode;
+              if (td)
+                e.listCol = td.cellIndex;
+            }          
             if((it.OnClick)&&(!ngVal(it.OnClick(e),false)))
             {
               if((e.listIgnoreSelect)&&(e.listPart)) this.ignore_select=new Date().getTime();
