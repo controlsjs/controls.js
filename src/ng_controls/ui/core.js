@@ -2383,26 +2383,18 @@ function nge_SuggestionResults(id,txt,data)
   {
     var res=new Object;
     res.found=false;
-    res.needupdate=false;
-
     if(!ngVal(c.OnSuggestionResults(c,txt,data,res),false)) return;
-
-    if((dd.Visible)&&(lst.Visible)&&(res.needupdate)&&(res.found))
-    {
-      lst.SetItemFocus(null);
-      lst.Update();
-    }
     c.SuggestionFound=res.found;
   }
   else
   {
-    if((typeof data==='undefined')||(data.length==0)) c.SuggestionFound=false;
+    if((typeof data==='undefined')||((data.length===0)&&(!c.SuggestionAllowEmptyResults))) c.SuggestionFound=false;
     else
     {
       lst.BeginUpdate();
       try {
         lst.Clear();
-        lst.AddItems(data);
+        if(data.length) lst.AddItems(data);
       } finally {
         lst.EndUpdate();
       }
@@ -2410,18 +2402,21 @@ function nge_SuggestionResults(id,txt,data)
       c.SuggestionFound=true;
     }
   }
-  if(c.SuggestionFound)
-  {
-    lst.SetItemFocus(null);
-    if(c.ControlHasFocus) c.DropDown();
-  }
-  else
-  {
-    c.HideDropDown();
+  if(typeof c.SuggestionFound!=='undefined') {
+    if(c.SuggestionFound)
+    {
+      lst.SetItemFocus(null);
+      c.HideDropDown();
+      c.DropDown();
+    }
+    else
+    {
+      c.HideDropDown();
+    }
   }
 }
 
-function nge_Suggestion(id)
+function nge_Suggestion(id, forcerequery)
 {
   var c=ngGetControlById(id);
   if((!c)||(!ngVal(c.Suggestion,false))) return;
@@ -2437,39 +2432,23 @@ function nge_Suggestion(id)
     if((txt=='')&&(!c.SuggestionAllowEmpty)) { c.HideDropDown(); c.SuggestionLastSearch=''; return; }
     changed=(ngVal(c.SuggestionLastSearch,'')!=txt);
   }
-  if(changed)
-  {
-    c.SuggestionSearch(txt);
-    if(c.SuggestionFound)
-    {
-      var lst=c.DoGetSuggestionList();
-      if(lst) lst.SetItemFocus(null);
-      if(c.ControlHasFocus) c.DropDown();
-    }
-    else c.HideDropDown();
-  }
-  else c.HideDropDown();
+  if((changed)||(forcerequery)) c.SuggestionSearch(txt);
 }
 
 function nge_SuggestionSearch(txt)
 {
+  var lst;
   txt=ngVal(txt,'');
   if(this.OnSuggestionSearch)
   {
     var res=new Object;
     res.found=false;
-    res.needupdate=false;
     res.lastsearch=void 0;
 
-    var lst=this.DoGetSuggestionList();
+    lst=this.DoGetSuggestionList();
     var dd=this.DropDownControl;
     if(!ngVal(this.OnSuggestionSearch(this,txt,res,lst,dd),false)) return;
 
-    if((res.needupdate)&&(res.found)&&(dd)&&(dd.Visible)&&(lst)&&(lst.Visible))
-    {
-      lst.SetItemFocus(null);
-      lst.Update();
-    }
     this.SuggestionFound=res.found;
     this.SuggestionLastSearch=(typeof res.lastsearch!=='undefined' ? res.lastsearch : txt);
   }
@@ -2497,18 +2476,16 @@ function nge_SuggestionSearch(txt)
     {
       if(!this.SuggestionRPC) this.SuggestionRPC=new ngRPC(this.ID);
       this.SuggestionRPC.sendRequest(url);
-      this.SuggestionFound=false;
+      this.SuggestionFound=void 0;
       return;
     }
     else // Client suggestions
     {
-      var found=false;
-      var needupdate=false;
-      var lst=this.DoGetSuggestionList();
-      var dd=this.DropDownControl;
-      if((lst)&&(dd))
+      var emptytxt=(txt=='');
+      var found=!!this.SuggestionAllowEmptyResults;
+      lst=this.DoGetSuggestionList();
+      if(lst)
       {
-        var emptytxt=((txt=='')&&(this.SuggestionAllowEmpty));
         if((ignorecase)&&(typeof txt.toLowerCase==='function')) txt=txt.toLowerCase();
         var cid='';
         if(lst.Columns.length>0) cid=ngVal(this.SuggestionSearchColumn,lst.Columns[0].ID);
@@ -2518,31 +2495,29 @@ function nge_SuggestionSearch(txt)
         else if(partial==-1) partial=2;
         var self=this;
         lst.Scan(function(list, it, parent, userdata) {
-          if(lst.Columns.length>0) t=ngVal(it.Text[cid],'');
-          else t=it.Text;
-          if((ignorecase)&&(typeof t.toLowerCase==='function')) t=t.toLowerCase();
-          switch(partial)
-          {
-            case -1:
-              v=ngVal(self.OnSuggestionCompareItem(self,txt,t,list,it,parent),false);
-              break;
-            case 1:
-              if(emptytxt) v=true;
-              else {
+          if((emptytxt)&&(partial!==-1)) v=true;
+          else {
+            if(lst.Columns.length>0) t=ngVal(it.Text[cid],'');
+            else t=it.Text;
+            if((ignorecase)&&(typeof t.toLowerCase==='function')) t=t.toLowerCase();
+            switch(partial)
+            {
+              case -1:
+                v=ngVal(self.OnSuggestionCompareItem(self,txt,t,list,it,parent),false);
+                break;
+              case 1:
                 t=''+t;
                 if(txt.length>t.length) v=false;
                 else v=(t.substring(0,txt.length)==txt);
-              }
-              break;
-            case 2:
-              t=''+t;
-              if(emptytxt) v=true;
-              else v=(t.indexOf(txt)>=0)
-              break;
-            default:
-              if(emptytxt) v=true;
-              else v=(t==txt);
-              break;
+                break;
+              case 2:
+                t=''+t;
+                v=(t.indexOf(txt)>=0)
+                break;
+              default:
+                v=(t==txt);
+                break;
+            }
           }
           if(it.Visible!=v)
           {
@@ -2552,14 +2527,22 @@ function nge_SuggestionSearch(txt)
           if(it.Visible) found=true;
           return true;
         });
-        if((needupdate)&&(found)&&(dd.Visible)&&(lst.Visible))
-        {
-          lst.SetItemFocus(null);
-          lst.Update();
-        }
       }
       this.SuggestionFound=found;
     }
+  }
+  if(typeof this.SuggestionFound!=='undefined') {
+    if(this.SuggestionFound)
+    {
+      if(typeof lst==='undefined') lst=this.DoGetSuggestionList();
+      if(lst) lst.SetItemFocus(null);
+      var dd=this.DropDownControl;
+      if((dd)&&(!dd.__hidingdropdown)) {
+        this.HideDropDown();
+        this.DropDown();
+      }
+    }
+    else this.HideDropDown();
   }
 }
 
@@ -2569,24 +2552,13 @@ function nge_SuggestionRefresh(forcerequery, delay)
   if(!dd) return;
 
   if(this.SuggestionTimer) clearTimeout(this.SuggestionTimer);
-
-  if(ngVal(forcerequery,false)) this.SuggestionLastSearch='';
-
-  var o=dd.Elm();
-
-  if(o)
-  {
-    o.style.display='none';
-    if(typeof this._origDDWidth  !== 'undefined') o.style.width =this._origDDWidth;
-    if(typeof this._origDDHeight !== 'undefined') o.style.height=this._origDDHeight;
-  }
   if(typeof delay==='undefined') delay=ngVal(this.SuggestionDelay,200);
-  this.SuggestionTimer=setTimeout("nge_Suggestion('"+this.ID+"')",delay);
+  this.SuggestionTimer=setTimeout("nge_Suggestion('"+this.ID+"',"+(forcerequery ? 'true' : 'false')+")",delay);
 }
 
 function nge_SuggestionCancelRefresh()
 {
-  if(this.SuggestionTimer) clearTimeout (this.SuggestionTimer);
+  if(this.SuggestionTimer) clearTimeout(this.SuggestionTimer);
   this.SuggestionTimer=null;
   this.SuggestionCmdID=ngVal(this.SuggestionCmdID,-1)+1;
 }
@@ -2981,7 +2953,8 @@ function nge_KeyUp(e,elm)
               }
               else
               {
-                edit.SuggestionRefresh(e.keyCode===40 ? true : false);
+                if(e.keyCode===40) edit.SuggestionRefresh(true,1);
+                else edit.SuggestionRefresh();
               }
               if(e.keyCode==40) edit=null;
               break;
@@ -3081,6 +3054,11 @@ function nge_SetText(text)
       else o.value=text;
       if((this.HintVisible)&&(!hintvisible)) nge_HideHint(this,o);
     }
+    if(ngVal(this.Suggestion,false)) {
+      this.SuggestionCancelRefresh();            
+      this.SuggestionLastSearch=text;
+      if(this.SuggestionHideOnTextChange) this.HideDropDown();
+    }
     if(this.OnTextChanged) this.OnTextChanged(this);
     if(o) o.className = this.GetClassName('Input',hint);
   }
@@ -3105,7 +3083,7 @@ function nge_DoGesture(pi)
       case 'swipedown':
       case 'swipeup':
         if(ngVal(this.Suggestion,false)) {
-          this.SuggestionRefresh(true);
+          this.SuggestionRefresh(true,1);
           return true;      
         }
         break;
@@ -3284,6 +3262,7 @@ function nge_DoSetEnabled(v)
   {
     this.SetFocus(false);
     this.HasFocus=false;
+    if(ngVal(this.Suggestion,false)) this.SuggestionCancelRefresh();
     if(this.OnBlur) this.OnBlur(this);
   }
   if(this.Update) this.Update();
@@ -3294,6 +3273,7 @@ function nge_DoBlur(e, elm)
   this.HasFocus=false;
   nge_EndMobileKeyboard();
 
+  if(ngVal(this.Suggestion,false)) this.SuggestionCancelRefresh();
   if((this.OnBlur)&&(this.Enabled)) this.OnBlur(this);
   if((this.Text == '')&&(!this.HintVisible))
   {
@@ -4164,6 +4144,18 @@ function ngEdit(id, text)
    *  Default value: *''*
    */
   //this.SuggestionAllowEmpty=false;
+  /*  Variable: SuggestionAllowEmptyResults
+   *  ...
+   *  Type: bool
+   *  Default value: *''*
+   */
+  //this.SuggestionAllowEmptyResults=false;
+  /*  Variable: SuggestionHideOnTextChange
+   *  ...
+   *  Type: bool
+   *  Default value: *''*
+   */
+  //this.SuggestionHideOnTextChange=false;
 
   /*
    *  Group: Methods
@@ -4504,7 +4496,10 @@ function ngDropDown_Add(c)
     {
       var l=e.DropDownControl;
       if((l)&&(l.Visible)) e.HideDropDown();
-      else e.DropDown();
+      else {
+        if(ngVal(e.Suggestion,false)) e.SuggestionRefresh(true,1); 
+        else e.DropDown();
+      }
     }
   }
   c.Buttons=new Array(b);
