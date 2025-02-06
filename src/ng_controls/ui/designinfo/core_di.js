@@ -464,7 +464,9 @@ return {
             "SuggestionPartial": ng_diTypeValues('integer',2,[{Value:2,Text:'Contains'},{Value:1,Text:'Starts With'},{Value:0,Text:'Equals'},{Value:-1,Text:'Custom'}], { Level: 'advanced' }),
             "SuggestionURL": ng_diType('url', { Level: 'advanced' }),
             "SuggestionType": ng_diString('', { Level: 'advanced' }),
-            "SuggestionAllowEmpty": ng_diBoolean(false, { Level: 'advanced' })
+            "SuggestionAllowEmpty": ng_diBoolean(false, { Level: 'advanced' }),
+            "SuggestionAllowEmptyResults": ng_diBoolean(false, { Level: 'advanced' }),
+            "SuggestionHideOnTextChange": ng_diBoolean(false, { Level: 'advanced' })
           },
           "Methods": {
             "DoFocus": ng_diFunction('function(e, elm) { ng_CallParent(this, "DoFocus", arguments); }', { Level: 'advanced' }),
