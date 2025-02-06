@@ -6560,6 +6560,20 @@ ngUserControls['list'] = {
       this.UncheckAll(void 0, void 0, this.CheckAllVisibleOnly);
     }
 
+    function ngcl_CheckItem(it, state)
+    {
+      if((it)&&(it===this.CheckAllItem)) {
+        state=ngVal(state,1);
+        if((ngVal(it.Checked,0)!=state)&&(state!=2))
+        {
+          if(state) this.DoCheckAll();
+          else this.DoUncheckAll();
+        }
+        return;      
+      }
+      ng_CallParent(this,'CheckItem',arguments);
+    }
+
     function ngcl_ClickItem(it, e)
     {
       if(typeof e === 'undefined') e=new Object;
@@ -6653,6 +6667,7 @@ ngUserControls['list'] = {
           DoCheckAll: ngcl_DoCheckAll,
           DoUncheckAll: ngcl_DoUncheckAll,
           DrawItem: ngcl_DrawItem,
+          CheckItem: ngcl_CheckItem,
           ClickItem: ngcl_ClickItem,
           UpdateChecked: ngcl_UpdateChecked
         }
