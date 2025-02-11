@@ -1291,7 +1291,17 @@ function ngRegisterControlMod(type, modtype, def) {
         } else {          
           delete cdef.ModType;
         }
-        if(typeof modtype==='undefined') modtype=mod.ModType;
+        if(typeof modtype==='undefined') {
+          modtype=mod.ModType;
+          if(ng_IsArrayVar(modtype)) {
+            if(modtype.length===1) modtype=modtype[0];
+            else { 
+              var cmodtype=ng_CopyVar(modtype);
+              modtype=cmodtype.shift();
+              cdef.ModType=cmodtype;
+            }
+          }
+        }
         if((typeof modtype==='undefined')&&(ngHASDESIGNINFO())) modtype='feGenericControl';
         if((typeof modtype!=='string')||(modtype==='')) {
           ngDEBUGERROR('Invalid mod type "%s" of component type "%s".',ngVal(modtype,''),ngVal(cdef.Type,''),cdef);
