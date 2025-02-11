@@ -10,7 +10,8 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-var MaskEditControl = {
+if (typeof(ngUserControls)==='undefined') ngUserControls = {};
+ngUserControls['maskedit'] = {
   Lib: 'ng_controls',
   ControlsGroup: 'Core',
 
@@ -1072,6 +1073,3 @@ var MaskEditControl = {
 
   }
 };
-
-if (typeof(ngUserControls)==='undefined') ngUserControls = {};
-ngUserControls['maskedit'] = MaskEditControl;

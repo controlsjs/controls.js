@@ -11,7 +11,7 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-var ViewModel_Controls_DesignInfo = (function()
+ngUserControls['viewmodel_controls_designinfo'] = (function()
 {
   var vm_ids={};
   var vm_namespaces={};
@@ -1285,4 +1285,3 @@ var ViewModel_Controls_DesignInfo = (function()
     }
   };
 })();
-ngUserControls['viewmodel_controls_designinfo'] = ViewModel_Controls_DesignInfo;

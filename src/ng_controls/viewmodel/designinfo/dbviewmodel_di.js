@@ -11,7 +11,7 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-var DBViewModel_DesignInfo = {
+ngUserControls['dbviewmodel_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
@@ -76,4 +76,3 @@ var DBViewModel_DesignInfo = {
     });
   }
 };
-ngUserControls['dbviewmodel_designinfo'] = DBViewModel_DesignInfo;

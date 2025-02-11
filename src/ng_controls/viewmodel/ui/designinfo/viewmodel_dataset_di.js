@@ -11,7 +11,7 @@
  */
 
 if(typeof ngUserControls === 'undefined') ngUserControls = {};
-var ViewModel_Dataset_DesignInfo = {
+ngUserControls['viewmodel_dataset_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
@@ -56,4 +56,3 @@ var ViewModel_Dataset_DesignInfo = {
     });
   }
 };
-ngUserControls['viewmodel_dataset_designinfo'] = ViewModel_Dataset_DesignInfo;
