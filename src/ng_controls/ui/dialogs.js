@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2025 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -101,159 +101,6 @@ function ngMessageDlg(type, text, caption, onclose, def)
   return win;
 }
 
-// --- ngMessageDlg ------------------------------------------------------------
-
-function dlgbx_BtnClick(e)
-{
-  var b=e.Owner;
-  if(typeof b.DialogResult !== 'undefined')
-  {
-    b.Owner.Owner.DialogResult=b.DialogResult;
-    b.Owner.Owner.Close();
-  }
-}
-
-function dlgbx_Center()
-{
-  var o=this.Elm();
-  if(!o) return;
-  var pw,ph,sl,st,po=o.parentNode;
-  ng_BeginMeasureElement(po);
-  sl=ng_ScrollX(po);
-  st=ng_ScrollY(po);
-  pw=ng_ClientWidthEx(po);
-  ph=ng_ClientHeightEx(po);
-  ng_EndMeasureElement(po);
-
-  var b=this.Bounds;
-  ng_BeginMeasureElement(o);
-  var w=ng_ClientWidth(o);
-  var h=ng_ClientHeight(o);
-  ng_EndMeasureElement(o);
-
-  b.L=sl+Math.round((pw-w)/2);
-  b.T=st+Math.round(0.40*ph-(h/2));
-  if(b.T<0) b.T=0;
-
-  this.SetBounds();
-}
-
-function dlgbx_CalcAutoSize()
-{
-  if(!ngVal(this.ControlsPanel,false)) return;
- 
-  var o=this.Elm();
-  if(!o) return;
-  var po=o.parentNode;
-  var pw=ng_ClientWidthEx(po);
-  var ph=ng_ClientHeightEx(po);
-
-  var cmw=ng_OuterWidth(o)-ng_ClientWidth(this.ControlsPanel.Elm());
-
-  // set to max size (eliminate scrollbars)
-  ng_SetClientWidth(o,pw);
-  ng_SetClientHeight(o,ph);
-   
-  var w=0,h=0,bw=0,minx=0,miny=0;
-
-  // calculate size and position of msg box components
-  var msg=ngVal(this.Controls.Message,null);
-  var content=ngVal(this.Controls.Content,null); 
-  var btns=ngVal(this.Controls.Buttons,null);
-  var fnote=ngVal(this.Controls.Footnote,null);
-
-  // calculate right/bottom margin by minimal left/top position of components   
-  var cc=this.ControlsPanel.ChildControls;
-  if(typeof cc !== 'undefined')
-  {
-    minx=10000,miny=10000;
-    var l,t;
-    for(var i=0;i<cc.length;i++) 
-    {
-      if(cc[i]==btns) continue;
-      o=cc[i].Elm();
-      if(!o) continue;
-      l=ng_GetCurrentStylePx(o,'left');
-      if(l<minx) minx=l;
-      if(cc[i]!=content)
-      {
-        t=ng_GetCurrentStylePx(o,'top');
-        if(t<miny) miny=t;
-      }      
-    }
-  }
-  
-  // message
-  o=(msg ? msg.Elm() : null);
-  if((o)&&(msg.Visible))
-  {
-    var ml=ng_GetCurrentStylePx(o,'left');
-    var mw=ng_OuterWidth(o)
-    if(ml+mw+minx+cmw>pw) // text width overflows maximal allowed width 
-    {
-      mw=pw-cmw-minx-ml;
-      msg.AutoSizeMode='vertical';
-      msg.SetBounds({W: mw});
-      msg.Update(false); 
-    } 
-    w=ml+mw;        
-    h=ng_GetCurrentStylePx(o,'top')+ng_OuterHeight(o);
-  }  
-  // put content under message
-  o=(content ? content.Elm() : null);
-  if((o)&&(content.Visible))
-  {
-    content.SetBounds({ T: h });  
-    h+=ng_OuterHeight(o);
-  }
-  // center buttons and put them under content/message
-  o=(btns ? btns.Elm() : null);
-  if(o)
-  {
-    var cc=btns.ChildControls;
-    if((btns.Visible)&&(typeof cc !== 'undefined')&&(cc.length>0))
-    {
-      bw=ng_OuterWidth(o);
-      if(btns.CenterButtons)
-      {
-        o.style.marginLeft=(-Math.round(bw/2))+'px';  
-        btns.SetBounds({ L: '50%', T: h });
-      }
-      else btns.SetBounds({ T: h });
-      h+=ng_OuterHeight(o);
-      btns.SetVisible(true);
-    }
-    else btns.SetVisible(false);
-  }
-  // put footnote under buttons
-  o=(fnote ? fnote.Elm() : null);
-  if((o)&&(fnote.Visible))
-  {
-    fnote.SetBounds({ T: h });  
-    h+=ng_OuterHeight(o);
-  }
-
-  // add margin
-  if(w<bw) w=bw+2*minx;  
-  else     w+=minx;
-  h+=miny;
-  
-  // check minimal dialog size
-  if(w<mbMinimalWidth)  w=mbMinimalWidth;
-  if(h<mbMinimalHeight) h=mbMinimalHeight;
-
-  this.SetClientRect({W: w, H: h });
-
-  // check parent size
-  if(this.Bounds.W>pw) this.Bounds.W=pw;
-  if(this.Bounds.H>ph) this.Bounds.H=ph;
-
-  if(this.Bounds.W<this.MinWidth) this.MinWidth=this.Bounds.W;
-  if(this.Bounds.H<this.MinHeight) this.MinHeight=this.Bounds.H;
-  this.SetBounds();
-  this.Update();
-}
-
 // --- ngAboutDlg --------------------------------------------------------------
 
 function ngAboutBrowser()
@@ -268,11 +115,17 @@ function ngAboutBrowser()
   {
     if(ngFireFox1x) browser='FireFox 1.x';
     else if(ngFireFox2x) browser='FireFox 2.x';
-    else browser='FireFox';
+    else browser='FireFox '+ngFireFoxVersion;
   }
-  if(ngOpera)  browser='Opera'+ngOperaVersion;
-  if(ngSafari) browser='Safari';
-  if(ngChrome) browser='Chrome';
+  if(ngChrome) browser='Chrome '+ngChromeVersion;
+
+  var ua=navigator.userAgent.toLowerCase();
+  if(ua.indexOf("edg") != -1) {
+    browser='Edge '+parseInt(ua.match( /edg\/(.*)$/ )[1] );
+  }
+  if(ngOpera)  browser='Opera '+ngOperaVersion;
+  if(ngSafari) browser='Safari '+ngSafariVersion;
+  if(ngEdge) browser='Edge '+ngEdgeVersion;
   
   if(browser=='')
   {
@@ -280,6 +133,10 @@ function ngAboutBrowser()
     var i=browser.indexOf('(');
     if(i>=0) browser=browser.substr(0,i);
   }
+  if(browser=='') browser='Unknown';
+  if(ngiOS) browser+=', iOS';
+  if(ngAndroid) browser+=', Android';
+  if(ngCordova) browser+=' (Cordova)';
   return browser;
 } 
 
@@ -292,6 +149,157 @@ ngUserControls['dialogs'] = {
 
   OnInit: function() {
 
+    function dlgbx_BtnClick(e)
+    {
+      var b=e.Owner;
+      if(typeof b.DialogResult !== 'undefined')
+      {
+        b.Owner.Owner.DialogResult=b.DialogResult;
+        b.Owner.Owner.Close();
+      }
+    }
+    
+    function dlgbx_Center()
+    {
+      var o=this.Elm();
+      if(!o) return;
+      var pw,ph,sl,st,po=o.parentNode;
+      ng_BeginMeasureElement(po);
+      sl=ng_ScrollX(po);
+      st=ng_ScrollY(po);
+      pw=ng_ClientWidthEx(po);
+      ph=ng_ClientHeightEx(po);
+      ng_EndMeasureElement(po);
+    
+      var b=this.Bounds;
+      ng_BeginMeasureElement(o);
+      var w=ng_ClientWidth(o);
+      var h=ng_ClientHeight(o);
+      ng_EndMeasureElement(o);
+    
+      b.L=sl+Math.round((pw-w)/2);
+      b.T=st+Math.round(0.40*ph-(h/2));
+      if(b.T<0) b.T=0;
+    
+      this.SetBounds();
+    }
+    
+    function dlgbx_CalcAutoSize()
+    {
+      if(!ngVal(this.ControlsPanel,false)) return;
+     
+      var o=this.Elm();
+      if(!o) return;
+      var po=o.parentNode;
+      var pw=ng_ClientWidthEx(po);
+      var ph=ng_ClientHeightEx(po);
+    
+      var cmw=ng_OuterWidth(o)-ng_ClientWidth(this.ControlsPanel.Elm());
+    
+      // set to max size (eliminate scrollbars)
+      ng_SetClientWidth(o,pw);
+      ng_SetClientHeight(o,ph);
+       
+      var w=0,h=0,bw=0,minx=0,miny=0;
+    
+      // calculate size and position of msg box components
+      var msg=ngVal(this.Controls.Message,null);
+      var content=ngVal(this.Controls.Content,null); 
+      var btns=ngVal(this.Controls.Buttons,null);
+      var fnote=ngVal(this.Controls.Footnote,null);
+    
+      // calculate right/bottom margin by minimal left/top position of components   
+      var cc=this.ControlsPanel.ChildControls;
+      if(typeof cc !== 'undefined')
+      {
+        minx=10000,miny=10000;
+        var l,t;
+        for(var i=0;i<cc.length;i++) 
+        {
+          if(cc[i]==btns) continue;
+          o=cc[i].Elm();
+          if(!o) continue;
+          l=ng_GetCurrentStylePx(o,'left');
+          if(l<minx) minx=l;
+          if(cc[i]!=content)
+          {
+            t=ng_GetCurrentStylePx(o,'top');
+            if(t<miny) miny=t;
+          }      
+        }
+      }
+      
+      // message
+      o=(msg ? msg.Elm() : null);
+      if((o)&&(msg.Visible))
+      {
+        var ml=ng_GetCurrentStylePx(o,'left');
+        var mw=ng_OuterWidth(o)
+        if(ml+mw+minx+cmw>pw) // text width overflows maximal allowed width 
+        {
+          mw=pw-cmw-minx-ml;
+          msg.AutoSizeMode='vertical';
+          msg.SetBounds({W: mw});
+          msg.Update(false); 
+        } 
+        w=ml+mw;        
+        h=ng_GetCurrentStylePx(o,'top')+ng_OuterHeight(o);
+      }  
+      // put content under message
+      o=(content ? content.Elm() : null);
+      if((o)&&(content.Visible))
+      {
+        content.SetBounds({ T: h });  
+        h+=ng_OuterHeight(o);
+      }
+      // center buttons and put them under content/message
+      o=(btns ? btns.Elm() : null);
+      if(o)
+      {
+        var cc=btns.ChildControls;
+        if((btns.Visible)&&(typeof cc !== 'undefined')&&(cc.length>0))
+        {
+          bw=ng_OuterWidth(o);
+          if(btns.CenterButtons)
+          {
+            o.style.marginLeft=(-Math.round(bw/2))+'px';  
+            btns.SetBounds({ L: '50%', T: h });
+          }
+          else btns.SetBounds({ T: h });
+          h+=ng_OuterHeight(o);
+          btns.SetVisible(true);
+        }
+        else btns.SetVisible(false);
+      }
+      // put footnote under buttons
+      o=(fnote ? fnote.Elm() : null);
+      if((o)&&(fnote.Visible))
+      {
+        fnote.SetBounds({ T: h });  
+        h+=ng_OuterHeight(o);
+      }
+    
+      // add margin
+      if(w<bw) w=bw+2*minx;  
+      else     w+=minx;
+      h+=miny;
+      
+      // check minimal dialog size
+      if(w<mbMinimalWidth)  w=mbMinimalWidth;
+      if(h<mbMinimalHeight) h=mbMinimalHeight;
+    
+      this.SetClientRect({W: w, H: h });
+    
+      // check parent size
+      if(this.Bounds.W>pw) this.Bounds.W=pw;
+      if(this.Bounds.H>ph) this.Bounds.H=ph;
+    
+      if(this.Bounds.W<this.MinWidth) this.MinWidth=this.Bounds.W;
+      if(this.Bounds.H<this.MinHeight) this.MinHeight=this.Bounds.H;
+      this.SetBounds();
+      this.Update();
+    }
+        
     /*  Class: ngMessageDlg
      *  Basic message dialog (based on <ngWindow>).
      */
@@ -701,7 +709,7 @@ ngUserControls['dialogs'] = {
       items[0].Collapsed=true;
       items[0].Items=[ ng_sprintf(ngTxt('ngAboutBrowser'),ngAboutBrowser()), ng_sprintf(ngTxt('ngAboutWindow'),window), ng_sprintf(ngTxt('ngAboutLanguage'),ngApp.Lang+langs) ];
       
-      function ngAboutAddInfo(f,t)
+      function about_addinfo(f,t)
       {
         if((typeof f === 'object')&&(f)&&(f.length>0))
         {
@@ -713,7 +721,7 @@ ngUserControls['dialogs'] = {
         }
       }
       
-      ngAboutAddInfo(def.AboutSystemInfo,items[0]);
+      about_addinfo(def.AboutSystemInfo,items[0]);
 
       // Components
       items[1].Collapsed=true;
@@ -763,7 +771,7 @@ ngUserControls['dialogs'] = {
       }
       
       
-      ngAboutAddInfo(def.AboutComponents,items[1]);
+      about_addinfo(def.AboutComponents,items[1]);
       
       // Libraries
       if(typeof ngLib !== 'undefined') 
@@ -781,9 +789,9 @@ ngUserControls['dialogs'] = {
         }
       }
 
-      ngAboutAddInfo(def.AboutLibraries,items[2]);
-      ngAboutAddInfo(def.AboutTrademarks,items[3]);      
-      ngAboutAddInfo(def.AboutReleaseNotes,items[4])
+      about_addinfo(def.AboutLibraries,items[2]);
+      about_addinfo(def.AboutTrademarks,items[3]);      
+      about_addinfo(def.AboutReleaseNotes,items[4])
 
       if(def.DialogType == 'ngAboutDlg') def.DialogType='ngMessageDlg';  
       return ngCreateControlAsType(def, def.DialogType, ref, parent);
