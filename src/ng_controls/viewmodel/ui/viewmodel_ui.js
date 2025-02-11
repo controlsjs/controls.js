@@ -959,6 +959,7 @@ ngUserControls['viewmodel_ui'] = {
     
     function ngve_SetEditText(t)
     {
+      var oldedittext=this.__setEditText;
       this.__setEditText=true;
       try
       {
@@ -966,7 +967,7 @@ ngUserControls['viewmodel_ui'] = {
       }
       finally
       {
-        delete this.__setEditText;
+        if(!oldedittext) delete this.__setEditText;
       }
     }
     
@@ -974,71 +975,60 @@ ngUserControls['viewmodel_ui'] = {
      *  Edit field control (based on <ngEdit>).
      */
     /*<>*/
-    function Create_EditField(def, ref, parent, basetype)
+    function Create_EditField(def, ref, parent, modtype)
     {
-      var c=ngCreateControlAsType(def, ngVal(basetype,'ngEdit'), ref, parent);
-      if(!c) return c;
-    
-      ng_MergeDef(def.ErrorHint, {
+      ng_MergeDef(def, {
+        ErrorHint: {
           Type: 'ngTextHint',
           ParentReferences: false,
           Data: {
             IsPopup: true
           }
-        });
+        },
+        Data: {
+          ErrorMessage: '',    
+          ErrorState: false,        
+          ErrorBindings: [ 'Value', 'Lookup' ],
+        },
+        Methods: {
+          GetFieldDefs: ngve_GetFieldDefs,
+          GetErrorHint: ngve_GetErrorHint,
+        
+          ShowErrorHint: ngve_ShowErrorHint,
+          HideErrorHint: ngve_HideErrorHint,
+          SetErrorState: ngve_SetErrorState,
+          Validate: ngve_Validate,
+          SetEditText: ngve_SetEditText,
+
+          DoMouseDown: function(e) {
+            if((c.HasFocus)||(!c.ErrorState))
+              ng_CallParent(c,'DoMouseDown',arguments);
+          },
+          DropDown: function() {
+            var oldignoreerror=c.__ignoreerror;
+            c.__ignoreerror=true;
+            try {
+              var ret=ng_CallParent(c,'DropDown',arguments,false);
+            }
+            finally {
+              if(oldignoreerror) delete c.__ignoreerror;
+            }
+            return ret;
+          }
+        },
+        Events: {
+          OnSetErrorState: null,
+          OnShowErrorHint: null,
+          OnHideErrorHint: null    
+        }
+      });
+
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
+      if(!c) return c;
     
-      /*
-       *  Group: Properties
-       */
-      c.ErrorHintDef = def.ErrorHint;
       c.ErrorHint = null;
-      c.ErrorMessage = '';
-    
-      c.ErrorState = false;
-    
-      c.ErrorBindings = [ 'Value', 'Lookup' ];
-    
-      /*
-       *  Group: Methods
-       */
-      c.GetFieldDefs = ngve_GetFieldDefs;
-      c.GetErrorHint = ngve_GetErrorHint;
-    
-      c.ShowErrorHint = ngve_ShowErrorHint;
-      c.HideErrorHint = ngve_HideErrorHint;
-      c.SetErrorState = ngve_SetErrorState;
-    
-      c.Validate = ngve_Validate;
-    
-      /*
-       *  Group: Events
-       */
-      c.OnSetErrorState = null;
-      c.OnShowErrorHint = null;
-      c.OnHideErrorHint = null;
-    
-      c.__ddlfDropDown = c.DropDown;
-      c.__ddlfDoMouseDown = c.DoMouseDown;
-    
-      c.DoMouseDown = function(e) {
-        if((c.HasFocus)||(!c.ErrorState))
-          c.__ddlfDoMouseDown(e);
-      }
-    
-      c.DropDown = function() {
-        c.__ignoreerror=true;
-        try {
-          var ret=c.__ddlfDropDown();
-        }
-        finally {
-          delete c.__ignoreerror;
-        }
-        return ret;
-      }
-    
-      c.SetEditText = ngve_SetEditText;
-    
-    
+      c.ErrorHintDef = def.ErrorHint;
+        
       def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
         c.AddEvent('OnFocus', function(c) {
           if(c.ErrorState) {
@@ -1068,15 +1058,15 @@ ngUserControls['viewmodel_ui'] = {
       });
       return c;
     }    
-    ngRegisterControlType('ngEditField', function(def, ref, parent) { return Create_EditField(def, ref, parent); });
+    ngRegisterControlMod('ngEditField', 'ngEdit', Create_EditField);
 
     /*  Class: ngEditNumField
      *  Edit number field control (based on <ngEditNum>).
      */
     /*<>*/
-    ngRegisterControlType('ngEditNumField', function(def, ref, parent)
+    ngRegisterControlMod('ngEditNumField', ['ngEditField','ngEditNum'], function(def, ref, parent, modtype)
     {
-      var c=Create_EditField(def, ref, parent, 'ngEditNum');
+      var c=ngCreateControlAsType(def, modtype, ref, parent);
       if(!c) return c;
 
       c.AddEvent('OnGetNum',function(c) {
@@ -1120,32 +1110,32 @@ ngUserControls['viewmodel_ui'] = {
        *  Edit date field control (based on <ngEditDate>).
        */
       /*<>*/
-      ngRegisterControlType('ngEditDateField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngEditDate'); });
+      ngRegisterControlMod('ngEditDateField', 'ngEditDate', Create_EditField);
 
       /*  Class: ngEditTimeField
        *  Edit time field control (based on <ngEditTime>).
        */
       /*<>*/
-      ngRegisterControlType('ngEditTimeField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngEditTime'); });
+      ngRegisterControlMod('ngEditTimeField', 'ngEditTime', Create_EditField);
     }
 
     /*  Class: ngDropDownField
      *  Dropdown field control (based on <ngDropDown>).
      */
     /*<>*/
-    ngRegisterControlType('ngDropDownField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngDropDown'); });
+    ngRegisterControlMod('ngDropDownField', 'ngDropDown', Create_EditField);
 
     /*  Class: ngDropDownListField
      *  Dropdown list field control (based on <ngDropDownList>).
      */
     /*<>*/
-    ngRegisterControlType('ngDropDownListField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngDropDownList'); });
+    ngRegisterControlMod('ngDropDownListField', 'ngDropDownList', Create_EditField);
 
     /*  Class: ngMemoField
      *  Memo field control (based on <ngMemo>).
      */
     /*<>*/
-    ngRegisterControlType('ngMemoField', function(def, ref, parent) { return Create_EditField(def, ref, parent, 'ngMemo'); });
+    ngRegisterControlMod('ngMemoField', 'ngMemo', Create_EditField);
 
 
     /* Bindings */
