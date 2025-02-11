@@ -42,6 +42,39 @@ var nglRowGroup = 1;
 var ngl_CurrentRowId='';
 var ngl_FocusTime=0;
 
+// --- ngPageList --------------------------------------------------------------
+
+var plDisplayFixed = 0;
+var plDisplayFit   = 1;
+
+var plFirstPage = -9999;
+var plLastPage  = -9998;
+
+var plPaging_First        = 1;
+var plPaging_Prev         = 2;
+var plPaging_Next         = 4;
+var plPaging_Last         = 8;
+var plPaging_Pages        = 16;
+var plPaging_PageNo       = 32;
+var plPaging_HideDisabled = 256;
+
+var plPagingUser       = -1;
+var plPagingSimple     = plPaging_Prev  | plPaging_Next;
+var plPagingSimple2    = plPaging_Prev  | plPaging_Next   | plPaging_HideDisabled;
+var plPagingSimpleEx   = plPaging_Prev  | plPaging_PageNo | plPaging_Next;
+var plPagingPages      = plPaging_Prev  | plPaging_Pages  | plPaging_Next;
+var plPagingPages2     = plPaging_First | plPaging_Prev   | plPaging_Pages  | plPaging_Next  | plPaging_Last;
+var plPagingPagesEx    = plPagingPages  | plPaging_HideDisabled;
+var plPagingPagesEx2   = plPagingPages2 | plPaging_HideDisabled;
+var plPagingDataSet    = plPaging_First | plPaging_Prev   | plPaging_Next   | plPaging_Last;
+var plPagingDataSetEx  = plPaging_First | plPaging_Prev   | plPaging_PageNo | plPaging_Next  | plPaging_Last;
+var plPagingAll        = 511; // all bits
+
+var plDisplayPagingNone      = 0;
+var plDisplayPagingAlways    = 1;
+var plDisplayPagingNotEmpty  = 2;
+var plDisplayPagingMorePages = 3;
+
 function ngl_BeginUpdate()
 {
   this.update_cnt++;
@@ -4336,2157 +4369,6 @@ function ngList(id)
   // - columns drag&drop
 }
 
-// --- ngPageList --------------------------------------------------------------
-
-var plDisplayFixed = 0;
-var plDisplayFit   = 1;
-
-var plFirstPage = -9999;
-var plLastPage  = -9998;
-
-var plPaging_First        = 1;
-var plPaging_Prev         = 2;
-var plPaging_Next         = 4;
-var plPaging_Last         = 8;
-var plPaging_Pages        = 16;
-var plPaging_PageNo       = 32;
-var plPaging_HideDisabled = 256;
-
-var plPagingUser       = -1;
-var plPagingSimple     = plPaging_Prev  | plPaging_Next;
-var plPagingSimple2    = plPaging_Prev  | plPaging_Next   | plPaging_HideDisabled;
-var plPagingSimpleEx   = plPaging_Prev  | plPaging_PageNo | plPaging_Next;
-var plPagingPages      = plPaging_Prev  | plPaging_Pages  | plPaging_Next;
-var plPagingPages2     = plPaging_First | plPaging_Prev   | plPaging_Pages  | plPaging_Next  | plPaging_Last;
-var plPagingPagesEx    = plPagingPages  | plPaging_HideDisabled;
-var plPagingPagesEx2   = plPagingPages2 | plPaging_HideDisabled;
-var plPagingDataSet    = plPaging_First | plPaging_Prev   | plPaging_Next   | plPaging_Last;
-var plPagingDataSetEx  = plPaging_First | plPaging_Prev   | plPaging_PageNo | plPaging_Next  | plPaging_Last;
-var plPagingAll        = 511; // all bits
-
-var plDisplayPagingNone      = 0;
-var plDisplayPagingAlways    = 1;
-var plDisplayPagingNotEmpty  = 2;
-var plDisplayPagingMorePages = 3;
-
-function npgl_OnListChanged(list,it,parent)
-{
-  if(!parent) list.ListPagingChanged();
-  return true;
-}
-
-function npgl_ListPagingChanged()
-{
-  this.page_start=new Array();
-  this.page_start[0]=0;
-}
-
-function npgl_DoUpdate(o)
-{
-  if(this.Controls.List.Enabled!=this.Enabled) // enabled is not in sync, fix it
-  {
-    for(var i in this.Controls)
-    {
-      if(typeof this.Controls[i].SetEnabled==='function') this.Controls[i].SetEnabled(this.Enabled);
-    }
-    if(this.Enabled) this.Controls.List.paging_needs_update=true;
-  }
-  return true;
-}
-
-function npgl_DoUpdateBefore(o)
-{
-  if((this.update_cnt>0)||(this.ID=='')) return;
-  this.need_update=false;
-
-  var pl=this.Owner.Owner;
-  if(!pl) return false;
-
-  if((this.display_mode!=pl.DisplayMode) // Display mode changed
-    ||(pl.DisplayMode==plDisplayFixed)&&(this.displayed_items!=pl.DisplayedItems))
-  {
-    this.ListPagingChanged();
-  }
-
-  if(pl.DisplayMode==plDisplayFixed)
-  {
-    if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssAuto);
-  }
-
-  if(pl.TopIndex>=this.Items.length)
-  {
-//  pl.LastPage();
-    pl.SetPage(pl.PageByIndex(pl.GetLength()));
-
-  }
-
-  if(this.draw_page!=pl.Page) // page changed
-  {
-    if(this.ContentElm) this.ContentElm.scrollTop=0;
-  }
-
-  var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
-  if((to)&&(to.parentNode))
-  {
-    var pgheight=ng_OuterHeight(to);
-    if(pl.PagingInside)
-    {
-      to.style.position='relative';
-      var bounds = { T:0, B: '' };
-      if(ngIExplorer6) bounds.R=2;
-      pl.Controls.Paging.SetBounds(bounds);
-      pl.Controls.List.SetBounds({B: 0});
-      this.draw_paging_height=pgheight;
-    }
-    else
-    {
-      to.style.position='absolute';
-      pl.Controls.Paging.SetBounds({ T:'', B: 0, R: 0 });
-      var pgvisible=pl.IsPagingVisible();
-      if((pl.Controls.Paging)&&(pl.Controls.Paging.Visible!=pgvisible))
-        pl.Controls.List.paging_needs_update=true;
-      pl.Controls.List.SetBounds({B: (pgvisible ? pgheight /*  pl.Controls.Paging.Bounds.H*/ : 0) });
-      if(to.parentNode == pl.Elm()) to=null;
-      this.draw_paging_height=0;
-    }
-    if(to)
-    {
-      this.draw_paging_elm=to.parentNode.removeChild(to);
-    }
-  }
-  else
-  {
-    this.draw_paging_height=0;
-    pl.Controls.List.SetBounds({B: 0});
-  }
-
-  this.Loading=false;
-  var fit=(pl.DisplayMode==plDisplayFit);
-  var ncnt=pl.DisplayedItems;
-  if(fit) {
-    ncnt=Math.max(this.max_displayed_items,ncnt);
-    var aih=ngVal(pl.GetAverageItemHeight(),0);
-    if(aih>0) {
-      var gcnt = Math.floor((ng_ClientHeight(o)-1)/aih);
-      if(gcnt>ncnt) ncnt=gcnt;
-    }
-    ncnt+=2;
-  }
-  else ncnt++;
-  if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt)) { this.Loading=true; return false; }
-  if(!this.draw_measure) {
-    if(!pl.NeedData(pl.TopIndex,ncnt))
-    {
-      if(pl.AsyncWaiting()) this.Loading=true;
-      return false;
-    }
-
-    if(fit) {
-      this.measure_loadto=pl.TopIndex+ncnt;
-    }
-  }
-  this.draw_measure=fit;
-  return true;
-}
-
-function npgl_GetAverageItemHeight()
-{
-  var ih,mih;
-  var list=this.Controls.List;
-  if(list) {
-    ih=list.ItemHeight;
-    mih=list.MinItemHeight;
-  }
-  if(typeof ih==='undefined') ih=this.AverageItemHeight;
-  if((typeof mih!=='undefined')&&(ngVal(ih,0)<mih)) ih=mih;
-  return ih;
-}
-
-function npgl_getitemsperpage(max)
-{
-  var ncnt=this.DisplayedItems;
-  if(this.DisplayMode==plDisplayFit) {
-    var list=this.Controls.List;
-    if(list) {
-      var maxh=ngVal(list.list_maxheight,0);
-      if((maxh>0)||(max)) {
-        var aih=ngVal(this.GetAverageItemHeight(),0);
-        if(aih>0) {
-          if((max)&&(!maxh)) {
-            // max possible items wanted, list was not rendered
-            // use full height of list (header and paging height are ignored)
-            var lo=list.Elm();
-            if(lo) maxh=ng_ClientHeight(lo);
-          }
-          if(maxh>0) ncnt=Math.floor(maxh/aih);
-        }
-      }
-      if((max)&&(list.max_displayed_items)) ncnt=Math.max(list.max_displayed_items, ncnt);
-    }
-  }
-  return ncnt;
-}
-
-function npgl_ItemsPerPage()
-{
-  return this.getitemsperpage();
-}
-
-function npgl_DataRequestPerPage()
-{
-  return this.getitemsperpage(true)+(this.DisplayMode==plDisplayFit ? 2 : 1);
-}
-
-function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
-{
-  if(list.in_measure) return true;
-  var pl=list.Owner/*controls*/.Owner/*pagelist*/;
-  if(list.draw_measure)
-  {
-    list.draw_measure=false;
-
-    var o=list.Elm();
-    if(list.HasEmbededContent)
-    {
-      var del=1;
-      if(list.Columns.length>0) { del++; html.append('</table>'); }
-      html.append('</div>');
-      ng_SetInnerHTML(o,html.toString());
-      html.strings.splice(html.strings.length-del,del);
-      o=document.getElementById(list.ID+'_CB');
-    }
-    if(o)
-    {
-      var maxh = ng_ClientHeight(o)-1;
-
-      var hheight = 0, io;
-      var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) maxh-=p;
-      p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) maxh-=p;
-
-      var changed_height=false;
-      if((list.draw_height!=maxh)&&(list.draw_height>0))
-      {
-        list.max_displayed_items=0;
-        changed_height=true;
-        list.ListPagingChanged();
-      }
-      list.draw_height=maxh;
-
-      var scrollbars=false;
-
-      if(list.Columns.length>0) // Measure header
-      {
-        ng_SetInnerHTML(o,html.toString()+'</table>');
-        io=document.getElementById(list.ID+'_TB');
-        if(io) hheight=ng_OuterHeight(io);
-      }
-      maxh -= list.draw_paging_height;
-      maxh -= hheight;
-      list.list_maxheight=maxh;
-
-      var cnt=0;
-      var i,it,items,tmp_html,ih=0,l;
-      list.in_measure=true;
-      try {
-        for(i=pl.TopIndex;i<list.Items.length;i++)
-        {
-          tmp_html=new ngStringBuilder(html);
-
-          if(!pl.IsDataLoaded(i+1))
-          {
-            var lfrom=i+1;
-            var aih=ngVal(pl.GetAverageItemHeight(),0);
-            if((aih<=0)&&(cnt)) aih=(ih/cnt);
-            var lcnt=(aih>0 ? Math.floor(maxh/aih) : 0);
-            var dcnt=Math.max(this.max_displayed_items, pl.DisplayedItems)-(i-pl.TopIndex);
-            if(dcnt>lcnt) lcnt=dcnt;
-            if(lcnt<1) lcnt=1;
-            lcnt+=2;
-
-            if(pl.IsAsyncLoadingBlock(lfrom,lcnt)) list.Loading=true;
-            else {
-              if(pl.LoadFullPage) {
-                lcnt+=(lfrom-pl.TopIndex);
-                lfrom=pl.TopIndex;
-              }
-              pl.DoLoadData(lfrom,lcnt);
-            }
-            if(lfrom+lcnt>list.measure_loadto) list.measure_loadto=lfrom+lcnt;
-          }
-
-          it=list.Items[i];
-          if(typeof it === 'undefined') it=new Object;
-
-          items=it.Items;
-          it.Items=undefined;
-          l=list.DrawItem(tmp_html, it, i, 0, false);
-          it.Items=items;
-
-          if(l.l>0) tmp_html.append('</tbody>');
-          if(list.Columns.length>0) tmp_html.append('</table>');
-          ng_SetInnerHTML(o,tmp_html.toString());
-
-          io=document.getElementById(list.ID+'_'+i);
-          if(io)
-          {
-            o.style.display='block';
-            h=ng_OuterHeight(io);
-            o.style.display=(this.Visible ? 'block' : 'none');
-          }
-          else h=0;
-
-          maxh-=h;
-          if(maxh<0) break;
-
-          ih+=h;
-          cnt++;
-          if((typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
-        }
-      } finally {
-        delete list.measure_loadto;
-        list.in_measure=false;
-        ng_SetInnerHTML(o,'');
-      }
-      if(i<list.Items.length) {
-        pl.DisplayedItems=cnt;
-        if(pl.DisplayedItems>this.max_displayed_items) this.max_displayed_items=pl.DisplayedItems;
-      }
-      else
-      {
-        if((cnt)&&(ih)) {
-          var aih=ngVal(pl.GetAverageItemHeight(),0);
-          if(aih<=0) aih=(ih/cnt);
-          pl.DisplayedItems=cnt+Math.floor(maxh/aih); // guess displayed items
-        }
-      }
-      if(pl.DisplayedItems<=0) pl.DisplayedItems=1;
-
-      if(this.displayed_items!=pl.DisplayedItems) { // number of displayed items changed
-        list.paging_needs_update=true;
-      }
-      if(changed_height)
-      {
-        var op=pl.Page;
-        if(!pl.TopIndex)
-        {
-          list.page_start_found=true;
-          list.page_start[0]=0;
-          pl.Page=0;
-        }
-        else // guess page no
-        {
-          var ipp=pl.ItemsPerPage();
-          if(ipp>0) pl.Page=Math.floor((pl.TopIndex+ipp-1)/ipp);
-        }
-        if(op!=pl.Page)
-        {
-          list.paging_needs_update=true;
-        }
-      }
-      if((!pl.TopIndex)||((pl.Page>0)&&(typeof list.page_start[pl.Page] !== 'undefined')))
-      {
-        var nti = pl.TopIndex+pl.DisplayedItems;
-        if((typeof pl.MaxLength === 'undefined') || (nti <= pl.MaxLength)){
-          list.page_start[pl.Page+1]=nti;
-        }
-      }
-
-      if(list.ContentElm) ng_SetScrollBars(list.ContentElm,scrollbars ? ssAuto : ssNone);
-    }
-  }
-  if(!level)
-  {
-    var pl=list.Owner/*controls*/.Owner/*pagelist*/;
-    if(list.draw_length!=list.Items.length) // items changed
-    {
-      list.paging_needs_update=true;
-    }
-    if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems))
-    {
-      list.Loading=true;
-      list.next_draw_itemidx=list.Items.length;
-      return false;
-    }
-
-    if(id<pl.TopIndex) list.next_draw_itemidx=pl.TopIndex;
-    if(id>=pl.TopIndex+pl.DisplayedItems) list.next_draw_itemidx=list.Items.length;
-    return ((id>=pl.TopIndex)&&(id<pl.TopIndex+pl.DisplayedItems));
-  }
-  return true;
-}
-
-function npgl_ShowNoData(v)
-{
-  if((v)&&(this.OnShowNoData)) {
-    this.OnShowNoData(this);
-    return;
-  }
-  if((!v)&&(this.OnHideNoData)) {
-    this.OnHideNoData(this);
-    return;
-  }
-  if((typeof this.Controls.NoData === 'object')&&(typeof this.Controls.NoData.SetVisible === 'function')) {
-    if((v)&&(typeof this.Controls.NoData.SetText === 'function')) {
-      var txt;
-      if(this.OnNoDataText) {
-        txt=ngVal(this.OnNoDataText(this),'');
-      }
-      else {
-        txt=ngVal(this.NoDataText,'');
-        if(txt!='') txt=ngTxt(txt,txt);
-      }
-      if(txt!='') this.Controls.NoData.SetText(txt);
-      else v=false;
-    }
-    this.Controls.NoData.SetVisible(v);
-  }
-}
-
-function npgl_ShowLoading(v)
-{
-  if((v)&&(this.OnShowLoading)) {
-    this.OnShowLoading(this);
-    return;
-  }
-  if((!v)&&(this.OnHideLoading)) {
-    this.OnHideLoading(this);
-    return;
-  }
-  if((typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
-}
-
-function npgl_DoUpdateAfter(o)
-{
-  if((this.update_cnt>0)||(this.ID=='')) return;
-
-  this.draw_measure=false;
-  var pl=this.Owner.Owner;
-  if(!pl) return true;
-
-  if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems)) this.Loading=true;
-  if(pl.loading_displayed!=this.Loading)
-  {
-    pl.loading_displayed=this.Loading;
-    pl.ShowLoading(this.Loading ? true : false);
-  }
-  if(this.Loading)
-  {
-    pl.ShowNoData(false);
-    if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
-  }
-  else {
-    pl.ShowNoData(pl.IsDynamicData() ? (typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0) : (!this.Items.length));
-  }
-
-  if(this.draw_paging_elm)
-  {
-    if(pl.PagingInside)
-    {
-      if(this.ContentElm) this.ContentElm.appendChild(this.draw_paging_elm);
-    }
-    else
-    {
-      var io=pl.Elm();
-      if(io) io.appendChild(this.draw_paging_elm);
-    }
-    this.draw_paging_elm=null;
-  }
-  if((pl.PagingInside)&&(pl.Controls.Paging)) pl.Controls.Paging.SetVisible(!this.Loading && pl.IsPagingVisible());
-  if(this.paging_needs_update)
-  {
-    this.paging_needs_update=false;
-    pl.UpdatePaging();
-  }
-
-  this.draw_page=pl.Page;
-  this.draw_length=this.Items.length;
-  this.displayed_items=pl.DisplayedItems;
-  this.display_mode=pl.DisplayMode;
-  delete this.draw_paging_height;
-
-  if((this.init_page>0)&&((pl.DisplayMode==plDisplayFixed)||(!this.Loading)))
-  {
-    var p=this.init_page;
-    this.init_page=0;
-    pl.SetPage(p);
-  }
-  if((pl.AutoSelectFirstItem)&&(!pl.firstitemselected)&&(this.SelCount==0)&&(pl.IsDataLoaded(0)))
-  {
-    pl.firstitemselected=true;
-    this.SelectItem(this.Items[0]);
-  }
-
-  return true;
-}
-
-function npgl_OnExpanding(l,it)
-{
-  var pl=this.Owner.Owner;
-  if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssAuto);
-  var to=(ngIExplorerVersion==7 && pl && pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
-  if(to) // IE7 fix
-  {
-    to.style.display='none';
-    to.style.display='block';
-  }
-  return true;
-}
-
-function npgl_SetPage(p)
-{
-  p=parseInt(p,10);
-  if((isNaN(p))||((p<0)&&(p!=plFirstPage)&&(p!=plLastPage))) return;
-  if((p!=this.Page)||(this.TopIndex===999999999))
-  {
-    if((p===plFirstPage)&&(this.TopIndex===0)) return;
-    if(this.TopIndex===999999999) this.TopIndex=0;
-    var needupdate=false;
-    var list=this.Controls.List;
-    if((this.OnPageChanging)&&(!ngVal(this.OnPageChanging(this,p),false))) return;
-
-    var op=this.Page;
-    var pti=this.TopIndex;
-
-    if(p==plFirstPage)
-    {
-      this.TopIndex=0;
-      list.page_start[0]=0;
-      p=0;
-    }
-    else
-      switch(p-op)
-      {
-        case 1: // next page
-          var ti=list.page_start[p];
-          var oti=list.page_start[op];
-          if((list.page_start_found)&&(typeof ti!=='undefined')&&(typeof oti!=='undefined')) { this.TopIndex=ti; list.page_start_found=true; }
-          else
-          {
-            list.page_start_found=false;
-            this.TopIndex+=this.DisplayedItems;
-            if(oti != 'undefined') list.page_start[p]=this.TopIndex;
-          }
-          break;
-        case -1: // prev page
-          var ti=list.page_start[p];
-          var oti=list.page_start[op];
-          if((list.page_start_found)&&(typeof ti!=='undefined')&&(typeof oti!=='undefined')) { this.TopIndex=ti; list.page_start_found=true; }
-          else
-          {
-            list.page_start_found=false;
-            this.TopIndex-=this.ItemsPerPage();
-          }
-          if(this.TopIndex<0) this.TopIndex=0;
-          break;
-        default: // any page
-          var len=this.GetLength();
-          if((p==plLastPage)&&((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined')))
-          {
-            p=this.PageByIndex(len);
-          }
-          for(var q=0;q<2;q++)
-          {
-            if(p!=plLastPage)
-            {
-              var ti=list.page_start[p];
-              if(typeof ti!=='undefined') { this.TopIndex=ti; list.page_start_found=true; }
-              else
-              {
-                var i=0,s=0;
-                if(this.DisplayMode!=plDisplayFixed)
-                {
-                  var sp=-1;
-                  for(i in list.page_start)
-                  {
-                    if((i>sp)&&(i<=p)&&(typeof list.page_start[i] !== 'undefined')) sp=i;
-                  }
-                  if(sp>=0)
-                  {
-                    s=list.page_start[sp];
-                    i=sp;
-                  }
-                  else i=0;
-/*                  for(i=p-1;i>0;i--)
-                  {
-                    if(typeof list.page_start[i] !== 'undefined')
-                    {
-                      s=list.page_start[i];
-                      break;
-                    }
-                  }*/
-                }
-                var ap=(p-i);
-
-                this.TopIndex=s;
-                if(ap>0){this.TopIndex += ap*this.ItemsPerPage();}
-                list.page_start_found=false;
-              }
-            }
-            else this.TopIndex=999999999; // dynamic data, determine items count
-            if((p==plLastPage)||((this.TopIndex>0)&&(this.TopIndex>=list.Items.length)))
-            {
-              if(!this.AsyncWaiting()) this.async_datapage=(p==plLastPage ? op : p);
-            }
-            this.NeedData(this.TopIndex,Math.max(list.max_displayed_items, this.DisplayedItems)+((this.DisplayMode==plDisplayFit) ? 2 : 1));
-            if(!this.AsyncWaiting()) delete this.async_datapage;
-            if(p==plLastPage) {
-              pti=999999999;
-              needupdate=true;
-              p=this.PageByIndex(len);
-              break;
-            }
-            if((this.TopIndex>0)&&(this.TopIndex>=len))
-              p=this.PageByIndex(len);
-            else break;
-          }
-          break;
-      }
-    if(this.TopIndex>=list.Items.length) { this.TopIndex=pti; p=op; }
-    if(p<0) p=0;
-    if(!this.TopIndex) { list.page_start[0]=0; list.page_start_found=true; }
-    else if((!p)&&(this.TopIndex>0)) p=1;
-
-    this.Page=p;
-    this.UpdatePaging();
-
-    if((pti!=this.TopIndex)||(needupdate)) list.Update();
-    if(this.OnPageChanged) this.OnPageChanged(this,op);
-  }
-}
-
-function npgl_SetPagingType(pt, update)
-{
-  if(typeof pt!=='undefined')
-  {
-    if(pt==this.PagingType) return;
-    this.PagingType=pt;
-  }
-  else pt=this.PagingType;
-
-  if(pt==plPagingUser) return;
-  var c;
-  var changed=false, update_paging=false;
-  var first=((pt & plPaging_First)!=0);
-  var prev=((pt & plPaging_Prev)!=0);
-  var pageno=((pt & plPaging_PageNo)!=0);
-  var pages=((pt & plPaging_Pages)!=0);
-  var next=((pt & plPaging_Next)!=0);
-  var last=((pt & plPaging_Last)!=0);
-  var hidedisabled=((pt & plPaging_HideDisabled)!=0);
-
-  c=this.Controls.FirstPage; if((c)&&(c.InitVisible!=first)) { c.InitVisible=first; changed=true; }
-  c=this.Controls.PrevPage;  if((c)&&(c.InitVisible!=prev)) { c.InitVisible=prev; changed=true; }
-  c=this.Controls.NextPage;  if((c)&&(c.InitVisible!=next)) { c.InitVisible=next; changed=true; }
-  c=this.Controls.LastPage;  if((c)&&(c.InitVisible!=last)) { c.InitVisible=last; changed=true; }
-  c=this.Controls.PageNo;    if((c)&&(c.InitVisible!=pageno)) { c.InitVisible=pageno; changed=true; update_paging=true; }
-  if(this.PagesVisible != pages) { this.PagesVisible = pages; update_paging=true; changed=true; }
-
-  if(this.PagingHideDisabled!=hidedisabled) { this.PagingHideDisabled=hidedisabled; changed=true; }
-  if((changed)&&(ngVal(update,true)))
-  {
-    if((update_paging)&&(this.Controls.List)) this.Controls.List.paging_needs_update=true;
-    this.Update();
-  }
-}
-
-function npgl_IsPagingVisible()
-{
-  var v=false;
-  if((!this.Controls.List)||((this.Controls.List.Loading)&&(this.PagingInside))) return v;
-  switch(this.DisplayPaging)
-  {
-    case plDisplayPagingAlways: v=true; break;
-    case plDisplayPagingNotEmpty: v=(this.Controls.List)&&(this.GetLength()>0); break;
-    case plDisplayPagingMorePages: v=(this.Controls.List)&&((this.Page>0)||(this.IsNextPageAvailable())); break;
-  }
-  return v;
-}
-
-function npgl_IsPrevPageAvailable()
-{
-  return (this.TopIndex>0);
-}
-
-function npgl_IsNextPageAvailable()
-{
-  if((this.IsDynamicData())&&(typeof this.MaxLength === 'undefined')) return true;
-  return (this.TopIndex+this.DisplayedItems<this.GetLength());
-}
-
-function npgl_UpdatePaging()
-{
-  var s;
-  var pginfo = {
-    PageNo: ''+(this.Page+1),
-    PrevPage:  this.IsPrevPageAvailable(),
-    NextPage:  this.IsNextPageAvailable(),
-    PagingVisible: this.IsPagingVisible(),
-    PagingTo: this.Page+ngVal(this.PagingLookout,Math.floor((this.PagingSize-1)/2)),
-    Update: false
-  };
-  pginfo.FirstPage=pginfo.PrevPage;
-  pginfo.LastPage=pginfo.NextPage;
-  if(this.PagingInside) pginfo.Update=true;
-
-  var ms=ngVal(this.PagingMinSize,0);
-  if((ms)&&(pginfo.PagingTo<ms)) pginfo.PagingTo=ms-1;
-  if(pginfo.PagingTo<0) pginfo.PagingTo=0;
-
-  if((!this.IsDynamicData())||(typeof this.MaxLength !== 'undefined'))
-  {
-    var numitems=this.GetLength();
-    var ipp=this.ItemsPerPage();
-    while(pginfo.PagingTo>this.Page) // remove pages over last page
-    {
-      s=this.Controls.List.page_start[pginfo.PagingTo];
-      if(typeof s==='undefined') {
-        s=this.TopIndex+(pginfo.PagingTo-this.Page)*ipp;
-      }
-      if(s<numitems) break;
-      pginfo.PagingTo--;
-    }
-  }
-  pginfo.PagingFrom=pginfo.PagingTo-this.PagingSize;
-
-  if((this.OnPagingUpdating)&&(!ngVal(this.OnPagingUpdating(this,pginfo),false))) return;
-
-  if(this.Controls.Paging)
-  {
-    var v=pginfo.PagingVisible;
-    if(v!=this.Controls.Paging.Visible)
-    {
-      this.Controls.Paging.SetVisible(v);
-      if(!this.PagingInside) this.Controls.List.SetBounds({B: (v ? (typeof this.draw_paging_height !== 'undefined' ? this.draw_paging_height : ng_OuterHeight(this.Controls.Paging.Elm())) /*this.Controls.Paging.Bounds.H*/ : 0) });
-    }
-  }
-
-  var e,c,v;
-  // update FirstPage
-  c=this.Controls.FirstPage;
-  if(c)
-  {
-    e=pginfo.FirstPage;
-    c.SetEnabled(this.Enabled && e);
-    if(this.PagingType!=plPagingUser)
-    {
-      v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
-      if(c.Visible!=v) pginfo.Update=true;
-      c.SetVisible(v);
-    }
-  }
-  // update PrevPage
-  c=this.Controls.PrevPage;
-  if(c)
-  {
-    e=pginfo.PrevPage;
-    c.SetEnabled(this.Enabled && e);
-    if(this.PagingType!=plPagingUser)
-    {
-      v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
-      if(c.Visible!=v) pginfo.Update=true;
-      c.SetVisible(v);
-    }
-  }
-  // update NextPage
-  c=this.Controls.NextPage;
-  if(c)
-  {
-    e=pginfo.NextPage;
-    c.SetEnabled(this.Enabled && e);
-    if(this.PagingType!=plPagingUser)
-    {
-      v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
-      if(c.Visible!=v) pginfo.Update=true;
-      c.SetVisible(v);
-    }
-  }
-  // update LastPage
-  c=this.Controls.LastPage;
-  if(c)
-  {
-    e=pginfo.LastPage;
-    c.SetEnabled(this.Enabled && e);
-    if(this.PagingType!=plPagingUser)
-    {
-      v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
-      if(c.Visible!=v) pginfo.Update=true;
-      c.SetVisible(v);
-    }
-  }
-  // update PageNo
-  c=this.Controls.PageNo;
-  if(c)
-  {
-    if(this.PagingType!=plPagingUser) c.SetVisible(c.InitVisible);
-    if(c.Text!=pginfo.PageNo) { c.Text=pginfo.PageNo; if(c.Visible) pginfo.Update=true; }
-  }
-
-  // update paging
-  var checked,pg=pginfo.PagingTo;
-  if(pginfo.PagingFrom<0) pginfo.PagingFrom=0;
-  for(var i=this.PagingSize-1;i>=0;i--)
-  {
-    c=this.Controls['Page'+i];
-    if((!c)||(typeof c==='undefined')) continue;
-    txt=''+(pg+1);
-    if(c.Text!=txt) { c.Text=txt; pginfo.Update=true; }
-    c.Page=pg;
-    checked=((pg==this.Page) ? 1 : 0);
-    v=(this.PagesVisible && (pg>=pginfo.PagingFrom));
-    if(c.Checked!=checked) { c.Checked=checked; if(v) pginfo.Update=true; }
-    c.SetVisible(v);
-    pg--;
-  }
-  if((this.OnPagingUpdated)&&(!ngVal(this.OnPagingUpdated(this,pginfo),false))) return;
-
-  if((pginfo.Update)&&(this.Controls.Paging)) { this.Controls.Paging.Update(); return true; }
-  return false;
-}
-
-function npgl_FirstPage()
-{
-  this.SetPage(plFirstPage);
-}
-
-function npgl_NextPage()
-{
-  this.SetPage(this.Page+1);
-}
-
-function npgl_PrevPage()
-{
-  this.SetPage(this.Page-1);
-}
-
-function npgl_LastPage()
-{
-  this.SetPage(plLastPage);
-}
-
-function npgl_PageByIndex(idx)
-{
-  var d,pgstart=0,pg=0;
-  var list=this.Controls.List;
-  if(!list) return 0;
-  if(idx<0) idx=0;
-  var len=this.GetLength();
-  if(idx>=len) idx=len-1;
-  if(this.DisplayMode!=plDisplayFixed)
-  {
-    var d,mind=100000;
-    for(var i in list.page_start)
-    {
-      s=list.page_start[i];
-      if(typeof s!=='undefined')
-      {
-        d=Math.abs(s-idx);
-        if(d<mind) { mind=d; pg=parseInt(i,10); pgstart=parseInt(s,10); }
-      }
-    }
-  }
-  var ni=(idx-pgstart);
-  if(ni>0) {
-    var ipp=this.ItemsPerPage();
-    if(ipp>0)
-    {
-      d=Math.floor(ni/ipp);
-      pg+=d;
-    }
-  }
-  return pg;
-}
-
-function npgl_OnKeyDown(e)
-{
-  switch(e.keyCode)
-  {
-    case 33:
-    {
-      var pl=e.Owner.Owner.Owner;
-      if((pl)&&(pl.KeyEvents)) pl.PrevPage();
-      return false;
-    }
-    case 34:
-    {
-      var pl=e.Owner.Owner.Owner;
-      if((pl)&&(pl.KeyEvents)) pl.NextPage();
-      return false;
-    }
-  }
-  return true;
-}
-
-function npgl_PageButtonClick(e)
-{
-  var pg=e.Owner.Page;
-  if(typeof pg !== 'undefined') e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.SetPage(pg);
-}
-
-function npgl_NeedData(idx,cnt)
-{
-  var list=this.Controls.List;
-  if((!list)||(cnt<=0)) return true;
-
-  if(idx>=list.Items.length)
-  {
-    if(this.LoadFullPage) {
-      if(idx>this.TopIndex) {
-        cnt+=idx-this.TopIndex;
-        idx=this.TopIndex;
-      }
-    }
-    return this.DoLoadData(idx,cnt);
-  }
-  var lfrom,lcnt;
-  for(var i=0;(i<cnt)&&(idx+i<=list.Items.length);i++)
-  {
-    if(!this.IsDataLoaded(idx+i))
-    {
-      lfrom=idx+i;
-      lcnt=cnt-i;
-      if(this.LoadFullPage) {
-        if(lfrom>this.TopIndex) {
-          lcnt+=lfrom-this.TopIndex;
-          lfrom=this.TopIndex;
-        }
-      }
-      if(!this.DoLoadData(lfrom,lcnt)) return false;
-      if(this.AsyncData) break;
-    }
-  }
-  return true;
-}
-
-function npgl_IsDynamicData()
-{
-  return ((this.OnLoadData)||(this.AsyncDataURL!=''))&&((!this.InDesignMode)||(this.DesignLive));
-}
-
-function npgl_IsDataLoaded(idx)
-{
-  if(!this.IsDynamicData()) return true;
-
-  var list=this.Controls.List;
-  if(!list) return true;
-
-  if(this.OnIsDataLoaded) return this.OnIsDataLoaded(this,list,idx);
-
-  if(idx<0) return true;
-  if(idx>=list.Items.length) return false;
-
-  // if caching is disabled or loading of full pages is enabled, anything outside current view is not loaded (up-to-date)
-  if(((!this.CacheData)||(this.LoadFullPage))
-    &&((idx<this.TopIndex)
-     ||(idx>=(typeof list.measure_loadto!=='undefined' ? list.measure_loadto :
-             (this.DisplayMode==plDisplayFit ? 0 :
-              this.TopIndex+this.DisplayedItems))))) return false;
-
-  var it=list.Items[idx];
-  if(typeof it==='undefined') return false;
-  for(var i in it) // if any property exists data loaded
-  {
-    return true;
-  }
-  return false;
-}
-
-function npgl_InvalidateData(idx, cnt)
-{
-  var list=this.Controls.List;
-  if(!list) return;
-
-  if(typeof idx === 'undefined')
-  {
-    idx=0;
-    cnt=list.Items.length;
-  }
-  if(typeof cnt==='undefined') return;
-
-  if(this.IsDynamicData())
-  {
-    if((!this.OnInvalidateData)||(ngVal(this.OnInvalidateData(this,idx,cnt),false)))
-    {
-      if(idx<list.Items.length)
-        for(var i=0;(i<cnt)&&(idx+i<=list.Items.length);i++)
-        {
-          list.do_remove(list.Items[idx+i],list);
-          delete list.Items[idx+i];
-        }
-    }
-
-    if(!this.IsAsyncLoadingBlock(idx, cnt))
-    {
-      var to=idx+cnt;
-      if(!this.AsyncWaiting())
-      {
-        var lato=this.last_asyncdata_index+this.last_asyncdata_count;
-        if(!((idx<this.last_asyncdata_index)&&(to<this.last_asyncdata_index))||((idx>=lato)&&(to>=lato)))
-        {
-          this.last_asyncdata_index=-1;
-          this.last_asyncdata_count=0;
-        }
-      }
-    }
-  }
-  var ato=this.TopIndex+this.DisplayedItems;
-  if(!((idx<this.TopIndex)&&(to<this.TopIndex))||((idx>=ato)&&(to>=ato))) list.Update();
-}
-
-
-
-function npgl_AsyncTimeout(lid)
-{
-  var l=ngGetControlById(lid, 'ngPanel');
-  if(l)
-  {
-    if(l.async_datatimeout_timer) clearTimeout(l.async_datatimeout_timer);
-    l.async_datatimeout_timer=null;
-    if(l.AsyncWaiting())
-    {
-      l.DoLoadData(l.async_dataindex,l.async_datacount,true); // retry load
-      if(l.async_datatimeout_retry<0) // no more attempts, set empty data
-        l.SetAsyncData(l.async_dataindex, new Array());
-    }
-  }
-}
-
-function npgl_Refresh()
-{
-  var undefined;
-  this.MaxLength = undefined;
-  this.InvalidateData(this.TopIndex,this.DisplayedItems);
-}
-
-function npgl_GetRPC()
-{
-  if(!this.IsDynamicData()) return null;
-  if(!this.async_rpc)
-  {
-    this.async_rpc=new ngRPC(this.ID);
-    this.async_rpc.nocache=true;
-  }
-  return this.async_rpc;
-}
-
-function npgl_DoLoadData(idx,cnt,retry)
-{
-  if(!this.IsDynamicData()) return true;
-
-  var list=this.Controls.List;
-  if(!list)
-  {
-    this.async_datatimeout_retry=-1;
-    return false;
-  }
-
-  if(typeof this.MaxLength !== 'undefined')
-  {
-    if(idx>this.MaxLength) cnt=0;
-    else if(idx+cnt>this.MaxLength) cnt=this.MaxLength-idx;
-  }
-
-  if((typeof cnt === 'undefined')||(cnt<1))
-  {
-    this.async_datatimeout_retry=-1;
-    return true;
-  }
-
-  if((typeof this.MinDataBatch!=='undefined')&&(cnt<this.MinDataBatch)) {
-    cnt=this.MinDataBatch;
-  }
-
-  var lato=this.last_asyncdata_index+this.last_asyncdata_count;
-  var ato=idx+cnt;
-  if((idx>=this.last_asyncdata_index)&&(idx<lato)&&(ato>=this.last_asyncdata_index)&&(ato<=lato))
-  {
-    this.async_datatimeout_retry=-1;
-    return true; // data was already loaded during last load data
-  }
-
-  if((this.async_dataindex==idx)&&(this.async_datacount==cnt)&&(ngVal(retry,false)))
-  {
-    this.async_datatimeout_retry--;
-    if(this.async_datatimeout_retry<0) // no more retry, data loading failed
-    {
-      this.async_datatimeout_retry=-1;
-      return true;
-    }
-    this.async_dataindex = undefined;
-    this.async_datacount = undefined;
-  }
-  else if(!this.AsyncWaiting()) this.async_datatimeout_retry=this.AsyncDataRetryCnt;
-
-  if(this.AsyncData)
-  {
-    if(this.AsyncWaiting()) return false;
-
-    this.async_dataindex = idx;
-    this.async_datacount = cnt;
-
-    // Set timeout timer
-    if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
-    this.async_datatimeout_timer=null;
-    if((this.AsyncDataTimeout>0)&&(this.async_datatimeout_retry>=0))
-      this.async_datatimeout_timer=setTimeout("npgl_AsyncTimeout('"+this.ID+"');",this.AsyncDataTimeout*1000);
-  }
-
-  var data;
-  if(this.OnLoadData) data=this.OnLoadData(this,list,idx,cnt);
-  else
-  {
-    var rpc=this.GetRPC();
-    if(rpc){
-      var url=this.AsyncDataURL;
-      url=ng_AddURLParam(url,'id='+ng_URLEncode(this.ID)+'&i='+idx+'&c='+cnt);
-      if((typeof ngApp==='object')&&(ngApp)) url=ng_AddURLParam(url,'lang='+ngApp.Lang);
-      if(this.OnAsyncURLRequest) url=this.OnAsyncURLRequest(this,url,idx,cnt);
-      if(url!='') rpc.sendRequest(url);
-    }
-  }
-  if((typeof data==='object')&&(data))
-  {
-    this.async_dataindex = undefined;
-    this.async_datacount = undefined;
-
-    if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
-    this.async_datatimeout_timer=null;
-
-    var j;
-    if((data.length>=0)&&(data.length<cnt)) // trim length if not enough data
-    {
-      this.SetLength(idx+data.length);
-    }
-    for(var i=0;i<data.length;i++)
-    {
-      j=i+idx;
-      if(j>=list.Items.length)
-      {
-        list.Items.length=j;
-        if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
-      }
-      if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
-    }
-  }
-  return true;
-}
-
-function npgl_AsyncWaiting()
-{
-  return (ngVal(this.async_dataindex,-1)>=0);
-}
-
-function npglSetAsyncDataCallback(lid, idx, data, length)
-{
-  var l=ngGetControlById(lid, 'ngPanel');
-  if(!l) return false;
-  if((typeof length!=='undefined')&&(length!==null)) l.SetLength(length);
-  l.SetAsyncData(idx,data);
-  return true;
-}
-
-function npgl_SetAsyncData(idx, data)
-{
-  if(!this.AsyncWaiting()) return;
-  var list=this.Controls.List;
-  if(!list) return;
-
-  var changed=false;
-  idx=ngVal(idx,this.async_dataindex);
-  if((this.OnSetAsyncData)&&(!ngVal(this.OnSetAsyncData(this, idx, data),false))) return;
-  if((typeof data==='object')&&(data)&&(idx!=999999999)) // data available and not length detection
-  {
-    var j;
-    var asynclast=this.async_dataindex+this.async_datacount;
-    list.BeginUpdate();
-    try {
-      if((idx==this.async_dataindex)&&(data.length>=0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
-      {
-        this.SetLength(idx+data.length);
-        changed=true;
-      }
-      for(var i=0;i<data.length;i++)
-      {
-        j=i+idx;
-        if(j>=list.Items.length)
-        {
-          list.Items.length=j;
-          if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
-        }
-        if(typeof data[i] !== 'undefined')
-        {
-          list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
-          if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
-        }
-      }
-    }
-    finally {
-      if(changed) list.need_update=false;
-      list.EndUpdate();
-    }
-  }
-  idx=this.async_dataindex;
-  var cnt=this.async_datacount;
-
-  // check if all required data are filled
-  if(!changed)
-    for(var i=0;(i<cnt)&&(idx+i<list.Items.length);i++)
-    {
-      if(!this.IsDataLoaded(idx+i)) return;
-    }
-
-  idx=this.async_dataindex;
-  if((this.IsAsyncLoadingBlock(this.TopIndex,this.DisplayedItems))||(this.List.Loading)) changed=true;
-
-  this.last_asyncdata_index=this.async_dataindex;
-  this.last_asyncdata_count=this.async_datacount;
-
-  // Clear timeout timer
-  if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
-  this.async_datatimeout_timer=null;
-
-  this.async_dataindex=undefined;
-  this.async_datacount=undefined;
-  if(typeof this.async_datapage!=='undefined') // request was beyond length
-  {
-    var p=this.async_datapage;
-    var len=this.GetLength();
-    if(idx>=len) p=this.PageByIndex(len);
-    delete this.async_datapage;
-    if(this.Page!=p)
-    {
-      this.SetPage(p);
-      return;
-    }
-  }
-  if((typeof data!=='object')||(changed)) list.Update();
-}
-
-function npgl_SetLength(l)
-{
-  if(this.OnSetLength) l=this.OnSetLength(this,l);
-  var list=this.Controls.List;
-  if(list) list.paging_needs_update=true;
-
-  if(!this.IsDynamicData()) // not dynamic data, adjust list length
-  {
-    if(typeof l === 'undefined') return;
-    if(list) list.Items.length=l;
-  }
-  else
-  {
-    this.MaxLength=l;
-    if(typeof l === 'undefined') return;
-    if((list)&&(l<list.Items.length)) list.Items.length=l;
-  }
-}
-
-function npgl_GetLength()
-{
-  if((this.IsDynamicData())&&(typeof this.MaxLength !== 'undefined')) return this.MaxLength;
-  var list=this.Controls.List;
-  return (list ? list.Items.length : 0);
-}
-
-function npgl_IsAsyncLoadingBlock(idx, cnt)
-{
-  if(!this.AsyncWaiting()) return false;
-  var to=idx+cnt;
-  var ato=this.async_dataindex+this.async_datacount;
-  return (!((idx<this.async_dataindex)&&(to<this.async_dataindex))||((idx>=ato)&&(to>=ato)));
-}
-
-function npgl_IndexOf(it, parent)
-{
-  var pl=this.Owner.Owner;
-  if(pl)
-  {
-    var list=parent;
-    if((!list)||(list==this))
-    {
-      for(var i=pl.TopIndex;(i<pl.TopIndex+pl.DisplayedItems)&&(i<this.Items.length);i++)
-        if(this.Items[i]==it) return i;
-    }
-  }
-  return this.IndexOf.callParent(it,parent);
-}
-
-function npgl_Reset(doclear)
-{
-  var list=this.Controls.List;
-  if(list) list.BeginUpdate();
-  try {
-    delete this.firstitemselected;
-    this.MaxLength = undefined;
-    this.async_dataindex = undefined;
-    this.async_datacount = undefined;
-    this.last_asyncdata_index=-1;
-    this.last_asyncdata_count=0;
-
-    if(list) list.ClearSelected();
-    this.FirstPage();
-    this.InvalidateData();
-  }
-  finally {
-    if(list)
-    {
-      list.max_displayed_items=0;
-      if(ngVal(doclear,false)) list.Clear();
-      list.EndUpdate();
-    }
-  }
-}
-
-function npgl_GetPageTopItems()
-{
-  var items=new Array();
-  var list=this.Controls.List;
-  for(var i=this.TopIndex;(i<this.TopIndex+this.DisplayedItems)&&(i<list.Items.length);i++)
-  {
-    if(i<0) continue;
-    items[items.length]=list.Items[i];
-  }
-  return items;
-}
-
-function npgl_ScanPageItems(fnc, recursive, userdata)
-{
-  if(typeof fnc !== 'function') return false;
-  var list=this.Controls.List;
-  for(var i=this.TopIndex;(i<this.TopIndex+this.DisplayedItems)&&(i<list.Items.length);i++)
-  {
-    if(i<0) continue;
-
-    if(!fnc(this, list.Items[i], list, userdata)) return false;
-    if((ngVal(recursive,true))&&(!list.Scan(fnc, list.Items[i], userdata))) return false;
-  }
-  return true;
-}
-
-
-function npgl_ScanVisiblePageItems(fnc, recursive, userdata)
-{
-  if(typeof fnc !== 'function') return false;
-  var list=this.Controls.List;
-  for(var i=this.TopIndex;(i<this.TopIndex+this.DisplayedItems)&&(i<list.Items.length);i++)
-  {
-    if(i<0) continue;
-
-    var pi=list.Items[i];
-    if(typeof pi === 'undefined') continue;
-    if(!ngVal(pi.Visible,true)) continue;
-    if(!fnc(this, pi, list, userdata)) return false;
-
-    if((ngVal(pi.Collapsed,false))||(typeof pi.Items === 'undefined')||(!pi.Items.length)) continue;
-    if((ngVal(recursive,true))&&(!list.ScanVisible(fnc, pi, userdata))) return false;
-  }
-  return true;
-}
-
-function npgl_DoDropDown(edit)
-{
-  this.SetVisible(true);
-  var l=this.List;
-  if(l) {
-    l.DropDownOwner=this.DropDownOwner;
-    l.DoDropDown.apply(l,arguments);
-
-    var it=l.DropDownOwnerListItem;
-    if((it)&&(l.Items)&&(l.Items.length)) {
-      var idx=-1;
-      for(var i=0;i<l.Items.length;i++) {
-        if(l.Items[i]===it) { idx=i; break; }
-        if(ng_IsArrayVar(l.Items[i].Items)) {
-          l.Scan(function(l, lit, items) {
-            if(lit===it) { idx=i; return false; }
-            return (idx<0);
-          });
-          if(idx>=0) break;
-        }
-      }
-      if(idx>=0) {
-        this.SetPage(this.PageByIndex(idx));
-      }
-    }
-  }
-}
-
-function npgl_DoDropDownFinished(edit) {
-  if(this.List) return this.List.DoDropDownFinished.apply(this.List,arguments);
-}
-
-function npgl_SelectDropDownItem(it) {
-  if(this.List) return this.List.SelectDropDownItem.apply(this.List,arguments);
-}
-
-function npgl_SelectDropDownItemWithFocus(it) {
-  if(this.List) return this.List.SelectDropDownItemWithFocus.apply(this.List,arguments);
-}
-
-/**
- *  Class: ngPageList
- *  This class implements <ngPageList> control (based on component <ngFrame>)
- */
-function Create_ngPageList(def, ref, parent)
-{
-  var undefined;
-  ng_MergeDef(def, {
-    Data: {
-      PagingSize: 5
-    },
-    Controls : {
-      List: {
-        Type: 'ngList',
-        style: { border: '0px' },
-        L: 0, T: 0, R: 0, B: 24
-      },
-      Paging: {
-        Type: 'ngToolBar',
-        L:0, B: 0, R: 0, H: 24,
-        Data: {
-          Visible: false
-        },
-        Controls: {
-          FirstPage: {
-            Type: 'ngButton',
-            Data: {
-              Text: '|<'
-            },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.FirstPage(); }
-            }
-          },
-          PrevPage: {
-            Type: 'ngButton',
-            Data: {
-              Text: '<'
-            },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.PrevPage(); }
-            }
-          },
-          PageNo: {
-            Type: 'ngEdit',
-            W: 30,
-            Data: {
-              Text: '1',
-              TextAlign: 'center'
-            },
-            Events: {
-              OnKeyDown: function(e) { if(e.keyCode==13) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.SetPage(parseInt(e.Owner.GetText())-1,10); return false; } return true; }
-            }
-          },
-          Page0: {
-            Type: 'ngButton',
-            Data: {
-              Text: '1',
-              TextAlign: 'center'
-            },
-            Events: {
-              OnClick: npgl_PageButtonClick
-            }
-          },
-          NextPage: {
-            Type: 'ngButton',
-            Data: {
-              Text: '>'
-            },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.NextPage(); }
-            }
-          },
-          LastPage: {
-            Type: 'ngButton',
-            Data: {
-              Text: '>|'
-            },
-            Events: {
-              OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.LastPage(); }
-            }
-          }
-        }
-      }
-    }
-  });
-
-  // Create paging
-  var pgsize=ngVal(def.Data.PagingSize,5);
-  if(pgsize<0) pgsize=1;
-
-  for(var i=1;i<pgsize;i++)
-  {
-    if((typeof def.Controls.Paging!=='object')||(!def.Controls.Paging)) continue;
-    var bdef=new Object;
-    bdef['Page'+i]=def.Controls.Paging.Controls.Page0;
-    ng_MergeDef(def.Controls.Paging.Controls, bdef);
-  }
-
-  var c=ngCreateControlAsType(def, 'ngFrame', ref, parent);
-  if(!c) return c;
-  /*
-   *  Group: Properties
-   */
-  /*  Variable: DisplayMode
-   *  ...
-   *  Type: int
-   *  Default value: *plDisplayFit*
-   */
-  c.DisplayMode = plDisplayFit;
-
-  /*  Variable: PagingType
-   *  ...
-   *  Type: int
-   *  Default value: *plPagingSimple*
-   */
-  c.PagingType = plPagingSimple;
-  /*  Variable: PagingSize
-   *  ...
-   *  Type: int
-   *  Default value: *5*
-   */
-  c.PagingSize=pgsize;
-
-  /*  Variable: PagingMinSize
-   *  ...
-   *  Type: int
-   */
-  c.PagingMinSize=undefined;
-
-  /*  Variable: PagingLookout
-   *  ...
-   *  Type: int
-   */
-  c.PagingLookout = undefined;
-
-  /*  Variable: PagingInside
-   *  ...
-   *  Type: bool
-   *  Default value: *true*
-   */
-  c.PagingInside = true;
-
-  /*  Variable: PagingHideDisabled
-   *  ...
-   *  Type: bool
-   *  Default value: *false*
-   */
-  c.PagingHideDisabled = false;
-  /*  Variable: DisplayPaging
-   *  ...
-   *  Type: int
-   *  Default value: *plDisplayPagingMorePages*
-   */
-  c.DisplayPaging=plDisplayPagingMorePages;
-
-  /*  Variable: KeyEvents
-   *  ...
-   *  Type: bool
-   *  Default value: *true*
-   */
-  c.KeyEvents=true;
-
-  /*  Variable: AutoSelectFirstItem
-   *  ...
-   *  Type: bool
-   *  Default value: *false*
-   */
-  c.AutoSelectFirstItem=false;
-
-  /*  Variable: Page
-   *  ...
-   *  Type: int
-   *  Default value: *0*
-   */
-  c.Page=0;
-
-  /*  Variable: TopIndex
-   *  ...
-   *  Type: int
-   *  Default value: *0*
-   */
-  c.TopIndex=0;
-  /*  Variable: DisplayedItems
-   *  ...
-   *  Type: int
-   *  Default value: *10*
-   */
-  c.DisplayedItems=10;
-
-  /*  Variable: AverageItemHeight
-   *  ...
-   *  Type: int
-   *  Default value: *undefined*
-   */
-  c.AverageItemHeight = undefined;
-
-  /*  Variable: MaxLength
-   *  ...
-   *  Type: int
-   *  Default value: *undefined*
-   */
-  c.MaxLength=undefined;
-
-  /*  Variable: CacheData
-   *  ...
-   *  Type: bool
-   *  Default value: *true*
-   */
-  c.CacheData = true;
-  /*  Variable: LoadFullPage
-   *  ...
-   *  Type: bool
-   *  Default value: *false*
-   */
-  c.LoadFullPage = false;
-
-  /*  Variable: MinDataBatch
-   *  ...
-   *  Type: int
-   *  Default value: *undefined*
-   */
-  c.MinDataBatch=undefined;
-
-  /*  Variable: AsyncData
-   *  ...
-   *  Type: bool
-   *  Default value: *true*
-   */
-  c.AsyncData = true;
-  /*  Variable: AsyncDataTimeout
-   *  ...
-   *  Type: int
-   *  Default value: *30*
-   */
-  c.AsyncDataTimeout = 30;
-  /*  Variable: AsyncDataRetryCnt
-   *  ...
-   *  Type: int
-   *  Default value: *3*
-   */
-  c.AsyncDataRetryCnt = 3;
-
-  /*  Variable: AsyncDataURL
-   *  ...
-   *  Type: string
-   *  Default value: *''*
-   */
-  c.AsyncDataURL = '';
-
-  /*  Variable: NoDataText
-   *  ...
-   *  Type: string
-   *  Default value: *''*
-   */
-  c.NoDataText = '';
-
-  /*
-   *  Group: Methods
-   */
-  /*  Function: SetPage
-   *  Sets current page.
-   *
-   *  Syntax:
-   *    void *SetPage* (int page)
-   *
-   *  Returns:
-   *    -
-   *
-   *  Constants:
-   *    plFirstPage - first page
-   *    plLastPage  - last page
-   */
-  c.SetPage = npgl_SetPage;
-
-  /*  Function: NextPage
-   *  Switches to next page.
-   *
-   *  Syntax:
-   *    void *NextPage* ()
-   *
-   *  Returns:
-   *    -
-   */
-  c.NextPage = npgl_NextPage;
-  /*  Function: PrevPage
-   *  Switches to previous page.
-   *
-   *  Syntax:
-   *    void *PrevPage* ()
-   *
-   *  Returns:
-   *    -
-   */
-  c.PrevPage = npgl_PrevPage;
-  /*  Function: FirstPage
-   *  Switches to first page.
-   *
-   *  Syntax:
-   *    void *FirstPage* ()
-   *
-   *  Returns:
-   *    -
-   */
-  c.FirstPage = npgl_FirstPage;
-  /*  Function: LastPage
-   *  Switches to last page.
-   *
-   *  Syntax:
-   *    void *LastPage* ()
-   *
-   *  Returns:
-   *    -
-   */
-  c.LastPage = npgl_LastPage;
-
-
-  /*  Function: IsPrevPageAvailable
-   *  Checks if previous page is available.
-   *
-   *  Syntax:
-   *    bool *IsPrevPageAvailable* ()
-   *
-   *  Returns:
-   *    TRUE if previous page is available.
-   */
-  c.IsPrevPageAvailable = npgl_IsPrevPageAvailable;
-  /*  Function: IsNextPageAvailable
-   *  Checks if next page is available.
-   *
-   *  Syntax:
-   *    bool *IsNextPageAvailable* ()
-   *
-   *  Returns:
-   *    TRUE if next page is available.
-   */
-  c.IsNextPageAvailable = npgl_IsNextPageAvailable;
-
-  /*  Function: PageByIndex
-   *  Returns page number by given item index.
-   *
-   *  Syntax:
-   *    int *PageByIndex* (int index)
-   *
-   *  Returns:
-   *    Page number.
-   */
-  c.PageByIndex = npgl_PageByIndex;
-
-  /*  Function: SetPagingType
-   *  Sets visible paging elements.
-   *
-   *  Syntax:
-   *    void *SetPagingType* (int pagingtype [, bool update=true])
-   *
-   *  Returns:
-   *    -
-   */
-  c.SetPagingType = npgl_SetPagingType;
-
-  /*  Function: ItemsPerPage
-   *  Returns number of displayed items per page.
-   *
-   *  Syntax:
-   *    int *ItemsPerPage* ()
-   *
-   *  Returns:
-   *    Number of items.
-   */
-  c.ItemsPerPage = npgl_ItemsPerPage;
-
-  c.getitemsperpage = npgl_getitemsperpage;
-
-  /*  Function: DataRequestPerPage
-   *  Determines how much data is needed to fill the page when doing dynamic requests.
-   *
-   *  Syntax:
-   *    int *DataRequestPerPage* ()
-   *
-   *  Returns:
-   *    Requested number of items.
-   */
-  c.DataRequestPerPage = npgl_DataRequestPerPage;
-
-  /*  Function: GetAverageItemHeight
-   *  Determines average height of list item.
-   *  The average item height is based on ngPageList property AverageItemHeight (if defined)
-   *  and list properties ItemHeight and/or MinItemHeight. The item height cannot be determited
-   *  if none of these properties are defined.
-   *
-   *  Syntax:
-   *    mixed *GetAverageItemHeight* ()
-   *
-   *  Returns:
-   *    Height of the item or undefined if cannot be determined.
-   */
-  c.GetAverageItemHeight = npgl_GetAverageItemHeight;
-
-  c.IsPagingVisible = npgl_IsPagingVisible;
-  c.UpdatePaging = npgl_UpdatePaging;
-
-  c.SetAsyncData = npgl_SetAsyncData;
-
-  /*  Function: SetLength
-   *  Sets number of items in list.
-   *
-   *  Syntax:
-   *    void *SetLength* (int length)
-   *
-   *  Returns:
-   *    -
-   */
-  c.SetLength = npgl_SetLength;
-  /*  Function: GetLength
-   *  Gets number of items in list.
-   *
-   *  Syntax:
-   *    int *GetLength* ()
-   *
-   *  Returns:
-   *    Number of items.
-   */
-  c.GetLength = npgl_GetLength;
-
-  /*  Function: IsDynamicData
-   *  Determines if list is using dynamic data from server.
-   *
-   *  Syntax:
-   *    bool *IsDynamicData* ()
-   *
-   *  Returns:
-   *    TRUE if list loads dynamic data from server.
-   */
-  c.IsDynamicData = npgl_IsDynamicData;
-
-  /*  Function: GetRPC
-   *  Gets current ngRPC for server data loading if dynamic.
-   *
-   *  Syntax:
-   *    ngRPC *GetRPC* ()
-   *
-   *  Returns:
-   *    Instance of ngRPC or null if not dynamic.
-   */
-  c.GetRPC = npgl_GetRPC;
-
-  c.IsDataLoaded = npgl_IsDataLoaded;
-  c.DoLoadData = npgl_DoLoadData;
-  c.NeedData = npgl_NeedData;
-
-  /*  Function: GetPageTopItems
-   *  Provides access to top level items on current page.
-   *
-   *  Syntax:
-   *    array *GetPageTopItems* ()
-   *
-   *  Returns:
-   *    Array of items on current page.
-   */
-  c.GetPageTopItems = npgl_GetPageTopItems;
-
-  /*  Function: InvalidateData
-   *  Invalidates loaded data from server.
-   *
-   *  Syntax:
-   *    void *InvalidateData* ([int idx=0, int cnt=max])
-   *
-   *  Returns:
-   *    -
-   */
-  c.InvalidateData = npgl_InvalidateData;
-  /*  Function: Refresh
-   *  Invalidates data from server on current page.
-   *
-   *  Syntax:
-   *    void *Refresh* ()
-   *
-   *  Returns:
-   *    -
-   */
-  c.Refresh = npgl_Refresh;
-  /*  Function: Reset
-   *  Switches to the first page, clears selection and invalidates
-   *  all data loaded from server if list is dynamic.
-   *
-   *  Syntax:
-   *    void *Reset* ([bool doclear=false])
-   *
-   *  Returns:
-   *    -
-   */
-  c.Reset = npgl_Reset;
-  /*  Function: ScanPageItems
-   *  Recursive scan items on current page.
-   *
-   *  Syntax:
-   *    bool *ScanPageItems* (function scanfnc [, bool recursive=true, mixed userdata])
-   *
-   *  Returns:
-   *    -
-   */
-  c.ScanPageItems = npgl_ScanPageItems;
-
-  /*  Function: ScanVisiblePageItems
-   *  Recursive scan visible items on current page..
-   *
-   *  Syntax:
-   *    bool *ScanVisiblePageItems* (function scanfnc [, bool recursive=true, mixed userdata])
-   *
-   *  Returns:
-   *    -
-   */
-  c.ScanVisiblePageItems = npgl_ScanVisiblePageItems;
-
-  /*  Function: ShowLoading
-   *  Shows default loading control, if available.
-   *
-   *  Syntax:
-   *    void *ShowLoading* (bool visible)
-   *
-   *  Returns:
-   *    -
-   */
-  c.ShowLoading=npgl_ShowLoading;
-
-  /*  Function: ShowNoData
-   *  Shows no data control, if available.
-   *
-   *  Syntax:
-   *    void *ShowNoData* (bool visible)
-   *
-   *  Returns:
-   *    -
-   */
-  c.ShowNoData=npgl_ShowNoData;
-
-  c.IsAsyncLoadingBlock = npgl_IsAsyncLoadingBlock;
-
-  c.loading_displayed=false;
-  c.last_asyncdata_index=-1;
-  c.last_asyncdata_count=0;
-  c.async_rpc=null;
-  //c.async_dataindex = undefined;
-  //c.async_datacount = undefined;
-
-  c.AsyncWaiting = npgl_AsyncWaiting;
-
-  c.DoDropDown = npgl_DoDropDown;
-  c.DoDropDownFinished = npgl_DoDropDownFinished;
-  c.SelectDropDownItem = npgl_SelectDropDownItem;
-  c.SelectDropDownItemWithFocus = npgl_SelectDropDownItemWithFocus;
-  c.SetDropDownOwner = function(owner) {
-    c.DropDownOwner=owner;
-    if(c.List) c.List.DropDownOwner=owner;
-  }
-
-  /*
-   *  Group: Events
-   */
-  /*
-   *  Event: OnPageChanging
-   */
-  c.OnPageChanging = null;
-  /*
-   *  Event: OnPageChanged
-   */
-  c.OnPageChanged = null;
-  /*
-   *  Event: OnPagingUpdating
-   */
-  c.OnPagingUpdating = null;
-  /*
-   *  Event: OnPagingUpdated
-   */
-  c.OnPagingUpdated = null;
-  /*
-   *  Event: OnLoadData
-   */
-  c.OnLoadData = null;
-  /*
-   *  Event: OnInvalidateData
-   */
-  c.OnInvalidateData = null;
-  /*
-   *  Event: OnAsyncURLRequest
-   */
-  c.OnAsyncURLRequest = null;
-  /*
-   *  Event: OnSetAsyncData
-   */
-  c.OnSetAsyncData = null;
-  /*
-   *  Event: OnSetLength
-   */
-  c.OnSetLength = null;
-  /*
-   *  Event: OnShowLoading
-   */
-  c.OnShowLoading = null;
-  /*
-   *  Event: OnHideLoading
-   */
-  c.OnHideLoading = null;
-
-  /*
-   *  Event: OnShowNoData
-   */
-  c.OnShowNoData = null;
-  /*
-   *  Event: OnHideNoData
-   */
-  c.OnHideNoData = null;
-  /*
-   *  Event: OnNoDataText
-   */
-  c.OnNoDataText = null;
-
-  /*
-   *  Group: Controls
-   */
-  /*
-   *  Object: List
-   *  <ngList>
-   */
-  /*
-   *  Object: Paging
-   *  <ngToolBar>
-   */
-  /*
-   *  Object: FirstPage
-   *  <ngButton>
-   */
-  /*
-   *  Object: PrevPage
-   *  <ngButton>
-   */
-  /*
-   *  Object: PageNo
-   *  <ngEdit>
-   */
-  /*
-   *  Object: Page0
-   *  <ngButton>
-   */
-  /*
-   *  Object: NextPage
-   *  <ngButton>
-   */
-  /*
-   *  Object: LastPage
-   *  <ngButton>
-   */
-
-  def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-
-    // Handle focus
-    ng_OverrideMethod(c,'SetFocus',function(s) {
-      if(ngVal(s,true)) {
-        if(c.List) c.List.SetFocus(true);
-        else c.SetFocus.callParent(true);
-      }
-      else
-      {
-        if(c.List) c.List.SetFocus(false);
-        c.SetFocus.callParent(false);
-      }
-    });
-    // Group pages in paging and save visibility
-    if(c.Controls.Paging)
-    {
-      var cc=c.Controls.Paging.ChildControls;
-
-      if(typeof cc !== 'undefined')
-      {
-        var reverse=(c.Controls.Paging.HAlign=='right'); // reverse paging
-        if(reverse)
-        {
-          var ncc=new Array();
-          var j=0;
-          for(var i=cc.length-1;i>=0;i--)
-            ncc[j++]=cc[i];
-
-          c.Controls.Paging.ChildControls=ncc;
-          cc=ncc;
-        }
-
-        var c0;
-        for(var j=1;j<c.PagingSize;j++)
-        {
-          var c0=c.Controls['Page'+j];
-          if(!c0) continue;
-          c0.InitVisible=c0.Visible;
-          for(var i=cc.length-1;i>=0;i--)
-            if(cc[i]==c0)
-            {
-              cc.splice(i, 1);
-              break;
-            }
-        }
-
-        var pidx=-1,c0;
-        for(var i=cc.length-1;i>=0;i--)
-        {
-          c0=cc[i];
-          c0.InitVisible=c0.Visible;
-          if(c0==c.Controls.Page0) pidx=i+1;
-        }
-        if(pidx>=0)
-        {
-          if(reverse)
-          {
-            pidx--;
-            for(var j=c.PagingSize-1;j>0;j--)
-            {
-              c0=c.Controls['Page'+j];
-              if(c0) cc.splice(pidx++,0,c0);
-            }
-          }
-          else
-            for(var j=1;j<c.PagingSize;j++)
-            {
-              c0=c.Controls['Page'+j];
-              if(c0) cc.splice(pidx++,0,c0);
-            }
-        }
-      }
-    }
-    var pt=c.PagingType;
-    c.PagingType=c.PagingType-1;
-    c.SetPagingType(pt,false);
-
-    c.AddEvent(npgl_DoUpdate,'DoUpdate');
-    var l=c.Controls.List;
-    c.List=ngVal(l,null);
-    if(l)
-    {
-      if(c.DropDownOwner) l.DropDownOwner=c.DropDownOwner;
-
-      l.draw_page=-1;
-      l.draw_length=-1;
-      l.draw_height=0;
-      l.paging_needs_update=true;
-      l.page_start_found=true;
-      l.init_page=c.Page;
-      l.in_measure=false;
-      l.displayed_items=c.DisplayedItems;
-      l.max_displayed_items=0;
-      l.display_mode=c.DisplayMode;
-      l.ListPagingChanged=npgl_ListPagingChanged;
-      l.ListPagingChanged();
-
-      ng_OverrideMethod(l,'IndexOf',npgl_IndexOf);
-
-      l.AddEvent(npgl_DoUpdateBefore,'DoUpdate');
-      l.AddEvent('OnKeyDown', npgl_OnKeyDown);
-      l.AddEvent('DoUpdate',npgl_DoUpdateAfter);
-      l.AddEvent('OnDrawItem', npgl_OnDrawItem);
-      l.AddEvent('OnExpanding', npgl_OnExpanding);
-      l.AddEvent('OnAdd', npgl_OnListChanged);
-      l.AddEvent('OnRemove', npgl_OnListChanged);
-    }
-    c.Page=0;
-  });
-  return c;
-}
-
 if(typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['list'] = {
   Lib: 'ng_controls',
@@ -6494,6 +4376,2125 @@ ngUserControls['list'] = {
 
   OnInit: function() {
 
+    function npgl_OnListChanged(list,it,parent)
+    {
+      if(!parent) list.ListPagingChanged();
+      return true;
+    }
+
+    function npgl_ListPagingChanged()
+    {
+      this.page_start=new Array();
+      this.page_start[0]=0;
+    }
+
+    function npgl_DoUpdate(o)
+    {
+      if(this.Controls.List.Enabled!=this.Enabled) // enabled is not in sync, fix it
+      {
+        for(var i in this.Controls)
+        {
+          if(typeof this.Controls[i].SetEnabled==='function') this.Controls[i].SetEnabled(this.Enabled);
+        }
+        if(this.Enabled) this.Controls.List.paging_needs_update=true;
+      }
+      return true;
+    }
+
+    function npgl_DoUpdateBefore(o)
+    {
+      if((this.update_cnt>0)||(this.ID=='')) return;
+      this.need_update=false;
+
+      var pl=this.Owner.Owner;
+      if(!pl) return false;
+
+      if((this.display_mode!=pl.DisplayMode) // Display mode changed
+        ||(pl.DisplayMode==plDisplayFixed)&&(this.displayed_items!=pl.DisplayedItems))
+      {
+        this.ListPagingChanged();
+      }
+
+      if(pl.DisplayMode==plDisplayFixed)
+      {
+        if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssAuto);
+      }
+
+      if(pl.TopIndex>=this.Items.length)
+      {
+    //  pl.LastPage();
+        pl.SetPage(pl.PageByIndex(pl.GetLength()));
+
+      }
+
+      if(this.draw_page!=pl.Page) // page changed
+      {
+        if(this.ContentElm) this.ContentElm.scrollTop=0;
+      }
+
+      var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
+      if((to)&&(to.parentNode))
+      {
+        var pgheight=ng_OuterHeight(to);
+        if(pl.PagingInside)
+        {
+          to.style.position='relative';
+          var bounds = { T:0, B: '' };
+          if(ngIExplorer6) bounds.R=2;
+          pl.Controls.Paging.SetBounds(bounds);
+          pl.Controls.List.SetBounds({B: 0});
+          this.draw_paging_height=pgheight;
+        }
+        else
+        {
+          to.style.position='absolute';
+          pl.Controls.Paging.SetBounds({ T:'', B: 0, R: 0 });
+          var pgvisible=pl.IsPagingVisible();
+          if((pl.Controls.Paging)&&(pl.Controls.Paging.Visible!=pgvisible))
+            pl.Controls.List.paging_needs_update=true;
+          pl.Controls.List.SetBounds({B: (pgvisible ? pgheight /*  pl.Controls.Paging.Bounds.H*/ : 0) });
+          if(to.parentNode == pl.Elm()) to=null;
+          this.draw_paging_height=0;
+        }
+        if(to)
+        {
+          this.draw_paging_elm=to.parentNode.removeChild(to);
+        }
+      }
+      else
+      {
+        this.draw_paging_height=0;
+        pl.Controls.List.SetBounds({B: 0});
+      }
+
+      this.Loading=false;
+      var fit=(pl.DisplayMode==plDisplayFit);
+      var ncnt=pl.DisplayedItems;
+      if(fit) {
+        ncnt=Math.max(this.max_displayed_items,ncnt);
+        var aih=ngVal(pl.GetAverageItemHeight(),0);
+        if(aih>0) {
+          var gcnt = Math.floor((ng_ClientHeight(o)-1)/aih);
+          if(gcnt>ncnt) ncnt=gcnt;
+        }
+        ncnt+=2;
+      }
+      else ncnt++;
+      if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt)) { this.Loading=true; return false; }
+      if(!this.draw_measure) {
+        if(!pl.NeedData(pl.TopIndex,ncnt))
+        {
+          if(pl.AsyncWaiting()) this.Loading=true;
+          return false;
+        }
+
+        if(fit) {
+          this.measure_loadto=pl.TopIndex+ncnt;
+        }
+      }
+      this.draw_measure=fit;
+      return true;
+    }
+
+    function npgl_GetAverageItemHeight()
+    {
+      var ih,mih;
+      var list=this.Controls.List;
+      if(list) {
+        ih=list.ItemHeight;
+        mih=list.MinItemHeight;
+      }
+      if(typeof ih==='undefined') ih=this.AverageItemHeight;
+      if((typeof mih!=='undefined')&&(ngVal(ih,0)<mih)) ih=mih;
+      return ih;
+    }
+
+    function npgl_getitemsperpage(max)
+    {
+      var ncnt=this.DisplayedItems;
+      if(this.DisplayMode==plDisplayFit) {
+        var list=this.Controls.List;
+        if(list) {
+          var maxh=ngVal(list.list_maxheight,0);
+          if((maxh>0)||(max)) {
+            var aih=ngVal(this.GetAverageItemHeight(),0);
+            if(aih>0) {
+              if((max)&&(!maxh)) {
+                // max possible items wanted, list was not rendered
+                // use full height of list (header and paging height are ignored)
+                var lo=list.Elm();
+                if(lo) maxh=ng_ClientHeight(lo);
+              }
+              if(maxh>0) ncnt=Math.floor(maxh/aih);
+            }
+          }
+          if((max)&&(list.max_displayed_items)) ncnt=Math.max(list.max_displayed_items, ncnt);
+        }
+      }
+      return ncnt;
+    }
+
+    function npgl_ItemsPerPage()
+    {
+      return this.getitemsperpage();
+    }
+
+    function npgl_DataRequestPerPage()
+    {
+      return this.getitemsperpage(true)+(this.DisplayMode==plDisplayFit ? 2 : 1);
+    }
+
+    function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
+    {
+      if(list.in_measure) return true;
+      var pl=list.Owner/*controls*/.Owner/*pagelist*/;
+      if(list.draw_measure)
+      {
+        list.draw_measure=false;
+
+        var o=list.Elm();
+        if(list.HasEmbededContent)
+        {
+          var del=1;
+          if(list.Columns.length>0) { del++; html.append('</table>'); }
+          html.append('</div>');
+          ng_SetInnerHTML(o,html.toString());
+          html.strings.splice(html.strings.length-del,del);
+          o=document.getElementById(list.ID+'_CB');
+        }
+        if(o)
+        {
+          var maxh = ng_ClientHeight(o)-1;
+
+          var hheight = 0, io;
+          var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) maxh-=p;
+          p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) maxh-=p;
+
+          var changed_height=false;
+          if((list.draw_height!=maxh)&&(list.draw_height>0))
+          {
+            list.max_displayed_items=0;
+            changed_height=true;
+            list.ListPagingChanged();
+          }
+          list.draw_height=maxh;
+
+          var scrollbars=false;
+
+          if(list.Columns.length>0) // Measure header
+          {
+            ng_SetInnerHTML(o,html.toString()+'</table>');
+            io=document.getElementById(list.ID+'_TB');
+            if(io) hheight=ng_OuterHeight(io);
+          }
+          maxh -= list.draw_paging_height;
+          maxh -= hheight;
+          list.list_maxheight=maxh;
+
+          var cnt=0;
+          var i,it,items,tmp_html,ih=0,l;
+          list.in_measure=true;
+          try {
+            for(i=pl.TopIndex;i<list.Items.length;i++)
+            {
+              tmp_html=new ngStringBuilder(html);
+
+              if(!pl.IsDataLoaded(i+1))
+              {
+                var lfrom=i+1;
+                var aih=ngVal(pl.GetAverageItemHeight(),0);
+                if((aih<=0)&&(cnt)) aih=(ih/cnt);
+                var lcnt=(aih>0 ? Math.floor(maxh/aih) : 0);
+                var dcnt=Math.max(this.max_displayed_items, pl.DisplayedItems)-(i-pl.TopIndex);
+                if(dcnt>lcnt) lcnt=dcnt;
+                if(lcnt<1) lcnt=1;
+                lcnt+=2;
+
+                if(pl.IsAsyncLoadingBlock(lfrom,lcnt)) list.Loading=true;
+                else {
+                  if(pl.LoadFullPage) {
+                    lcnt+=(lfrom-pl.TopIndex);
+                    lfrom=pl.TopIndex;
+                  }
+                  pl.DoLoadData(lfrom,lcnt);
+                }
+                if(lfrom+lcnt>list.measure_loadto) list.measure_loadto=lfrom+lcnt;
+              }
+
+              it=list.Items[i];
+              if(typeof it === 'undefined') it=new Object;
+
+              items=it.Items;
+              it.Items=undefined;
+              l=list.DrawItem(tmp_html, it, i, 0, false);
+              it.Items=items;
+
+              if(l.l>0) tmp_html.append('</tbody>');
+              if(list.Columns.length>0) tmp_html.append('</table>');
+              ng_SetInnerHTML(o,tmp_html.toString());
+
+              io=document.getElementById(list.ID+'_'+i);
+              if(io)
+              {
+                o.style.display='block';
+                h=ng_OuterHeight(io);
+                o.style.display=(this.Visible ? 'block' : 'none');
+              }
+              else h=0;
+
+              maxh-=h;
+              if(maxh<0) break;
+
+              ih+=h;
+              cnt++;
+              if((typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
+            }
+          } finally {
+            delete list.measure_loadto;
+            list.in_measure=false;
+            ng_SetInnerHTML(o,'');
+          }
+          if(i<list.Items.length) {
+            pl.DisplayedItems=cnt;
+            if(pl.DisplayedItems>this.max_displayed_items) this.max_displayed_items=pl.DisplayedItems;
+          }
+          else
+          {
+            if((cnt)&&(ih)) {
+              var aih=ngVal(pl.GetAverageItemHeight(),0);
+              if(aih<=0) aih=(ih/cnt);
+              pl.DisplayedItems=cnt+Math.floor(maxh/aih); // guess displayed items
+            }
+          }
+          if(pl.DisplayedItems<=0) pl.DisplayedItems=1;
+
+          if(this.displayed_items!=pl.DisplayedItems) { // number of displayed items changed
+            list.paging_needs_update=true;
+          }
+          if(changed_height)
+          {
+            var op=pl.Page;
+            if(!pl.TopIndex)
+            {
+              list.page_start_found=true;
+              list.page_start[0]=0;
+              pl.Page=0;
+            }
+            else // guess page no
+            {
+              var ipp=pl.ItemsPerPage();
+              if(ipp>0) pl.Page=Math.floor((pl.TopIndex+ipp-1)/ipp);
+            }
+            if(op!=pl.Page)
+            {
+              list.paging_needs_update=true;
+            }
+          }
+          if((!pl.TopIndex)||((pl.Page>0)&&(typeof list.page_start[pl.Page] !== 'undefined')))
+          {
+            var nti = pl.TopIndex+pl.DisplayedItems;
+            if((typeof pl.MaxLength === 'undefined') || (nti <= pl.MaxLength)){
+              list.page_start[pl.Page+1]=nti;
+            }
+          }
+
+          if(list.ContentElm) ng_SetScrollBars(list.ContentElm,scrollbars ? ssAuto : ssNone);
+        }
+      }
+      if(!level)
+      {
+        var pl=list.Owner/*controls*/.Owner/*pagelist*/;
+        if(list.draw_length!=list.Items.length) // items changed
+        {
+          list.paging_needs_update=true;
+        }
+        if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems))
+        {
+          list.Loading=true;
+          list.next_draw_itemidx=list.Items.length;
+          return false;
+        }
+
+        if(id<pl.TopIndex) list.next_draw_itemidx=pl.TopIndex;
+        if(id>=pl.TopIndex+pl.DisplayedItems) list.next_draw_itemidx=list.Items.length;
+        return ((id>=pl.TopIndex)&&(id<pl.TopIndex+pl.DisplayedItems));
+      }
+      return true;
+    }
+
+    function npgl_ShowNoData(v)
+    {
+      if((v)&&(this.OnShowNoData)) {
+        this.OnShowNoData(this);
+        return;
+      }
+      if((!v)&&(this.OnHideNoData)) {
+        this.OnHideNoData(this);
+        return;
+      }
+      if((typeof this.Controls.NoData === 'object')&&(typeof this.Controls.NoData.SetVisible === 'function')) {
+        if((v)&&(typeof this.Controls.NoData.SetText === 'function')) {
+          var txt;
+          if(this.OnNoDataText) {
+            txt=ngVal(this.OnNoDataText(this),'');
+          }
+          else {
+            txt=ngVal(this.NoDataText,'');
+            if(txt!='') txt=ngTxt(txt,txt);
+          }
+          if(txt!='') this.Controls.NoData.SetText(txt);
+          else v=false;
+        }
+        this.Controls.NoData.SetVisible(v);
+      }
+    }
+
+    function npgl_ShowLoading(v)
+    {
+      if((v)&&(this.OnShowLoading)) {
+        this.OnShowLoading(this);
+        return;
+      }
+      if((!v)&&(this.OnHideLoading)) {
+        this.OnHideLoading(this);
+        return;
+      }
+      if((typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
+    }
+
+    function npgl_DoUpdateAfter(o)
+    {
+      if((this.update_cnt>0)||(this.ID=='')) return;
+
+      this.draw_measure=false;
+      var pl=this.Owner.Owner;
+      if(!pl) return true;
+
+      if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems)) this.Loading=true;
+      if(pl.loading_displayed!=this.Loading)
+      {
+        pl.loading_displayed=this.Loading;
+        pl.ShowLoading(this.Loading ? true : false);
+      }
+      if(this.Loading)
+      {
+        pl.ShowNoData(false);
+        if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
+      }
+      else {
+        pl.ShowNoData(pl.IsDynamicData() ? (typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0) : (!this.Items.length));
+      }
+
+      if(this.draw_paging_elm)
+      {
+        if(pl.PagingInside)
+        {
+          if(this.ContentElm) this.ContentElm.appendChild(this.draw_paging_elm);
+        }
+        else
+        {
+          var io=pl.Elm();
+          if(io) io.appendChild(this.draw_paging_elm);
+        }
+        this.draw_paging_elm=null;
+      }
+      if((pl.PagingInside)&&(pl.Controls.Paging)) pl.Controls.Paging.SetVisible(!this.Loading && pl.IsPagingVisible());
+      if(this.paging_needs_update)
+      {
+        this.paging_needs_update=false;
+        pl.UpdatePaging();
+      }
+
+      this.draw_page=pl.Page;
+      this.draw_length=this.Items.length;
+      this.displayed_items=pl.DisplayedItems;
+      this.display_mode=pl.DisplayMode;
+      delete this.draw_paging_height;
+
+      if((this.init_page>0)&&((pl.DisplayMode==plDisplayFixed)||(!this.Loading)))
+      {
+        var p=this.init_page;
+        this.init_page=0;
+        pl.SetPage(p);
+      }
+      if((pl.AutoSelectFirstItem)&&(!pl.firstitemselected)&&(this.SelCount==0)&&(pl.IsDataLoaded(0)))
+      {
+        pl.firstitemselected=true;
+        this.SelectItem(this.Items[0]);
+      }
+
+      return true;
+    }
+
+    function npgl_OnExpanding(l,it)
+    {
+      var pl=this.Owner.Owner;
+      if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssAuto);
+      var to=(ngIExplorerVersion==7 && pl && pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
+      if(to) // IE7 fix
+      {
+        to.style.display='none';
+        to.style.display='block';
+      }
+      return true;
+    }
+
+    function npgl_SetPage(p)
+    {
+      p=parseInt(p,10);
+      if((isNaN(p))||((p<0)&&(p!=plFirstPage)&&(p!=plLastPage))) return;
+      if((p!=this.Page)||(this.TopIndex===999999999))
+      {
+        if((p===plFirstPage)&&(this.TopIndex===0)) return;
+        if(this.TopIndex===999999999) this.TopIndex=0;
+        var needupdate=false;
+        var list=this.Controls.List;
+        if((this.OnPageChanging)&&(!ngVal(this.OnPageChanging(this,p),false))) return;
+
+        var op=this.Page;
+        var pti=this.TopIndex;
+
+        if(p==plFirstPage)
+        {
+          this.TopIndex=0;
+          list.page_start[0]=0;
+          p=0;
+        }
+        else
+          switch(p-op)
+          {
+            case 1: // next page
+              var ti=list.page_start[p];
+              var oti=list.page_start[op];
+              if((list.page_start_found)&&(typeof ti!=='undefined')&&(typeof oti!=='undefined')) { this.TopIndex=ti; list.page_start_found=true; }
+              else
+              {
+                list.page_start_found=false;
+                this.TopIndex+=this.DisplayedItems;
+                if(oti != 'undefined') list.page_start[p]=this.TopIndex;
+              }
+              break;
+            case -1: // prev page
+              var ti=list.page_start[p];
+              var oti=list.page_start[op];
+              if((list.page_start_found)&&(typeof ti!=='undefined')&&(typeof oti!=='undefined')) { this.TopIndex=ti; list.page_start_found=true; }
+              else
+              {
+                list.page_start_found=false;
+                this.TopIndex-=this.ItemsPerPage();
+              }
+              if(this.TopIndex<0) this.TopIndex=0;
+              break;
+            default: // any page
+              var len=this.GetLength();
+              if((p==plLastPage)&&((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined')))
+              {
+                p=this.PageByIndex(len);
+              }
+              for(var q=0;q<2;q++)
+              {
+                if(p!=plLastPage)
+                {
+                  var ti=list.page_start[p];
+                  if(typeof ti!=='undefined') { this.TopIndex=ti; list.page_start_found=true; }
+                  else
+                  {
+                    var i=0,s=0;
+                    if(this.DisplayMode!=plDisplayFixed)
+                    {
+                      var sp=-1;
+                      for(i in list.page_start)
+                      {
+                        if((i>sp)&&(i<=p)&&(typeof list.page_start[i] !== 'undefined')) sp=i;
+                      }
+                      if(sp>=0)
+                      {
+                        s=list.page_start[sp];
+                        i=sp;
+                      }
+                      else i=0;
+    /*                  for(i=p-1;i>0;i--)
+                      {
+                        if(typeof list.page_start[i] !== 'undefined')
+                        {
+                          s=list.page_start[i];
+                          break;
+                        }
+                      }*/
+                    }
+                    var ap=(p-i);
+
+                    this.TopIndex=s;
+                    if(ap>0){this.TopIndex += ap*this.ItemsPerPage();}
+                    list.page_start_found=false;
+                  }
+                }
+                else this.TopIndex=999999999; // dynamic data, determine items count
+                if((p==plLastPage)||((this.TopIndex>0)&&(this.TopIndex>=list.Items.length)))
+                {
+                  if(!this.AsyncWaiting()) this.async_datapage=(p==plLastPage ? op : p);
+                }
+                this.NeedData(this.TopIndex,Math.max(list.max_displayed_items, this.DisplayedItems)+((this.DisplayMode==plDisplayFit) ? 2 : 1));
+                if(!this.AsyncWaiting()) delete this.async_datapage;
+                if(p==plLastPage) {
+                  pti=999999999;
+                  needupdate=true;
+                  p=this.PageByIndex(len);
+                  break;
+                }
+                if((this.TopIndex>0)&&(this.TopIndex>=len))
+                  p=this.PageByIndex(len);
+                else break;
+              }
+              break;
+          }
+        if(this.TopIndex>=list.Items.length) { this.TopIndex=pti; p=op; }
+        if(p<0) p=0;
+        if(!this.TopIndex) { list.page_start[0]=0; list.page_start_found=true; }
+        else if((!p)&&(this.TopIndex>0)) p=1;
+
+        this.Page=p;
+        this.UpdatePaging();
+
+        if((pti!=this.TopIndex)||(needupdate)) list.Update();
+        if(this.OnPageChanged) this.OnPageChanged(this,op);
+      }
+    }
+
+    function npgl_SetPagingType(pt, update)
+    {
+      if(typeof pt!=='undefined')
+      {
+        if(pt==this.PagingType) return;
+        this.PagingType=pt;
+      }
+      else pt=this.PagingType;
+
+      if(pt==plPagingUser) return;
+      var c;
+      var changed=false, update_paging=false;
+      var first=((pt & plPaging_First)!=0);
+      var prev=((pt & plPaging_Prev)!=0);
+      var pageno=((pt & plPaging_PageNo)!=0);
+      var pages=((pt & plPaging_Pages)!=0);
+      var next=((pt & plPaging_Next)!=0);
+      var last=((pt & plPaging_Last)!=0);
+      var hidedisabled=((pt & plPaging_HideDisabled)!=0);
+
+      c=this.Controls.FirstPage; if((c)&&(c.InitVisible!=first)) { c.InitVisible=first; changed=true; }
+      c=this.Controls.PrevPage;  if((c)&&(c.InitVisible!=prev)) { c.InitVisible=prev; changed=true; }
+      c=this.Controls.NextPage;  if((c)&&(c.InitVisible!=next)) { c.InitVisible=next; changed=true; }
+      c=this.Controls.LastPage;  if((c)&&(c.InitVisible!=last)) { c.InitVisible=last; changed=true; }
+      c=this.Controls.PageNo;    if((c)&&(c.InitVisible!=pageno)) { c.InitVisible=pageno; changed=true; update_paging=true; }
+      if(this.PagesVisible != pages) { this.PagesVisible = pages; update_paging=true; changed=true; }
+
+      if(this.PagingHideDisabled!=hidedisabled) { this.PagingHideDisabled=hidedisabled; changed=true; }
+      if((changed)&&(ngVal(update,true)))
+      {
+        if((update_paging)&&(this.Controls.List)) this.Controls.List.paging_needs_update=true;
+        this.Update();
+      }
+    }
+
+    function npgl_IsPagingVisible()
+    {
+      var v=false;
+      if((!this.Controls.List)||((this.Controls.List.Loading)&&(this.PagingInside))) return v;
+      switch(this.DisplayPaging)
+      {
+        case plDisplayPagingAlways: v=true; break;
+        case plDisplayPagingNotEmpty: v=(this.Controls.List)&&(this.GetLength()>0); break;
+        case plDisplayPagingMorePages: v=(this.Controls.List)&&((this.Page>0)||(this.IsNextPageAvailable())); break;
+      }
+      return v;
+    }
+
+    function npgl_IsPrevPageAvailable()
+    {
+      return (this.TopIndex>0);
+    }
+
+    function npgl_IsNextPageAvailable()
+    {
+      if((this.IsDynamicData())&&(typeof this.MaxLength === 'undefined')) return true;
+      return (this.TopIndex+this.DisplayedItems<this.GetLength());
+    }
+
+    function npgl_UpdatePaging()
+    {
+      var s;
+      var pginfo = {
+        PageNo: ''+(this.Page+1),
+        PrevPage:  this.IsPrevPageAvailable(),
+        NextPage:  this.IsNextPageAvailable(),
+        PagingVisible: this.IsPagingVisible(),
+        PagingTo: this.Page+ngVal(this.PagingLookout,Math.floor((this.PagingSize-1)/2)),
+        Update: false
+      };
+      pginfo.FirstPage=pginfo.PrevPage;
+      pginfo.LastPage=pginfo.NextPage;
+      if(this.PagingInside) pginfo.Update=true;
+
+      var ms=ngVal(this.PagingMinSize,0);
+      if((ms)&&(pginfo.PagingTo<ms)) pginfo.PagingTo=ms-1;
+      if(pginfo.PagingTo<0) pginfo.PagingTo=0;
+
+      if((!this.IsDynamicData())||(typeof this.MaxLength !== 'undefined'))
+      {
+        var numitems=this.GetLength();
+        var ipp=this.ItemsPerPage();
+        while(pginfo.PagingTo>this.Page) // remove pages over last page
+        {
+          s=this.Controls.List.page_start[pginfo.PagingTo];
+          if(typeof s==='undefined') {
+            s=this.TopIndex+(pginfo.PagingTo-this.Page)*ipp;
+          }
+          if(s<numitems) break;
+          pginfo.PagingTo--;
+        }
+      }
+      pginfo.PagingFrom=pginfo.PagingTo-this.PagingSize;
+
+      if((this.OnPagingUpdating)&&(!ngVal(this.OnPagingUpdating(this,pginfo),false))) return;
+
+      if(this.Controls.Paging)
+      {
+        var v=pginfo.PagingVisible;
+        if(v!=this.Controls.Paging.Visible)
+        {
+          this.Controls.Paging.SetVisible(v);
+          if(!this.PagingInside) this.Controls.List.SetBounds({B: (v ? (typeof this.draw_paging_height !== 'undefined' ? this.draw_paging_height : ng_OuterHeight(this.Controls.Paging.Elm())) /*this.Controls.Paging.Bounds.H*/ : 0) });
+        }
+      }
+
+      var e,c,v;
+      // update FirstPage
+      c=this.Controls.FirstPage;
+      if(c)
+      {
+        e=pginfo.FirstPage;
+        c.SetEnabled(this.Enabled && e);
+        if(this.PagingType!=plPagingUser)
+        {
+          v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
+          if(c.Visible!=v) pginfo.Update=true;
+          c.SetVisible(v);
+        }
+      }
+      // update PrevPage
+      c=this.Controls.PrevPage;
+      if(c)
+      {
+        e=pginfo.PrevPage;
+        c.SetEnabled(this.Enabled && e);
+        if(this.PagingType!=plPagingUser)
+        {
+          v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
+          if(c.Visible!=v) pginfo.Update=true;
+          c.SetVisible(v);
+        }
+      }
+      // update NextPage
+      c=this.Controls.NextPage;
+      if(c)
+      {
+        e=pginfo.NextPage;
+        c.SetEnabled(this.Enabled && e);
+        if(this.PagingType!=plPagingUser)
+        {
+          v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
+          if(c.Visible!=v) pginfo.Update=true;
+          c.SetVisible(v);
+        }
+      }
+      // update LastPage
+      c=this.Controls.LastPage;
+      if(c)
+      {
+        e=pginfo.LastPage;
+        c.SetEnabled(this.Enabled && e);
+        if(this.PagingType!=plPagingUser)
+        {
+          v=(c.InitVisible && (e || (!this.PagingHideDisabled)));
+          if(c.Visible!=v) pginfo.Update=true;
+          c.SetVisible(v);
+        }
+      }
+      // update PageNo
+      c=this.Controls.PageNo;
+      if(c)
+      {
+        if(this.PagingType!=plPagingUser) c.SetVisible(c.InitVisible);
+        if(c.Text!=pginfo.PageNo) { c.Text=pginfo.PageNo; if(c.Visible) pginfo.Update=true; }
+      }
+
+      // update paging
+      var checked,pg=pginfo.PagingTo;
+      if(pginfo.PagingFrom<0) pginfo.PagingFrom=0;
+      for(var i=this.PagingSize-1;i>=0;i--)
+      {
+        c=this.Controls['Page'+i];
+        if((!c)||(typeof c==='undefined')) continue;
+        txt=''+(pg+1);
+        if(c.Text!=txt) { c.Text=txt; pginfo.Update=true; }
+        c.Page=pg;
+        checked=((pg==this.Page) ? 1 : 0);
+        v=(this.PagesVisible && (pg>=pginfo.PagingFrom));
+        if(c.Checked!=checked) { c.Checked=checked; if(v) pginfo.Update=true; }
+        c.SetVisible(v);
+        pg--;
+      }
+      if((this.OnPagingUpdated)&&(!ngVal(this.OnPagingUpdated(this,pginfo),false))) return;
+
+      if((pginfo.Update)&&(this.Controls.Paging)) { this.Controls.Paging.Update(); return true; }
+      return false;
+    }
+
+    function npgl_FirstPage()
+    {
+      this.SetPage(plFirstPage);
+    }
+
+    function npgl_NextPage()
+    {
+      this.SetPage(this.Page+1);
+    }
+
+    function npgl_PrevPage()
+    {
+      this.SetPage(this.Page-1);
+    }
+
+    function npgl_LastPage()
+    {
+      this.SetPage(plLastPage);
+    }
+
+    function npgl_PageByIndex(idx)
+    {
+      var d,pgstart=0,pg=0;
+      var list=this.Controls.List;
+      if(!list) return 0;
+      if(idx<0) idx=0;
+      var len=this.GetLength();
+      if(idx>=len) idx=len-1;
+      if(this.DisplayMode!=plDisplayFixed)
+      {
+        var d,mind=100000;
+        for(var i in list.page_start)
+        {
+          s=list.page_start[i];
+          if(typeof s!=='undefined')
+          {
+            d=Math.abs(s-idx);
+            if(d<mind) { mind=d; pg=parseInt(i,10); pgstart=parseInt(s,10); }
+          }
+        }
+      }
+      var ni=(idx-pgstart);
+      if(ni>0) {
+        var ipp=this.ItemsPerPage();
+        if(ipp>0)
+        {
+          d=Math.floor(ni/ipp);
+          pg+=d;
+        }
+      }
+      return pg;
+    }
+
+    function npgl_OnKeyDown(e)
+    {
+      switch(e.keyCode)
+      {
+        case 33:
+        {
+          var pl=e.Owner.Owner.Owner;
+          if((pl)&&(pl.KeyEvents)) pl.PrevPage();
+          return false;
+        }
+        case 34:
+        {
+          var pl=e.Owner.Owner.Owner;
+          if((pl)&&(pl.KeyEvents)) pl.NextPage();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function npgl_PageButtonClick(e)
+    {
+      var pg=e.Owner.Page;
+      if(typeof pg !== 'undefined') e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.SetPage(pg);
+    }
+
+    function npgl_NeedData(idx,cnt)
+    {
+      var list=this.Controls.List;
+      if((!list)||(cnt<=0)) return true;
+
+      if(idx>=list.Items.length)
+      {
+        if(this.LoadFullPage) {
+          if(idx>this.TopIndex) {
+            cnt+=idx-this.TopIndex;
+            idx=this.TopIndex;
+          }
+        }
+        return this.DoLoadData(idx,cnt);
+      }
+      var lfrom,lcnt;
+      for(var i=0;(i<cnt)&&(idx+i<=list.Items.length);i++)
+      {
+        if(!this.IsDataLoaded(idx+i))
+        {
+          lfrom=idx+i;
+          lcnt=cnt-i;
+          if(this.LoadFullPage) {
+            if(lfrom>this.TopIndex) {
+              lcnt+=lfrom-this.TopIndex;
+              lfrom=this.TopIndex;
+            }
+          }
+          if(!this.DoLoadData(lfrom,lcnt)) return false;
+          if(this.AsyncData) break;
+        }
+      }
+      return true;
+    }
+
+    function npgl_IsDynamicData()
+    {
+      return ((this.OnLoadData)||(this.AsyncDataURL!=''))&&((!this.InDesignMode)||(this.DesignLive));
+    }
+
+    function npgl_IsDataLoaded(idx)
+    {
+      if(!this.IsDynamicData()) return true;
+
+      var list=this.Controls.List;
+      if(!list) return true;
+
+      if(this.OnIsDataLoaded) return this.OnIsDataLoaded(this,list,idx);
+
+      if(idx<0) return true;
+      if(idx>=list.Items.length) return false;
+
+      // if caching is disabled or loading of full pages is enabled, anything outside current view is not loaded (up-to-date)
+      if(((!this.CacheData)||(this.LoadFullPage))
+        &&((idx<this.TopIndex)
+        ||(idx>=(typeof list.measure_loadto!=='undefined' ? list.measure_loadto :
+                (this.DisplayMode==plDisplayFit ? 0 :
+                  this.TopIndex+this.DisplayedItems))))) return false;
+
+      var it=list.Items[idx];
+      if(typeof it==='undefined') return false;
+      for(var i in it) // if any property exists data loaded
+      {
+        return true;
+      }
+      return false;
+    }
+
+    function npgl_InvalidateData(idx, cnt)
+    {
+      var list=this.Controls.List;
+      if(!list) return;
+
+      if(typeof idx === 'undefined')
+      {
+        idx=0;
+        cnt=list.Items.length;
+      }
+      if(typeof cnt==='undefined') return;
+
+      if(this.IsDynamicData())
+      {
+        if((!this.OnInvalidateData)||(ngVal(this.OnInvalidateData(this,idx,cnt),false)))
+        {
+          if(idx<list.Items.length)
+            for(var i=0;(i<cnt)&&(idx+i<=list.Items.length);i++)
+            {
+              list.do_remove(list.Items[idx+i],list);
+              delete list.Items[idx+i];
+            }
+        }
+
+        if(!this.IsAsyncLoadingBlock(idx, cnt))
+        {
+          var to=idx+cnt;
+          if(!this.AsyncWaiting())
+          {
+            var lato=this.last_asyncdata_index+this.last_asyncdata_count;
+            if(!((idx<this.last_asyncdata_index)&&(to<this.last_asyncdata_index))||((idx>=lato)&&(to>=lato)))
+            {
+              this.last_asyncdata_index=-1;
+              this.last_asyncdata_count=0;
+            }
+          }
+        }
+      }
+      var ato=this.TopIndex+this.DisplayedItems;
+      if(!((idx<this.TopIndex)&&(to<this.TopIndex))||((idx>=ato)&&(to>=ato))) list.Update();
+    }
+
+
+
+    function npgl_AsyncTimeout(lid)
+    {
+      var l=ngGetControlById(lid, 'ngPanel');
+      if(l)
+      {
+        if(l.async_datatimeout_timer) clearTimeout(l.async_datatimeout_timer);
+        l.async_datatimeout_timer=null;
+        if(l.AsyncWaiting())
+        {
+          l.DoLoadData(l.async_dataindex,l.async_datacount,true); // retry load
+          if(l.async_datatimeout_retry<0) // no more attempts, set empty data
+            l.SetAsyncData(l.async_dataindex, new Array());
+        }
+      }
+    }
+
+    function npgl_Refresh()
+    {
+      var undefined;
+      this.MaxLength = undefined;
+      this.InvalidateData(this.TopIndex,this.DisplayedItems);
+    }
+
+    function npgl_GetRPC()
+    {
+      if(!this.IsDynamicData()) return null;
+      if(!this.async_rpc)
+      {
+        this.async_rpc=new ngRPC(this.ID);
+        this.async_rpc.nocache=true;
+      }
+      return this.async_rpc;
+    }
+
+    function npgl_DoLoadData(idx,cnt,retry)
+    {
+      if(!this.IsDynamicData()) return true;
+
+      var list=this.Controls.List;
+      if(!list)
+      {
+        this.async_datatimeout_retry=-1;
+        return false;
+      }
+
+      if(typeof this.MaxLength !== 'undefined')
+      {
+        if(idx>this.MaxLength) cnt=0;
+        else if(idx+cnt>this.MaxLength) cnt=this.MaxLength-idx;
+      }
+
+      if((typeof cnt === 'undefined')||(cnt<1))
+      {
+        this.async_datatimeout_retry=-1;
+        return true;
+      }
+
+      if((typeof this.MinDataBatch!=='undefined')&&(cnt<this.MinDataBatch)) {
+        cnt=this.MinDataBatch;
+      }
+
+      var lato=this.last_asyncdata_index+this.last_asyncdata_count;
+      var ato=idx+cnt;
+      if((idx>=this.last_asyncdata_index)&&(idx<lato)&&(ato>=this.last_asyncdata_index)&&(ato<=lato))
+      {
+        this.async_datatimeout_retry=-1;
+        return true; // data was already loaded during last load data
+      }
+
+      if((this.async_dataindex==idx)&&(this.async_datacount==cnt)&&(ngVal(retry,false)))
+      {
+        this.async_datatimeout_retry--;
+        if(this.async_datatimeout_retry<0) // no more retry, data loading failed
+        {
+          this.async_datatimeout_retry=-1;
+          return true;
+        }
+        this.async_dataindex = undefined;
+        this.async_datacount = undefined;
+      }
+      else if(!this.AsyncWaiting()) this.async_datatimeout_retry=this.AsyncDataRetryCnt;
+
+      if(this.AsyncData)
+      {
+        if(this.AsyncWaiting()) return false;
+
+        this.async_dataindex = idx;
+        this.async_datacount = cnt;
+
+        // Set timeout timer
+        if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+        this.async_datatimeout_timer=null;
+        if((this.AsyncDataTimeout>0)&&(this.async_datatimeout_retry>=0))
+          this.async_datatimeout_timer=setTimeout("npgl_AsyncTimeout('"+this.ID+"');",this.AsyncDataTimeout*1000);
+      }
+
+      var data;
+      if(this.OnLoadData) data=this.OnLoadData(this,list,idx,cnt);
+      else
+      {
+        var rpc=this.GetRPC();
+        if(rpc){
+          var url=this.AsyncDataURL;
+          url=ng_AddURLParam(url,'id='+ng_URLEncode(this.ID)+'&i='+idx+'&c='+cnt);
+          if((typeof ngApp==='object')&&(ngApp)) url=ng_AddURLParam(url,'lang='+ngApp.Lang);
+          if(this.OnAsyncURLRequest) url=this.OnAsyncURLRequest(this,url,idx,cnt);
+          if(url!='') rpc.sendRequest(url);
+        }
+      }
+      if((typeof data==='object')&&(data))
+      {
+        this.async_dataindex = undefined;
+        this.async_datacount = undefined;
+
+        if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+        this.async_datatimeout_timer=null;
+
+        var j;
+        if((data.length>=0)&&(data.length<cnt)) // trim length if not enough data
+        {
+          this.SetLength(idx+data.length);
+        }
+        for(var i=0;i<data.length;i++)
+        {
+          j=i+idx;
+          if(j>=list.Items.length)
+          {
+            list.Items.length=j;
+            if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
+          }
+          if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
+        }
+      }
+      return true;
+    }
+
+    function npgl_AsyncWaiting()
+    {
+      return (ngVal(this.async_dataindex,-1)>=0);
+    }
+
+    function npglSetAsyncDataCallback(lid, idx, data, length)
+    {
+      var l=ngGetControlById(lid, 'ngPanel');
+      if(!l) return false;
+      if((typeof length!=='undefined')&&(length!==null)) l.SetLength(length);
+      l.SetAsyncData(idx,data);
+      return true;
+    }
+
+    function npgl_SetAsyncData(idx, data)
+    {
+      if(!this.AsyncWaiting()) return;
+      var list=this.Controls.List;
+      if(!list) return;
+
+      var changed=false;
+      idx=ngVal(idx,this.async_dataindex);
+      if((this.OnSetAsyncData)&&(!ngVal(this.OnSetAsyncData(this, idx, data),false))) return;
+      if((typeof data==='object')&&(data)&&(idx!=999999999)) // data available and not length detection
+      {
+        var j;
+        var asynclast=this.async_dataindex+this.async_datacount;
+        list.BeginUpdate();
+        try {
+          if((idx==this.async_dataindex)&&(data.length>=0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
+          {
+            this.SetLength(idx+data.length);
+            changed=true;
+          }
+          for(var i=0;i<data.length;i++)
+          {
+            j=i+idx;
+            if(j>=list.Items.length)
+            {
+              list.Items.length=j;
+              if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
+            }
+            if(typeof data[i] !== 'undefined')
+            {
+              list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
+              if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
+            }
+          }
+        }
+        finally {
+          if(changed) list.need_update=false;
+          list.EndUpdate();
+        }
+      }
+      idx=this.async_dataindex;
+      var cnt=this.async_datacount;
+
+      // check if all required data are filled
+      if(!changed)
+        for(var i=0;(i<cnt)&&(idx+i<list.Items.length);i++)
+        {
+          if(!this.IsDataLoaded(idx+i)) return;
+        }
+
+      idx=this.async_dataindex;
+      if((this.IsAsyncLoadingBlock(this.TopIndex,this.DisplayedItems))||(this.List.Loading)) changed=true;
+
+      this.last_asyncdata_index=this.async_dataindex;
+      this.last_asyncdata_count=this.async_datacount;
+
+      // Clear timeout timer
+      if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+      this.async_datatimeout_timer=null;
+
+      this.async_dataindex=undefined;
+      this.async_datacount=undefined;
+      if(typeof this.async_datapage!=='undefined') // request was beyond length
+      {
+        var p=this.async_datapage;
+        var len=this.GetLength();
+        if(idx>=len) p=this.PageByIndex(len);
+        delete this.async_datapage;
+        if(this.Page!=p)
+        {
+          this.SetPage(p);
+          return;
+        }
+      }
+      if((typeof data!=='object')||(changed)) list.Update();
+    }
+
+    function npgl_SetLength(l)
+    {
+      if(this.OnSetLength) l=this.OnSetLength(this,l);
+      var list=this.Controls.List;
+      if(list) list.paging_needs_update=true;
+
+      if(!this.IsDynamicData()) // not dynamic data, adjust list length
+      {
+        if(typeof l === 'undefined') return;
+        if(list) list.Items.length=l;
+      }
+      else
+      {
+        this.MaxLength=l;
+        if(typeof l === 'undefined') return;
+        if((list)&&(l<list.Items.length)) list.Items.length=l;
+      }
+    }
+
+    function npgl_GetLength()
+    {
+      if((this.IsDynamicData())&&(typeof this.MaxLength !== 'undefined')) return this.MaxLength;
+      var list=this.Controls.List;
+      return (list ? list.Items.length : 0);
+    }
+
+    function npgl_IsAsyncLoadingBlock(idx, cnt)
+    {
+      if(!this.AsyncWaiting()) return false;
+      var to=idx+cnt;
+      var ato=this.async_dataindex+this.async_datacount;
+      return (!((idx<this.async_dataindex)&&(to<this.async_dataindex))||((idx>=ato)&&(to>=ato)));
+    }
+
+    function npgl_IndexOf(it, parent)
+    {
+      var pl=this.Owner.Owner;
+      if(pl)
+      {
+        var list=parent;
+        if((!list)||(list==this))
+        {
+          for(var i=pl.TopIndex;(i<pl.TopIndex+pl.DisplayedItems)&&(i<this.Items.length);i++)
+            if(this.Items[i]==it) return i;
+        }
+      }
+      return this.IndexOf.callParent(it,parent);
+    }
+
+    function npgl_Reset(doclear)
+    {
+      var list=this.Controls.List;
+      if(list) list.BeginUpdate();
+      try {
+        delete this.firstitemselected;
+        this.MaxLength = undefined;
+        this.async_dataindex = undefined;
+        this.async_datacount = undefined;
+        this.last_asyncdata_index=-1;
+        this.last_asyncdata_count=0;
+
+        if(list) list.ClearSelected();
+        this.FirstPage();
+        this.InvalidateData();
+      }
+      finally {
+        if(list)
+        {
+          list.max_displayed_items=0;
+          if(ngVal(doclear,false)) list.Clear();
+          list.EndUpdate();
+        }
+      }
+    }
+
+    function npgl_GetPageTopItems()
+    {
+      var items=new Array();
+      var list=this.Controls.List;
+      for(var i=this.TopIndex;(i<this.TopIndex+this.DisplayedItems)&&(i<list.Items.length);i++)
+      {
+        if(i<0) continue;
+        items[items.length]=list.Items[i];
+      }
+      return items;
+    }
+
+    function npgl_ScanPageItems(fnc, recursive, userdata)
+    {
+      if(typeof fnc !== 'function') return false;
+      var list=this.Controls.List;
+      for(var i=this.TopIndex;(i<this.TopIndex+this.DisplayedItems)&&(i<list.Items.length);i++)
+      {
+        if(i<0) continue;
+
+        if(!fnc(this, list.Items[i], list, userdata)) return false;
+        if((ngVal(recursive,true))&&(!list.Scan(fnc, list.Items[i], userdata))) return false;
+      }
+      return true;
+    }
+
+
+    function npgl_ScanVisiblePageItems(fnc, recursive, userdata)
+    {
+      if(typeof fnc !== 'function') return false;
+      var list=this.Controls.List;
+      for(var i=this.TopIndex;(i<this.TopIndex+this.DisplayedItems)&&(i<list.Items.length);i++)
+      {
+        if(i<0) continue;
+
+        var pi=list.Items[i];
+        if(typeof pi === 'undefined') continue;
+        if(!ngVal(pi.Visible,true)) continue;
+        if(!fnc(this, pi, list, userdata)) return false;
+
+        if((ngVal(pi.Collapsed,false))||(typeof pi.Items === 'undefined')||(!pi.Items.length)) continue;
+        if((ngVal(recursive,true))&&(!list.ScanVisible(fnc, pi, userdata))) return false;
+      }
+      return true;
+    }
+
+    function npgl_DoDropDown(edit)
+    {
+      this.SetVisible(true);
+      var l=this.List;
+      if(l) {
+        l.DropDownOwner=this.DropDownOwner;
+        l.DoDropDown.apply(l,arguments);
+
+        var it=l.DropDownOwnerListItem;
+        if((it)&&(l.Items)&&(l.Items.length)) {
+          var idx=-1;
+          for(var i=0;i<l.Items.length;i++) {
+            if(l.Items[i]===it) { idx=i; break; }
+            if(ng_IsArrayVar(l.Items[i].Items)) {
+              l.Scan(function(l, lit, items) {
+                if(lit===it) { idx=i; return false; }
+                return (idx<0);
+              });
+              if(idx>=0) break;
+            }
+          }
+          if(idx>=0) {
+            this.SetPage(this.PageByIndex(idx));
+          }
+        }
+      }
+    }
+
+    function npgl_DoDropDownFinished(edit) {
+      if(this.List) return this.List.DoDropDownFinished.apply(this.List,arguments);
+    }
+
+    function npgl_SelectDropDownItem(it) {
+      if(this.List) return this.List.SelectDropDownItem.apply(this.List,arguments);
+    }
+
+    function npgl_SelectDropDownItemWithFocus(it) {
+      if(this.List) return this.List.SelectDropDownItemWithFocus.apply(this.List,arguments);
+    }
+
+    /**
+     *  Class: ngPageList
+     *  This class implements <ngPageList> control (based on component <ngFrame>)
+     */
+    function Create_ngPageList(def, ref, parent)
+    {
+      var undefined;
+      ng_MergeDef(def, {
+        Data: {
+          PagingSize: 5
+        },
+        Controls : {
+          List: {
+            Type: 'ngList',
+            style: { border: '0px' },
+            L: 0, T: 0, R: 0, B: 24
+          },
+          Paging: {
+            Type: 'ngToolBar',
+            L:0, B: 0, R: 0, H: 24,
+            Data: {
+              Visible: false
+            },
+            Controls: {
+              FirstPage: {
+                Type: 'ngButton',
+                Data: {
+                  Text: '|<'
+                },
+                Events: {
+                  OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.FirstPage(); }
+                }
+              },
+              PrevPage: {
+                Type: 'ngButton',
+                Data: {
+                  Text: '<'
+                },
+                Events: {
+                  OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.PrevPage(); }
+                }
+              },
+              PageNo: {
+                Type: 'ngEdit',
+                W: 30,
+                Data: {
+                  Text: '1',
+                  TextAlign: 'center'
+                },
+                Events: {
+                  OnKeyDown: function(e) { if(e.keyCode==13) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.SetPage(parseInt(e.Owner.GetText())-1,10); return false; } return true; }
+                }
+              },
+              Page0: {
+                Type: 'ngButton',
+                Data: {
+                  Text: '1',
+                  TextAlign: 'center'
+                },
+                Events: {
+                  OnClick: npgl_PageButtonClick
+                }
+              },
+              NextPage: {
+                Type: 'ngButton',
+                Data: {
+                  Text: '>'
+                },
+                Events: {
+                  OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.NextPage(); }
+                }
+              },
+              LastPage: {
+                Type: 'ngButton',
+                Data: {
+                  Text: '>|'
+                },
+                Events: {
+                  OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.LastPage(); }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Create paging
+      var pgsize=ngVal(def.Data.PagingSize,5);
+      if(pgsize<0) pgsize=1;
+
+      for(var i=1;i<pgsize;i++)
+      {
+        if((typeof def.Controls.Paging!=='object')||(!def.Controls.Paging)) continue;
+        var bdef=new Object;
+        bdef['Page'+i]=def.Controls.Paging.Controls.Page0;
+        ng_MergeDef(def.Controls.Paging.Controls, bdef);
+      }
+
+      var c=ngCreateControlAsType(def, 'ngFrame', ref, parent);
+      if(!c) return c;
+      /*
+      *  Group: Properties
+      */
+      /*  Variable: DisplayMode
+      *  ...
+      *  Type: int
+      *  Default value: *plDisplayFit*
+      */
+      c.DisplayMode = plDisplayFit;
+
+      /*  Variable: PagingType
+      *  ...
+      *  Type: int
+      *  Default value: *plPagingSimple*
+      */
+      c.PagingType = plPagingSimple;
+      /*  Variable: PagingSize
+      *  ...
+      *  Type: int
+      *  Default value: *5*
+      */
+      c.PagingSize=pgsize;
+
+      /*  Variable: PagingMinSize
+      *  ...
+      *  Type: int
+      */
+      c.PagingMinSize=undefined;
+
+      /*  Variable: PagingLookout
+      *  ...
+      *  Type: int
+      */
+      c.PagingLookout = undefined;
+
+      /*  Variable: PagingInside
+      *  ...
+      *  Type: bool
+      *  Default value: *true*
+      */
+      c.PagingInside = true;
+
+      /*  Variable: PagingHideDisabled
+      *  ...
+      *  Type: bool
+      *  Default value: *false*
+      */
+      c.PagingHideDisabled = false;
+      /*  Variable: DisplayPaging
+      *  ...
+      *  Type: int
+      *  Default value: *plDisplayPagingMorePages*
+      */
+      c.DisplayPaging=plDisplayPagingMorePages;
+
+      /*  Variable: KeyEvents
+      *  ...
+      *  Type: bool
+      *  Default value: *true*
+      */
+      c.KeyEvents=true;
+
+      /*  Variable: AutoSelectFirstItem
+      *  ...
+      *  Type: bool
+      *  Default value: *false*
+      */
+      c.AutoSelectFirstItem=false;
+
+      /*  Variable: Page
+      *  ...
+      *  Type: int
+      *  Default value: *0*
+      */
+      c.Page=0;
+
+      /*  Variable: TopIndex
+      *  ...
+      *  Type: int
+      *  Default value: *0*
+      */
+      c.TopIndex=0;
+      /*  Variable: DisplayedItems
+      *  ...
+      *  Type: int
+      *  Default value: *10*
+      */
+      c.DisplayedItems=10;
+
+      /*  Variable: AverageItemHeight
+      *  ...
+      *  Type: int
+      *  Default value: *undefined*
+      */
+      c.AverageItemHeight = undefined;
+
+      /*  Variable: MaxLength
+      *  ...
+      *  Type: int
+      *  Default value: *undefined*
+      */
+      c.MaxLength=undefined;
+
+      /*  Variable: CacheData
+      *  ...
+      *  Type: bool
+      *  Default value: *true*
+      */
+      c.CacheData = true;
+      /*  Variable: LoadFullPage
+      *  ...
+      *  Type: bool
+      *  Default value: *false*
+      */
+      c.LoadFullPage = false;
+
+      /*  Variable: MinDataBatch
+      *  ...
+      *  Type: int
+      *  Default value: *undefined*
+      */
+      c.MinDataBatch=undefined;
+
+      /*  Variable: AsyncData
+      *  ...
+      *  Type: bool
+      *  Default value: *true*
+      */
+      c.AsyncData = true;
+      /*  Variable: AsyncDataTimeout
+      *  ...
+      *  Type: int
+      *  Default value: *30*
+      */
+      c.AsyncDataTimeout = 30;
+      /*  Variable: AsyncDataRetryCnt
+      *  ...
+      *  Type: int
+      *  Default value: *3*
+      */
+      c.AsyncDataRetryCnt = 3;
+
+      /*  Variable: AsyncDataURL
+      *  ...
+      *  Type: string
+      *  Default value: *''*
+      */
+      c.AsyncDataURL = '';
+
+      /*  Variable: NoDataText
+      *  ...
+      *  Type: string
+      *  Default value: *''*
+      */
+      c.NoDataText = '';
+
+      /*
+      *  Group: Methods
+      */
+      /*  Function: SetPage
+      *  Sets current page.
+      *
+      *  Syntax:
+      *    void *SetPage* (int page)
+      *
+      *  Returns:
+      *    -
+      *
+      *  Constants:
+      *    plFirstPage - first page
+      *    plLastPage  - last page
+      */
+      c.SetPage = npgl_SetPage;
+
+      /*  Function: NextPage
+      *  Switches to next page.
+      *
+      *  Syntax:
+      *    void *NextPage* ()
+      *
+      *  Returns:
+      *    -
+      */
+      c.NextPage = npgl_NextPage;
+      /*  Function: PrevPage
+      *  Switches to previous page.
+      *
+      *  Syntax:
+      *    void *PrevPage* ()
+      *
+      *  Returns:
+      *    -
+      */
+      c.PrevPage = npgl_PrevPage;
+      /*  Function: FirstPage
+      *  Switches to first page.
+      *
+      *  Syntax:
+      *    void *FirstPage* ()
+      *
+      *  Returns:
+      *    -
+      */
+      c.FirstPage = npgl_FirstPage;
+      /*  Function: LastPage
+      *  Switches to last page.
+      *
+      *  Syntax:
+      *    void *LastPage* ()
+      *
+      *  Returns:
+      *    -
+      */
+      c.LastPage = npgl_LastPage;
+
+
+      /*  Function: IsPrevPageAvailable
+      *  Checks if previous page is available.
+      *
+      *  Syntax:
+      *    bool *IsPrevPageAvailable* ()
+      *
+      *  Returns:
+      *    TRUE if previous page is available.
+      */
+      c.IsPrevPageAvailable = npgl_IsPrevPageAvailable;
+      /*  Function: IsNextPageAvailable
+      *  Checks if next page is available.
+      *
+      *  Syntax:
+      *    bool *IsNextPageAvailable* ()
+      *
+      *  Returns:
+      *    TRUE if next page is available.
+      */
+      c.IsNextPageAvailable = npgl_IsNextPageAvailable;
+
+      /*  Function: PageByIndex
+      *  Returns page number by given item index.
+      *
+      *  Syntax:
+      *    int *PageByIndex* (int index)
+      *
+      *  Returns:
+      *    Page number.
+      */
+      c.PageByIndex = npgl_PageByIndex;
+
+      /*  Function: SetPagingType
+      *  Sets visible paging elements.
+      *
+      *  Syntax:
+      *    void *SetPagingType* (int pagingtype [, bool update=true])
+      *
+      *  Returns:
+      *    -
+      */
+      c.SetPagingType = npgl_SetPagingType;
+
+      /*  Function: ItemsPerPage
+      *  Returns number of displayed items per page.
+      *
+      *  Syntax:
+      *    int *ItemsPerPage* ()
+      *
+      *  Returns:
+      *    Number of items.
+      */
+      c.ItemsPerPage = npgl_ItemsPerPage;
+
+      c.getitemsperpage = npgl_getitemsperpage;
+
+      /*  Function: DataRequestPerPage
+      *  Determines how much data is needed to fill the page when doing dynamic requests.
+      *
+      *  Syntax:
+      *    int *DataRequestPerPage* ()
+      *
+      *  Returns:
+      *    Requested number of items.
+      */
+      c.DataRequestPerPage = npgl_DataRequestPerPage;
+
+      /*  Function: GetAverageItemHeight
+      *  Determines average height of list item.
+      *  The average item height is based on ngPageList property AverageItemHeight (if defined)
+      *  and list properties ItemHeight and/or MinItemHeight. The item height cannot be determited
+      *  if none of these properties are defined.
+      *
+      *  Syntax:
+      *    mixed *GetAverageItemHeight* ()
+      *
+      *  Returns:
+      *    Height of the item or undefined if cannot be determined.
+      */
+      c.GetAverageItemHeight = npgl_GetAverageItemHeight;
+
+      c.IsPagingVisible = npgl_IsPagingVisible;
+      c.UpdatePaging = npgl_UpdatePaging;
+
+      c.SetAsyncData = npgl_SetAsyncData;
+
+      /*  Function: SetLength
+      *  Sets number of items in list.
+      *
+      *  Syntax:
+      *    void *SetLength* (int length)
+      *
+      *  Returns:
+      *    -
+      */
+      c.SetLength = npgl_SetLength;
+      /*  Function: GetLength
+      *  Gets number of items in list.
+      *
+      *  Syntax:
+      *    int *GetLength* ()
+      *
+      *  Returns:
+      *    Number of items.
+      */
+      c.GetLength = npgl_GetLength;
+
+      /*  Function: IsDynamicData
+      *  Determines if list is using dynamic data from server.
+      *
+      *  Syntax:
+      *    bool *IsDynamicData* ()
+      *
+      *  Returns:
+      *    TRUE if list loads dynamic data from server.
+      */
+      c.IsDynamicData = npgl_IsDynamicData;
+
+      /*  Function: GetRPC
+      *  Gets current ngRPC for server data loading if dynamic.
+      *
+      *  Syntax:
+      *    ngRPC *GetRPC* ()
+      *
+      *  Returns:
+      *    Instance of ngRPC or null if not dynamic.
+      */
+      c.GetRPC = npgl_GetRPC;
+
+      c.IsDataLoaded = npgl_IsDataLoaded;
+      c.DoLoadData = npgl_DoLoadData;
+      c.NeedData = npgl_NeedData;
+
+      /*  Function: GetPageTopItems
+      *  Provides access to top level items on current page.
+      *
+      *  Syntax:
+      *    array *GetPageTopItems* ()
+      *
+      *  Returns:
+      *    Array of items on current page.
+      */
+      c.GetPageTopItems = npgl_GetPageTopItems;
+
+      /*  Function: InvalidateData
+      *  Invalidates loaded data from server.
+      *
+      *  Syntax:
+      *    void *InvalidateData* ([int idx=0, int cnt=max])
+      *
+      *  Returns:
+      *    -
+      */
+      c.InvalidateData = npgl_InvalidateData;
+      /*  Function: Refresh
+      *  Invalidates data from server on current page.
+      *
+      *  Syntax:
+      *    void *Refresh* ()
+      *
+      *  Returns:
+      *    -
+      */
+      c.Refresh = npgl_Refresh;
+      /*  Function: Reset
+      *  Switches to the first page, clears selection and invalidates
+      *  all data loaded from server if list is dynamic.
+      *
+      *  Syntax:
+      *    void *Reset* ([bool doclear=false])
+      *
+      *  Returns:
+      *    -
+      */
+      c.Reset = npgl_Reset;
+      /*  Function: ScanPageItems
+      *  Recursive scan items on current page.
+      *
+      *  Syntax:
+      *    bool *ScanPageItems* (function scanfnc [, bool recursive=true, mixed userdata])
+      *
+      *  Returns:
+      *    -
+      */
+      c.ScanPageItems = npgl_ScanPageItems;
+
+      /*  Function: ScanVisiblePageItems
+      *  Recursive scan visible items on current page..
+      *
+      *  Syntax:
+      *    bool *ScanVisiblePageItems* (function scanfnc [, bool recursive=true, mixed userdata])
+      *
+      *  Returns:
+      *    -
+      */
+      c.ScanVisiblePageItems = npgl_ScanVisiblePageItems;
+
+      /*  Function: ShowLoading
+      *  Shows default loading control, if available.
+      *
+      *  Syntax:
+      *    void *ShowLoading* (bool visible)
+      *
+      *  Returns:
+      *    -
+      */
+      c.ShowLoading=npgl_ShowLoading;
+
+      /*  Function: ShowNoData
+      *  Shows no data control, if available.
+      *
+      *  Syntax:
+      *    void *ShowNoData* (bool visible)
+      *
+      *  Returns:
+      *    -
+      */
+      c.ShowNoData=npgl_ShowNoData;
+
+      c.IsAsyncLoadingBlock = npgl_IsAsyncLoadingBlock;
+
+      c.loading_displayed=false;
+      c.last_asyncdata_index=-1;
+      c.last_asyncdata_count=0;
+      c.async_rpc=null;
+      //c.async_dataindex = undefined;
+      //c.async_datacount = undefined;
+
+      c.AsyncWaiting = npgl_AsyncWaiting;
+
+      c.DoDropDown = npgl_DoDropDown;
+      c.DoDropDownFinished = npgl_DoDropDownFinished;
+      c.SelectDropDownItem = npgl_SelectDropDownItem;
+      c.SelectDropDownItemWithFocus = npgl_SelectDropDownItemWithFocus;
+      c.SetDropDownOwner = function(owner) {
+        c.DropDownOwner=owner;
+        if(c.List) c.List.DropDownOwner=owner;
+      }
+
+      /*
+      *  Group: Events
+      */
+      /*
+      *  Event: OnPageChanging
+      */
+      c.OnPageChanging = null;
+      /*
+      *  Event: OnPageChanged
+      */
+      c.OnPageChanged = null;
+      /*
+      *  Event: OnPagingUpdating
+      */
+      c.OnPagingUpdating = null;
+      /*
+      *  Event: OnPagingUpdated
+      */
+      c.OnPagingUpdated = null;
+      /*
+      *  Event: OnLoadData
+      */
+      c.OnLoadData = null;
+      /*
+      *  Event: OnInvalidateData
+      */
+      c.OnInvalidateData = null;
+      /*
+      *  Event: OnAsyncURLRequest
+      */
+      c.OnAsyncURLRequest = null;
+      /*
+      *  Event: OnSetAsyncData
+      */
+      c.OnSetAsyncData = null;
+      /*
+      *  Event: OnSetLength
+      */
+      c.OnSetLength = null;
+      /*
+      *  Event: OnShowLoading
+      */
+      c.OnShowLoading = null;
+      /*
+      *  Event: OnHideLoading
+      */
+      c.OnHideLoading = null;
+
+      /*
+      *  Event: OnShowNoData
+      */
+      c.OnShowNoData = null;
+      /*
+      *  Event: OnHideNoData
+      */
+      c.OnHideNoData = null;
+      /*
+      *  Event: OnNoDataText
+      */
+      c.OnNoDataText = null;
+
+      /*
+      *  Group: Controls
+      */
+      /*
+      *  Object: List
+      *  <ngList>
+      */
+      /*
+      *  Object: Paging
+      *  <ngToolBar>
+      */
+      /*
+      *  Object: FirstPage
+      *  <ngButton>
+      */
+      /*
+      *  Object: PrevPage
+      *  <ngButton>
+      */
+      /*
+      *  Object: PageNo
+      *  <ngEdit>
+      */
+      /*
+      *  Object: Page0
+      *  <ngButton>
+      */
+      /*
+      *  Object: NextPage
+      *  <ngButton>
+      */
+      /*
+      *  Object: LastPage
+      *  <ngButton>
+      */
+
+      def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+
+        // Handle focus
+        ng_OverrideMethod(c,'SetFocus',function(s) {
+          if(ngVal(s,true)) {
+            if(c.List) c.List.SetFocus(true);
+            else c.SetFocus.callParent(true);
+          }
+          else
+          {
+            if(c.List) c.List.SetFocus(false);
+            c.SetFocus.callParent(false);
+          }
+        });
+        // Group pages in paging and save visibility
+        if(c.Controls.Paging)
+        {
+          var cc=c.Controls.Paging.ChildControls;
+
+          if(typeof cc !== 'undefined')
+          {
+            var reverse=(c.Controls.Paging.HAlign=='right'); // reverse paging
+            if(reverse)
+            {
+              var ncc=new Array();
+              var j=0;
+              for(var i=cc.length-1;i>=0;i--)
+                ncc[j++]=cc[i];
+
+              c.Controls.Paging.ChildControls=ncc;
+              cc=ncc;
+            }
+
+            var c0;
+            for(var j=1;j<c.PagingSize;j++)
+            {
+              var c0=c.Controls['Page'+j];
+              if(!c0) continue;
+              c0.InitVisible=c0.Visible;
+              for(var i=cc.length-1;i>=0;i--)
+                if(cc[i]==c0)
+                {
+                  cc.splice(i, 1);
+                  break;
+                }
+            }
+
+            var pidx=-1,c0;
+            for(var i=cc.length-1;i>=0;i--)
+            {
+              c0=cc[i];
+              c0.InitVisible=c0.Visible;
+              if(c0==c.Controls.Page0) pidx=i+1;
+            }
+            if(pidx>=0)
+            {
+              if(reverse)
+              {
+                pidx--;
+                for(var j=c.PagingSize-1;j>0;j--)
+                {
+                  c0=c.Controls['Page'+j];
+                  if(c0) cc.splice(pidx++,0,c0);
+                }
+              }
+              else
+                for(var j=1;j<c.PagingSize;j++)
+                {
+                  c0=c.Controls['Page'+j];
+                  if(c0) cc.splice(pidx++,0,c0);
+                }
+            }
+          }
+        }
+        var pt=c.PagingType;
+        c.PagingType=c.PagingType-1;
+        c.SetPagingType(pt,false);
+
+        c.AddEvent(npgl_DoUpdate,'DoUpdate');
+        var l=c.Controls.List;
+        c.List=ngVal(l,null);
+        if(l)
+        {
+          if(c.DropDownOwner) l.DropDownOwner=c.DropDownOwner;
+
+          l.draw_page=-1;
+          l.draw_length=-1;
+          l.draw_height=0;
+          l.paging_needs_update=true;
+          l.page_start_found=true;
+          l.init_page=c.Page;
+          l.in_measure=false;
+          l.displayed_items=c.DisplayedItems;
+          l.max_displayed_items=0;
+          l.display_mode=c.DisplayMode;
+          l.ListPagingChanged=npgl_ListPagingChanged;
+          l.ListPagingChanged();
+
+          ng_OverrideMethod(l,'IndexOf',npgl_IndexOf);
+
+          l.AddEvent(npgl_DoUpdateBefore,'DoUpdate');
+          l.AddEvent('OnKeyDown', npgl_OnKeyDown);
+          l.AddEvent('DoUpdate',npgl_DoUpdateAfter);
+          l.AddEvent('OnDrawItem', npgl_OnDrawItem);
+          l.AddEvent('OnExpanding', npgl_OnExpanding);
+          l.AddEvent('OnAdd', npgl_OnListChanged);
+          l.AddEvent('OnRemove', npgl_OnListChanged);
+        }
+        c.Page=0;
+      });
+      return c;
+    }
+    ngRegisterControlType('ngPageList', Create_ngPageList);
+  
     function ngcl_GetItemsCheckState(it)
     {
       var list;
@@ -6688,9 +6689,8 @@ ngUserControls['list'] = {
       }
       return c;
     }
+    ngRegisterControlType('ngCheckList', Create_ngCheckList);
 
     ngRegisterControlType('ngList', function() { return new ngList; });
-    ngRegisterControlType('ngCheckList', Create_ngCheckList);
-    ngRegisterControlType('ngPageList', Create_ngPageList);
   }
 };
