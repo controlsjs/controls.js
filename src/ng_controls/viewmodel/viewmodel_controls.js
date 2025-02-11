@@ -340,29 +340,6 @@ function ngApplyBindings(ctrl, viewModel, databind)
   return true;
 }
 
-function ngsvm_DoCreate(def, ref)
-{
-  if(this.ID!='') {
-    ngViewModels[this.ID] = this;
-  }
-}
-
-/*  Class: ngSysViewModel
- *  This class implements non-visual <ngSysViewModel> control (based on <ngViewModel>).
- */
-function ngSysViewModel(id, namespace)
-{
-  ngSysControl(this, id, 'ngSysViewModel');
-  this.DoCreate=ngsvm_DoCreate;
-  this.AddEvent(function() {
-    if(this.ID!='') {
-      if(ngViewModels[this.ID] === this) delete ngViewModels[this.ID];
-    }
-  },'Dispose');
-  ngViewModel.apply(this,[id, namespace]);
-  ngControlCreated(this);
-}
-
 function ng_FindViewModel(def, c)
 {
   var vm=def.ViewModel;
@@ -439,6 +416,29 @@ ngUserControls['viewmodel_controls'] = {
   },
 
   OnInit: function() {
+
+    function ngsvm_DoCreate(def, ref)
+    {
+      if(this.ID!='') {
+        ngViewModels[this.ID] = this;
+      }
+    }
+
+    /*  Class: ngSysViewModel
+     *  This class implements non-visual <ngSysViewModel> control (based on <ngViewModel>).
+     */
+    window.ngSysViewModel = function(id, namespace)
+    {
+      ngSysControl(this, id, 'ngSysViewModel');
+      this.DoCreate=ngsvm_DoCreate;
+      this.AddEvent(function() {
+        if(this.ID!='') {
+          if(ngViewModels[this.ID] === this) delete ngViewModels[this.ID];
+        }
+      },'Dispose');
+      ngViewModel.apply(this,[id, namespace]);
+      ngControlCreated(this);
+    }
 
     var vmdevice;
     var vmdeviceprofile;
