@@ -283,2597 +283,2599 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
   }
 }
 
+(function(window) {
 
-function ngfd_Clear()
-{
-  var undefined;
-  if(ko.isObservable(this.Value)) this.Value(undefined);
-  else this.Value=undefined;
-}
-
-function ngfd_Validate(v)
-{
-  try
+  function ngfd_Clear()
   {
-    this.Serialize(v);
+    var undefined;
+    if(ko.isObservable(this.Value)) this.Value(undefined);
+    else this.Value=undefined;
   }
-  catch(e)
+
+  function ngfd_Validate(v)
   {
-    return e;
+    try
+    {
+      this.Serialize(v);
+    }
+    catch(e)
+    {
+      return e;
+    }
+    return true;
   }
-  return true;
-}
 
-function ngfd_FormatError(err)
-{
-  if(this.OnFormatError)
+  function ngfd_FormatError(err)
   {
-    var msg=this.OnFormatError(this, err);
-    if(!ng_isEmpty(msg)) return msg;
+    if(this.OnFormatError)
+    {
+      var msg=this.OnFormatError(this, err);
+      if(!ng_isEmpty(msg)) return msg;
+    }
+    return this.DoFormatError(err);
   }
-  return this.DoFormatError(err);
-}
 
-function ngfd_DoFormatError(err)
-{
-  return ng_ViewModelFormatError(err);
-}
-
-function ngfd_GetDisplayName(substid)
-{
-  var dn=(ko.isObservable(this.DisplayName) ? this.DisplayName() : this.DisplayName);
-  if((ng_isEmptyOrNull(dn))&&(ngVal(substid,true))) dn=ngVal(this.ID,'');
-  return dn;
-}
-
-function ngfd_GetTypedDefaultValue()
-{
-  try
+  function ngfd_DoFormatError(err)
   {
-    return this.TypedValue(this.DefaultValue);
+    return ng_ViewModelFormatError(err);
   }
-  catch(e)
-  {
-    return ng_CopyVar(this.DefaultValue);
-  }
-}
 
-function ngfd_GetTypedValue(exception, defval)
-{
-  var v=ko.ng_getvalue(this.Value);
-  if(exception===false) {
-    try {
-      v=this.TypedValue(v);
-    } catch(e) {
-      if(arguments.length===2) {
-        try {
-          v=this.TypedValue(defval);
-        } catch(e) {
-          v=defval;
+  function ngfd_GetDisplayName(substid)
+  {
+    var dn=(ko.isObservable(this.DisplayName) ? this.DisplayName() : this.DisplayName);
+    if((ng_isEmptyOrNull(dn))&&(ngVal(substid,true))) dn=ngVal(this.ID,'');
+    return dn;
+  }
+
+  function ngfd_GetTypedDefaultValue()
+  {
+    try
+    {
+      return this.TypedValue(this.DefaultValue);
+    }
+    catch(e)
+    {
+      return ng_CopyVar(this.DefaultValue);
+    }
+  }
+
+  function ngfd_GetTypedValue(exception, defval)
+  {
+    var v=ko.ng_getvalue(this.Value);
+    if(exception===false) {
+      try {
+        v=this.TypedValue(v);
+      } catch(e) {
+        if(arguments.length===2) {
+          try {
+            v=this.TypedValue(defval);
+          } catch(e) {
+            v=defval;
+          }
+        }
+        else v=this.GetTypedDefaultValue();
+      }
+      return v;
+    }
+    return this.TypedValue(v);
+  }
+
+  function ngfd_SetTypedValue(v, exception, defval)
+  {
+    if(exception===false) {
+      try {
+        v=this.TypedValue(v);
+      } catch(e) {
+        if(arguments.length===3) {
+          try {
+            v=this.TypedValue(defval);
+          } catch(e) {
+            v=defval;
+          }
+        }
+        else v=this.GetTypedDefaultValue();
+      }
+    }
+    else v=this.TypedValue(v);
+    ko.ng_setvalue(this.Value,v);
+  }
+
+  function ngfd_TypedValue(v)
+  {
+    if(this.__typingvalue) return v;
+    this.__typingvalue=true;
+    try
+    {
+      if(ng_typeString(v)) v=this.ParseString(v);
+
+      var err=0;
+      if(this.OnTypedValue)
+      {
+        try
+        {
+          var val=this.OnTypedValue(this, v);
+          if(!ng_isEmpty(val)) return val;
+        }
+        catch(e)
+        {
+          if(e instanceof ngFieldDefException)
+            err=e.Error;
+          else
+            throw e;
         }
       }
-      else v=this.GetTypedDefaultValue();
+
+      var origv=v;
+      if(this.DoTypedValue) v=this.DoTypedValue(v);
+
+      if((this.NullIfEmpty)&&
+        ((ng_isEmpty(v))
+      ||((ng_typeString(v))&&(v.length==0))
+      ||((ng_typeDate(v))&&(v.getTime()===0))
+      ||((ng_typeArray(v))&&(v.length==0))
+      ||((ng_typeObject(v))&&(ng_isEmptyObject(v)))))
+        v=null;
+
+      if(ng_isEmptyOrNull(v))
+      {
+        if(this.Required) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+        return v;
+      }
+
+      function cast_numberwithlimit(fd,v,min,max)
+      {
+        v=parseInt(v,10);
+        if(!ng_typeNumberInt(v)) return null;
+        if((ng_isEmpty(fd.MinValue))||(parseInt(fd.MinValue,10)<min)) fd.MinValue=min;
+        if((ng_isEmpty(fd.MaxValue))||(parseInt(fd.MaxValue,10)>max)) fd.MaxValue=max;
+        return v;
+      }
+
+      var r=null;
+      switch(this.DataType)
+      {
+        // boolean
+        case 'BOOL':          r=ng_toBool(v,null); break;
+        // numeric
+        case 'INTEGER':       r=ng_toInteger(v,null); break;
+        case 'FLOAT':         r=ng_toFloat(v,null); break;
+        case 'SBYTE':         r=cast_numberwithlimit(this,v,SBYTE_MIN,SBYTE_MAX); break;
+        case 'BYTE':          r=cast_numberwithlimit(this,v,BYTE_MIN,BYTE_MAX); break;
+        case 'SHORT':         r=cast_numberwithlimit(this,v,SHORT_MIN,SHORT_MAX); break;
+        case 'USHORT':        r=cast_numberwithlimit(this,v,USHORT_MIN,USHORT_MAX); break;
+        case 'LONG':          r=cast_numberwithlimit(this,v,LONG_MIN,LONG_MAX); break;
+        case 'ULONG':         r=cast_numberwithlimit(this,v,ULONG_MIN,ULONG_MAX); break;
+        case 'DECIMAL':       r=ng_toDECIMAL(v,this.Size,this.Precision,null);
+                              if(r===null) {
+                                r=ng_toDECIMAL(v,1000,this.Precision,null);
+                                if(r!==null) throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
+                              }
+                              break;
+        // string
+        case 'STRING':        r=ng_toString(v,null); break;
+        case 'NVARCHAR':      r=ng_toNVARCHAR(v,undefined,null);
+                              if((r!==null)&&(!ng_isEmpty(this.Size))&&(r.length>this.Size))
+                                throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
+                              break;
+        // date
+        case 'TIMESTAMP':
+        case 'DATETIME':      r=ng_toDate(v,null); break;
+        case 'DATE':          r=ng_toDateOnly(v,null); break;
+        case 'TIME':          r=ng_toDate(v,null); break;
+        case 'UTCTIMESTAMP':
+        case 'UTCDATETIME':   r=ng_toDate(v,null); break;
+        // array
+        case 'ARRAY':         if(ng_typeArray(v)) r=(origv===v ? ng_CopyVar(v) : v);
+                              else
+                              {
+                                r=new Array();
+                                r.push(v);
+                              }
+                              break;
+        case 'OBJECT':        r=(typeof v==='object' ? (origv===v ? ng_CopyVar(v) : v) : null); break;
+        default:
+          if((''+this.DataType).substr(0,7)!=='UNKNOWN') r=(origv===v ? ng_CopyVar(v) : v);
+          break;
+      }
+      if(r===null)
+        throw new ngFieldDefException(this, err|FIELDDEF_ERR_TYPE); // type error
+
+      // Test value limits
+      var c=r;
+      var typefnc=null;
+      var checkminmax=true;
+      switch(this.DataType)
+      {
+        case 'BOOL':
+          typefnc=ng_toBool;
+          break;
+        case 'INTEGER':
+        case 'FLOAT':
+        case 'SBYTE':
+        case 'BYTE':
+        case 'SHORT':
+        case 'USHORT':
+        case 'LONG':
+        case 'ULONG':
+          typefnc=ng_toNumber;
+          c=ng_toNumber(r);
+          break;
+        case 'DECIMAL':
+          checkminmax=false;
+          if((!ng_isEmpty(this.MinValue))&&(ng_toNumber(c)<ng_toNumber(this.MinValue))) err|=FIELDDEF_ERR_MIN;
+          if((!ng_isEmpty(this.MaxValue))&&(ng_toNumber(c)>ng_toNumber(this.MaxValue))) err|=FIELDDEF_ERR_MAX;
+
+          typefnc=null;
+          break;
+        case 'STRING':
+        case 'NVARCHAR':
+          if(r!='')
+          {
+            if((this.Attrs['UTF8mb3'])&&(!ng_IsUTF8mb3(r))) {
+              throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+            }
+            if(typeof this.Attrs['ValidChars']!=='undefined') {
+              if((this.Attrs['ValidChars']=='')||(new RegExp('[^'+this.Attrs['ValidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+            }
+            if(typeof this.Attrs['InvalidChars']!=='undefined') {
+              if((this.Attrs['InvalidChars']!='')&&(new RegExp('['+this.Attrs['InvalidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+            }
+          }
+          typefnc=ng_toString;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((typeof this.Attrs['MinSize']!=='undefined')&&(c.length<this.Attrs['MinSize'])) {
+            throw new ngFieldDefException(this, err|FIELDDEF_ERR_MINLEN);
+          }
+          break;
+        case 'TIMESTAMP':
+        case 'DATETIME':
+          typefnc=ng_toDate;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          break;
+        case 'DATE':
+          typefnc=ng_toDateOnly;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          break;
+        case 'TIME':
+          typefnc=ng_toDate;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          break;
+        case 'UTCTIMESTAMP':
+        case 'UTCDATETIME':
+          typefnc=ng_toDate;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          break;
+        case 'ARRAY':
+          if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+
+          checkminmax=false;
+          if((!ng_isEmpty(this.MinValue))&&(c.length<parseInt(this.MinValue,10))) err|=FIELDDEF_ERR_MIN;
+          if((!ng_isEmpty(this.MaxValue))&&(c.length>parseInt(this.MaxValue,10))) err|=FIELDDEF_ERR_MAX;
+
+          typefnc=function(n) { return n; };
+          break;
+        case 'OBJECT':
+          typefnc=function(n) { return n; };
+          checkminmax=false;
+          break;
+        default:
+          typefnc=function(n) { return n; };
+          c=r;
+          break;
+      }
+      if(typefnc!==null)
+      {
+        if(checkminmax)
+        {
+          if((!ng_isEmpty(this.MinValue))&&(c<typefnc(this.MinValue))) err|=FIELDDEF_ERR_MIN;
+          if((!ng_isEmpty(this.MaxValue))&&(c>typefnc(this.MaxValue))) err|=FIELDDEF_ERR_MAX;
+        }
+        if(!ng_isEmpty(this.Enum))
+        {
+          var i;
+          for(i=0;i<this.Enum.length;i++)
+            if(ng_VarEquals(c,typefnc(this.Enum[i]))) break;
+          if(i>=this.Enum.length) err|=FIELDDEF_ERR_ENUM;
+        }
+      }
+      if(err) throw new ngFieldDefException(this, err);
+    }
+    finally
+    {
+      delete this.__typingvalue;
+    }
+    return r;
+  }
+
+  function ngfd_TypedValueAs(v,field)
+  {
+    if(!field) return v;
+    try {
+      v=field.TypedValue(v);
+    }
+    catch(e)
+    {
+      if(e.FieldDef==field) e.FieldDef=this;
+      throw e;
     }
     return v;
   }
-  return this.TypedValue(v);
-}
 
-function ngfd_SetTypedValue(v, exception, defval)
-{
-  if(exception===false) {
-    try {
-      v=this.TypedValue(v);
-    } catch(e) {
-      if(arguments.length===3) {
-        try {
-          v=this.TypedValue(defval);
-        } catch(e) {
-          v=defval;
-        }
-      }
-      else v=this.GetTypedDefaultValue();
-    }
-  }
-  else v=this.TypedValue(v);
-  ko.ng_setvalue(this.Value,v);
-}
-
-function ngfd_TypedValue(v)
-{
-  if(this.__typingvalue) return v;
-  this.__typingvalue=true;
-  try
+  function ngfd_Serialize(v)
   {
-    if(ng_typeString(v)) v=this.ParseString(v);
+    var r;
 
-    var err=0;
-    if(this.OnTypedValue)
+    if(this.OnSerialize) r=this.OnSerialize(this,v);
+    if((ng_isEmpty(r))&&(this.DoSerialize)) r=this.DoSerialize(v);
+    if(ng_isEmpty(r)) r=this.TypedValue(v);
+    switch(this.DataType)
+    {
+      case 'ULONG':
+      case 'INTEGER':
+        if(!ng_isEmpty(r)) r=ng_toString(r); // PHP doesn't support unsigned longs and JavaScript big integers, pass it as string
+        break;
+      case 'TIMESTAMP':
+      case 'DATETIME':
+      case 'DATE':
+      case 'TIME':
+      case 'UTCTIMESTAMP':
+      case 'UTCDATETIME':
+        r=ng_toUnixTimestamp(r);
+        break;
+    }
+    return r;
+  }
+
+  function ngfd_Deserialize(v)
+  {
+    var r;
+
+    if(this.OnDeserialize) r=this.OnDeserialize(this,v);
+    if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
+    if(ng_isEmpty(r)) r=v;
+    switch(this.DataType)
+    {
+      case 'TIMESTAMP':
+      case 'DATETIME':
+      case 'DATE':
+      case 'TIME':
+      case 'UTCTIMESTAMP':
+      case 'UTCDATETIME':
+        r=ng_toDate(r,r);
+        break;
+    }
+    r=this.TypedValue(r);
+    return r;
+  }
+
+  function ngfd_FormatString(v)
+  {
+    if(this.__formatingstring) return v;
+    this.__formatingstring=true;
+    try
     {
       try
       {
-        var val=this.OnTypedValue(this, v);
-        if(!ng_isEmpty(val)) return val;
+        v=this.TypedValue(v);
       }
       catch(e)
       {
-        if(e instanceof ngFieldDefException)
-          err=e.Error;
-        else
-          throw e;
       }
+      var s;
+      if(this.OnFormatString) s=this.OnFormatString(this,v);
+      if(ng_typeString(s)) return s;
+      if(this.DoFormatString) s=this.DoFormatString(v);
+      if(ng_typeString(s)) return s;
+      var r=null;
+      switch(this.DataType)
+      {
+        case 'SHORT':
+        case 'USHORT':
+        case 'LONG':
+        case 'ULONG':
+        case 'INTEGER':
+          if(this.Attrs['FormatNumber']) r=ng_Format3Num(v,this.Attrs['ThousandsSeparator']);
+          break;
+        case 'FLOAT':
+        case 'DECIMAL':
+          if(this.Attrs['FormatNumber']) {
+            r=ng_Format3Num(v,this.Attrs['ThousandsSeparator'],'.');
+            if(ng_typeString(r)) r=r.replace('.',ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()));
+          }
+          break;
+        case 'TIMESTAMP':
+        case 'DATETIME':
+          r=ng_FormatDateTime(ng_toDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
+          break;
+        case 'DATE':
+          r=ng_FormatDate(ng_toDate(v),ngVal(this.Attrs['DateFormat'],''),null);
+          break;
+        case 'TIME':
+          r=ng_FormatTime(ng_toDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
+          break;
+        case 'UTCTIMESTAMP':
+        case 'UTCDATETIME':
+          r=ng_FormatDateTime(ng_fromUTCDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
+          break;
+        case 'ARRAY':
+          if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
+            r=v.join(ngVal(this.Attrs['ItemSeparator'],','));
+          else
+            r=null;
+          break;
+      }
+      if(r!==null) v=r;
+      else v=ng_toString(v);
     }
-
-    var origv=v;
-    if(this.DoTypedValue) v=this.DoTypedValue(v);
-
-    if((this.NullIfEmpty)&&
-      ((ng_isEmpty(v))
-     ||((ng_typeString(v))&&(v.length==0))
-     ||((ng_typeDate(v))&&(v.getTime()===0))
-     ||((ng_typeArray(v))&&(v.length==0))
-     ||((ng_typeObject(v))&&(ng_isEmptyObject(v)))))
-      v=null;
-
-    if(ng_isEmptyOrNull(v))
+    finally
     {
-      if(this.Required) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-      return v;
+      delete this.__formatingstring;
     }
+    return v;
+  }
 
-    function cast_numberwithlimit(fd,v,min,max)
+  function ngfd_EditString(v)
+  {
+    var s;
+    if(this.OnEditString) s=this.OnEditString(this,v);
+    if(ng_typeString(s)) return s;
+    if(this.DoEditString) s=this.DoEditString(v);
+    if(ng_typeString(s)) return s;
+    return this.FormatString(v);
+  }
+
+  function ngfd_ParseString(v)
+  {
+    if(this.__parsingstring) return v;
+    this.__parsingstring=true;
+    try
     {
-      v=parseInt(v,10);
-      if(!ng_typeNumberInt(v)) return null;
-      if((ng_isEmpty(fd.MinValue))||(parseInt(fd.MinValue,10)<min)) fd.MinValue=min;
-      if((ng_isEmpty(fd.MaxValue))||(parseInt(fd.MaxValue,10)>max)) fd.MaxValue=max;
-      return v;
-    }
-
-    var r=null;
-    switch(this.DataType)
-    {
-      // boolean
-      case 'BOOL':          r=ng_toBool(v,null); break;
-      // numeric
-      case 'INTEGER':       r=ng_toInteger(v,null); break;
-      case 'FLOAT':         r=ng_toFloat(v,null); break;
-      case 'SBYTE':         r=cast_numberwithlimit(this,v,SBYTE_MIN,SBYTE_MAX); break;
-      case 'BYTE':          r=cast_numberwithlimit(this,v,BYTE_MIN,BYTE_MAX); break;
-      case 'SHORT':         r=cast_numberwithlimit(this,v,SHORT_MIN,SHORT_MAX); break;
-      case 'USHORT':        r=cast_numberwithlimit(this,v,USHORT_MIN,USHORT_MAX); break;
-      case 'LONG':          r=cast_numberwithlimit(this,v,LONG_MIN,LONG_MAX); break;
-      case 'ULONG':         r=cast_numberwithlimit(this,v,ULONG_MIN,ULONG_MAX); break;
-      case 'DECIMAL':       r=ng_toDECIMAL(v,this.Size,this.Precision,null);
-                            if(r===null) {
-                              r=ng_toDECIMAL(v,1000,this.Precision,null);
-                              if(r!==null) throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
-                            }
-                            break;
-      // string
-      case 'STRING':        r=ng_toString(v,null); break;
-      case 'NVARCHAR':      r=ng_toNVARCHAR(v,undefined,null);
-                            if((r!==null)&&(!ng_isEmpty(this.Size))&&(r.length>this.Size))
-                              throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
-                            break;
-      // date
-      case 'TIMESTAMP':
-      case 'DATETIME':      r=ng_toDate(v,null); break;
-      case 'DATE':          r=ng_toDateOnly(v,null); break;
-      case 'TIME':          r=ng_toDate(v,null); break;
-      case 'UTCTIMESTAMP':
-      case 'UTCDATETIME':   r=ng_toDate(v,null); break;
-      // array
-      case 'ARRAY':         if(ng_typeArray(v)) r=(origv===v ? ng_CopyVar(v) : v);
-                            else
-                            {
-                              r=new Array();
-                              r.push(v);
-                            }
-                            break;
-      case 'OBJECT':        r=(typeof v==='object' ? (origv===v ? ng_CopyVar(v) : v) : null); break;
-      default:
-        if((''+this.DataType).substr(0,7)!=='UNKNOWN') r=(origv===v ? ng_CopyVar(v) : v);
-        break;
-    }
-    if(r===null)
-      throw new ngFieldDefException(this, err|FIELDDEF_ERR_TYPE); // type error
-
-    // Test value limits
-    var c=r;
-    var typefnc=null;
-    var checkminmax=true;
-    switch(this.DataType)
-    {
-      case 'BOOL':
-        typefnc=ng_toBool;
-        break;
-      case 'INTEGER':
-      case 'FLOAT':
-      case 'SBYTE':
-      case 'BYTE':
-      case 'SHORT':
-      case 'USHORT':
-      case 'LONG':
-      case 'ULONG':
-        typefnc=ng_toNumber;
-        c=ng_toNumber(r);
-        break;
-      case 'DECIMAL':
-        checkminmax=false;
-        if((!ng_isEmpty(this.MinValue))&&(ng_toNumber(c)<ng_toNumber(this.MinValue))) err|=FIELDDEF_ERR_MIN;
-        if((!ng_isEmpty(this.MaxValue))&&(ng_toNumber(c)>ng_toNumber(this.MaxValue))) err|=FIELDDEF_ERR_MAX;
-
-        typefnc=null;
-        break;
-      case 'STRING':
-      case 'NVARCHAR':
-        if(r!='')
+      v=''+v;
+      var trim=ngVal(this.AutoTrim,1);
+      switch(trim)
+      {
+        case 1: v=ng_Trim(v); break;
+        case 2: v=ng_LTrim(v); break;
+        case 3: v=ng_RTrim(v); break;
+      }
+      if(v!=='') {
+        if(typeof this.Attrs['UTF8mb3Replace']!=='undefined')
         {
-          if((this.Attrs['UTF8mb3'])&&(!ng_IsUTF8mb3(r))) {
-            throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+          var replacewith=this.Attrs['UTF8mb3Replace'];
+          if(replacewith===true) replacewith=void 0;
+          if(replacewith!==false) v=ng_UTF8mb3(v, replacewith);
+        }
+        if(this.Attrs['LowerCase']) v=v.toLowerCase();
+        if(this.Attrs['UpperCase']) v=v.toUpperCase();
+      }
+      if(this.OnParseString) v=this.OnParseString(this,v);
+      if(this.DoParseString) v=this.DoParseString(v);
+      if(ng_typeString(v))
+      {
+        if((this.NullIfEmpty)&&(v.length==0)) v=null;
+        else
+        {
+          var r;
+          switch(this.DataType)
+          {
+            case 'SHORT':
+            case 'USHORT':
+            case 'LONG':
+            case 'ULONG':
+            case 'INTEGER':
+              if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
+                v=ng_Unformat3Num(v,this.Attrs['ThousandsSeparator']);
+              }
+              break;
+            case 'FLOAT':
+            case 'DECIMAL':
+              if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
+                v=ng_Unformat3Num(''+v,this.Attrs['ThousandsSeparator'],'.');
+                v=v.replace(ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()),'.');
+              }
+              break;
+            case 'TIMESTAMP':
+            case 'DATETIME':
+            case 'UTCTIMESTAMP':
+            case 'UTCDATETIME':
+              var fmt=this.Attrs['ParseDateTimeFormat'];
+              if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateTimeFormat'],'');
+              r=ng_ParseDateTime(v,fmt,null);
+              break;
+            case 'DATE':
+              var fmt=this.Attrs['ParseDateFormat'];
+              if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateFormat'],'');
+              r=ng_ParseDate(v,fmt,null);
+              break;
+            case 'TIME':
+              var fmt=this.Attrs['ParseTimeFormat'];
+              if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['TimeFormat'],'');
+              r=ng_ParseTime(v,fmt,null);
+              break;
+            case 'ARRAY':
+              v=v.split(ngVal(this.Attrs['ItemSeparator'],','));
+              break;
           }
-          if(typeof this.Attrs['ValidChars']!=='undefined') {
-            if((this.Attrs['ValidChars']=='')||(new RegExp('[^'+this.Attrs['ValidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
-          }
-          if(typeof this.Attrs['InvalidChars']!=='undefined') {
-            if((this.Attrs['InvalidChars']!='')&&(new RegExp('['+this.Attrs['InvalidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+
+          switch(this.DataType)
+          {
+            case 'TIMESTAMP':
+            case 'DATETIME':
+            case 'DATE':
+            case 'TIME':
+              if(r!==null) v=r;
+              break;
+            case 'UTCTIMESTAMP':
+            case 'UTCDATETIME':
+              if(r!==null) v=ng_toUTCDate(r);
+              break;
           }
         }
-        typefnc=ng_toString;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        if((typeof this.Attrs['MinSize']!=='undefined')&&(c.length<this.Attrs['MinSize'])) {
-          throw new ngFieldDefException(this, err|FIELDDEF_ERR_MINLEN);
-        }
-        break;
-      case 'TIMESTAMP':
-      case 'DATETIME':
-        typefnc=ng_toDate;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        break;
-      case 'DATE':
-        typefnc=ng_toDateOnly;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        break;
-      case 'TIME':
-        typefnc=ng_toDate;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        break;
-      case 'UTCTIMESTAMP':
-      case 'UTCDATETIME':
-        typefnc=ng_toDate;
-        if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-        break;
-      case 'ARRAY':
-        if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
-
-        checkminmax=false;
-        if((!ng_isEmpty(this.MinValue))&&(c.length<parseInt(this.MinValue,10))) err|=FIELDDEF_ERR_MIN;
-        if((!ng_isEmpty(this.MaxValue))&&(c.length>parseInt(this.MaxValue,10))) err|=FIELDDEF_ERR_MAX;
-
-        typefnc=function(n) { return n; };
-        break;
-      case 'OBJECT':
-        typefnc=function(n) { return n; };
-        checkminmax=false;
-        break;
-      default:
-        typefnc=function(n) { return n; };
-        c=r;
-        break;
+      }
+      try
+      {
+        v=this.TypedValue(v);
+      }
+      catch(e)
+      {
+      }
     }
-    if(typefnc!==null)
+    finally
     {
-      if(checkminmax)
-      {
-        if((!ng_isEmpty(this.MinValue))&&(c<typefnc(this.MinValue))) err|=FIELDDEF_ERR_MIN;
-        if((!ng_isEmpty(this.MaxValue))&&(c>typefnc(this.MaxValue))) err|=FIELDDEF_ERR_MAX;
-      }
-      if(!ng_isEmpty(this.Enum))
-      {
-        var i;
-        for(i=0;i<this.Enum.length;i++)
-          if(ng_VarEquals(c,typefnc(this.Enum[i]))) break;
-        if(i>=this.Enum.length) err|=FIELDDEF_ERR_ENUM;
-      }
+      delete this.__parsingstring;
     }
-    if(err) throw new ngFieldDefException(this, err);
+    return v;
   }
-  finally
+
+  function ngfd_SetAttribute(attr,val)
   {
-    delete this.__typingvalue;
-  }
-  return r;
-}
+    switch(attr)
+    {
+      case 'PrivateField': this.PrivateField=val; break;
+      case 'DisplayName':  this.DisplayName=val; break;
+      case 'Size':         this.Size=val; break;
+      case 'Precision':    this.Precision=val; break;
 
-function ngfd_TypedValueAs(v,field)
-{
-  if(!field) return v;
-  try {
-    v=field.TypedValue(v);
+      case 'Required':     this.Required=val; break;
+      case 'NullIfEmpty':  this.NullIfEmpty=val; break;
+      case 'AllowEmpty':   this.AllowEmpty=val; break;
+      case 'AutoTrim':     this.AutoTrim=val; break;
+      case 'ReadOnly':     this.ReadOnly=val; break;
+      case 'MinValue':     this.MinValue=val; break;
+      case 'MaxValue':     this.MaxValue=val; break;
+      case 'Enum':         this.Enum=val; break;
+      case 'DefaultValue': this.DefaultValue=val; break;
+      default:             this.Attrs[attr]=val; break;
+    }
   }
-  catch(e)
+
+  function ngfd_GetAttribute(attr)
   {
-    if(e.FieldDef==field) e.FieldDef=this;
-    throw e;
+    switch(attr)
+    {
+      case 'PrivateField': return this.PrivateField;
+      case 'DisplayName':  return this.DisplayName;
+      case 'Size':         return this.Size;
+      case 'Precision':    return this.Precision;
+
+      case 'Required':     return this.Required;
+      case 'NullIfEmpty':  return this.NullIfEmpty;
+      case 'AllowEmpty':   return this.AllowEmpty;
+      case 'AutoTrim':     return this.AutoTrim;
+      case 'ReadOnly':     return this.ReadOnly;
+      case 'MinValue':     return this.MinValue;
+      case 'MaxValue':     return this.MaxValue;
+      case 'Enum':         return this.Enum;
+      case 'DefaultValue': return this.DefaultValue;
+      default:             return this.Attrs[attr];
+    }
   }
-  return v;
-}
 
-function ngfd_Serialize(v)
-{
-  var r;
-
-  if(this.OnSerialize) r=this.OnSerialize(this,v);
-  if((ng_isEmpty(r))&&(this.DoSerialize)) r=this.DoSerialize(v);
-  if(ng_isEmpty(r)) r=this.TypedValue(v);
-  switch(this.DataType)
+  function ngfd_SetAttributes(attrs)
   {
-    case 'ULONG':
-    case 'INTEGER':
-      if(!ng_isEmpty(r)) r=ng_toString(r); // PHP doesn't support unsigned longs and JavaScript big integers, pass it as string
-      break;
-    case 'TIMESTAMP':
-    case 'DATETIME':
-    case 'DATE':
-    case 'TIME':
-    case 'UTCTIMESTAMP':
-    case 'UTCDATETIME':
-      r=ng_toUnixTimestamp(r);
-      break;
+    if(ng_IsObjVar(attrs))
+      for(var attr in attrs)
+        this.SetAttribute(attr,attrs[attr]);
   }
-  return r;
-}
 
-function ngfd_Deserialize(v)
-{
-  var r;
-
-  if(this.OnDeserialize) r=this.OnDeserialize(this,v);
-  if((ng_isEmpty(r))&&(this.DoDeserialize)) r=this.DoDeserialize(v);
-  if(ng_isEmpty(r)) r=v;
-  switch(this.DataType)
+  function ngfd_GetAttributes(attrs)
   {
-    case 'TIMESTAMP':
-    case 'DATETIME':
-    case 'DATE':
-    case 'TIME':
-    case 'UTCTIMESTAMP':
-    case 'UTCDATETIME':
-      r=ng_toDate(r,r);
-      break;
-  }
-  r=this.TypedValue(r);
-  return r;
-}
+    var result={};
+    var getAll=false;
+    if(!ng_IsArrayVar(attrs)){
+      getAll=true;
+      attrs=new Array(
+        'PrivateField',
+        'DisplayName',
+        'Size',
+        'Precision',
 
-function ngfd_FormatString(v)
-{
-  if(this.__formatingstring) return v;
-  this.__formatingstring=true;
-  try
+        'Required',
+        'NullIfEmpty',
+        'AllowEmpty',
+        'AutoTrim',
+        'ReadOnly',
+        'MinValue',
+        'MaxValue',
+        'Enum',
+        'DefaultValue'
+      );
+    }
+
+    var attr;
+    for(var i in attrs){
+      attr=attrs[i];
+      result[attr]=this.GetAttribute(attr);
+    }
+
+    if(getAll)
+      for(var attr in this.Attrs)
+        result[attr]=this.GetAttribute(attr);
+
+    return result;
+  }
+
+  window.ngFieldDefCreateAs = function(fd, id, type, attrs)
   {
     try
     {
-      v=this.TypedValue(v);
-    }
-    catch(e)
-    {
-    }
-    var s;
-    if(this.OnFormatString) s=this.OnFormatString(this,v);
-    if(ng_typeString(s)) return s;
-    if(this.DoFormatString) s=this.DoFormatString(v);
-    if(ng_typeString(s)) return s;
-    var r=null;
-    switch(this.DataType)
-    {
-      case 'SHORT':
-      case 'USHORT':
-      case 'LONG':
-      case 'ULONG':
-      case 'INTEGER':
-        if(this.Attrs['FormatNumber']) r=ng_Format3Num(v,this.Attrs['ThousandsSeparator']);
-        break;
-      case 'FLOAT':
-      case 'DECIMAL':
-        if(this.Attrs['FormatNumber']) {
-          r=ng_Format3Num(v,this.Attrs['ThousandsSeparator'],'.');
-          if(ng_typeString(r)) r=r.replace('.',ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()));
-        }
-        break;
-      case 'TIMESTAMP':
-      case 'DATETIME':
-        r=ng_FormatDateTime(ng_toDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
-        break;
-      case 'DATE':
-        r=ng_FormatDate(ng_toDate(v),ngVal(this.Attrs['DateFormat'],''),null);
-        break;
-      case 'TIME':
-        r=ng_FormatTime(ng_toDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
-        break;
-      case 'UTCTIMESTAMP':
-      case 'UTCDATETIME':
-        r=ng_FormatDateTime(ng_fromUTCDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
-        break;
-      case 'ARRAY':
-        if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
-          r=v.join(ngVal(this.Attrs['ItemSeparator'],','));
-        else
-          r=null;
-        break;
-    }
-    if(r!==null) v=r;
-    else v=ng_toString(v);
-  }
-  finally
-  {
-    delete this.__formatingstring;
-  }
-  return v;
-}
-
-function ngfd_EditString(v)
-{
-  var s;
-  if(this.OnEditString) s=this.OnEditString(this,v);
-  if(ng_typeString(s)) return s;
-  if(this.DoEditString) s=this.DoEditString(v);
-  if(ng_typeString(s)) return s;
-  return this.FormatString(v);
-}
-
-function ngfd_ParseString(v)
-{
-  if(this.__parsingstring) return v;
-  this.__parsingstring=true;
-  try
-  {
-    v=''+v;
-    var trim=ngVal(this.AutoTrim,1);
-    switch(trim)
-    {
-      case 1: v=ng_Trim(v); break;
-      case 2: v=ng_LTrim(v); break;
-      case 3: v=ng_RTrim(v); break;
-    }
-    if(v!=='') {
-      if(typeof this.Attrs['UTF8mb3Replace']!=='undefined')
+      if(typeof type==='function')
       {
-        var replacewith=this.Attrs['UTF8mb3Replace'];
-        if(replacewith===true) replacewith=void 0;
-        if(replacewith!==false) v=ng_UTF8mb3(v, replacewith);
+        fd.__fielddef = type;
+        var args=Array.prototype.slice.apply(arguments);
+        args.splice(2,1);
+        args.splice(0,1);
+        fd.__fielddef.apply(fd,args)
       }
-      if(this.Attrs['LowerCase']) v=v.toLowerCase();
-      if(this.Attrs['UpperCase']) v=v.toUpperCase();
-    }
-    if(this.OnParseString) v=this.OnParseString(this,v);
-    if(this.DoParseString) v=this.DoParseString(v);
-    if(ng_typeString(v))
-    {
-      if((this.NullIfEmpty)&&(v.length==0)) v=null;
       else
       {
-        var r;
-        switch(this.DataType)
-        {
-          case 'SHORT':
-          case 'USHORT':
-          case 'LONG':
-          case 'ULONG':
-          case 'INTEGER':
-            if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
-              v=ng_Unformat3Num(v,this.Attrs['ThousandsSeparator']);
-            }
-            break;
-          case 'FLOAT':
-          case 'DECIMAL':
-            if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
-              v=ng_Unformat3Num(''+v,this.Attrs['ThousandsSeparator'],'.');
-              v=v.replace(ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()),'.');
-            }
-            break;
-          case 'TIMESTAMP':
-          case 'DATETIME':
-          case 'UTCTIMESTAMP':
-          case 'UTCDATETIME':
-            var fmt=this.Attrs['ParseDateTimeFormat'];
-            if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateTimeFormat'],'');
-            r=ng_ParseDateTime(v,fmt,null);
-            break;
-          case 'DATE':
-            var fmt=this.Attrs['ParseDateFormat'];
-            if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateFormat'],'');
-            r=ng_ParseDate(v,fmt,null);
-            break;
-          case 'TIME':
-            var fmt=this.Attrs['ParseTimeFormat'];
-            if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['TimeFormat'],'');
-            r=ng_ParseTime(v,fmt,null);
-            break;
-          case 'ARRAY':
-            v=v.split(ngVal(this.Attrs['ItemSeparator'],','));
-            break;
-        }
-
-        switch(this.DataType)
-        {
-          case 'TIMESTAMP':
-          case 'DATETIME':
-          case 'DATE':
-          case 'TIME':
-            if(r!==null) v=r;
-            break;
-          case 'UTCTIMESTAMP':
-          case 'UTCDATETIME':
-            if(r!==null) v=ng_toUTCDate(r);
-            break;
-        }
+        fd.__fielddef = ngFieldDef;
+        fd.__fielddef(id, type, attrs);
       }
+    } finally {
+      delete fd.__fielddef;
     }
-    try
+  }
+
+  window.ngIsFieldDef = function(v)
+  {
+    return (ng_typeObject(v))&&(!ng_isEmpty(v.DataType))&&(typeof v.Validate === 'function')&&(typeof v.Serialize === 'function')&&(typeof v.Deserialize === 'function');
+  }
+
+  /**
+   *  Class: ngFieldDef
+   *  This class implements ViewModel field type description object.
+   */
+  window.ngFieldDef = function(id, type, attrs)
+  {
+    attrs=ngVal(attrs,{});
+
+    /*
+    *  Group: Properties
+    */
+
+    /*  Variable: Owner
+    *  Owner (usualy <ngViewModel>) of <ngFieldDef>.
+    *  Type: object
+    */
+    this.Owner    = null;
+    /*  Variable: Parent
+    *  Reference to parent ngFieldDef (if exists).
+    *  Type: mixed
+    */
+    //this.Parent    = undefined;
+
+    /*  Variable: ID
+    *  Field identifier.
+    *  Type: string
+    */
+    this.ID       = ngVal(id,'');
+
+    /*  Variable: Type
+    *  Basic field type.
+    *  Type: string
+    *
+    *  Constants:
+    *    'BOOL' - boolean type
+    *    'INTEGER' - integer type
+    *    'FLOAT' - float number type
+    *    'SBYTE' - signed byte (-127..127)
+    *    'BYTE' - unsigned byte (0..255)
+    *    'SHORT' - signed short (-32767..32767)
+    *    'USHORT' - unsigned short (0-65535)
+    *    'LONG' - signed long (-2147483647..2147483647)
+    *    'ULONG' - unsigned long (0..4294967295)
+    *    'DECIMAL' - number with fixed decimal
+    *    'STRING' - string type
+    *    'NVARCHAR' - string type with limited length
+    *    'TIMESTAMP' - date and time type
+    *    'DATETIME' - date and time type
+    *    'DATE' - date only type
+    *    'TIME' - time only type
+    *    'UTCTIMESTAMP' - date and time type (UTC)
+    *    'UTCDATETIME' - date and time type (UTC)
+    *    'ARRAY' - array type
+    */
+    this.Type     = ngVal(this.Type, type);
+
+    /*  Variable: DataType
+    *  Field type identifier.
+    *  Type: string
+    */
+    this.DataType = ngVal(type,'');
+
+    /*  Variable: PrivateField
+    *  Determines if field is private. Private fields are never sent to server.
+    *  Type: boolean
+    *  Default value: *false*
+    */
+    this.PrivateField = false;
+
+    /*  Variable: Attrs
+    *  Field extended attributes.
+    *  Type: object
+    *  Default value: *{}*
+    */
+    this.Attrs = {};
+
+    /*  Variable: DisplayName
+    *  Textual description of field.
+    *  Type: string
+    *  Default value: *undefined*
+    */
+    // this.DisplayName=undefined;
+
+    /*  Variable: Size
+    *  Field size.
+    *  Type: integer
+    *  Default value: *undefined*
+    */
+    // this.Size=undefined;
+
+    /*  Variable: Precision
+    *  Field precision.
+    *  Type: integer
+    *  Default value: *undefined*
+    */
+    // this.Precision=undefined;
+
+    /*  Variable: Required
+    *  If TRUE, the value of field is required.
+    *  Type: boolean
+    *  Default value: *false*
+    */
+    this.Required=false;
+
+    /*  Variable: NullIfEmpty
+    *  If TRUE, the empty value of field is considered as null.
+    *  Type: boolean
+    *  Default value: *true*
+    */
+    this.NullIfEmpty=true;
+
+    /*  Variable: AllowEmpty
+    *  If TRUE, the empty values are accepted even if Required is TRUE
+    *  Type: boolean
+    *  Default value: *false*
+    */
+    this.AllowEmpty=false;
+
+    /*  Variable: AutoTrim
+    *  Type of automatic string trim.
+    *  Type: integer
+    *  Default value: *fdTrim*
+    *
+    *  Constants:
+    *    fdNoTrim - don't trim
+    *    fdTrim - trim leading and trailing spaces
+    *    fdLeftTrim - trim leading spaces
+    *    fdRightTrim - trim trailing spaces
+    */
+    // this.AutoTrim=undefined;
+
+    /*  Variable: ReadOnly
+    *  If TRUE, the value cannot be modified.
+    *  Type: string
+    *  Default value: *undefined*
+    */
+    // this.ReadOnly=undefined;
+
+    /*  Variable: MinValue
+    *  Minimal allowed value.
+    *  Type: mixed
+    *  Default value: *undefined*
+    */
+    // this.MinValue=undefined;
+
+    /*  Variable: MaxValue
+    *  Maximum allowed value.
+    *  Type: mixed
+    *  Default value: *undefined*
+    */
+    // this.MaxValue=undefined;
+
+    /*  Variable: Enum
+    *  Enumeration of allowed values.
+    *  Type: array
+    *  Default value: *undefined*
+    */
+    // this.Enum=undefined;
+
+    /*  Variable: DefaultValue
+    *  Default value of field.
+    *  Type: mixed
+    *  Default value: *undefined*
+    */
+    // this.DefaultValue=undefined;
+
+    /*  Variable: Value
+    *  Value of field.
+    *  Type: mixed
+    *  Default value: *undefined*
+    */
+    this.Value = undefined;
+
+    /*
+    *  Group: Methods
+    */
+
+    /*  Function: GetDisplayName
+    *  Gets field DisplayName.
+    *
+    *  Syntax:
+    *    string *GetDisplayName* ([bool substid=true])
+    *
+    *  Parameters:
+    *    substid - if TRUE, returns field ID if display name is not defined
+    *
+    *  Returns:
+    *    The field display name.
+    */
+    this.GetDisplayName = ngfd_GetDisplayName;
+
+    /*  Function: GetTypedValue
+    *  Gets field *typed* value.
+    *
+    *  Syntax:
+    *    mixed *GetTypedValue* ([bool exception=true, mixed defval])
+    *
+    *  Parameters:
+    *    exception - if false field's DefaultValue is returned instead of throwing exception
+    *    defval - if defined this value is returned instead of field's DefaultValue if execption is false
+    *
+    *  Returns:
+    *    The field value.
+    */
+    this.GetTypedValue = ngfd_GetTypedValue;
+
+    /*  Function: SetTypedValue
+    *  Sets field *typed* value.
+    *
+    *  Syntax:
+    *    mixed *SetTypedValue* (mixed value, [bool exception=true, mixed defval])
+    *
+    *  Parameters:
+    *    value - value to be set
+    *    exception - if false field's DefaultValue is set as value instead of throwing exception
+    *    defval - if defined this value is set instead of field's DefaultValue if execption is false
+    *
+    *  Returns:
+    *    -.
+    */
+    this.SetTypedValue = ngfd_SetTypedValue;
+
+    /*  Function: GetTypedDefaultValue
+    *  Gets field *typed* default value.
+    *
+    *  Syntax:
+    *    mixed *GetTypedDefaultValue* ()
+    *
+    *  Returns:
+    *    The field default value.
+    */
+    this.GetTypedDefaultValue = ngfd_GetTypedDefaultValue;
+
+    /*  Function: GetAttribute
+    *  Gets field attribute.
+    *
+    *  Syntax:
+    *    mixed *GetAttribute* (string attr)
+    *
+    *  Parameters:
+    *    attr - attribute id
+    *
+    *  Returns:
+    *    The value of specified attribute.
+    */
+    this.GetAttribute = ngfd_GetAttribute;
+
+    /*  Function: SetAttribute
+    *  Sets field attribute.
+    *
+    *  Syntax:
+    *    void *SetAttribute* (string attr, mixed value)
+    *
+    *  Parameters:
+    *    attr - attribute id
+    *    value - attribute value
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetAttribute = ngfd_SetAttribute;
+
+    /*  Function: GetAttributes
+    *  Gets field attributes.
+    *
+    *  Syntax:
+    *    object *GetAttributes* (array attrs)
+    *
+    *  Parameters:
+    *    attrs - array of attribute names
+    *
+    *  Returns:
+    *    The value of all attribute.
+    */
+    this.GetAttributes = ngfd_GetAttributes;
+
+    /*  Function: SetAttributes
+    *  Sets field attributes.
+    *
+    *  Syntax:
+    *    object *SetAttributes* (object attrs)
+    *
+    *  Parameters:
+    *    attrs - name-value pairs
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetAttributes = ngfd_SetAttributes;
+
+    /*  Function: TypedValue
+    *  Converts given value according to field type.
+    *
+    *  Syntax:
+    *    mixed *TypedValue* (mixed value)
+    *
+    *  Parameters:
+    *    value - value to convert
+    *
+    *  Returns:
+    *    Converted value or throws <ngFieldDefException> if convert fails.
+    */
+    this.TypedValue = ngfd_TypedValue;
+
+    /*  Function: TypedValueAs
+    *  Converts given value according to external field type.
+    *
+    *  Syntax:
+    *    mixed *TypedValueAs* (mixed value, ngFieldDef field)
+    *
+    *  Parameters:
+    *    value - value to convert
+    *    field - field to which type value should be converted
+    *
+    *  Returns:
+    *    Converted value or throws <ngFieldDefException> if convert fails.
+    *    Thrown exception has reference to this field, not external.
+    */
+    this.TypedValueAs = ngfd_TypedValueAs;
+
+    /*  Function: Clear
+    *  Sets field value to undefined.
+    *
+    *  Syntax:
+    *    void *Clear* (void)
+    *
+    *  Returns:
+    *    -
+    */
+    this.Clear = ngfd_Clear;
+
+    /*  Function: Validate
+    *  Validates if given value can be converted according to field type.
+    *
+    *  Syntax:
+    *    mixed *Validate* (mixed value)
+    *
+    *  Parameters:
+    *    value - value to test
+    *
+    *  Returns:
+    *    TRUE if value can be converted or <ngFieldDefException> object with description of conversion failure.
+    */
+    this.Validate    = ngfd_Validate;
+
+    /*  Function: FormatError
+    *  Formats ViewModel error object to one or more text messages.
+    *
+    *  Syntax:
+    *    array *FormatError* (object error)
+    *
+    *  Parameters:
+    *    error - ViewModel error object (<ngFieldDefException> or array of <ngFieldDefException>s)
+    *
+    *  Returns:
+    *  Array of formated string messages.
+    */
+    this.FormatError = ngfd_FormatError;
+
+    this.DoFormatError = ngfd_DoFormatError;
+
+    /*  Function: Serialize
+    *  Exports (and converts) given value from ViewModel.
+    *
+    *  Syntax:
+    *    mixed *Serialize* (mixed value)
+    *
+    *  Parameters:
+    *    value - value to serialize
+    *
+    *  Returns:
+    *    Exported value or throws <ngFieldDefException> if convert fails.
+    */
+    this.Serialize   = ngfd_Serialize;
+
+    /*  Function: Deserialize
+    *  Imports (and converts) given value to ViewModel.
+    *
+    *  Syntax:
+    *    mixed *Deserialize* (mixed value)
+    *
+    *  Parameters:
+    *    value - value to deserialize
+    *
+    *  Returns:
+    *    Imported value or throws <ngFieldDefException> if convert fails.
+    */
+    this.Deserialize = ngfd_Deserialize;
+
+    /*  Function: FormatString
+    *  Converts given value to string according to field type.
+    *
+    *  Syntax:
+    *    string *FormatString* (mixed value)
+    *
+    *  Parameters:
+    *    value - value to convert
+    *
+    *  Returns:
+    *    String value.
+    */
+    this.FormatString = ngfd_FormatString;
+
+    /*  Function: EditString
+    *  Converts given value to string suitable for editation according to field type.
+    *
+    *  Syntax:
+    *    string *EditString* (mixed value)
+    *
+    *  Parameters:
+    *    value - value to convert
+    *
+    *  Returns:
+    *    String value for edit.
+    */
+    this.EditString = ngfd_EditString;
+
+    /*  Function: ParseString
+    *  Converts given string value to value according to field type.
+    *
+    *  Syntax:
+    *    mixed *ParseString* (string str)
+    *
+    *  Parameters:
+    *    str - string value
+    *
+    *  Returns:
+    *    Value according to field type.
+    */
+    this.ParseString  = ngfd_ParseString;
+
+    /*
+    *  Group: Events
+    */
+
+    /*
+    *  Event: OnFormatError
+    */
+    this.OnFormatError = null;
+    /*
+    *  Event: OnSerialize
+    */
+    this.OnSerialize   = null;
+    /*
+    *  Event: OnDeserialize
+    */
+    this.OnDeserialize = null;
+    /*
+    *  Event: OnTypedValue
+    */
+    this.OnTypedValue  = null;
+
+    /*
+    *  Event: OnFormatString
+    */
+    this.OnFormatString = null;
+    /*
+    *  Event: OnEditString
+    */
+    this.OnEditString = null;
+    /*
+    *  Event: OnParseString
+    */
+    this.OnParseString = null;
+
+    this.SetAttributes(attrs);
+  }
+
+  function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluenames)
+  {
+    deserialize=ngVal(deserialize,false);
+    errors=ngVal(errors,{});
+    strictvaluenames=ngVal(strictvaluenames,false);
+    if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors, strictvaluenames),false))) return;
+
+    if(valuenames)
     {
-      v=this.TypedValue(v);
-    }
-    catch(e)
-    {
-    }
-  }
-  finally
-  {
-    delete this.__parsingstring;
-  }
-  return v;
-}
-
-function ngfd_SetAttribute(attr,val)
-{
-  switch(attr)
-  {
-    case 'PrivateField': this.PrivateField=val; break;
-    case 'DisplayName':  this.DisplayName=val; break;
-    case 'Size':         this.Size=val; break;
-    case 'Precision':    this.Precision=val; break;
-
-    case 'Required':     this.Required=val; break;
-    case 'NullIfEmpty':  this.NullIfEmpty=val; break;
-    case 'AllowEmpty':   this.AllowEmpty=val; break;
-    case 'AutoTrim':     this.AutoTrim=val; break;
-    case 'ReadOnly':     this.ReadOnly=val; break;
-    case 'MinValue':     this.MinValue=val; break;
-    case 'MaxValue':     this.MaxValue=val; break;
-    case 'Enum':         this.Enum=val; break;
-    case 'DefaultValue': this.DefaultValue=val; break;
-    default:             this.Attrs[attr]=val; break;
-  }
-}
-
-function ngfd_GetAttribute(attr)
-{
-  switch(attr)
-  {
-    case 'PrivateField': return this.PrivateField;
-    case 'DisplayName':  return this.DisplayName;
-    case 'Size':         return this.Size;
-    case 'Precision':    return this.Precision;
-
-    case 'Required':     return this.Required;
-    case 'NullIfEmpty':  return this.NullIfEmpty;
-    case 'AllowEmpty':   return this.AllowEmpty;
-    case 'AutoTrim':     return this.AutoTrim;
-    case 'ReadOnly':     return this.ReadOnly;
-    case 'MinValue':     return this.MinValue;
-    case 'MaxValue':     return this.MaxValue;
-    case 'Enum':         return this.Enum;
-    case 'DefaultValue': return this.DefaultValue;
-    default:             return this.Attrs[attr];
-  }
-}
-
-function ngfd_SetAttributes(attrs)
-{
-  if(ng_IsObjVar(attrs))
-    for(var attr in attrs)
-      this.SetAttribute(attr,attrs[attr]);
-}
-
-function ngfd_GetAttributes(attrs)
-{
-  var result={};
-  var getAll=false;
-  if(!ng_IsArrayVar(attrs)){
-    getAll=true;
-    attrs=new Array(
-      'PrivateField',
-      'DisplayName',
-      'Size',
-      'Precision',
-
-      'Required',
-      'NullIfEmpty',
-      'AllowEmpty',
-      'AutoTrim',
-      'ReadOnly',
-      'MinValue',
-      'MaxValue',
-      'Enum',
-      'DefaultValue'
-    );
-  }
-
-  var attr;
-  for(var i in attrs){
-    attr=attrs[i];
-    result[attr]=this.GetAttribute(attr);
-  }
-
-  if(getAll)
-    for(var attr in this.Attrs)
-      result[attr]=this.GetAttribute(attr);
-
-  return result;
-}
-
-function ngFieldDefCreateAs(fd, id, type, attrs)
-{
-  try
-  {
-    if(typeof type==='function')
-    {
-      fd.__fielddef = type;
-      var args=Array.prototype.slice.apply(arguments);
-      args.splice(2,1);
-      args.splice(0,1);
-      fd.__fielddef.apply(fd,args)
-    }
-    else
-    {
-      fd.__fielddef = ngFieldDef;
-      fd.__fielddef(id, type, attrs);
-    }
-  } finally {
-    delete fd.__fielddef;
-  }
-}
-
-function ngIsFieldDef(v)
-{
-  return (ng_typeObject(v))&&(!ng_isEmpty(v.DataType))&&(typeof v.Validate === 'function')&&(typeof v.Serialize === 'function')&&(typeof v.Deserialize === 'function');
-}
-
-/**
- *  Class: ngFieldDef
- *  This class implements ViewModel field type description object.
- */
-function ngFieldDef(id, type, attrs)
-{
-  attrs=ngVal(attrs,{});
-
-  /*
-   *  Group: Properties
-   */
-
-  /*  Variable: Owner
-   *  Owner (usualy <ngViewModel>) of <ngFieldDef>.
-   *  Type: object
-   */
-  this.Owner    = null;
-  /*  Variable: Parent
-   *  Reference to parent ngFieldDef (if exists).
-   *  Type: mixed
-   */
-  //this.Parent    = undefined;
-
-  /*  Variable: ID
-   *  Field identifier.
-   *  Type: string
-   */
-  this.ID       = ngVal(id,'');
-
-  /*  Variable: Type
-   *  Basic field type.
-   *  Type: string
-   *
-   *  Constants:
-   *    'BOOL' - boolean type
-   *    'INTEGER' - integer type
-   *    'FLOAT' - float number type
-   *    'SBYTE' - signed byte (-127..127)
-   *    'BYTE' - unsigned byte (0..255)
-   *    'SHORT' - signed short (-32767..32767)
-   *    'USHORT' - unsigned short (0-65535)
-   *    'LONG' - signed long (-2147483647..2147483647)
-   *    'ULONG' - unsigned long (0..4294967295)
-   *    'DECIMAL' - number with fixed decimal
-   *    'STRING' - string type
-   *    'NVARCHAR' - string type with limited length
-   *    'TIMESTAMP' - date and time type
-   *    'DATETIME' - date and time type
-   *    'DATE' - date only type
-   *    'TIME' - time only type
-   *    'UTCTIMESTAMP' - date and time type (UTC)
-   *    'UTCDATETIME' - date and time type (UTC)
-   *    'ARRAY' - array type
-   */
-  this.Type     = ngVal(this.Type, type);
-
-  /*  Variable: DataType
-   *  Field type identifier.
-   *  Type: string
-   */
-  this.DataType = ngVal(type,'');
-
-  /*  Variable: PrivateField
-   *  Determines if field is private. Private fields are never sent to server.
-   *  Type: boolean
-   *  Default value: *false*
-   */
-  this.PrivateField = false;
-
-  /*  Variable: Attrs
-   *  Field extended attributes.
-   *  Type: object
-   *  Default value: *{}*
-   */
-  this.Attrs = {};
-
-  /*  Variable: DisplayName
-   *  Textual description of field.
-   *  Type: string
-   *  Default value: *undefined*
-   */
-  // this.DisplayName=undefined;
-
-  /*  Variable: Size
-   *  Field size.
-   *  Type: integer
-   *  Default value: *undefined*
-   */
-  // this.Size=undefined;
-
-  /*  Variable: Precision
-   *  Field precision.
-   *  Type: integer
-   *  Default value: *undefined*
-   */
-  // this.Precision=undefined;
-
-  /*  Variable: Required
-   *  If TRUE, the value of field is required.
-   *  Type: boolean
-   *  Default value: *false*
-   */
-  this.Required=false;
-
-  /*  Variable: NullIfEmpty
-   *  If TRUE, the empty value of field is considered as null.
-   *  Type: boolean
-   *  Default value: *true*
-   */
-  this.NullIfEmpty=true;
-
-  /*  Variable: AllowEmpty
-   *  If TRUE, the empty values are accepted even if Required is TRUE
-   *  Type: boolean
-   *  Default value: *false*
-   */
-  this.AllowEmpty=false;
-
-  /*  Variable: AutoTrim
-   *  Type of automatic string trim.
-   *  Type: integer
-   *  Default value: *fdTrim*
-   *
-   *  Constants:
-   *    fdNoTrim - don't trim
-   *    fdTrim - trim leading and trailing spaces
-   *    fdLeftTrim - trim leading spaces
-   *    fdRightTrim - trim trailing spaces
-   */
-  // this.AutoTrim=undefined;
-
-  /*  Variable: ReadOnly
-   *  If TRUE, the value cannot be modified.
-   *  Type: string
-   *  Default value: *undefined*
-   */
-  // this.ReadOnly=undefined;
-
-  /*  Variable: MinValue
-   *  Minimal allowed value.
-   *  Type: mixed
-   *  Default value: *undefined*
-   */
-  // this.MinValue=undefined;
-
-  /*  Variable: MaxValue
-   *  Maximum allowed value.
-   *  Type: mixed
-   *  Default value: *undefined*
-   */
-  // this.MaxValue=undefined;
-
-  /*  Variable: Enum
-   *  Enumeration of allowed values.
-   *  Type: array
-   *  Default value: *undefined*
-   */
-  // this.Enum=undefined;
-
-  /*  Variable: DefaultValue
-   *  Default value of field.
-   *  Type: mixed
-   *  Default value: *undefined*
-   */
-  // this.DefaultValue=undefined;
-
-  /*  Variable: Value
-   *  Value of field.
-   *  Type: mixed
-   *  Default value: *undefined*
-   */
-  this.Value = undefined;
-
-  /*
-   *  Group: Methods
-   */
-
-  /*  Function: GetDisplayName
-   *  Gets field DisplayName.
-   *
-   *  Syntax:
-   *    string *GetDisplayName* ([bool substid=true])
-   *
-   *  Parameters:
-   *    substid - if TRUE, returns field ID if display name is not defined
-   *
-   *  Returns:
-   *    The field display name.
-   */
-  this.GetDisplayName = ngfd_GetDisplayName;
-
-  /*  Function: GetTypedValue
-   *  Gets field *typed* value.
-   *
-   *  Syntax:
-   *    mixed *GetTypedValue* ([bool exception=true, mixed defval])
-   *
-   *  Parameters:
-   *    exception - if false field's DefaultValue is returned instead of throwing exception
-   *    defval - if defined this value is returned instead of field's DefaultValue if execption is false
-   *
-   *  Returns:
-   *    The field value.
-   */
-  this.GetTypedValue = ngfd_GetTypedValue;
-
-  /*  Function: SetTypedValue
-   *  Sets field *typed* value.
-   *
-   *  Syntax:
-   *    mixed *SetTypedValue* (mixed value, [bool exception=true, mixed defval])
-   *
-   *  Parameters:
-   *    value - value to be set
-   *    exception - if false field's DefaultValue is set as value instead of throwing exception
-   *    defval - if defined this value is set instead of field's DefaultValue if execption is false
-   *
-   *  Returns:
-   *    -.
-   */
-  this.SetTypedValue = ngfd_SetTypedValue;
-
-  /*  Function: GetTypedDefaultValue
-   *  Gets field *typed* default value.
-   *
-   *  Syntax:
-   *    mixed *GetTypedDefaultValue* ()
-   *
-   *  Returns:
-   *    The field default value.
-   */
-  this.GetTypedDefaultValue = ngfd_GetTypedDefaultValue;
-
-  /*  Function: GetAttribute
-   *  Gets field attribute.
-   *
-   *  Syntax:
-   *    mixed *GetAttribute* (string attr)
-   *
-   *  Parameters:
-   *    attr - attribute id
-   *
-   *  Returns:
-   *    The value of specified attribute.
-   */
-  this.GetAttribute = ngfd_GetAttribute;
-
-  /*  Function: SetAttribute
-   *  Sets field attribute.
-   *
-   *  Syntax:
-   *    void *SetAttribute* (string attr, mixed value)
-   *
-   *  Parameters:
-   *    attr - attribute id
-   *    value - attribute value
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetAttribute = ngfd_SetAttribute;
-
-  /*  Function: GetAttributes
-   *  Gets field attributes.
-   *
-   *  Syntax:
-   *    object *GetAttributes* (array attrs)
-   *
-   *  Parameters:
-   *    attrs - array of attribute names
-   *
-   *  Returns:
-   *    The value of all attribute.
-   */
-  this.GetAttributes = ngfd_GetAttributes;
-
-  /*  Function: SetAttributes
-   *  Sets field attributes.
-   *
-   *  Syntax:
-   *    object *SetAttributes* (object attrs)
-   *
-   *  Parameters:
-   *    attrs - name-value pairs
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetAttributes = ngfd_SetAttributes;
-
-  /*  Function: TypedValue
-   *  Converts given value according to field type.
-   *
-   *  Syntax:
-   *    mixed *TypedValue* (mixed value)
-   *
-   *  Parameters:
-   *    value - value to convert
-   *
-   *  Returns:
-   *    Converted value or throws <ngFieldDefException> if convert fails.
-   */
-  this.TypedValue = ngfd_TypedValue;
-
-  /*  Function: TypedValueAs
-   *  Converts given value according to external field type.
-   *
-   *  Syntax:
-   *    mixed *TypedValueAs* (mixed value, ngFieldDef field)
-   *
-   *  Parameters:
-   *    value - value to convert
-   *    field - field to which type value should be converted
-   *
-   *  Returns:
-   *    Converted value or throws <ngFieldDefException> if convert fails.
-   *    Thrown exception has reference to this field, not external.
-   */
-  this.TypedValueAs = ngfd_TypedValueAs;
-
-  /*  Function: Clear
-   *  Sets field value to undefined.
-   *
-   *  Syntax:
-   *    void *Clear* (void)
-   *
-   *  Returns:
-   *    -
-   */
-  this.Clear = ngfd_Clear;
-
-  /*  Function: Validate
-   *  Validates if given value can be converted according to field type.
-   *
-   *  Syntax:
-   *    mixed *Validate* (mixed value)
-   *
-   *  Parameters:
-   *    value - value to test
-   *
-   *  Returns:
-   *    TRUE if value can be converted or <ngFieldDefException> object with description of conversion failure.
-   */
-  this.Validate    = ngfd_Validate;
-
-  /*  Function: FormatError
-   *  Formats ViewModel error object to one or more text messages.
-   *
-   *  Syntax:
-   *    array *FormatError* (object error)
-   *
-   *  Parameters:
-   *    error - ViewModel error object (<ngFieldDefException> or array of <ngFieldDefException>s)
-   *
-   *  Returns:
-   *  Array of formated string messages.
-   */
-  this.FormatError = ngfd_FormatError;
-
-  this.DoFormatError = ngfd_DoFormatError;
-
-  /*  Function: Serialize
-   *  Exports (and converts) given value from ViewModel.
-   *
-   *  Syntax:
-   *    mixed *Serialize* (mixed value)
-   *
-   *  Parameters:
-   *    value - value to serialize
-   *
-   *  Returns:
-   *    Exported value or throws <ngFieldDefException> if convert fails.
-   */
-  this.Serialize   = ngfd_Serialize;
-
-  /*  Function: Deserialize
-   *  Imports (and converts) given value to ViewModel.
-   *
-   *  Syntax:
-   *    mixed *Deserialize* (mixed value)
-   *
-   *  Parameters:
-   *    value - value to deserialize
-   *
-   *  Returns:
-   *    Imported value or throws <ngFieldDefException> if convert fails.
-   */
-  this.Deserialize = ngfd_Deserialize;
-
-  /*  Function: FormatString
-   *  Converts given value to string according to field type.
-   *
-   *  Syntax:
-   *    string *FormatString* (mixed value)
-   *
-   *  Parameters:
-   *    value - value to convert
-   *
-   *  Returns:
-   *    String value.
-   */
-  this.FormatString = ngfd_FormatString;
-
-  /*  Function: EditString
-   *  Converts given value to string suitable for editation according to field type.
-   *
-   *  Syntax:
-   *    string *EditString* (mixed value)
-   *
-   *  Parameters:
-   *    value - value to convert
-   *
-   *  Returns:
-   *    String value for edit.
-   */
-  this.EditString = ngfd_EditString;
-
-  /*  Function: ParseString
-   *  Converts given string value to value according to field type.
-   *
-   *  Syntax:
-   *    mixed *ParseString* (string str)
-   *
-   *  Parameters:
-   *    str - string value
-   *
-   *  Returns:
-   *    Value according to field type.
-   */
-  this.ParseString  = ngfd_ParseString;
-
-  /*
-   *  Group: Events
-   */
-
-  /*
-   *  Event: OnFormatError
-   */
-  this.OnFormatError = null;
-  /*
-   *  Event: OnSerialize
-   */
-  this.OnSerialize   = null;
-  /*
-   *  Event: OnDeserialize
-   */
-  this.OnDeserialize = null;
-  /*
-   *  Event: OnTypedValue
-   */
-  this.OnTypedValue  = null;
-
-  /*
-   *  Event: OnFormatString
-   */
-  this.OnFormatString = null;
-  /*
-   *  Event: OnEditString
-   */
-  this.OnEditString = null;
-  /*
-   *  Event: OnParseString
-   */
-  this.OnParseString = null;
-
-  this.SetAttributes(attrs);
-}
-
-function ngvm_SetValues(values, deserialize, valuenames, errors, strictvaluenames)
-{
-  deserialize=ngVal(deserialize,false);
-  errors=ngVal(errors,{});
-  strictvaluenames=ngVal(strictvaluenames,false);
-  if((this.OnSetValues)&&(!ngVal(this.OnSetValues(this,values,deserialize, valuenames, errors, strictvaluenames),false))) return;
-
-  if(valuenames)
-  {
-    var valnames={};
-    for(var i in valuenames) {
-      valnames[valuenames[i]]=true;
-    }
-    valuenames=valnames;
-  }
-
-  function cansetvalue(valpath) {
-    if(!valuenames) return true;
-    if(valuenames[valpath]) {
-       delete valuenames[valpath];
-       return true;
-    }
-    return strictvaluenames ? false : true;
-  }
-
-  var self=this;
-  function setvalues(o,d,path)
-  {
-    var val,valpath,setval,instance;
-    if(o==self) return;
-    if(path!='') path+='.';
-    if((!d)||(typeof d!=='object')) return;
-    if((!o)||(typeof o!=='object')) return;
-    for(var i in o)
-    {
-      if((o==self.ViewModel)&&(i=='Owner')) continue;
-      if((typeof d[i]==='undefined')&&(!valuenames)) continue;
-      val=instance=o[i];
-      if(ngIsFieldDef(instance))
-      {
-        if(instance.PrivateField) {
-          cansetvalue(path+i);
-          continue;
-        }
-        val=instance.Value;
+      var valnames={};
+      for(var i in valuenames) {
+        valnames[valuenames[i]]=true;
       }
-      valpath=path+i;
-      if(ko.isObservable(val))
+      valuenames=valnames;
+    }
+
+    function cansetvalue(valpath) {
+      if(!valuenames) return true;
+      if(valuenames[valpath]) {
+        delete valuenames[valpath];
+        return true;
+      }
+      return strictvaluenames ? false : true;
+    }
+
+    var self=this;
+    function setvalues(o,d,path)
+    {
+      var val,valpath,setval,instance;
+      if(o==self) return;
+      if(path!='') path+='.';
+      if((!d)||(typeof d!=='object')) return;
+      if((!o)||(typeof o!=='object')) return;
+      for(var i in o)
       {
-        if((cansetvalue(valpath))&&(ko.isWriteableObservable(val)))
+        if((o==self.ViewModel)&&(i=='Owner')) continue;
+        if((typeof d[i]==='undefined')&&(!valuenames)) continue;
+        val=instance=o[i];
+        if(ngIsFieldDef(instance))
         {
-          instance.__Loading=true;
-          if(d.hasOwnProperty(i)) {
-            try
-            {
-              setval=d[i];
-              if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
-              if((deserialize)&&(typeof instance.Deserialize === 'function')) {
-                setval=instance.Deserialize(setval);
-              }
-              else
-              {
-                if(typeof instance.TypedValue === 'function')
-                  setval=instance.TypedValue(setval);
-              }
-            }
-            catch(e)
-            {
-              errors[valpath]=e;
-            }
-            ko.ng_setvalue(val,setval);
+          if(instance.PrivateField) {
+            cansetvalue(path+i);
+            continue;
           }
-          else {
-            if(valuenames) {
-              try {
-                if(typeof instance.TypedValue === 'function') {
-                  setval=instance.TypedValue(ko.ng_getvalue(val));
+          val=instance.Value;
+        }
+        valpath=path+i;
+        if(ko.isObservable(val))
+        {
+          if((cansetvalue(valpath))&&(ko.isWriteableObservable(val)))
+          {
+            instance.__Loading=true;
+            if(d.hasOwnProperty(i)) {
+              try
+              {
+                setval=d[i];
+                if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
+                if((deserialize)&&(typeof instance.Deserialize === 'function')) {
+                  setval=instance.Deserialize(setval);
+                }
+                else
+                {
+                  if(typeof instance.TypedValue === 'function')
+                    setval=instance.TypedValue(setval);
                 }
               }
-              catch(e) {
+              catch(e)
+              {
                 errors[valpath]=e;
               }
+              ko.ng_setvalue(val,setval);
+            }
+            else {
+              if(valuenames) {
+                try {
+                  if(typeof instance.TypedValue === 'function') {
+                    setval=instance.TypedValue(ko.ng_getvalue(val));
+                  }
+                }
+                catch(e) {
+                  errors[valpath]=e;
+                }
+              }
+            }
+            delete instance.__Loading;
+          }
+        }
+        else
+        {
+          if(typeof val==='function') continue;
+          if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
+            if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) {
+              val={};
+              setvalues(val,d[i],valpath);
+              if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
+                o[i]=val;
+              }
+            }
+            else setvalues(val,d[i],valpath);
+          }
+          else
+          {
+            if((cansetvalue(valpath))&&(d.hasOwnProperty(i))) {
+              setval=d[i];
+              if(this.OnSetValue) {
+                try {
+                  setval=this.OnSetValue(this,setval,instance, valpath);
+                }
+                catch(e) {
+                  errors[valpath]=e;
+                }
+              }
+              o[i]=setval;
             }
           }
-          delete instance.__Loading;
         }
       }
-      else
+      for(var i in d)
       {
-        if(typeof val==='function') continue;
-        if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
-          if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) {
+        if(typeof o[i]==='undefined')
+        {
+          valpath=path+i;
+          if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
             val={};
             setvalues(val,d[i],valpath);
             if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
               o[i]=val;
             }
           }
-          else setvalues(val,d[i],valpath);
+          else {
+            if(cansetvalue(valpath)) {
+              setval=d[i];
+              if(this.OnSetValue) {
+                try {
+                  setval=this.OnSetValue(this,setval,instance, valpath);
+                }
+                catch(e) {
+                  errors[valpath]=e;
+                }
+              }
+              o[i]=setval;
+            }
+          }
+        }
+      }
+    }
+    setvalues(this.ViewModel,values,'');
+  }
+
+  function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serialize)
+  {
+    serialize=ngVal(serialize,false);
+    convtimestamps=ngVal(convtimestamps,false);
+    writableonly=ngVal(writableonly,false);
+    errors=ngVal(errors,{});
+    var origvaluenames=valuenames;
+    if(valuenames)
+    {
+      var valnames={};
+      for(var i in valuenames) {
+        valnames[valuenames[i]]=true;
+      }
+      valuenames=valnames;
+    }
+
+    function cangetvalue(valpath) {
+      if(!valuenames) return true;
+      if(valuenames[valpath]) {
+        delete valuenames[valpath];
+        return true;
+      }
+      return false;
+    }
+
+    var self=this;
+    function getvalues(o,d,path)
+    {
+      var val,valpath,instance;
+      if(o==self) return;
+      if(path!='') path+='.';
+      for(var i in o)
+      {
+        if((o==self.ViewModel)&&(i=='Owner')) continue;
+        val=instance=o[i];
+        if(ngIsFieldDef(instance))
+        {
+          if(instance.PrivateField) {
+            cangetvalue(valpath);
+            continue;
+          }
+          val=instance.Value;
+        }
+        valpath=path+i;
+        if(ko.isObservable(val))
+        {
+          if((writableonly)&&(!ko.isWriteableObservable(val))) continue;
+          if((serialize)&&(!val['__serialize'])) continue;
+
+          if(cangetvalue(valpath))
+          {
+            instance.__Saving=true;
+            try
+            {
+              val=ko.ng_getvalue(val);
+              if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
+              if((serialize)&&(typeof instance.Serialize === 'function'))
+                d[i]=instance.Serialize(val);
+              else
+              {
+                if(typeof instance.TypedValue === 'function')
+                  d[i]=instance.TypedValue(val);
+                else
+                  d[i]=val;
+              }
+            }
+            catch(e)
+            {
+              d[i]=val;
+              errors[valpath]=e;
+            }
+            delete instance.__Saving;
+            if((convtimestamps)&&(ng_typeDate(d[i]))) d[i]=ng_toUnixTimestamp(d[i]);
+          }
         }
         else
         {
-          if((cansetvalue(valpath))&&(d.hasOwnProperty(i))) {
-            setval=d[i];
-            if(this.OnSetValue) {
-              try {
-                setval=this.OnSetValue(this,setval,instance, valpath);
+          if(typeof val==='function') continue;
+          if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val)))
+          {
+            var dobj={};
+            getvalues(val,dobj,valpath);
+            if((cangetvalue(valpath))||!ng_EmptyVar(dobj)) d[i]=dobj;
+          }
+          else
+          {
+            if(cangetvalue(valpath))
+            {
+              if(self.OnGetValue) {
+                try {
+                  val=self.OnGetValue(self,val,instance, valpath, errors);
+                }
+                catch(e) {
+                  errors[valpath]=e;
+                }
               }
-              catch(e) {
-                errors[valpath]=e;
-              }
+              if((convtimestamps)&&(ng_typeDate(val))) val=ng_toUnixTimestamp(val);
+              d[i]=val;
             }
-            o[i]=setval;
           }
         }
       }
     }
-    for(var i in d)
-    {
-      if(typeof o[i]==='undefined')
+
+    var ret={};
+    getvalues(this.ViewModel,ret,'');
+
+    if(this.OnGetValues) {
+      try
       {
-        valpath=path+i;
-        if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
-          val={};
-          setvalues(val,d[i],valpath);
-          if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
-            o[i]=val;
-          }
-        }
-        else {
-          if(cansetvalue(valpath)) {
-            setval=d[i];
-            if(this.OnSetValue) {
-              try {
-                setval=this.OnSetValue(this,setval,instance, valpath);
-              }
-              catch(e) {
-                errors[valpath]=e;
-              }
-            }
-            o[i]=setval;
-          }
-        }
+        this.OnGetValues(this, ret, writableonly, origvaluenames, errors, convtimestamps, serialize);
+      }
+      catch(e)
+      {
+        if((ng_typeObject(e.FieldDef))&&(e.FieldDef.ID!='')) errors[e.FieldDef.ID]=e;
+        else throw e;
       }
     }
+    return ret;
   }
-  setvalues(this.ViewModel,values,'');
-}
 
-function ngvm_GetValues(writableonly, valuenames, errors, convtimestamps, serialize)
-{
-  serialize=ngVal(serialize,false);
-  convtimestamps=ngVal(convtimestamps,false);
-  writableonly=ngVal(writableonly,false);
-  errors=ngVal(errors,{});
-  var origvaluenames=valuenames;
-  if(valuenames)
+  function ngvm_IsValid(writableonly, valuenames)
   {
-    var valnames={};
-    for(var i in valuenames) {
-      valnames[valuenames[i]]=true;
-    }
-    valuenames=valnames;
+    var err={};
+    this.GetValues(writableonly, valuenames, err);
+    for(var i in err)
+      return err;
+
+    return true;
   }
 
-  function cangetvalue(valpath) {
-    if(!valuenames) return true;
-    if(valuenames[valpath]) {
-       delete valuenames[valpath];
-       return true;
+  function ngvm_Errors(writableonly, valuenames)
+  {
+    return ng_ViewModelFormatError(this.IsValid(writableonly, valuenames));
+  }
+
+  function ngvm_ShowErrors(errors)
+  {
+    if(typeof errors==='undefined') errors=this.IsValid();
+    if(!ng_typeObject(errors)) return false;
+
+    for(var i in errors)
+    {
+      if(this.OnShowErrors) this.OnShowErrors(this,ng_ViewModelFormatError(errors),errors);
+      else
+      {
+        var errmsg=ng_ViewModelFormatError(errors);
+        if(ng_IsArrayVar(errmsg)) errmsg=errmsg.join("\n");
+        if(errmsg!='') alert(errmsg);
+      }
+      return true;
     }
     return false;
   }
 
-  var self=this;
-  function getvalues(o,d,path)
+  function ngvm_GetRPC()
   {
-    var val,valpath,instance;
-    if(o==self) return;
-    if(path!='') path+='.';
+    if(!this.rpc)
+    {
+      var vm=this;
+      var rpc=new ngRPC(this.ID);
+      rpc.nocache=true;
+      rpc.OnError=function(rpc, reqinfo) {
+        if((reqinfo.ViewModel===vm)&&(reqinfo.vmCommand===vm.ActiveCommand)&&(reqinfo.vmRequestID==vm.rpc_reqid)) {
+          vm.DoCommandError(reqinfo.vmCommand,reqinfo.vmCommandOptions, { RPC: rpc, ReqInfo: reqinfo });
+        }
+      };
+      this.rpc=rpc;
+    }
+    return this.rpc;
+  }
+
+  function ngvm_makeobservable(o,serializeable)
+  {
+    if((!o)||(typeof o!=='object')) return false;
+    var isarray,ret=false;
     for(var i in o)
     {
-      if((o==self.ViewModel)&&(i=='Owner')) continue;
-      val=instance=o[i];
+      isarray=ng_IsArrayVar(o[i]);
+      if((typeof o[i]!=='function')&&((isarray)||(typeof o[i]!=='object')||(ng_typeDate(o[i]))))
+      {
+        if(isarray) o[i]=ko.observableArray(o[i]);
+        else o[i]=ko.observable(o[i]);
+        if(serializeable) ko.ng_serialize(o[i]);
+        continue;
+      }
+      ngvm_makeobservable(o[i],serializeable);
+    }
+  }
+
+  window.ngvm_recievedata = function(results)
+  {
+    if(!results) return;
+
+    // Parse request id
+    var vmid='';
+    var reqid=ngVal(results.reqid,'');
+    var i=reqid.lastIndexOf('_');
+    if(i>=0)
+    {
+      vmid=reqid.substring(0,i);
+      reqid=reqid.substring(i+1,reqid.length);
+    }
+    if(vmid=='') return;
+
+    // Get ngViewModel
+    var vm=getViewModelById(vmid);
+    if(!vm) return;
+
+    // Check request id
+    if(reqid!=vm.rpc_reqid) return;
+
+    if(vm.CommandTimer) clearTimeout(vm.CommandTimer);
+    delete vm.CommandTimer;
+
+    var sresults;
+    if(vm.OnResults)
+    {
+      sresults = vm.OnResults(vm, results);
+      if(!sresults) return;
+    }
+    else sresults=results;
+
+    var cmd=vm.ActiveCommand;
+    if(vm.OnCommandResults) vm.OnCommandResults(vm,cmd,sresults);
+
+    // Update ViewModel
+    if(sresults.ViewModel) {
+      var vmodel=sresults.ViewModel;
+      if(typeof vmodel !== 'function')
+      {
+        if(!sresults.Values) sresults.Values={};
+        ng_MergeVar(sresults.Values,vmodel);
+        ngvm_makeobservable(vmodel,true);
+      }
+      vm.SetViewModel(vmodel);
+    }
+
+    vm.ActiveCommand='';
+    if(vm.OnCommandFinished) vm.OnCommandFinished(vm,cmd,sresults);
+
+    // Handle Errors
+    function create_exceptions(err)
+    {
+      if(ng_typeObject(err.childerrs))
+        for(var k in err.childerrs)
+          err.childerrs[k] = create_exceptions(err.childerrs[k]);
+
+      var fd=vm.GetFieldByID(err.field);
+      return new ngFieldDefException(ngIsFieldDef(fd) ? fd : ngTxt('VM.'+vm.Namespace+'.'+err.field,err.field), err.err, err.errmsg, err.errext, err.childerrs);
+    }
+
+    if(sresults.Errors)
+    {
+      var err,fd;
+      var errors=new Array();
+      for(var e in sresults.Errors)
+      {
+        err=sresults.Errors[e];
+        errors.push(create_exceptions(err));
+      }
+      if(errors.length>0)
+      {
+        if((vm.OnErrors)&&(!ngVal(vm.OnErrors(vm,errors),false))) return false;
+        if(!ng_EmptyVar(errors))
+          vm.ShowErrors(errors);
+        return false;
+      }
+    }
+
+    // Update Values
+    if(sresults.Values) {
+      if(!ngVal(sresults.NoReset,false))
+      {
+        var valexist={};
+
+        function getvalexist(vals, path) {
+          if((!ng_IsObjVar(vals))||(ng_typeDate(vals))||(ng_IsArrayVar(vals))) return;
+          for(var i in vals) {
+            if(i=='') continue;
+            valexist[path+i]=true;
+            getvalexist(vals[i], path+i+'.');
+          }
+        }
+        getvalexist(sresults.Values, '');
+
+        // Reset all except result Values and PrivateFields
+        vm.Reset(function (vm,val,instance,path) {
+          if(valexist[path]) {
+            if((ko.isObservable(val))||(!ng_typeObject(val))||(ng_typeDate(val))||(ng_IsArrayVar(val))) return false;
+          }
+          if((ngIsFieldDef(instance))&&(instance.PrivateField)) return false;
+          return true;
+        });
+
+        delete valexist;
+      }
+      vm.SetValues(sresults.Values,true);
+    }
+    if(vm.OnCommandData) vm.OnCommandData(vm,cmd,sresults);
+
+    // Fire callback
+    if(typeof sresults.Callback === 'function') {
+      vm.ViewModel.__servercallback=sresults.Callback;
+      try {
+        vm.ViewModel.__servercallback();
+      }
+      finally {
+        delete vm.ViewModel.__servercallback;
+      }
+    }
+  }
+
+  function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
+  {
+    exactmatch=ngVal(exactmatch,false);
+    var valuenames=[];
+    var attrfound=false;
+    this.ScanValues(function(vm,val,instance,valpath) {
       if(ngIsFieldDef(instance))
       {
-        if(instance.PrivateField) {
-          cangetvalue(valpath);
-          continue;
-        }
-        val=instance.Value;
-      }
-      valpath=path+i;
-      if(ko.isObservable(val))
-      {
-        if((writableonly)&&(!ko.isWriteableObservable(val))) continue;
-        if((serialize)&&(!val['__serialize'])) continue;
-
-        if(cangetvalue(valpath))
+        var forcmd=instance.Attrs['Command'];
+        if(forcmd!=='')
         {
-          instance.__Saving=true;
-          try
+          if(ng_isEmpty(forcmd))
           {
-            val=ko.ng_getvalue(val);
-            if(self.OnGetValue) val=self.OnGetValue(self,val,instance, valpath, errors);
-            if((serialize)&&(typeof instance.Serialize === 'function'))
-              d[i]=instance.Serialize(val);
-            else
-            {
-              if(typeof instance.TypedValue === 'function')
-                d[i]=instance.TypedValue(val);
-              else
-                d[i]=val;
-            }
+            if(!exactmatch) valuenames.push(valpath);
           }
-          catch(e)
+          else
           {
-            d[i]=val;
-            errors[valpath]=e;
-          }
-          delete instance.__Saving;
-          if((convtimestamps)&&(ng_typeDate(d[i]))) d[i]=ng_toUnixTimestamp(d[i]);
-        }
-      }
-      else
-      {
-        if(typeof val==='function') continue;
-        if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val)))
-        {
-          var dobj={};
-          getvalues(val,dobj,valpath);
-          if((cangetvalue(valpath))||!ng_EmptyVar(dobj)) d[i]=dobj;
-        }
-        else
-        {
-          if(cangetvalue(valpath))
-          {
-            if(self.OnGetValue) {
-              try {
-                val=self.OnGetValue(self,val,instance, valpath, errors);
-              }
-              catch(e) {
-                errors[valpath]=e;
-              }
-            }
-            if((convtimestamps)&&(ng_typeDate(val))) val=ng_toUnixTimestamp(val);
-            d[i]=val;
+            attrfound=true;
+            if((forcmd===cmd)||(ng_inArray(cmd,forcmd)))
+              valuenames.push(valpath);
           }
         }
+        else attrfound=true;
       }
-    }
+      else if(!exactmatch) valuenames.push(valpath);
+      return true;
+    });
+    if(!attrfound) return; // undefined - no special values for command;
+    return valuenames;
   }
 
-  var ret={};
-  getvalues(this.ViewModel,ret,'');
-
-  if(this.OnGetValues) {
-    try
-    {
-      this.OnGetValues(this, ret, writableonly, origvaluenames, errors, convtimestamps, serialize);
-    }
-    catch(e)
-    {
-      if((ng_typeObject(e.FieldDef))&&(e.FieldDef.ID!='')) errors[e.FieldDef.ID]=e;
-      else throw e;
-    }
-  }
-  return ret;
-}
-
-function ngvm_IsValid(writableonly, valuenames)
-{
-  var err={};
-  this.GetValues(writableonly, valuenames, err);
-  for(var i in err)
-    return err;
-
-  return true;
-}
-
-function ngvm_Errors(writableonly, valuenames)
-{
-  return ng_ViewModelFormatError(this.IsValid(writableonly, valuenames));
-}
-
-function ngvm_ShowErrors(errors)
-{
-  if(typeof errors==='undefined') errors=this.IsValid();
-  if(!ng_typeObject(errors)) return false;
-
-  for(var i in errors)
+  function ngvm_GetCommandValueNames(cmd,options,exactmatch)
   {
-    if(this.OnShowErrors) this.OnShowErrors(this,ng_ViewModelFormatError(errors),errors);
-    else
+    if(this.OnGetCommandValueNames)
     {
-      var errmsg=ng_ViewModelFormatError(errors);
-      if(ng_IsArrayVar(errmsg)) errmsg=errmsg.join("\n");
-      if(errmsg!='') alert(errmsg);
+      if(typeof options === 'undefined') options={};
+      return this.OnGetCommandValueNames(this,cmd,options);
     }
-    return true;
+    else return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch);
   }
-  return false;
-}
 
-function ngvm_GetRPC()
-{
-  if(!this.rpc)
+  function ngvm_DoCommandError(cmd, options, errinfo)
   {
-    var vm=this;
-    var rpc=new ngRPC(this.ID);
-    rpc.nocache=true;
-    rpc.OnError=function(rpc, reqinfo) {
-      if((reqinfo.ViewModel===vm)&&(reqinfo.vmCommand===vm.ActiveCommand)&&(reqinfo.vmRequestID==vm.rpc_reqid)) {
-        vm.DoCommandError(reqinfo.vmCommand,reqinfo.vmCommandOptions, { RPC: rpc, ReqInfo: reqinfo });
-      }
-    };
-    this.rpc=rpc;
-  }
-  return this.rpc;
-}
+    ngDEBUGLOG('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
 
-function ngvm_makeobservable(o,serializeable)
-{
-  if((!o)||(typeof o!=='object')) return false;
-  var isarray,ret=false;
-  for(var i in o)
+    this.CancelCommand();
+
+    if(options.IgnoreCommandError) return;
+
+    var info='';
+
+    function addinfo(type,data) {
+      var msg=ngTxt('viewmodel_err_cmd_'+type);
+      if(typeof data!=='undefined') msg=ng_sprintf(msg,data);
+      if(msg==='') return;
+      if(info!='') info+='; ';
+      info+=msg;
+    }
+    addinfo('viewmodel', this.ID);
+    addinfo('command', cmd);
+
+    var reqinfo=errinfo.ReqInfo;
+    if(reqinfo) {
+      if(reqinfo.RequestTimeout) addinfo('timeout');
+      if(reqinfo.EmptyResponse) addinfo('emptyresponse');
+      if(reqinfo.ParseError) addinfo('parseerror');
+      if(reqinfo.XMLHttp) addinfo('httpstatus', reqinfo.XMLHttp.status);
+    }
+    else if(errinfo.CommandTimeout) addinfo('timeout');
+
+    var msg=ngVal(options.CommandErrorMessage,'');
+    if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage.'+cmd,'');
+    if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage','');
+    if(msg==='') msg=ngTxt('viewmodel_err_cmd');
+    msg=ng_sprintf(msg,info);
+    if(this.OnCommandError) this.OnCommandError(this, msg, cmd, options, info, errinfo);
+  }
+
+  function ngvm_CancelCommand()
   {
-    isarray=ng_IsArrayVar(o[i]);
-    if((typeof o[i]!=='function')&&((isarray)||(typeof o[i]!=='object')||(ng_typeDate(o[i]))))
+    if(this.CommandTimer) clearTimeout(this.CommandTimer);
+    delete this.CommandTimer;
+
+    var cmd=this.ActiveCommand;
+    if(cmd!='')
     {
-      if(isarray) o[i]=ko.observableArray(o[i]);
-      else o[i]=ko.observable(o[i]);
-      if(serializeable) ko.ng_serialize(o[i]);
-      continue;
-    }
-    ngvm_makeobservable(o[i],serializeable);
-  }
-}
-
-function ngvm_recievedata(results)
-{
-  if(!results) return;
-
-  // Parse request id
-  var vmid='';
-  var reqid=ngVal(results.reqid,'');
-  var i=reqid.lastIndexOf('_');
-  if(i>=0)
-  {
-    vmid=reqid.substring(0,i);
-    reqid=reqid.substring(i+1,reqid.length);
-  }
-  if(vmid=='') return;
-
-  // Get ngViewModel
-  var vm=getViewModelById(vmid);
-  if(!vm) return;
-
-  // Check request id
-  if(reqid!=vm.rpc_reqid) return;
-
-  if(vm.CommandTimer) clearTimeout(vm.CommandTimer);
-  delete vm.CommandTimer;
-
-  var sresults;
-  if(vm.OnResults)
-  {
-    sresults = vm.OnResults(vm, results);
-    if(!sresults) return;
-  }
-  else sresults=results;
-
-  var cmd=vm.ActiveCommand;
-  if(vm.OnCommandResults) vm.OnCommandResults(vm,cmd,sresults);
-
-  // Update ViewModel
-  if(sresults.ViewModel) {
-    var vmodel=sresults.ViewModel;
-    if(typeof vmodel !== 'function')
-    {
-      if(!sresults.Values) sresults.Values={};
-      ng_MergeVar(sresults.Values,vmodel);
-      ngvm_makeobservable(vmodel,true);
-    }
-    vm.SetViewModel(vmodel);
-  }
-
-  vm.ActiveCommand='';
-  if(vm.OnCommandFinished) vm.OnCommandFinished(vm,cmd,sresults);
-
-  // Handle Errors
-  function create_exceptions(err)
-  {
-    if(ng_typeObject(err.childerrs))
-      for(var k in err.childerrs)
-        err.childerrs[k] = create_exceptions(err.childerrs[k]);
-
-    var fd=vm.GetFieldByID(err.field);
-    return new ngFieldDefException(ngIsFieldDef(fd) ? fd : ngTxt('VM.'+vm.Namespace+'.'+err.field,err.field), err.err, err.errmsg, err.errext, err.childerrs);
-  }
-
-  if(sresults.Errors)
-  {
-    var err,fd;
-    var errors=new Array();
-    for(var e in sresults.Errors)
-    {
-      err=sresults.Errors[e];
-      errors.push(create_exceptions(err));
-    }
-    if(errors.length>0)
-    {
-      if((vm.OnErrors)&&(!ngVal(vm.OnErrors(vm,errors),false))) return false;
-      if(!ng_EmptyVar(errors))
-        vm.ShowErrors(errors);
-      return false;
+      this.ActiveCommand='';
+      this.rpc_reqid++;
+      if(this.OnCommandCancel) this.OnCommandCancel(this, cmd);
     }
   }
 
-  // Update Values
-  if(sresults.Values) {
-    if(!ngVal(sresults.NoReset,false))
-    {
-      var valexist={};
-
-      function getvalexist(vals, path) {
-        if((!ng_IsObjVar(vals))||(ng_typeDate(vals))||(ng_IsArrayVar(vals))) return;
-        for(var i in vals) {
-          if(i=='') continue;
-          valexist[path+i]=true;
-          getvalexist(vals[i], path+i+'.');
-        }
-      }
-      getvalexist(sresults.Values, '');
-
-      // Reset all except result Values and PrivateFields
-      vm.Reset(function (vm,val,instance,path) {
-        if(valexist[path]) {
-          if((ko.isObservable(val))||(!ng_typeObject(val))||(ng_typeDate(val))||(ng_IsArrayVar(val))) return false;
-        }
-        if((ngIsFieldDef(instance))&&(instance.PrivateField)) return false;
-        return true;
-      });
-
-      delete valexist;
-    }
-    vm.SetValues(sresults.Values,true);
-  }
-  if(vm.OnCommandData) vm.OnCommandData(vm,cmd,sresults);
-
-  // Fire callback
-  if(typeof sresults.Callback === 'function') {
-    vm.ViewModel.__servercallback=sresults.Callback;
-    try {
-      vm.ViewModel.__servercallback();
-    }
-    finally {
-      delete vm.ViewModel.__servercallback;
-    }
-  }
-}
-
-function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
-{
-  exactmatch=ngVal(exactmatch,false);
-  var valuenames=[];
-  var attrfound=false;
-  this.ScanValues(function(vm,val,instance,valpath) {
-    if(ngIsFieldDef(instance))
-    {
-      var forcmd=instance.Attrs['Command'];
-      if(forcmd!=='')
-      {
-        if(ng_isEmpty(forcmd))
-        {
-          if(!exactmatch) valuenames.push(valpath);
-        }
-        else
-        {
-          attrfound=true;
-          if((forcmd===cmd)||(ng_inArray(cmd,forcmd)))
-            valuenames.push(valpath);
-        }
-      }
-      else attrfound=true;
-    }
-    else if(!exactmatch) valuenames.push(valpath);
-    return true;
-  });
-  if(!attrfound) return; // undefined - no special values for command;
-  return valuenames;
-}
-
-function ngvm_GetCommandValueNames(cmd,options,exactmatch)
-{
-  if(this.OnGetCommandValueNames)
+  function ngvm_Command(cmd,options)
   {
     if(typeof options === 'undefined') options={};
-    return this.OnGetCommandValueNames(this,cmd,options);
-  }
-  else return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch);
-}
+    if((this.OnCommand)&&(!ngVal(this.OnCommand(this,cmd,options),false))) return false;
 
-function ngvm_DoCommandError(cmd, options, errinfo)
-{
-  ngDEBUGLOG('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
+    this.CancelCommand();
 
-  this.CancelCommand();
-
-  if(options.IgnoreCommandError) return;
-
-  var info='';
-
-  function addinfo(type,data) {
-    var msg=ngTxt('viewmodel_err_cmd_'+type);
-    if(typeof data!=='undefined') msg=ng_sprintf(msg,data);
-    if(msg==='') return;
-    if(info!='') info+='; ';
-    info+=msg;
-  }
-  addinfo('viewmodel', this.ID);
-  addinfo('command', cmd);
-
-  var reqinfo=errinfo.ReqInfo;
-  if(reqinfo) {
-    if(reqinfo.RequestTimeout) addinfo('timeout');
-    if(reqinfo.EmptyResponse) addinfo('emptyresponse');
-    if(reqinfo.ParseError) addinfo('parseerror');
-    if(reqinfo.XMLHttp) addinfo('httpstatus', reqinfo.XMLHttp.status);
-  }
-  else if(errinfo.CommandTimeout) addinfo('timeout');
-
-  var msg=ngVal(options.CommandErrorMessage,'');
-  if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage.'+cmd,'');
-  if(msg==='') msg=ngTxt('VM.'+this.Namespace+'.CmdErrMessage','');
-  if(msg==='') msg=ngTxt('viewmodel_err_cmd');
-  msg=ng_sprintf(msg,info);
-  if(this.OnCommandError) this.OnCommandError(this, msg, cmd, options, info, errinfo);
-}
-
-function ngvm_CancelCommand()
-{
-  if(this.CommandTimer) clearTimeout(this.CommandTimer);
-  delete this.CommandTimer;
-
-  var cmd=this.ActiveCommand;
-  if(cmd!='')
-  {
-    this.ActiveCommand='';
-    this.rpc_reqid++;
-    if(this.OnCommandCancel) this.OnCommandCancel(this, cmd);
-  }
-}
-
-function ngvm_Command(cmd,options)
-{
-  if(typeof options === 'undefined') options={};
-  if((this.OnCommand)&&(!ngVal(this.OnCommand(this,cmd,options),false))) return false;
-
-  this.CancelCommand();
-
-  var err={};
-  var vals=options.Values;
-  if(ng_isEmpty(vals))
-  {
-    var valuenames=options.ValueNames;
-    if(ng_isEmpty(valuenames)) valuenames=this.GetCommandValueNames(cmd,options);
-    vals=this.GetValues(false,valuenames,err,true,true);
-  }
-  if(ng_EmptyVar(err))
-  {
-    try
+    var err={};
+    var vals=options.Values;
+    if(ng_isEmpty(vals))
     {
-      if(this.OnDoCommand)
+      var valuenames=options.ValueNames;
+      if(ng_isEmpty(valuenames)) valuenames=this.GetCommandValueNames(cmd,options);
+      vals=this.GetValues(false,valuenames,err,true,true);
+    }
+    if(ng_EmptyVar(err))
+    {
+      try
       {
-        var ret=(ngVal(this.OnDoCommand(this,cmd,options,vals,err),true));
-        if((ret)&&(ng_EmptyVar(err))) return true;
+        if(this.OnDoCommand)
+        {
+          var ret=(ngVal(this.OnDoCommand(this,cmd,options,vals,err),true));
+          if((ret)&&(ng_EmptyVar(err))) return true;
+        }
+      }
+      catch(e)
+      {
+        if((ng_typeObject(e.FieldDef))&&(e.FieldDef.ID!='')) err[e.FieldDef.ID]=e;
+        else throw e;
       }
     }
-    catch(e)
-    {
-      if((ng_typeObject(e.FieldDef))&&(e.FieldDef.ID!='')) err[e.FieldDef.ID]=e;
-      else throw e;
-    }
-  }
-  if(!ng_EmptyVar(err))
-  {
-    if((this.OnErrors)&&(!ngVal(this.OnErrors(this,err),false))) return false;
     if(!ng_EmptyVar(err))
     {
-      this.ShowErrors(err);
-      return false;
-    }
-  }
-
-  var url=ngVal(options.URL,this.ServerURL);
-  if(url=='') return false;
-
-  var rpc=this.GetRPC();
-  if(!rpc) return false;
-
-  this.rpc_reqid++;
-  rpc.clearParams();
-  if(ngVal(this.Namespace,'')!='') rpc.Params.ns=this.Namespace;
-  rpc.Params.cmd=cmd;
-  rpc.Params.data=ko.toJSON(vals);
-  rpc.Params.reqid=this.ID+'_'+this.rpc_reqid;
-  if(options.Params) ng_MergeVar(rpc.Params,options.Params);
-  rpc.URL = url;
-  this.ActiveCommand=cmd;
-
-  if((this.OnCommandRequest)&&(!ngVal(this.OnCommandRequest(this,rpc),false))) return false;
-
-  var self=this;
-  var reqid=this.rpc_reqid;
-  var timeout=ngVal(options.CommandTimeout,this.CommandTimeout);
-  if(this.CommandTimer) clearTimeout(this.CommandTimer);
-  if(timeout>0) {
-    this.CommandTimer=setTimeout(function() {
-      if((self.ActiveCommand===cmd)&&(self.rpc_reqid==reqid)) self.DoCommandError(cmd, options, {CommandTimeout: true});
-    },timeout);
-  } else delete this.CommandTimer;
-
-  rpc.sendRequest(void 0, void 0, { ViewModel: this, vmCommand: cmd, vmCommandOptions: options, vmRequestID: reqid });
-  return true;
-}
-
-function ngvm_SetViewModel(vmodel)
-{
-  if(!vmodel) return;
-  if(this.OnSetViewModel)
-  {
-    vmodel=this.OnSetViewModel(this,vmodel);
-    if(!vmodel) return;
-  }
-  this.ViewModel.Owner=this;
-  if(typeof vmodel === 'function')
-  {
-    this.viewmodel_history.push(vmodel);
-    if(typeof this.InDesignMode!=='undefined') {
-      try {
-        vmodel.apply(this.ViewModel,[this]);
-      } catch(e) { ngDEBUGERROR(e); }
-    }
-    else {
-      vmodel.apply(this.ViewModel,[this]);
-    }
-  }
-  else
-  {
-    this.viewmodel_history.push(ng_CopyVar(vmodel));
-    ngvm_makeobservable(vmodel,false);
-    ng_MergeVar(this.ViewModel,vmodel);
-  }
-  this.DefaultValues = this.GetValues(true);
-  this.ViewModel.Owner=this;
-  if(this.OnViewModelChanged) this.OnViewModelChanged(this);
-}
-
-function ngvm_ScanValues(callback)
-{
-  var undefined;
-  var self=this;
-  function scanvalues(o,path)
-  {
-    var val,valpath,instance;
-    if(o==self) return;
-    if((!o)||(typeof o!=='object')) return;
-    if(path!='') path+='.';
-    for(var i in o)
-    {
-      if((o==self.ViewModel)&&(i=='Owner')) continue;
-      val=instance=o[i];
-      if(ngIsFieldDef(instance)) val=instance.Value;
-      valpath=path+i;
-      if(ko.isObservable(val))
+      if((this.OnErrors)&&(!ngVal(this.OnErrors(this,err),false))) return false;
+      if(!ng_EmptyVar(err))
       {
-        if(!callback(self,val,instance,valpath)) return false;
-      }
-      else
-      {
-        if(typeof val === 'function') continue;
-        if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val)))
-        {
-          if(!scanvalues(val,valpath)) return false;
-        }
-        else if(!callback(self,val,instance,valpath)) return false;
+        this.ShowErrors(err);
+        return false;
       }
     }
+
+    var url=ngVal(options.URL,this.ServerURL);
+    if(url=='') return false;
+
+    var rpc=this.GetRPC();
+    if(!rpc) return false;
+
+    this.rpc_reqid++;
+    rpc.clearParams();
+    if(ngVal(this.Namespace,'')!='') rpc.Params.ns=this.Namespace;
+    rpc.Params.cmd=cmd;
+    rpc.Params.data=ko.toJSON(vals);
+    rpc.Params.reqid=this.ID+'_'+this.rpc_reqid;
+    if(options.Params) ng_MergeVar(rpc.Params,options.Params);
+    rpc.URL = url;
+    this.ActiveCommand=cmd;
+
+    if((this.OnCommandRequest)&&(!ngVal(this.OnCommandRequest(this,rpc),false))) return false;
+
+    var self=this;
+    var reqid=this.rpc_reqid;
+    var timeout=ngVal(options.CommandTimeout,this.CommandTimeout);
+    if(this.CommandTimer) clearTimeout(this.CommandTimer);
+    if(timeout>0) {
+      this.CommandTimer=setTimeout(function() {
+        if((self.ActiveCommand===cmd)&&(self.rpc_reqid==reqid)) self.DoCommandError(cmd, options, {CommandTimeout: true});
+      },timeout);
+    } else delete this.CommandTimer;
+
+    rpc.sendRequest(void 0, void 0, { ViewModel: this, vmCommand: cmd, vmCommandOptions: options, vmRequestID: reqid });
     return true;
   }
-  if(typeof callback!=='function') return;
-  scanvalues(this.ViewModel,'');
-}
 
-function ngvm_Reset(callback)
-{
-  var undefined;
-  var self=this;
-  function resetvalues(o,path)
+  function ngvm_SetViewModel(vmodel)
   {
-    var val,valpath,instance;
-    if(o==self) return;
-    if((!o)||(typeof o!=='object')) return;
-    if(path!='') path+='.';
-    for(var i in o)
+    if(!vmodel) return;
+    if(this.OnSetViewModel)
     {
-      if((o==self.ViewModel)&&(i=='Owner')) continue;
-      val=instance=o[i];
-      valpath=path+i;
-      if(ngIsFieldDef(instance))
-      {
-        if(instance.Attrs['NoReset']===true) continue;
-        val=instance.Value;
-        defaultval=instance.GetTypedDefaultValue();
-      }
-      else
-      {
-        if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i]))) defaultval=undefined;
-        else defaultval=ng_CopyVar(vmGetFieldByID(self.DefaultValues,valpath));
-      }
-      if((typeof callback==='function')&&(!callback(this,val,instance,valpath,defaultval))) continue;
-
-      if(ko.isObservable(val))
-      {
-         instance.__Loading=true;
+      vmodel=this.OnSetViewModel(this,vmodel);
+      if(!vmodel) return;
+    }
+    this.ViewModel.Owner=this;
+    if(typeof vmodel === 'function')
+    {
+      this.viewmodel_history.push(vmodel);
+      if(typeof this.InDesignMode!=='undefined') {
         try {
-          if(ko.isWriteableObservable(val)) ko.ng_setvalue(val,defaultval);
-        }
-        finally {
-           delete instance.__Loading;
-        }
+          vmodel.apply(this.ViewModel,[this]);
+        } catch(e) { ngDEBUGERROR(e); }
       }
-      else
+      else {
+        vmodel.apply(this.ViewModel,[this]);
+      }
+    }
+    else
+    {
+      this.viewmodel_history.push(ng_CopyVar(vmodel));
+      ngvm_makeobservable(vmodel,false);
+      ng_MergeVar(this.ViewModel,vmodel);
+    }
+    this.DefaultValues = this.GetValues(true);
+    this.ViewModel.Owner=this;
+    if(this.OnViewModelChanged) this.OnViewModelChanged(this);
+  }
+
+  function ngvm_ScanValues(callback)
+  {
+    var undefined;
+    var self=this;
+    function scanvalues(o,path)
+    {
+      var val,valpath,instance;
+      if(o==self) return;
+      if((!o)||(typeof o!=='object')) return;
+      if(path!='') path+='.';
+      for(var i in o)
       {
-        if(typeof val === 'function') continue;
-        if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i])))
+        if((o==self.ViewModel)&&(i=='Owner')) continue;
+        val=instance=o[i];
+        if(ngIsFieldDef(instance)) val=instance.Value;
+        valpath=path+i;
+        if(ko.isObservable(val))
         {
-          resetvalues(val,valpath);
-          var found=false;
-          for(var j in val) { found=true; break; }
-          if(!found) delete o[i];
+          if(!callback(self,val,instance,valpath)) return false;
         }
         else
         {
-          if(typeof defaultval!=='undefined') o[i]=defaultval;
-          else delete o[i];
+          if(typeof val === 'function') continue;
+          if((ng_typeObject(val))&&(!ng_typeDate(val))&&(!ng_IsArrayVar(val)))
+          {
+            if(!scanvalues(val,valpath)) return false;
+          }
+          else if(!callback(self,val,instance,valpath)) return false;
         }
       }
+      return true;
     }
+    if(typeof callback!=='function') return;
+    scanvalues(this.ViewModel,'');
   }
-  resetvalues(this.ViewModel,'');
-}
 
-function vmGetFieldByID(vm,propid)
-{
-  propid=''+propid;
-  if((!vm)||(propid=='')) return; // undefined
-  var pids=propid.split('.');
-  if(pids.length) {
-    for(var i=0;i<pids.length;i++)
-    {
-      if(ko.isObservable(vm)) vm=vm();
-      if(ngIsFieldDef(vm)) {
-        if(typeof vm.GetChildFieldByID === 'function') {
-          pids.splice(0,i);
-          return vm.GetChildFieldByID(pids.join('.'));
-        }
-      }
-      if((!vm)||(typeof vm!=='object')) return; // undefined
-      vm=vm[pids[i]];
-    }
-    return vm;
-  }
-  return; //undefined
-}
-
-function vmGetObservableByID(vm,propid)
-{
-  var f=vmGetFieldByID(vm,propid);
-  if(ngIsFieldDef(f)) f=f.Value;
-  return (ko.isObservable(f) ? f : undefined);
-}
-
-function ngvm_GetFieldByID(propid)
-{
-  return vmGetFieldByID(this.ViewModel,propid);
-}
-
-function vmGetFieldValueByID(vm,propid)
-{
-  var p=vmGetFieldByID(vm,propid);
-  return ko.ng_getvalue(p);
-}
-
-function ngvm_GetFieldValueByID(propid)
-{
-  return vmGetFieldValueByID(this.ViewModel,propid);
-}
-
-function vmSetFieldValueByID(vm,propid,val)
-{
-  propid=''+propid;
-  if((!vm)||(propid=='')) return false;
-  var p,pv,pids=propid.split('.');
-  if(pids.length<1) return; // empty
-  if(ko.isObservable(vm)) {
-    pv=vm();
-    if((!pv)||(typeof pv!=='object')) {
-      if(!ko.isWriteableObservable(vm)) return false;
-      pv={};
-      vm(pv);
-    }
-    vm=pv;
-  }
-  if((!vm)||(typeof vm!=='object')) return false; // not object
-  var pidslen=pids.length-1;
-  for(var i=0;i<pidslen;i++)
+  function ngvm_Reset(callback)
   {
-    p=vm[pids[i]];
-    if(ko.isObservable(p)) pv=p();
-    else pv=p;
-    if((!pv)||(typeof pv!=='object'))
+    var undefined;
+    var self=this;
+    function resetvalues(o,path)
     {
-      if(typeof pv==='undefined')
+      var val,valpath,instance;
+      if(o==self) return;
+      if((!o)||(typeof o!=='object')) return;
+      if(path!='') path+='.';
+      for(var i in o)
       {
-        if(p!==pv) {
-          if(!ko.isWriteableObservable(p)) return false; // read-only property
-          pv={};
-          p(pv);
+        if((o==self.ViewModel)&&(i=='Owner')) continue;
+        val=instance=o[i];
+        valpath=path+i;
+        if(ngIsFieldDef(instance))
+        {
+          if(instance.Attrs['NoReset']===true) continue;
+          val=instance.Value;
+          defaultval=instance.GetTypedDefaultValue();
         }
-        else {
-          pv={};
-          vm[pids[i]]=pv;
+        else
+        {
+          if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i]))) defaultval=undefined;
+          else defaultval=ng_CopyVar(vmGetFieldByID(self.DefaultValues,valpath));
+        }
+        if((typeof callback==='function')&&(!callback(this,val,instance,valpath,defaultval))) continue;
+
+        if(ko.isObservable(val))
+        {
+          instance.__Loading=true;
+          try {
+            if(ko.isWriteableObservable(val)) ko.ng_setvalue(val,defaultval);
+          }
+          finally {
+            delete instance.__Loading;
+          }
+        }
+        else
+        {
+          if(typeof val === 'function') continue;
+          if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i])))
+          {
+            resetvalues(val,valpath);
+            var found=false;
+            for(var j in val) { found=true; break; }
+            if(!found) delete o[i];
+          }
+          else
+          {
+            if(typeof defaultval!=='undefined') o[i]=defaultval;
+            else delete o[i];
+          }
         }
       }
-      else return false; // not diveable
     }
-    vm=pv;
+    resetvalues(this.ViewModel,'');
   }
-  var prop=pids[pidslen];
-  vm[prop]=ko.ng_setvalue(vm[prop],val);
-  return true;
-}
 
-function ngvm_SetFieldValueByID(propid,val)
-{
-  vmSetFieldValueByID(this.ViewModel,propid,val);
-}
-
-function ngvm_Assign(src)
-{
-  this.viewmodel_history = [];
-
-  this.ViewModel={ };
-  this.DefaultValues = { };
-
-  this.Namespace=this.ID;
-  this.ServerURL = '';
-  this.ViewModel={ };
-  if(src)
+  window.vmGetFieldByID = function(vm,propid)
   {
-    this.Namespace=ngVal(src.Namespace,this.ID);
-    this.ServerURL=ngVal(src.ServerURL,'');
-
-    for(var i=0;i<src.viewmodel_history.length;i++)
-      this.SetViewModel(src.viewmodel_history[i]);
-
-    var values=src.GetValues(false);
-    this.SetValues(values);
+    propid=''+propid;
+    if((!vm)||(propid=='')) return; // undefined
+    var pids=propid.split('.');
+    if(pids.length) {
+      for(var i=0;i<pids.length;i++)
+      {
+        if(ko.isObservable(vm)) vm=vm();
+        if(ngIsFieldDef(vm)) {
+          if(typeof vm.GetChildFieldByID === 'function') {
+            pids.splice(0,i);
+            return vm.GetChildFieldByID(pids.join('.'));
+          }
+        }
+        if((!vm)||(typeof vm!=='object')) return; // undefined
+        vm=vm[pids[i]];
+      }
+      return vm;
+    }
+    return; //undefined
   }
-  if(this.OnAssign) this.OnAssign(this,src);
-}
 
-function ngvm_SetNamespace(ns)
-{
-  if(this.Namespace==ns) return;
-  this.Namespace=ngVal(ns,'');
-  if(this.Namespace!='') {
-    var nsdef=ngViewModelNamespaces[ns];
-    if(ng_typeObject(nsdef))
+  window.vmGetObservableByID = function(vm,propid)
+  {
+    var f=vmGetFieldByID(vm,propid);
+    if(ngIsFieldDef(f)) f=f.Value;
+    return (ko.isObservable(f) ? f : undefined);
+  }
+
+  function ngvm_GetFieldByID(propid)
+  {
+    return vmGetFieldByID(this.ViewModel,propid);
+  }
+
+  window.vmGetFieldValueByID = function(vm,propid)
+  {
+    var p=vmGetFieldByID(vm,propid);
+    return ko.ng_getvalue(p);
+  }
+
+  function ngvm_GetFieldValueByID(propid)
+  {
+    return vmGetFieldValueByID(this.ViewModel,propid);
+  }
+
+  window.vmSetFieldValueByID = function(vm,propid,val)
+  {
+    propid=''+propid;
+    if((!vm)||(propid=='')) return false;
+    var p,pv,pids=propid.split('.');
+    if(pids.length<1) return; // empty
+    if(ko.isObservable(vm)) {
+      pv=vm();
+      if((!pv)||(typeof pv!=='object')) {
+        if(!ko.isWriteableObservable(vm)) return false;
+        pv={};
+        vm(pv);
+      }
+      vm=pv;
+    }
+    if((!vm)||(typeof vm!=='object')) return false; // not object
+    var pidslen=pids.length-1;
+    for(var i=0;i<pidslen;i++)
     {
-      if(this.ServerURL=='') this.ServerURL=ngVal(nsdef.ServerURL,'');
-      if((ng_typeObject(nsdef.ViewModel))||(typeof nsdef.ViewModel==='function')) this.SetViewModel(nsdef.ViewModel);
+      p=vm[pids[i]];
+      if(ko.isObservable(p)) pv=p();
+      else pv=p;
+      if((!pv)||(typeof pv!=='object'))
+      {
+        if(typeof pv==='undefined')
+        {
+          if(p!==pv) {
+            if(!ko.isWriteableObservable(p)) return false; // read-only property
+            pv={};
+            p(pv);
+          }
+          else {
+            pv={};
+            vm[pids[i]]=pv;
+          }
+        }
+        else return false; // not diveable
+      }
+      vm=pv;
+    }
+    var prop=pids[pidslen];
+    vm[prop]=ko.ng_setvalue(vm[prop],val);
+    return true;
+  }
+
+  function ngvm_SetFieldValueByID(propid,val)
+  {
+    vmSetFieldValueByID(this.ViewModel,propid,val);
+  }
+
+  function ngvm_Assign(src)
+  {
+    this.viewmodel_history = [];
+
+    this.ViewModel={ };
+    this.DefaultValues = { };
+
+    this.Namespace=this.ID;
+    this.ServerURL = '';
+    this.ViewModel={ };
+    if(src)
+    {
+      this.Namespace=ngVal(src.Namespace,this.ID);
+      this.ServerURL=ngVal(src.ServerURL,'');
+
+      for(var i=0;i<src.viewmodel_history.length;i++)
+        this.SetViewModel(src.viewmodel_history[i]);
+
+      var values=src.GetValues(false);
+      this.SetValues(values);
+    }
+    if(this.OnAssign) this.OnAssign(this,src);
+  }
+
+  function ngvm_SetNamespace(ns)
+  {
+    if(this.Namespace==ns) return;
+    this.Namespace=ngVal(ns,'');
+    if(this.Namespace!='') {
+      var nsdef=ngViewModelNamespaces[ns];
+      if(ng_typeObject(nsdef))
+      {
+        if(this.ServerURL=='') this.ServerURL=ngVal(nsdef.ServerURL,'');
+        if((ng_typeObject(nsdef.ViewModel))||(typeof nsdef.ViewModel==='function')) this.SetViewModel(nsdef.ViewModel);
+      }
     }
   }
-}
-
-/**
- *  Class: ngViewModel
- *  This class implements ViewModel object.
- */
-function ngViewModel(id,namespace,vmodel,url)
-{
-  id=ngVal(id,'');
-  this.ID = id;
-  if(id!='') {
-    ngViewModels[id] = this;
-  }
-  this.rpc = null;
-  this.rpc_reqid = 0;
-  this.viewmodel_history = [];
-
-  /*
-   *  Group: Properties
-   */
-
-  /*  Variable: Namespace
-   *  ViewModel namespace.
-   *  Type: string
-   *  Default value: *''*
-   */
-  this.Namespace = '';
-
-  /*  Variable: ViewModel
-   *  ViewModel properties.
-   *  Type: object
-   *  Default value: *{ }*
-   */
-  this.ViewModel={ };
-
-  /*  Variable: DefaultValues
-   *  Holds default values for non-<ngFieldDef> properties.
-   *  Type: object
-   *  Default value: *{ }*
-   */
-  this.DefaultValues = { };
-
-  /*  Variable: ServerURL
-   *  ViewModel's server script URL.
-   *  Type: string
-   *  Default value: *''*
-   */
-  this.ServerURL = ngVal(url,'');
-
-  /*  Variable: CommandTimeout
-   *  Default command timeout.
-   *  Type: integer
-   *  Default value: *3*60000*
-   */
-  this.CommandTimeout=3*60000; // 3 mins
-
-  /*  Variable: ActiveCommand
-   *  Current running server-side command.
-   *  Type: string
-   *  Default value: *''*
-   */
-  this.ActiveCommand = '';
-
-  /*
-   *  Group: Methods
-   */
-
-  /*  Function: Assign
-   *  Assigns settings and values from another ViewModel.
-   *
-   *  Syntax:
-   *    void *Assign* (<ngViewModel> vm)
-   *
-   *  Parameters:
-   *    vm - source viewmodel
-   *
-   *  Returns:
-   *    -
-   */
-  this.Assign = ngvm_Assign;
-
-  /*  Function: SetNamespace
-   *  Sets ViewModel namespace.
-   *  If specified namespace is registered, the settings of viewmodel is copied
-   *  from registered namespace.
-   *
-   *  Syntax:
-   *    void *SetNamespace* (string ns)
-   *
-   *  Parameters:
-   *    ns - namespace
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetNamespace = ngvm_SetNamespace;
-
-  /*  Function: SetViewModel
-   *  Sets ViewModel *modification*.
-   *
-   *  Syntax:
-   *    void *SetViewModel* (mixed vm)
-   *
-   *  Parameters:
-   *    vm - object containing new properties of viewmodel or function which adds new properties to viewmodel
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetViewModel = ngvm_SetViewModel;
-
-  /*  Function: SetValues
-   *  Sets values to ViewModel.
-   *
-   *  Syntax:
-   *    void *SetValues* (object values)
-   *
-   *  Parameters:
-   *    values - object containing new values
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetValues = ngvm_SetValues;
-
-  /*  Function: GetValues
-   *  Gets values from ViewModel.
-   *
-   *  Syntax:
-   *    void *GetValues* ([bool writableonly=false, array valuenames=undefined, object errors={}, bool convtimestamps=false])
-   *
-   *  Parameters:
-   *    writableonly - if TRUE, return only values of non-read-only properties
-   *    valuenames - optional list of property names, returned values are only from properties specified on this list
-   *    errors - all errors which occured during serialization (including type conversion erros) are recorded into this object as name-value pairs "property path":"exception"
-   *    convtimestamps - if TRUE, values of type Date are returned as timestamps (integer)
-   *
-   *  Returns:
-   *    Object containing values.
-   */
-  this.GetValues = ngvm_GetValues;
-
-  /*  Function: ScanValues
-   *  Scans all ViewModel values.
-   *
-   *  Syntax:
-   *    void *ScanValues* (function callback)
-   *
-   *  Parameters:
-   *    callback - function which is called on each ViewModel value
-   *
-   *  Returns:
-   *    -
-   *
-   *  Callback:
-   *    function *callback* (<ngViewModel> vm, mixed value, <ngFieldDef> instance, string propid)
-   *
-   *  Callback parameters:
-   *    vm - ViewModel on which is scan performed
-   *    value - observable or value
-   *    instance - <ngFieldDef> or same as value
-   *    propid - property ID (including path) in ViewModel
-   *
-   *  Callback returns:
-   *    TRUE, if continue scan.
-   */
-  this.ScanValues = ngvm_ScanValues;
-
-  /*  Function: GetFieldByID
-   *  Gets field in ViewModel based on property ID.
-   *
-   *  Syntax:
-   *    mixed *GetFieldByID* (string propid)
-   *
-   *  Parameters:
-   *    propid - property ID (including path) in ViewModel
-   *
-   *  Returns:
-   *    ViewModel property.
-   */
-  this.GetFieldByID = ngvm_GetFieldByID;
-
-  /*  Function: GetFieldValueByID
-   *  Gets ViewModel value based on property ID.
-   *
-   *  Syntax:
-   *    mixed *GetFieldValueByID* (string propid)
-   *
-   *  Parameters:
-   *    propid - property ID (including path) in ViewModel
-   *
-   *  Returns:
-   *    Value of property.
-   */
-  this.GetFieldValueByID = ngvm_GetFieldValueByID;
-
-  /*  Function: SetFieldValueByID
-   *  Sets ViewModel value based on property ID.
-   *
-   *  Syntax:
-   *    void *SetFieldValueByID* (string propid, mixed value)
-   *
-   *  Parameters:
-   *    propid - property ID (including path) in ViewModel
-   *    value - property value
-   *
-   *  Returns:
-   *    -
-   */
-  this.SetFieldValueByID = ngvm_SetFieldValueByID;
-
-  /*  Function: Reset
-   *  Resets ViewModel to initial state.
-   *
-   *  Syntax:
-   *    void *Reset* ([function callback])
-   *
-   *  Parameters:
-   *    callback - optional callback function which is called before value is reset
-   *
-   *  Returns:
-   *    -
-   *
-   *  Callback:
-   *    function *callback* (<ngViewModel> vm, mixed value, <ngFieldDef> instance, string propid)
-   *
-   *  Callback parameters:
-   *    vm - ViewModel on which is scan performed
-   *    value - observable or value
-   *    instance - <ngFieldDef> or same as value
-   *    propid - property ID (including path) in ViewModel
-   *
-   *  Callback returns:
-   *    If FALSE, reset of the property will be skipped
-   */
-  this.Reset = ngvm_Reset;
-
-  /*  Function: IsValid
-   *  Tests if all (or selected) ViewModel's properties are valid.
-   *
-   *  Syntax:
-   *    mixed *IsValid* ([bool writableonly=false, array valuenames=undefined])
-   *
-   *  Parameters:
-   *    writableonly - if TRUE, return only values of non-read-only properties
-   *    valuenames - optional list of property names, returned values are only from properties specified on this list
-   *
-   *  Returns:
-   *    TRUE if ViewModel's properties are valid or object with errors as name-value pairs "property path":"exception".
-   */
-  this.IsValid = ngvm_IsValid;
-
-  /*  Function: Errors
-   *  Gets textual description of ViewModel's errors.
-   *
-   *  Syntax:
-   *    array *Errors* ([bool writableonly=false, array valuenames=undefined])
-   *
-   *  Parameters:
-   *    writableonly - if TRUE, return only values of non-read-only properties
-   *    valuenames - optional list of property names, returned values are only from properties specified on this list
-   *
-   *  Returns:
-   *    Array of formated string messages.
-   */
-  this.Errors = ngvm_Errors;
-
-  /*  Function: ShowErrors
-   *  Displays ViewModel errors.
-   *
-   *  Syntax:
-   *    void *ShowErrors* ([object errors])
-   *
-   *  Parameters:
-   *    errors - optional error object, if not specified the <ngViewModel.IsValid> is used for getting errors
-   *
-   *  Returns:
-   *    TRUE is one or more error present and displayed.
-   */
-  this.ShowErrors = ngvm_ShowErrors;
 
   /**
-   *  Function: Command
-   *  Sends command to the server.
-   *
-   *  Syntax:
-   *    void *Command* (string cmd[, object options])
-   *
-   *  Parameters:
-   *    cmd - command id
-   *    options - command options
-   *
-   *  Returns:
-   *    TRUE if command was sent.
-   *
-   *  Command options:
-   *    ValueNames - optional list of property names; values, which are send to server, are only from properties specified on this list
-   *    Values - optional object with values which are send to server (ViewModel values are ignored)
-   *    URL - optional server URL, default is <ServerURL>
-   *    Params - optional request <ngRPC> parameters
+   *  Class: ngViewModel
+   *  This class implements ViewModel object.
    */
-  this.Command = ngvm_Command;
-
-  /**
-   *  Function: CancelCommand
-   *  Cancels running command.
-   *
-   *  Syntax:
-   *    void *CancelCommand* ()
-   *
-   *  Returns:
-   *    -
-   */
-  this.CancelCommand = ngvm_CancelCommand;
-
-  /**
-   *  Function: DoCommandError
-   *  Handles command error.
-   *
-   *  Syntax:
-   *    void *DoCommandError* (string cmd, object options, object errinfo)
-   *
-   *  Parameters:
-   *    cmd - command id
-   *    options - command options
-   *    errinfo - additional error info
-   *
-   *  Returns:
-   *    -
-   */
-  this.DoCommandError = ngvm_DoCommandError;
-
-  /**
-   *  Function: GetCommandValueNames
-   *  Gets value names for specified command.
-   *
-   *  Syntax:
-   *    mixed *GetCommandValueNames* (string cmd[, object options, bool exactmatch=false])
-   *
-   *  Parameters:
-   *    cmd - command id
-   *    options - command options (see <Command>)
-   *    exactmatch - return only value names which are exactly defined for specified command
-   *
-   *  Returns:
-   *    Array of value names to be passed together with command or undefined if no specific value names defined for command (all values are sent to server).
-   */
-  this.GetCommandValueNames = ngvm_GetCommandValueNames;
-
-  /**
-   *  Function: GetCommandValueNamesByFieldAttrs
-   *  Gets value names for specified command based on field attribute 'Command'.
-   *
-   *  Syntax:
-   *    mixed *GetCommandValueNamesByFieldAttrs* (string cmd [, bool exactmatch=false])
-   *
-   *  Parameters:
-   *    cmd - command id
-   *    exactmatch - return only value names which are exactly defined for specified command
-   *
-   *  Returns:
-   *    Array of value names to be passed together with command or undefined if no specific value names defined for command (all values are sent to server).
-   */
-  this.GetCommandValueNamesByFieldAttrs = ngvm_GetCommandValueNamesByFieldAttrs;
-
-  /*  Function: GetRPC
-   *  Gets current <ngRPC> for ViewModel requests.
-   *
-   *  Syntax:
-   *    <ngRPC> *GetRPC* ()
-   *
-   *  Returns:
-   *    Instance of <ngRPC>.
-   */
-  this.GetRPC = ngvm_GetRPC;
-
-  this.AddEvent = ngObjAddEvent;
-  this.RemoveEvent = ngObjRemoveEvent;
-
-  /*
-   *  Group: Events
-   */
-
-  /*
-   *  Event: OnSetValues
-   */
-  this.OnSetValues = null;
-  /*
-   *  Event: OnSetValue
-   */
-  this.OnSetValue = null;
-  /*
-   *  Event: OnGetValues
-   */
-  this.OnGetValues = null;
-  /*
-   *  Event: OnGetValue
-   */
-  this.OnGetValue = null;
-
-  /*
-   *  Event: OnCommand
-   */
-  this.OnCommand = null;
-
-  /*
-   *  Event: OnGetCommandValueNames
-   */
-  this.OnGetCommandValueNames = null;
-
-  /*
-   *  Event: OnDoCommand
-   */
-  this.OnDoCommand = null;
-  /*
-   *  Event: OnCommandRequest
-   */
-  this.OnCommandRequest = null;
-  /*
-   *  Event: OnCommandResults
-   */
-  this.OnCommandResults = null;
-  /*
-   *  Event: OnCommandFinished
-   */
-  this.OnCommandFinished = null;
-  /*
-   *  Event: OnCommandCancel
-   */
-  this.OnCommandCancel = null;
-  /*
-   *  Event: OnCommandError
-   */
-  this.OnCommandError = null;
-  /*
-   *  Event: OnCommandData
-   */
-  this.OnCommandData = null;
-
-  /*
-   *  Event: OnSetViewModel
-   */
-  this.OnSetViewModel = null;
-  /*
-   *  Event: OnViewModelChanged
-   */
-  this.OnViewModelChanged = null;
-
-  /*
-   *  Event: OnResults
-   */
-  this.OnResults = null;
-
-  /*
-   *  Event: OnErrors
-   */
-  this.OnErrors = null;
-  /*
-   *  Event: OnShowErrors
-   */
-  this.OnShowErrors = null;
-
-  /*
-   *  Event: OnAssign
-   */
-  this.OnAssign = null;
-
-  this.SetNamespace(ngVal(namespace,id));
-  if(vmodel) this.SetViewModel(vmodel);
-}
-
-function ngfd_DataSetFieldSerialize(v)
-{
-  return (this.DataSetNeedUpdate || !ng_typeArray(v) ? '__LOAD__' : '__LOADED__');
-}
-
-function ngfd_DataSetFieldDeserialize(v)
-{
-  if(v=='__LOADED__')
+  window.ngViewModel = function(id,namespace,vmodel,url)
   {
-    v=this.GetTypedValue();
-    if(ng_isEmpty(v)) v=new Array();
-    return v;
+    id=ngVal(id,'');
+    this.ID = id;
+    if(id!='') {
+      ngViewModels[id] = this;
+    }
+    this.rpc = null;
+    this.rpc_reqid = 0;
+    this.viewmodel_history = [];
+
+    /*
+    *  Group: Properties
+    */
+
+    /*  Variable: Namespace
+    *  ViewModel namespace.
+    *  Type: string
+    *  Default value: *''*
+    */
+    this.Namespace = '';
+
+    /*  Variable: ViewModel
+    *  ViewModel properties.
+    *  Type: object
+    *  Default value: *{ }*
+    */
+    this.ViewModel={ };
+
+    /*  Variable: DefaultValues
+    *  Holds default values for non-<ngFieldDef> properties.
+    *  Type: object
+    *  Default value: *{ }*
+    */
+    this.DefaultValues = { };
+
+    /*  Variable: ServerURL
+    *  ViewModel's server script URL.
+    *  Type: string
+    *  Default value: *''*
+    */
+    this.ServerURL = ngVal(url,'');
+
+    /*  Variable: CommandTimeout
+    *  Default command timeout.
+    *  Type: integer
+    *  Default value: *3*60000*
+    */
+    this.CommandTimeout=3*60000; // 3 mins
+
+    /*  Variable: ActiveCommand
+    *  Current running server-side command.
+    *  Type: string
+    *  Default value: *''*
+    */
+    this.ActiveCommand = '';
+
+    /*
+    *  Group: Methods
+    */
+
+    /*  Function: Assign
+    *  Assigns settings and values from another ViewModel.
+    *
+    *  Syntax:
+    *    void *Assign* (<ngViewModel> vm)
+    *
+    *  Parameters:
+    *    vm - source viewmodel
+    *
+    *  Returns:
+    *    -
+    */
+    this.Assign = ngvm_Assign;
+
+    /*  Function: SetNamespace
+    *  Sets ViewModel namespace.
+    *  If specified namespace is registered, the settings of viewmodel is copied
+    *  from registered namespace.
+    *
+    *  Syntax:
+    *    void *SetNamespace* (string ns)
+    *
+    *  Parameters:
+    *    ns - namespace
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetNamespace = ngvm_SetNamespace;
+
+    /*  Function: SetViewModel
+    *  Sets ViewModel *modification*.
+    *
+    *  Syntax:
+    *    void *SetViewModel* (mixed vm)
+    *
+    *  Parameters:
+    *    vm - object containing new properties of viewmodel or function which adds new properties to viewmodel
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetViewModel = ngvm_SetViewModel;
+
+    /*  Function: SetValues
+    *  Sets values to ViewModel.
+    *
+    *  Syntax:
+    *    void *SetValues* (object values)
+    *
+    *  Parameters:
+    *    values - object containing new values
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetValues = ngvm_SetValues;
+
+    /*  Function: GetValues
+    *  Gets values from ViewModel.
+    *
+    *  Syntax:
+    *    void *GetValues* ([bool writableonly=false, array valuenames=undefined, object errors={}, bool convtimestamps=false])
+    *
+    *  Parameters:
+    *    writableonly - if TRUE, return only values of non-read-only properties
+    *    valuenames - optional list of property names, returned values are only from properties specified on this list
+    *    errors - all errors which occured during serialization (including type conversion erros) are recorded into this object as name-value pairs "property path":"exception"
+    *    convtimestamps - if TRUE, values of type Date are returned as timestamps (integer)
+    *
+    *  Returns:
+    *    Object containing values.
+    */
+    this.GetValues = ngvm_GetValues;
+
+    /*  Function: ScanValues
+    *  Scans all ViewModel values.
+    *
+    *  Syntax:
+    *    void *ScanValues* (function callback)
+    *
+    *  Parameters:
+    *    callback - function which is called on each ViewModel value
+    *
+    *  Returns:
+    *    -
+    *
+    *  Callback:
+    *    function *callback* (<ngViewModel> vm, mixed value, <ngFieldDef> instance, string propid)
+    *
+    *  Callback parameters:
+    *    vm - ViewModel on which is scan performed
+    *    value - observable or value
+    *    instance - <ngFieldDef> or same as value
+    *    propid - property ID (including path) in ViewModel
+    *
+    *  Callback returns:
+    *    TRUE, if continue scan.
+    */
+    this.ScanValues = ngvm_ScanValues;
+
+    /*  Function: GetFieldByID
+    *  Gets field in ViewModel based on property ID.
+    *
+    *  Syntax:
+    *    mixed *GetFieldByID* (string propid)
+    *
+    *  Parameters:
+    *    propid - property ID (including path) in ViewModel
+    *
+    *  Returns:
+    *    ViewModel property.
+    */
+    this.GetFieldByID = ngvm_GetFieldByID;
+
+    /*  Function: GetFieldValueByID
+    *  Gets ViewModel value based on property ID.
+    *
+    *  Syntax:
+    *    mixed *GetFieldValueByID* (string propid)
+    *
+    *  Parameters:
+    *    propid - property ID (including path) in ViewModel
+    *
+    *  Returns:
+    *    Value of property.
+    */
+    this.GetFieldValueByID = ngvm_GetFieldValueByID;
+
+    /*  Function: SetFieldValueByID
+    *  Sets ViewModel value based on property ID.
+    *
+    *  Syntax:
+    *    void *SetFieldValueByID* (string propid, mixed value)
+    *
+    *  Parameters:
+    *    propid - property ID (including path) in ViewModel
+    *    value - property value
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetFieldValueByID = ngvm_SetFieldValueByID;
+
+    /*  Function: Reset
+    *  Resets ViewModel to initial state.
+    *
+    *  Syntax:
+    *    void *Reset* ([function callback])
+    *
+    *  Parameters:
+    *    callback - optional callback function which is called before value is reset
+    *
+    *  Returns:
+    *    -
+    *
+    *  Callback:
+    *    function *callback* (<ngViewModel> vm, mixed value, <ngFieldDef> instance, string propid)
+    *
+    *  Callback parameters:
+    *    vm - ViewModel on which is scan performed
+    *    value - observable or value
+    *    instance - <ngFieldDef> or same as value
+    *    propid - property ID (including path) in ViewModel
+    *
+    *  Callback returns:
+    *    If FALSE, reset of the property will be skipped
+    */
+    this.Reset = ngvm_Reset;
+
+    /*  Function: IsValid
+    *  Tests if all (or selected) ViewModel's properties are valid.
+    *
+    *  Syntax:
+    *    mixed *IsValid* ([bool writableonly=false, array valuenames=undefined])
+    *
+    *  Parameters:
+    *    writableonly - if TRUE, return only values of non-read-only properties
+    *    valuenames - optional list of property names, returned values are only from properties specified on this list
+    *
+    *  Returns:
+    *    TRUE if ViewModel's properties are valid or object with errors as name-value pairs "property path":"exception".
+    */
+    this.IsValid = ngvm_IsValid;
+
+    /*  Function: Errors
+    *  Gets textual description of ViewModel's errors.
+    *
+    *  Syntax:
+    *    array *Errors* ([bool writableonly=false, array valuenames=undefined])
+    *
+    *  Parameters:
+    *    writableonly - if TRUE, return only values of non-read-only properties
+    *    valuenames - optional list of property names, returned values are only from properties specified on this list
+    *
+    *  Returns:
+    *    Array of formated string messages.
+    */
+    this.Errors = ngvm_Errors;
+
+    /*  Function: ShowErrors
+    *  Displays ViewModel errors.
+    *
+    *  Syntax:
+    *    void *ShowErrors* ([object errors])
+    *
+    *  Parameters:
+    *    errors - optional error object, if not specified the <ngViewModel.IsValid> is used for getting errors
+    *
+    *  Returns:
+    *    TRUE is one or more error present and displayed.
+    */
+    this.ShowErrors = ngvm_ShowErrors;
+
+    /**
+     *  Function: Command
+     *  Sends command to the server.
+     *
+     *  Syntax:
+     *    void *Command* (string cmd[, object options])
+     *
+     *  Parameters:
+     *    cmd - command id
+     *    options - command options
+     *
+     *  Returns:
+     *    TRUE if command was sent.
+     *
+     *  Command options:
+     *    ValueNames - optional list of property names; values, which are send to server, are only from properties specified on this list
+     *    Values - optional object with values which are send to server (ViewModel values are ignored)
+     *    URL - optional server URL, default is <ServerURL>
+     *    Params - optional request <ngRPC> parameters
+     */
+    this.Command = ngvm_Command;
+
+    /**
+     *  Function: CancelCommand
+     *  Cancels running command.
+     *
+     *  Syntax:
+     *    void *CancelCommand* ()
+     *
+     *  Returns:
+     *    -
+     */
+    this.CancelCommand = ngvm_CancelCommand;
+
+    /**
+     *  Function: DoCommandError
+     *  Handles command error.
+     *
+     *  Syntax:
+     *    void *DoCommandError* (string cmd, object options, object errinfo)
+     *
+     *  Parameters:
+     *    cmd - command id
+     *    options - command options
+     *    errinfo - additional error info
+     *
+     *  Returns:
+     *    -
+     */
+    this.DoCommandError = ngvm_DoCommandError;
+
+    /**
+     *  Function: GetCommandValueNames
+     *  Gets value names for specified command.
+     *
+     *  Syntax:
+     *    mixed *GetCommandValueNames* (string cmd[, object options, bool exactmatch=false])
+     *
+     *  Parameters:
+     *    cmd - command id
+     *    options - command options (see <Command>)
+     *    exactmatch - return only value names which are exactly defined for specified command
+     *
+     *  Returns:
+     *    Array of value names to be passed together with command or undefined if no specific value names defined for command (all values are sent to server).
+     */
+    this.GetCommandValueNames = ngvm_GetCommandValueNames;
+
+    /**
+     *  Function: GetCommandValueNamesByFieldAttrs
+     *  Gets value names for specified command based on field attribute 'Command'.
+     *
+     *  Syntax:
+     *    mixed *GetCommandValueNamesByFieldAttrs* (string cmd [, bool exactmatch=false])
+     *
+     *  Parameters:
+     *    cmd - command id
+     *    exactmatch - return only value names which are exactly defined for specified command
+     *
+     *  Returns:
+     *    Array of value names to be passed together with command or undefined if no specific value names defined for command (all values are sent to server).
+     */
+    this.GetCommandValueNamesByFieldAttrs = ngvm_GetCommandValueNamesByFieldAttrs;
+
+    /*  Function: GetRPC
+    *  Gets current <ngRPC> for ViewModel requests.
+    *
+    *  Syntax:
+    *    <ngRPC> *GetRPC* ()
+    *
+    *  Returns:
+    *    Instance of <ngRPC>.
+    */
+    this.GetRPC = ngvm_GetRPC;
+
+    this.AddEvent = ngObjAddEvent;
+    this.RemoveEvent = ngObjRemoveEvent;
+
+    /*
+    *  Group: Events
+    */
+
+    /*
+    *  Event: OnSetValues
+    */
+    this.OnSetValues = null;
+    /*
+    *  Event: OnSetValue
+    */
+    this.OnSetValue = null;
+    /*
+    *  Event: OnGetValues
+    */
+    this.OnGetValues = null;
+    /*
+    *  Event: OnGetValue
+    */
+    this.OnGetValue = null;
+
+    /*
+    *  Event: OnCommand
+    */
+    this.OnCommand = null;
+
+    /*
+    *  Event: OnGetCommandValueNames
+    */
+    this.OnGetCommandValueNames = null;
+
+    /*
+    *  Event: OnDoCommand
+    */
+    this.OnDoCommand = null;
+    /*
+    *  Event: OnCommandRequest
+    */
+    this.OnCommandRequest = null;
+    /*
+    *  Event: OnCommandResults
+    */
+    this.OnCommandResults = null;
+    /*
+    *  Event: OnCommandFinished
+    */
+    this.OnCommandFinished = null;
+    /*
+    *  Event: OnCommandCancel
+    */
+    this.OnCommandCancel = null;
+    /*
+    *  Event: OnCommandError
+    */
+    this.OnCommandError = null;
+    /*
+    *  Event: OnCommandData
+    */
+    this.OnCommandData = null;
+
+    /*
+    *  Event: OnSetViewModel
+    */
+    this.OnSetViewModel = null;
+    /*
+    *  Event: OnViewModelChanged
+    */
+    this.OnViewModelChanged = null;
+
+    /*
+    *  Event: OnResults
+    */
+    this.OnResults = null;
+
+    /*
+    *  Event: OnErrors
+    */
+    this.OnErrors = null;
+    /*
+    *  Event: OnShowErrors
+    */
+    this.OnShowErrors = null;
+
+    /*
+    *  Event: OnAssign
+    */
+    this.OnAssign = null;
+
+    this.SetNamespace(ngVal(namespace,id));
+    if(vmodel) this.SetViewModel(vmodel);
   }
-  this.DataSetNeedUpdate = false;
-  return;
-}
 
-function ngfd_InvalidateDataSet()
-{
-  this.DataSetNeedUpdate = true;
-}
+  function ngfd_DataSetFieldSerialize(v)
+  {
+    return (this.DataSetNeedUpdate || !ng_typeArray(v) ? '__LOAD__' : '__LOADED__');
+  }
 
-/*  Class: ngDataSetFieldDef
- *  <ngViewModel> DataSet field (based on <ngFieldDef> ARRAY).
- *
- *  Syntax:
- *    new *ngDataSetFieldDef* (string id [, object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngDataSetFieldDef(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,'ARRAY',attrs);
+  function ngfd_DataSetFieldDeserialize(v)
+  {
+    if(v=='__LOADED__')
+    {
+      v=this.GetTypedValue();
+      if(ng_isEmpty(v)) v=new Array();
+      return v;
+    }
+    this.DataSetNeedUpdate = false;
+    return;
+  }
 
-  /*
-   *  Group: Properties
-   */
+  function ngfd_InvalidateDataSet()
+  {
+    this.DataSetNeedUpdate = true;
+  }
 
-  /*  Variable: DataSetNeedUpdate
-   *  Indicates if fresh data is requested from server on data update.
-   *  Type: bool
-   *  Default value: *true*
-   */
-  this.DataSetNeedUpdate = true;
+  /*  Class: ngDataSetFieldDef
+  *  <ngViewModel> DataSet field (based on <ngFieldDef> ARRAY).
+  *
+  *  Syntax:
+  *    new *ngDataSetFieldDef* (string id [, object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngDataSetFieldDef = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,'ARRAY',attrs);
 
-  /*
-   *  Group: Methods
-   */
+    /*
+    *  Group: Properties
+    */
 
-  /*  Function: InvalidateDataSet
-   *  Indicated that fresh data is requested from server on data update.
-   *
-   *  Syntax:
-   *    void *InvalidateDataSet* ()
-   *
-   *  Returns:
-   *    -
-   */
-  this.InvalidateDataSet = ngfd_InvalidateDataSet;
+    /*  Variable: DataSetNeedUpdate
+    *  Indicates if fresh data is requested from server on data update.
+    *  Type: bool
+    *  Default value: *true*
+    */
+    this.DataSetNeedUpdate = true;
 
-  this.DoSerialize = ngfd_DataSetFieldSerialize;
-  this.DoDeserialize = ngfd_DataSetFieldDeserialize;
-}
+    /*
+    *  Group: Methods
+    */
 
-/*  Class: ngLookupFieldDef
- *  <ngViewModel> Lookup field (based on <ngFieldDef> ARRAY).
- *
- *  Syntax:
- *    new *ngLookupFieldDef* (string id [, object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngLookupFieldDef(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,'ARRAY',attrs);
+    /*  Function: InvalidateDataSet
+    *  Indicated that fresh data is requested from server on data update.
+    *
+    *  Syntax:
+    *    void *InvalidateDataSet* ()
+    *
+    *  Returns:
+    *    -
+    */
+    this.InvalidateDataSet = ngfd_InvalidateDataSet;
 
-  /*
-   *  Group: Properties
-   */
-  /*  Variable: DataSetNeedUpdate
-   *  Indicates if fresh data is requested from server on data update.
-   *  Type: bool
-   *  Default value: *true*
-   */
-  this.DataSetNeedUpdate = false;
+    this.DoSerialize = ngfd_DataSetFieldSerialize;
+    this.DoDeserialize = ngfd_DataSetFieldDeserialize;
+  }
 
-  /*
-   *  Group: Methods
-   */
+  /*  Class: ngLookupFieldDef
+  *  <ngViewModel> Lookup field (based on <ngFieldDef> ARRAY).
+  *
+  *  Syntax:
+  *    new *ngLookupFieldDef* (string id [, object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngLookupFieldDef = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,'ARRAY',attrs);
 
-  /*  Function: InvalidateDataSet
-   *  Indicated that fresh data is requested from server on data update.
-   *
-   *  Syntax:
-   *    void *InvalidateDataSet* ()
-   *
-   *  Returns:
-   *    -
-   */
-  this.InvalidateDataSet = ngfd_InvalidateDataSet;
+    /*
+    *  Group: Properties
+    */
+    /*  Variable: DataSetNeedUpdate
+    *  Indicates if fresh data is requested from server on data update.
+    *  Type: bool
+    *  Default value: *true*
+    */
+    this.DataSetNeedUpdate = false;
 
-  this.DoSerialize = ngfd_DataSetFieldSerialize;
-  this.DoDeserialize = ngfd_DataSetFieldDeserialize;
-}
+    /*
+    *  Group: Methods
+    */
+
+    /*  Function: InvalidateDataSet
+    *  Indicated that fresh data is requested from server on data update.
+    *
+    *  Syntax:
+    *    void *InvalidateDataSet* ()
+    *
+    *  Returns:
+    *    -
+    */
+    this.InvalidateDataSet = ngfd_InvalidateDataSet;
+
+    this.DoSerialize = ngfd_DataSetFieldSerialize;
+    this.DoDeserialize = ngfd_DataSetFieldDeserialize;
+  }
+})(window);
 
 function ngvm_InitServerNamespaces() {
   if(typeof ngViewModelsServerURL !== 'function') return;
