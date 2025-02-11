@@ -1264,7 +1264,7 @@ function ngRegisterControlMod(type, modtype, def) {
   }
   if(arguments.length===2)
   {
-    if(typeof modtype==='string') {
+    if((typeof modtype==='string')||(ng_IsArrayVar(modtype))) {
       def=modtype;
       if(type===def) return;
       ngRegisterControlMod(type, modtype, function(cdef,ref,parent, modtype) {
