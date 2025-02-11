@@ -204,8 +204,8 @@ return {
               Editor: 'ngfeEditor_DropDown',
               EditorOptions: {
                 Items: function() {
-                  var items;
-                  if(typeof CoreUI_DesignInfo==='object') items=CoreUI_DesignInfo.EditorActionIDs();
+                  var items;                  
+                  if(typeof ngUserControls['uicore_designinfo']==='object') items=ngUserControls['uicore_designinfo'].EditorActionIDs();
                   return items;
                 }
               }

@@ -11,7 +11,7 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-var CoreUI_DesignInfo = (function(){
+ngUserControls['uicore_designinfo'] = (function(){
 
   var radiogroups={};
   var action_radiogroups={};
@@ -1208,4 +1208,3 @@ return {
  }
 };
 })();
-ngUserControls['uicore_designinfo'] = CoreUI_DesignInfo;

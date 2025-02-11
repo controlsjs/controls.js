@@ -11,7 +11,7 @@
  */
 
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
-var MaskEdit_DesignInfo = {
+ngUserControls['maskedit_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
@@ -94,4 +94,3 @@ var MaskEdit_DesignInfo = {
     });
   }
 };
-ngUserControls['maskedit_designinfo'] = MaskEdit_DesignInfo;
