@@ -1,4 +1,4 @@
-/*!
+  /*!
  * Controls.js
  * http://controlsjs.com/
  *
@@ -10,1125 +10,1129 @@
  * The commercial license can be purchased at Controls.js website.
  */
 
-/*  Class: ngFieldDef_Bool
- *  <ngViewModel> Boolean field (based on <ngFieldDef> BOOL).
- *
- *  Syntax:
- *    new *ngFieldDef_Bool* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Bool(id, attrs) {
-  ngFieldDefCreateAs(this,id,'BOOL',attrs);
-}
+(function(window) {
 
-/*  Class: ngFieldDef_Integer
- *  <ngViewModel> Integer field (based on <ngFieldDef> INTEGER).
- *
- *  Syntax:
- *    new *ngFieldDef_Integer* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Integer(id, attrs) {
-  ngFieldDefCreateAs(this,id,'INTEGER',attrs);
-}
+  /*  Class: ngFieldDef_Bool
+  *  <ngViewModel> Boolean field (based on <ngFieldDef> BOOL).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Bool* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Bool = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'BOOL',attrs);
+  }
 
-/*  Class: ngFieldDef_Float
- *  <ngViewModel> Float field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_Float* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Float(id, attrs) {
-  ngFieldDefCreateAs(this,id,'FLOAT',attrs);
-}
+  /*  Class: ngFieldDef_Integer
+  *  <ngViewModel> Integer field (based on <ngFieldDef> INTEGER).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Integer* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Integer = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'INTEGER',attrs);
+  }
 
-/*  Class: ngFieldDef_SByte
- *  <ngViewModel> Signed byte field (based on <ngFieldDef> SBYTE).
- *
- *  Syntax:
- *    new *ngFieldDef_SByte* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_SByte(id, attrs) {
-  ngFieldDefCreateAs(this,id,'SBYTE',attrs);
-}
+  /*  Class: ngFieldDef_Float
+  *  <ngViewModel> Float field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Float* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Float = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'FLOAT',attrs);
+  }
 
-/*  Class: ngFieldDef_Byte
- *  <ngViewModel> Byte field (based on <ngFieldDef> BYTE).
- *
- *  Syntax:
- *    new *ngFieldDef_Byte* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Byte(id, attrs) {
-  ngFieldDefCreateAs(this,id,'BYTE',attrs);
-}
+  /*  Class: ngFieldDef_SByte
+  *  <ngViewModel> Signed byte field (based on <ngFieldDef> SBYTE).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_SByte* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_SByte = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'SBYTE',attrs);
+  }
 
-/*  Class: ngFieldDef_Short
- *  <ngViewModel> Short field (based on <ngFieldDef> SHORT).
- *
- *  Syntax:
- *    new *ngFieldDef_Short* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Short(id, attrs) {
-  ngFieldDefCreateAs(this,id,'SHORT',attrs);
-}
+  /*  Class: ngFieldDef_Byte
+  *  <ngViewModel> Byte field (based on <ngFieldDef> BYTE).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Byte* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Byte = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'BYTE',attrs);
+  }
 
-/*  Class: ngFieldDef_UShort
- *  <ngViewModel> Unsigned short field (based on <ngFieldDef> USHORT).
- *
- *  Syntax:
- *    new *ngFieldDef_UShort* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_UShort(id, attrs) {
-  ngFieldDefCreateAs(this,id,'USHORT',attrs);
-}
+  /*  Class: ngFieldDef_Short
+  *  <ngViewModel> Short field (based on <ngFieldDef> SHORT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Short* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Short = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'SHORT',attrs);
+  }
 
-/*  Class: ngFieldDef_Long
- *  <ngViewModel> Long field (based on <ngFieldDef> LONG).
- *
- *  Syntax:
- *    new *ngFieldDef_Long* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Long(id, attrs) {
-  ngFieldDefCreateAs(this,id,'LONG',attrs);
-}
+  /*  Class: ngFieldDef_UShort
+  *  <ngViewModel> Unsigned short field (based on <ngFieldDef> USHORT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_UShort* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_UShort = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'USHORT',attrs);
+  }
 
-/*  Class: ngFieldDef_ULong
- *  <ngViewModel> Unsigned long field (based on <ngFieldDef> ULONG).
- *
- *  Syntax:
- *    new *ngFieldDef_ULong* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_ULong(id, attrs) {
-  ngFieldDefCreateAs(this,id,'ULONG',attrs);
-}
+  /*  Class: ngFieldDef_Long
+  *  <ngViewModel> Long field (based on <ngFieldDef> LONG).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Long* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Long = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'LONG',attrs);
+  }
 
-/*  Class: ngFieldDef_Decimal
- *  <ngViewModel> Decimal field (based on <ngFieldDef> DECIMAL).
- *
- *  Syntax:
- *    new *ngFieldDef_Decimal* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Decimal(id, attrs) {
-  ngFieldDefCreateAs(this,id,'DECIMAL',attrs);
-}
+  /*  Class: ngFieldDef_ULong
+  *  <ngViewModel> Unsigned long field (based on <ngFieldDef> ULONG).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_ULong* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_ULong = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'ULONG',attrs);
+  }
 
-/*  Class: ngFieldDef_String
- *  <ngViewModel> String field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_String* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_String(id, attrs) {
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-}
+  /*  Class: ngFieldDef_Decimal
+  *  <ngViewModel> Decimal field (based on <ngFieldDef> DECIMAL).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Decimal* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Decimal = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'DECIMAL',attrs);
+  }
 
-/*  Class: ngFieldDef_Timestamp
- *  <ngViewModel> Timestamp field (based on <ngFieldDef> TIMESTAMP).
- *
- *  Syntax:
- *    new *ngFieldDef_Timestamp* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Timestamp(id, attrs) {
-  ngFieldDefCreateAs(this,id,'TIMESTAMP',attrs);
-}
+  /*  Class: ngFieldDef_String
+  *  <ngViewModel> String field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_String* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_String = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+  }
 
-/*  Class: ngFieldDef_DateTime
- *  <ngViewModel> Date and time field (based on <ngFieldDef> DATETIME).
- *
- *  Syntax:
- *    new *ngFieldDef_DateTime* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_DateTime(id, attrs) {
-  ngFieldDefCreateAs(this,id,'DATETIME',attrs);
-}
+  /*  Class: ngFieldDef_Timestamp
+  *  <ngViewModel> Timestamp field (based on <ngFieldDef> TIMESTAMP).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Timestamp* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Timestamp = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'TIMESTAMP',attrs);
+  }
 
-/*  Class: ngFieldDef_Date
- *  <ngViewModel> Date field (based on <ngFieldDef> DATE).
- *
- *  Syntax:
- *    new *ngFieldDef_Date* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Date(id, attrs) {
-  ngFieldDefCreateAs(this,id,'DATE',attrs);
-}
+  /*  Class: ngFieldDef_DateTime
+  *  <ngViewModel> Date and time field (based on <ngFieldDef> DATETIME).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_DateTime* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_DateTime = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'DATETIME',attrs);
+  }
 
-/*  Class: ngFieldDef_Time
- *  <ngViewModel> Time field (based on <ngFieldDef> TIME).
- *
- *  Syntax:
- *    new *ngFieldDef_Time* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Time(id, attrs) {
-  ngFieldDefCreateAs(this,id,'TIME',attrs);
-}
+  /*  Class: ngFieldDef_Date
+  *  <ngViewModel> Date field (based on <ngFieldDef> DATE).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Date* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Date = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'DATE',attrs);
+  }
 
-/*  Class: ngFieldDef_UTCTimestamp
- *  <ngViewModel> UTC timestamp field (based on <ngFieldDef> UTCTIMESTAMP).
- *
- *  Syntax:
- *    new *ngFieldDef_UTCTimestamp* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_UTCTimestamp(id, attrs) {
-  ngFieldDefCreateAs(this,id,'UTCTIMESTAMP',attrs);
-}
+  /*  Class: ngFieldDef_Time
+  *  <ngViewModel> Time field (based on <ngFieldDef> TIME).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Time* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Time = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'TIME',attrs);
+  }
 
-/*  Class: ngFieldDef_UTCDateTime
- *  <ngViewModel> UTC date and time field (based on <ngFieldDef> UTCDATETIME).
- *
- *  Syntax:
- *    new *ngFieldDef_UTCDateTime* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_UTCDateTime(id, attrs) {
-  ngFieldDefCreateAs(this,id,'UTCDATETIME',attrs);
-}
+  /*  Class: ngFieldDef_UTCTimestamp
+  *  <ngViewModel> UTC timestamp field (based on <ngFieldDef> UTCTIMESTAMP).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_UTCTimestamp* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_UTCTimestamp = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'UTCTIMESTAMP',attrs);
+  }
 
-function ngfd_ArrayInternalTypedValue(v, op)
-{
-  if(this.__arraytypingvalue) return v;
-  this.__arraytypingvalue=true;
-  try
+  /*  Class: ngFieldDef_UTCDateTime
+  *  <ngViewModel> UTC date and time field (based on <ngFieldDef> UTCDATETIME).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_UTCDateTime* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_UTCDateTime = function(id, attrs) {
+    ngFieldDefCreateAs(this,id,'UTCDATETIME',attrs);
+  }
+
+  function ngfd_ArrayInternalTypedValue(v, op)
   {
-    if(v===null) return null;
-    var r;
-    if(typeof v!=='object')
-      throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
-
-    var pack=ngVal(this.Attrs['RemoveEmptyItems'],false);
-    if(ngIsFieldDef(this.ValueFieldDef))
+    if(this.__arraytypingvalue) return v;
+    this.__arraytypingvalue=true;
+    try
     {
-      var errs=null;
-      var fd=this.ValueFieldDef;
-      r=[];
-      for(var k in v)
-      {
-        try
-        {
-          if(typeof this.Item === 'function') {
-            fd=this.Item(k,false);
-            if(!ngIsFieldDef(fd)) fd=this.ValueFieldDef;
-          }
-          var val=v[k];
-          if(ngIsFieldDef(val)) val=val.Value;
-          if(ko.isObservable(val)) val=val();
-          switch(op)
-          {
-            case 0: val=fd.TypedValue(val); break;
-            case 1: val=fd.Serialize(val); break;
-            case 2: val=fd.Deserialize(val); break;
-          }
+      if(v===null) return null;
+      var r;
+      if(typeof v!=='object')
+        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
 
-          if(pack) {
-            if(ng_isEmptyOrNull(val)) continue;
-            r.push(val);
-          }
-          else r[k]=val;
-        }
-        catch(e)
-        {
-          if(typeof this.Item === 'function') e.FieldDef=this.Item(k); // Get ngFieldDef for item (if available)
-          else {
-            e.FieldDef=ng_CopyVar(this.ValueFieldDef);
-            e.FieldDef.ID=k;
-          }
-          if(errs===null) errs={};
-          errs[k]=e;
-        }
-      }
-      if(errs!==null)
+      var pack=ngVal(this.Attrs['RemoveEmptyItems'],false);
+      if(ngIsFieldDef(this.ValueFieldDef))
       {
-        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs); // type error
-      }
-    }
-    else {
-      if(!pack) r=v;
-      else {
-        var val;
+        var errs=null;
+        var fd=this.ValueFieldDef;
         r=[];
         for(var k in v)
         {
-          val=v[k];
-          if(ng_isEmptyOrNull(val)) continue;
-          r.push(val);
-        }
-      }
-    }
-    if(op===1) r=this.TypedValue(r);
-  } finally {
-    delete this.__arraytypingvalue;
-  }
-  return r;
-}
-
-function ngfd_ArrayDoTypedValue(v)
-{
-  return this.InternalTypedValue(v,0);
-}
-
-function ngfd_ArrayDoSerialize(v)
-{
-  if(!ngIsFieldDef(this.ValueFieldDef)) return;
-  return this.InternalTypedValue(v,1);
-}
-
-function ngfd_ArrayDoDeserialize(v)
-{
-  if(!ngIsFieldDef(this.ValueFieldDef)) return;
-  return this.InternalTypedValue(v,2);
-}
-
-function ngfd_ArrayFormatItemError(err)
-{
-  return ngTxt('viewmodel_err_type');
-}
-
-function ngfd_ArrayFormatError(err)
-{
-  if(err.ErrorMessage=='viewmodel_err_arrayitem') {
-    return this.DoFormatItemError(err);
-  }
-  return ng_ViewModelFormatError(err);
-}
-
-function ngfd_ArrayGetChildFieldByID(propid)
-{
-  if(typeof this.Item === 'function') {
-    var pid,i=propid.indexOf('.');
-    if(i>=0) {
-      pid=propid.substr(i+1,propid.length-i);
-      propid=propid.substr(0,i);
-    }
-    else pid='';
-    var item=this.Item(ng_toInteger(propid));  // Get ngFieldDef for item (if available)
-    if(pid!='') item=vmGetFieldByID(item,pid);
-    return item;
-  }
-  return; // undefined
-}
-
-/*  Class: ngFieldDef_Array
- *  <ngViewModel> Array field (based on <ngFieldDef> ARRAY).
- *
- *  Syntax:
- *    new *ngFieldDef_Array* ([string id ='', object attrs={}, object valfielddef=null])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    valfielddef - ngFieldDef instance used for array value type casting and validation, null if validation is not required
- */
-function ngFieldDef_Array(id, attrs, valfielddef) {
-  ngFieldDefCreateAs(this,id,'ARRAY',attrs);
-  this.ValueFieldDef=ngVal(valfielddef,null);
-  if(ng_typeObject(this.ValueFieldDef)) ng_SetByRef(this.ValueFieldDef,'Parent',this);
-  this.InternalTypedValue = ngfd_ArrayInternalTypedValue;
-  this.DoTypedValue = ngfd_ArrayDoTypedValue;
-  this.DoSerialize = ngfd_ArrayDoSerialize;
-  this.DoDeserialize = ngfd_ArrayDoDeserialize;
-  this.DoFormatError = ngfd_ArrayFormatError;
-  this.DoFormatItemError = ngfd_ArrayFormatItemError;
-  this.GetChildFieldByID = ngfd_ArrayGetChildFieldByID;
-}
-
-function ngfd_ObjectInternalTypedValue(v,op)
-{
-  if(this.__objecttypingvalue) return v;
-  this.__objecttypingvalue=true;
-  try
-  {
-    if(v===null) return null;
-    var r;
-    if(!ng_typeObject(v))
-      throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
-
-    if(ng_typeObject(this.PropsFieldDefs))
-    {
-      r={};
-      var isempty=this.NullIfEmpty ? true : false;
-      var fd,errs=null;
-      for(var k in this.PropsFieldDefs)
-      {
-        try
-        {
-          var val=vmGetFieldByID(v,k);
-          fd=this.PropsFieldDefs[k];
-          if(ngIsFieldDef(val))
+          try
           {
-            if(val.PrivateField) continue;
-            val=val.Value;
-          }
-          val=ko.ng_getvalue(val);
-          if(ngIsFieldDef(fd)) {
+            if(typeof this.Item === 'function') {
+              fd=this.Item(k,false);
+              if(!ngIsFieldDef(fd)) fd=this.ValueFieldDef;
+            }
+            var val=v[k];
+            if(ngIsFieldDef(val)) val=val.Value;
+            if(ko.isObservable(val)) val=val();
             switch(op)
             {
               case 0: val=fd.TypedValue(val); break;
               case 1: val=fd.Serialize(val); break;
               case 2: val=fd.Deserialize(val); break;
             }
+
+            if(pack) {
+              if(ng_isEmptyOrNull(val)) continue;
+              r.push(val);
+            }
+            else r[k]=val;
           }
-          if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
-          vmSetFieldValueByID(r,k,val);
+          catch(e)
+          {
+            if(typeof this.Item === 'function') e.FieldDef=this.Item(k); // Get ngFieldDef for item (if available)
+            else {
+              e.FieldDef=ng_CopyVar(this.ValueFieldDef);
+              e.FieldDef.ID=k;
+            }
+            if(errs===null) errs={};
+            errs[k]=e;
+          }
         }
-        catch(e)
+        if(errs!==null)
         {
-          if(errs===null) errs={};
-          errs[k]=e;
+          throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs); // type error
         }
       }
-      if(errs!==null)
-      {
-        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs); // type error
-      }
-      if(isempty) r=null;
-    }
-    else {
-      if(this.NullIfEmpty) {
-        var isempty=true;
-        for(var k in v) {
-          if(!ng_isEmptyObject(v[k])) { isempty=false; break; }
+      else {
+        if(!pack) r=v;
+        else {
+          var val;
+          r=[];
+          for(var k in v)
+          {
+            val=v[k];
+            if(ng_isEmptyOrNull(val)) continue;
+            r.push(val);
+          }
         }
-        if(isempty) v=null;
       }
-      r=v;
+      if(op===1) r=this.TypedValue(r);
+    } finally {
+      delete this.__arraytypingvalue;
     }
-    if(op===1) r=this.TypedValue(r);
-  } finally {
-    delete this.__objecttypingvalue;
+    return r;
   }
-  return r;
-}
 
-function ngfd_ObjectDoTypedValue(v)
-{
-  return this.InternalTypedValue(v,0);
-}
-
-function ngfd_ObjectDoSerialize(v)
-{
-  if(!ng_typeObject(this.PropsFieldDefs)) return;
-  return this.InternalTypedValue(v,1);
-}
-
-function ngfd_ObjectDoDeserialize(v)
-{
-  if(!ng_typeObject(this.PropsFieldDefs)) return;
-  return this.InternalTypedValue(v,2);
-}
-
-function ngfd_ObjectDoFormatPropertyError(err)
-{
-  return ngTxt('viewmodel_err_type');
-}
-
-function ngfd_ObjectFormatError(err)
-{
-  if(err.ErrorMessage=='viewmodel_err_objproperty') {
-    return this.DoFormatPropertyError(err);
-  }
-  return ng_ViewModelFormatError(err);
-}
-
-function ngfd_ObjectGetChildFieldByID(propid)
-{
-  if(ng_typeObject(this.PropsFieldDefs)) {
-    var p,i,pid='';
-
-    while(propid!='') {
-      p=this.PropsFieldDefs[propid];
-      if(typeof p!=='undefined') {
-        if(pid!='') p=vmGetFieldByID(p,pid);
-        return p;
-      }
-      i=propid.lastIndexOf('.');
-      if(i<0) break;
-      if(pid!='') pid='.'+pid;
-      pid=propid.substr(i+1,propid.length-i)+pid;
-      propid=propid.substr(0,i);
-    }
-  }
-  return; // undefined
-}
-
-/*  Class: ngFieldDef_Object
- *  <ngViewModel> Object field (based on <ngFieldDef> OBJECT).
- *
- *  Syntax:
- *    new *ngFieldDef_Object* ([string id ='', object attrs={}, object propsfielddefs=null])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    propsfielddefs - associative array of ngFieldDef instances used for object properties value type casting and validation, null if validation is not required
- */
-function ngFieldDef_Object(id, attrs, propsfielddefs) {
-  ngFieldDefCreateAs(this,id,'OBJECT',attrs);
-  var fd;
-  if(ng_IsArrayVar(propsfielddefs))
+  function ngfd_ArrayDoTypedValue(v)
   {
-    var k={};
-    for(var i=0;i<propsfielddefs.length;i++) {
-      fd=propsfielddefs[i];
-      if((ngIsFieldDef(fd))&&(fd.ID!='')) {
-        k[fd.ID]=fd;
-        ng_SetByRef(fd,'Parent',this);
+    return this.InternalTypedValue(v,0);
+  }
+
+  function ngfd_ArrayDoSerialize(v)
+  {
+    if(!ngIsFieldDef(this.ValueFieldDef)) return;
+    return this.InternalTypedValue(v,1);
+  }
+
+  function ngfd_ArrayDoDeserialize(v)
+  {
+    if(!ngIsFieldDef(this.ValueFieldDef)) return;
+    return this.InternalTypedValue(v,2);
+  }
+
+  function ngfd_ArrayFormatItemError(err)
+  {
+    return ngTxt('viewmodel_err_type');
+  }
+
+  function ngfd_ArrayFormatError(err)
+  {
+    if(err.ErrorMessage=='viewmodel_err_arrayitem') {
+      return this.DoFormatItemError(err);
+    }
+    return ng_ViewModelFormatError(err);
+  }
+
+  function ngfd_ArrayGetChildFieldByID(propid)
+  {
+    if(typeof this.Item === 'function') {
+      var pid,i=propid.indexOf('.');
+      if(i>=0) {
+        pid=propid.substr(i+1,propid.length-i);
+        propid=propid.substr(0,i);
+      }
+      else pid='';
+      var item=this.Item(ng_toInteger(propid));  // Get ngFieldDef for item (if available)
+      if(pid!='') item=vmGetFieldByID(item,pid);
+      return item;
+    }
+    return; // undefined
+  }
+
+  /*  Class: ngFieldDef_Array
+  *  <ngViewModel> Array field (based on <ngFieldDef> ARRAY).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Array* ([string id ='', object attrs={}, object valfielddef=null])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    valfielddef - ngFieldDef instance used for array value type casting and validation, null if validation is not required
+  */
+  window.ngFieldDef_Array = function(id, attrs, valfielddef) {
+    ngFieldDefCreateAs(this,id,'ARRAY',attrs);
+    this.ValueFieldDef=ngVal(valfielddef,null);
+    if(ng_typeObject(this.ValueFieldDef)) ng_SetByRef(this.ValueFieldDef,'Parent',this);
+    this.InternalTypedValue = ngfd_ArrayInternalTypedValue;
+    this.DoTypedValue = ngfd_ArrayDoTypedValue;
+    this.DoSerialize = ngfd_ArrayDoSerialize;
+    this.DoDeserialize = ngfd_ArrayDoDeserialize;
+    this.DoFormatError = ngfd_ArrayFormatError;
+    this.DoFormatItemError = ngfd_ArrayFormatItemError;
+    this.GetChildFieldByID = ngfd_ArrayGetChildFieldByID;
+  }
+
+  function ngfd_ObjectInternalTypedValue(v,op)
+  {
+    if(this.__objecttypingvalue) return v;
+    this.__objecttypingvalue=true;
+    try
+    {
+      if(v===null) return null;
+      var r;
+      if(!ng_typeObject(v))
+        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
+
+      if(ng_typeObject(this.PropsFieldDefs))
+      {
+        r={};
+        var isempty=this.NullIfEmpty ? true : false;
+        var fd,errs=null;
+        for(var k in this.PropsFieldDefs)
+        {
+          try
+          {
+            var val=vmGetFieldByID(v,k);
+            fd=this.PropsFieldDefs[k];
+            if(ngIsFieldDef(val))
+            {
+              if(val.PrivateField) continue;
+              val=val.Value;
+            }
+            val=ko.ng_getvalue(val);
+            if(ngIsFieldDef(fd)) {
+              switch(op)
+              {
+                case 0: val=fd.TypedValue(val); break;
+                case 1: val=fd.Serialize(val); break;
+                case 2: val=fd.Deserialize(val); break;
+              }
+            }
+            if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
+            vmSetFieldValueByID(r,k,val);
+          }
+          catch(e)
+          {
+            if(errs===null) errs={};
+            errs[k]=e;
+          }
+        }
+        if(errs!==null)
+        {
+          throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs); // type error
+        }
+        if(isempty) r=null;
+      }
+      else {
+        if(this.NullIfEmpty) {
+          var isempty=true;
+          for(var k in v) {
+            if(!ng_isEmptyObject(v[k])) { isempty=false; break; }
+          }
+          if(isempty) v=null;
+        }
+        r=v;
+      }
+      if(op===1) r=this.TypedValue(r);
+    } finally {
+      delete this.__objecttypingvalue;
+    }
+    return r;
+  }
+
+  function ngfd_ObjectDoTypedValue(v)
+  {
+    return this.InternalTypedValue(v,0);
+  }
+
+  function ngfd_ObjectDoSerialize(v)
+  {
+    if(!ng_typeObject(this.PropsFieldDefs)) return;
+    return this.InternalTypedValue(v,1);
+  }
+
+  function ngfd_ObjectDoDeserialize(v)
+  {
+    if(!ng_typeObject(this.PropsFieldDefs)) return;
+    return this.InternalTypedValue(v,2);
+  }
+
+  function ngfd_ObjectDoFormatPropertyError(err)
+  {
+    return ngTxt('viewmodel_err_type');
+  }
+
+  function ngfd_ObjectFormatError(err)
+  {
+    if(err.ErrorMessage=='viewmodel_err_objproperty') {
+      return this.DoFormatPropertyError(err);
+    }
+    return ng_ViewModelFormatError(err);
+  }
+
+  function ngfd_ObjectGetChildFieldByID(propid)
+  {
+    if(ng_typeObject(this.PropsFieldDefs)) {
+      var p,i,pid='';
+
+      while(propid!='') {
+        p=this.PropsFieldDefs[propid];
+        if(typeof p!=='undefined') {
+          if(pid!='') p=vmGetFieldByID(p,pid);
+          return p;
+        }
+        i=propid.lastIndexOf('.');
+        if(i<0) break;
+        if(pid!='') pid='.'+pid;
+        pid=propid.substr(i+1,propid.length-i)+pid;
+        propid=propid.substr(0,i);
       }
     }
-    propsfielddefs=k;
+    return; // undefined
   }
-  else {
-    if(ng_typeObject(propsfielddefs))
+
+  /*  Class: ngFieldDef_Object
+  *  <ngViewModel> Object field (based on <ngFieldDef> OBJECT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Object* ([string id ='', object attrs={}, object propsfielddefs=null])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    propsfielddefs - associative array of ngFieldDef instances used for object properties value type casting and validation, null if validation is not required
+  */
+  window.ngFieldDef_Object = function(id, attrs, propsfielddefs) {
+    ngFieldDefCreateAs(this,id,'OBJECT',attrs);
+    var fd;
+    if(ng_IsArrayVar(propsfielddefs))
     {
       var k={};
-      for(var i in propsfielddefs) {
+      for(var i=0;i<propsfielddefs.length;i++) {
         fd=propsfielddefs[i];
-        if(ngIsFieldDef(fd)) {
-          ng_SetByRef(fd,'Parent',this);
-          fd.ID=''+i;
+        if((ngIsFieldDef(fd))&&(fd.ID!='')) {
           k[fd.ID]=fd;
+          ng_SetByRef(fd,'Parent',this);
         }
-        else k[i]=fd;
       }
       propsfielddefs=k;
     }
-    else propsfielddefs=null;
-  }
-  this.PropsFieldDefs=propsfielddefs;
-
-  this.InternalTypedValue = ngfd_ObjectInternalTypedValue;
-  this.DoTypedValue = ngfd_ObjectDoTypedValue;
-  this.DoSerialize = ngfd_ObjectDoSerialize;
-  this.DoDeserialize = ngfd_ObjectDoDeserialize;
-  this.DoFormatError = ngfd_ObjectFormatError;
-  this.DoFormatPropertyError = ngfd_ObjectDoFormatPropertyError;
-  this.GetChildFieldByID = ngfd_ObjectGetChildFieldByID;
-}
-
-function ngfd_WWWDoTypedValue(v)
-{
-  var s=ng_toString(v);
-  if(s!='')
-  {
-    v=ng_formatWWW(v,null);
-    if(v===null) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_www');
-  }
-  return v;
-}
-
-/*  Class: ngFieldDef_WWW
- *  <ngViewModel> WWW string field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_WWW* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_WWW(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-  this.DoTypedValue = ngfd_WWWDoTypedValue;
-}
-
-function ngfd_EmailParseAtSign(v, add)
-{
-  var s   = ng_toString(v);
-      add = ng_toBool(add);
-
-  if ((add)  && (s==''))  return '@';  //Add
-  if ((!add) && (s=='@')) return '';   //Remove
-
-  return s;
-}
-
-function ngfd_EmailParseString(v)
-{
-  return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, false) : v);
-}
-
-function ngfd_EmailFormatString(v)
-{
-  return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, false) : v);
-}
-
-function ngfd_EmailEditString(v)
-{
-  return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, true) : v);
-}
-
-function ngfd_EmailDoTypedValue(v)
-{
-  var s=ng_toString(v);
-  if((s!='')&&(!ng_isEmail(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_email');
-  return s;
-}
-
-/*  Class: ngFieldDef_Email
- *  <ngViewModel> Email string field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_Email* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Email(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-  this.DoTypedValue = ngfd_EmailDoTypedValue;
-  this.ParseAtSign  = ngfd_EmailParseAtSign;
-
-  this.DoParseString  = ngfd_EmailParseString;
-  this.DoFormatString = ngfd_EmailFormatString;
-  this.DoEditString   = ngfd_EmailEditString;
-}
-
-function ngfd_IP4DoTypedValue(v)
-{
-  var s=ng_toString(v);
-  if((s!='')&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip4');
-  return v;
-}
-
-/*  Class: ngFieldDef_IP4
- *  <ngViewModel> IPv4 string field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_IP4* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_IP4(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-  this.DoTypedValue = ngfd_IP4DoTypedValue;
-}
-
-function ngfd_IP6DoTypedValue(v)
-{
-  var s=ng_toString(v);
-  if((s!='')&&(!ng_isIP6(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip6');
-  return v;
-}
-
-/*  Class: ngFieldDef_IP6
- *  <ngViewModel> IPv6 string field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_IP6* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_IP6(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-  this.DoTypedValue = ngfd_IP6DoTypedValue;
-}
-
-function ngfd_IP46DoTypedValue(v)
-{
-  var s=ng_toString(v);
-  if((s!='')&&(!ng_isIP6(s))&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip46');
-  return v;
-}
-
-/*  Class: ngFieldDef_IP46
- *  <ngViewModel> IPv4/IPv6 string field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_IP46* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_IP46(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-  this.DoTypedValue = ngfd_IP46DoTypedValue;
-}
-
-function ngfd_CurrencyFormatString(v)
-{
-  var prefix=ngVal(this.Attrs['CurrencyPrefix'],'');
-  var suffix=ngVal(this.Attrs['CurrencySuffix'],'');
-
-  var unit=ngVal(this.Attrs['CurrencyUnits'],'');
-  if(unit!='') suffix+=' '+unit;
-
-  v=ng_toDECIMAL(v,this.Size,this.Precision,null);
-  if(v===null) return null;
-  var zeros=ngVal(this.Attrs['Zeros'],1);
-  if((zeros==0)||(zeros==1))
-  {
-    var i=v.lastIndexOf('.');
-    if(i>=0)
-    {
-      for(var l=v.length-1;l>=i;l--)
+    else {
+      if(ng_typeObject(propsfielddefs))
       {
-        if(v.charAt(l)=='.')
-        {
-           if(zeros==1) l++;
-           else l--;
-           break;
+        var k={};
+        for(var i in propsfielddefs) {
+          fd=propsfielddefs[i];
+          if(ngIsFieldDef(fd)) {
+            ng_SetByRef(fd,'Parent',this);
+            fd.ID=''+i;
+            k[fd.ID]=fd;
+          }
+          else k[i]=fd;
         }
-        if(v.charAt(l)!='0') break;
+        propsfielddefs=k;
       }
-      v=v.substr(0,l+1);
+      else propsfielddefs=null;
     }
+    this.PropsFieldDefs=propsfielddefs;
+
+    this.InternalTypedValue = ngfd_ObjectInternalTypedValue;
+    this.DoTypedValue = ngfd_ObjectDoTypedValue;
+    this.DoSerialize = ngfd_ObjectDoSerialize;
+    this.DoDeserialize = ngfd_ObjectDoDeserialize;
+    this.DoFormatError = ngfd_ObjectFormatError;
+    this.DoFormatPropertyError = ngfd_ObjectDoFormatPropertyError;
+    this.GetChildFieldByID = ngfd_ObjectGetChildFieldByID;
   }
-  v=ng_Format3Num(v);
-  if(suffix!='') v=ng_AddSuffix(v, suffix, true);
-  if(prefix!='') v=ng_AddPrefix(v, prefix, true);
-  return v;
-}
 
-function ngfd_CurrencyParseString(v)
-{
-  var prefix=ngVal(this.Attrs['CurrencyPrefix'],'');
-  var suffix=ngVal(this.Attrs['CurrencySuffix'],'');
-
-  var unit=ngVal(this.Attrs['CurrencyUnits'],'');
-  if(unit!='') suffix=ng_Trim(suffix+' '+unit);
-
-  if(suffix!='') v=ng_StripSuffix(v, suffix, true);
-  if(prefix!='') v=ng_StripPrefix(v, prefix, true);
-
-  return ng_Unformat3Num(v);
-}
-
-/*  Class: ngFieldDef_Currency
- *  <ngViewModel> Currency field (based on <ngFieldDef> DECIMAL).
- *
- *  Syntax:
- *    new *ngFieldDef_Currency* ([string id ='', string units='', object attrs={}, string fieldtype = 'DECIMAL'])
- *
- *  Parameters:
- *    id - field id
- *    units - currency unit
- *    attrs - field attributes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_Currency(id, units, attrs, fieldtype)
-{
-  attrs=ngVal(attrs,{});
-  fieldtype=ngVal(fieldtype,'DECIMAL');
-  attrs['CurrencyUnits']=ngVal(units,'');
-  if(fieldtype=='DECIMAL') {
-    attrs['Size'] = ngVal(attrs['Size'],23);
-    attrs['Precision'] = ngVal(attrs['Precision'],3);
-  }
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_CurrencyFormatString;
-  this.DoParseString = ngfd_CurrencyParseString;
-}
-
-function ngfd_DistanceFormatString(v) {
-  return ng_formatDistance(v, null, ngVal(this.Precision,2));
-}
-
-function ngfd_DistanceParseString(v) {
-  return ng_parseDistance(v,null);
-}
-
-/*  Class: ngFieldDef_Distance
- *  <ngViewModel> Distance field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_Distance* ([string id ='', object attrs={}, string fieldtype = 'FLOAT'])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_Distance(id, attrs, fieldtype)
-{
-  fieldtype=ngVal(fieldtype,'FLOAT');
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_DistanceFormatString;
-  this.DoParseString = ngfd_DistanceParseString;
-}
-
-function ngfd_AreaFormatString(v) {
-  return ng_formatArea(v, null, ngVal(this.Precision,2));
-}
-
-function ngfd_AreaParseString(v) {
-  return ng_parseArea(v,null);
-}
-
-/*  Class: ngFieldDef_Area
- *  <ngViewModel> Area field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_Area* ([string id ='', object attrs={}, string fieldtype = 'FLOAT'])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_Area(id, attrs, fieldtype)
-{
-  fieldtype=ngVal(fieldtype,'FLOAT');
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_AreaFormatString;
-  this.DoParseString = ngfd_AreaParseString;
-}
-
-function ngfd_SIUnitsFormatString(v) {
-  var units=ng_toString(this.Attrs['SIUnits']);
-  if(typeof this.Attrs['SIExponent']!=='undefined') v=ng_toNumber(v)*ng_toNumber(this.Attrs['SIExponent']);
-  return ng_Format3Num(ng_formatSIUnits(v, units, null, this.Attrs['SIAllowedPref'], ngVal(this.Precision,2)));
-}
-
-function ngfd_SIUnitsParseString(v) {
-  var units=ng_toString(this.Attrs['SIUnits']);
-  v=ng_parseSIUnits(ng_Unformat3Num(v), units, null, this.Attrs['SIAllowedPref']);
-  if(typeof this.Attrs['SIExponent']!=='undefined') v=ng_toNumber(v)/ng_toNumber(this.Attrs['SIExponent']);
-  return v;
-}
-
-/*  Class: ngFieldDef_SIUnits
- *  <ngViewModel> SIUnits field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_SIUnits* ([string id ='', string units='', object attrs={}, array allowedprefixes=undefined, string fieldtype = 'FLOAT'])
- *
- *  Parameters:
- *    id - field id
- *    units - field units
- *    attrs - field attributes
- *    allowedprefixes - allowed SI prefixes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_SIUnits(id, units, attrs, allowedpref, fieldtype)
-{
-  attrs=ngVal(attrs,{});
-  fieldtype=ngVal(fieldtype,'FLOAT');
-  attrs['SIUnits']=ngVal(units,'');
-  if(typeof allowedpref!=='undefined') attrs['SIAllowedPref']=allowedpref;
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_SIUnitsFormatString;
-  this.DoParseString = ngfd_SIUnitsParseString;
-}
-
-function ngfd_MinutesFormatString(v) {
-  return ng_formatMinutes(v, null, ngVal(this.Precision,0)>0);
-}
-
-function ngfd_MinutesParseString(v) {
-  return ng_parseMinutes(v,null);
-}
-
-/*  Class: ngFieldDef_Minutes
- *  <ngViewModel> Minutes field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_Minutes* ([string id ='', object attrs={}, string fieldtype = 'INTEGER'])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_Minutes(id, attrs, fieldtype)
-{
-  fieldtype=ngVal(fieldtype,'INTEGER');
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_MinutesFormatString;
-  this.DoParseString = ngfd_MinutesParseString;
-}
-
-function ngfd_SecondsFormatString(v) {
-  return ng_formatSeconds(v, null, ngVal(this.Precision,0)>0);
-}
-
-function ngfd_SecondsParseString(v) {
-  return ng_parseSeconds(v,null);
-}
-
-/*  Class: ngFieldDef_Seconds
- *  <ngViewModel> Seconds field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_Seconds* ([string id ='', object attrs={}, string fieldtype = 'INTEGER'])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_Seconds(id, attrs, fieldtype)
-{
-  fieldtype=ngVal(fieldtype,'INTEGER');
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_SecondsFormatString;
-  this.DoParseString = ngfd_SecondsParseString;
-}
-
-function ngfd_BytesFormatString(v) {
-  return ng_formatBytes(v, null, ngVal(this.Precision,0)>0);
-}
-
-function ngfd_BytesParseString(v) {
-  return ng_parseBytes(v,null);
-}
-
-/*  Class: ngFieldDef_Bytes
- *  <ngViewModel> Bytes field (based on <ngFieldDef> FLOAT).
- *
- *  Syntax:
- *    new *ngFieldDef_Bytes* ([string id ='', object attrs={}, string fieldtype = 'INTEGER'])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- *    fieldtype - optional base data type
- */
-function ngFieldDef_Bytes(id, attrs, fieldtype)
-{
-  fieldtype=ngVal(fieldtype,'INTEGER');
-  ngFieldDefCreateAs(this,id,fieldtype,attrs);
-
-  this.DoFormatString = ngfd_BytesFormatString;
-  this.DoParseString = ngfd_BytesParseString;
-}
-
-function ngfd_IsPhone(v) {
-  return ng_isPhone(v,false,ngVal(this.Attrs['PhoneAllowShortcode'],false));
-}
-
-function ngfd_PhoneFormatString(v) {
-  return(this.IsPhone(v) ? ng_FormatPhone(v, null, ngVal(this.Attrs['PhoneZeros'],false),ngVal(this.Attrs['PhoneSeparator'],' ')) : v);
-}
-
-function ngfd_PhoneEditString(v) {
-  var s=ng_UnformatPhone(v,v);
-  return (this.IsPhone(s) ? s : v);
-}
-
-function ngfd_PhoneParseString(v) {
-  var s=ng_UnformatPhone(v,v);
-  return (this.IsPhone(s) ? s : v);
-}
-
-function ngfd_PhoneFormatError(err)
-{
-  if(err.ErrorMessage=='viewmodel_err_invalidphoneprefix')
+  function ngfd_WWWDoTypedValue(v)
   {
-    var prefixes='';
-    var allowed=this.Attrs['PhoneAllowedPrefixes'];
-    for(var i in allowed)
+    var s=ng_toString(v);
+    if(s!='')
     {
-      if(prefixes!='') prefixes+=', ';
-      prefixes+=allowed[i];
+      v=ng_formatWWW(v,null);
+      if(v===null) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_www');
     }
-    if(prefixes=='') return ngTxt('viewmodel_err_invalidphoneprefix_novalue');
-    return ng_sprintf(ngTxt('viewmodel_err_invalidphoneprefix'),prefixes);
+    return v;
   }
-  return ng_ViewModelFormatError(err);
-}
 
-function ngfd_PhoneTypedValue(v)
-{
-  if(v!=null)
+  /*  Class: ngFieldDef_WWW
+  *  <ngViewModel> WWW string field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_WWW* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_WWW = function(id, attrs)
   {
-    var s=ng_toString(v,null);
-    if(s===null) return s;
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+    this.DoTypedValue = ngfd_WWWDoTypedValue;
+  }
 
-    var allowed=this.Attrs['PhoneAllowedPrefixes'];
-    var allowscode=ngVal(this.Attrs['PhoneAllowShortcode'],false);
+  function ngfd_EmailParseAtSign(v, add)
+  {
+    var s   = ng_toString(v);
+        add = ng_toBool(add);
 
-    var prefix=this.Attrs['PhonePrefix'];
-    var op=ngVal(this.Attrs['PhonePrefixOperation'],!ng_isEmpty(prefix) ? NG_PHONE_PREFIX_ADD : NG_PHONE_PREFIX_DONTCHANGE);
-    prefix=ngVal(prefix,'');
+    if ((add)  && (s==''))  return '@';  //Add
+    if ((!add) && (s=='@')) return '';   //Remove
 
-    var n=ng_NormalizePhone(s,op,prefix);
-    if((n===false)||(!ng_isPhone(n,!ng_isEmpty(allowed) ? false : true,allowscode,this.Attrs['PhoneAllowedShortcodes'])))
-      throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_notphone');
+    return s;
+  }
 
-    if(!ng_isEmpty(allowed))
+  function ngfd_EmailParseString(v)
+  {
+    return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, false) : v);
+  }
+
+  function ngfd_EmailFormatString(v)
+  {
+    return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, false) : v);
+  }
+
+  function ngfd_EmailEditString(v)
+  {
+    return (ngVal(this.Attrs['AtSignIfEmpty'], true) ? this.ParseAtSign(v, true) : v);
+  }
+
+  function ngfd_EmailDoTypedValue(v)
+  {
+    var s=ng_toString(v);
+    if((s!='')&&(!ng_isEmail(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_email');
+    return s;
+  }
+
+  /*  Class: ngFieldDef_Email
+  *  <ngViewModel> Email string field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Email* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Email = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+    this.DoTypedValue = ngfd_EmailDoTypedValue;
+    this.ParseAtSign  = ngfd_EmailParseAtSign;
+
+    this.DoParseString  = ngfd_EmailParseString;
+    this.DoFormatString = ngfd_EmailFormatString;
+    this.DoEditString   = ngfd_EmailEditString;
+  }
+
+  function ngfd_IP4DoTypedValue(v)
+  {
+    var s=ng_toString(v);
+    if((s!='')&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip4');
+    return v;
+  }
+
+  /*  Class: ngFieldDef_IP4
+  *  <ngViewModel> IPv4 string field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_IP4* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_IP4 = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+    this.DoTypedValue = ngfd_IP4DoTypedValue;
+  }
+
+  function ngfd_IP6DoTypedValue(v)
+  {
+    var s=ng_toString(v);
+    if((s!='')&&(!ng_isIP6(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip6');
+    return v;
+  }
+
+  /*  Class: ngFieldDef_IP6
+  *  <ngViewModel> IPv6 string field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_IP6* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_IP6 = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+    this.DoTypedValue = ngfd_IP6DoTypedValue;
+  }
+
+  function ngfd_IP46DoTypedValue(v)
+  {
+    var s=ng_toString(v);
+    if((s!='')&&(!ng_isIP6(s))&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip46');
+    return v;
+  }
+
+  /*  Class: ngFieldDef_IP46
+  *  <ngViewModel> IPv4/IPv6 string field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_IP46* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_IP46 = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+    this.DoTypedValue = ngfd_IP46DoTypedValue;
+  }
+
+  function ngfd_CurrencyFormatString(v)
+  {
+    var prefix=ngVal(this.Attrs['CurrencyPrefix'],'');
+    var suffix=ngVal(this.Attrs['CurrencySuffix'],'');
+
+    var unit=ngVal(this.Attrs['CurrencyUnits'],'');
+    if(unit!='') suffix+=' '+unit;
+
+    v=ng_toDECIMAL(v,this.Size,this.Precision,null);
+    if(v===null) return null;
+    var zeros=ngVal(this.Attrs['Zeros'],1);
+    if((zeros==0)||(zeros==1))
     {
-      if((!allowscode)||(!ng_isShortCode(n)))
+      var i=v.lastIndexOf('.');
+      if(i>=0)
       {
-        if(!ng_hasPhoneValidPrefix(n, false, allowed))
-          throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_invalidphoneprefix');
+        for(var l=v.length-1;l>=i;l--)
+        {
+          if(v.charAt(l)=='.')
+          {
+            if(zeros==1) l++;
+            else l--;
+            break;
+          }
+          if(v.charAt(l)!='0') break;
+        }
+        v=v.substr(0,l+1);
       }
     }
-    v=n;
+    v=ng_Format3Num(v);
+    if(suffix!='') v=ng_AddSuffix(v, suffix, true);
+    if(prefix!='') v=ng_AddPrefix(v, prefix, true);
+    return v;
   }
-  return v;
-}
 
-/*  Class: ngFieldDef_Phone
- *  <ngViewModel> Phone field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_Phone* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Phone(id, attrs)
-{
-  this.Size=NG_PHONE_MAXLENGTH;
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-
-  this.IsPhone = ngfd_IsPhone;
-
-  this.DoFormatError = ngfd_PhoneFormatError;
-  this.DoTypedValue = ngfd_PhoneTypedValue;
-  this.DoFormatString = ngfd_PhoneFormatString;
-  this.DoEditString = ngfd_PhoneEditString;
-  this.DoParseString = ngfd_PhoneParseString;
-}
-
-function ngfd_RegExpDoTypedValue(v)
-{
-  var s = ng_toString(v);
-  if ((s!='') && (this.Attrs['RegExp']!=''))
+  function ngfd_CurrencyParseString(v)
   {
-    var re     = new RegExp(this.Attrs['RegExp'], ngVal(this.Attrs['RegExpMods'], ''));
-    var result = re.exec(s);
-    if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR, ngVal(this.Attrs['RegExpError'], 'viewmodel_err_format'));
+    var prefix=ngVal(this.Attrs['CurrencyPrefix'],'');
+    var suffix=ngVal(this.Attrs['CurrencySuffix'],'');
 
-    if (result.length>1)
-    {
-      v = '';
-      for (var i=1;i<result.length;i++)
-        v += result[i];
-    }
+    var unit=ngVal(this.Attrs['CurrencyUnits'],'');
+    if(unit!='') suffix=ng_Trim(suffix+' '+unit);
+
+    if(suffix!='') v=ng_StripSuffix(v, suffix, true);
+    if(prefix!='') v=ng_StripPrefix(v, prefix, true);
+
+    return ng_Unformat3Num(v);
   }
 
-  return v;
-}
+  /*  Class: ngFieldDef_Currency
+  *  <ngViewModel> Currency field (based on <ngFieldDef> DECIMAL).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Currency* ([string id ='', string units='', object attrs={}, string fieldtype = 'DECIMAL'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    units - currency unit
+  *    attrs - field attributes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_Currency = function(id, units, attrs, fieldtype)
+  {
+    attrs=ngVal(attrs,{});
+    fieldtype=ngVal(fieldtype,'DECIMAL');
+    attrs['CurrencyUnits']=ngVal(units,'');
+    if(fieldtype=='DECIMAL') {
+      attrs['Size'] = ngVal(attrs['Size'],23);
+      attrs['Precision'] = ngVal(attrs['Precision'],3);
+    }
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
 
-/*  Class: ngFieldDef_RegExp
- *  <ngViewModel> RegExp string field (based on <ngFieldDef> NVARCHAR).
- *
- *  Syntax:
- *    new *ngFieldDef_RegExp* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_RegExp(id, attrs)
-{
-  ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
-  this.DoTypedValue = ngfd_RegExpDoTypedValue;
-}
+    this.DoFormatString = ngfd_CurrencyFormatString;
+    this.DoParseString = ngfd_CurrencyParseString;
+  }
 
-function ngfd_PercentFormatString(v)
-{
-  v=ng_toDECIMAL(v,this.Size,this.Precision,null);
-  if(v===null) return null;
-  return ng_AddSuffix(v, ' %');
-}
+  function ngfd_DistanceFormatString(v) {
+    return ng_formatDistance(v, null, ngVal(this.Precision,2));
+  }
 
-function ngfd_PercentParseString(v)
-{
-  return ng_Trim(ng_StripSuffix(v,'%'));
-}
+  function ngfd_DistanceParseString(v) {
+    return ng_parseDistance(v,null);
+  }
 
-/*  Class: ngFieldDef_Percent
- *  <ngViewModel> Percent field (based on <ngFieldDef> DECIMAL).
- *
- *  Syntax:
- *    new *ngFieldDef_Percent* ([string id ='', object attrs={}])
- *
- *  Parameters:
- *    id - field id
- *    attrs - field attributes
- */
-function ngFieldDef_Percent(id, attrs)
-{
-  attrs=ngVal(attrs,{});
-  attrs['Size'] = ngVal(attrs['Size'],3);
-  attrs['Precision'] = ngVal(attrs['Precision'],0);
-  attrs['MinValue'] = ngVal(attrs['MinValue'],0);
-  attrs['MaxValue'] = ngVal(attrs['MaxValue'],100);
-  ngFieldDefCreateAs(this,id,'DECIMAL',attrs);
+  /*  Class: ngFieldDef_Distance
+  *  <ngViewModel> Distance field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Distance* ([string id ='', object attrs={}, string fieldtype = 'FLOAT'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_Distance = function(id, attrs, fieldtype)
+  {
+    fieldtype=ngVal(fieldtype,'FLOAT');
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
 
-  this.DoFormatString = ngfd_PercentFormatString;
-  this.DoParseString = ngfd_PercentParseString;
-}
+    this.DoFormatString = ngfd_DistanceFormatString;
+    this.DoParseString = ngfd_DistanceParseString;
+  }
+
+  function ngfd_AreaFormatString(v) {
+    return ng_formatArea(v, null, ngVal(this.Precision,2));
+  }
+
+  function ngfd_AreaParseString(v) {
+    return ng_parseArea(v,null);
+  }
+
+  /*  Class: ngFieldDef_Area
+  *  <ngViewModel> Area field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Area* ([string id ='', object attrs={}, string fieldtype = 'FLOAT'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_Area = function(id, attrs, fieldtype)
+  {
+    fieldtype=ngVal(fieldtype,'FLOAT');
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
+
+    this.DoFormatString = ngfd_AreaFormatString;
+    this.DoParseString = ngfd_AreaParseString;
+  }
+
+  function ngfd_SIUnitsFormatString(v) {
+    var units=ng_toString(this.Attrs['SIUnits']);
+    if(typeof this.Attrs['SIExponent']!=='undefined') v=ng_toNumber(v)*ng_toNumber(this.Attrs['SIExponent']);
+    return ng_Format3Num(ng_formatSIUnits(v, units, null, this.Attrs['SIAllowedPref'], ngVal(this.Precision,2)));
+  }
+
+  function ngfd_SIUnitsParseString(v) {
+    var units=ng_toString(this.Attrs['SIUnits']);
+    v=ng_parseSIUnits(ng_Unformat3Num(v), units, null, this.Attrs['SIAllowedPref']);
+    if(typeof this.Attrs['SIExponent']!=='undefined') v=ng_toNumber(v)/ng_toNumber(this.Attrs['SIExponent']);
+    return v;
+  }
+
+  /*  Class: ngFieldDef_SIUnits
+  *  <ngViewModel> SIUnits field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_SIUnits* ([string id ='', string units='', object attrs={}, array allowedprefixes=undefined, string fieldtype = 'FLOAT'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    units - field units
+  *    attrs - field attributes
+  *    allowedprefixes - allowed SI prefixes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_SIUnits = function(id, units, attrs, allowedpref, fieldtype)
+  {
+    attrs=ngVal(attrs,{});
+    fieldtype=ngVal(fieldtype,'FLOAT');
+    attrs['SIUnits']=ngVal(units,'');
+    if(typeof allowedpref!=='undefined') attrs['SIAllowedPref']=allowedpref;
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
+
+    this.DoFormatString = ngfd_SIUnitsFormatString;
+    this.DoParseString = ngfd_SIUnitsParseString;
+  }
+
+  function ngfd_MinutesFormatString(v) {
+    return ng_formatMinutes(v, null, ngVal(this.Precision,0)>0);
+  }
+
+  function ngfd_MinutesParseString(v) {
+    return ng_parseMinutes(v,null);
+  }
+
+  /*  Class: ngFieldDef_Minutes
+  *  <ngViewModel> Minutes field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Minutes* ([string id ='', object attrs={}, string fieldtype = 'INTEGER'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_Minutes = function(id, attrs, fieldtype)
+  {
+    fieldtype=ngVal(fieldtype,'INTEGER');
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
+
+    this.DoFormatString = ngfd_MinutesFormatString;
+    this.DoParseString = ngfd_MinutesParseString;
+  }
+
+  function ngfd_SecondsFormatString(v) {
+    return ng_formatSeconds(v, null, ngVal(this.Precision,0)>0);
+  }
+
+  function ngfd_SecondsParseString(v) {
+    return ng_parseSeconds(v,null);
+  }
+
+  /*  Class: ngFieldDef_Seconds
+  *  <ngViewModel> Seconds field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Seconds* ([string id ='', object attrs={}, string fieldtype = 'INTEGER'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_Seconds = function(id, attrs, fieldtype)
+  {
+    fieldtype=ngVal(fieldtype,'INTEGER');
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
+
+    this.DoFormatString = ngfd_SecondsFormatString;
+    this.DoParseString = ngfd_SecondsParseString;
+  }
+
+  function ngfd_BytesFormatString(v) {
+    return ng_formatBytes(v, null, ngVal(this.Precision,0)>0);
+  }
+
+  function ngfd_BytesParseString(v) {
+    return ng_parseBytes(v,null);
+  }
+
+  /*  Class: ngFieldDef_Bytes
+  *  <ngViewModel> Bytes field (based on <ngFieldDef> FLOAT).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Bytes* ([string id ='', object attrs={}, string fieldtype = 'INTEGER'])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  *    fieldtype - optional base data type
+  */
+  window.ngFieldDef_Bytes = function(id, attrs, fieldtype)
+  {
+    fieldtype=ngVal(fieldtype,'INTEGER');
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
+
+    this.DoFormatString = ngfd_BytesFormatString;
+    this.DoParseString = ngfd_BytesParseString;
+  }
+
+  function ngfd_IsPhone(v) {
+    return ng_isPhone(v,false,ngVal(this.Attrs['PhoneAllowShortcode'],false));
+  }
+
+  function ngfd_PhoneFormatString(v) {
+    return(this.IsPhone(v) ? ng_FormatPhone(v, null, ngVal(this.Attrs['PhoneZeros'],false),ngVal(this.Attrs['PhoneSeparator'],' ')) : v);
+  }
+
+  function ngfd_PhoneEditString(v) {
+    var s=ng_UnformatPhone(v,v);
+    return (this.IsPhone(s) ? s : v);
+  }
+
+  function ngfd_PhoneParseString(v) {
+    var s=ng_UnformatPhone(v,v);
+    return (this.IsPhone(s) ? s : v);
+  }
+
+  function ngfd_PhoneFormatError(err)
+  {
+    if(err.ErrorMessage=='viewmodel_err_invalidphoneprefix')
+    {
+      var prefixes='';
+      var allowed=this.Attrs['PhoneAllowedPrefixes'];
+      for(var i in allowed)
+      {
+        if(prefixes!='') prefixes+=', ';
+        prefixes+=allowed[i];
+      }
+      if(prefixes=='') return ngTxt('viewmodel_err_invalidphoneprefix_novalue');
+      return ng_sprintf(ngTxt('viewmodel_err_invalidphoneprefix'),prefixes);
+    }
+    return ng_ViewModelFormatError(err);
+  }
+
+  function ngfd_PhoneTypedValue(v)
+  {
+    if(v!=null)
+    {
+      var s=ng_toString(v,null);
+      if(s===null) return s;
+
+      var allowed=this.Attrs['PhoneAllowedPrefixes'];
+      var allowscode=ngVal(this.Attrs['PhoneAllowShortcode'],false);
+
+      var prefix=this.Attrs['PhonePrefix'];
+      var op=ngVal(this.Attrs['PhonePrefixOperation'],!ng_isEmpty(prefix) ? NG_PHONE_PREFIX_ADD : NG_PHONE_PREFIX_DONTCHANGE);
+      prefix=ngVal(prefix,'');
+
+      var n=ng_NormalizePhone(s,op,prefix);
+      if((n===false)||(!ng_isPhone(n,!ng_isEmpty(allowed) ? false : true,allowscode,this.Attrs['PhoneAllowedShortcodes'])))
+        throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_notphone');
+
+      if(!ng_isEmpty(allowed))
+      {
+        if((!allowscode)||(!ng_isShortCode(n)))
+        {
+          if(!ng_hasPhoneValidPrefix(n, false, allowed))
+            throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_invalidphoneprefix');
+        }
+      }
+      v=n;
+    }
+    return v;
+  }
+
+  /*  Class: ngFieldDef_Phone
+  *  <ngViewModel> Phone field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Phone* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Phone = function(id, attrs)
+  {
+    this.Size=NG_PHONE_MAXLENGTH;
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+
+    this.IsPhone = ngfd_IsPhone;
+
+    this.DoFormatError = ngfd_PhoneFormatError;
+    this.DoTypedValue = ngfd_PhoneTypedValue;
+    this.DoFormatString = ngfd_PhoneFormatString;
+    this.DoEditString = ngfd_PhoneEditString;
+    this.DoParseString = ngfd_PhoneParseString;
+  }
+
+  function ngfd_RegExpDoTypedValue(v)
+  {
+    var s = ng_toString(v);
+    if ((s!='') && (this.Attrs['RegExp']!=''))
+    {
+      var re     = new RegExp(this.Attrs['RegExp'], ngVal(this.Attrs['RegExpMods'], ''));
+      var result = re.exec(s);
+      if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR, ngVal(this.Attrs['RegExpError'], 'viewmodel_err_format'));
+
+      if (result.length>1)
+      {
+        v = '';
+        for (var i=1;i<result.length;i++)
+          v += result[i];
+      }
+    }
+
+    return v;
+  }
+
+  /*  Class: ngFieldDef_RegExp
+  *  <ngViewModel> RegExp string field (based on <ngFieldDef> NVARCHAR).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_RegExp* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_RegExp = function(id, attrs)
+  {
+    ngFieldDefCreateAs(this,id,((ng_typeObject(attrs))&&(attrs['Size']>0)) ? 'NVARCHAR' : 'STRING',attrs);
+    this.DoTypedValue = ngfd_RegExpDoTypedValue;
+  }
+
+  function ngfd_PercentFormatString(v)
+  {
+    v=ng_toDECIMAL(v,this.Size,this.Precision,null);
+    if(v===null) return null;
+    return ng_AddSuffix(v, ' %');
+  }
+
+  function ngfd_PercentParseString(v)
+  {
+    return ng_Trim(ng_StripSuffix(v,'%'));
+  }
+
+  /*  Class: ngFieldDef_Percent
+  *  <ngViewModel> Percent field (based on <ngFieldDef> DECIMAL).
+  *
+  *  Syntax:
+  *    new *ngFieldDef_Percent* ([string id ='', object attrs={}])
+  *
+  *  Parameters:
+  *    id - field id
+  *    attrs - field attributes
+  */
+  window.ngFieldDef_Percent = function(id, attrs)
+  {
+    attrs=ngVal(attrs,{});
+    attrs['Size'] = ngVal(attrs['Size'],3);
+    attrs['Precision'] = ngVal(attrs['Precision'],0);
+    attrs['MinValue'] = ngVal(attrs['MinValue'],0);
+    attrs['MaxValue'] = ngVal(attrs['MaxValue'],100);
+    ngFieldDefCreateAs(this,id,'DECIMAL',attrs);
+
+    this.DoFormatString = ngfd_PercentFormatString;
+    this.DoParseString = ngfd_PercentParseString;
+  }
+
+})(window);
