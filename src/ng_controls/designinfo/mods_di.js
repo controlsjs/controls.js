@@ -83,13 +83,13 @@ ngUserControls['mods_designinfo'] = {
         ControlCategory: false,
         Properties: ng_diProperties({
           "Data": {
-            "WMin": ng_diInteger(0, { Level: 'basic' }),
-            "WMax": ng_diInteger(100, { Level: 'basic' }),
-            "WAlign": ng_diStringValues('left', ['left','right'], { Level: 'basic' }),
+            "SizeLimitWMin": ng_diInteger(0, { Level: 'basic' }),
+            "SizeLimitWMax": ng_diInteger(100, { Level: 'basic' }),
+            "SizeLimitWAlign": ng_diStringValues('left', ['left','right'], { Level: 'advanced' }),
 
-            "HMin": ng_diInteger(0, { Level: 'basic' }),
-            "HMax": ng_diInteger(100, { Level: 'basic' }),
-            "HAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'basic' })
+            "SizeLimitHMin": ng_diInteger(0, { Level: 'basic' }),
+            "SizeLimitHMax": ng_diInteger(100, { Level: 'basic' }),
+            "SizeLimitHAlign": ng_diStringValues('top', ['top','bottom'], { Level: 'advanced' })
           }
         })
       };

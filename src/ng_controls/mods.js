@@ -137,15 +137,25 @@ ngUserControls['mods'] = {
     ngRegisterControlMod('modSizeLimit', function(def, ref, parent, modtype) {
       ng_MergeDef(def, {
         Data: {
-          WMin: void 0,
-          WMax: void 0,
-          WAlign: 'left',
+          SizeLimitWMin: void 0,
+          SizeLimitWMax: void 0,
+          SizeLimitWAlign: void 0,
 
-          HMin: void 0,
-          HMax: void 0,
-          HAlign: 'top'
+          SizeLimitHMin: void 0,
+          SizeLimitHMax: void 0,
+          SizeLimitHAlign: void 0
         },
         Methods: {
+          DoCreate: function(def, ref, elm, parent)
+          {
+            if(ngVal(this.SizeLimitWAlign,'')==='') {
+              this.SizeLimitWAlign=((typeof def.R!=='undefined')&&(typeof def.L==='undefined')) ? 'right' : 'left';
+            }
+            if(ngVal(this.SizeLimitHAlign,'')==='') {
+              this.SizeLimitHAlign=((typeof def.B!=='undefined')&&(typeof def.T==='undefined')) ? 'bottom' : 'top';
+            }
+            ng_CallParent(this,'DoCreate',arguments);
+          },
           GetRealBounds: function(bounds) {
             if(typeof bounds==='undefined') bounds=this.Bounds;
             var elm=this.Elm();
@@ -214,33 +224,33 @@ ngUserControls['mods'] = {
         BeforeEvents: {
           OnUpdate: function(c) {
             var props;
-            if((c.WMin)||(c.WMax)||(c.HMin)||(c.HMax)) {
+            if((c.SizeLimitWMin)||(c.SizeLimitWMax)||(c.SizeLimitHMin)||(c.SizeLimitHMax)) {
               var rb=c.GetRealBounds();
               var props,lw,lh;
               if(typeof rb.W!=='undefined')
               {
-                if((c.WMin)&&(rb.W<c.WMin)) lw=c.WMin;
-                if((c.WMax)&&(rb.W>c.WMax)) lw=c.WMax;
+                if((c.SizeLimitWMin)&&(rb.W<c.SizeLimitWMin)) lw=c.SizeLimitWMin;
+                if((c.SizeLimitWMax)&&(rb.W>c.SizeLimitWMax)) lw=c.SizeLimitWMax;
               }
               if(typeof rb.H!=='undefined')
               {
-                if((c.HMin)&&(rb.H<c.HMin)) lh=c.HMin;
-                if((c.HMax)&&(rb.H>c.HMax)) lh=c.HMax;
+                if((c.SizeLimitHMin)&&(rb.H<c.SizeLimitHMin)) lh=c.SizeLimitHMin;
+                if((c.SizeLimitHMax)&&(rb.H>c.SizeLimitHMax)) lh=c.SizeLimitHMax;
               }
               if(typeof lw!=='undefined') {
                 if(!props) props={};
                 props.W=lw;
                 if((typeof this.Bounds.L!=='undefined')&&(typeof this.Bounds.R!=='undefined')) {
-                  if(c.WAlign==='right') props.L=void 0;
-                  else                   props.R=void 0;
+                  if(c.SizeLimitWAlign==='right') props.L=void 0;
+                  else                            props.R=void 0;
                 }
               }
               if(typeof lh!=='undefined') {
                 if(!props) props={};
                 props.H=lh;
                 if((typeof this.Bounds.T!=='undefined')&&(typeof this.Bounds.B!=='undefined')) {
-                  if(c.HAlign==='bottom') props.T=void 0;
-                  else                    props.B=void 0;
+                  if(c.SizeLimitHAlign==='bottom') props.T=void 0;
+                  else                             props.B=void 0;
                 }
               }
             }
