@@ -21,629 +21,564 @@ TODO:
 - file(s) upload
 */
 
-var ngvmf_hintevents_initialized = false;
+if(typeof ngUserControls === 'undefined') ngUserControls = {};
+ngUserControls['viewmodel_ui'] = {
+  Lib: 'ng_controls',
+  ControlsGroup: 'Core',
 
-// Simple calculation based on Levenshtein distance.
-function ngca_calcEditDistMatrix(oldArray, newArray, cmpfnc, maxAllowedDistance) {
-    var distances = [];
-    for (var i = 0; i <= newArray.length; i++)
-        distances[i] = [];
+  OnInit: function() {
 
-    // Top row - transform old array into empty array via deletions
-    for (var i = 0, j = Math.min(oldArray.length, maxAllowedDistance); i <= j; i++)
-        distances[0][i] = i;
+    // Simple calculation based on Levenshtein distance.
+    function ngca_calcEditDistMatrix(oldArray, newArray, cmpfnc, maxAllowedDistance) {
+      var distances = [];
+      for (var i = 0; i <= newArray.length; i++)
+          distances[i] = [];
 
-    // Left row - transform empty array into new array via additions
-    for (var i = 1, j = Math.min(newArray.length, maxAllowedDistance); i <= j; i++) {
-        distances[i][0] = i;
-    }
+      // Top row - transform old array into empty array via deletions
+      for (var i = 0, j = Math.min(oldArray.length, maxAllowedDistance); i <= j; i++)
+          distances[0][i] = i;
 
-    // Fill out the body of the array
-    var oldIndex, oldIndexMax = oldArray.length, newIndex, newIndexMax = newArray.length;
-    var distanceViaAddition, distanceViaDeletion;
-    for (oldIndex = 1; oldIndex <= oldIndexMax; oldIndex++) {
-        var newIndexMinForRow = Math.max(1, oldIndex - maxAllowedDistance);
-        var newIndexMaxForRow = Math.min(newIndexMax, oldIndex + maxAllowedDistance);
-        for (newIndex = newIndexMinForRow; newIndex <= newIndexMaxForRow; newIndex++) {
-            if (cmpfnc(oldArray[oldIndex - 1],newArray[newIndex - 1]))
-                distances[newIndex][oldIndex] = distances[newIndex - 1][oldIndex - 1];
-            else {
-                var northDistance = distances[newIndex - 1][oldIndex] === undefined ? Number.MAX_VALUE : distances[newIndex - 1][oldIndex] + 1;
-                var westDistance = distances[newIndex][oldIndex - 1] === undefined ? Number.MAX_VALUE : distances[newIndex][oldIndex - 1] + 1;
-                distances[newIndex][oldIndex] = Math.min(northDistance, westDistance);
-            }
-        }
-    }
+      // Left row - transform empty array into new array via additions
+      for (var i = 1, j = Math.min(newArray.length, maxAllowedDistance); i <= j; i++) {
+          distances[i][0] = i;
+      }
 
-    return distances;
-}
-
-function ngca_findEditScriptFromEditDistMatrix(editDistanceMatrix, oldArray, newArray) {
-    var oldIndex = oldArray.length;
-    var newIndex = newArray.length;
-    var editScript = [];
-    var maxDistance = editDistanceMatrix[newIndex][oldIndex];
-    if (maxDistance === undefined)
-        return null; // maxAllowedDistance must be too small
-    while ((oldIndex > 0) || (newIndex > 0)) {
-        var me = editDistanceMatrix[newIndex][oldIndex];
-        var distanceViaAdd = (newIndex > 0) ? editDistanceMatrix[newIndex - 1][oldIndex] : maxDistance + 1;
-        var distanceViaDelete = (oldIndex > 0) ? editDistanceMatrix[newIndex][oldIndex - 1] : maxDistance + 1;
-        var distanceViaRetain = (newIndex > 0) && (oldIndex > 0) ? editDistanceMatrix[newIndex - 1][oldIndex - 1] : maxDistance + 1;
-        if ((distanceViaAdd === undefined) || (distanceViaAdd < me - 1)) distanceViaAdd = maxDistance + 1;
-        if ((distanceViaDelete === undefined) || (distanceViaDelete < me - 1)) distanceViaDelete = maxDistance + 1;
-        if (distanceViaRetain < me - 1) distanceViaRetain = maxDistance + 1;
-
-        if ((distanceViaAdd <= distanceViaDelete) && (distanceViaAdd < distanceViaRetain)) {
-            editScript.push({ status: 1/*"added"*/, value: newArray[newIndex - 1] });
-            newIndex--;
-        } else if ((distanceViaDelete < distanceViaAdd) && (distanceViaDelete < distanceViaRetain)) {
-            editScript.push({ status: 2/*"deleted"*/, value: oldArray[oldIndex - 1] });
-            oldIndex--;
-        } else {
-            editScript.push({ status: 0/*"retained"*/, value: oldArray[oldIndex - 1] });
-            newIndex--;
-            oldIndex--;
-        }
-    }
-    return editScript.reverse();
-}
-
-function ng_GetArraysEditScript(oldArray, newArray, cmpfnc, maxEditsToConsider) {
-    if (maxEditsToConsider === undefined) {
-        return ng_GetArraysEditScript(oldArray, newArray, cmpfnc, 1)                 // First consider likely case where there is at most one edit (very fast)
-            || ng_GetArraysEditScript(oldArray, newArray, cmpfnc, 10)                // If that fails, account for a fair number of changes while still being fast
-            || ng_GetArraysEditScript(oldArray, newArray, cmpfnc, Number.MAX_VALUE); // Ultimately give the right answer, even though it may take a long time
-    } else {
-        oldArray = oldArray || [];
-        newArray = newArray || [];
-        var editDistanceMatrix = ngca_calcEditDistMatrix(oldArray, newArray, cmpfnc, maxEditsToConsider);
-        return ngca_findEditScriptFromEditDistMatrix(editDistanceMatrix, oldArray, newArray);
-    }
-};
-
-function ngvmf_DoDispose()
-{
-  this.SetViewModel(null);
-  return true;
-}
-
-function ngvmf_OnCommand(vm,cmd,options)
-{
-  var form=vm.ViewModelForm;
-  if(form)
-  {
-    if((form.OnCommand)&&(!ngVal(form.OnCommand(form,cmd,options),false))) return false;
-    form.ResetErrors();
-  }
-  return true;
-}
-
-function ngvmf_ShowControl(c,s)
-{
-  if(!c) return;
-  var o=c['binding_updatingVisible'];
-  try
-  {
-    c['binding_updatingVisible']=true;
-    c.SetVisible(s);
-  }
-  finally
-  {
-    if(ng_isEmpty(o)) delete c['binding_updatingVisible'];
-    else c['binding_updatingVisible']=o;
-  }
-}
-
-function ngvmf_EnableControl(c,s)
-{
-  if(!c) return;
-  var o=c['binding_updatingEnabled'];
-  try
-  {
-    c['binding_updatingEnabled']=true;
-    c.SetEnabled(s);
-  }
-  finally
-  {
-    if(ng_isEmpty(o)) delete c['binding_updatingEnabled'];
-    else c['binding_updatingEnabled']=o;
-  }
-}
-
-function ngvmf_IntSetChildControlsEnabled(v,p)
-{
-  if(typeof this._intSetChildControlsEnabled!=='function') return;
-  var o=this['binding_updatingChildEnabled'];
-  var t=this.SetChildControlsEnabled;
-  try
-  {
-    this['binding_updatingChildEnabled']=true;
-    this.SetChildControlsEnabled=this._intSetChildControlsEnabled;
-    this.SetChildControlsEnabled.apply(this,arguments);
-  }
-  finally
-  {
-    this.SetChildControlsEnabled=t;
-    if(ng_isEmpty(o)) delete this['binding_updatingChildEnabled'];
-    else this['binding_updatingChildEnabled']=o;
-  }
-}
-
-function ngvmf_DoSetChildEnabled(c,v,p)
-{
-  if(!v) {
-    if((typeof c.SetChildControlsEnabled === 'function')&&(typeof c._intSetChildControlsEnabled === 'undefined'))
-    {
-      c._intSetChildControlsEnabled=c.SetChildControlsEnabled;
-      c.SetChildControlsEnabled=ngvmf_IntSetChildControlsEnabled;
-    }
-    this.EnableControl(c,v);
-  }
-  else {
-    this.EnableControl(c,v);
-    if(typeof c._intSetChildControlsEnabled!=='undefined')
-    {
-      c.SetChildControlsEnabled=c._intSetChildControlsEnabled;
-      delete c._intSetChildControlsEnabled;
-    }
-  }
-}
-
-function ngvmf_DisableControls()
-{
-  if(this.disablectrlscnt<=0)
-  {
-    this.disablectrlscnt=0;
-    if((!this.OnDisableControls)||(ngVal(this.OnDisableControls(this),false)))
-      this.SetChildControlsEnabled(false);
-  }
-  this.disablectrlscnt++;
-}
-
-function ngvmf_EnableControls()
-{
-  if(this.disablectrlscnt<=0) return;
-  this.disablectrlscnt--;
-  if(!this.disablectrlscnt) {
-    if((!this.OnEnableControls)||(ngVal(this.OnEnableControls(this),false)))
-      this.SetChildControlsEnabled(true);
-  }
-}
-
-function ngvmf_OnCommandRequest(vm,rpc)
-{
-  var form=vm.ViewModelForm;
-  if(form)
-  {
-    if((form.OnCommandRequest)&&(!ngVal(form.OnCommandRequest(form,rpc),false))) return false;
-
-    form.ShowLoading(true);
-
-    if(form.DisableOnCommand) {
-      var delay = form.DisableDelay;
-      if(delay<=0) delay=1;
-      if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
-      form.disable_ctrls_timer=setTimeout(function() {
-        if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
-        delete form.disable_ctrls_timer;
-
-        if((form.DisableOnCommand===true)||(ng_inArray(vm.ActiveCommand, form.DisableOnCommand))) {
-          if((!form.OnDisableControlsCommand)||(ngVal(form.OnDisableControlsCommand(form,vm.ActiveCommand),true))) {
-            form.controls_disabled=true;
-            form.DisableControls();
+      // Fill out the body of the array
+      var oldIndex, oldIndexMax = oldArray.length, newIndex, newIndexMax = newArray.length;
+      var distanceViaAddition, distanceViaDeletion;
+      for (oldIndex = 1; oldIndex <= oldIndexMax; oldIndex++) {
+          var newIndexMinForRow = Math.max(1, oldIndex - maxAllowedDistance);
+          var newIndexMaxForRow = Math.min(newIndexMax, oldIndex + maxAllowedDistance);
+          for (newIndex = newIndexMinForRow; newIndex <= newIndexMaxForRow; newIndex++) {
+              if (cmpfnc(oldArray[oldIndex - 1],newArray[newIndex - 1]))
+                  distances[newIndex][oldIndex] = distances[newIndex - 1][oldIndex - 1];
+              else {
+                  var northDistance = distances[newIndex - 1][oldIndex] === undefined ? Number.MAX_VALUE : distances[newIndex - 1][oldIndex] + 1;
+                  var westDistance = distances[newIndex][oldIndex - 1] === undefined ? Number.MAX_VALUE : distances[newIndex][oldIndex - 1] + 1;
+                  distances[newIndex][oldIndex] = Math.min(northDistance, westDistance);
+              }
           }
-        }
-      },delay);
+      }
+
+      return distances;
     }
-  }
-  return true;
-}
 
-function ngvmf_OnCommandCancel(vm, cmd)
-{
-  var form=vm.ViewModelForm;
-  if(form)
-  {
-    if(form.OnCommandCancel) form.OnCommandCancel(form, cmd);
-    if(form.disable_ctrls_timer) {
-      clearTimeout(form.disable_ctrls_timer);
-      delete form.disable_ctrls_timer;
+    function ngca_findEditScriptFromEditDistMatrix(editDistanceMatrix, oldArray, newArray) {
+      var oldIndex = oldArray.length;
+      var newIndex = newArray.length;
+      var editScript = [];
+      var maxDistance = editDistanceMatrix[newIndex][oldIndex];
+      if (maxDistance === undefined)
+          return null; // maxAllowedDistance must be too small
+      while ((oldIndex > 0) || (newIndex > 0)) {
+          var me = editDistanceMatrix[newIndex][oldIndex];
+          var distanceViaAdd = (newIndex > 0) ? editDistanceMatrix[newIndex - 1][oldIndex] : maxDistance + 1;
+          var distanceViaDelete = (oldIndex > 0) ? editDistanceMatrix[newIndex][oldIndex - 1] : maxDistance + 1;
+          var distanceViaRetain = (newIndex > 0) && (oldIndex > 0) ? editDistanceMatrix[newIndex - 1][oldIndex - 1] : maxDistance + 1;
+          if ((distanceViaAdd === undefined) || (distanceViaAdd < me - 1)) distanceViaAdd = maxDistance + 1;
+          if ((distanceViaDelete === undefined) || (distanceViaDelete < me - 1)) distanceViaDelete = maxDistance + 1;
+          if (distanceViaRetain < me - 1) distanceViaRetain = maxDistance + 1;
+
+          if ((distanceViaAdd <= distanceViaDelete) && (distanceViaAdd < distanceViaRetain)) {
+              editScript.push({ status: 1/*"added"*/, value: newArray[newIndex - 1] });
+              newIndex--;
+          } else if ((distanceViaDelete < distanceViaAdd) && (distanceViaDelete < distanceViaRetain)) {
+              editScript.push({ status: 2/*"deleted"*/, value: oldArray[oldIndex - 1] });
+              oldIndex--;
+          } else {
+              editScript.push({ status: 0/*"retained"*/, value: oldArray[oldIndex - 1] });
+              newIndex--;
+              oldIndex--;
+          }
+      }
+      return editScript.reverse();
     }
-    else {
-      if((form.controls_disabled)&&(form.DisableOnCommand)) form.EnableControls();
-    }
-    delete form.controls_disabled;
-  }
-}
 
-function ngvmf_OnCommandError(vm,msg,cmd,options)
-{
-  var form=vm.ViewModelForm;
-  if(form)
-  {
-    if(form.OnCommandError) form.OnCommandError(form,msg,cmd,options);
-    else {
-      if(form.OnShowErrorMsg) form.OnShowErrorMsg(this,msg);
-      else alert(msg);
-    }
-  }
-}
+    function ng_GetArraysEditScript(oldArray, newArray, cmpfnc, maxEditsToConsider) {
+      if (maxEditsToConsider === undefined) {
+          return ng_GetArraysEditScript(oldArray, newArray, cmpfnc, 1)                 // First consider likely case where there is at most one edit (very fast)
+              || ng_GetArraysEditScript(oldArray, newArray, cmpfnc, 10)                // If that fails, account for a fair number of changes while still being fast
+              || ng_GetArraysEditScript(oldArray, newArray, cmpfnc, Number.MAX_VALUE); // Ultimately give the right answer, even though it may take a long time
+      } else {
+          oldArray = oldArray || [];
+          newArray = newArray || [];
+          var editDistanceMatrix = ngca_calcEditDistMatrix(oldArray, newArray, cmpfnc, maxEditsToConsider);
+          return ngca_findEditScriptFromEditDistMatrix(editDistanceMatrix, oldArray, newArray);
+      }
+    };
 
-function ngvmf_OnCommandResults(vm,cmd,sresults)
-{
-  var form=vm.ViewModelForm;
-  if(form)
-  {
-    if(form.OnCommandResults) form.OnCommandResults(form,cmd,sresults);
-    if(form.disable_ctrls_timer) {
-      clearTimeout(form.disable_ctrls_timer);
-      delete form.disable_ctrls_timer;
-    }
-    else if((form.controls_disabled)&&(form.DisableOnCommand)) form.EnableControls();
-    delete form.controls_disabled;
-  }
-  return true;
-}
-function ngvmf_OnCommandFinished(vm,cmd,sresults)
-{
-  var form=vm.ViewModelForm;
-  if(form)
-  {
-    form.ShowLoading(false);
-    if(form.OnCommandFinished) form.OnCommandFinished(form,cmd,sresults);
-  }
-  return true;
-}
+    var ngvmf_hintevents_initialized = false;
 
-function ngvmf_OnShowErrors(vm,errmsg,errors)
-{
-  var form=vm.ViewModelForm;
-  if(form) form.ShowErrors(errors);
-  return false;
-}
-
-function ngvmf_FindFieldControl(fid, visibleonly, bindings, parentfielddef)
-{
-  var found=this.FindFieldControls(fid, visibleonly, bindings, parentfielddef);
-  if(found.length>0) return found[0];
-  return null;
-}
-
-function ngvmf_FindFieldControls(fid, visibleonly, bindings, parentfielddef)
-{
-  visibleonly=ngVal(visibleonly,true);
-  bindings=ngVal(bindings,this.DefaultFindFieldControlsBindings);
-  parentfielddef=ngVal(parentfielddef,null);
-  if(this.OnFindFieldControls)
-  {
-    var ctrls=this.OnFindFieldControls(this,fid, visibleonly, bindings, parentfielddef);
-    if(ng_IsArrayVar(ctrls)) return ctrls;
-  }
-  var found=[];
-  if(bindings)
-  {
-    var b={};
-    for(var j=0;j<bindings.length;j++)
-      b[bindings[j]]=true;
-    bindings=b;
-  }
-
-  function checkvalue(v,fid,parentfielddef)
-  {
-    var fd = (v && v.FieldDef) ? v.FieldDef : v;
-    if(ngIsFieldDef(fd)) return ((fd.ID==fid)&&(ngVal(fd.Parent,null)===parentfielddef));
-    return false;
-  }
-
-  function findfield(f)
-  {
-    if(!ng_typeObject(f.ChildControls)) return;
-    var c,b,v,cf;
-    for(var i=0;i<f.ChildControls.length;i++)
+    function ngvmf_DoDispose()
     {
-      c=f.ChildControls[i];
-      if((!c)||((visibleonly)&&(!c.Visible))) continue;
-      if(c.DataBindings)
+      this.SetViewModel(null);
+      return true;
+    }
+    
+    function ngvmf_OnCommand(vm,cmd,options)
+    {
+      var form=vm.ViewModelForm;
+      if(form)
       {
-        cf=false;
-        for(var j in c.DataBindings)
+        if((form.OnCommand)&&(!ngVal(form.OnCommand(form,cmd,options),false))) return false;
+        form.ResetErrors();
+      }
+      return true;
+    }
+    
+    function ngvmf_ShowControl(c,s)
+    {
+      if(!c) return;
+      var o=c['binding_updatingVisible'];
+      try
+      {
+        c['binding_updatingVisible']=true;
+        c.SetVisible(s);
+      }
+      finally
+      {
+        if(ng_isEmpty(o)) delete c['binding_updatingVisible'];
+        else c['binding_updatingVisible']=o;
+      }
+    }
+    
+    function ngvmf_EnableControl(c,s)
+    {
+      if(!c) return;
+      var o=c['binding_updatingEnabled'];
+      try
+      {
+        c['binding_updatingEnabled']=true;
+        c.SetEnabled(s);
+      }
+      finally
+      {
+        if(ng_isEmpty(o)) delete c['binding_updatingEnabled'];
+        else c['binding_updatingEnabled']=o;
+      }
+    }
+    
+    function ngvmf_IntSetChildControlsEnabled(v,p)
+    {
+      if(typeof this._intSetChildControlsEnabled!=='function') return;
+      var o=this['binding_updatingChildEnabled'];
+      var t=this.SetChildControlsEnabled;
+      try
+      {
+        this['binding_updatingChildEnabled']=true;
+        this.SetChildControlsEnabled=this._intSetChildControlsEnabled;
+        this.SetChildControlsEnabled.apply(this,arguments);
+      }
+      finally
+      {
+        this.SetChildControlsEnabled=t;
+        if(ng_isEmpty(o)) delete this['binding_updatingChildEnabled'];
+        else this['binding_updatingChildEnabled']=o;
+      }
+    }
+    
+    function ngvmf_DoSetChildEnabled(c,v,p)
+    {
+      if(!v) {
+        if((typeof c.SetChildControlsEnabled === 'function')&&(typeof c._intSetChildControlsEnabled === 'undefined'))
         {
-          if((bindings)&&(typeof bindings[j] === 'undefined')) continue;
-          b=c.DataBindings[j];
-          if((ng_typeObject(b))&&(b.ValueAccessor))
-          {
-            v=b.ValueAccessor();
-            if(ng_typeArray(v))
-            {
-              for(var k in v)
-              {
-                if(checkvalue(v[k],fid,parentfielddef)) { found.push(c); cf=true; break; }
+          c._intSetChildControlsEnabled=c.SetChildControlsEnabled;
+          c.SetChildControlsEnabled=ngvmf_IntSetChildControlsEnabled;
+        }
+        this.EnableControl(c,v);
+      }
+      else {
+        this.EnableControl(c,v);
+        if(typeof c._intSetChildControlsEnabled!=='undefined')
+        {
+          c.SetChildControlsEnabled=c._intSetChildControlsEnabled;
+          delete c._intSetChildControlsEnabled;
+        }
+      }
+    }
+    
+    function ngvmf_DisableControls()
+    {
+      if(this.disablectrlscnt<=0)
+      {
+        this.disablectrlscnt=0;
+        if((!this.OnDisableControls)||(ngVal(this.OnDisableControls(this),false)))
+          this.SetChildControlsEnabled(false);
+      }
+      this.disablectrlscnt++;
+    }
+    
+    function ngvmf_EnableControls()
+    {
+      if(this.disablectrlscnt<=0) return;
+      this.disablectrlscnt--;
+      if(!this.disablectrlscnt) {
+        if((!this.OnEnableControls)||(ngVal(this.OnEnableControls(this),false)))
+          this.SetChildControlsEnabled(true);
+      }
+    }
+    
+    function ngvmf_OnCommandRequest(vm,rpc)
+    {
+      var form=vm.ViewModelForm;
+      if(form)
+      {
+        if((form.OnCommandRequest)&&(!ngVal(form.OnCommandRequest(form,rpc),false))) return false;
+    
+        form.ShowLoading(true);
+    
+        if(form.DisableOnCommand) {
+          var delay = form.DisableDelay;
+          if(delay<=0) delay=1;
+          if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
+          form.disable_ctrls_timer=setTimeout(function() {
+            if(form.disable_ctrls_timer) clearTimeout(form.disable_ctrls_timer);
+            delete form.disable_ctrls_timer;
+    
+            if((form.DisableOnCommand===true)||(ng_inArray(vm.ActiveCommand, form.DisableOnCommand))) {
+              if((!form.OnDisableControlsCommand)||(ngVal(form.OnDisableControlsCommand(form,vm.ActiveCommand),true))) {
+                form.controls_disabled=true;
+                form.DisableControls();
               }
             }
-            else if(v)
-              if(checkvalue(v,fid,parentfielddef)) { found.push(c); cf=true; }
-          }
-          if(cf) break;
+          },delay);
         }
       }
-      findfield(c);
+      return true;
     }
-  }
-  findfield(this);
-  return found;
-}
-
-function ngvmf_ResetErrors()
-{
-  if((this.OnResetErrors)&&(!ngVal(this.OnResetErrors(this),false))) return;
-
-  if(this.ErrorHint) this.ErrorHint.SetVisible(false);
-
-  function reseterrors(f)
-  {
-    if(!ng_typeObject(f.ChildControls)) return false;
-    var c;
-    for(var i=0;i<f.ChildControls.length;i++)
+    
+    function ngvmf_OnCommandCancel(vm, cmd)
     {
-      c=f.ChildControls[i];
-      if((!c)||((ng_typeObject(c.DataBindings))&&(c.DataBindings['Error']))) continue;
-      if(typeof c.SetErrorState === 'function') c.SetErrorState(false);
-      else
+      var form=vm.ViewModelForm;
+      if(form)
       {
-        c.ErrorMessage='';
-        if(typeof c.SetInvalid === 'function') c.SetInvalid(false);
+        if(form.OnCommandCancel) form.OnCommandCancel(form, cmd);
+        if(form.disable_ctrls_timer) {
+          clearTimeout(form.disable_ctrls_timer);
+          delete form.disable_ctrls_timer;
+        }
+        else {
+          if((form.controls_disabled)&&(form.DisableOnCommand)) form.EnableControls();
+        }
+        delete form.controls_disabled;
       }
-      reseterrors(c);
     }
-    return false;
-  }
-  reseterrors(this);
-}
-
-var ngvmf_active_errorhints = new Array();
-
-function ngvmf_HideErrorHintEvent(e)
-{
-  var hints=ngvmf_active_errorhints;
-  if(hints)
-    for(var i=hints.length-1;i>=0;i--)
-      hints[i].SetVisible(false);
-  return true;
-}
-
-function ngvmf_ErrorHintVisibleChanged(c)
-{
-  var hints=ngvmf_active_errorhints;
-  for(var i=0;i<hints.length;i++)
-  {
-    if(hints[i]==c)
+    
+    function ngvmf_OnCommandError(vm,msg,cmd,options)
     {
-      if(c.Visible) return;
-      hints.splice(i,1);
-      return;
-    }
-  }
-  if(c.Visible) hints.push(c);
-}
-
-function ngvmf_FocusControl(c)
-{
-  if(!c) return;
-  if(this.OnSetControlFocus) this.OnSetControlFocus(this,c);
-  else
-  {
-    c.SetFocus(false);
-    c.SetFocus();
-  }
-}
-
-function ngvmf_ShowControlError(c,err,setfocus)
-{
-  if(!c) return;
-  if((err===false)||(err===null)) err='';
-  err=(ng_typeString(err) ? err : ng_ViewModelFormatError(err));
-  c.ErrorMessage=err;
-
-  if((this.OnSetControlError)&&(!ngVal(this.OnSetControlError(this,c,err,setfocus),false))) return;
-
-  if(typeof c.SetErrorState === 'function') c.SetErrorState(err!='');
-  else
-    if (typeof c.SetInvalid === 'function') c.SetInvalid(err!='');
-
-  if(err==='')
-  {
-    this.HideControlError(c);
-    return;
-  }
-  else
-    if(ngVal(setfocus,false))
-    {
-      if(typeof c.SetErrorState !== 'function') // Not Edit field
+      var form=vm.ViewModelForm;
+      if(form)
       {
-        var hint=this.GetErrorHint();
-        if(hint)
-        {
-          if(ng_isEmpty(c.HintX)) c.HintX=0;
-          if(typeof hint.SetText === 'function') hint.SetText(err);
-          hint.ErrorControl=c;
-          hint.ErrorMessage=err;
-          hint.PopupCtrl(c);
-          if(!ngvmf_hintevents_initialized)
-          {
-            document.onmousedown = ngAddEvent(ngvmf_HideErrorHintEvent, document.onmousedown);
-            document.onkeydown = ngAddEvent(ngvmf_HideErrorHintEvent, document.onkeydown);
-            ngvmf_hintevents_initialized = true;
-          }
+        if(form.OnCommandError) form.OnCommandError(form,msg,cmd,options);
+        else {
+          if(form.OnShowErrorMsg) form.OnShowErrorMsg(this,msg);
+          else alert(msg);
         }
       }
-      this.FocusControl(c);
     }
-}
-
-function ngvmf_HideControlError(c)
-{
-  var hint=this.GetErrorHint();
-  if(hint)
-  {
-    if((!c)||(c===hint.ErrorControl)) hint.SetVisible(false);
-  }
-}
-
-function ngvmf_ShowErrors(errors)
-{
-  if((typeof errors==='undefined')&&(ng_typeObject(this.ViewModel))) errors=this.ViewModel.IsValid();
-  if(!ng_typeObject(errors)) return false;
-
-  for(var i in errors) // tests if errors exists
-  {
-    if(this.OnShowErrors) this.OnShowErrors(this,ng_ViewModelFormatError(errors),errors);
-    else
+    
+    function ngvmf_OnCommandResults(vm,cmd,sresults)
     {
-      var form=this;
-
-      var msg=[],fieldcontrols=[];
-      function showerrors(err)
+      var form=vm.ViewModelForm;
+      if(form)
       {
-        if(!ng_typeObject(err)) return;
-
-        if(!(err instanceof ngFieldDefException))
-        {
-          for(var i in err)
-          {
-            if(err[i] instanceof ngFieldDefException) showerrors(err[i]);
-          }
+        if(form.OnCommandResults) form.OnCommandResults(form,cmd,sresults);
+        if(form.disable_ctrls_timer) {
+          clearTimeout(form.disable_ctrls_timer);
+          delete form.disable_ctrls_timer;
         }
-        else
+        else if((form.controls_disabled)&&(form.DisableOnCommand)) form.EnableControls();
+        delete form.controls_disabled;
+      }
+      return true;
+    }
+    function ngvmf_OnCommandFinished(vm,cmd,sresults)
+    {
+      var form=vm.ViewModelForm;
+      if(form)
+      {
+        form.ShowLoading(false);
+        if(form.OnCommandFinished) form.OnCommandFinished(form,cmd,sresults);
+      }
+      return true;
+    }
+    
+    function ngvmf_OnShowErrors(vm,errmsg,errors)
+    {
+      var form=vm.ViewModelForm;
+      if(form) form.ShowErrors(errors);
+      return false;
+    }
+    
+    function ngvmf_FindFieldControl(fid, visibleonly, bindings, parentfielddef)
+    {
+      var found=this.FindFieldControls(fid, visibleonly, bindings, parentfielddef);
+      if(found.length>0) return found[0];
+      return null;
+    }
+    
+    function ngvmf_FindFieldControls(fid, visibleonly, bindings, parentfielddef)
+    {
+      visibleonly=ngVal(visibleonly,true);
+      bindings=ngVal(bindings,this.DefaultFindFieldControlsBindings);
+      parentfielddef=ngVal(parentfielddef,null);
+      if(this.OnFindFieldControls)
+      {
+        var ctrls=this.OnFindFieldControls(this,fid, visibleonly, bindings, parentfielddef);
+        if(ng_IsArrayVar(ctrls)) return ctrls;
+      }
+      var found=[];
+      if(bindings)
+      {
+        var b={};
+        for(var j=0;j<bindings.length;j++)
+          b[bindings[j]]=true;
+        bindings=b;
+      }
+    
+      function checkvalue(v,fid,parentfielddef)
+      {
+        var fd = (v && v.FieldDef) ? v.FieldDef : v;
+        if(ngIsFieldDef(fd)) return ((fd.ID==fid)&&(ngVal(fd.Parent,null)===parentfielddef));
+        return false;
+      }
+    
+      function findfield(f)
+      {
+        if(!ng_typeObject(f.ChildControls)) return;
+        var c,b,v,cf;
+        for(var i=0;i<f.ChildControls.length;i++)
         {
-          var m,emsg;
-
-          if(ngIsFieldDef(err.FieldDef))
+          c=f.ChildControls[i];
+          if((!c)||((visibleonly)&&(!c.Visible))) continue;
+          if(c.DataBindings)
           {
-            var controlsfound=false;
-
-            function findchildfieldcontrols(err) {
-              var lvl=0;
-
-              if(ng_typeObject(err.ChildErrors)) {
-                var cerr;
-                for(var i in err.ChildErrors) {
-                  cerr=err.ChildErrors[i];
-                  if(cerr instanceof ngFieldDefException) {
-                    var l=findchildfieldcontrols(cerr);
-                    if(l>lvl) lvl=l;
-                  }
-                  if(ngIsFieldDef(cerr.FieldDef)) {
-                    var ctrls=form.FindFieldControls(cerr.FieldDef.ID,false,undefined,err.FieldDef);
-                    if(ctrls.length>0)
-                    {
-                      controlsfound=true;
-                      for(var j=0;j<ctrls.length;j++)
-                        fieldcontrols.push({ Control: ctrls[j], Err: cerr, Level: lvl});
-                    }
+            cf=false;
+            for(var j in c.DataBindings)
+            {
+              if((bindings)&&(typeof bindings[j] === 'undefined')) continue;
+              b=c.DataBindings[j];
+              if((ng_typeObject(b))&&(b.ValueAccessor))
+              {
+                v=b.ValueAccessor();
+                if(ng_typeArray(v))
+                {
+                  for(var k in v)
+                  {
+                    if(checkvalue(v[k],fid,parentfielddef)) { found.push(c); cf=true; break; }
                   }
                 }
-                lvl++;
+                else if(v)
+                  if(checkvalue(v,fid,parentfielddef)) { found.push(c); cf=true; }
               }
-              return lvl;
+              if(cf) break;
             }
-            var lvl=findchildfieldcontrols(err);
-
-            var ctrls=form.FindFieldControls(err.FieldDef.ID,false);
-            if(ctrls.length>0)
-            {
-              controlsfound=true;
-              for(var j=0;j<ctrls.length;j++)
-                fieldcontrols.push({ Control: ctrls[j], Err: err, Level: lvl});
-            }
-            if(controlsfound) return;
-
-            dn=ng_Trim(err.FieldDef.GetDisplayName());
-            if(dn.length>0)
-            {
-              if(dn.charAt(dn.length-1)!=':') dn+=': ';
-              else dn+=' ';
-            }
-            emsg=ng_ViewModelFormatError(err);
           }
+          findfield(c);
+        }
+      }
+      findfield(this);
+      return found;
+    }
+    
+    function ngvmf_ResetErrors()
+    {
+      if((this.OnResetErrors)&&(!ngVal(this.OnResetErrors(this),false))) return;
+    
+      if(this.ErrorHint) this.ErrorHint.SetVisible(false);
+    
+      function reseterrors(f)
+      {
+        if(!ng_typeObject(f.ChildControls)) return false;
+        var c;
+        for(var i=0;i<f.ChildControls.length;i++)
+        {
+          c=f.ChildControls[i];
+          if((!c)||((ng_typeObject(c.DataBindings))&&(c.DataBindings['Error']))) continue;
+          if(typeof c.SetErrorState === 'function') c.SetErrorState(false);
           else
           {
-            emsg=ng_ViewModelFormatError(err);
-            if(ng_typeString(err.FieldDef)) dn=err.FieldDef+': ';
-            else dn='';
+            c.ErrorMessage='';
+            if(typeof c.SetInvalid === 'function') c.SetInvalid(false);
           }
-          if((ng_typeString(emsg))&&(emsg!==''))
-          {
-            m=dn+emsg;
-            if(!ng_inArray(m,msg)) msg.push(m);
-          }
-          if(ng_typeObject(emsg))
-          {
-            for(var j in emsg)
-            {
-              m=dn+emsg[j]
-              if(!ng_inArray(m,msg)) msg.push(m);
-            }
-          }
+          reseterrors(c);
+        }
+        return false;
+      }
+      reseterrors(this);
+    }
+    
+    var ngvmf_active_errorhints = new Array();
+    
+    function ngvmf_HideErrorHintEvent(e)
+    {
+      var hints=ngvmf_active_errorhints;
+      if(hints)
+        for(var i=hints.length-1;i>=0;i--)
+          hints[i].SetVisible(false);
+      return true;
+    }
+    
+    function ngvmf_ErrorHintVisibleChanged(c)
+    {
+      var hints=ngvmf_active_errorhints;
+      for(var i=0;i<hints.length;i++)
+      {
+        if(hints[i]==c)
+        {
+          if(c.Visible) return;
+          hints.splice(i,1);
+          return;
         }
       }
-      showerrors(errors);
-      if(fieldcontrols.length>0)
+      if(c.Visible) hints.push(c);
+    }
+    
+    function ngvmf_FocusControl(c)
+    {
+      if(!c) return;
+      if(this.OnSetControlFocus) this.OnSetControlFocus(this,c);
+      else
       {
-        var focuscontrol=[];
-        function focusfield(f)
+        c.SetFocus(false);
+        c.SetFocus();
+      }
+    }
+    
+    function ngvmf_ShowControlError(c,err,setfocus)
+    {
+      if(!c) return;
+      if((err===false)||(err===null)) err='';
+      err=(ng_typeString(err) ? err : ng_ViewModelFormatError(err));
+      c.ErrorMessage=err;
+    
+      if((this.OnSetControlError)&&(!ngVal(this.OnSetControlError(this,c,err,setfocus),false))) return;
+    
+      if(typeof c.SetErrorState === 'function') c.SetErrorState(err!='');
+      else
+        if (typeof c.SetInvalid === 'function') c.SetInvalid(err!='');
+    
+      if(err==='')
+      {
+        this.HideControlError(c);
+        return;
+      }
+      else
+        if(ngVal(setfocus,false))
         {
-          if(!ng_typeObject(f.ChildControls)) return false;
-          var c;
-          for(var i=0;i<f.ChildControls.length;i++)
+          if(typeof c.SetErrorState !== 'function') // Not Edit field
           {
-            c=f.ChildControls[i];
-            if((!c)||(!c.Visible)) continue;
-            for(var j=0;j<fieldcontrols.length;j++)
+            var hint=this.GetErrorHint();
+            if(hint)
             {
-              if(c===fieldcontrols[j].Control)
+              if(ng_isEmpty(c.HintX)) c.HintX=0;
+              if(typeof hint.SetText === 'function') hint.SetText(err);
+              hint.ErrorControl=c;
+              hint.ErrorMessage=err;
+              hint.PopupCtrl(c);
+              if(!ngvmf_hintevents_initialized)
               {
-                var p=c.ParentControl;
-                while(p)
-                {
-                  if(!p.Visible) break;
-                  p=p.ParentControl;
-                }
-                if(!p)
-                {
-                  focuscontrol[fieldcontrols[j].Level]=j;
-                  if(!fieldcontrols[j].Level) return true;
-                }
+                document.onmousedown = ngAddEvent(ngvmf_HideErrorHintEvent, document.onmousedown);
+                document.onkeydown = ngAddEvent(ngvmf_HideErrorHintEvent, document.onkeydown);
+                ngvmf_hintevents_initialized = true;
               }
             }
-            if(focusfield(c)) return true;
           }
-          return false;
+          this.FocusControl(c);
         }
-        focusfield(this);
-
-        if(!focuscontrol.length)
+    }
+    
+    function ngvmf_HideControlError(c)
+    {
+      var hint=this.GetErrorHint();
+      if(hint)
+      {
+        if((!c)||(c===hint.ErrorControl)) hint.SetVisible(false);
+      }
+    }
+    
+    function ngvmf_ShowErrors(errors)
+    {
+      if((typeof errors==='undefined')&&(ng_typeObject(this.ViewModel))) errors=this.ViewModel.IsValid();
+      if(!ng_typeObject(errors)) return false;
+    
+      for(var i in errors) // tests if errors exists
+      {
+        if(this.OnShowErrors) this.OnShowErrors(this,ng_ViewModelFormatError(errors),errors);
+        else
         {
-          var focusfound=false;
-          if((this.OnSetControlVisible)&&(ngVal(this.OnSetControlVisible(this,fieldcontrols[0].Control),false)))
+          var form=this;
+    
+          var msg=[],fieldcontrols=[];
+          function showerrors(err)
           {
-            focusfield(this);
-            focusfound=true;
-          }
-
-          if(!focusfound)
-          {
-            var err,dn,m;
-            for(var i=0;i<fieldcontrols.length;i++)
+            if(!ng_typeObject(err)) return;
+    
+            if(!(err instanceof ngFieldDefException))
             {
-              err=fieldcontrols[i].Err;
-              dn=ng_Trim(err.FieldDef.GetDisplayName());
-              if(dn.length>0)
+              for(var i in err)
               {
-                if(dn.charAt(dn.length-1)!=':') dn+=': ';
-                else dn+=' ';
+                if(err[i] instanceof ngFieldDefException) showerrors(err[i]);
               }
-              var emsg=ng_ViewModelFormatError(err);
+            }
+            else
+            {
+              var m,emsg;
+    
+              if(ngIsFieldDef(err.FieldDef))
+              {
+                var controlsfound=false;
+    
+                function findchildfieldcontrols(err) {
+                  var lvl=0;
+    
+                  if(ng_typeObject(err.ChildErrors)) {
+                    var cerr;
+                    for(var i in err.ChildErrors) {
+                      cerr=err.ChildErrors[i];
+                      if(cerr instanceof ngFieldDefException) {
+                        var l=findchildfieldcontrols(cerr);
+                        if(l>lvl) lvl=l;
+                      }
+                      if(ngIsFieldDef(cerr.FieldDef)) {
+                        var ctrls=form.FindFieldControls(cerr.FieldDef.ID,false,undefined,err.FieldDef);
+                        if(ctrls.length>0)
+                        {
+                          controlsfound=true;
+                          for(var j=0;j<ctrls.length;j++)
+                            fieldcontrols.push({ Control: ctrls[j], Err: cerr, Level: lvl});
+                        }
+                      }
+                    }
+                    lvl++;
+                  }
+                  return lvl;
+                }
+                var lvl=findchildfieldcontrols(err);
+    
+                var ctrls=form.FindFieldControls(err.FieldDef.ID,false);
+                if(ctrls.length>0)
+                {
+                  controlsfound=true;
+                  for(var j=0;j<ctrls.length;j++)
+                    fieldcontrols.push({ Control: ctrls[j], Err: err, Level: lvl});
+                }
+                if(controlsfound) return;
+    
+                dn=ng_Trim(err.FieldDef.GetDisplayName());
+                if(dn.length>0)
+                {
+                  if(dn.charAt(dn.length-1)!=':') dn+=': ';
+                  else dn+=' ';
+                }
+                emsg=ng_ViewModelFormatError(err);
+              }
+              else
+              {
+                emsg=ng_ViewModelFormatError(err);
+                if(ng_typeString(err.FieldDef)) dn=err.FieldDef+': ';
+                else dn='';
+              }
               if((ng_typeString(emsg))&&(emsg!==''))
               {
                 m=dn+emsg;
@@ -659,416 +594,480 @@ function ngvmf_ShowErrors(errors)
               }
             }
           }
+          showerrors(errors);
+          if(fieldcontrols.length>0)
+          {
+            var focuscontrol=[];
+            function focusfield(f)
+            {
+              if(!ng_typeObject(f.ChildControls)) return false;
+              var c;
+              for(var i=0;i<f.ChildControls.length;i++)
+              {
+                c=f.ChildControls[i];
+                if((!c)||(!c.Visible)) continue;
+                for(var j=0;j<fieldcontrols.length;j++)
+                {
+                  if(c===fieldcontrols[j].Control)
+                  {
+                    var p=c.ParentControl;
+                    while(p)
+                    {
+                      if(!p.Visible) break;
+                      p=p.ParentControl;
+                    }
+                    if(!p)
+                    {
+                      focuscontrol[fieldcontrols[j].Level]=j;
+                      if(!fieldcontrols[j].Level) return true;
+                    }
+                  }
+                }
+                if(focusfield(c)) return true;
+              }
+              return false;
+            }
+            focusfield(this);
+    
+            if(!focuscontrol.length)
+            {
+              var focusfound=false;
+              if((this.OnSetControlVisible)&&(ngVal(this.OnSetControlVisible(this,fieldcontrols[0].Control),false)))
+              {
+                focusfield(this);
+                focusfound=true;
+              }
+    
+              if(!focusfound)
+              {
+                var err,dn,m;
+                for(var i=0;i<fieldcontrols.length;i++)
+                {
+                  err=fieldcontrols[i].Err;
+                  dn=ng_Trim(err.FieldDef.GetDisplayName());
+                  if(dn.length>0)
+                  {
+                    if(dn.charAt(dn.length-1)!=':') dn+=': ';
+                    else dn+=' ';
+                  }
+                  var emsg=ng_ViewModelFormatError(err);
+                  if((ng_typeString(emsg))&&(emsg!==''))
+                  {
+                    m=dn+emsg;
+                    if(!ng_inArray(m,msg)) msg.push(m);
+                  }
+                  if(ng_typeObject(emsg))
+                  {
+                    for(var j in emsg)
+                    {
+                      m=dn+emsg[j]
+                      if(!ng_inArray(m,msg)) msg.push(m);
+                    }
+                  }
+                }
+              }
+            }
+    
+            var fc=-1;
+            for(var j=0;j<focuscontrol.length;j++)
+              if(typeof focuscontrol[j]!=='undefined') { fc=focuscontrol[j]; break; }
+    
+            for(var j=0;j<fieldcontrols.length;j++)
+              if(j!=fc) this.ShowControlError(fieldcontrols[j].Control,fieldcontrols[j].Err);
+    
+            if(fc>=0) this.ShowControlError(fieldcontrols[fc].Control,fieldcontrols[fc].Err,true);
+          }
+          if(msg.length>0)
+          {
+            msg=msg.join("\n");
+            if(this.OnShowErrorMsg) form.OnShowErrorMsg(this,msg);
+            else alert(msg);
+          }
         }
-
-        var fc=-1;
-        for(var j=0;j<focuscontrol.length;j++)
-          if(typeof focuscontrol[j]!=='undefined') { fc=focuscontrol[j]; break; }
-
-        for(var j=0;j<fieldcontrols.length;j++)
-          if(j!=fc) this.ShowControlError(fieldcontrols[j].Control,fieldcontrols[j].Err);
-
-        if(fc>=0) this.ShowControlError(fieldcontrols[fc].Control,fieldcontrols[fc].Err,true);
+        return true;
       }
-      if(msg.length>0)
+      return false;
+    }
+    
+    function ngvmf_SetViewModel(vm)
+    {
+      if(ng_typeString(vm)) vm=getViewModelById(vm);
+      if((vm)&&(vm.ViewModelForm)) return;
+      var ovm=this.ViewModel;
+      if(ng_typeObject(ovm))
       {
-        msg=msg.join("\n");
-        if(this.OnShowErrorMsg) form.OnShowErrorMsg(this,msg);
-        else alert(msg);
+        if(typeof ovm.RemoveEvent === 'function') { // check if not pure ViewModel
+          ovm.RemoveEvent('OnShowErrors',ngvmf_OnShowErrors);
+          ovm.RemoveEvent('OnCommand',ngvmf_OnCommand);
+          ovm.RemoveEvent('OnCommandRequest',ngvmf_OnCommandRequest);
+          ovm.RemoveEvent('OnCommandResults',ngvmf_OnCommandResults);
+          ovm.RemoveEvent('OnCommandFinished',ngvmf_OnCommandFinished);
+          ovm.RemoveEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+          ovm.RemoveEvent('OnCommandError',ngvmf_OnCommandError);
+        }
+        delete ovm.ViewModelForm;
       }
-    }
-    return true;
-  }
-  return false;
-}
-
-function ngvmf_SetViewModel(vm)
-{
-  if(ng_typeString(vm)) vm=getViewModelById(vm);
-  if((vm)&&(vm.ViewModelForm)) return;
-  var ovm=this.ViewModel;
-  if(ng_typeObject(ovm))
-  {
-    if(typeof ovm.RemoveEvent === 'function') { // check if not pure ViewModel
-      ovm.RemoveEvent('OnShowErrors',ngvmf_OnShowErrors);
-      ovm.RemoveEvent('OnCommand',ngvmf_OnCommand);
-      ovm.RemoveEvent('OnCommandRequest',ngvmf_OnCommandRequest);
-      ovm.RemoveEvent('OnCommandResults',ngvmf_OnCommandResults);
-      ovm.RemoveEvent('OnCommandFinished',ngvmf_OnCommandFinished);
-      ovm.RemoveEvent('OnCommandCancel',ngvmf_OnCommandCancel);
-      ovm.RemoveEvent('OnCommandError',ngvmf_OnCommandError);
-    }
-    delete ovm.ViewModelForm;
-  }
-  this.ViewModel=vm;
-  if(ng_typeObject(vm))
-  {
-    vm.ViewModelForm=this;
-    if(typeof vm.AddEvent === 'function') { // check if not pure ViewModel
-      vm.AddEvent('OnShowErrors',ngvmf_OnShowErrors);
-      vm.AddEvent(ngvmf_OnCommand,'OnCommand');
-      vm.AddEvent('OnCommandRequest',ngvmf_OnCommandRequest);
-      vm.AddEvent('OnCommandResults',ngvmf_OnCommandResults);
-      vm.AddEvent('OnCommandFinished',ngvmf_OnCommandFinished);
-      vm.AddEvent('OnCommandCancel',ngvmf_OnCommandCancel);
-      vm.AddEvent('OnCommandError',ngvmf_OnCommandError);
-    }
-  }
-  if(this.OnSetViewModel) this.OnSetViewModel(this,vm,ovm);
-}
-
-function ngvmf_ShowLoading(v)
-{
-  if((v)&&(this.OnShowLoading)) { this.OnShowLoading(this); return; }
-  if((!v)&&(this.OnHideLoading)) { this.OnHideLoading(this); return; }
-
-  if(ng_typeObject(this.Controls)&&(typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
-}
-
-function ngvmf_GetErrorHint()
-{
-  if(!this.ErrorHint)
-  {
-    var ldefs = {
-      ErrorHint: this.ErrorHintDef
-    };
-    var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
-    this.ErrorHint=ngVal(lref.ErrorHint,null);
-    if(this.ErrorHint)
-    {
-      ngAddChildControl(this,this.ErrorHint);
-      this.ErrorHint.AddEvent(ngvmf_ErrorHintVisibleChanged,'OnVisibleChanged');
-    }
-  }
-  return this.ErrorHint;
-}
-
-/*  Class: ngViewModelForm
- *  View model form control (based on <ngFrame>).
- */
-/*<>*/
-function Create_ngViewModelForm(def, ref, parent)
-{
-  ng_MergeDef(def, {
-    ParentReferences: false,
-    ErrorHint: {
-      Type: 'ngTextHint',
-      ParentReferences: false,
-      Data: {
-        IsPopup: true
-      }
-    }
-  });
-  var c=ngCreateControlAsType(def, 'ngFrame', ref, parent);
-  if(!c) return c;
-
-  def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-    if(typeof c.FormID === 'undefined') c.FormID=c.ID; // make default buttons in form
-
-    var vm=null;
-    if(typeof def.ViewModel === 'undefined')
-    {
-      if((c.Controls)&&(c.Controls.ViewModel)) vm=c.Controls.ViewModel;
-    }
-    if(!ng_typeObject(vm)) vm=ng_FindViewModel(def, c);
-    if(ng_typeObject(vm)) c.SetViewModel(vm);
-
-  });
-
-  c.disablectrlscnt=0;
-
-  /*
-   *  Group: Properties
-   */
-  c.DefaultFindFieldControlsBindings=['Data','Value','Checked','Selected','Lookup','Error','Link'];
-
-  c.ErrorHintDef = def.ErrorHint;
-  c.ErrorHint = null;
-
-  c.DisableOnCommand = true;
-  c.DisableDelay = 1;
-
-  c.ChildHandling = 1; // ngChildEnabledParentAware
-  /*
-   *  Group: Methods
-   */
-  c.DoDispose = ngvmf_DoDispose;
-  c.DoSetChildEnabled = ngvmf_DoSetChildEnabled;
-
-  c.GetErrorHint = ngvmf_GetErrorHint;
-  c.DisableControls = ngvmf_DisableControls;
-  c.EnableControls = ngvmf_EnableControls;
-  c.EnableControl = ngvmf_EnableControl;
-  c.ShowControl = ngvmf_ShowControl;
-
-  c.FindFieldControl = ngvmf_FindFieldControl;
-  c.FindFieldControls = ngvmf_FindFieldControls;
-
-  c.FocusControl = ngvmf_FocusControl;
-  c.ShowControlError = ngvmf_ShowControlError;
-  c.HideControlError = ngvmf_HideControlError;
-
-  c.SetViewModel = ngvmf_SetViewModel;
-  c.ResetErrors = ngvmf_ResetErrors;
-  c.ShowErrors = ngvmf_ShowErrors;
-  c.ShowLoading = ngvmf_ShowLoading;
-
-  /*
-   *  Group: Events
-   */
-  c.OnSetViewModel = null;
-  c.OnResetErrors = null;
-  c.OnShowErrors = null;
-
-  c.OnFindFieldControls = null;
-  c.OnSetControlError = null;
-
-  c.OnSetControlVisible = null;
-  c.OnSetControlFocus = null;
-
-  c.OnShowLoading = null;
-  c.OnHideLoading = null;
-  c.OnShowErrorMsg = null;
-
-  c.OnDisableControlsCommand = null;
-  c.OnDisableControls = null;
-  c.OnEnableControls = null;
-
-  c.OnCommand = null;
-  c.OnCommandRequest = null;
-  c.OnCommandResults = null;
-  c.OnCommandFinished = null;
-  c.OnCommandCancel = null;
-  c.OnCommandError = null;
-
-  return c;
-}
-
-function ngve_GetFieldDefs()
-{
-  var fdefs=[];
-  if(this.DataBindings)
-  {
-    var bind;
-    for(var i=0;i<this.ErrorBindings.length;i++)
-    {
-      bind=this.DataBindings[this.ErrorBindings[i]];
-      if(ng_typeObject(bind))
+      this.ViewModel=vm;
+      if(ng_typeObject(vm))
       {
-        var v=bind.ValueAccessor();
-        if((v)&&(ng_typeObject(v.FieldDef))) fdefs.push(v.FieldDef);
+        vm.ViewModelForm=this;
+        if(typeof vm.AddEvent === 'function') { // check if not pure ViewModel
+          vm.AddEvent('OnShowErrors',ngvmf_OnShowErrors);
+          vm.AddEvent(ngvmf_OnCommand,'OnCommand');
+          vm.AddEvent('OnCommandRequest',ngvmf_OnCommandRequest);
+          vm.AddEvent('OnCommandResults',ngvmf_OnCommandResults);
+          vm.AddEvent('OnCommandFinished',ngvmf_OnCommandFinished);
+          vm.AddEvent('OnCommandCancel',ngvmf_OnCommandCancel);
+          vm.AddEvent('OnCommandError',ngvmf_OnCommandError);
+        }
       }
+      if(this.OnSetViewModel) this.OnSetViewModel(this,vm,ovm);
     }
-  }
-  return fdefs;
-}
-
-function ngve_Validate()
-{
-  var err,fd,singleerr;
-  var errs={};
-  var fdefs=this.GetFieldDefs();
-  for(var i=0;i<fdefs.length;i++)
-  {
-    fd=fdefs[i];
-    err=fd.Validate(fd.Value());
-    if(err===true) continue;
-    if(ng_isEmpty(singleerr)) singleerr=err;
-    else singleerr=null;
-    errs[fd.ID]=err;
-  }
-  if(ng_isEmpty(singleerr)) return true;
-  if(singleerr!==null) return singleerr;
-  return errs;
-}
-
-
-function ngve_GetErrorHint()
-{
-  if(!this.ErrorHint)
-  {
-    var ldefs = {
-      ErrorHint: this.ErrorHintDef
-    };
-    var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
-    this.ErrorHint=ngVal(lref.ErrorHint,null);
-    if(this.ErrorHint) {
-      var self=this;
-      this.ErrorHint.AddEvent('OnIsInsidePopup', function (h,t,w,pi) {
-        return (ngGetControlByElement(t)===self);
-      });
-      ngAddChildControl(this,this.ErrorHint);
+    
+    function ngvmf_ShowLoading(v)
+    {
+      if((v)&&(this.OnShowLoading)) { this.OnShowLoading(this); return; }
+      if((!v)&&(this.OnHideLoading)) { this.OnHideLoading(this); return; }
+    
+      if(ng_typeObject(this.Controls)&&(typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
     }
-  }
-  return this.ErrorHint;
-}
-
-function ngve_ShowErrorHint(msg)
-{
-  msg=ngVal(msg,this.ErrorMessage);
-  if(ng_EmptyVar(msg))
-  {
-    this.HideErrorHint();
-    this.ErrorMessage='';
-    return;
-  }
-  this.ErrorMessage=msg;
-  this.SetErrorState(true);
-
-  if((this.OnShowErrorHint)&&(!ngVal(this.OnShowErrorHint(this,msg),false))) return;
-
-  var hint=this.GetErrorHint();
-  if(!hint) return;
-  if(typeof hint.SetText === 'function')
-  {
-    if(ng_IsArrayVar(msg)) msg=msg.join("<br/>");
-    hint.SetText(msg);
-  }
-  hint.PopupCtrl(this);
-}
-
-function ngve_HideErrorHint()
-{
-  if((this.OnHideErrorHint)&&(!ngVal(this.OnHideErrorHint(this),false))) return;
-  if(this.ErrorHint) this.ErrorHint.SetVisible(false);
-}
-
-function ngve_SetErrorState(state)
-{
-  if(this.ErrorState == state) return;
-
-  if((this.OnSetErrorState)&&(!ngVal(this.OnSetErrorState(this,state),false))) return;
-
-  this.ErrorState = state;
-
-  if(!state)
-  {
-    this.HideErrorHint();
-    this.ErrorMessage='';
-  }
-  if(typeof this.SetInvalid === 'function') this.SetInvalid(state ? true : false);
-}
-
-function ngve_SetEditText(t)
-{
-  this.__setEditText=true;
-  try
-  {
-    this.SetText(t);
-  }
-  finally
-  {
-    delete this.__setEditText;
-  }
-}
-
-/*  Class: ngEditField
- *  Edit field control (based on <ngEdit>).
- */
-/*<>*/
-function Create_EditField(def, ref, parent, basetype)
-{
-  var c=ngCreateControlAsType(def, ngVal(basetype,'ngEdit'), ref, parent);
-  if(!c) return c;
-
-  ng_MergeDef(def.ErrorHint, {
-      Type: 'ngTextHint',
-      ParentReferences: false,
-      Data: {
-        IsPopup: true
-      }
-    });
-
-  /*
-   *  Group: Properties
-   */
-  c.ErrorHintDef = def.ErrorHint;
-  c.ErrorHint = null;
-  c.ErrorMessage = '';
-
-  c.ErrorState = false;
-
-  c.ErrorBindings = [ 'Value', 'Lookup' ];
-
-  /*
-   *  Group: Methods
-   */
-  c.GetFieldDefs = ngve_GetFieldDefs;
-  c.GetErrorHint = ngve_GetErrorHint;
-
-  c.ShowErrorHint = ngve_ShowErrorHint;
-  c.HideErrorHint = ngve_HideErrorHint;
-  c.SetErrorState = ngve_SetErrorState;
-
-  c.Validate = ngve_Validate;
-
-  /*
-   *  Group: Events
-   */
-  c.OnSetErrorState = null;
-  c.OnShowErrorHint = null;
-  c.OnHideErrorHint = null;
-
-  c.__ddlfDropDown = c.DropDown;
-  c.__ddlfDoMouseDown = c.DoMouseDown;
-
-  c.DoMouseDown = function(e) {
-    if((c.HasFocus)||(!c.ErrorState))
-      c.__ddlfDoMouseDown(e);
-  }
-
-  c.DropDown = function() {
-    c.__ignoreerror=true;
-    try {
-      var ret=c.__ddlfDropDown();
-    }
-    finally {
-      delete c.__ignoreerror;
-    }
-    return ret;
-  }
-
-  c.SetEditText = ngve_SetEditText;
-
-
-  def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
-    c.AddEvent('OnFocus', function(c) {
-      if(c.ErrorState) {
-        if(ng_EmptyVar(c.ErrorMessage))
+    
+    function ngvmf_GetErrorHint()
+    {
+      if(!this.ErrorHint)
+      {
+        var ldefs = {
+          ErrorHint: this.ErrorHintDef
+        };
+        var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
+        this.ErrorHint=ngVal(lref.ErrorHint,null);
+        if(this.ErrorHint)
         {
-          var errors=c.Validate();
-          if(errors!==true) c.ShowErrorHint(ng_ViewModelFormatError(errors));
-          else c.SetErrorState(false);
+          ngAddChildControl(this,this.ErrorHint);
+          this.ErrorHint.AddEvent(ngvmf_ErrorHintVisibleChanged,'OnVisibleChanged');
         }
-        else c.ShowErrorHint();
       }
-      return true;
-    });
-    c.AddEvent('OnBlur', function(c) {
-      if((ng_EmptyVar(c.ErrorMessage))&&(!c.__ignoreerror))
-      {
-        var errors=c.Validate();
-        if(errors!==true) c.SetErrorState(true);
-      }
-      c.HideErrorHint();
-      return true;
-    });
-    c.AddEvent('OnTextChanged', function (c,t) {
-      if(!this.__setEditText)
-        c.SetErrorState(false);
-    });
-  });
-  return c;
-}
-
-if(typeof ngUserControls === 'undefined') ngUserControls = {};
-ngUserControls['viewmodel_ui'] = {
-  Lib: 'ng_controls',
-  ControlsGroup: 'Core',
-
-  OnInit: function() {
+      return this.ErrorHint;
+    }
+    
+    /*  Class: ngViewModelForm
+     *  View model form control (based on <ngFrame>).
+     */
+    /*<>*/
+    function Create_ngViewModelForm(def, ref, parent)
+    {
+      ng_MergeDef(def, {
+        ParentReferences: false,
+        ErrorHint: {
+          Type: 'ngTextHint',
+          ParentReferences: false,
+          Data: {
+            IsPopup: true
+          }
+        }
+      });
+      var c=ngCreateControlAsType(def, 'ngFrame', ref, parent);
+      if(!c) return c;
+    
+      def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+        if(typeof c.FormID === 'undefined') c.FormID=c.ID; // make default buttons in form
+    
+        var vm=null;
+        if(typeof def.ViewModel === 'undefined')
+        {
+          if((c.Controls)&&(c.Controls.ViewModel)) vm=c.Controls.ViewModel;
+        }
+        if(!ng_typeObject(vm)) vm=ng_FindViewModel(def, c);
+        if(ng_typeObject(vm)) c.SetViewModel(vm);
+    
+      });
+    
+      c.disablectrlscnt=0;
+    
+      /*
+       *  Group: Properties
+       */
+      c.DefaultFindFieldControlsBindings=['Data','Value','Checked','Selected','Lookup','Error','Link'];
+    
+      c.ErrorHintDef = def.ErrorHint;
+      c.ErrorHint = null;
+    
+      c.DisableOnCommand = true;
+      c.DisableDelay = 1;
+    
+      c.ChildHandling = 1; // ngChildEnabledParentAware
+      /*
+       *  Group: Methods
+       */
+      c.DoDispose = ngvmf_DoDispose;
+      c.DoSetChildEnabled = ngvmf_DoSetChildEnabled;
+    
+      c.GetErrorHint = ngvmf_GetErrorHint;
+      c.DisableControls = ngvmf_DisableControls;
+      c.EnableControls = ngvmf_EnableControls;
+      c.EnableControl = ngvmf_EnableControl;
+      c.ShowControl = ngvmf_ShowControl;
+    
+      c.FindFieldControl = ngvmf_FindFieldControl;
+      c.FindFieldControls = ngvmf_FindFieldControls;
+    
+      c.FocusControl = ngvmf_FocusControl;
+      c.ShowControlError = ngvmf_ShowControlError;
+      c.HideControlError = ngvmf_HideControlError;
+    
+      c.SetViewModel = ngvmf_SetViewModel;
+      c.ResetErrors = ngvmf_ResetErrors;
+      c.ShowErrors = ngvmf_ShowErrors;
+      c.ShowLoading = ngvmf_ShowLoading;
+    
+      /*
+       *  Group: Events
+       */
+      c.OnSetViewModel = null;
+      c.OnResetErrors = null;
+      c.OnShowErrors = null;
+    
+      c.OnFindFieldControls = null;
+      c.OnSetControlError = null;
+    
+      c.OnSetControlVisible = null;
+      c.OnSetControlFocus = null;
+    
+      c.OnShowLoading = null;
+      c.OnHideLoading = null;
+      c.OnShowErrorMsg = null;
+    
+      c.OnDisableControlsCommand = null;
+      c.OnDisableControls = null;
+      c.OnEnableControls = null;
+    
+      c.OnCommand = null;
+      c.OnCommandRequest = null;
+      c.OnCommandResults = null;
+      c.OnCommandFinished = null;
+      c.OnCommandCancel = null;
+      c.OnCommandError = null;
+    
+      return c;
+    }    
     ngRegisterControlType('ngViewModelForm', function(def, ref, parent) { return Create_ngViewModelForm(def, ref, parent); });
 
+    function ngve_GetFieldDefs()
+    {
+      var fdefs=[];
+      if(this.DataBindings)
+      {
+        var bind;
+        for(var i=0;i<this.ErrorBindings.length;i++)
+        {
+          bind=this.DataBindings[this.ErrorBindings[i]];
+          if(ng_typeObject(bind))
+          {
+            var v=bind.ValueAccessor();
+            if((v)&&(ng_typeObject(v.FieldDef))) fdefs.push(v.FieldDef);
+          }
+        }
+      }
+      return fdefs;
+    }
+    
+    function ngve_Validate()
+    {
+      var err,fd,singleerr;
+      var errs={};
+      var fdefs=this.GetFieldDefs();
+      for(var i=0;i<fdefs.length;i++)
+      {
+        fd=fdefs[i];
+        err=fd.Validate(fd.Value());
+        if(err===true) continue;
+        if(ng_isEmpty(singleerr)) singleerr=err;
+        else singleerr=null;
+        errs[fd.ID]=err;
+      }
+      if(ng_isEmpty(singleerr)) return true;
+      if(singleerr!==null) return singleerr;
+      return errs;
+    }
+    
+    
+    function ngve_GetErrorHint()
+    {
+      if(!this.ErrorHint)
+      {
+        var ldefs = {
+          ErrorHint: this.ErrorHintDef
+        };
+        var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
+        this.ErrorHint=ngVal(lref.ErrorHint,null);
+        if(this.ErrorHint) {
+          var self=this;
+          this.ErrorHint.AddEvent('OnIsInsidePopup', function (h,t,w,pi) {
+            return (ngGetControlByElement(t)===self);
+          });
+          ngAddChildControl(this,this.ErrorHint);
+        }
+      }
+      return this.ErrorHint;
+    }
+    
+    function ngve_ShowErrorHint(msg)
+    {
+      msg=ngVal(msg,this.ErrorMessage);
+      if(ng_EmptyVar(msg))
+      {
+        this.HideErrorHint();
+        this.ErrorMessage='';
+        return;
+      }
+      this.ErrorMessage=msg;
+      this.SetErrorState(true);
+    
+      if((this.OnShowErrorHint)&&(!ngVal(this.OnShowErrorHint(this,msg),false))) return;
+    
+      var hint=this.GetErrorHint();
+      if(!hint) return;
+      if(typeof hint.SetText === 'function')
+      {
+        if(ng_IsArrayVar(msg)) msg=msg.join("<br/>");
+        hint.SetText(msg);
+      }
+      hint.PopupCtrl(this);
+    }
+    
+    function ngve_HideErrorHint()
+    {
+      if((this.OnHideErrorHint)&&(!ngVal(this.OnHideErrorHint(this),false))) return;
+      if(this.ErrorHint) this.ErrorHint.SetVisible(false);
+    }
+    
+    function ngve_SetErrorState(state)
+    {
+      if(this.ErrorState == state) return;
+    
+      if((this.OnSetErrorState)&&(!ngVal(this.OnSetErrorState(this,state),false))) return;
+    
+      this.ErrorState = state;
+    
+      if(!state)
+      {
+        this.HideErrorHint();
+        this.ErrorMessage='';
+      }
+      if(typeof this.SetInvalid === 'function') this.SetInvalid(state ? true : false);
+    }
+    
+    function ngve_SetEditText(t)
+    {
+      this.__setEditText=true;
+      try
+      {
+        this.SetText(t);
+      }
+      finally
+      {
+        delete this.__setEditText;
+      }
+    }
+    
+    /*  Class: ngEditField
+     *  Edit field control (based on <ngEdit>).
+     */
+    /*<>*/
+    function Create_EditField(def, ref, parent, basetype)
+    {
+      var c=ngCreateControlAsType(def, ngVal(basetype,'ngEdit'), ref, parent);
+      if(!c) return c;
+    
+      ng_MergeDef(def.ErrorHint, {
+          Type: 'ngTextHint',
+          ParentReferences: false,
+          Data: {
+            IsPopup: true
+          }
+        });
+    
+      /*
+       *  Group: Properties
+       */
+      c.ErrorHintDef = def.ErrorHint;
+      c.ErrorHint = null;
+      c.ErrorMessage = '';
+    
+      c.ErrorState = false;
+    
+      c.ErrorBindings = [ 'Value', 'Lookup' ];
+    
+      /*
+       *  Group: Methods
+       */
+      c.GetFieldDefs = ngve_GetFieldDefs;
+      c.GetErrorHint = ngve_GetErrorHint;
+    
+      c.ShowErrorHint = ngve_ShowErrorHint;
+      c.HideErrorHint = ngve_HideErrorHint;
+      c.SetErrorState = ngve_SetErrorState;
+    
+      c.Validate = ngve_Validate;
+    
+      /*
+       *  Group: Events
+       */
+      c.OnSetErrorState = null;
+      c.OnShowErrorHint = null;
+      c.OnHideErrorHint = null;
+    
+      c.__ddlfDropDown = c.DropDown;
+      c.__ddlfDoMouseDown = c.DoMouseDown;
+    
+      c.DoMouseDown = function(e) {
+        if((c.HasFocus)||(!c.ErrorState))
+          c.__ddlfDoMouseDown(e);
+      }
+    
+      c.DropDown = function() {
+        c.__ignoreerror=true;
+        try {
+          var ret=c.__ddlfDropDown();
+        }
+        finally {
+          delete c.__ignoreerror;
+        }
+        return ret;
+      }
+    
+      c.SetEditText = ngve_SetEditText;
+    
+    
+      def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+        c.AddEvent('OnFocus', function(c) {
+          if(c.ErrorState) {
+            if(ng_EmptyVar(c.ErrorMessage))
+            {
+              var errors=c.Validate();
+              if(errors!==true) c.ShowErrorHint(ng_ViewModelFormatError(errors));
+              else c.SetErrorState(false);
+            }
+            else c.ShowErrorHint();
+          }
+          return true;
+        });
+        c.AddEvent('OnBlur', function(c) {
+          if((ng_EmptyVar(c.ErrorMessage))&&(!c.__ignoreerror))
+          {
+            var errors=c.Validate();
+            if(errors!==true) c.SetErrorState(true);
+          }
+          c.HideErrorHint();
+          return true;
+        });
+        c.AddEvent('OnTextChanged', function (c,t) {
+          if(!this.__setEditText)
+            c.SetErrorState(false);
+        });
+      });
+      return c;
+    }    
     ngRegisterControlType('ngEditField', function(def, ref, parent) { return Create_EditField(def, ref, parent); });
 
     /*  Class: ngEditNumField
