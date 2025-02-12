@@ -1090,18 +1090,38 @@ function ngmn_MenuText(list, it, col)
 function ngmn_DrawItemText(html, it, id, level)
 {
   var txt;
-  var cclass=this.BaseClassName;
-  if(this.Columns.length>0) txt=ngVal(it.Text[this.Columns[0].ID],'');
-  else txt=it.Text;
-  if(txt=='-')
+  if(this.Columns.length>0) {
+    var colid=this.Columns[0].ID;
+    txt=it.Text[colid];
+  } else txt=it.Text;
+  if(txt==='-')
   {
-    it.Visible=false;
-    var h=((this.Items[0]==it)||(this.Items[this.Items.length-1]==it));
-    if(this.OnDrawSeparator) this.OnDrawSeparator(html,it,id,level,this);
-    else
-    {
-      if(this.Columns.length>0) html.append('<tr class="'+cclass+'Row" '+(h ? 'style="display:none" ' : '')+'id="'+this.ID+'_'+id+'"><td colspan="'+this.Columns.length+'"><div class="'+cclass+'Separator">&nbsp;</div></td></tr>');
-      else html.append('<div id="'+this.ID+'_'+id+'" '+(h ? 'style="display:none" ' : '')+'class="'+cclass+'Separator"></div>');
+    var h=((this.Items[0]===it)||(this.Items[this.Items.length-1]===it));
+    if(!h) {
+      var mit, found=false;
+      h=true;
+      for(var i=0;i<this.Items.length;i++) {
+        mit=this.Items[i];
+        if(mit===it) {
+          if(h) break;
+          found=true;          
+        }
+        txt=this.Columns.length>0 ? mit.Text[colid] : mit.Text;
+        if(txt==='-') h=true;
+        else if(ngVal(mit.Visible,true)) { h=false; if(found) break; }
+      }
+    }
+    it.Visible=!h;
+    try {
+      if(this.OnDrawSeparator) this.OnDrawSeparator(html,it,id,level,this);
+      else
+      {
+        var cclass=this.BaseClassName;
+        if(this.Columns.length>0) html.append('<tr class="'+cclass+'Row" '+(h ? 'style="display:none" ' : '')+'id="'+this.ID+'_'+id+'"><td colspan="'+this.Columns.length+'"><div class="'+cclass+'Separator">&nbsp;</div></td></tr>');
+        else html.append('<div id="'+this.ID+'_'+id+'" '+(h ? 'style="display:none" ' : '')+'class="'+cclass+'Separator"></div>');
+      }
+    } finally {
+      it.Visible=false;
     }
   }
   else this.DefaultDrawItemText(html,it,id,level);
