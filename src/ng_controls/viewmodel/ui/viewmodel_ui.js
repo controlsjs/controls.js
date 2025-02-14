@@ -988,7 +988,7 @@ ngUserControls['viewmodel_ui'] = {
         Data: {
           ErrorMessage: '',    
           ErrorState: false,        
-          ErrorBindings: [ 'Value', 'Lookup' ],
+          ErrorBindings: [ 'Value', 'Lookup' ]
         },
         Methods: {
           GetFieldDefs: ngve_GetFieldDefs,
