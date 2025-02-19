@@ -5339,9 +5339,7 @@ ngUserControls['list'] = {
       if(!((idx<this.TopIndex)&&(to<this.TopIndex))||((idx>=ato)&&(to>=ato))) list.Update();
     }
 
-
-
-    window.npgl_AsyncTimeout = function(lid)
+    function npgl_AsyncTimeout(lid)
     {
       var l=ngGetControlById(lid, 'ngPanel');
       if(l)
@@ -5434,7 +5432,10 @@ ngUserControls['list'] = {
         if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
         this.async_datatimeout_timer=null;
         if((this.AsyncDataTimeout>0)&&(this.async_datatimeout_retry>=0))
-          this.async_datatimeout_timer=setTimeout("npgl_AsyncTimeout('"+this.ID+"');",this.AsyncDataTimeout*1000);
+          var id=this.ID;
+          this.async_datatimeout_timer=setTimeout(function() {
+            npgl_AsyncTimeout(id);
+          },this.AsyncDataTimeout*1000);
       }
 
       var data;
