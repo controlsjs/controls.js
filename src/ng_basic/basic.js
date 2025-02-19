@@ -1865,8 +1865,11 @@ function ng_GetBackgroundColor(el)
 {
   while(el)
   {
-    var backgroundColor = ng_GetCurrentStyle(el,'background-color');
-    if (backgroundColor != ngDefaultBackgroundColor) return backgroundColor;
+    if(el.nodeType === 1)
+    {
+      var backgroundColor = ng_GetCurrentStyle(el,'background-color');
+      if (backgroundColor != ngDefaultBackgroundColor) return backgroundColor;
+    }
     el=el.parentNode;
   }
   return ngDefaultBackgroundColor;
