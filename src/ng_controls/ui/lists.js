@@ -5341,7 +5341,7 @@ ngUserControls['list'] = {
 
 
 
-    function npgl_AsyncTimeout(lid)
+    window.npgl_AsyncTimeout = function(lid)
     {
       var l=ngGetControlById(lid, 'ngPanel');
       if(l)
@@ -5426,10 +5426,10 @@ ngUserControls['list'] = {
       if(this.AsyncData)
       {
         if(this.AsyncWaiting()) return false;
-
+        
         this.async_dataindex = idx;
         this.async_datacount = cnt;
-
+        
         // Set timeout timer
         if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
         this.async_datatimeout_timer=null;
