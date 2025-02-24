@@ -4307,6 +4307,20 @@ var WinEightControls = {
       /*<>*/
       ngRegisterControlSkin('weCompactDBDataSet','ngDBDataSet', function (def,ref,parent,modtype) { return skinfnc.Create_weDBDataSet(def,ref,parent,modtype,'weCompactList'); });
     }
+
+    /**
+     * Drag&Drop Controls
+     */
+    if(ngUserControls['dragndrop_ui'])
+    {
+      function Create_weDnDLayout(def,ref,parent,modtype) {
+        if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weLayoutDnDLight we'+wineight.DefColorScheme(def)+'DragHint' : 'weLayoutDnDDark');
+        return ngCreateControlAsType(def, modtype, ref, parent);
+      }
+
+      ngRegisterControlSkin('weVLayoutDnD','ngVLayoutDnD', Create_weDnDLayout);
+      ngRegisterControlSkin('weHLayoutDnD','ngHLayoutDnD', Create_weDnDLayout);
+    }  
   }
 };
 

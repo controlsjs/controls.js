@@ -57,6 +57,7 @@
   background-color:#FFFFFF;
   padding:2px 15px 2px 15px;
 }
+.weWhiteDragHint .weLayoutDnDLightDragHintL, .weWhiteDragHint .weLayoutDnDLightDragHintT, .weWhiteDragHint .weLayoutDnDLightDragHintR, .weWhiteDragHint .weLayoutDnDLightDragHintB { border-color:#FFFFFF; }
 .weBlue { background-color:#004D91 !important; }
 .weBlueText { color:#004D91 !important; }
 .weBlueDropDown .weDropDownLightRow_Focus, .weBlueDropDown .weDropDownLightRow_Focus TD, .weBlueDropDown .weDropDownLightRowChecked_Focus, .weBlueDropDown .weDropDownLightRowChecked_Focus TD, .weBlueDropDown .weDropDownLightRowGrayed_Focus, .weBlueDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -99,6 +100,7 @@
   background-color:#004D91;
   padding:2px 15px 2px 15px;
 }
+.weBlueDragHint .weLayoutDnDLightDragHintL, .weBlueDragHint .weLayoutDnDLightDragHintT, .weBlueDragHint .weLayoutDnDLightDragHintR, .weBlueDragHint .weLayoutDnDLightDragHintB { border-color:#004D91; }
 .weGreen { background-color:#00A300 !important; }
 .weGreenText { color:#00A300 !important; }
 .weGreenDropDown .weDropDownLightRow_Focus, .weGreenDropDown .weDropDownLightRow_Focus TD, .weGreenDropDown .weDropDownLightRowChecked_Focus, .weGreenDropDown .weDropDownLightRowChecked_Focus TD, .weGreenDropDown .weDropDownLightRowGrayed_Focus, .weGreenDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -141,6 +143,7 @@
   background-color:#00A300;
   padding:2px 15px 2px 15px;
 }
+.weGreenDragHint .weLayoutDnDLightDragHintL, .weGreenDragHint .weLayoutDnDLightDragHintT, .weGreenDragHint .weLayoutDnDLightDragHintR, .weGreenDragHint .weLayoutDnDLightDragHintB { border-color:#00A300; }
 .weYellow { background-color:#FFC40D !important; }
 .weYellowText { color:#FFC40D !important; }
 .weYellowDropDown .weDropDownLightRow_Focus, .weYellowDropDown .weDropDownLightRow_Focus TD, .weYellowDropDown .weDropDownLightRowChecked_Focus, .weYellowDropDown .weDropDownLightRowChecked_Focus TD, .weYellowDropDown .weDropDownLightRowGrayed_Focus, .weYellowDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -183,6 +186,7 @@
   background-color:#FFC40D;
   padding:2px 15px 2px 15px;
 }
+.weYellowDragHint .weLayoutDnDLightDragHintL, .weYellowDragHint .weLayoutDnDLightDragHintT, .weYellowDragHint .weLayoutDnDLightDragHintR, .weYellowDragHint .weLayoutDnDLightDragHintB { border-color:#FFC40D; }
 .weGray { background-color:#525252 !important; }
 .weGrayText { color:#525252 !important; }
 .weGrayDropDown .weDropDownLightRow_Focus, .weGrayDropDown .weDropDownLightRow_Focus TD, .weGrayDropDown .weDropDownLightRowChecked_Focus, .weGrayDropDown .weDropDownLightRowChecked_Focus TD, .weGrayDropDown .weDropDownLightRowGrayed_Focus, .weGrayDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -225,6 +229,7 @@
   background-color:#525252;
   padding:2px 15px 2px 15px;
 }
+.weGrayDragHint .weLayoutDnDLightDragHintL, .weGrayDragHint .weLayoutDnDLightDragHintT, .weGrayDragHint .weLayoutDnDLightDragHintR, .weGrayDragHint .weLayoutDnDLightDragHintB { border-color:#525252; }
 .weLtGray { background-color:#BABABA !important; }
 .weLtGrayText { color:#BABABA !important; }
 .weLtGrayDropDown .weDropDownLightRow_Focus, .weLtGrayDropDown .weDropDownLightRow_Focus TD, .weLtGrayDropDown .weDropDownLightRowChecked_Focus, .weLtGrayDropDown .weDropDownLightRowChecked_Focus TD, .weLtGrayDropDown .weDropDownLightRowGrayed_Focus, .weLtGrayDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -267,6 +272,7 @@
   background-color:#BABABA;
   padding:2px 15px 2px 15px;
 }
+.weLtGrayDragHint .weLayoutDnDLightDragHintL, .weLtGrayDragHint .weLayoutDnDLightDragHintT, .weLtGrayDragHint .weLayoutDnDLightDragHintR, .weLtGrayDragHint .weLayoutDnDLightDragHintB { border-color:#BABABA; }
 .weDkGray { background-color:#1F1F1F !important; }
 .weDkGrayText { color:#1F1F1F !important; }
 .weDkGrayDropDown .weDropDownLightRow_Focus, .weDkGrayDropDown .weDropDownLightRow_Focus TD, .weDkGrayDropDown .weDropDownLightRowChecked_Focus, .weDkGrayDropDown .weDropDownLightRowChecked_Focus TD, .weDkGrayDropDown .weDropDownLightRowGrayed_Focus, .weDkGrayDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -309,6 +315,7 @@
   background-color:#1F1F1F;
   padding:2px 15px 2px 15px;
 }
+.weDkGrayDragHint .weLayoutDnDLightDragHintL, .weDkGrayDragHint .weLayoutDnDLightDragHintT, .weDkGrayDragHint .weLayoutDnDLightDragHintR, .weDkGrayDragHint .weLayoutDnDLightDragHintB { border-color:#1F1F1F; }
 .weMaroon { background-color:#B91D47 !important; }
 .weMaroonText { color:#B91D47 !important; }
 .weMaroonDropDown .weDropDownLightRow_Focus, .weMaroonDropDown .weDropDownLightRow_Focus TD, .weMaroonDropDown .weDropDownLightRowChecked_Focus, .weMaroonDropDown .weDropDownLightRowChecked_Focus TD, .weMaroonDropDown .weDropDownLightRowGrayed_Focus, .weMaroonDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -351,6 +358,7 @@
   background-color:#B91D47;
   padding:2px 15px 2px 15px;
 }
+.weMaroonDragHint .weLayoutDnDLightDragHintL, .weMaroonDragHint .weLayoutDnDLightDragHintT, .weMaroonDragHint .weLayoutDnDLightDragHintR, .weMaroonDragHint .weLayoutDnDLightDragHintB { border-color:#B91D47; }
 .weLtBlue { background-color:#2D89EF !important; }
 .weLtBlueText { color:#2D89EF !important; }
 .weLtBlueDropDown .weDropDownLightRow_Focus, .weLtBlueDropDown .weDropDownLightRow_Focus TD, .weLtBlueDropDown .weDropDownLightRowChecked_Focus, .weLtBlueDropDown .weDropDownLightRowChecked_Focus TD, .weLtBlueDropDown .weDropDownLightRowGrayed_Focus, .weLtBlueDropDown .weDropDownLightRowGrayed_Focus TD {
@@ -393,6 +401,7 @@
   background-color:#2D89EF;
   padding:2px 15px 2px 15px;
 }
+.weLtBlueDragHint .weLayoutDnDLightDragHintL, .weLtBlueDragHint .weLayoutDnDLightDragHintT, .weLtBlueDragHint .weLayoutDnDLightDragHintR, .weLtBlueDragHint .weLayoutDnDLightDragHintB { border-color:#2D89EF; }
 .wePanel { background-color:inherit; }
 .weTextLight, .weCheckBoxLight, .weRadioLight, .weEditLight, .weToolBarLight, .wePagesLight, .wePgListLight, .weCalendarLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
@@ -1541,4 +1550,57 @@ TD .weMenuLightSeparator, TD .weMenuDarkSeparator { margin:10px 0px 10px 0px; }
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#FF0000;
+}
+.weLayoutDnDLightDragHintL {
+  border-left-width:2px;
+  border-left-style:dotted;
+  top:0px;
+  bottom:0px;
+  width:1px;
+}
+.weLayoutDnDLightDragHintR {
+  border-right-width:2px;
+  border-right-style:dotted;
+  top:0px;
+  bottom:0px;
+  width:1px;
+}
+.weLayoutDnDLightDragHintT {
+  border-top-width:2px;
+  border-top-style:dotted;
+  left:0px;
+  right:0px;
+  height:1px;
+}
+.weLayoutDnDLightDragHintB {
+  border-bottom-width:2px;
+  border-bottom-style:dotted;
+  left:0px;
+  right:0px;
+  height:1px;
+}
+.weLayoutDnDDarkDragHintL {
+  border-left:2px dotted white;
+  top:0px;
+  bottom:0px;
+  width:1px;
+}
+.weLayoutDnDDarkDragHintR {
+  border-right:2px dotted white;
+  top:0px;
+  bottom:0px;
+  width:1px;
+}
+.weLayoutDnDDarkDragHintT {
+  border-top:2px dotted white;
+  border-top-style:dotted;
+  left:0px;
+  right:0px;
+  height:1px;
+}
+.weLayoutDnDDarkDragHintB {
+  border-bottom:2px dotted white;
+  left:0px;
+  right:0px;
+  height:1px;
 }

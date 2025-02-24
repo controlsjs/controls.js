@@ -2177,6 +2177,19 @@ return {
       ng_MergeVar(di,weDBDataSetDI(d,c,ref));
       return di;
     });
+
+    function Create_weDnDLayout_DI(d,c,ref) {
+      return themeSchemeDI({
+        ControlCategory: 'Layout',
+        IsContainer: true,
+        Properties: {
+          "className": deftheme() ? defThemeSchemeClassName('LayoutDnD','DragHint') : ng_diString('weLayoutDnDDark')
+        }
+      });
+    }    
+    ngRegisterControlDesignInfo('weVLayoutDnD',Create_weDnDLayout_DI);
+    ngRegisterControlDesignInfo('weHLayoutDnD',Create_weDnDLayout_DI);
+
   }
 };
 })();
