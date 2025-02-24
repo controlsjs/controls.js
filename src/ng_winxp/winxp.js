@@ -3464,6 +3464,21 @@ var WinXPControls = {
       });
 
     }
+
+    /**
+     * Drag&Drop Controls
+     */
+    if(ngUserControls['dragndrop_ui'])
+    {
+      function Create_stdDnDLayout(def,ref,parent,modtype) {
+        if(typeof def.className === 'undefined') def.className='wxpLayoutDnD';
+        return ngCreateControlAsType(def, modtype, ref, parent);
+      }
+
+      ngRegisterControlSkin('stdVLayoutDnD','ngVLayoutDnD', Create_stdDnDLayout);
+      ngRegisterControlSkin('stdHLayoutDnD','ngHLayoutDnD', Create_stdDnDLayout);
+    }
+  
   }
 };
 ngUserControls['winxp'] = WinXPControls;

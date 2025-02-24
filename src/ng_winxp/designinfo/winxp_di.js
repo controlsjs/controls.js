@@ -1755,6 +1755,18 @@ var WinXP_DesignInfo = {
       ng_MergeVar(di,stdPageListDI(d,c,ref));
       return di;
     });
+
+    function Create_stdDnDLayout_DI(d,c,ref) {
+      return {
+        ControlCategory: 'Layout',
+        IsContainer: true,
+        Properties: {
+          "className": ng_diString('wxpLayoutDnD')
+        }
+      };
+    }    
+    ngRegisterControlDesignInfo('stdVLayoutDnD',Create_stdDnDLayout_DI);
+    ngRegisterControlDesignInfo('stdHLayoutDnD',Create_stdDnDLayout_DI);
   }
 };
 ngUserControls['winxp_designinfo'] = WinXP_DesignInfo;

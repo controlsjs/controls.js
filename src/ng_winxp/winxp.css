@@ -1244,3 +1244,34 @@
   color: #7F9DB9;
 }
 
+/* wxpLayoutDnD ***************************************************************/
+
+.wxpLayoutDnD {
+}
+
+.wxpLayoutDnDDragHintL {
+  border-left: 1px dashed #7F9DB9;
+  top: 0px;
+  bottom: 0px;
+  width: 1px;
+}
+
+.wxpLayoutDnDDragHintR {
+  border-right: 1px dashed #7F9DB9;
+  top: 0px;
+  bottom: 0px;
+  width: 1px;
+}
+.wxpLayoutDnDDragHintT {
+  border-top: 1px dashed #7F9DB9;
+  left: 0px;
+  right: 0px;
+  height: 1px;
+}
+
+.wxpLayoutDnDDragHintB {
+  border-bottom: 1px dashed #7F9DB9;
+  left: 0px;
+  right: 0px;
+  height: 1px;
+}
