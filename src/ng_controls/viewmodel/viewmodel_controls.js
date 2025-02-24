@@ -1677,6 +1677,22 @@ ngUserControls['viewmodel_controls'] = {
       }
     );
 
+    ngRegisterBindingHandler('DragOver', null,
+      function (c, valueAccessor, allBindingsAccessor,viewModel) {
+        value_write('DragOver',false,c, valueAccessor, allBindingsAccessor);
+        c.AddEvent(function(c) { value_write('DragOver',true,c, valueAccessor, allBindingsAccessor); },'OnDragEnter');
+        c.AddEvent(function(c) { value_write('DragOver',false,c, valueAccessor, allBindingsAccessor); },'OnDragLeave');
+      }
+    );
+
+    ngRegisterBindingHandler('Dragged', null,
+      function (c, valueAccessor, allBindingsAccessor,viewModel) {
+        value_write('Dragged',false,c, valueAccessor, allBindingsAccessor);
+        c.AddEvent(function(c) { value_write('Dragged',true,c, valueAccessor, allBindingsAccessor); },'OnDragStarted');
+        c.AddEvent(function(c) { value_write('Dragged',false,c, valueAccessor, allBindingsAccessor); },'OnDragEnd');
+      }
+    );
+
     function event_init(eventtype, c, valueAccessor, allBindingsAccessor, viewModel) {
       var eventsToHandle = valueAccessor() || {};
       for(var eventNameOutsideClosure in eventsToHandle) {
