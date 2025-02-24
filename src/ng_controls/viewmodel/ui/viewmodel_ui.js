@@ -2818,6 +2818,37 @@ ngUserControls['viewmodel_ui'] = {
       }
     );
 
+    ngRegisterBindingHandler('Controls',
+      null,
+      function (c, valueAccessor, allBindingsAccessor, viewModel) {
+        if((c.CtrlInheritsFrom('ngVLayoutDnD'))||(c.CtrlInheritsFrom('ngHLayoutDnD'))) {
+          c.AddEvent('OnDragDropControl', function(c, ctrl, insertbefore, di, pi) {
+            if(!ng_IsObjVar(di.DragData)) return;
+            var fromidx=ngVal(di.DragData.ChildIndex,-1);
+            var toidx=ngVal(di.DragContext.InsertBeforeIdx,-1);
+
+            if((fromidx===toidx)||(fromidx+1===toidx)) return;
+
+            var modelValue = valueAccessor();
+            if((ko.isObservable(modelValue))&&(!ko.isWriteableObservable(modelValue))) return;  
+            var arr=ko.ng_getvalue(modelValue);
+            if((ng_IsArrayVar(arr))&&(fromidx>=0)&&(fromidx<arr.length)) {
+              if((toidx===-1)&&(fromidx===arr.length-1)) return;
+              var it=arr[fromidx];
+              if(fromidx<toidx) toidx--;
+              var acc = (ko.isObservable(modelValue)) && (typeof modelValue.splice==='function') ? modelValue : arr;
+              acc.splice(fromidx,1);
+              if(toidx<0) acc.push(it);
+              else acc.splice(toidx,0,it);
+              if((acc===arr)&&(ko.isObservable(modelValue))) modelValue(arr);
+            }
+          });    
+          return true;
+        }
+        return false;
+      }
+    );
+
     ngRegisterBindingHandler('Command',null,
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         var valuenames = allBindingsAccessor.get("ValueNames");
