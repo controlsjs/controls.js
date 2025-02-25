@@ -254,7 +254,7 @@ ngUserControls['mods'] = {
                 }
               }
             }
-            if(typeof props!==typeof c.SizeLimitBounds) {
+            if((typeof props!==typeof c.SizeLimitBounds)||(!ng_VarEquals(props,c.SizeLimitBounds))) {
               c.SizeLimitBounds=props;
               c.SetBounds();
             }
