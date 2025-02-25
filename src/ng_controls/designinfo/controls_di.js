@@ -1164,7 +1164,7 @@ ngUserControls['controls_designinfo'] = {
       var type=ngVal(def.Type,'');
       if(type!=='') {
         var r=ngRegisteredControlTypes[type];
-        if((typeof r!=='undefined')&&('ModType' in r)) {
+        if(((typeof r!=='undefined')&&('ModType' in r))||(def.Type==='feGenericControl')) {
           var lvl=typeof r.ModType==='undefined' ? 'basic' : 'advanced';
           cdi.Properties["ModType"]=ng_diMixed([
             ng_diString(ngVal(r.ModType,''), { Level: lvl }, { Editor: 'ngfeEditor_ControlType' }),
