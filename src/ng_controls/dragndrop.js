@@ -191,6 +191,10 @@ ngUserControls['dragndrop'] = {
       di.DragTargetY=void 0;
       di.DragElementX=(di.DragAxis==='vertical' ? di.DragStartX : pi.X)-di.DragSourceX;
       di.DragElementY=(di.DragAxis==='horizontal' ? di.DragStartY : pi.Y)-di.DragSourceY;
+      
+      di.LastDragTarget=lastdt;
+      di.LastDragContext=lastctx;
+      di.LastDragHintElements=dh;
 
       if('DragSourceElementVisibility' in di) {
         var se=di.DragSourceElement;
@@ -286,13 +290,18 @@ ngUserControls['dragndrop'] = {
       var dg=di.DragGroup;
       if(dg==='') dg=void 0;
       try {
+        var dctx,dhel;
         while(dt) {
           accept=false;
           di.DragTarget=dt;
           di.DragTargetX=void 0;
-          di.DragTargetY=void 0;    
-          di.DragContext=(dt === lastdt ? lastctx : {});
-          di.DragHintElements=(dt === lastdt ? lastdh : void 0);
+          di.DragTargetY=void 0;
+          
+          dctx=(dt === lastdt ? lastctx : {});
+          dhel=(dt === lastdt ? lastdh : void 0);
+          
+          di.DragContext=dctx;
+          di.DragHintElements=dhel;
 
           if((typeof dt.DragDropGroup!=='undefined')&&(dt.DragDropGroup!==''))
           {
@@ -325,8 +334,14 @@ ngUserControls['dragndrop'] = {
             {
               di.DragTargetX=void 0;
               di.DragTargetY=void 0;
-              di.DragContext=(di.DragTarget === lastdt ? lastctx : {});
-              di.DragHintElements=(di.DragTarget === lastdt ? lastdh : void 0);
+              if(di.DragContext===dctx) {
+                dtx=(di.DragTarget === lastdt ? lastctx : {});
+                di.DragContext=dtx;
+              }
+              if(di.DragHintElements===dhel) {
+                dhel=(di.DragTarget === lastdt ? lastdh : void 0);
+                di.DragHintElements=dhel;
+              }
             }          
             if(ngVal(dt.OnDragOver(dt, di, pi),false)) accept=true;
           }
@@ -337,8 +352,8 @@ ngUserControls['dragndrop'] = {
               dt=di.DragTarget;
               di.DragTargetX=void 0;
               di.DragTargetY=void 0;
-              di.DragContext=(dt === lastdt ? lastctx : {});
-              di.DragHintElements=(dt === lastdt ? lastdh : void 0);
+              if(di.DragContext===dctx) di.DragContext=(dt === lastdt ? lastctx : {});
+              if(di.DragHintElements===dhel) di.DragHintElements=(dt === lastdt ? lastdh : void 0);
             }
             break;
           }
@@ -401,6 +416,10 @@ ngUserControls['dragndrop'] = {
           ng_IE7RedrawFix(o);
         }
       }
+      
+      delete di.LastDragTarget;
+      delete di.LastDragContext;
+      delete di.LastDragHintElements;      
     }
 
     function dragend(di, pi)
