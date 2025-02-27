@@ -511,8 +511,11 @@ ngUserControls['dragndrop'] = {
     function ptrstart(pi)
     {
       ng_CallParent(this,'DoPtrStart',arguments);
+      pi.StopPropagation=true;
+      pi.DocumentDeselect=true;
+      pi.PreventSelect=true;  
       pi.Gestures.drag=true;            
-      pi.Gestures.hold=true;            
+      pi.Gestures.hold=true;
     }
 
     function dogesture(pi)
