@@ -282,11 +282,12 @@ ngUserControls['dragndrop'] = {
         di.AutoScrollDirection='';
       }
 
-      var accept=false;
+      var accept;
       var dg=di.DragGroup;
       if(dg==='') dg=void 0;
       try {
         while(dt) {
+          accept=false;
           di.DragTarget=dt;
           di.DragTargetX=void 0;
           di.DragTargetY=void 0;    
@@ -318,12 +319,29 @@ ngUserControls['dragndrop'] = {
           }
 
           if((dt.DoDragOver)&&(ngVal(dt.DoDragOver(di, pi),false))) accept=true;                      
-          if(dt.OnDragOver) {
+          if((dt.OnDragOver)&&(di.DragTarget))
+          {
+            if(dt!==di.DragTarget)
+            {
+              di.DragTargetX=void 0;
+              di.DragTargetY=void 0;
+              di.DragContext=(di.DragTarget === lastdt ? lastctx : {});
+              di.DragHintElements=(di.DragTarget === lastdt ? lastdh : void 0);
+            }          
             if(ngVal(dt.OnDragOver(dt, di, pi),false)) accept=true;
-            else accept=false;
           }
 
-          if(accept) break;
+          if((accept)&&(di.DragTarget)) {
+            if(dt!==di.DragTarget)
+            {
+              dt=di.DragTarget;
+              di.DragTargetX=void 0;
+              di.DragTargetY=void 0;
+              di.DragContext=(dt === lastdt ? lastctx : {});
+              di.DragHintElements=(dt === lastdt ? lastdh : void 0);
+            }
+            break;
+          }
           dt=dt.ParentControl;
         }
       } finally {
