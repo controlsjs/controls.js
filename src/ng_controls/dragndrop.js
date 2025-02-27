@@ -318,7 +318,10 @@ ngUserControls['dragndrop'] = {
           }
 
           if((dt.DoDragOver)&&(ngVal(dt.DoDragOver(di, pi),false))) accept=true;                      
-          if((!accept)&&(dt.OnDragOver)&&(ngVal(dt.OnDragOver(dt, di, pi),false))) accept=true;
+          if(dt.OnDragOver) {
+            if(ngVal(dt.OnDragOver(dt, di, pi),false)) accept=true;
+            else accept=false;
+          }
 
           if(accept) break;
           dt=dt.ParentControl;
