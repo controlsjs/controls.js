@@ -224,24 +224,24 @@ return {
     ngRegisterControlDesignInfo('weCaption',function(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'Label',
-        Properties: {
+        Properties: ng_diProperties({
           "className": defThemeSchemeClassName('Caption','Text'),
           "Data": {
             "CanSelectText": ng_diBoolean(true)
           }
-        }
+        })
       });
     });
     
     ngRegisterControlDesignInfo('weTitle',function(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'Label',
-        Properties: {
+        Properties: ng_diProperties({
           "className": defThemeSchemeClassName('Title','Text'),
           "Data": {
             "CanSelectText": ng_diBoolean(true)
           }          
-        }
+        })
       });
     });
     
@@ -382,12 +382,12 @@ return {
     ngRegisterControlDesignInfo('weLabel',function(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'Label',
-        Properties: {
+        Properties: ng_diProperties({
           "className": defThemeClassName('Label'),
           "Data": {
             "CanSelectText": ng_diBoolean(true)
           }          
-        }
+        })
       });
     });
     
