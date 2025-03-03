@@ -96,12 +96,12 @@ var WinXP_DesignInfo = {
     ngRegisterControlDesignInfo('stdLabel',function(d,c,ref) {
       return {
         ControlCategory: 'Label',
-        Properties: {
+        Properties: ng_diProperties({
           "className": ng_diString('wxpLabel'),
           "Data": {
             "CanSelectText": ng_diBoolean(true)
           }
-        }
+        })
       };
     });
     ngRegisterControlDesignInfo('stdLink',function(d,c,ref) {
