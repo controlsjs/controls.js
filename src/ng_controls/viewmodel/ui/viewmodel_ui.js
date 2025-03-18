@@ -454,9 +454,9 @@ ngUserControls['viewmodel_ui'] = {
     
       if((this.OnSetControlError)&&(!ngVal(this.OnSetControlError(this,c,err,setfocus),false))) return;
     
-      if(typeof c.SetErrorState === 'function') c.SetErrorState(err!='');
+      if(typeof c.SetErrorState === 'function') c.SetErrorState((err!='')&&(c.Enabled));
       else
-        if (typeof c.SetInvalid === 'function') c.SetInvalid(err!='');
+        if (typeof c.SetInvalid === 'function') c.SetInvalid((err!='')&&(c.Enabled));
     
       if(err==='')
       {
@@ -466,7 +466,7 @@ ngUserControls['viewmodel_ui'] = {
       else
         if(ngVal(setfocus,false))
         {
-          if(typeof c.SetErrorState !== 'function') // Not Edit field
+          if((typeof c.SetErrorState !== 'function')||(!c.Enabled)) // Not Edit field
           {
             var hint=this.GetErrorHint();
             if(hint)
@@ -484,7 +484,7 @@ ngUserControls['viewmodel_ui'] = {
               }
             }
           }
-          this.FocusControl(c);
+          if(c.Enabled) this.FocusControl(c);
         }
     }
     
@@ -618,8 +618,9 @@ ngUserControls['viewmodel_ui'] = {
                     }
                     if(!p)
                     {
-                      focuscontrol[fieldcontrols[j].Level]=j;
-                      if(!fieldcontrols[j].Level) return true;
+                      var l=fieldcontrols[j].Level;
+                      if((c.Enabled)||(typeof focuscontrol[l]==='undefined')) focuscontrol[l]=j;
+                      if((!l)&&(c.Enabled)) return true;
                     }
                   }
                 }
@@ -631,14 +632,11 @@ ngUserControls['viewmodel_ui'] = {
     
             if(!focuscontrol.length)
             {
-              var focusfound=false;
-              if((this.OnSetControlVisible)&&(ngVal(this.OnSetControlVisible(this,fieldcontrols[0].Control),false)))
-              {
+              if((this.OnSetControlVisible)&&(ngVal(this.OnSetControlVisible(this,fieldcontrols[0].Control),true))) {
                 focusfield(this);
-                focusfound=true;
               }
     
-              if(!focusfound)
+              if(!focuscontrol.length)
               {
                 var err,dn,m;
                 for(var i=0;i<fieldcontrols.length;i++)
