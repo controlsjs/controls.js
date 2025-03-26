@@ -701,7 +701,12 @@ ngUserControls['dbviewmodel_ui'] = {
     
         var list=c.Controls.List;
         if(list) {
-          if(list.SelectType==nglSelectNone) list.SelectType=nglSelectSingle;
+          if(list.SelectType==nglSelectNone)
+          {
+            list.SelectType = ((def.Controls) && (def.Controls.List) && (def.Controls.List.Data))
+              ? ngVal(def.Controls.List.Data.SelectType,nglSelectSingle) : nglSelectSingle;
+          }
+          
           list.AddEvent('OnSelectChanged', ngdbdsc_SelectChanged);
           list.AddEvent('OnClick', ngdbdsc_OnClick);
           list.AddEvent('OnClickItem', ngdbdsc_OnClickItem);
