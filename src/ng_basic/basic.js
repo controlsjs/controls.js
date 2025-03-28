@@ -2897,14 +2897,11 @@ function ng_EmptyVar(o)
   {
     case 'undefined': return true;
     case 'string': return (o=='');
-    case 'integer': return (o==0);
     case 'object':
       if(!o) return true;
-      if(o.length>0) return false;
-      if(ng_type_date(o)) return false;
+      if((o.length>0)||(ng_type_date(o))) return false;
       for(var i in o) return false;
       return true;
-    case 'boolean': return (!o);
   }
   return false;
 }
