@@ -4218,14 +4218,8 @@ ngUserControls['viewmodel'] = {
                   if(writeallowed()) {
                     var a=val();
                     var pack=(ngVal(fd.Attrs['RemoveEmptyItems'],false));
-                    if(!ng_typeArray(a)) {
-                      if((pack)&&(ng_isEmptyOrNull(v))) return;
-                      a=[];
-                      a[idx]=ko.ng_setvalue(a[idx],v);
-                      val(a);
-                      return;
-                    }
-                    if(idx>=a.length) {
+                    var isarr=ng_typeArray(a);
+                    if((!isarr)||(idx>=a.length)) {
                       if(ng_isEmptyOrNull(v)) {
                         if(pack) return;
                         if((ngIsFieldDef(fd.ValueFieldDef))&&(ng_typeObject(fd.ValueFieldDef.PropsFieldDefs)))
@@ -4235,8 +4229,14 @@ ngUserControls['viewmodel'] = {
                         }
                       }
                     }
-                    else
-                      if(ng_VarEquals(ko.ng_getvalue(a[idx]),v)) return;
+
+                    if(!isarr) {
+                      a=[];
+                      a[idx]=ko.ng_setvalue(a[idx],v);
+                      val(a);
+                      return;
+                    }
+                    if((idx<a.length)&&(ng_VarEquals(ko.ng_getvalue(a[idx]),v))) return;
 
                     if(typeof val.valueWillMutate === 'function') val.valueWillMutate();
                     a[idx]=ko.ng_setvalue(a[idx],v);
