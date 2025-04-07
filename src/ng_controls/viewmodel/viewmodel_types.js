@@ -252,11 +252,10 @@
 
   function ngfd_ArrayInternalTypedValue(v, op)
   {
-    if(this.__arraytypingvalue) return v;
+    if((this.__arraytypingvalue)||(v===null)) return v;
     this.__arraytypingvalue=true;
     try
     {
-      if(v===null) return null;
       var r;
       if(typeof v!=='object')
         throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
@@ -293,7 +292,10 @@
           }
           catch(e)
           {
-            if(typeof this.Item === 'function') e.FieldDef=this.Item(k); // Get ngFieldDef for item (if available)
+            if(typeof this.Item === 'function') {
+              e.FieldDef=this.Item(k,false); // Get ngFieldDef for item (if available)
+              if(!ngIsFieldDef(e.FieldDef)) e.FieldDef=this.ValueFieldDef;
+            }
             else {
               e.FieldDef=ng_CopyVar(this.ValueFieldDef);
               e.FieldDef.ID=k;
@@ -399,11 +401,10 @@
 
   function ngfd_ObjectInternalTypedValue(v,op)
   {
-    if(this.__objecttypingvalue) return v;
+    if((this.__objecttypingvalue)||(v===null)) return v;
     this.__objecttypingvalue=true;
     try
     {
-      if(v===null) return null;
       var r;
       if(!ng_typeObject(v))
         throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE); // type error
