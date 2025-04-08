@@ -160,12 +160,12 @@ ngUserControls['dialogs_designinfo'] = {
             "AppText": ng_diString('',{ Level: 'basic' })
           },
           "ModifyControls": {
-            "Message": ng_diControl(undefined, ng_diProperties({
+            "Message": ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "MinWidth": ng_diInteger(260)
               }
             })),
-            "Content": ng_diControl(undefined, {
+            "Content": ng_diControl(void 0, {
               "H": ng_diTypeVal('bounds', 125)
             }),
             "AppInfo": ng_diControl('ngList', ng_diProperties({
@@ -209,7 +209,7 @@ ngUserControls['dialogs_designinfo'] = {
                 })
               }
             }), { Level: 'basic' }, { InheritedFrom: 'ngList' }),
-            "Buttons": ng_diControl(undefined, ng_diProperties({
+            "Buttons": ng_diControl(void 0, ng_diProperties({
               "R": ng_diTypeVal('bounds', 10),
               "Data": {
                 "CenterButtons": ng_diBoolean(false)

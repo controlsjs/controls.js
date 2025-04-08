@@ -191,7 +191,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
   function add_databind_di(di, def, c)
   {
     var props = {
-      "Calls": ng_diMixed([ng_diObject(undefined, undefined, {
+      "Calls": ng_diMixed([ng_diObject(void 0, void 0, {
         ChildDesignInfo: ng_diType('databind_function_name', { Level: 'basic' }, {
           EditorOptions: {
             IgnoreDataModel: true
@@ -304,7 +304,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
       case 'ngSysRPC':
         if(dn==='') dn='Parameters (Value)';
         props["Value"] = ng_diMixed([
-          ng_diObject({},undefined, {
+          ng_diObject({},void 0, {
             ChildDesignInfo: ng_diType('vm_databind_field', { Level: 'basic' })
           }),
           ng_diType('vm_databind_field')
@@ -332,7 +332,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
           ng_diBindings(props),
           ng_diObject({
             "Default": {}
-          }, undefined, {
+          }, void 0, {
             DestroyIfEmpty: true,
             ChildDesignInfo: ng_diMixed([
               ng_diBindings(props),
@@ -345,7 +345,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
           ng_diBindings(),
           ng_diObject({
             "Default": {}
-          }, undefined, {
+          }, void 0, {
             DestroyIfEmpty: true,
             ChildDesignInfo: ng_diMixed([
               ng_diBindings(),
@@ -375,25 +375,23 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
     // handle DataBind Events properties
     if (di && di.Properties && di.Properties.Events && di.Properties.Events.Types && di.Properties.Events.Types['object'])
     {
-      var netbeans = ((typeof CodeMirrorIntegration !== 'undefined')&&(typeof CodeMirrorIntegration.RunningInNetBeans === 'function')&&(CodeMirrorIntegration.RunningInNetBeans()));
-
       var o = {},
           props = di.Properties.Events.Types['object'].ObjectProperties;
       for (var i in props)
       {
         o[i] = ng_diType('vm_databind_function_name');
 
-        if (typeof props[i].Level !== undefined) o[i].Level = props[i].Level;
+        if (typeof props[i].Level !== 'undefined') o[i].Level = props[i].Level;
         else o[i].Level = 'advanced';
       }
 
       var eventprop1 = ng_diMixed([
-        ng_diObject(o, undefined, { DestroyIfEmpty: true, ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'user' }) }),
+        ng_diObject(o, void 0, { DestroyIfEmpty: true, ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'user' }) }),
         ng_diType('bindings_string')
-      ], { Order: undefined, Level: 'advanced' });
+      ], { Order: void 0, Level: 'advanced' });
 
       var eventprop2 = ng_diMixed([
-        ng_diObject({}, undefined, { DestroyIfEmpty: true, ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'user' }) }),
+        ng_diObject({}, void 0, { DestroyIfEmpty: true, ChildDesignInfo: ng_diType('vm_databind_function_name', { Level: 'user' }) }),
         ng_diType('bindings_string')
       ], { Level: 'advanced' });
       for (var i in o)

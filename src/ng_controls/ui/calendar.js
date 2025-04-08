@@ -926,7 +926,7 @@ var ngcalSelectRange = 4;
     }
 
     if(!ng_EmptyVar(ldefs)) {
-      var lref=ngCreateControls(ldefs,undefined,null);
+      var lref=ngCreateControls(ldefs,void 0,null);
       if((typeof def.FastButtons === 'object')&&(def.FastButtons))
       {
         this.FastButtons=new Array();

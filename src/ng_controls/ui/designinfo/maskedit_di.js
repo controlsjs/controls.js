@@ -16,7 +16,6 @@ ngUserControls['maskedit_designinfo'] = {
   {
     if(!ngDESIGNINFO) return;
 
-    var undefined;
     ngRegisterControlDesignInfo('ngMaskEdit',function(d,c,ref) {
       return {
         ControlCategory: 'Edit',

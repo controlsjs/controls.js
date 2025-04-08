@@ -13,7 +13,6 @@
 if (typeof ngUserControls === 'undefined') ngUserControls = {};
 ngUserControls['menu_designinfo'] = {
   OnFormEditorInit: function(FE) {
-    var undefined;
 
     function getpropertytext(p) {
       return (p.PropertyType==='string' ? ngVal(p.PropertyValue,'') : '');
@@ -94,7 +93,6 @@ ngUserControls['menu_designinfo'] = {
   {
     if(!ngDESIGNINFO) return;
 
-    var undefined;
     ngRegisterControlDesignInfo('ngMenu',function(d,c,ref) {
       return {
         ControlCategory: 'Menu',
@@ -139,10 +137,10 @@ ngUserControls['menu_designinfo'] = {
               ng_diUndefined(),
               ng_diBoolean(true)
             ],{ InitType: 'boolean', Level: 'advanced' }),
-            "ActiveSubMenu": ng_diObject(undefined, { Level: 'hidden' }),
-            "PopupX": ng_diInteger(undefined, { Level: 'hidden' }),
-            "PopupY": ng_diInteger(undefined, { Level: 'hidden' }),
-            "PopupElm": ng_diObject(undefined, { Level: 'hidden' }),
+            "ActiveSubMenu": ng_diObject(void 0, { Level: 'hidden' }),
+            "PopupX": ng_diInteger(void 0, { Level: 'hidden' }),
+            "PopupY": ng_diInteger(void 0, { Level: 'hidden' }),
+            "PopupElm": ng_diObject(void 0, { Level: 'hidden' }),
 
             // change defaults
             "Visible": ng_diBoolean(false),

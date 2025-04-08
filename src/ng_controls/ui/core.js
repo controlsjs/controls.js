@@ -2025,7 +2025,7 @@ function ngg_DoUpdate(o)
   var text=ngHtmlVal(this.GetText(), false, this.HTMLEncode);
 
   var dp=new Object;
-  ngc_ImgBox(html, this.ID, 'ngGroup', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', undefined, dp);
+  ngc_ImgBox(html, this.ID, 'ngGroup', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', void 0, dp);
 
   if(this.ControlsInside)
   {
@@ -2117,7 +2117,7 @@ function ngg_DoCreate(def, ref, elm, parent)
   ldefs.ControlsPanel.Controls=def.Controls;
   ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
 
-  var lref=ngCreateControls(ldefs,undefined,elm);
+  var lref=ngCreateControls(ldefs,void 0,elm);
   if(!ngVal(def.ParentReferences,true))
   {
     this.Controls = new Object;
@@ -2439,6 +2439,7 @@ function nge_SuggestionSearch(txt)
 {
   var lst;
   txt=ngVal(txt,'');
+
   if(this.OnSuggestionSearch)
   {
     var res=new Object;
@@ -3846,7 +3847,7 @@ function nge_DoCreate(d, ref, elm, parent)
       }
     });
     if(this.InDesignMode) d.DropDown.Data.Visible=false; // DropDowns are always invisible in FormEditor
-    var lref=ngCreateControls({ Control: d.DropDown },undefined,(typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
+    var lref=ngCreateControls({ Control: d.DropDown },void 0,(typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : document.body);
     if(typeof lref.Control !== 'undefined') // dropdown successfuly created
     {
       lref.Control.Owner=this;
@@ -3871,7 +3872,7 @@ function nge_DoCreate(d, ref, elm, parent)
       b=ng_CopyVar(d.Buttons[i]);
       ldefs['B'+i]=b;
     }
-    var lref=ngCreateControls(ldefs,undefined,null);
+    var lref=ngCreateControls(ldefs,void 0,null);
     if((typeof this.Buttons !== 'object')||(!this.Buttons)) this.Buttons=new Array();
     for(var i=0;i<d.Buttons.length;i++)
     {
@@ -4062,7 +4063,7 @@ function ngEdit(id, text)
    *  Type: integer
    *  Default value: *undefined*
    */
-  this.DropDownWidth = undefined;
+  this.DropDownWidth = void 0;
   /*  Variable: DropDownAlign
    *  ...
    *  Type: string
@@ -5829,7 +5830,7 @@ function ngpg_InsertPage(idx, p, ref) {
   ldefs.ControlsPanel.Controls=p.Controls;
   ldefs.ControlsPanel.ModifyControls=p.ModifyControls;
 
-  var lref=ngCreateControls(ldefs,undefined,elm);
+  var lref=ngCreateControls(ldefs,void 0,elm);
   if(!ngVal(this.ParentReferences,true))
   {
     (function (pg,pgid,pages) {
@@ -6300,7 +6301,7 @@ function ngpg_DoCreate(d, ref, elm, parent)
       ldefs.ControlsPanel.ModifyControls=p.ModifyControls;
       if(i==this.Page) ldefs.ControlsPanel.Data.Visible=true;
 
-      var lref=ngCreateControls(ldefs,undefined,elm);
+      var lref=ngCreateControls(ldefs,void 0,elm);
       if(!ngVal(d.ParentReferences,true))
       {
         (function (pg,pgid,pages) {

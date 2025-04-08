@@ -20,8 +20,6 @@ ngUserControls['auth_controls'] = {
   ControlsGroup: 'Core',
 
   OnInit: function() {
-    var undefined;
-    
     function ngauth_ctrlid()
     {
       var id,n,characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -237,7 +235,7 @@ ngUserControls['auth_controls'] = {
             Type: 'ngEdit',
             L: 0, R: 0,
             Data: {
-              ngHintD: (compact ? 'ngauthOrganization' : undefined),
+              ngHintD: (compact ? 'ngauthOrganization' : void 0),
               AutoComplete: 'section-ngloginform organization',
               Visible: (showorganization ? true : false)
             },
@@ -263,7 +261,7 @@ ngUserControls['auth_controls'] = {
             L: 0, R: 0,
             Data: {
               AutoComplete: 'section-ngloginform username',
-              ngHintD: (compact ? 'ngauthLogin' : undefined)
+              ngHintD: (compact ? 'ngauthLogin' : void 0)
             },
             Events: {
               OnKeyUp: function(e) {
@@ -288,7 +286,7 @@ ngUserControls['auth_controls'] = {
             Data: {
               Password: true,
               AutoComplete: 'section-ngloginform current-password',
-              ngHintD: (compact ? 'ngauthLoginPassword' : undefined)
+              ngHintD: (compact ? 'ngauthLoginPassword' : void 0)
             },
             Events: {
               OnFocus: function(c) {
@@ -549,7 +547,7 @@ ngUserControls['auth_controls'] = {
             Data: {
               Visible: (showoldpassword ? true : false),
               AutoComplete: 'section-ngpasswdform current-password',
-              ngHintD: (compact ? 'ngauthOldPassword' : undefined),
+              ngHintD: (compact ? 'ngauthOldPassword' : void 0),
               Password: true
             },
             Events: {
@@ -592,7 +590,7 @@ ngUserControls['auth_controls'] = {
             Type: 'ngEdit',
             L: 0, R: 0,
             Data: {
-              ngHintD: (compact ? 'ngauthNewPassword' : undefined),
+              ngHintD: (compact ? 'ngauthNewPassword' : void 0),
               AutoComplete: 'section-ngpasswdform new-password',
               Password: true
             },
@@ -637,7 +635,7 @@ ngUserControls['auth_controls'] = {
             Type: 'ngEdit',
             L: 0, R: 0,
             Data: {
-              ngHintD: (compact ? 'ngauthConfirmNewPassword' : undefined),
+              ngHintD: (compact ? 'ngauthConfirmNewPassword' : void 0),
               AutoComplete: 'section-ngpasswdform new-password',
               Password: true
             },
@@ -707,7 +705,7 @@ ngUserControls['auth_controls'] = {
         id: ngauth_ctrlid(),
         Data: {
           HTMLEncode: false,
-          UserName: undefined
+          UserName: void 0
         },
         Menu: {
           id: ngauth_ctrlid(),
@@ -731,7 +729,7 @@ ngUserControls['auth_controls'] = {
           },
           LoggedOut: function() {
             if(typeof c.UserName=='undefined') return;
-            c.UserName=undefined;
+            c.UserName=void 0;
             c.Update();
           }
         },

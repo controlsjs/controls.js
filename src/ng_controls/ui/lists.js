@@ -456,7 +456,7 @@ function ngl_Clear(parent)
   {
     list=this;
     this.ClearSelected();
-    this.ItemsControls = undefined;
+    this.ItemsControls = void 0;
     if((typeof list.Items === 'object')&&(!list.Items.length)) return;
   }
   if(typeof list.Items !== 'undefined')
@@ -1444,9 +1444,8 @@ function ngl_SelectDropDownItem(it)
       else if((this.Columns.length>0)&&(typeof it.Text==='object')) t=it.Text[this.Columns[0].ID];
       if((ngVal(dd.Suggestion,false))&&(dd.OnSuggestionSetText))
       {
-        var undefined;
         t=dd.OnSuggestionSetText(t,it);
-        if(t=='') t=undefined;
+        if(t=='') t=void 0;
       }
     }
     if(dd.OnListItemGetText) t=dd.OnListItemGetText(dd,this,it,t);
@@ -2986,8 +2985,8 @@ function ngl_RemoveItemControl(obj)
   for(var i=this.ItemsControls.length-1;i>=0;i--)
     if(this.ItemsControls[i]==obj) this.ItemsControls.splice(i, 1);
 
-  if(!this.ItemsControls.length) this.ItemsControls=undefined;
-  obj.ParentControl=undefined;
+  if(!this.ItemsControls.length) this.ItemsControls=void 0;
+  obj.ParentControl=void 0;
 }
 
 function ngl_SetReadOnly(ro)
@@ -3022,7 +3021,7 @@ function ngl_CreateItemControls(it, recursive)
               if(typeof it.ControlsHolder === 'undefined') it.ControlsHolder=new Object;
 
               it.ControlsHolder[cid]=document.createElement('div');
-              var lref=ngCreateControls(it.Controls[cid],undefined,it.ControlsHolder[cid]);
+              var lref=ngCreateControls(it.Controls[cid],void 0,it.ControlsHolder[cid]);
               var ref;
               if(typeof it.Controls === 'undefined') it.Controls=new Object;
               var ctrls=new Object;
@@ -3046,7 +3045,7 @@ function ngl_CreateItemControls(it, recursive)
         else
         {
           it.ControlsHolder=document.createElement('div');
-          var lref=ngCreateControls(it.Controls,undefined,it.ControlsHolder);
+          var lref=ngCreateControls(it.Controls,void 0,it.ControlsHolder);
           var ref;
 
           it.Controls=new Object;
@@ -4625,7 +4624,7 @@ ngUserControls['list'] = {
               if(typeof it === 'undefined') it=new Object;
 
               items=it.Items;
-              it.Items=undefined;
+              it.Items=void 0;
               l=list.DrawItem(tmp_html, it, i, 0, false);
               it.Items=items;
 
@@ -5357,8 +5356,7 @@ ngUserControls['list'] = {
 
     function npgl_Refresh()
     {
-      var undefined;
-      this.MaxLength = undefined;
+      this.MaxLength = void 0;
       this.InvalidateData(this.TopIndex,this.DisplayedItems);
     }
 
@@ -5416,8 +5414,8 @@ ngUserControls['list'] = {
           this.async_datatimeout_retry=-1;
           return true;
         }
-        this.async_dataindex = undefined;
-        this.async_datacount = undefined;
+        this.async_dataindex = void 0;
+        this.async_datacount = void 0;
       }
       else if(!this.AsyncWaiting()) this.async_datatimeout_retry=this.AsyncDataRetryCnt;
 
@@ -5453,8 +5451,8 @@ ngUserControls['list'] = {
       }
       if((typeof data==='object')&&(data))
       {
-        this.async_dataindex = undefined;
-        this.async_datacount = undefined;
+        this.async_dataindex = void 0;
+        this.async_datacount = void 0;
 
         if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
         this.async_datatimeout_timer=null;
@@ -5552,8 +5550,8 @@ ngUserControls['list'] = {
       if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
       this.async_datatimeout_timer=null;
 
-      this.async_dataindex=undefined;
-      this.async_datacount=undefined;
+      this.async_dataindex=void 0;
+      this.async_datacount=void 0;
       if(typeof this.async_datapage!=='undefined') // request was beyond length
       {
         var p=this.async_datapage;
@@ -5624,9 +5622,9 @@ ngUserControls['list'] = {
       if(list) list.BeginUpdate();
       try {
         delete this.firstitemselected;
-        this.MaxLength = undefined;
-        this.async_dataindex = undefined;
-        this.async_datacount = undefined;
+        this.MaxLength = void 0;
+        this.async_dataindex = void 0;
+        this.async_datacount = void 0;
         this.last_asyncdata_index=-1;
         this.last_asyncdata_count=0;
 
@@ -5736,7 +5734,6 @@ ngUserControls['list'] = {
      */
     function Create_ngPageList(def, ref, parent)
     {
-      var undefined;
       ng_MergeDef(def, {
         Data: {
           PagingSize: 5
@@ -5857,13 +5854,13 @@ ngUserControls['list'] = {
       *  ...
       *  Type: int
       */
-      c.PagingMinSize=undefined;
+      c.PagingMinSize=void 0;
 
       /*  Variable: PagingLookout
       *  ...
       *  Type: int
       */
-      c.PagingLookout = undefined;
+      c.PagingLookout = void 0;
 
       /*  Variable: PagingInside
       *  ...
@@ -5924,14 +5921,14 @@ ngUserControls['list'] = {
       *  Type: int
       *  Default value: *undefined*
       */
-      c.AverageItemHeight = undefined;
+      c.AverageItemHeight = void 0;
 
       /*  Variable: MaxLength
       *  ...
       *  Type: int
       *  Default value: *undefined*
       */
-      c.MaxLength=undefined;
+      c.MaxLength=void 0;
 
       /*  Variable: CacheData
       *  ...
@@ -5951,7 +5948,7 @@ ngUserControls['list'] = {
       *  Type: int
       *  Default value: *undefined*
       */
-      c.MinDataBatch=undefined;
+      c.MinDataBatch=void 0;
 
       /*  Variable: AsyncData
       *  ...
@@ -6271,8 +6268,8 @@ ngUserControls['list'] = {
       c.last_asyncdata_index=-1;
       c.last_asyncdata_count=0;
       c.async_rpc=null;
-      //c.async_dataindex = undefined;
-      //c.async_datacount = undefined;
+      //c.async_dataindex = void 0;
+      //c.async_datacount = void 0;
 
       c.AsyncWaiting = npgl_AsyncWaiting;
 

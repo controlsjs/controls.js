@@ -107,12 +107,12 @@ ngUserControls['window_designinfo'] = {
           "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
           "R": null,
           "B": null,
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false, Level: 'advanced' }),
+          "ControlsPanel": ng_diControl('ngPanel', void 0, { IsContainer: false, Level: 'advanced' }),
           "style": {
             "zIndex": { Level: 'hidden' }
           },
           "Buttons": ng_diArrayOfControls(
-            ng_diControl(undefined, ng_diProperties({
+            ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "ButtonAlign": ng_diStringValues('right', ['left','right'], { Level: 'basic', Order: 0.8 })
               }
@@ -146,7 +146,7 @@ ngUserControls['window_designinfo'] = {
             "MinHeight": ng_diInteger(50, { Level: 'basic' }),
             "MaxWidth": ng_diInteger(0, { Level: 'basic' }),
             "MaxHeight": ng_diInteger(0, { Level: 'basic' }),
-            "Buttons": ng_diObject(undefined, { Level: 'hidden' }),
+            "Buttons": ng_diObject(void 0, { Level: 'hidden' }),
             "Img": ng_diType('image', { Level: 'basic' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' } ),
             "CaptionImg": ng_diObject({
@@ -207,7 +207,7 @@ ngUserControls['window_designinfo'] = {
           "H": { Exclude: ['CH'] },
           "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'], Level: 'advanced' }),
           "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { IsContainer: false, Level: 'advanced' }),
+          "ControlsPanel": ng_diControl('ngPanel', void 0, { IsContainer: false, Level: 'advanced' }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
@@ -227,7 +227,7 @@ ngUserControls['window_designinfo'] = {
             }),
             "Anchors": ng_diMixed([
               ng_diNull(),
-              ng_diObject(undefined, undefined, {
+              ng_diObject(void 0, void 0, {
                 ChildDesignInfo: ng_diType('ngHintAnchor', { Level: 'basic' })
               })
             ], { InitType: 'object', Level: 'basic' }),
@@ -249,8 +249,8 @@ ngUserControls['window_designinfo'] = {
             "ControlsInside": ng_diBoolean(true, { Level: 'basic' }),
             "AutoHideTimeout": ng_diInteger(0, { Level: 'basic' }),
             "DisposeOnHide": ng_diBoolean(false, { Level: 'basic' }),
-            "PopupX": ng_diInteger(undefined, { Level: 'hidden' }),
-            "PopupY": ng_diInteger(undefined, { Level: 'hidden' })
+            "PopupX": ng_diInteger(void 0, { Level: 'hidden' }),
+            "PopupY": ng_diInteger(void 0, { Level: 'hidden' })
           },
           "Events": {
             "OnCheckPlacement": ng_diEvent('function(c, p) {}', { Level: 'basic' }),

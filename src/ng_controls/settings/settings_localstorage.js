@@ -27,7 +27,7 @@ ngUserControls['settings_localstorage'] = {
     {
       var sid=ngVal(this.StorageId,'');
       if(sid!='') {
-        var undefined,cinfo = {
+        var cinfo = {
           Owner: settings,
           StorageID: sid
         };
@@ -54,11 +54,11 @@ ngUserControls['settings_localstorage'] = {
       var sid=ngVal(this.StorageId,'');
       if(sid=='') return;
 
-      var undefined,linfo = {
+      var linfo = {
         Owner: settings,
         StorageID: sid,
-        Settings: undefined,
-        LoadData: undefined
+        Settings: void 0,
+        LoadData: void 0
       };
 
       if((this.OnLoadingData)&&(!ngVal(this.OnLoadingData(this,linfo),false))) return;
@@ -88,11 +88,11 @@ ngUserControls['settings_localstorage'] = {
       var sid=ngVal(this.StorageId,'');
       if(sid=='') return;
 
-      var undefined,sinfo = {
+      var sinfo = {
         Owner: settings,
         StorageID: sid,
         Settings: data,
-        SaveData: undefined
+        SaveData: void 0
       };
 
       if((this.OnSaveData)&&(!ngVal(this.OnSaveData(this,sinfo),false))) return;

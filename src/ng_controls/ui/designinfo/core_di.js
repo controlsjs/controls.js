@@ -59,7 +59,6 @@ return {
       actionids={};
     });
 
-    var undefined;
     var types = [
       // ngImageShape
       {
@@ -96,7 +95,7 @@ return {
             "W": ng_diMixed(['undefined','bounds'], { InitType: 'bounds_integer', Level: 'basic' }),
             "H": ng_diMixed(['undefined','bounds'], { InitType: 'bounds_integer', Level: 'basic' }),
             "MinWidth": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
-            "Controls": ng_diControls(undefined, { Level: 'basic', ContainerProperty: true }, {
+            "Controls": ng_diControls(void 0, { Level: 'basic', ContainerProperty: true }, {
               DestroyIfEmpty: true,
               ChildDesignInfo: {
                 PropertyGroup: 'Controls',
@@ -128,7 +127,6 @@ return {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
-    var undefined;
 
     ngRegisterControlDesignInfo('ngPanel',function(d,c,ref) {
       return {
@@ -417,13 +415,13 @@ return {
         Properties: ng_diProperties({
           "H": null,
           "Buttons": ng_diArrayOfControls(
-            ng_diControl(undefined, ng_diProperties({
+            ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "ButtonAlign": ng_diStringValues('right', ['left','right'], { Level: 'basic', Order: 0.8 })
               }
             }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
             { Level: 'basic', Collapsed: false, PropertyGroup: 'Controls' }, { DestroyIfEmpty: true }),
-          "DropDown": ng_diControl(undefined, undefined, { PropertyGroup: 'Controls', Level: 'advanced' }),
+          "DropDown": ng_diControl(void 0, void 0, { PropertyGroup: 'Controls', Level: 'advanced' }),
           "Data": {
             "ngText":  { Level: 'advanced' },
             "ngTextD": { Level: 'optional' },
@@ -653,7 +651,7 @@ return {
                 return true;
               }
             }), { Level: 'basic', Collapsed: false }),
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
+          "ControlsPanel": ng_diControl('ngPanel', void 0, { Level: 'advanced', IsContainer: false }),
           "Data": {
             "ChildHandling": { Level: 'advanced' },
             "Page": ng_diInteger(0, { Level: 'basic' }),
@@ -674,7 +672,7 @@ return {
             }, { Level: 'advanced' }), { Level: 'advanced' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' }),
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
-            "ControlsPanelDef": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false })
+            "ControlsPanelDef": ng_diControl('ngPanel', void 0, { Level: 'advanced', IsContainer: false })
           },
           "Methods": {
             "DoPagesChanged": ng_diFunction('function() { ng_CallParent(this, "DoPagesChanged", arguments); }', { Level: 'advanced' })
@@ -924,8 +922,8 @@ return {
           }
         },
         {
-          "Controls": ng_diControls(undefined, { Level: 'basic' }, {
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+          "Controls": ng_diControls(void 0, { Level: 'basic' }, {
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "ToolBarIgnore": ng_diBoolean(false, { Level: 'basic', Order: 0.8 }),
                 "ToolBarAutoUpdate": ng_diBoolean(true, { Level: 'basic', Order: 0.8 }),
@@ -1058,7 +1056,7 @@ return {
           }
         },
         Properties: ng_diProperties({
-          "DropDown": ng_diControl(undefined , ng_diProperties({
+          "DropDown": ng_diControl(void 0 , ng_diProperties({
             "Data": {
               "MaxHeight": ng_diInteger(150, { Level: 'basic' })
             }

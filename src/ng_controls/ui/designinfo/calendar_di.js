@@ -15,7 +15,6 @@ ngUserControls['calendar_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
-    var undefined;
 
     ngRegisterControlDesignInfo('ngCalendar',function(d,c,ref) {
       return {
@@ -46,7 +45,7 @@ ngUserControls['calendar_designinfo'] = {
             }
           }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
           "FastButtons": ng_diArrayOfControls(
-            ng_diControl(undefined, ng_diProperties({
+            ng_diControl(void 0, ng_diProperties({
             }), { Level: 'basic', PropertyGroup: 'Controls' }, { InheritedFrom: 'ngButton' }),
             { Level: 'basic', Collapsed: false, PropertyGroup: 'Controls' }, { DestroyIfEmpty: true }),
           "Data": {

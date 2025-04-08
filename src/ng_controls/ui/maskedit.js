@@ -129,7 +129,7 @@ ngUserControls['maskedit'] = {
        *  Type: bool
        *  Default value: (undefined)
        */
-      c.AutoSize = undefined;
+      c.AutoSize = void 0;
       /*  Variable: CharWidth
        *  ...
        *  Type: int
@@ -237,7 +237,7 @@ ngUserControls['maskedit'] = {
         if (parts.length==0) { edits[0].Control.SetText(text); return; }
 
         var nParts = new Array();
-        for (var i=0;i<parts.length;i++) nParts.push((parts[i].Type=='Static' ? undefined : parts[i].Text));
+        for (var i=0;i<parts.length;i++) nParts.push((parts[i].Type=='Static' ? void 0 : parts[i].Text));
         c.SetParts(nParts);
       }
 
@@ -570,10 +570,10 @@ ngUserControls['maskedit'] = {
           ng_MergeDef(def, parts.type[i]=='Edit' ? c.EditDef : c.StaticDef);
 
           if (i<c.PartWidths.length) partWidth = c.PartWidths[i];
-          else partWidth = undefined;
+          else partWidth = void 0;
 
           if (i<c.PartDefaultValues.length) partDefaultValue = c.PartDefaultValues[i];
-          else partDefaultValue = undefined;
+          else partDefaultValue = void 0;
 
           if (parts.type[i]=='Edit')
           {
@@ -798,7 +798,7 @@ ngUserControls['maskedit'] = {
         var re, test;
         for (var i=0;i<parts.length;i++)
         {
-          if (parts[i].Type=='Static') { result.push(undefined); continue; }
+          if (parts[i].Type=='Static') { result.push(void 0); continue; }
 
           re   = new RegExp(parts[i].RegExp);
           test = re.test(parts[i].Text);
@@ -838,7 +838,7 @@ ngUserControls['maskedit'] = {
         var result = new Array();
         for (var i=0;i<parts.length;i++)
         {
-          if (parts[i].Type=='Static') { result.push(undefined); continue; }
+          if (parts[i].Type=='Static') { result.push(void 0); continue; }
 
           if ((!defaultValueIsEmpty) || (typeof(parts[i].DefaultValue)==='undefined')) result.push(parts[i].RawText=='' ? true : false);
           else result.push(((parts[i].RawText=='') || (parts[i].RawText==parts[i].DefaultValue)) ? true : false);

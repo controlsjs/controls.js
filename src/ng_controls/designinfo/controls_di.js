@@ -874,7 +874,6 @@ function ng_diProperties(props,data) {
 
 (function()
 {
-  var undefined;
   function getBaseProperties()
   {
     var BaseDI = {
@@ -911,15 +910,15 @@ function ng_diProperties(props,data) {
             }
           })
         }, { Level: 'basic', Order: 0.4 }, { DestroyIfEmpty: true }),
-        "Controls": ng_diControls(undefined, { Level: 'optional', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls' }, {
+        "Controls": ng_diControls(void 0, { Level: 'optional', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls' }, {
           ChildDesignInfo: {
             PropertyGroup: 'Controls',
             Level: 'basic'
           }
         }),
-        "ModifyControls": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
+        "ModifyControls": ng_diControls(void 0, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
           DestroyIfEmpty: true,
-          ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+          ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
             "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 })
           }),
           {

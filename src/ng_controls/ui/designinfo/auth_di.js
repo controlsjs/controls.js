@@ -15,7 +15,6 @@ ngUserControls['auth_controls_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
-    var undefined;
 
     ngRegisterControlDesignInfo('ngLoginForm',function(d,c,ref) {
       return {

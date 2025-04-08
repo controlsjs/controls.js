@@ -218,8 +218,8 @@ ngUserControls['layouts_designinfo'] = {
           }
         },
         {
-          "Controls": ng_diControls(undefined, { Level: 'basic' }, {
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+          "Controls": ng_diControls(void 0, { Level: 'basic' }, {
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "IgnoreLayout": ng_diBoolean(false, { Level: 'basic', Order: 0.8 }),
                 "LayoutVPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.81 })
@@ -269,8 +269,8 @@ ngUserControls['layouts_designinfo'] = {
           }
         },
         {
-          "Controls": ng_diControls(undefined, { Level: 'basic' }, {
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+          "Controls": ng_diControls(void 0, { Level: 'basic' }, {
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "IgnoreLayout": ng_diBoolean(false, { Level: 'basic', Order: 0.8 }),
                 "LayoutHPadding": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic', Order: 0.81 })
@@ -306,8 +306,8 @@ ngUserControls['layouts_designinfo'] = {
           }
         },
         {
-          "Controls": ng_diControls(undefined, { Level: 'basic' }, {
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+          "Controls": ng_diControls(void 0, { Level: 'basic' }, {
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "Data": {
                 "IgnoreLayout": ng_diBoolean(false, { Level: 'basic', Order: 0.8 }),
                 "CenterOffsetX": ng_diInteger(0, { Level: 'basic', Order: 0.81 }),
@@ -336,14 +336,14 @@ ngUserControls['layouts_designinfo'] = {
         },
         Properties: ng_diProperties({
           "Data": {
-            "Guidelines": ng_diObject(undefined, { Level: 'basic' }, {
+            "Guidelines": ng_diObject(void 0, { Level: 'basic' }, {
               ChildDesignInfo:  ng_diType('bounds', { Level: 'basic' })
             })
           }
         },
         {
-          "Controls": ng_diControls(undefined, { Level: 'basic' }, {
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+          "Controls": ng_diControls(void 0, { Level: 'basic' }, {
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "id": { Level: 'basic' },
               "Data": {
                 "LayoutID": ng_diStringRefName({ Level: 'basic', Order: 0.8 }),

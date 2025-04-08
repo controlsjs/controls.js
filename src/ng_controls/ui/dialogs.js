@@ -469,7 +469,7 @@ ngUserControls['dialogs'] = {
         case mbDefButton4: defbtn=!revertbtn ? 4 : bcnt-3; break;
         default:           defbtn=-1; break;
       }
-      var defresult=undefined;
+      var defresult=void 0;
       var cancel=false;
       bcnt=0;
       for(var i in btns)
@@ -484,7 +484,7 @@ ngUserControls['dialogs'] = {
             b.Data.Default=true;
             if(typeof b.Data.Cancel!=='undefined') b.Data.Cancel=false;
           }
-          else if(typeof b.Data.Default!=='undefined') b.Data.Default=undefined;
+          else if(typeof b.Data.Default!=='undefined') b.Data.Default=void 0;
         }
         if(typeof b.Data.DialogResult !== 'undefined')
         {

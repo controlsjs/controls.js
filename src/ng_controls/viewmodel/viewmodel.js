@@ -287,9 +287,8 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 
   function ngfd_Clear()
   {
-    var undefined;
-    if(ko.isObservable(this.Value)) this.Value(undefined);
-    else this.Value=undefined;
+    if(ko.isObservable(this.Value)) this.Value(void 0);
+    else this.Value=void 0;
   }
 
   function ngfd_Validate(v)
@@ -453,7 +452,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                               break;
         // string
         case 'STRING':        r=ng_toString(v,null); break;
-        case 'NVARCHAR':      r=ng_toNVARCHAR(v,undefined,null);
+        case 'NVARCHAR':      r=ng_toNVARCHAR(v,void 0,null);
                               if((r!==null)&&(!ng_isEmpty(this.Size))&&(r.length>this.Size))
                                 throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
                               break;
@@ -1113,7 +1112,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     *  Type: mixed
     *  Default value: *undefined*
     */
-    this.Value = undefined;
+    this.Value = void 0;
 
     /*
     *  Group: Methods
@@ -2071,7 +2070,6 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 
   function ngvm_ScanValues(callback)
   {
-    var undefined;
     var self=this;
     function scanvalues(o,path)
     {
@@ -2107,7 +2105,6 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 
   function ngvm_Reset(callback)
   {
-    var undefined;
     var self=this;
     function resetvalues(o,path)
     {
@@ -2128,7 +2125,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         }
         else
         {
-          if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i]))) defaultval=undefined;
+          if((ng_typeObject(o[i]))&&(!ng_typeDate(o[i]))&&(!ng_IsArrayVar(o[i]))) defaultval=void 0;
           else defaultval=ng_CopyVar(vmGetFieldByID(self.DefaultValues,valpath));
         }
         if((typeof callback==='function')&&(!callback(this,val,instance,valpath,defaultval))) continue;
@@ -2191,7 +2188,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
   {
     var f=vmGetFieldByID(vm,propid);
     if(ngIsFieldDef(f)) f=f.Value;
-    return (ko.isObservable(f) ? f : undefined);
+    return (ko.isObservable(f) ? f : void 0);
   }
 
   function ngvm_GetFieldByID(propid)
@@ -3596,8 +3593,7 @@ ngUserControls['viewmodel'] = {
               }
             }
           }
-          var undefined;
-          vmSetFieldValueByID(vm,propname,undefined);
+          vmSetFieldValueByID(vm,propname,void 0);
         },
         owner: this}));
     };
@@ -4021,7 +4017,6 @@ ngUserControls['viewmodel'] = {
             }
             delete n;
             if(ng_IsArrayVar(d)) {
-              var undefined;
               for(var i=d.length-1;i>=0;i--) {
                 if(delkeys[i]) {
                   d.length=i;
@@ -4029,7 +4024,7 @@ ngUserControls['viewmodel'] = {
                 }
                 else break;
               }
-              for(var i in delkeys) d[i]=undefined;
+              for(var i in delkeys) d[i]=void 0;
             }
             else {
               for(var i in delkeys) delete d[i];
@@ -4332,8 +4327,8 @@ ngUserControls['viewmodel'] = {
                     for(var k in fd.PropsFieldDefs) {
                       pfd=fd.PropsFieldDefs[k];
                       if(ngIsFieldDef(pfd)) pfd=pfd.Value;
-                      if(ko.isObservable(pfd)) pfd(undefined);
-                      else vmSetFieldValueByID(objprops,k,undefined);
+                      if(ko.isObservable(pfd)) pfd(void 0);
+                      else vmSetFieldValueByID(objprops,k,void 0);
                     }
                   }
                 } finally {

@@ -1775,9 +1775,8 @@ ngUserControls['viewmodel_controls'] = {
         });
       },
       function (c, valueAccessor, allBindingsAccessor,viewModel) {
-        var undefined;
         c.OnViewModelDataChanged = c.OnViewModelDataChanged || null;
-        c.ViewModelData=undefined;
+        c.ViewModelData=void 0;
         if(typeof c.SetViewModelData !== 'function')
           c.SetViewModelData = function (val)
           {
@@ -1882,7 +1881,7 @@ ngUserControls['viewmodel_controls'] = {
           case 'ngSysTimer':
             c.AddEvent('OnTimer', function(c) {
               if((viewModel.Owner)&&(viewModel.Owner.Command))
-                viewModel.Owner.Command(cmd, (valuenames ? { ValueNames: valuenames } : undefined));
+                viewModel.Owner.Command(cmd, (valuenames ? { ValueNames: valuenames } : void 0));
               return true;
             });
             break;
@@ -1991,7 +1990,7 @@ ngUserControls['viewmodel_controls'] = {
                 if(ng_typeObject(def)) {
                   def.ParentReferences=false;
                   var cdef={ Control: def };
-                  var ref=ngCreateControls(cdef,undefined,c);
+                  var ref=ngCreateControls(cdef,void 0,c);
                   if(typeof ref.Control !== 'undefined') return ref.Control;
                 }
                 return null;

@@ -1993,7 +1993,7 @@ function ngCreateControls(defs,ref,parent,options)
             }
             nref.Owner=ngVal(nref.Owner, c);
             if(typeof nref.Dispose     !=='function') nref.Dispose     = function()                { ngDisposeControls(this); }
-            if(typeof nref.AddControls !=='function') nref.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent, ng_EmptyVar(this.Owner) ? undefined : this.Owner.ID)); }
+            if(typeof nref.AddControls !=='function') nref.AddControls = function(defs, newparent) { ngCreateControls(defs,this,ngVal(newparent, ng_EmptyVar(this.Owner) ? void 0 : this.Owner.ID)); }
           }
           if(typeof d.Controls !== 'undefined')
           {
@@ -2657,7 +2657,7 @@ function ngc_DoSetChildControlsEnabled(cc,v,p)
       this._changingchildenabled=true;
       try
       {
-        var self=this,undefined;
+        var self=this;
         function setenabled(v,p)
         {
           if(self._changingchildenabled) return;
@@ -4588,7 +4588,7 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       PreventDefault: true,
       PreventSelect: true,
       DocumentDeselect: true,
-      //StopPropagation: undefined,
+      //StopPropagation: void 0,
       EventPreventDefault: preventdefault,
       EventStopPropagation: stoppropagation,
       OnGesture: null,
@@ -5411,8 +5411,6 @@ function nga_SetLangById(lngid)
 
 function nga_SetLang(language, country, variant)
 {
-  var undefined;
-
   var changed=false;
   if(language !== this.Lang) changed=true;
   else {
@@ -5426,22 +5424,22 @@ function nga_SetLang(language, country, variant)
   }
   if(changed) {
     if(!country) {
-      country=undefined;
-      variant=undefined;
+      country=void 0;
+      variant=void 0;
     }
     if(!language) {
-      language=undefined;
-      country=undefined;
-      variant=undefined;
+      language=void 0;
+      country=void 0;
+      variant=void 0;
     }
     var oldlang = {
       Lang: this.Lang,
       LangCountry: this.LangCountry,
       LangVariant: this.LangVariant
     };
-    this.Lang = typeof language === 'string' ? language.toLowerCase() : undefined;
-    this.LangCountry = typeof country === 'string' ? country.toLowerCase() : undefined;
-    this.LangVariant = typeof variant === 'string' ? variant.toLowerCase() : undefined;
+    this.Lang = typeof language === 'string' ? language.toLowerCase() : void 0;
+    this.LangCountry = typeof country === 'string' ? country.toLowerCase() : void 0;
+    this.LangVariant = typeof variant === 'string' ? variant.toLowerCase() : void 0;
     if(this.OnLangChanged) this.OnLangChanged(this, oldlang);
   }
   return changed;
@@ -5517,10 +5515,9 @@ function nga_DoRun()
     var li=ngApp.DetectLangEx();
     var lng=ngGetSupportedLang(li.Lang);
     if(lng!==li.Lang) {
-      var undefined;
       ngApp.Lang=lng;
-      ngApp.LangCountry=undefined;
-      ngApp.LangVariant=undefined;
+      ngApp.LangCountry=void 0;
+      ngApp.LangVariant=void 0;
     }
     else {
       ngApp.Lang=li.Lang;
@@ -6145,7 +6142,7 @@ function nga_CallServerURL(url)
 
 function nga_CallServer(url, nocache)
 {
-  this.CallServerEx(url,undefined,nocache);
+  this.CallServerEx(url,void 0,nocache);
 }
 
 function nga_CallServerEx(url, params, nocache)
@@ -6192,7 +6189,7 @@ function nga_SetParam(p, v, type)
   if(this.OnSetParam) v=this.OnSetParam(this,p,v,type);
   var changed=false;
 
-  if(v === null){v = undefined;}
+  if(v === null){v = void 0;}
   if(ngURLParams[p] != v) changed=true;
   ngURLParams[p] = v;
   if(typeof v === 'undefined')
@@ -6248,9 +6245,9 @@ function nga_ParamType(p)
     this.params_parsed=true;
     this.ParseParams();
   }
-  if(typeof this.ParamInfo === 'undefined') return undefined;
+  if(typeof this.ParamInfo === 'undefined') return; // undefined;
   var pi = this.ParamInfo[p];
-  if((typeof pi === 'undefined')||(!pi)) return undefined;
+  if((typeof pi === 'undefined')||(!pi)) return; // undefined;
   return ngVal(pi.Type,APPPARAM_URL);
 }
 

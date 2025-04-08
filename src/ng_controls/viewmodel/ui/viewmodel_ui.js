@@ -53,8 +53,8 @@ ngUserControls['viewmodel_ui'] = {
               if (cmpfnc(oldArray[oldIndex - 1],newArray[newIndex - 1]))
                   distances[newIndex][oldIndex] = distances[newIndex - 1][oldIndex - 1];
               else {
-                  var northDistance = distances[newIndex - 1][oldIndex] === undefined ? Number.MAX_VALUE : distances[newIndex - 1][oldIndex] + 1;
-                  var westDistance = distances[newIndex][oldIndex - 1] === undefined ? Number.MAX_VALUE : distances[newIndex][oldIndex - 1] + 1;
+                  var northDistance = typeof distances[newIndex - 1][oldIndex] === 'undefined' ? Number.MAX_VALUE : distances[newIndex - 1][oldIndex] + 1;
+                  var westDistance = typeof distances[newIndex][oldIndex - 1] === 'undefined' ? Number.MAX_VALUE : distances[newIndex][oldIndex - 1] + 1;
                   distances[newIndex][oldIndex] = Math.min(northDistance, westDistance);
               }
           }
@@ -68,15 +68,15 @@ ngUserControls['viewmodel_ui'] = {
       var newIndex = newArray.length;
       var editScript = [];
       var maxDistance = editDistanceMatrix[newIndex][oldIndex];
-      if (maxDistance === undefined)
+      if (typeof maxDistance === 'undefined')
           return null; // maxAllowedDistance must be too small
       while ((oldIndex > 0) || (newIndex > 0)) {
           var me = editDistanceMatrix[newIndex][oldIndex];
           var distanceViaAdd = (newIndex > 0) ? editDistanceMatrix[newIndex - 1][oldIndex] : maxDistance + 1;
           var distanceViaDelete = (oldIndex > 0) ? editDistanceMatrix[newIndex][oldIndex - 1] : maxDistance + 1;
           var distanceViaRetain = (newIndex > 0) && (oldIndex > 0) ? editDistanceMatrix[newIndex - 1][oldIndex - 1] : maxDistance + 1;
-          if ((distanceViaAdd === undefined) || (distanceViaAdd < me - 1)) distanceViaAdd = maxDistance + 1;
-          if ((distanceViaDelete === undefined) || (distanceViaDelete < me - 1)) distanceViaDelete = maxDistance + 1;
+          if ((typeof distanceViaAdd === 'undefined') || (distanceViaAdd < me - 1)) distanceViaAdd = maxDistance + 1;
+          if ((typeof distanceViaDelete === 'undefined') || (distanceViaDelete < me - 1)) distanceViaDelete = maxDistance + 1;
           if (distanceViaRetain < me - 1) distanceViaRetain = maxDistance + 1;
 
           if ((distanceViaAdd <= distanceViaDelete) && (distanceViaAdd < distanceViaRetain)) {
@@ -95,7 +95,7 @@ ngUserControls['viewmodel_ui'] = {
     }
 
     function ng_GetArraysEditScript(oldArray, newArray, cmpfnc, maxEditsToConsider) {
-      if (maxEditsToConsider === undefined) {
+      if (typeof maxEditsToConsider === 'undefined') {
           return ng_GetArraysEditScript(oldArray, newArray, cmpfnc, 1)                 // First consider likely case where there is at most one edit (very fast)
               || ng_GetArraysEditScript(oldArray, newArray, cmpfnc, 10)                // If that fails, account for a fair number of changes while still being fast
               || ng_GetArraysEditScript(oldArray, newArray, cmpfnc, Number.MAX_VALUE); // Ultimately give the right answer, even though it may take a long time
@@ -541,7 +541,7 @@ ngUserControls['viewmodel_ui'] = {
                         if(l>lvl) lvl=l;
                       }
                       if(ngIsFieldDef(cerr.FieldDef)) {
-                        var ctrls=form.FindFieldControls(cerr.FieldDef.ID,false,undefined,err.FieldDef);
+                        var ctrls=form.FindFieldControls(cerr.FieldDef.ID,false,void 0,err.FieldDef);
                         if(ctrls.length>0)
                         {
                           controlsfound=true;
@@ -737,7 +737,7 @@ ngUserControls['viewmodel_ui'] = {
         var ldefs = {
           ErrorHint: this.ErrorHintDef
         };
-        var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
+        var lref=ngCreateControls(ldefs,void 0,ngApp ? ngApp.TopElm() : void 0);
         this.ErrorHint=ngVal(lref.ErrorHint,null);
         if(this.ErrorHint)
         {
@@ -896,7 +896,7 @@ ngUserControls['viewmodel_ui'] = {
         var ldefs = {
           ErrorHint: this.ErrorHintDef
         };
-        var lref=ngCreateControls(ldefs,undefined,ngApp ? ngApp.TopElm() : undefined);
+        var lref=ngCreateControls(ldefs,void 0,ngApp ? ngApp.TopElm() : void 0);
         this.ErrorHint=ngVal(lref.ErrorHint,null);
         if(this.ErrorHint) {
           var self=this;
@@ -1073,7 +1073,7 @@ ngUserControls['viewmodel_ui'] = {
         if(bind)
           return ng_toNumber(ngCtrlBindingParseString(bind.ValueAccessor,txt));
         var n=parseInt(txt);
-        if(isNaN(n)) return undefined;
+        if(isNaN(n)) return; // undefined;
 
         if((typeof c.MinNum !== 'undefined')&&(n<c.MinNum)) n=c.MinNum;
         if((typeof c.MaxNum !== 'undefined')&&(n>c.MaxNum)) n=c.MaxNum;
@@ -1519,8 +1519,7 @@ ngUserControls['viewmodel_ui'] = {
       else {
         if(ko.isObservable(vitems)) {
           if(ko.isWriteableObservable(vitems)) {
-            var undefined;
-            vitems(undefined);
+            vitems(void 0);
           }
         }
         else delete vmval[pitems];
@@ -1553,8 +1552,7 @@ ngUserControls['viewmodel_ui'] = {
         else {
           if(ko.isObservable(vsubmenu)) {
             if(ko.isWriteableObservable(vsubmenu)) {
-              var undefined;
-              vsubmenu(undefined);
+              vsubmenu(void 0);
             }
           }
           else delete vmval[psubmenu];
@@ -1724,7 +1722,7 @@ ngUserControls['viewmodel_ui'] = {
       var menubar=(c.CtrlType==='ngToolBar')&&(c.CtrlInheritsFrom('ngMenuBar'));
       if((c.CtrlType==='ngList')||(menubar))
       {
-        var bindinfo={},undefined;
+        var bindinfo={};
         var binding=allBindingsAccessor();
         bindinfo.DelayedUpdate = ngVal(binding["DelayedUpdate"],10);
         bindinfo.KeyField  = binding["KeyField"];
@@ -1743,7 +1741,7 @@ ngUserControls['viewmodel_ui'] = {
 
         function newlistitem(it,list) {
           var ci = {
-            NewItem: (bindinfo.SimpleArray ? undefined : {}),
+            NewItem: (bindinfo.SimpleArray ? void 0 : {}),
             BindInfo: bindinfo,
             Owner: c,
             List: list,
@@ -2435,7 +2433,6 @@ ngUserControls['viewmodel_ui'] = {
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlType==='ngEdit')
         {
-          var undefined;
           c.LookupKeyField = ngVal(allBindingsAccessor()["KeyField"],'Value');
           c.AddEvent(function(e,l,it,oit) {
             var keyfield=ngVal(e.LookupKeyField, 'Value');
@@ -2453,7 +2450,7 @@ ngUserControls['viewmodel_ui'] = {
             var keyfield=ngVal(e.LookupKeyField, 'Value');
             var list=e.DropDownControl;
             if((list.CtrlType!=='ngList')&&(ng_IsObjVar(list.Controls))&&(ng_IsObjVar(list.Controls.List))&&(list.Controls.List.CtrlType==='ngList')) list=list.Controls.List;
-            var selval=(e.ListItem ? vmGetFieldValueByID(e.ListItem,keyfield) : undefined);
+            var selval=(e.ListItem ? vmGetFieldValueByID(e.ListItem,keyfield) : void 0);
             if(!ng_isEmpty(selval))
             {
               if(typeof list.Scan==='function') {
@@ -2732,7 +2729,6 @@ ngUserControls['viewmodel_ui'] = {
       },
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlInheritsFrom('ngPageList')) {
-          var undefined;
 
           ngBindingDeferUpdates('Paging',allBindingsAccessor,true);
           var isdataset=c.CtrlInheritsFrom('ngDataSet');
@@ -2750,10 +2746,10 @@ ngUserControls['viewmodel_ui'] = {
               if(val.TotalCount) val.TotalCount.PagingChanging=true;
               try {
                 if(totalcount) {
-                  ko.ng_setvalue(val.TotalCount,undefined);
+                  ko.ng_setvalue(val.TotalCount,void 0);
                 }
                 else {
-                  ko.ng_setvalue(val.Records,undefined);
+                  ko.ng_setvalue(val.Records,void 0);
                 }
                 ko.ng_setvalue(val.Count,cnt);
                 ko.ng_setvalue(val.Offset,idx);
@@ -2797,7 +2793,7 @@ ngUserControls['viewmodel_ui'] = {
                     c.SetLength(tc);
                     c.SetAsyncData(999999999, null);
                   },1);
-                  recs=undefined;
+                  recs=void 0;
                   return;
                 }
               }
@@ -2877,10 +2873,9 @@ ngUserControls['viewmodel_ui'] = {
         {
           case 'ngButton':
           case 'ngSysAction':
-            var undefined;
             c.AddEvent('OnClick', function(e) {
               if((viewModel.Owner)&&(viewModel.Owner.Command))
-                viewModel.Owner.Command(cmd, (valuenames ? { ValueNames: valuenames } : undefined));
+                viewModel.Owner.Command(cmd, (valuenames ? { ValueNames: valuenames } : void 0));
               return true;
             });
             c.Update();

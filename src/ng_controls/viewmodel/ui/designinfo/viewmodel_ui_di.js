@@ -118,7 +118,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
 
         props["DelayedUpdate"] = ng_diMixed([
           ng_diInteger(10),
-          ng_diType('vm_databind_field', undefined, {
+          ng_diType('vm_databind_field', void 0, {
             EditorOptions: {
               IgnoreDataModel: true
             }
@@ -301,8 +301,8 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
             }
           },
           {
-            "Controls": ng_diControls(undefined, { Level: 'basic' }, {
-              ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+            "Controls": ng_diControls(void 0, { Level: 'basic' }, {
+              ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
                 "Methods": {
                   "SetInvalid": ng_diFunction('function(s) { return ng_CallParent(this, "SetInvalid", arguments, true); }', { Level: 'advanced' }),
                   "SetErrorState": ng_diFunction('function(s) { return ng_CallParent(this, "SetErrorState", arguments, true); }', { Level: 'advanced' })

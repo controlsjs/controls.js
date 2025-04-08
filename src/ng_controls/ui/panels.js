@@ -618,7 +618,7 @@ var ngspResizeAutoMaximize = 16;
     ld.Controls=def.Controls1;
     ld.ModifyControls=def.ModifyControls1;
 
-    var lref=ngCreateControls(ldefs,undefined,elm);
+    var lref=ngCreateControls(ldefs,void 0,elm);
 
     this.ControlsPanel1=lref.ControlsPanel;
     this.ControlsPanel1.Owner=this;
@@ -662,7 +662,7 @@ var ngspResizeAutoMaximize = 16;
     }
     ld.Controls=def.Controls2;
     ld.ModifyControls=def.ModifyControls2;
-    lref=ngCreateControls(ldefs,undefined,elm);
+    lref=ngCreateControls(ldefs,void 0,elm);
 
     this.ControlsPanel2=lref.ControlsPanel;
     this.ControlsPanel2.Owner=this;
@@ -1004,11 +1004,11 @@ var ngspResizeAutoMaximize = 16;
       if(b.Checked==1) dropdown=true;
       if(btntop)
       {
-        b.SetBounds({T: 0, B: undefined});      
+        b.SetBounds({T: 0, B: void 0});      
       }
       else
       {
-        b.SetBounds({B: 0, T: undefined});
+        b.SetBounds({B: 0, T: void 0});
       }
       if(b.ID=='') b.Attach(this.ID+'_B');
       b.Parent=this;
@@ -1147,9 +1147,9 @@ var ngspResizeAutoMaximize = 16;
         OnClick: ngdp_BtnClick
       }
     });   
-    if(typeof def.B === 'undefined') { def.Button.B=0; def.Button.T=undefined; }
+    if(typeof def.B === 'undefined') { def.Button.B=0; def.Button.T=void 0; }
     else { def.Button.T=0; delete def.Button.B; }
-    var lref=ngCreateControls({ Control: def.Button },undefined,elm);
+    var lref=ngCreateControls({ Control: def.Button },void 0,elm);
     if(typeof lref.Control !== 'undefined') // dropdown successfuly created
     {
       lref.Control.Owner=this;
@@ -1187,7 +1187,7 @@ var ngspResizeAutoMaximize = 16;
     ldefs.ControlsPanel.T=(btntop ? bh : 0);
     ldefs.ControlsPanel.B=(btntop ? 0 : bh);
     
-    var lref=ngCreateControls(ldefs,undefined,elm);
+    var lref=ngCreateControls(ldefs,void 0,elm);
 
     this.ControlsPanel=lref.ControlsPanel;
     this.ControlsPanel.Owner=this;

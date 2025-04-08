@@ -81,7 +81,7 @@ function ngm_gm_getlist(list)
 
 function ngGetMenu(parent, path, create, oncreatefnc, userdata)
 {
-  var undefined,list=ngm_gm_getlist(parent);
+  var list=ngm_gm_getlist(parent);
   var ret=null;
 
   create=ngVal(create,true);
@@ -100,7 +100,7 @@ function ngGetMenu(parent, path, create, oncreatefnc, userdata)
         {
           if(list.CtrlType=='ngToolBar') items = list.Menu;
           else items = list.Items;
-        } else items = undefined;
+        } else items = void 0;
 
         pos=-1;
         id='';
@@ -1280,7 +1280,7 @@ function ngmn_CreateSubMenu(it,m)
   m.Owner=this;
   m.ParentMenu=it;
 
-  var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
+  var lref=ngCreateControls(ldefs,void 0,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : void 0));
   it.SubMenu=lref.SubMenu;
   if(it.SubMenu) {
     if(p.OnSubMenuCreated) p.OnSubMenuCreated(p,ld,it.SubMenu);
@@ -1503,7 +1503,7 @@ function ngmb_MenuButtontClick()
 
 function ngmb_InsertItem(idx, it)
 {
-  var ld,undefined;
+  var ld;
   if(typeof this.ButtonDef === 'object') ld=ng_CopyVar(this.ButtonDef);
   else {
     ld={ Type: typeof this.DefType !== 'undefined' ? this.DefType+'Button' : 'ngButton' };
@@ -1525,7 +1525,7 @@ function ngmb_InsertItem(idx, it)
   delete ld.Data.Menu;
 
   var ldefs={ MenuBtn: ld };
-  var lref=ngCreateControls(ldefs,undefined,this.ID);
+  var lref=ngCreateControls(ldefs,void 0,this.ID);
   if(lref.MenuBtn)
   {
     it.SubMenu=lref.MenuBtn.Menu;
@@ -2842,7 +2842,7 @@ ngUserControls['menu'] = {
     if((typeof def.Menu === 'object')&&(c.CtrlType!='ngToolBar')&&(typeof c.Menu === 'undefined'))
     {
       var ldefs={Control: def.Menu };
-      var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
+      var lref=ngCreateControls(ldefs,void 0,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : void 0));
       ng_SetControlMenu(c,lref.Control);
     }
     /*  Variable: PopupMenu
@@ -2855,7 +2855,7 @@ ngUserControls['menu'] = {
       var ld=def.PopupMenu;
       if(typeof ld.Data === 'undefined') ld.Data = new Object;
       var ldefs={Control: ld };
-      var lref=ngCreateControls(ldefs,undefined,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : undefined));
+      var lref=ngCreateControls(ldefs,void 0,((typeof ngApp === 'object')&&(ngApp) ? ngApp.TopElm() : void 0));
       ng_SetControlPopup(c, lref.Control);
     }
   },

@@ -15,7 +15,6 @@ ngUserControls['panels_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
-    var undefined;
 
     ngRegisterControlDesignInfo('ngDropPanel',function(d,c,ref) {
       return {
@@ -37,8 +36,8 @@ ngUserControls['panels_designinfo'] = {
           "CW": ng_diInteger(0, { Order: 0.141, Exclude: ['W'], Level: 'advanced' }),
           "CH": ng_diInteger(0, { Order: 0.142, Exclude: ['H'], Level: 'advanced' }),
           "DroppedDown": ng_diBoolean(false, { Level: 'basic' }),
-          "ControlsPanel": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
-          "Button": ng_diControl('ngButton', undefined, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
+          "ControlsPanel": ng_diControl('ngPanel', void 0, { Level: 'advanced', IsContainer: false }),
+          "Button": ng_diControl('ngButton', void 0, { Level: 'basic' }, { InheritedFrom: 'ngButton' }),
           "Events": {
             "OnDropDown": ng_diEvent('function(c, state) { return true; }', { Level: 'basic' })
           }
@@ -71,23 +70,23 @@ ngUserControls['panels_designinfo'] = {
         },
         Properties: ng_diProperties({
           "ParentReferences": { Level: 'advanced' },
-          "Controls1": ng_diControls(undefined, { Level: 'basic', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls1'  }, {
+          "Controls1": ng_diControls(void 0, { Level: 'basic', Order: 0.65, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls1'  }, {
             ChildDesignInfo: {
               PropertyGroup: 'Controls',
               Level: 'basic'
             }
           }),
-          "Controls2": ng_diControls(undefined, { Level: 'basic', Order: 0.66, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls2'  }, {
+          "Controls2": ng_diControls(void 0, { Level: 'basic', Order: 0.66, ContainerProperty: true, PropertyGroup: 'Controls', ModifyControlsProperty: 'ModifyControls2'  }, {
             ChildDesignInfo: {
               PropertyGroup: 'Controls',
               Level: 'basic'
             }
           }),
-          "ControlsPanel1": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
-          "ControlsPanel2": ng_diControl('ngPanel', undefined, { Level: 'advanced', IsContainer: false }),
-          "ModifyControls1": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
+          "ControlsPanel1": ng_diControl('ngPanel', void 0, { Level: 'advanced', IsContainer: false }),
+          "ControlsPanel2": ng_diControl('ngPanel', void 0, { Level: 'advanced', IsContainer: false }),
+          "ModifyControls1": ng_diControls(void 0, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
             DestroyIfEmpty: true,
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 })
             }),
             {
@@ -95,9 +94,9 @@ ngUserControls['panels_designinfo'] = {
               Level: 'basic'
             })
           }),
-          "ModifyControls2": ng_diControls(undefined, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
+          "ModifyControls2": ng_diControls(void 0, { Level: 'optional', Order: 0.7, ContainerProperty: true, PropertyGroup: 'Controls', Collapsed: false }, {
             DestroyIfEmpty: true,
-            ChildDesignInfo: ng_diControl(undefined, ng_diProperties({
+            ChildDesignInfo: ng_diControl(void 0, ng_diProperties({
               "IgnoreModifyIfMissing": ng_diBoolean(false, { Level: 'basic', Order: 0.002 })
             }),
             {

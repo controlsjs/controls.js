@@ -233,8 +233,6 @@ ngUserControls['ngColorControls_designinfo'] = {
   {
     if(!ngDESIGNINFO) return;
 
-    var undefined;
-
     function sliderlayout(props) {
       ng_MergeVar(props, {
         'ParentReferences': ng_diBoolean(false),

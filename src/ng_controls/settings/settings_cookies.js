@@ -35,7 +35,7 @@ ngUserControls['settings_cookies'] = {
 
     function ngsetcoo_EncodeSetting(settings,n,v)
     {
-      if(!settings.IsValidName(n)) return undefined;
+      if(!settings.IsValidName(n)) return; // undefined;
       if(typeof v === 'undefined') return v;
       if(this.OnEncodeSetting) v=this.OnEncodeSetting(this,n,v,settings);
       else v=ng_URLEncode(v);

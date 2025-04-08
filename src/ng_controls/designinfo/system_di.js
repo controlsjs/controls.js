@@ -15,7 +15,6 @@ ngUserControls['system_designinfo'] = {
   OnInit: function()
   {
     if(!ngDESIGNINFO) return;
-    var undefined;
 
     ngRegisterControlDesignInfo('ngSysContainer',function(d,c,ref) {
       return {
@@ -42,7 +41,7 @@ ngUserControls['system_designinfo'] = {
             "Interval": ng_diInteger(0,{Level:'basic'}),
             "Repeat": ng_diMixed([
               ng_diBoolean(true),
-              ng_diInteger(0, undefined, { InitValue: 1 })
+              ng_diInteger(0, void 0, { InitValue: 1 })
             ], { Level:'basic' })
           },
           "Events": {
@@ -85,7 +84,7 @@ ngUserControls['system_designinfo'] = {
             "HTTPMethod": ng_diStringValues('',['GET','POST','PUT','DELETE','OPTIONS','HEAD','CONNECT'], { Level: 'advanced' }, { Editor: 'ngfeEditor_DropDown' }),
             "URL": ng_diType('url', { Level: 'basic' }),
             "Timeout": ng_diInteger(0,{Level:'basic'}),
-            "Params": ng_diObject(undefined, { Level: 'basic' }, {
+            "Params": ng_diObject(void 0, { Level: 'basic' }, {
               ChildDesignInfo: ng_diString('', { Level: 'basic' })
             })
           },
@@ -115,7 +114,7 @@ ngUserControls['system_designinfo'] = {
         Properties: ng_diProperties({
           "Data": {
             "URL": ng_diType('url', { Level: 'basic' }),
-            "Params": ng_diObject(undefined, { Level: 'basic' }, {
+            "Params": ng_diObject(void 0, { Level: 'basic' }, {
               ChildDesignInfo: ng_diString('', { Level: 'basic' })
             }),
             "NoCache": ng_diBoolean(true, { Level: 'basic' }),
@@ -134,10 +133,10 @@ ngUserControls['system_designinfo'] = {
         IsBasic: true,
         Properties: ng_diProperties({
           "Data": {
-            "Params": ng_diObject(undefined, { Level: 'basic' }, {
+            "Params": ng_diObject(void 0, { Level: 'basic' }, {
               ChildDesignInfo: ng_diString('', { Level: 'basic' })
             }),
-            "DefaultValues": ng_diObject(undefined, { Level: 'basic' }, {
+            "DefaultValues": ng_diObject(void 0, { Level: 'basic' }, {
               ChildDesignInfo: ng_diString('', { Level: 'basic' })
             })
           },

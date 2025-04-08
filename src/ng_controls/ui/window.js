@@ -240,8 +240,8 @@
       else if(minb>=0) h+=minb;
       if(minb>=0) h+=minb;
       else if(mint>=0) h+=mint;
-      if(w<=0) w=undefined;
-      if(h<=0) h=undefined;
+      if(w<=0) w=void 0;
+      if(h<=0) h=void 0;
       var changed=this.SetClientRect({W: w, H: h });
       this.SetBounds();
       if(changed) this.Update();
@@ -685,7 +685,7 @@
       {
         changed=true;
         this.Bounds.W=nw;
-        this.Bounds.R=undefined;
+        this.Bounds.R=void 0;
       }
     }
     
@@ -720,7 +720,7 @@
       {
         changed=true;
         this.Bounds.H=nh;
-        this.Bounds.B=undefined;
+        this.Bounds.B=void 0;
       }
     }  
     if(changed) this.CheckBounds();
@@ -848,7 +848,7 @@
     
     var framehtml=new ngStringBuilder;
     var fdp=new Object;
-    ngc_ImgBox(framehtml, this.ID, 'ngWindow', 0, this.Enabled, 0,0,w,h,false, this.Frame, styles, attrs, undefined, fdp);
+    ngc_ImgBox(framehtml, this.ID, 'ngWindow', 0, this.Enabled, 0,0,w,h,false, this.Frame, styles, attrs, void 0, fdp);
 
     bl=fdp.Left.W;
     if(fdp.LeftTop.W>bl) bl=fdp.LeftTop.W;
@@ -929,7 +929,7 @@
     var w=ngGetControlById(this.id, 'ngWindow');
     if((w)&&(w.Enabled))
     {
-      if(((e.keyCode==13)||(e.keyCode==27))&&(ngVal(w.IgnoreDefFormBtn,false))) { w.IgnoreDefFormBtn=undefined; return; }
+      if(((e.keyCode==13)||(e.keyCode==27))&&(ngVal(w.IgnoreDefFormBtn,false))) { w.IgnoreDefFormBtn=void 0; return; }
       var ret=false;
       switch(e.keyCode)
       {
@@ -994,7 +994,7 @@
         b=ng_CopyVar(def.Buttons[i]);
         ldefs['B'+i]=b;      
       }
-      var lref=ngCreateControls(ldefs,undefined,null);
+      var lref=ngCreateControls(ldefs,void 0,null);
       if((typeof this.Buttons !== 'object')||(!this.Buttons)) this.Buttons=new Array();
       for(var i=0;i<def.Buttons.length;i++)
       {
@@ -1023,7 +1023,7 @@
     ldefs.ControlsPanel.Controls=def.Controls;
     ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
 
-    var lref=ngCreateControls(ldefs,undefined,elm);
+    var lref=ngCreateControls(ldefs,void 0,elm);
     def.ParentReferences = ngVal(def.ParentReferences,false);
     if(!def.ParentReferences) 
     {
@@ -1853,7 +1853,7 @@
     var h=ng_ClientHeight(o);
 
     var dp=new Object;
-    ngc_ImgBox(html, this.ID, 'ngHint', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', undefined, dp);
+    ngc_ImgBox(html, this.ID, 'ngHint', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '', void 0, dp);
 
     if(this.ControlsInside)
     {
@@ -1892,7 +1892,7 @@
       {
         changed=true;
         this.Bounds.W=nw;
-        this.Bounds.R=undefined;
+        this.Bounds.R=void 0;
       }
 
       if(this.Bounds.W<this.MinWidth) { changed=true; this.Bounds.W=this.MinWidth; }
@@ -1909,7 +1909,7 @@
       {
         changed=true;
         this.Bounds.H=nh;
-        this.Bounds.B=undefined;
+        this.Bounds.B=void 0;
         if(this.Bounds.H<this.MinHeight) { changed=true; this.Bounds.H=this.MinHeight; }
         if((this.MaxHeight>0)&&(this.Bounds.H>this.MaxHeight)) { changed=true; this.Bounds.H=this.MaxHeight; }
       }
@@ -1968,7 +1968,7 @@
     ldefs.ControlsPanel.Controls=def.Controls;
     ldefs.ControlsPanel.ModifyControls=def.ModifyControls;
 
-    var lref=ngCreateControls(ldefs,undefined,elm);
+    var lref=ngCreateControls(ldefs,void 0,elm);
     if(!ngVal(def.ParentReferences,true)) 
     {
       this.Controls = new Object;
@@ -2044,9 +2044,9 @@
     else p=ngApp.TopElm();
 
     var pos=ng_ParentPosition(o, p, true);
-    var x=(c ? c.HintX : undefined);
+    var x=(c ? c.HintX : void 0);
     if(typeof x==='undefined') x=Math.floor(ng_OuterWidth(o)/3);
-    var y=(c ? c.HintY : undefined);
+    var y=(c ? c.HintY : void 0);
     if(typeof y==='undefined') y=Math.floor(ng_OuterHeight(o)/2);
 
     x+=ng_ScrollX(p);

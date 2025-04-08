@@ -71,7 +71,6 @@ return {
   EditorListColumns: editor_listcolumns,
 
   OnFormEditorInit: function(FE) {
-    var undefined;
 
     function nitemstring(prefix,ch)
     {
@@ -115,7 +114,7 @@ return {
             2: ng_diStringValues('left', ['left', 'center', 'right'], { DisplayName: 'Align', Level: 'basic' }),
             3: ng_diMixed([
                  ng_diUndefined(),
-                 ng_diInteger(0, undefined, { InitValue: 100 })
+                 ng_diInteger(0, void 0, { InitValue: 100 })
                ], { DisplayName: 'Width', InitType: 'integer', Level: 'basic' }),
             4: ng_diBoolean(true, { DisplayName: 'Visible', Level: 'basic' })
           }
@@ -145,7 +144,7 @@ return {
             "VAlign": ng_diStringValues('top', ['top','middle','bottom','baseline'], { Level: 'basic' }),
             "Width": ng_diMixed([
               ng_diUndefined(),
-              ng_diInteger(0, undefined, { InitValue: 100 })
+              ng_diInteger(0, void 0, { InitValue: 100 })
             ], { InitType: 'integer', Level: 'basic' }),
             "Visible": ng_diBoolean(true, { Level: 'basic' }),
             "HTMLEncode": ng_diMixed([
@@ -167,7 +166,7 @@ return {
             "Text": ng_diMixed([
               ng_diUndefined(),
               ng_diString(),
-              ng_diObject(undefined, undefined, {
+              ng_diObject(void 0, void 0, {
                 ChildDesignInfo: ng_diString()
               })
             ], { InitType: 'string', Level: 'basic', Order: 0.4,
@@ -213,7 +212,7 @@ return {
             "Alt": ng_diMixed([
               ng_diUndefined(),
               ng_diString(),
-              ng_diObject(undefined, undefined, {
+              ng_diObject(void 0, void 0, {
                 ChildDesignInfo: ng_diString()
               })
             ], { InitType: 'string', Level: 'basic' }),
@@ -244,16 +243,16 @@ return {
             "Parent": ng_diMixed(['undefined','object','null'], { Level: 'hidden' }),
             "Controls": ng_diMixed([
               // TODO: Check priority 'object' vs 'controls'
-              ng_diControls(undefined, { Level: 'basic' }, {
+              ng_diControls(void 0, { Level: 'basic' }, {
                 DestroyIfEmpty: true,
                 ChildDesignInfo: {
                   Level: 'basic',
                   PropertyGroup: 'Controls'
                 }
               }),
-              ng_diObject(undefined, { Level: 'basic' }, {
+              ng_diObject(void 0, { Level: 'basic' }, {
                 DestroyIfEmpty: true,
-                ChildDesignInfo: ng_diControls(undefined, { Level: 'basic', PropertyGroup: 'Controls' }, {
+                ChildDesignInfo: ng_diControls(void 0, { Level: 'basic', PropertyGroup: 'Controls' }, {
                   DestroyIfEmpty: true,
                   ChildDesignInfo: {
                     Level: 'basic',
@@ -311,8 +310,8 @@ return {
         Options: {
           Priority: 0.52,
           ChildDesignInfo: ng_diMixed([
-            ng_diType('ngListCol', undefined, { Level: 'basic' }),
-            ng_diType('ngListColClass', undefined, { Level: 'hidden' })
+            ng_diType('ngListCol', void 0, { Level: 'basic' }),
+            ng_diType('ngListColClass', void 0, { Level: 'hidden' })
           ], {
             Level: 'basic',
             DisplayName: function(pname, dispname) {
@@ -657,7 +656,7 @@ return {
             "PageSize": ng_diInteger(10, { Level: 'advanced' }),
             "ItemHeight": ng_diMixed([
               ng_diUndefined(),
-              ng_diInteger(0, undefined, { InitValue: 12 })
+              ng_diInteger(0, void 0, { InitValue: 12 })
             ], { InitType: 'integer', Level: 'basic' }),
             "MinItemHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
             "MouseEvents": ng_diBoolean(true, { Level: 'advanced' }),
@@ -673,7 +672,7 @@ return {
             "SortDir": ng_diIntegerIdentifiers(0,['nglSortAsc','nglSortDesc'], { Level: 'basic' }),
             "SortCaseSensitive": ng_diBoolean(false, { Level: 'basic' }),
             "CheckedChangedDelay": ng_diInteger(0, { Level: 'advanced' }),
-            "ItemsControls": ng_diArrayOfControls(undefined, { Level: 'hidden' }),
+            "ItemsControls": ng_diArrayOfControls(void 0, { Level: 'hidden' }),
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
             "Frame": ng_diType( 'img_frame', { Level: 'advanced' }),
             "CanSelectText": ng_diBoolean(false, { Level: 'basic' })
@@ -895,14 +894,14 @@ return {
             "TopIndex": ng_diInteger(0, { Level: 'hidden' }),
             "AverageItemHeight": ng_diMixed([
               ng_diUndefined(),
-              ng_diInteger(undefined, undefined, { InitValue: 12 })
+              ng_diInteger(void 0, void 0, { InitValue: 12 })
             ], { InitType: 'integer', Level: 'basic' }),
             "MaxLength": ng_diMixed(['undefined','integer'], { InitType: 'integer', Level: 'optional' }),
             "CacheData": ng_diBoolean(true, { Level: 'basic' }),
             "LoadFullPage": ng_diBoolean(false, { Level: 'basic' }),
             "MinDataBatch": ng_diMixed([
               ng_diUndefined(),
-              ng_diInteger(undefined, undefined, { InitValue: 50 })
+              ng_diInteger(void 0, void 0, { InitValue: 50 })
             ], { InitType: 'integer', Level: 'basic' }),
             "AsyncData": ng_diBoolean(true, { Level: 'basic' }),
             "AsyncDataTimeout": ng_diInteger(30, { Level: 'basic' }),
