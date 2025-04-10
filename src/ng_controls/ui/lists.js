@@ -1418,12 +1418,9 @@ function ngl_DoDropDown(edit)
 
 function ngl_DoDropDownFinished(edit)
 {
-  if(!ngVal(edit.Suggestion,false))
-  {
-    var it=this.DropDownOwnerListItem;
-    if(it) this.SetItemFocus(it);
-    this.SetFocus();
-  }
+  var it=this.DropDownOwnerListItem;
+  if(it) this.SetItemFocus(it);
+  if(!ngVal(edit.Suggestion,false)) this.SetFocus();
 }
 
 function ngl_SelectDropDownItem(it)
