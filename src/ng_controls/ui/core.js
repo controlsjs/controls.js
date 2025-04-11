@@ -2412,7 +2412,7 @@ function nge_SuggestionResults(id,txt,data)
       c.HideDropDown();
       if((txt==='')&&(etxt!=='')) {
         var it=c.SuggestionFindItem(etxt,true,true);
-        if(it) lst.DropDownOwnerListItem=it.Item;
+        if(it) lst.DropDownOwnerListItem=it;
       }
       c.DropDown();
     }
@@ -2490,7 +2490,7 @@ function nge_SuggestionFindItems(txt, visibleonly, exactmatch, onscancallback)
       parent=minfo.Parent;
       it=minfo.Item;
     }
-    if(v) ret.push({ Parent: parent, Item: it });
+    if(v) ret.push(it);
     return true;
   });
   return ret;
@@ -2531,7 +2531,7 @@ function nge_Suggestion(id, forcerequery)
       if(lst)
       {
         var it=(txt!=='' ? c.SuggestionFindItem(txt,true,true) : null);
-        lst.SetItemFocus(it ? it.Item : null);
+        lst.SetItemFocus(it);
       }
     }
   }
@@ -2608,7 +2608,7 @@ function nge_SuggestionSearch(txt)
         if((txt=='')&&(lst)) {
           var etxt=this.GetText();
           var it=(etxt!='' ? this.SuggestionFindItem(etxt) : null);
-          if(it) lst.DropDownOwnerListItem=it.Item;
+          if(it) lst.DropDownOwnerListItem=it;
         }
         this.DropDown();
       }
@@ -4408,7 +4408,7 @@ function ngEdit(id, text)
    *    array *SuggestionFindItems* (string text [, bool visibleonly=false, bool exactmatch=false, function onscancallback=undefined])
    *
    *  Returns:
-   *   Array of results.
+   *   Array of matched items.
    */
   this.SuggestionFindItems = nge_SuggestionFindItems;
 
@@ -4419,7 +4419,7 @@ function ngEdit(id, text)
    *    object *SuggestionFindItem* (string text [, bool visibleonly=false, bool exactmatch=false])
    *
    *  Returns:
-   *   Object with item info or null if not found.
+   *   First matched item or null if not found.
    */
   this.SuggestionFindItem = nge_SuggestionFindItem;
 
