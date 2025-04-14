@@ -2373,6 +2373,9 @@ function nge_SuggestionResults(id,txt,data)
   var etxt=c.GetText();
   if(txt!=etxt) return;
 
+  var forcerequery=c.SuggestionRPCForceRequery;
+  delete c.SuggestionRPCForceRequery;
+
   var lst=c.DoGetSuggestionList();
   if(!lst) return;
   var dd=c.DropDownControl;
@@ -2418,6 +2421,10 @@ function nge_SuggestionResults(id,txt,data)
     }
     else
     {
+      if((forcerequery)&&(c.SuggestionAllowEmpty)&&(txt!=='')) {
+        c.SuggestionSearch('', forcerequery);
+        return;
+      }    
       c.HideDropDown();
     }
   }
@@ -2521,10 +2528,7 @@ function nge_Suggestion(id, forcerequery)
     changed=(ngVal(c.SuggestionLastSearch,'')!=txt);
   }
   if((changed)||(forcerequery)) {
-    if((forcerequery)&&(c.SuggestionAllowEmpty)&&(txt!=='')) {
-      if(c.SuggestionFindItem(txt,true,true)) txt='';
-    }
-    c.SuggestionSearch(txt);
+    c.SuggestionSearch(txt, forcerequery);
   } else {
     if((c.SuggestionLastSearch=='')&&(c.DropDownControl)&&(c.DropDownControl.Visible)) {
       var lst=c.DoGetSuggestionList();
@@ -2537,11 +2541,15 @@ function nge_Suggestion(id, forcerequery)
   }
 }
 
-function nge_SuggestionSearch(txt)
+function nge_SuggestionSearch(txt, forcerequery)
 {
   var lst;
   txt=ngVal(txt,'');
+  forcerequery=ngVal(forcerequery,false);
 
+  if((forcerequery)&&(this.SuggestionAllowEmpty)&&(txt!=='')) {
+    if(this.SuggestionFindItem(txt,true,true)) txt='';
+  }
   if(this.OnSuggestionSearch)
   {
     var res=new Object;
@@ -2579,6 +2587,7 @@ function nge_SuggestionSearch(txt)
     {
       if(!this.SuggestionRPC) this.SuggestionRPC=new ngRPC(this.ID);
       this.SuggestionRPC.sendRequest(url);
+      this.SuggestionRPCForceRequery=forcerequery;
       this.SuggestionFound=void 0;
       return;
     }
@@ -2613,7 +2622,13 @@ function nge_SuggestionSearch(txt)
         this.DropDown();
       }
     }
-    else this.HideDropDown();
+    else {
+      if((forcerequery)&&(this.SuggestionAllowEmpty)&&(txt!=='')) {
+        this.SuggestionSearch('', forcerequery);
+        return;
+      }    
+      this.HideDropDown();
+    }
   }
 }
 
@@ -4373,7 +4388,7 @@ function ngEdit(id, text)
    *  Searches suggestion.
    *
    *  Syntax:
-   *    void *SuggestionSearch* (string txt)
+   *    void *SuggestionSearch* (string txt [, bool forcerequery=false])
    *
    *  Returns:
    *    -
