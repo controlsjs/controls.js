@@ -531,6 +531,7 @@ var ngspResizeAutoMaximize = 16;
 
   function ngs_DoUpdateImages()
   {
+    var img;
     for(var i=0;i<4;i++){
       img=this.GetImg(i);
       if(img)

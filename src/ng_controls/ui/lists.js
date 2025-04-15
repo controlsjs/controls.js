@@ -5125,7 +5125,7 @@ ngUserControls['list'] = {
       }
 
       // update paging
-      var checked,pg=pginfo.PagingTo;
+      var checked,txt,pg=pginfo.PagingTo;
       if(pginfo.PagingFrom<0) pginfo.PagingFrom=0;
       for(var i=this.PagingSize-1;i>=0;i--)
       {
@@ -5176,7 +5176,7 @@ ngUserControls['list'] = {
       if(idx>=len) idx=len-1;
       if(this.DisplayMode!=plDisplayFixed)
       {
-        var d,mind=100000;
+        var d,s,mind=100000;
         for(var i in list.page_start)
         {
           s=list.page_start[i];

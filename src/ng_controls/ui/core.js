@@ -5730,7 +5730,7 @@ function ngpg_GetPageById(id)
 {
   if(ngVal(id,'')=='') return -1;
   var pg;
-  for(i=0;i<this.Pages.length;i++)
+  for(var i=0;i<this.Pages.length;i++)
   {
     pg=this.Pages[i];
     if(!pg) continue;
