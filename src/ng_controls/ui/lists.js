@@ -4588,7 +4588,7 @@ ngUserControls['list'] = {
           list.list_maxheight=maxh;
 
           var cnt=0;
-          var i,it,items,tmp_html,ih=0,l;
+          var i,h,it,items,tmp_html,ih=0,l;
           list.in_measure=true;
           try {
             for(i=pl.TopIndex;i<list.Items.length;i++)
@@ -5478,7 +5478,7 @@ ngUserControls['list'] = {
       return (ngVal(this.async_dataindex,-1)>=0);
     }
 
-    function npglSetAsyncDataCallback(lid, idx, data, length)
+    window.npglSetAsyncDataCallback = function(lid, idx, data, length)
     {
       var l=ngGetControlById(lid, 'ngPanel');
       if(!l) return false;
