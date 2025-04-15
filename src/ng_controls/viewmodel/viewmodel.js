@@ -2108,7 +2108,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     var self=this;
     function resetvalues(o,path)
     {
-      var val,valpath,instance;
+      var val,valpath,instance, defaultval;
       if(o==self) return;
       if((!o)||(typeof o!=='object')) return;
       if(path!='') path+='.';
@@ -4104,7 +4104,7 @@ ngUserControls['viewmodel'] = {
       parent[fid]=fd;
       ng_SetByRef(fd,'Owner',vm);
 
-      var val;
+      var val, defaultval;
       var isarray  = (fd.DataType==='ARRAY');
       var isobject = (fd.DataType==='OBJECT');
 

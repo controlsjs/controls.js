@@ -548,7 +548,7 @@ var ngcalSelectRange = 4;
       ho.style.display=(h ? '' : 'none');
     }
     
-    var row,col,cid,image,now,enabled,selected,cn,alt,text;
+    var row,col,cid,image,now,enabled,selected,cn,alt,text,od;
     for(row=0;row<6;row++)
     {
       for(col=0;col<=6;col++)
