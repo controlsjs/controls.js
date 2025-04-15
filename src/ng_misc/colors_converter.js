@@ -104,11 +104,11 @@ ColorsConverter.HSVToRGB = function(hue,saturation,value)
   }
   else{
     hue /= 60;
-    i = Math.floor(hue);
-    f = hue - i;
-    p = value * (1 - saturation);
-    q = value * (1 - saturation * f);
-    t = value * (1 - saturation * (1 - f));
+    var i = Math.floor(hue);
+    var f = hue - i;
+    var p = value * (1 - saturation);
+    var q = value * (1 - saturation * f);
+    var t = value * (1 - saturation * (1 - f));
 
     var red = null;
     var green = null;
