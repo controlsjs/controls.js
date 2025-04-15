@@ -292,7 +292,7 @@ ngUserControls['layouts'] = {
       ctrl.RemoveEvent('DoDispose',ngvhlay_CtrlDisposed);
     }
 
-    function ngvhlay_UpdateChildren(recursively)
+    function ngvhlay_UpdateChildren(recursive)
     {
       var cc=this.ChildControls;
       if((!cc)||(!cc.length)) return;
@@ -1170,7 +1170,7 @@ ngUserControls['layouts'] = {
       if(ngHASDEBUG()) ngconst_debugCheck(this);
     }
 
-    function ngconst_UpdateChildren(recursively)
+    function ngconst_UpdateChildren(recursive)
     {
       var cc=this.ChildControls;
       if((!cc)||(!cc.length)) return;
@@ -1207,7 +1207,7 @@ ngUserControls['layouts'] = {
       }
     }
 
-    function ngconst_CtrlUpdateBounds(props) {
+    function ngconst_CtrlUpdateBounds(props, recursive) {
       if(this.SetBounds(props)) {
         this.Update(recursive);
         return true;
