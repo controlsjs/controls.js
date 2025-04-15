@@ -238,7 +238,7 @@ function ng_parseHMS(v,sep,def)
 {
   v=ng_toString(v);
   sep=ngVal(sep,':');
-  var it=v.split(sep);
+  var p,it=v.split(sep);
   if(it.length>3) return ngVal(def,null);
   for(var i=0;i<it.length;i++)
   {
