@@ -2592,7 +2592,7 @@ function Create_ngMenu(def, ref, parent)
   /*
    *  Event: OnGetSubMenuImg
    */
-  this.OnGetSubMenuImg = null;
+  c.OnGetSubMenuImg = null;
   /*
    *  Event: OnSubMenuCreated
    */
