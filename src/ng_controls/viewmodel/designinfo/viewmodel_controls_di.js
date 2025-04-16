@@ -585,7 +585,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
       }
 
       function vmdisplayname(pname, dispname) {
-        var txt='';
+        var t,txt='';
         var idprops = FormEditor.GetSelectedControlsProperty(pname+'.0');
         for(var i=0;i<idprops.length;i++) {
           t=getpropertytext(idprops[i]);
