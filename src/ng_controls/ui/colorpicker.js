@@ -492,6 +492,7 @@ ngUserControls['ngColorControls'] = {
          *  Group: Methods
          */
         Methods: {
+          DoDispose: ngcopch_DoDispose,
           /**
            *  Function: ShowHSV
            *  - set color, which color picker should be set to
@@ -795,7 +796,7 @@ ngUserControls['ngColorControls'] = {
       }
     }
 
-    ngcopch_ColorPickers = new Array();
+    var ngcopch_ColorPickers = new Array();
     /**
      * DO ON COLOR PICKER CREATED
      * @param picker (ngColorPicker)
@@ -815,6 +816,16 @@ ngUserControls['ngColorControls'] = {
             picker.Controls.From,
             picker.Color
           );
+      }
+      return true;
+    }
+    
+    function ngcopch_DoDispose()
+    {
+      if(ngcopch_ColorPickers) {
+        for(var i=ngcopch_ColorPickers.length-1;i>=0;i--) {
+          if(ngcopch_ColorPickers[i]===this) ngcopch_ColorPickers.splice(i,1);
+        }
       }
       return true;
     }
@@ -3472,7 +3483,7 @@ ngUserControls['ngColorControls'] = {
         }
       }
 
-      return ngcopch_OnPickerCreated(picker);
+      return true;
     }
 
     /**
