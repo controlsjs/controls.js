@@ -2057,6 +2057,7 @@ function ng_SetControlMenu(c,m)
 
 // --- ngApplication Popupmenu -------------------------------------------------
 var nga_popup_initialized = false;
+var nga_popup_hammer = null;
 
 function nga_DoPopupMenuStart(e)
 {

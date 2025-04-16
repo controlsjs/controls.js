@@ -5714,7 +5714,7 @@ function ngpg_GetPageByText(txt)
 {
   if(ngVal(txt,'')=='') return -1;
   var pg,text;
-  for(i=0;i<this.Pages.length;i++)
+  for(var i=0;i<this.Pages.length;i++)
   {
     pg=this.Pages[i];
 
