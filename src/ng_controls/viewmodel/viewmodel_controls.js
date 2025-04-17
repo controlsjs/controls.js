@@ -921,7 +921,7 @@ ngUserControls['viewmodel_controls'] = {
 
       if(ngNullVal(filterfields,null)===null) filterfields=this.GetFilterDefs();
       var fd,val;
-      for(i in filterfields)
+      for(var i in filterfields)
       {
         fd=filterfields[i];
         if(!fd) continue;
