@@ -598,7 +598,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
 
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
-    if(image) ngc_ChangeImage(ngl_TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, this.Enabled, image));
+    if(image) ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, this.Enabled, image));
 
     if(list!=this) id+='_';
 
@@ -623,7 +623,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
 
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
-    if(image) ngc_ChangeImage(ngl_TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), this.Enabled, image));
+    if(image) ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), this.Enabled, image));
     if(list!=this) id+='_';
     if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
       for(var i=0;i<items.length;i++)
@@ -836,7 +836,7 @@ function ngl_UpdateChecked(it,recursion,setall,visibleonly,id,level)
       else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
       if(image)
       {
-        ngc_ChangeImage(ngl_CheckImgDrawProps(this.ID+'_'+id+'C', state, this.Enabled, image));
+        ngc_ChangeImage(this.CheckImgDrawProps(this.ID+'_'+id+'C', state, this.Enabled, image));
       }
 
       if(!level)
@@ -2417,7 +2417,7 @@ function ngl_DrawItemText(html, it, id, level)
     if(typeof image.x === 'undefined') il-=ngVal(image.sx, image.W);
     if(!images) images=new ngStringBuilder;
     if(image.H>minheight) minheight=image.H;
-    ngl_CreateImage(images, ngl_ItemImgDrawProps(this.ID+'_'+id+'I', (this.Enabled)&&(itenabled), image), image, 4, il, hasdblclickitem || hastoggle);
+    this.CreateImage(images, this.ItemImgDrawProps(this.ID+'_'+id+'I', (this.Enabled)&&(itenabled), image), image, 4, il, hasdblclickitem || hastoggle);
   }
   if(this.OnGetCheckImg) image=this.OnGetCheckImg(this, it, id);
   else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
@@ -2426,7 +2426,7 @@ function ngl_DrawItemText(html, it, id, level)
     if(typeof image.x === 'undefined') il-=ngVal(image.sx, image.W);
     if(!images) images=new ngStringBuilder;
     if(image.H>minheight) minheight=image.H;
-    ngl_CreateImage(images, ngl_CheckImgDrawProps(this.ID+'_'+id+'C', state, (this.Enabled)&&(itenabled), image), image, 2, il, hasdblclickitem);
+    this.CreateImage(images, this.CheckImgDrawProps(this.ID+'_'+id+'C', state, (this.Enabled)&&(itenabled), image), image, 2, il, hasdblclickitem);
   }
   if((typeof it.Collapsed !== 'undefined')||(typeof it.Items !== 'undefined')&&(it.Items.length>0))
   {
@@ -2437,7 +2437,7 @@ function ngl_DrawItemText(html, it, id, level)
       if(typeof image.x === 'undefined') il-=ngVal(image.sx, image.W);
       if(!images) images=new ngStringBuilder;
       if(image.H>minheight) minheight=image.H;
-      ngl_CreateImage(images, ngl_TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(it.Collapsed,false), (this.Enabled)&&(itenabled), image), image, 3, il, hasdblclickitem);
+      this.CreateImage(images, this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(it.Collapsed,false), (this.Enabled)&&(itenabled), image), image, 3, il, hasdblclickitem);
     }
   }
 
@@ -4095,6 +4095,11 @@ function ngList(id)
   this.ItemById = nglist_ItemById;
   this.CalcIndent=ngl_CalcIndent;
   this.CalcItemIndent=ngl_CalcItemIndent;
+
+  this.CreateImage=ngl_CreateImage;
+  this.CheckImgDrawProps=ngl_CheckImgDrawProps;
+  this.TreeImgDrawProps=ngl_TreeImgDrawProps;
+  this.ItemImgDrawProps=ngl_ItemImgDrawProps;  
 
   this.DoDropDown = ngl_DoDropDown;
   this.DoDropDownFinished = ngl_DoDropDownFinished;
@@ -6540,7 +6545,7 @@ ngUserControls['list'] = {
         else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
         if(image)
         {
-          ngc_ChangeImage(ngl_CheckImgDrawProps(this.ID+'_CAIC', it.Checked, this.Enabled, image));
+          ngc_ChangeImage(this.CheckImgDrawProps(this.ID+'_CAIC', it.Checked, this.Enabled, image));
         }
       }
       return ret;

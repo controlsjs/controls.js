@@ -1064,7 +1064,7 @@ function ngmn_DoDrawItemText(html, text, it, col, id, level)
 
   if((it.SubMenu)&&(image)&&((this.Columns.length<=0)||(col.ID===this.Columns[this.Columns.length-1].ID)))
   {
-    var dp=ngl_ItemImgDrawProps(this.ID+'_'+id+'M', (this.Enabled)&&(ngVal(it.Enabled,true)), image);
+    var dp=this.ItemImgDrawProps(this.ID+'_'+id+'M', (this.Enabled)&&(ngVal(it.Enabled,true)), image);
     html.append('<div style="position: relative;">');
     ngc_Img(html,dp,"width: "+dp.W+"px;",'class="'+this.BaseClassName+'SubMenu"');
     html.append('<div style="padding-right:'+dp.W+'px">')
