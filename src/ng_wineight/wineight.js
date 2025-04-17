@@ -1816,7 +1816,7 @@ var WinEightControls = {
               var img;
               if((!list.RadioAllowUncheck)&&(!ngVal(item.RadioAllowUncheck, false))&&(typeof item.RadioGroup!=='undefined')) img=(list.selected[id] ? img_rlight : img_rdark);
               else img=(list.selected[id] ? img_cblight : img_cbdark);
-              if(img) ngc_ChangeImage(ngl_CheckImgDrawProps(list.ID+'_'+id+'C', item.Checked, list.Enabled, img));
+              if(img) ngc_ChangeImage(list.CheckImgDrawProps(list.ID+'_'+id+'C', item.Checked, list.Enabled, img));
             }
 
             if(istree)
@@ -1831,7 +1831,7 @@ var WinEightControls = {
                   collapsed=ngVal(p.Collapsed,false);
                   p=p.Parent;
                 }
-                ngc_ChangeImage(ngl_TreeImgDrawProps(list.ID+'_'+id+'T', collapsed, list.Enabled, timg));
+                ngc_ChangeImage(list.TreeImgDrawProps(list.ID+'_'+id+'T', collapsed, list.Enabled, timg));
               }
             }
           });
