@@ -582,7 +582,7 @@ function imgm_EnterShape(p,bi)
 
 function imgm_MO(e,o,id,bi)
 {
-  if(!e) e=windows.event;
+  if(!e) e=window.event;
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
 
   var p=ngGetControlById(id);
@@ -591,7 +591,7 @@ function imgm_MO(e,o,id,bi)
 
 function imgm_MU(e,o,id,bi)
 {
-  if(!e) e=windows.event;
+  if(!e) e=window.event;
   if((ngUsingTouch)&&(e)&&(e.type.toLowerCase().match(/mouse/))) return; // ignore mouse events if using touch
 
   var p=ngGetControlById(id);
