@@ -16,7 +16,6 @@ TODO:
   - special types rendering (checkboxes, ...)
 - db struct generator
 
-- ngCalendar selected
 - two stage insert and update (sessions) and command repeat on timeout
 - file(s) upload
 */
@@ -2055,7 +2054,12 @@ ngUserControls['viewmodel_ui'] = {
           }
           c.AddEvent(function(c) {
             var val=c.GetSelected();
-            if((c.SelectType==ngcalSelectSingle)&&(val.length==1)) val=val[0];
+            if(c.SelectType==ngcalSelectSingle) {
+              var v=valueAccessor();
+              if((v)&&((typeof v.FieldDef === 'undefined')||(v.FieldDef.DataType!=='ARRAY'))) {
+                val=val.length>0 ? val[0] : null;
+              }
+            }
             if(ngCtrlBindingWrite('Value',val,c, valueAccessor, allBindingsAccessor))
               value_update(c, valueAccessor);
             return true;
@@ -2374,7 +2378,29 @@ ngUserControls['viewmodel_ui'] = {
           break;
         case 'ngCalendar':
           ngCtrlBindingRead('Value',c,valueAccessor,function(val) {
-            c.SetSelected(ng_toDate(val));
+            if(ng_IsArrayVar(val)) {
+              var d,seldates=[];
+              for(var i=0;i<val.length;i++)
+              {
+                d=val[i];
+                if(ng_typeString(d)) {
+                  d=c.ParseDate(d);
+                  if(typeof d==='undefined') d=ng_toDate(val[i]);
+                }
+                else d=ng_toDate(d);
+                if(d) seldates.push(d);
+              }
+              val=seldates;
+              if(!val.length) val=null;
+            } else {
+              if(ng_typeString(val)) {
+                var d=c.ParseDate(val);
+                if(typeof d==='undefined') d=ng_toDate(val);
+                val=d;
+              }
+              else val=ng_toDate(val);
+            }
+            c.SetSelected(val);
           });
           break;
         case 'ngFileUploader':
