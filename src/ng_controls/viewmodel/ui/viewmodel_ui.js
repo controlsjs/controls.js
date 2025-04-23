@@ -1116,6 +1116,15 @@ ngUserControls['viewmodel_ui'] = {
       ngRegisterControlMod('ngEditTimeField', 'ngEditTime', Create_EditField);
     }
 
+    if (ngUserControls['maskedit'])
+    {
+      /*  Class: ngMaskEditField
+      *  Mask edit field control (based on <ngMaskEdit>).
+      */
+      /*<>*/
+      ngRegisterControlMod('ngMaskEditField', 'ngMaskEdit', Create_EditField);
+    }
+
     /*  Class: ngDropDownField
      *  Dropdown field control (based on <ngDropDown>).
      */
@@ -1951,6 +1960,8 @@ ngUserControls['viewmodel_ui'] = {
               }
             }
           }
+        case 'ngToolBar':
+          if(c.CtrlType==='ngToolBar' && !c.CtrlInheritsFrom('ngMaskEdit')) return;
         case 'ngMemo':
           var binding=allBindingsAccessor();
           var instantupdate = ngVal(binding["InstantUpdate"],false);
@@ -1962,8 +1973,10 @@ ngUserControls['viewmodel_ui'] = {
             }
             if((instantupdate)||(!c.HasFocus))
             {
-              var val=ngCtrlBindingParseString(valueAccessor,c.GetText());
-              ngCtrlBindingWrite('Value',val,c, valueAccessor, allBindingsAccessor);
+              if(typeof c.GetText === 'function') {
+                var val=ngCtrlBindingParseString(valueAccessor,c.GetText());
+                ngCtrlBindingWrite('Value',val,c, valueAccessor, allBindingsAccessor);
+              }
             }
             else
             {

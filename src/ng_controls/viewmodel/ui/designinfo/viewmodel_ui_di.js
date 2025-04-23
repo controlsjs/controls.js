@@ -348,6 +348,7 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
       ngRegisterControlDesignInfo('ngEditNumField',EditField);
       ngRegisterControlDesignInfo('ngEditDateField',EditField);
       ngRegisterControlDesignInfo('ngEditTimeField',EditField);
+      ngRegisterControlDesignInfo('ngMaskEditField',EditField);
       ngRegisterControlDesignInfo('ngDropDownField',DropDownField);
       ngRegisterControlDesignInfo('ngDropDownListField',DropDownField);
       ngRegisterControlDesignInfo('ngMemoField',EditField);
