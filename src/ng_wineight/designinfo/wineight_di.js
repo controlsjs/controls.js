@@ -2044,6 +2044,11 @@ return {
       ng_MergeVar(di,weEditFieldDI(d,c,ref));
       return di;
     });
+    ngRegisterControlDesignInfo('weMaskEditField',function(d,c,ref) {
+      var di=weMaskEditDI(d,c,ref);
+      ng_MergeVar(di,weEditFieldDI(d,c,ref));
+      return di;
+    });
     ngRegisterControlDesignInfo('weDropDownField',function(d,c,ref) {
       var di=weEditDI(d,c,ref);
       ng_MergeVar(di,weEditFieldDI(d,c,ref));

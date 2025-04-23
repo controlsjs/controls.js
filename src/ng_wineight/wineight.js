@@ -4079,6 +4079,17 @@ var WinEightControls = {
         return skinfnc.Create_weColorEdit(def,ref,parent,modtype);
       });
 
+      if (ngUserControls['maskedit'])
+      {
+        /*  Class: weMaskEditField
+        *  Standard mask edit field control (based on <ngMaskEditField>).
+        */
+        ngRegisterControlSkin('weMaskEditField','ngMaskEditField', function(def,ref,parent,modtype) {
+          skinfnc.Create_weEditFieldDef(def);
+          return skinfnc.Create_weMaskEdit(def,ref,parent,modtype);
+        });
+      }
+
       /*  Class: weDropDownField
        *  Standard drop down field control (based on <ngDropDownField>).
        */
