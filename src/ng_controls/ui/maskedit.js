@@ -186,6 +186,13 @@ ngUserControls['maskedit'] = {
        */
       c.LockHintCaretPos = false;
 
+      /*  Variable: HasFocus
+       *  ...
+       *  Type: bool
+       *  Default value: *false*
+       */
+      c.HasFocus = false;
+
       //===== STANDARD METHODS =====
 
       /*
@@ -518,6 +525,38 @@ ngUserControls['maskedit'] = {
         //Vytvoreni komponent
         c.Controls.Dispose();
 
+        var doFocusPart = function(e,elm){
+          if(ng_IsOverriden(this.DoFocus)){
+            c._ignoreImagesUpdate = true;
+            this.DoFocus.callParent(e,elm);
+            c._ignoreImagesUpdate = false;
+          }
+
+          var self = this;
+          if(e)ngApp.InvokeLater(function(){
+            self.Owner.Owner.DoFocus(e,elm);
+          });
+        };
+
+        var doBlurPart = function(e, elm){
+          if(ng_IsOverriden(this.DoBlur)){
+            c._ignoreImagesUpdate = true;
+            this.DoBlur.callParent(e,elm);
+            c._ignoreImagesUpdate = false;
+          }
+
+          var self = this;
+          if(e)ngApp.InvokeLater(function(){
+            self.Owner.Owner.DoBlur(e,elm);
+          });
+        };
+
+        var doUpdatePartImages = function(){
+          if(!c._ignoreImagesUpdate && ng_IsOverriden(this.DoUpdateImages)){
+            this.DoUpdateImages.callParent();
+          }
+        };
+
         var def = new Object();
         if (c.OnCreateLeftHolder) c.OnCreateLeftHolder(c, def);
         ng_MergeDef(def, c.LeftDef);
@@ -539,13 +578,12 @@ ngUserControls['maskedit'] = {
             },
             DoMouseLeave: function (e) {
               if (e) this.Owner.Owner.handleEnterLeave(this, e, 'leave');
-            },
-            OnFocus: function (o) {
-              if (o) o.Owner.Owner.handleFocusBlur(o, 'focus');
-            },
-            OnBlur: function (o) {
-              if (o) o.Owner.Owner.handleFocusBlur(o, 'blur');
             }
+          },
+          Methods: {
+            DoUpdateImages: doUpdatePartImages,
+            DoFocus: doFocusPart,
+            DoBlur: doBlurPart
           }
         });
         c.Controls.AddControls({ LeftHolder: def });
@@ -705,13 +743,12 @@ ngUserControls['maskedit'] = {
               },
               DoMouseLeave: function (e) {
                 if (e) this.Owner.Owner.handleEnterLeave(this, e, 'leave');
-              },
-              OnFocus: function (o) {
-                if (o) o.Owner.Owner.handleFocusBlur(o, 'focus');
-              },
-              OnBlur: function (o) {
-                if (o) o.Owner.Owner.handleFocusBlur(o, 'blur');
               }
+            },
+            Methods: {
+              DoUpdateImages: doUpdatePartImages,
+              DoFocus: doFocusPart,
+              DoBlur: doBlurPart
             }
           });
 
@@ -756,13 +793,12 @@ ngUserControls['maskedit'] = {
             },
             DoMouseLeave: function (e) {
               if (e) this.Owner.Owner.handleEnterLeave(this, e, 'leave');
-            },
-            OnFocus: function (o) {
-              if (o) o.Owner.Owner.handleFocusBlur(o, 'focus');
-            },
-            OnBlur: function (o) {
-              if (o) o.Owner.Owner.handleFocusBlur(o, 'blur');
             }
+          },
+          Methods: {
+            DoUpdateImages: doUpdatePartImages,
+            DoFocus: doFocusPart,
+            DoBlur: doBlurPart
           }
         });
 
@@ -911,6 +947,55 @@ ngUserControls['maskedit'] = {
         return true;
       }
 
+      c.DoFocus = function(e,elm){
+        var parts = this.GetParts();
+        var partHasFocus = false;
+
+        for(var i in parts){
+          var ctrl = parts[i].Control;
+          if(ctrl.HasFocus){partHasFocus = true;}
+        }
+
+        if(!partHasFocus || this.HasFocus){return;}
+        this.HasFocus = true;
+
+        this.DoUpdateImages();
+        if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
+      };
+
+      c.DoBlur = function(e,elm){
+        var parts = this.GetParts();
+        var partHasFocus = false;
+
+        for(var i in parts){
+          var ctrl = parts[i].Control;
+          if(ctrl.HasFocus){partHasFocus = true;}
+        }
+
+        if(partHasFocus || !this.HasFocus){return;}
+        this.HasFocus = false;
+
+        this.DoUpdateImages();
+        if((this.OnBlur)&&(this.Enabled)) this.OnBlur(this);
+      };
+
+      c.DoUpdateImages = function(){
+        var parts = this.GetParts();
+        parts.push({ Control: this.Controls.LeftHolder });
+        parts.push({ Control: this.Controls.RightHolder });
+
+        for(var i in parts){
+          var ctrl = parts[i].Control;
+
+          if(ctrl.DoUpdateImages){
+            var oldFocus = ctrl.HasFocus;
+            ctrl.HasFocus = this.HasFocus;
+            ctrl.DoUpdateImages();
+            ctrl.HasFocus = oldFocus;   
+          }
+        }
+      };
+
       //===== HELPER METHODS =====
 
       c.textToParts = function (text) {
@@ -979,42 +1064,6 @@ ngUserControls['maskedit'] = {
         return true;
       }
 
-      c.handleFocusBlur = function (o, type) {
-        if ((typeof(o)==='undefined') || (typeof(type)==='undefined')) return false;
-        type = type.toLowerCase();
-
-        var oldFocus, newFocus, ctrl;
-        var parts = o.Owner.Owner.GetParts();
-        parts.push({ Control: o.Owner.LeftHolder });
-        parts.push({ Control: o.Owner.RightHolder });
-
-        for (var i=0;i<parts.length;i++)
-        {
-          ctrl = parts[i].Control;
-          if (typeof(ctrl.DoUpdateImages)!=='function') continue;
-
-          switch (type)
-          {
-            case 'focus':
-              newFocus = true;
-            break;
-            case 'blur':
-              newFocus = false;
-            break;
-            default:
-              return false;
-            break;
-          }
-
-          oldFocus      = ctrl.HasFocus;
-          ctrl.HasFocus = newFocus;
-          ctrl.DoUpdateImages();
-          ctrl.HasFocus = oldFocus;
-        }
-
-        return true;
-      }
-
       //===== EVENTS =====
 
       /*
@@ -1067,6 +1116,15 @@ ngUserControls['maskedit'] = {
        *  Event: OnCreateRightHolder
        */
       c.OnCreateRightHolder = null;
+
+      /*
+       *  Event: OnFocus
+       */
+      c.OnFocus = null;
+      /*
+       *  Event: OnBlur
+       */
+      c.OnBlur = null;
 
       return c;
     });
