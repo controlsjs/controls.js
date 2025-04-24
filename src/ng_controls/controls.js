@@ -3070,7 +3070,7 @@ function ngc_Blur(e, elm, type)
   {
     try {
       if(o.DoBlur) o.DoBlur(e, elm);
-      else if(o.DoBlur) o.DoBlur(o);
+      else if(o.OnBlur) o.OnBlur(o);
     }
     finally {
       o.ControlHasFocus=false;
