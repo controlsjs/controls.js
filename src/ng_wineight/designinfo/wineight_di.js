@@ -549,7 +549,7 @@ return {
         Properties: ng_diProperties({
           "H": ng_diInteger(WinEightControls.Images[deftheme() ? 'EditLight' : 'EditDark'].MiddleImg.H),
           "Data": {
-            "LeftDef": ng_diControl(undefined, ng_diProperties({
+            "LeftDef": ng_diControl('weEdit', ng_diProperties({
               "W": ng_diInteger(WinEightControls.Images[deftheme() ? 'EditLight' : 'EditDark'].LeftImg.W),
               "Data": {
                 "LeftImg": ng_diTypeVal('image', 'WinEightControls.Images.Edit'+defthemetxt()+'.LeftImg'),
@@ -561,12 +561,12 @@ return {
                 "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.Edit'+defthemetxt()+'.MiddleImg')
               }
             })),
-            "StaticDef": ng_diControl('weLabel', ng_diProperties({
+            "StaticDef": ng_diControl('weEdit', ng_diProperties({
               "Data": {
                 "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.Edit'+defthemetxt()+'.MiddleImg')
               }
             })),
-            "RightDef": ng_diControl(undefined, ng_diProperties({
+            "RightDef": ng_diControl('weEdit', ng_diProperties({
               "W": ng_diInteger(WinEightControls.Images[deftheme() ? 'EditLight' : 'EditDark'].RightImg.W),
               "Data": {
                 "MiddleImg": ng_diTypeVal('image', 'WinEightControls.Images.Edit'+defthemetxt()+'.MiddleImg'),

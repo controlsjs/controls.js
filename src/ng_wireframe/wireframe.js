@@ -811,6 +811,7 @@ var WireframeControls = {
           H: WFRImages.Edit.MiddleImg.H,
           Data: {
             LeftDef: {
+              Type: 'wfrEdit',
               W: WFRImages.Edit.LeftImg.W,
               Data: {
                 LeftImg: (invalid ? WFRImages.Edit.LeftImgReq : WFRImages.Edit.LeftImg),
@@ -827,12 +828,15 @@ var WireframeControls = {
               }
             },
             StaticDef: {
-              Type: 'wfrLabel',
+              Type: 'wfrEdit',
               Data: {
-                MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg)
+                LeftImg: null,
+                MiddleImg: (invalid ? WFRImages.Edit.MiddleImgReq : WFRImages.Edit.MiddleImg),
+                RightImg: null
               }
             },
             RightDef: {
+              Type: 'wfrEdit',
               W: WFRImages.Edit.RightImg.W,
               Data: {
                 LeftImg: null,
@@ -867,7 +871,7 @@ var WireframeControls = {
 
           if (update)
           {
-            var focus = (c.HasFocus ? 1 : 0);
+            var focus = (c.ControlHasFocus ? 1 : 0);
 
             if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
             if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));

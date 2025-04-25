@@ -256,7 +256,7 @@ var WinXP_DesignInfo = {
         Properties: ng_diProperties({
           "H": ng_diInteger(WinXPControls.Images.Edit.MiddleImg.H),
           "Data": {
-            "LeftDef": ng_diControl(undefined, ng_diProperties({
+            "LeftDef": ng_diControl('stdEdit', ng_diProperties({
               "W": ng_diInteger(WinXPControls.Images.Edit.LeftImg.W),
               "Data": {
                 "LeftImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.LeftImg'),
@@ -268,12 +268,12 @@ var WinXP_DesignInfo = {
                 "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg')
               }
             })),
-            "StaticDef": ng_diControl('stdLabel', ng_diProperties({
+            "StaticDef": ng_diControl('stdEdit', ng_diProperties({
               "Data": {
                 "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg')
               }
             })),
-            "RightDef": ng_diControl(undefined, ng_diProperties({
+            "RightDef": ng_diControl('stdEdit', ng_diProperties({
               "W": ng_diInteger(WinXPControls.Images.Edit.RightImg.W),
               "Data": {
                 "MiddleImg": ng_diTypeVal('image', 'WinXPControls.Images.Edit.MiddleImg'),

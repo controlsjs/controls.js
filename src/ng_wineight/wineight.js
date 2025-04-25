@@ -1416,6 +1416,7 @@ var WinEightControls = {
           H: img.MiddleImg.H,
           Data: {
             LeftDef: {
+              Type: 'weEdit',
               W: img.LeftImg.W,
               Data: {
                 LeftImg: (invalid ? img.LeftImgReq : img.LeftImg),
@@ -1432,12 +1433,15 @@ var WinEightControls = {
               }
             },
             StaticDef: {
-              Type: 'weLabel',
+              Type: 'weEdit',
               Data: {
-                MiddleImg: (invalid ? img.MiddleImgReq : img.MiddleImg)
+                LeftImg: null,
+                MiddleImg: (invalid ? img.MiddleImgReq : img.MiddleImg),
+                RightImg: null
               }
             },
             RightDef: {
+              Type: 'weEdit',
               W: img.RightImg.W,
               Data: {
                 LeftImg: null,
@@ -1470,7 +1474,7 @@ var WinEightControls = {
 
           if (update)
           {
-            var focus = (c.HasFocus ? 1 : 0);
+            var focus = (c.ControlHasFocus ? 1 : 0);
 
             if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
             if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));

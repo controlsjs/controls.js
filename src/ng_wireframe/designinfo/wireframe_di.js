@@ -190,7 +190,7 @@ var WireframeControls_DesignInfo = {
           "className": ng_diString('wfrMaskEdit'),
           "H": ng_diInteger(WireframeControls.Images.Edit.MiddleImg.H),
           "Data": {
-            "LeftDef": ng_diControl(undefined, ng_diProperties({
+            "LeftDef": ng_diControl('wfrEdit', ng_diProperties({
               "W": ng_diInteger(WireframeControls.Images.Edit.LeftImg.W),
               "Data": {
                 "LeftImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.LeftImg'),
@@ -202,12 +202,12 @@ var WireframeControls_DesignInfo = {
                 "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg')
               }
             })),
-            "StaticDef": ng_diControl('wfrLabel', ng_diProperties({
+            "StaticDef": ng_diControl('wfrEdit', ng_diProperties({
               "Data": {
                 "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg')
                }
             })),
-            "RightDef": ng_diControl(undefined, ng_diProperties({
+            "RightDef": ng_diControl('wfrEdit', ng_diProperties({
               "W": ng_diInteger(WireframeControls.Images.Edit.RightImg.W),
               "Data": {
                 "MiddleImg": ng_diTypeVal('image', 'WireframeControls.Images.Edit.MiddleImg'),

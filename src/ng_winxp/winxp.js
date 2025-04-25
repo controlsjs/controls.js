@@ -989,6 +989,7 @@ var WinXPControls = {
           H: winimages.Edit.MiddleImg.H,
           Data: {
             LeftDef: {
+              Type: 'stdEdit',
               W: winimages.Edit.LeftImg.W,
               Data: {
                 LeftImg: (invalid ? winimages.Edit.LeftImgReq : winimages.Edit.LeftImg),
@@ -1005,12 +1006,15 @@ var WinXPControls = {
               }
             },
             StaticDef: {
-              Type: 'stdLabel',
+              Type: 'stdEdit',
               Data: {
-                MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg)
+                LeftImg: null,
+                MiddleImg: (invalid ? winimages.Edit.MiddleImgReq : winimages.Edit.MiddleImg),
+                RightImg: null
               }
             },
             RightDef: {
+              Type: 'stdEdit',
               W: winimages.Edit.RightImg.W,
               Data: {
                 LeftImg: null,
@@ -1043,7 +1047,7 @@ var WinXPControls = {
 
           if (update)
           {
-            var focus = (c.HasFocus ? 1 : 0);
+            var focus = (c.ControlHasFocus ? 1 : 0);
 
             if (ctrl.LeftImg)   ngc_ChangeImage(ngpg_ImgDrawProps(ctrl.ID+'_IL', focus, ctrl.Enabled, ctrl.LeftImg));
             if (ctrl.MiddleImg) ngc_ChangeImageS(ngpg_ImgDrawProps(ctrl.ID+'_IM', focus, ctrl.Enabled, ctrl.MiddleImg));
