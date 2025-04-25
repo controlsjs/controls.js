@@ -30,7 +30,7 @@ ngUserControls['maskedit'] = {
         Data: {
           Vertical: true,
           LeftDef: {
-            Type: 'ngButton'
+            Type: 'ngEdit'
           },
           EditDef: {
             Type: 'ngEdit',
@@ -40,10 +40,10 @@ ngUserControls['maskedit'] = {
             }
           },
           StaticDef: {
-            Type: 'ngButton'
+            Type: 'ngEdit'
           },
           RightDef: {
-            Type: 'ngButton'
+            Type: 'ngEdit'
           }
         }
       });
@@ -518,34 +518,8 @@ ngUserControls['maskedit'] = {
         //Vytvoreni komponent
         c.Controls.Dispose();
 
-        var doFocusPart = function(e,elm){
-          if(ng_IsOverriden(this.DoFocus)){
-            c._ignoreImagesUpdate = true;
-            this.DoFocus.callParent(e,elm);
-            c._ignoreImagesUpdate = false;
-          }
-
-          var self = this;
-          if(e) ngApp.InvokeLater(function(){
-            self.Owner.Owner.DoFocus(e,elm);
-          });
-        };
-
-        var doBlurPart = function(e, elm){
-          if(ng_IsOverriden(this.DoBlur)){
-            c._ignoreImagesUpdate = true;
-            this.DoBlur.callParent(e,elm);
-            c._ignoreImagesUpdate = false;
-          }
-
-          var self = this;
-          if(e) ngApp.InvokeLater(function(){
-            self.Owner.Owner.DoBlur(e,elm);
-          });
-        };
-
         var doUpdatePartImages = function(){
-          if(!c._ignoreImagesUpdate && ng_IsOverriden(this.DoUpdateImages)){
+          if(!c._ignoreImagesUpdate){
             var oldCFocus = this.ControlHasFocus;
             var oldFocus = this.HasFocus;
 
@@ -559,17 +533,15 @@ ngUserControls['maskedit'] = {
         };
 
         var updatePart = function(recursive){
-          if(ng_IsOverriden(this.Update)){
-            var oldCFocus = this.ControlHasFocus;
-            var oldFocus = this.HasFocus;
+          var oldCFocus = this.ControlHasFocus;
+          var oldFocus = this.HasFocus;
 
-            this.ControlHasFocus = !!c.ControlHasFocus;
-            this.HasFocus = !!c.ControlHasFocus;
+          this.ControlHasFocus = !!c.ControlHasFocus;
+          this.HasFocus = !!c.ControlHasFocus;
 
-            this.Update.callParent(recursive);
-            this.ControlHasFocus = oldCFocus;
-            this.HasFocus = oldFocus;
-          }
+          this.Update.callParent(recursive);
+          this.ControlHasFocus = oldCFocus;
+          this.HasFocus = oldFocus;
         };
 
         var def = new Object();
@@ -578,16 +550,9 @@ ngUserControls['maskedit'] = {
         ng_MergeDef(def, {
           W: 0,
           Data: {
-            Enabled: c.Enabled,
-            Cursor: 'text',
-            DoUpdateImages: nge_DoUpdateImages
+            Enabled: c.Enabled
           },
           Events: {
-            OnClick: function (o) {
-              if (typeof(o)==='undefined') return;
-              var parts = o.Owner.Owner.Owner.GetParts(-1, true);
-              if (parts.length>0) o.Owner.Owner.Owner.SetFocusPart(parts[0].ID);
-            },
             DoMouseEnter: function (e) {
               if (e) this.Owner.Owner.handleEnterLeave(this, e, 'enter');
             },
@@ -598,13 +563,17 @@ ngUserControls['maskedit'] = {
           Methods: {
             Update: updatePart,
             DoUpdateImages: doUpdatePartImages,
-            DoFocus: doFocusPart,
-            DoBlur: doBlurPart
+
+            DoFocus: function(e,elm){
+              var maskEdit = this.Owner.Owner;
+              var parts = maskEdit.GetParts(-1,true);
+              if(parts.length > 0){maskEdit.SetFocusPart(parts[0].ID);}
+            }
           }
         });
         c.Controls.AddControls({ LeftHolder: def });
 
-        var component, partWidth, partDefaultValue, partInfo;
+        var component, partWidth, partMaskLength, partDefaultValue, partInfo;
         for (var i=0;i<parts.mask.length;i++)
         {
           component = new Object();
@@ -623,27 +592,57 @@ ngUserControls['maskedit'] = {
           if (i<c.PartDefs.length) ng_MergeDef(def, c.PartDefs[i]);
           ng_MergeDef(def, parts.type[i]=='Edit' ? c.EditDef : c.StaticDef);
 
+          partMaskLength = parts.mask[i].length;
+
           if (i<c.PartWidths.length) partWidth = c.PartWidths[i];
           else partWidth = void 0;
+
+          if (typeof(partWidth)==='undefined') partWidth = partMaskLength*c.CharWidth;
 
           if (i<c.PartDefaultValues.length) partDefaultValue = c.PartDefaultValues[i];
           else partDefaultValue = void 0;
 
           if (parts.type[i]=='Edit')
           {
-            if (typeof(partWidth)==='undefined') partWidth = parts.mask[i].length*c.CharWidth;
             ng_MergeDef(def, {
               Data: {
-                MaxLength: parts.mask[i].length
+                MaxLength: partMaskLength
+              },
+              Methods: {
+                DoFocus: function(e,elm){
+                  c._ignoreImagesUpdate = true;
+                  this.DoFocus.callParent(e,elm);
+                  c._ignoreImagesUpdate = false;
+        
+                  var self = this;
+                  if(e) ngApp.InvokeLater(function(){
+                    self.Owner.Owner.DoFocus(e,elm);
+                  });
+                },
+                DoBlur: function(e, elm){
+                  c._ignoreImagesUpdate = true;
+                  this.DoBlur.callParent(e,elm);
+                  c._ignoreImagesUpdate = false;
+        
+                  var self = this;
+                  if(e) ngApp.InvokeLater(function(){
+                    self.Owner.Owner.DoBlur(e,elm);
+                  });
+                }
               }
             });
           } else
           {
             ng_MergeDef(def, {
               Data: {
-                Cursor: 'text',
-                Text: parts.mask[i],
-                DoUpdateImages: nge_DoUpdateImages
+                Text: parts.mask[i]
+              },
+              Methods: {
+                DoFocus: function(e,elm){
+                  var maskEdit = this.Owner.Owner;
+                  var parts = maskEdit.GetParts(this.MaskID-1,true);
+                  if(parts.length > 0){maskEdit.SetFocusPart(parts[0].ID);}
+                }
               }
             });
           }
@@ -662,15 +661,6 @@ ngUserControls['maskedit'] = {
               DefaultValue: partDefaultValue
             },
             Events: {
-              OnClick: function (o) {
-                if (typeof(o)==='undefined') return;
-
-                if (o.Owner.MaskType=='Static')
-                {
-                  var parts = o.Owner.Owner.Owner.GetParts(o.Owner.MaskID-1, true);
-                  if (parts.length>0) o.Owner.Owner.Owner.SetFocusPart(parts[0].ID);
-                }
-              },
               OnKeyDown: function (e, elm) {
                 if ((typeof(e)==='undefined') || (typeof(e.Owner.GetCaretPos)==='undefined') || (ngiOS)) return false;
                 e.Owner.cursorPos = e.Owner.GetCaretPos();
@@ -763,9 +753,7 @@ ngUserControls['maskedit'] = {
             },
             Methods: {
               Update: updatePart,
-              DoUpdateImages: doUpdatePartImages,
-              DoFocus: doFocusPart,
-              DoBlur: doBlurPart
+              DoUpdateImages: doUpdatePartImages
             }
           });
 
@@ -795,16 +783,9 @@ ngUserControls['maskedit'] = {
         ng_MergeDef(def, {
           W: 0,
           Data: {
-            Enabled: c.Enabled,
-            Cursor: 'text',
-            DoUpdateImages: nge_DoUpdateImages
+            Enabled: c.Enabled
           },
           Events: {
-            OnClick: function (o) {
-              if (typeof(o)==='undefined') return;
-              var parts = o.Owner.Owner.Owner.GetParts(-1, true);
-              if (parts.length>0) o.Owner.Owner.Owner.SetFocusPart(parts[parts.length-1].ID);
-            },
             DoMouseEnter: function (e) {
               if (e) this.Owner.Owner.handleEnterLeave(this, e, 'enter');
             },
@@ -815,8 +796,12 @@ ngUserControls['maskedit'] = {
           Methods: {
             Update: updatePart,
             DoUpdateImages: doUpdatePartImages,
-            DoFocus: doFocusPart,
-            DoBlur: doBlurPart
+
+            DoFocus: function(e,elm){
+              var maskEdit = this.Owner.Owner;
+              var parts = maskEdit.GetParts(-1,true);
+              if(parts.length > 0){maskEdit.SetFocusPart(parts[parts.length-1].ID);}
+            }
           }
         });
 

@@ -43,10 +43,10 @@ ngUserControls['maskedit_designinfo'] = {
             "ngAlt": { Level: 'advanced' },
             "ngAltD": { Level: 'basic' },
             "Alt": ng_diString('', { Level: 'basic' }),
-            "LeftDef": ng_diControl('ngButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "LeftDef": ng_diControl('ngEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' }),
             "EditDef": ng_diControl('ngEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' }),
-            "StaticDef": ng_diControl('ngButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
-            "RightDef": ng_diControl('ngButton', null, { Level: 'advanced' }, { InheritedFrom: 'ngButton' }),
+            "StaticDef": ng_diControl('ngEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' }),
+            "RightDef": ng_diControl('ngEdit', null, { Level: 'advanced' }, { InheritedFrom: 'ngEdit' }),
 
             "Mask": ng_diStringValues('',[
               '00:00:00',
