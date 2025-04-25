@@ -186,13 +186,6 @@ ngUserControls['maskedit'] = {
        */
       c.LockHintCaretPos = false;
 
-      /*  Variable: HasFocus
-       *  ...
-       *  Type: bool
-       *  Default value: *false*
-       */
-      c.HasFocus = false;
-
       //===== STANDARD METHODS =====
 
       /*
@@ -533,7 +526,7 @@ ngUserControls['maskedit'] = {
           }
 
           var self = this;
-          if(e)ngApp.InvokeLater(function(){
+          if(e) ngApp.InvokeLater(function(){
             self.Owner.Owner.DoFocus(e,elm);
           });
         };
@@ -546,14 +539,36 @@ ngUserControls['maskedit'] = {
           }
 
           var self = this;
-          if(e)ngApp.InvokeLater(function(){
+          if(e) ngApp.InvokeLater(function(){
             self.Owner.Owner.DoBlur(e,elm);
           });
         };
 
         var doUpdatePartImages = function(){
           if(!c._ignoreImagesUpdate && ng_IsOverriden(this.DoUpdateImages)){
+            var oldCFocus = this.ControlHasFocus;
+            var oldFocus = this.HasFocus;
+
+            this.ControlHasFocus = !!c.ControlHasFocus;
+            this.HasFocus = !!c.ControlHasFocus;
+
             this.DoUpdateImages.callParent();
+            this.ControlHasFocus = oldCFocus;
+            this.HasFocus = oldFocus;
+          }
+        };
+
+        var updatePart = function(recursive){
+          if(ng_IsOverriden(this.Update)){
+            var oldCFocus = this.ControlHasFocus;
+            var oldFocus = this.HasFocus;
+
+            this.ControlHasFocus = !!c.ControlHasFocus;
+            this.HasFocus = !!c.ControlHasFocus;
+
+            this.Update.callParent(recursive);
+            this.ControlHasFocus = oldCFocus;
+            this.HasFocus = oldFocus;
           }
         };
 
@@ -581,6 +596,7 @@ ngUserControls['maskedit'] = {
             }
           },
           Methods: {
+            Update: updatePart,
             DoUpdateImages: doUpdatePartImages,
             DoFocus: doFocusPart,
             DoBlur: doBlurPart
@@ -746,6 +762,7 @@ ngUserControls['maskedit'] = {
               }
             },
             Methods: {
+              Update: updatePart,
               DoUpdateImages: doUpdatePartImages,
               DoFocus: doFocusPart,
               DoBlur: doBlurPart
@@ -796,6 +813,7 @@ ngUserControls['maskedit'] = {
             }
           },
           Methods: {
+            Update: updatePart,
             DoUpdateImages: doUpdatePartImages,
             DoFocus: doFocusPart,
             DoBlur: doBlurPart
@@ -952,15 +970,22 @@ ngUserControls['maskedit'] = {
         var partHasFocus = false;
 
         for(var i in parts){
-          var ctrl = parts[i].Control;
-          if(ctrl.HasFocus){partHasFocus = true;}
+          var part = parts[i];
+          var ctrl = part.Control;
+
+          if(ctrl.ControlHasFocus || ctrl.HasFocus){
+            partHasFocus = true;
+          }
         }
 
-        if(!partHasFocus || this.HasFocus){return;}
-        this.HasFocus = true;
+        if(!partHasFocus || this.ControlHasFocus){return;}
+        this.ControlHasFocus = true;
 
         this.DoUpdateImages();
-        if((this.OnFocus)&&(this.Enabled)) this.OnFocus(this);
+
+        if((this.OnFocus)&&(this.Enabled)){
+          this.OnFocus(this);
+        }
       };
 
       c.DoBlur = function(e,elm){
@@ -968,15 +993,22 @@ ngUserControls['maskedit'] = {
         var partHasFocus = false;
 
         for(var i in parts){
-          var ctrl = parts[i].Control;
-          if(ctrl.HasFocus){partHasFocus = true;}
+          var part = parts[i];
+          var ctrl = part.Control;
+
+          if(ctrl.ControlHasFocus || ctrl.HasFocus){
+            partHasFocus = true;
+          }
         }
 
-        if(partHasFocus || !this.HasFocus){return;}
-        this.HasFocus = false;
+        if(partHasFocus || !this.ControlHasFocus){return;}
+        this.ControlHasFocus = false;
 
         this.DoUpdateImages();
-        if((this.OnBlur)&&(this.Enabled)) this.OnBlur(this);
+
+        if((this.OnBlur)&&(this.Enabled)){
+          this.OnBlur(this);
+        }
       };
 
       c.DoUpdateImages = function(){
@@ -988,10 +1020,7 @@ ngUserControls['maskedit'] = {
           var ctrl = parts[i].Control;
 
           if(ctrl.DoUpdateImages){
-            var oldFocus = ctrl.HasFocus;
-            ctrl.HasFocus = this.HasFocus;
             ctrl.DoUpdateImages();
-            ctrl.HasFocus = oldFocus;   
           }
         }
       };
