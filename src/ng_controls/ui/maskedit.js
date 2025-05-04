@@ -544,13 +544,23 @@ ngUserControls['maskedit'] = {
           this.HasFocus = oldFocus;
         };
 
+        function doUpdateHideInput(o) {
+          var ret=ng_CallParent(this,'DoUpdate',arguments,true);
+          if(ret) {
+            var o2=document.getElementById(this.ID+'_T');
+            if(o2) o2.style.visibility='hidden';
+          }
+          return ret;
+        }
+
         var def = new Object();
         if (c.OnCreateLeftHolder) c.OnCreateLeftHolder(c, def);
         ng_MergeDef(def, c.LeftDef);
         ng_MergeDef(def, {
           W: 0,
           Data: {
-            Enabled: c.Enabled
+            Enabled: c.Enabled,
+            ReadOnly: true
           },
           Events: {
             DoMouseEnter: function (e) {
@@ -563,12 +573,7 @@ ngUserControls['maskedit'] = {
           Methods: {
             Update: updatePart,
             DoUpdateImages: doUpdatePartImages,
-
-            DoFocus: function(e,elm){
-              var maskEdit = this.Owner.Owner;
-              var parts = maskEdit.GetParts(-1,true);
-              if(parts.length > 0){maskEdit.SetFocusPart(parts[0].ID);}
-            }
+            DoUpdate: doUpdateHideInput
           }
         });
         c.Controls.AddControls({ LeftHolder: def });
@@ -597,15 +602,15 @@ ngUserControls['maskedit'] = {
           if (i<c.PartWidths.length) partWidth = c.PartWidths[i];
           else partWidth = void 0;
 
-          if (typeof(partWidth)==='undefined') partWidth = partMaskLength*c.CharWidth;
-
           if (i<c.PartDefaultValues.length) partDefaultValue = c.PartDefaultValues[i];
           else partDefaultValue = void 0;
 
           if (parts.type[i]=='Edit')
           {
+            if (typeof(partWidth)==='undefined') partWidth = partMaskLength*c.CharWidth;
             ng_MergeDef(def, {
               Data: {
+                SelectOnFocus: true,
                 MaxLength: partMaskLength
               },
               Methods: {
@@ -614,6 +619,7 @@ ngUserControls['maskedit'] = {
                   this.DoFocus.callParent(e,elm);
                   c._ignoreImagesUpdate = false;
         
+                  this.Owner.Owner.last_focused_edit=this.MaskID;
                   var self = this;
                   if(e) ngApp.InvokeLater(function(){
                     self.Owner.Owner.DoFocus(e,elm);
@@ -635,12 +641,21 @@ ngUserControls['maskedit'] = {
           {
             ng_MergeDef(def, {
               Data: {
-                Text: parts.mask[i]
+                Text: parts.mask[i],
+                ReadOnly: true,
+                TextAlign: 'center'
               },
               Methods: {
                 DoFocus: function(e,elm){
                   var maskEdit = this.Owner.Owner;
-                  var parts = maskEdit.GetParts(this.MaskID-1,true);
+                  var focusid=this.MaskID+1;
+                  if((typeof maskEdit.last_focused_edit!=='undefined')&&(maskEdit.last_focused_edit===focusid)) focusid=this.MaskID-1;
+                  var parts = maskEdit.GetParts(focusid,true);
+                  if(!parts.length) {
+                    if(focusid===this.MaskID-1) focusid=this.MaskID+1;
+                    else focusid=this.MaskID-1;
+                    parts = maskEdit.GetParts(focusid,true);
+                  }
                   if(parts.length > 0){maskEdit.SetFocusPart(parts[0].ID);}
                 }
               }
@@ -677,11 +692,11 @@ ngUserControls['maskedit'] = {
               OnKeyUp: function (e, elm) {
                 if ((typeof(e)==='undefined') || (typeof(e.Owner.GetCaretPos)==='undefined') || (typeof(e.Owner.SetCaretPos)==='undefined') || (typeof(e.Owner.cursorPos)==='undefined') || (ngiOS)) return false;
 
-                var ctrl      = e.Owner.Owner.Owner;
-                var oldCurPos = e.Owner.cursorPos;
-                var newCurPos = e.Owner.GetCaretPos();
-                var maxLen    = e.Owner.MaskDef.length;
-                var textLen   = e.Owner.GetText().length;
+                var c         = e.Owner;
+                var ctrl      = c.Owner.Owner;
+                var oldCurPos = c.cursorPos;
+                var newCurPos = c.GetCaretPos();
+                var textLen   = c.GetText().length;
 
                 var partID, part, parts;
                 var caretPos = 0;
@@ -694,35 +709,52 @@ ngUserControls['maskedit'] = {
                     if (parts.length==0) break;
 
                     part = (e.keyCode==KEY_END ? parts[parts.length-1] : parts[0]);
-                    if (e.keyCode==KEY_END) caretPos = (part.Control.HintVisible ? part.Control.GetHint() : part.Control.GetText()).length;
+                    var pc = part.Control;
 
-                    ctrl.SetFocusPart(part.ID);
-                    part.Control.SetCaretPos(caretPos);
-                  break;
+                    var sof=pc.SelectOnFocus;
+                    pc.SelectOnFocus=false;
+                    try {
+                      ctrl.SetFocusPart(part.ID);
+                      if (e.keyCode==KEY_END) caretPos = (pc.HintVisible ? pc.GetHint() : pc.GetText()).length;
+                      pc.SetCaretPos(caretPos);
+                    } finally {
+                      pc.SelectOnFocus=sof;
+                    }
+                    break;
                   case KEY_BACK:
-                    if(e.Owner.backHintVisible) oldCurPos=newCurPos;
-                    delete e.Owner.backHintVisible;
+                    if(c.backHintVisible) oldCurPos=newCurPos;
+                    delete c.backHintVisible;
                   case KEY_LEFT:
                   case KEY_RIGHT:
                     if (oldCurPos==newCurPos)
                     {
                       var direction = ((e.keyCode==KEY_RIGHT) ? 'R' : 'L');
 
-                      parts = ctrl.GetParts();
+                      if (((newCurPos==0)       || (c.HintVisible)) && (direction=='L')) partID = c.MaskID-2;
+                      if (((newCurPos>=textLen) || (c.HintVisible)) && (direction=='R')) partID = c.MaskID+2;
+
+                      if(typeof partID==='undefined') break;
+
+                      parts = ctrl.GetParts(partID);
                       if (parts.length==0) break;
 
-                      if (((newCurPos==0)       || (e.Owner.HintVisible)) && (direction=='L')) partID = e.Owner.MaskID-2;
-                      if (((newCurPos>=textLen) || (e.Owner.HintVisible)) && (direction=='R')) partID = e.Owner.MaskID+2;
+                      if (typeof(parts[0])==='undefined') break;
+                      var pc = parts[0].Control;
 
-                      if (typeof(parts[partID])==='undefined') break;
-                      if (direction=='L') caretPos = (parts[partID].Control.HintVisible ? parts[partID].Control.GetHint() : parts[partID].Control.GetText()).length;
+                      var sof=pc.SelectOnFocus;
+                      pc.SelectOnFocus=false;
+                      try {
+                        ctrl.SetFocusPart(partID);
 
-                      ctrl.SetFocusPart(partID);
-                      parts[partID].Control.SetCaretPos(caretPos);
+                        if (direction=='L') caretPos = (pc.HintVisible ? pc.GetHint() : pc.GetText()).length;
+                        pc.SetCaretPos(caretPos);
+                      } finally {
+                        pc.SelectOnFocus=sof;
+                      }
                     }
                   break;
                   default:
-                    e.Owner.cursorPos = newCurPos;
+                    c.cursorPos = newCurPos;
                   break;
                 }
 
@@ -742,6 +774,8 @@ ngUserControls['maskedit'] = {
                   if ((textLen==maxLen) && (o.cursorPos>=textLen)) ctrl.SetFocusPart(o.MaskID+2);
                 }
 
+                if(o.AutoSize) o.Update();
+
                 return true;
               },
               DoMouseEnter: function (e) {
@@ -758,6 +792,57 @@ ngUserControls['maskedit'] = {
           });
 
           def.OnCreated = ngAddEvent(def.OnCreated, function (pc, ref) {
+
+            if(pc.CtrlType==='ngEdit')
+            {
+              if((typeof pc.AutoSize==='undefined')&&(typeof pc.Bounds.W === 'undefined')&&((typeof pc.Bounds.L === 'undefined')||(typeof pc.Bounds.R === 'undefined'))) {
+                pc.AutoSize=true;
+              }
+              ng_OverrideMethod(pc, 'DoUpdate', function(o)
+              {
+                if(this.AutoSize)
+                {
+                  if(!ng_CallParent(this,'DoUpdate',arguments,true)) return false;
+                  var text=this.GetText();
+                  var tw=0;
+                  // Measure text
+                  if(text!='')
+                  {
+                    var cls=this.GetClassName('Input',false);
+                    if((text!==this.autosize_text)||(cls!==this.autosize_class)) {
+                      var nd=document.createElement('div');
+                      nd.style.position="absolute";
+                      o.appendChild(nd);
+                      nd.className=cls;
+                      ng_SetInnerHTML(nd,ngHtmlVal(text.replace(/\r\n|[\r\n]/g, ''),false));
+                      ng_BeginMeasureElement(nd);
+                      this.autosize_textwidth=ng_OuterWidth(nd);
+                      ng_EndMeasureElement(nd);
+                      o.removeChild(nd);
+                      this.autosize_text=text;
+                      this.autosize_class=cls;
+                    }
+                    tw+=this.autosize_textwidth;
+                  }
+                  var dp,image;
+                  if(this.OnGetImg) image=this.OnGetImg(this, 0);
+                  else image=this.LeftImg;
+                  if(image) {
+                    dp=ngc_ImgProps(this.ID+'_IL', (this.ControlHasFocus ? 1 : 0), this.Enabled, image);
+                    if(dp) tw+=ngVal(dp.W,0);
+                  }
+                  if(this.OnGetImg) image=this.OnGetImg(this, 2);
+                  else image=this.RightImg;
+                  if(image) {
+                    dp=ngc_ImgProps(this.ID+'_IL', (this.ControlHasFocus ? 1 : 0), this.Enabled, image);
+                    if(dp) tw+=ngVal(dp.W,0);
+                  }                    
+                  this.SetBounds({W: tw + 2});
+                }
+                return ng_CallParent(this,'DoUpdate',arguments,true);
+              });
+            }
+
             if (!pc.OnGetAlt)
             {
               pc.OnGetAlt = function (o) {
@@ -783,7 +868,8 @@ ngUserControls['maskedit'] = {
         ng_MergeDef(def, {
           W: 0,
           Data: {
-            Enabled: c.Enabled
+            Enabled: c.Enabled,
+            ReadOnly: true
           },
           Events: {
             DoMouseEnter: function (e) {
@@ -796,12 +882,7 @@ ngUserControls['maskedit'] = {
           Methods: {
             Update: updatePart,
             DoUpdateImages: doUpdatePartImages,
-
-            DoFocus: function(e,elm){
-              var maskEdit = this.Owner.Owner;
-              var parts = maskEdit.GetParts(-1,true);
-              if(parts.length > 0){maskEdit.SetFocusPart(parts[parts.length-1].ID);}
-            }
+            DoUpdate: doUpdateHideInput
           }
         });
 
@@ -994,6 +1075,7 @@ ngUserControls['maskedit'] = {
         if((this.OnBlur)&&(this.Enabled)){
           this.OnBlur(this);
         }
+        delete this.last_focused_edit;
       };
 
       c.DoUpdateImages = function(){
