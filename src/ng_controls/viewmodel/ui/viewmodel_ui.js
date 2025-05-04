@@ -1961,7 +1961,17 @@ ngUserControls['viewmodel_ui'] = {
             }
           }
         case 'ngToolBar':
-          if(c.CtrlType==='ngToolBar' && !c.CtrlInheritsFrom('ngMaskEdit')) return;
+          if(c.CtrlType==='ngToolBar') {
+            if((typeof c.SetMask!=='function')||(!c.CtrlInheritsFrom('ngMaskEdit'))) return;
+            var v=valueAccessor();
+            if((v)&&(typeof v.FieldDef !== 'undefined'))
+            {
+              var fd=v.FieldDef;
+              if(!ng_isEmpty(fd.Attrs['EditMask'])) {
+                c.SetMask(fd.Attrs['EditMask']);
+              }
+            }
+          }
         case 'ngMemo':
           var binding=allBindingsAccessor();
           var instantupdate = ngVal(binding["InstantUpdate"],false);
