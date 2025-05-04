@@ -1652,6 +1652,11 @@ var WinXP_DesignInfo = {
       di.ControlCategory='Dropdown Field';
       return di;
     });
+    ngRegisterControlDesignInfo('stdMaskEditField',function(d,c,ref) {
+      var di=stdMaskEditDI(d,c,ref);
+      ng_MergeVar(di,stdEditFieldDI(d,c,ref));
+      return di;
+    });    
     ngRegisterControlDesignInfo('stdEditDateField',function(d,c,ref) {
       var di=stdEditDateDI(d,c,ref);
       ng_MergeVar(di,stdEditFieldDI(d,c,ref));

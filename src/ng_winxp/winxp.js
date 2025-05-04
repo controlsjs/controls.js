@@ -3268,6 +3268,17 @@ var WinXPControls = {
         skinfnc.Create_stdEditFieldDef(def);
         return skinfnc.Create_stdDropDown(def,ref,parent,modtype,true);
       });
+      
+      if(ngUserControls['maskedit'])
+      {
+        /*  Class: stdMaskEditField
+         *  Standard mask edit field control (based on <ngMaskEditField>).
+         */
+        ngRegisterControlSkin('stdMaskEditField','ngMaskEditField', function(def,ref,parent,modtype) {
+          skinfnc.Create_stdEditFieldDef(def);
+          return skinfnc.Create_stdMaskEdit(def,ref,parent,modtype);
+        });
+      }
 
       if(ngUserControls['calendar'])
       {
