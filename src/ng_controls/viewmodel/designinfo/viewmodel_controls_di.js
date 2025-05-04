@@ -486,7 +486,9 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         "ItemSeparator": ng_diString(',', { Level: 'basic' }),
 
         "EditNumStep": ng_diInteger(1, { Level: 'optional' }),
-        "EditNumStepRound": ng_diBoolean(false, { Level: 'optional' })
+        "EditNumStepRound": ng_diBoolean(false, { Level: 'optional' }),
+
+        "EditMask": ng_diString('', { Level: 'optional' })
       };
 
       if(typeof ngUserControls['dbviewmodel'] === 'object')

@@ -105,7 +105,15 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
           props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
           props["ItemMapping"] = ng_diMixed(['databind_ngmenu_itemmapping', 'vm_databind_field'], { Level: 'basic' });
         }
-        else break;
+        else {
+          if(c.CtrlInheritsFrom('ngMaskEdit')) {
+            props["InstantUpdate"] = instantUpdateProperty;
+            props["DelayedUpdate"] = delayedUpdateProperty;
+            props["Focus"] = { Level: 'basic' };
+            props["Value"] = ng_diType('vm_databind_field', { Level: 'basic' });    
+          }
+          break;
+        }
       case 'ngList':
         if(c.CtrlType==='ngList') {
           props["Focus"] = { Level: 'basic' };
