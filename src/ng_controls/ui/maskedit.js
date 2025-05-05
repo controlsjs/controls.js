@@ -202,6 +202,7 @@ ngUserControls['maskedit'] = {
        */
       c.GetText = function () {
         if (c.OnGetText) return ngVal(c.OnGetText(c), '');
+        if (this.IsEmpty()) return '';
 
         var parts = c.GetParts();
 
@@ -317,7 +318,7 @@ ngUserControls['maskedit'] = {
        *  ...
        *
        *  Syntax:
-       *    string *GetValidText* ([bool editOnly = false])
+       *    string *GetValidText* ()
        *
        *  Parameters:
        *    editOnly - ...
@@ -325,18 +326,9 @@ ngUserControls['maskedit'] = {
        *  Returns:
        *    -
        */
-      c.GetValidText = function (editOnly) {
-        editOnly = ngVal(editOnly, false);
+      c.GetValidText = function () {
         if (!c.IsValid()) return '';
-
-        var result = '';
-        if (editOnly)
-        {
-          var parts = c.GetParts(-1, true);
-          for (var i=0;i<parts.length;i++) result += parts[i].Text;
-        } else result = c.GetText();
-
-        return result;
+        return c.GetText();
       }
 
       /*  Function: GetParts
