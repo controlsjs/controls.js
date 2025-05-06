@@ -3339,6 +3339,8 @@ function nge_DoFocus(e, elm)
       }
     } catch(e) { }
   }
+
+  if((ngVal(this.Suggestion,false))&&(this.SuggestionOnFocus)) this.SuggestionRefresh(true,1);
 }
 
 function nge_DoSetEnabled(v)
@@ -4239,9 +4241,15 @@ function ngEdit(id, text)
   /*  Variable: SuggestionHideOnTextChange
    *  ...
    *  Type: bool
-   *  Default value: *''*
+   *  Default value: *false*
    */
   //this.SuggestionHideOnTextChange=false;
+  /*  Variable: SuggestionOnFocus
+   *  ...
+   *  Type: bool
+   *  Default value: *false*
+   */
+  //this.SuggestionOnFocus=false;
 
   /*
    *  Group: Methods
