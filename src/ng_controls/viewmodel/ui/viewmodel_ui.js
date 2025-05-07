@@ -1124,7 +1124,18 @@ ngUserControls['viewmodel_ui'] = {
       *  Mask edit field control (based on <ngMaskEdit>).
       */
       /*<>*/
-      ngRegisterControlMod('ngMaskEditField', 'ngMaskEdit', Create_EditField);
+      ngRegisterControlMod('ngMaskEditField', 'ngMaskEdit', function(def, ref, parent, modtype)
+      {
+        ng_MergeDef(def, {
+          ErrorHint: {
+            Data: {
+              ToolBarIgnore: true
+            }
+          }
+        });
+
+        return Create_EditField(def, ref, parent, modtype);
+      });
     }
 
     /*  Class: ngDropDownField
