@@ -314,23 +314,6 @@ ngUserControls['maskedit'] = {
         return true;
       }
 
-      /*  Function: GetValidText
-       *  ...
-       *
-       *  Syntax:
-       *    string *GetValidText* ()
-       *
-       *  Parameters:
-       *    editOnly - ...
-       *
-       *  Returns:
-       *    -
-       */
-      c.GetValidText = function () {
-        if (!c.IsValid()) return '';
-        return c.GetText();
-      }
-
       /*  Function: GetParts
        *  ...
        *
@@ -890,20 +873,19 @@ ngUserControls['maskedit'] = {
        *  ...
        *
        *  Syntax:
-       *    bool *IsValid* ([mixed data = -1, bool asArray = false])
+       *    bool *IsValid* ([string text = null, bool asArray = false])
        *
        *  Parameters:
-       *    data - int: part>=0 (-1 for all parts) / string: text
+       *    text - ...
        *    asArray - ...
        *
        *  Returns:
        *    -
        */
-      c.IsValid = function (data, asArray) {
-        var part = (ng_typeNumberInt(data) ? data : -1);
+      c.IsValid = function (text, asArray) {
         asArray  = ngVal(asArray, false);
 
-        var parts = (ng_typeString(data) ? c.textToParts(data) : c.GetParts(part));
+        var parts = (ng_typeString(text) ? c.textToParts(text) : c.GetParts());
         if (parts.length==0) return false;
 
         var result = new Array();
@@ -914,9 +896,7 @@ ngUserControls['maskedit'] = {
 
           re   = new RegExp(parts[i].RegExp);
           test = re.test(parts[i].Text);
-
-          if (c.OnValidate) result.push(ng_toBool(c.OnValidate(c, parts[i], test, re)));
-          else result.push(test);
+          result.push(test);
         }
 
         if (asArray) return result;
@@ -1177,11 +1157,6 @@ ngUserControls['maskedit'] = {
        *  Event: OnGetAlt
        */
       c.OnGetAlt = null;
-
-      /*
-       *  Event: OnValidate
-       */
-      c.OnValidate = null;
 
       /*
        *  Event: OnSetInvalid

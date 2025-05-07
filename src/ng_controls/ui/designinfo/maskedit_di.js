@@ -72,7 +72,6 @@ ngUserControls['maskedit_designinfo'] = {
           "Events": {
             "OnTextChanged": ng_diEvent('function(c, cp) {}', { Level: 'basic' }),
             "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnValidate": ng_diEvent('function(c, part, text, re) { return true; }', { Level: 'basic' }),
             "OnSetInvalid": ng_diEvent('function(c, state, update) { return true; }', { Level: 'basic' }),
             "OnSetInvalidPart": ng_diEvent('function(c, part, state, update) { return true; }', { Level: 'basic' }),
             "OnCreatePart": ng_diEvent('function(c, partInfo, def, parts) {}', { Level: 'advanced' }),
