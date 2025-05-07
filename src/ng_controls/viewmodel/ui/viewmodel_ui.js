@@ -742,6 +742,7 @@ ngUserControls['viewmodel_ui'] = {
         {
           ngAddChildControl(this,this.ErrorHint);
           this.ErrorHint.AddEvent(ngvmf_ErrorHintVisibleChanged,'OnVisibleChanged');
+          this.ErrorHint.Owner = this;
         }
       }
       return this.ErrorHint;
@@ -903,6 +904,7 @@ ngUserControls['viewmodel_ui'] = {
             return (ngGetControlByElement(t)===self);
           });
           ngAddChildControl(this,this.ErrorHint);
+          this.ErrorHint.Owner = this;
         }
       }
       return this.ErrorHint;
