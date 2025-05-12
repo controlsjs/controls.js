@@ -1113,7 +1113,7 @@ ngUserControls['maskedit'] = {
 
   },
 
-  MaskToParts: function(mask){
+  MaskToParts: function(mask) {
     //Zakladni nastaveni
     var editChars = new Array('0', '9', 'C', 'X', 'A', 'a', 'Z', 'z', '!', '?');
     var metaChars = new Array('\\', '^', '$', '.', '[', ']', '|', '(', ')', '?', '*', '+', '{', '}');
@@ -1200,5 +1200,25 @@ ngUserControls['maskedit'] = {
     for (var i=0;i<parts.length;i++) parts[i].Text = result[i];
 
     return parts;
+  },
+
+  MaskToRegexp: function (mask) {
+    var parts = this.MaskToParts(mask);
+    var fullRegexp = '';
+
+    for(var i in parts.regexp){
+      var regexp = parts.regexp[i];
+      if(ng_typeString(regexp)) fullRegexp += regexp;
+    }
+
+    return '^'+fullRegexp+'$';
+  },
+
+  ValidateText: function (text, mask) {
+    if(!ng_typeString(text)) return false;
+
+    var regexp = this.MaskToRegexp(mask);
+    regexp = new RegExp(regexp, 'g');
+    return !!regexp.exec(text);
   }
 };
