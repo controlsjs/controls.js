@@ -1136,4 +1136,38 @@
     this.DoParseString = ngfd_PercentParseString;
   }
 
+  if (ngUserControls['maskedit']) {
+
+    function ngfd_MaskEditDoTypedValue(v)
+    {
+      var s = ng_toString(v);
+      if ((s!='') && (this.Attrs['EditMask']!=''))
+      {
+        var result = ngUserControls['maskedit'].ValidateText(s,this.Attrs['EditMask']);
+        if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR,'viewmodel_err_format');
+      }
+
+      return v;
+    }
+
+    /*  Class: ngFieldDef_MaskEdit
+    *  <ngViewModel> Mask edit field (based on <ngFieldDef> STRING).
+    *
+    *  Syntax:
+    *    new *ngFieldDef_MaskEdit* ([string id ='', string mask='', object attrs={}])
+    *
+    *  Parameters:
+    *    id - field id
+    *    mask - edit mask
+    *    attrs - field attributes
+    */
+    window.ngFieldDef_MaskEdit = function(id, mask, attrs) {
+      attrs=ngVal(attrs,{});
+      attrs['EditMask']=ngVal(mask,'');
+
+      ngFieldDefCreateAs(this,id,'STRING',attrs);
+      this.DoTypedValue = ngfd_MaskEditDoTypedValue;
+    };
+  }
+
 })(window);

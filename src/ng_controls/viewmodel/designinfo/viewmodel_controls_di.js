@@ -1080,6 +1080,14 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
             'MinValue': ng_diInteger(0),
             'MaxValue': ng_diInteger(100)
           }, true))
+        ]),
+
+        // ngFieldDef_MaskEdit
+        fdtype('ngFieldDef_MaskEdit', '', [
+          ng_diString('', { DisplayName: 'Mask', Level: 'basic' }),
+          ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('string', {
+            'EditMask': ng_diString('', { Level: 'basic' })
+          }))
         ])
       ];
 
