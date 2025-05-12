@@ -16,6 +16,7 @@ ngUserControls['maskedit'] = {
   ControlsGroup: 'Core',
 
   OnInit: function() {
+    var ns = this;
 
     /*  Class: ngMaskEdit
      *  Standard mask edit control (based on <ngToolBar>).
@@ -234,7 +235,7 @@ ngUserControls['maskedit'] = {
         var edits = c.GetParts(-1, true);
         if (edits.length==0) return;
 
-        var parts = c.textToParts(text);
+        var parts = ns.TextToParts(text,c.GetParts());
         if (parts.length==0) { edits[0].Control.SetText(text); return; }
 
         var nParts = new Array();
@@ -442,52 +443,7 @@ ngUserControls['maskedit'] = {
         if (typeof(mask)==='undefined') return false;
         c.Mask = mask;
 
-        mask = mask.split('');
-
-        //Zakladni nastaveni
-        var editChars = new Array('0', '9', 'C', 'X', 'A', 'a', 'Z', 'z', '!', '?');
-        var metaChars = new Array('\\', '^', '$', '.', '[', ']', '|', '(', ')', '?', '*', '+', '{', '}');
-        var parts     = new Object({ mask: new Array(), type: new Array(), regexp: new Array() });
-        var regExps   = new Object();
-
-        regExps['0'] = '[0-9]{1}';
-        regExps['9'] = '[0-9]?';
-
-        regExps['C'] = '[A-Za-z]{1}';
-        regExps['X'] = '[A-Za-z]?';
-
-        regExps['A'] = '[A-Z]{1}';
-        regExps['a'] = '[a-z]{1}';
-        regExps['Z'] = '[A-Z]?';
-        regExps['z'] = '[a-z]?';
-
-        regExps['!'] = '.{1}';
-        regExps['?'] = '.?';
-
-        //Parsovani masky
-        var escapeNext = false;
-
-        var part     = '';
-        var lastPart = '';
-        var lastIdx  = 0;
-        for (var i=0;i<mask.length;i++)
-        {
-          if ((mask[i]=='\\') && (!escapeNext)) { escapeNext = true; continue; }
-
-          if ((ng_inArray(mask[i], editChars)) && (!escapeNext)) part = 'Edit';
-          else part = 'Static';
-
-          if (lastPart=='') { parts.mask.push(''); parts.type.push(part); parts.regexp.push(''); }
-
-          if ((lastPart!='') && (lastPart!=part)) { lastIdx = parts.mask.push('')-1; parts.type.push(part); parts.regexp.push(''); }
-          parts.mask[lastIdx] += mask[i];
-          if (part=='Edit') parts.regexp[lastIdx] += regExps[mask[i]];
-          else parts.regexp[lastIdx] += (!ng_inArray(mask[i], metaChars) ? mask[i] : '\\'+mask[i]);
-
-          lastPart   = part;
-          escapeNext = false;
-        }
-
+        var parts = ns.MaskToParts(mask);
         for (var i=0;i<parts.regexp.length;i++) parts.regexp[i] = '^' + parts.regexp[i] + '$';
 
         //Vytvoreni komponent
@@ -885,8 +841,10 @@ ngUserControls['maskedit'] = {
       c.IsValid = function (text, asArray) {
         asArray  = ngVal(asArray, false);
 
-        var parts = (ng_typeString(text) ? c.textToParts(text) : c.GetParts());
+        var parts = c.GetParts();
         if (parts.length==0) return false;
+
+        if(ng_typeString(text)) parts = ns.TextToParts(text,parts);
 
         var result = new Array();
         var re, test;
@@ -1066,45 +1024,6 @@ ngUserControls['maskedit'] = {
 
       //===== HELPER METHODS =====
 
-      c.textToParts = function (text) {
-        if (typeof(text)==='undefined') return false;
-
-        var parts = c.GetParts();
-        if (parts.length==0) return false;
-
-        var regExps = new Array();
-
-        regExps[0] = '';
-        for (var i=0;i<parts.length;i++) regExps[0] += '('+parts[i].RegExp.substring(1, parts[i].RegExp.length-1)+')';
-
-        var regExp;
-        for (var i=parts.length-1;i>=0;i-=2)
-        {
-          regExp = '';
-          for (var j=0;j<=i;j++) regExp += (parts[j].Type=='Edit' ? '(.*)' : '('+parts[j].RegExp.substring(1, parts[j].RegExp.length-1)+')');
-
-          if ((i==parts.length-1) && (parts[i].Type!='Edit')) i++;
-          if ((i>0) || (regExp!='(.*)')) regExps.push(regExp);
-        }
-
-        var re, result;
-        for (var i=0;i<regExps.length;i++)
-        {
-          regExps[i] = '^'+regExps[i]+'$';
-
-          re     = new RegExp(regExps[i], 'g');
-          result = re.exec(text);
-          if (result) break;
-        }
-
-        if (!result) return new Array();
-
-        result.shift();
-        for (var i=0;i<parts.length;i++) parts[i].Text = result[i];
-
-        return parts;
-      }
-
       c.handleEnterLeave = function (o, e, type) {
         if ((typeof(o)==='undefined') || (typeof(e)==='undefined') || (typeof(type)==='undefined')) return false;
         type = type.toLowerCase();
@@ -1192,5 +1111,94 @@ ngUserControls['maskedit'] = {
       return c;
     });
 
+  },
+
+  MaskToParts: function(mask){
+    //Zakladni nastaveni
+    var editChars = new Array('0', '9', 'C', 'X', 'A', 'a', 'Z', 'z', '!', '?');
+    var metaChars = new Array('\\', '^', '$', '.', '[', ']', '|', '(', ')', '?', '*', '+', '{', '}');
+    var parts     = new Object({ mask: new Array(), type: new Array(), regexp: new Array() });
+    var regExps   = new Object();
+
+    regExps['0'] = '[0-9]{1}';
+    regExps['9'] = '[0-9]?';
+
+    regExps['C'] = '[A-Za-z]{1}';
+    regExps['X'] = '[A-Za-z]?';
+
+    regExps['A'] = '[A-Z]{1}';
+    regExps['a'] = '[a-z]{1}';
+    regExps['Z'] = '[A-Z]?';
+    regExps['z'] = '[a-z]?';
+
+    regExps['!'] = '.{1}';
+    regExps['?'] = '.?';
+
+    if(ng_typeString(mask)) {
+      mask = mask.split('');
+
+      //Parsovani masky
+      var escapeNext = false;
+
+      var part     = '';
+      var lastPart = '';
+      var lastIdx  = 0;
+      for (var i=0;i<mask.length;i++)
+      {
+        if ((mask[i]=='\\') && (!escapeNext)) { escapeNext = true; continue; }
+
+        if ((ng_inArray(mask[i], editChars)) && (!escapeNext)) part = 'Edit';
+        else part = 'Static';
+
+        if (lastPart=='') { parts.mask.push(''); parts.type.push(part); parts.regexp.push(''); }
+
+        if ((lastPart!='') && (lastPart!=part)) { lastIdx = parts.mask.push('')-1; parts.type.push(part); parts.regexp.push(''); }
+        parts.mask[lastIdx] += mask[i];
+        if (part=='Edit') parts.regexp[lastIdx] += regExps[mask[i]];
+        else parts.regexp[lastIdx] += (!ng_inArray(mask[i], metaChars) ? mask[i] : '\\'+mask[i]);
+
+        lastPart   = part;
+        escapeNext = false;
+      }
+    }
+
+    return parts;
+  },
+
+  TextToParts: function (text,parts) {
+    if (typeof(text)==='undefined') return false;
+    if ((!ng_typeArray(parts)) || (parts.length==0)) return false;
+
+    var regExps = new Array();
+
+    regExps[0] = '';
+    for (var i=0;i<parts.length;i++) regExps[0] += '('+parts[i].RegExp.substring(1, parts[i].RegExp.length-1)+')';
+
+    var regExp;
+    for (var i=parts.length-1;i>=0;i-=2)
+    {
+      regExp = '';
+      for (var j=0;j<=i;j++) regExp += (parts[j].Type=='Edit' ? '(.*)' : '('+parts[j].RegExp.substring(1, parts[j].RegExp.length-1)+')');
+
+      if ((i==parts.length-1) && (parts[i].Type!='Edit')) i++;
+      if ((i>0) || (regExp!='(.*)')) regExps.push(regExp);
+    }
+
+    var re, result;
+    for (var i=0;i<regExps.length;i++)
+    {
+      regExps[i] = '^'+regExps[i]+'$';
+
+      re     = new RegExp(regExps[i], 'g');
+      result = re.exec(text);
+      if (result) break;
+    }
+
+    if (!result) return new Array();
+
+    result.shift();
+    for (var i=0;i<parts.length;i++) parts[i].Text = result[i];
+
+    return parts;
   }
 };
