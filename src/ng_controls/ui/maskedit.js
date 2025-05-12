@@ -226,21 +226,23 @@ ngUserControls['maskedit'] = {
        *    -
        */
       c.SetText = function (text) {
-        if (c.OnSetText) text = c.OnSetText(text, c);
-        if (typeof(text)==='undefined') return;
+        if(this.OnSetText) text=this.OnSetText(text,this);
+        
+        if(text!=this.GetText())
+        {
+          this.Clear();
+          if (text=='') return;
 
-        c.Clear();
-        if (text=='') return;
+          var edits = this.GetParts(-1, true);
+          if (edits.length==0) return;
 
-        var edits = c.GetParts(-1, true);
-        if (edits.length==0) return;
+          var parts = ns.TextToParts(text,this.GetParts());
+          if (parts.length==0) { edits[0].Control.SetText(text); return; }
 
-        var parts = ns.TextToParts(text,c.GetParts());
-        if (parts.length==0) { edits[0].Control.SetText(text); return; }
-
-        var nParts = new Array();
-        for (var i=0;i<parts.length;i++) nParts.push((parts[i].Type=='Static' ? void 0 : parts[i].Text));
-        c.SetParts(nParts);
+          var nParts = new Array();
+          for (var i=0;i<parts.length;i++) nParts.push((parts[i].Type=='Static' ? void 0 : parts[i].Text));
+          this.SetParts(nParts);
+        }
       }
 
       /*  Function: SetFocus
