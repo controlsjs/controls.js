@@ -488,7 +488,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         "EditNumStep": ng_diInteger(1, { Level: 'optional' }),
         "EditNumStepRound": ng_diBoolean(false, { Level: 'optional' }),
 
-        "EditMask": ng_diString('', { Level: 'optional' })
+        "Mask": ng_diString('', { Level: 'optional' })
       };
 
       if(typeof ngUserControls['dbviewmodel'] === 'object')
@@ -1086,7 +1086,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         fdtype('ngFieldDef_MaskEdit', '', [
           ng_diString('', { DisplayName: 'Mask', Level: 'basic' }),
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('string', {
-            'EditMask': ng_diString('', { Level: 'basic' })
+            'Mask': ng_diString('', { Level: 'basic' })
           }))
         ])
       ];

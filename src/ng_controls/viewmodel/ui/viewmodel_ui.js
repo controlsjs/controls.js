@@ -1980,8 +1980,8 @@ ngUserControls['viewmodel_ui'] = {
             if((v)&&(typeof v.FieldDef !== 'undefined'))
             {
               var fd=v.FieldDef;
-              if(!ng_isEmpty(fd.Attrs['EditMask'])) {
-                c.SetMask(fd.Attrs['EditMask']);
+              if(!ng_isEmpty(fd.Attrs['Mask'])) {
+                c.SetMask(fd.Attrs['Mask']);
               }
             }
           }

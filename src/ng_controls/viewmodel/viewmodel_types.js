@@ -1141,9 +1141,9 @@
     function ngfd_MaskEditDoTypedValue(v)
     {
       var s = ng_toString(v);
-      if ((s!='') && (this.Attrs['EditMask']!=''))
+      if ((s!='') && (this.Attrs['Mask']!=''))
       {
-        var result = ngUserControls['maskedit'].ValidateText(s,this.Attrs['EditMask']);
+        var result = ngUserControls['maskedit'].ValidateText(s,this.Attrs['Mask']);
         if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR,'viewmodel_err_format');
       }
 
@@ -1163,11 +1163,11 @@
     */
     window.ngFieldDef_MaskEdit = function(id, mask, attrs) {
       attrs=ngVal(attrs,{});
-      attrs['EditMask']=ngVal(mask,'');
+      attrs['Mask']=ngVal(mask,'');
 
       ngFieldDefCreateAs(this,id,'STRING',attrs);
       this.DoTypedValue = ngfd_MaskEditDoTypedValue;
-    };
+    }
   }
 
 })(window);
