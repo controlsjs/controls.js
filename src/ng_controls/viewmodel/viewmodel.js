@@ -678,8 +678,11 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         case 'FLOAT':
         case 'DECIMAL':
           if(this.Attrs['FormatNumber']) {
-            r=ng_Format3Num(v,this.Attrs['ThousandsSeparator'],'.');
-            if(ng_typeString(r)) r=r.replace('.',ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()));
+            var n=v;
+            if(ng_typeString(n)) n=n.replace('.',ng_DecimalSeparator());
+            r=ng_Format3Num(n,this.Attrs['ThousandsSeparator']);
+            var sep=this.Attrs['DecimalSeparator'];
+            if((sep)&&(ng_typeString(r))) r=r.replace(ng_DecimalSeparator(),sep);
           }
           break;
         case 'TIMESTAMP':
@@ -769,8 +772,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
             case 'FLOAT':
             case 'DECIMAL':
               if((this.Attrs['FormatNumber'])||(this.Attrs['ParseFormattedNumber'])) {
-                v=ng_Unformat3Num(''+v,this.Attrs['ThousandsSeparator'],'.');
-                v=v.replace(ngVal(this.Attrs['DecimalSeparator'],ng_DecimalSeparator()),'.');
+                var sep=this.Attrs['DecimalSeparator'];
+                if((sep)&&(ng_typeString(v))) v=v.replace(sep,ng_DecimalSeparator());
+                v=ng_Unformat3Num(v,this.Attrs['ThousandsSeparator']);
+                if(ng_typeString(v)) v=v.replace(ng_DecimalSeparator(),'.');
               }
               break;
             case 'TIMESTAMP':
