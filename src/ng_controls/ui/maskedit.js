@@ -1116,28 +1116,27 @@ ngUserControls['maskedit'] = {
   },
 
   MaskToParts: function(mask) {
-    //Zakladni nastaveni
-    var editChars = new Array('0', '9', 'C', 'X', 'A', 'a', 'Z', 'z', '!', '?');
-    var metaChars = new Array('\\', '^', '$', '.', '[', ']', '|', '(', ')', '?', '*', '+', '{', '}');
-    var parts     = new Object({ mask: new Array(), type: new Array(), regexp: new Array() });
-    var regExps   = new Object();
-
-    regExps['0'] = '[0-9]{1}';
-    regExps['9'] = '[0-9]?';
-
-    regExps['C'] = '[A-Za-z]{1}';
-    regExps['X'] = '[A-Za-z]?';
-
-    regExps['A'] = '[A-Z]{1}';
-    regExps['a'] = '[a-z]{1}';
-    regExps['Z'] = '[A-Z]?';
-    regExps['z'] = '[a-z]?';
-
-    regExps['!'] = '.{1}';
-    regExps['?'] = '.?';
-
-    if(ng_typeString(mask)) {
+    var parts = { mask: [], type: [], regexp: [] };
+    if((ng_typeString(mask))&&(mask!=='')) {
       mask = mask.split('');
+
+      //Zakladni nastaveni
+      var editChars = { '0': 1, '9': 1, 'C': 1, 'X': 1, 'A': 1, 'a': 1, 'Z': 1, 'z': 1, '!': 1, '?': 1 };
+      var metaChars = { '\\': 1, '^': 1, '$': 1, '.': 1, '[': 1, ']': 1, '|': 1, '(': 1, ')': 1, '?': 1, '*': 1, '+': 1, '{': 1, '}': 1};
+      var regExps   = {
+        '0': '[0-9]{1}',
+        '9': '[0-9]?',
+
+        'C': '[A-Za-z]{1}',
+        'X': '[A-Za-z]?',
+        'A': '[A-Z]{1}',
+        'a': '[a-z]{1}',
+        'Z': '[A-Z]?',
+        'z': '[a-z]?',
+
+        '!': '.{1}',
+        '?': '.?'
+      };
 
       //Parsovani masky
       var escapeNext = false;
@@ -1149,7 +1148,7 @@ ngUserControls['maskedit'] = {
       {
         if ((mask[i]=='\\') && (!escapeNext)) { escapeNext = true; continue; }
 
-        if ((ng_inArray(mask[i], editChars)) && (!escapeNext)) part = 'Edit';
+        if ((editChars[mask[i]]) && (!escapeNext)) part = 'Edit';
         else part = 'Static';
 
         if (lastPart=='') { parts.mask.push(''); parts.type.push(part); parts.regexp.push(''); }
@@ -1157,7 +1156,7 @@ ngUserControls['maskedit'] = {
         if ((lastPart!='') && (lastPart!=part)) { lastIdx = parts.mask.push('')-1; parts.type.push(part); parts.regexp.push(''); }
         parts.mask[lastIdx] += mask[i];
         if (part=='Edit') parts.regexp[lastIdx] += regExps[mask[i]];
-        else parts.regexp[lastIdx] += (!ng_inArray(mask[i], metaChars) ? mask[i] : '\\'+mask[i]);
+        else parts.regexp[lastIdx] += (metaChars[mask[i]] ? '\\'+mask[i] : mask[i]);
 
         lastPart   = part;
         escapeNext = false;
