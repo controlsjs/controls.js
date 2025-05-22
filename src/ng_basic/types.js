@@ -3399,7 +3399,9 @@ function ng_Format3Num(v,sep,rsep)
   if((ng_isInvalid(v))||(ng_typeObject(v))) return '';    
   v=ng_toString(v);
   rsep=ngVal(rsep,sep);
-  var from=v.lastIndexOf(ng_DecimalSeparator());
+  var rsep_nbspace=(typeof rsep==='string')&&(rsep.charCodeAt(0)===160); // handle non-breaking space
+  var dsep=ng_DecimalSeparator();
+  var from=v.lastIndexOf(dsep);
   if((from<0)&&(sep!='.')&&(rsep!='.')) from=v.lastIndexOf('.');
   if(from<0) {
     var c;
@@ -3410,13 +3412,15 @@ function ng_Format3Num(v,sep,rsep)
     }
   }
   else from--;
-  var s='',j=0,c;
+  var s='',j=0,c,sign=false;
   for(var i=v.length-1;i>=0;i--)
   {
     c=v.charAt(i);
     if(i<=from)
     {
-      if(c==rsep) continue;
+      if((c==rsep)||((c===' ')&&(rsep_nbspace))||((rsep===' ')&&(v.charCodeAt(i)===160))) continue;
+      if((c==='+')||(c==='-')) { sign=true; s=c+s; continue; }
+      if((c<'0')||(c>'9')||(sign)) return v;
       if((!(j++%3))&&(i<from)) s=sep+s;
     }
     s=c+s;
