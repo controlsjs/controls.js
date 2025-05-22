@@ -1144,7 +1144,7 @@
       if ((s!='') && (this.Attrs['Mask']!=''))
       {
         var result = ngUserControls['maskedit'].ValidateText(s,this.Attrs['Mask']);
-        if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR,'viewmodel_err_format');
+        if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR,ngVal(this.Attrs['MaskEditError'],'viewmodel_err_format'));
       }
 
       return v;
