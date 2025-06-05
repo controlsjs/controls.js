@@ -2671,6 +2671,11 @@ function ng_FormatDateTime(date, format,def)
   while(i < format.length) 
   {
     c=format.charAt(i);
+    if((c==="\\")&&(i+1 < format.length)) {
+      res+=format.charAt(i+1);
+      i+=2;
+      continue;      
+    }
     token='';
     while ((format.charAt(i)==c) && (i < format.length)) 
       token += format.charAt(i++);
