@@ -118,6 +118,51 @@ if(typeof ngc_SupportedLangsLocked === 'undefined') ngc_SupportedLangsLocked=fal
 if(typeof ngIE6AlignFix === 'undefined') ngIE6AlignFix = true;
 
 /**
+ *  Function: ngLangRes
+ *  Define resources string/object.
+ *
+ *  Syntax: *ngLangRes* (array data [,string lng] [,boolean allowOverride])
+ *
+ *  Returns:
+ *  -
+ */
+function ngLangRes(data,lng,allowOverride)
+{
+  if(typeof data==='undefined') return;
+  if(typeof allowOverride === 'undefined') allowOverride=true;
+
+  if((typeof lng === 'undefined')||(lng==='')) {
+    lng=ngVal(ng_cur_lng,'');
+    if(lng=='') {
+      ngDEBUGWARN('ERROR: Missing language! Failed to set resources.');
+      return;
+    }
+    for(var id in data) {
+      if((allowOverride) || (typeof ngc_Lang[lng][id] === 'undefined')) ngc_Lang[lng][id]=data[id];
+    }
+    return;
+  }
+
+  if(ng_IsArrayVar(lng)) {
+    for(var i=0;i<lng.length;i++) ngLangRes(data,lng[i],allowOverride);
+    return;
+  }
+
+  lng=''+lng;
+  if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+  if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]={};
+
+  for(var id in data) {
+    if((allowOverride) || (typeof ngc_Lang[lng][id] === 'undefined')) ngc_Lang[lng][id]=data[id];
+  }
+
+  var li=ngExtractLangId(lng);
+  if(typeof ngc_Lang[li.Lang] === 'undefined') ngc_Lang[li.Lang]={};
+  var sublang=ngMakeLangId(li.Lang,li.LangCountry);
+  if(typeof ngc_Lang[sublang] === 'undefined') ngc_Lang[sublang]={};
+}
+
+/**
  *  Function: ngLang
  *  Defines resource string/object.
  *
@@ -128,22 +173,11 @@ if(typeof ngIE6AlignFix === 'undefined') ngIE6AlignFix = true;
  */
 function ngLang(id,data,lng,allowOverride)
 {
-  if(typeof id==='undefined') return;
-  if(typeof lng === 'undefined') lng=ng_cur_lng;
-  if(typeof allowOverride === 'undefined') allowOverride=true;
-  lng=''+lng;
-  if(lng=='') return;
-  if(typeof ngc_Lang === 'undefined') ngc_Lang={};
-  if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]={};
-  if((typeof ngc_Lang[lng][id] === 'undefined') || allowOverride) ngc_Lang[lng][id]=data;
-
-  var li=ngExtractLangId(lng);
-  if(typeof ngc_Lang[li.Lang] === 'undefined') ngc_Lang[li.Lang]={};
-  var sublang=ngMakeLangId(li.Lang,li.LangCountry);
-  if(typeof ngc_Lang[sublang] === 'undefined') ngc_Lang[sublang]={};
+  var r={}; r[id]=data;
+  ngLangRes(r, lng, allowOverride);
 }
 
-var ng_cur_lng = 'en';
+var ng_cur_lng = '';
 var ng_cur_lng_stack = new Array();
 
 /**
@@ -159,6 +193,13 @@ function ngBeginLang(lng)
 {
   ng_cur_lng_stack.push(ng_cur_lng);
   ng_cur_lng=lng;
+
+  if(typeof ngc_Lang === 'undefined') ngc_Lang={};
+  if(typeof ngc_Lang[lng] === 'undefined') ngc_Lang[lng]={};
+  var li=ngExtractLangId(lng);
+  if(typeof ngc_Lang[li.Lang] === 'undefined') ngc_Lang[li.Lang]={};
+  var sublang=ngMakeLangId(li.Lang,li.LangCountry);
+  if(typeof ngc_Lang[sublang] === 'undefined') ngc_Lang[sublang]={};
 }
 
 /**
