@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: Dialog for editing a record in the database.
+
 ngc_Lang['en']['dbviewmodel_form_changed'] = 'Discard changes?';
 ngc_Lang['en']['dbviewmodel_form_deletequery'] = 'Are you sure you want to delete this record?';
 

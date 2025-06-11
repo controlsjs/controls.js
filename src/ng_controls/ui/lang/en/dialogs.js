@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: Dialog confirmation buttons. System information about the application.
+
 ngc_Lang['en']['mbOK']='OK';
 ngc_Lang['en']['mbCancel']='Cancel';
 ngc_Lang['en']['mbYes']='Yes';

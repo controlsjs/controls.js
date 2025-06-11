@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: User login dialog. Password change dialog. Password validation errors.
+
 ngc_Lang['en']['ngauthOrganization']='Organization';
 ngc_Lang['en']['ngauthLogin']='Login';
 ngc_Lang['en']['ngauthLoginPassword']='Password';

@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: File upload dialog. Errors and limitations when uploading files.
+
 ngc_Lang['en']['ngfup_ColFile'] = 'Files';
 
 ngc_Lang['en']['ngfup_AddFile']     = 'Add file';

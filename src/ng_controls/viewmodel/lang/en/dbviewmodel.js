@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: Errors when editing the database.
+
 ngc_Lang['en']['dbviewmodel_err_failed']='Error: Operation failed.';
 ngc_Lang['en']['dbviewmodel_err_loadfailed']='Error: Unable to get record data.';
 ngc_Lang['en']['dbviewmodel_err_insertfailed']='Error: Can\'t insert new record.';

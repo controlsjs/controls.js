@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: User input validation errors.
+
 ngc_Lang['en']['viewmodel_err_www']   = 'Value is not a WWW address.';
 ngc_Lang['en']['viewmodel_err_email'] = 'Value is not an e-mail address.';
 ngc_Lang['en']['viewmodel_err_ip4']   = 'Value is not an IPv4 address.';

@@ -12,4 +12,6 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: List view control.
+
 ngc_Lang['en']['ngCheckListSelectAll'] = 'Select All';

@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: Color selection dialog.
+
 ngc_Lang['en']['colorpicker_hue']         = 'Hue';
 ngc_Lang['en']['colorpicker_saturation']  = 'Saturation';
 ngc_Lang['en']['colorpicker_value']       = 'Value';

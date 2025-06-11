@@ -12,6 +12,8 @@
 if(typeof ngc_Lang === 'undefined') ngc_Lang={};
 if(typeof ngc_Lang['en'] === 'undefined') ngc_Lang['en']={};
 
+// TranslationContext: Date selection dialog.
+
 ngc_Lang['en']['calendar']              = 'Calendar';
 ngc_Lang['en']['calendar_today']        = 'Today';
 ngc_Lang['en']['calendar_tomorrow']     = '+1';
