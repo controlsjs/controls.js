@@ -152,7 +152,13 @@ ngUserControls['layouts'] = {
       var padname=vert ? 'VPadding' : 'HPadding';
       var padding=0,ppadding=ngVal(p[padname],0);
       padname='Layout'+padname;
-      var o,b={};
+      var o,b={},prev=null;
+      function setpadding(i) {
+        prev = cc[i];
+        if((prev)&&(prev.Visible)&&(!prev.IgnoreLayout)) {
+          padding=ngVal(prev[padname],ppadding);
+        }
+      }
       function setbounds(i) {
         if((c)&&(c.Visible)&&(!c.IgnoreLayout)) {
           padding=ngVal(c[padname],ppadding);
@@ -166,12 +172,16 @@ ngUserControls['layouts'] = {
           if(typeof c.SetBounds === 'function') c.SetBounds(b);
         }
       }
+
+      var len=cc.length;
+
       if(p.Reverse) {
         var stop=p.AutoSize ? -1 : 0;
+        for(var i=len-1;i>chidx;i--) setpadding(i);
         for(var i=chidx-1;i>=stop;i--) setbounds(i);
       } else {
-        var len=cc.length;
         if(p.AutoSize) len++;
+        for(var i=0;i<chidx;i++) setpadding(i);
         for(var i=chidx+1;i<len;i++) setbounds(i);
       }
       var s=t-padding;
@@ -382,7 +392,6 @@ ngUserControls['layouts'] = {
       }
 
       if(typeof s==='undefined') s=(vert ? this.Bounds.H : this.Bounds.W);
-
       if(typeof s!=='undefined') ngvhlay_setSize(vert, this, s);
 
       if((cc)&&(cc.length>0)) {
