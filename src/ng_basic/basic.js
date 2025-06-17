@@ -187,13 +187,7 @@ var ngSupportsHiResImages = (ngChromeVersion>=15) || (ngIExplorerVersion>=9) || 
  *  Variable: ngDefaultBackgroundColor
  *  Default background color for current browser, typically "rgba(0, 0, 0, 0)"
  */
-var ngDefaultBackgroundColor=(function() {
-  var div = document.createElement("div")
-  document.body.appendChild(div);
-  var bg = ng_GetCurrentStyle(div,'background-color');
-  document.body.removeChild(div);
-  return bg;
-})();
+var ngDefaultBackgroundColor=void 0;
 /**
  *  Variable: ngFirebug
  *  TRUE if Firebug present (useful for debug informations).
@@ -1863,17 +1857,45 @@ function ng_GetCurrentStyle(o,s)
  */
 function ng_GetBackgroundColor(el)
 {
+  var bc=ng_GetDefaultBackgroundColor();
+  if(typeof bc==='undefined') bc='rgba(0, 0, 0, 0)';
   while(el)
   {
     if(el.nodeType === 1)
     {
       var backgroundColor = ng_GetCurrentStyle(el,'background-color');
-      if (backgroundColor != ngDefaultBackgroundColor) return backgroundColor;
+      if (backgroundColor != bc) return backgroundColor;
     }
     el=el.parentNode;
   }
+  return bc;
+}
+
+/**
+ *  Function: ng_GetDefaultBackgroundColor
+ *  Gets default browser background color.
+ *
+ *  Syntax:
+ *    string *ng_GetDefaultBackgroundColor* ()
+ *
+ *
+ *  Returns:
+ *    Default browser background color.
+ *
+ */
+function ng_GetDefaultBackgroundColor()
+{
+  if((typeof ngDefaultBackgroundColor==='undefined')&&(document.body))
+  {
+    var div = document.createElement("div");
+    document.body.appendChild(div);
+    ngDefaultBackgroundColor = ng_GetCurrentStyle(div,'background-color');
+    document.body.removeChild(div);
+  }
   return ngDefaultBackgroundColor;
 }
+
+if(document.body) ng_GetDefaultBackgroundColor();
 
 /**
  *  Function: ng_BeginMeasureElement
