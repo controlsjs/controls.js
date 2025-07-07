@@ -426,6 +426,39 @@ function ngAddSupportedLang()
 }
 
 /**
+ *  Function: ngLangDisplayName
+ *  Gets language(s) display name.
+ *
+ *  Syntax: mixed *ngLangDisplayName* (mixed id [, bool ucfirst=true])
+ *
+ *  Returns:
+ *  Language display name(s).
+ */
+function ngLangDisplayName(lng, ucfirst)
+{
+  if((typeof lng!=='undefined')&&(ngc_Lang)) {
+    if(ng_IsObjVar(lng)) {
+      var ret={};
+      for(var i in lng) {
+        var l=lng[i];
+        if(l) ret[l]=ngLangDisplayName(l);
+      }
+      return ret;
+    }
+    lng = ngNormalizeLang(lng);
+    if(lng=='cz') lng='cs';
+    var t;
+    if((lng!=='')&&(ng_IsObjVar(ngc_Lang[lng]))) {
+      t=ngc_Lang[lng]['locale_language_native'];
+      if(typeof t==='undefined') t=ngc_Lang[lng]['locale_language'];
+    }
+    if(typeof t==='undefined') t=lng.toUpperCase();
+    else if(ngVal(ucfirst,true)) t=t.substr(0,1).toUpperCase()+t.substr(1);
+    return t;
+  }  
+}
+
+/**
  *  Function: ngTxt
  *  Gets locale text.
  *
