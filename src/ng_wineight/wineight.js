@@ -3782,7 +3782,7 @@ var WinEightControls = {
           },
           Events: {
             OnError: function (o, error, data) {
-              ngMessageDlg('weDlgMessageBox', ngHtmlVal(error, true, true));
+              ngMessageDlg('weDlgMessageBox', ngHtmlVal(error, true, true),'ngfup_AddFile');
             },
             OnUploadProgress: function(c,p) {
               if(c.curDialog) {
