@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+  require('google-closure-compiler').grunt(grunt);
+
   // ** Languages **************************************************************
 
   var lang='*';
@@ -412,7 +414,7 @@ module.exports = function(grunt) {
   function controlsRAWRelease(files) {
     return {
       clean: [ releaseBuild('controls-raw.js') ],
-      closurecompiler: {
+      "closure-compiler": {
         files: compilerfiles('controls-raw.js',files),
         options: {
           compilation_level: 'SIMPLE_OPTIMIZATIONS',
@@ -582,7 +584,7 @@ module.exports = function(grunt) {
   ' * <%= pkg.lib_hammerjs.homepage %>\n' +
   ' *\n' +
   ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.lib_hammerjs.author.name %> <<%= pkg.lib_hammerjs.author.email %>>;\n' +
-  ' * Licensed under the <%= _.pluck(pkg.lib_hammerjs.licenses, "type").join(", ") %> license */\n\n';
+  ' * Licensed under the <%= _.map(pkg.lib_hammerjs.licenses, "type").join(", ") %> license */\n\n';
 
   registerTask('lib_hammerjs-debug', {
     clean: [ debugBuild('libs/lib_hammerjs/') ],
@@ -595,7 +597,7 @@ module.exports = function(grunt) {
 
   registerTask('lib_hammerjs-release', {
     clean: [ releaseBuild('libs/lib_hammerjs/') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('libs/lib_hammerjs/hammer.js','lib_hammerjs'),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -645,7 +647,7 @@ module.exports = function(grunt) {
 
   registerTask('lib_knockout-release', {
     clean: [ releaseBuild('libs/lib_knockout/') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('libs/lib_knockout/knockout.js','lib_knockout'),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -674,7 +676,7 @@ module.exports = function(grunt) {
 
     registerTask('lib_FontLoader-release', {
       clean: [ releaseBuild('libs/lib_FontLoader/') ],
-      closurecompiler: {
+      "closure-compiler": {
         files: compilerfiles('libs/lib_FontLoader/FontLoader.js','lib_FontLoader'),
         options: {
           compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -722,7 +724,7 @@ module.exports = function(grunt) {
 
   registerTask('loader-release', {
     clean: [ releaseBuild('loader.js') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('loader.js','loader'),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -742,7 +744,7 @@ module.exports = function(grunt) {
 
   registerTask('loaderbar-release', {
     clean: [ releaseBuild('loader-bar.js') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('loader-bar.js',['loader','loaderbar']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -762,7 +764,7 @@ module.exports = function(grunt) {
 
   registerTask('loaderpercent-release', {
     clean: [ releaseBuild('loader-percent.js') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('loader-percent.js',['loader','loaderpercent']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -782,7 +784,7 @@ module.exports = function(grunt) {
 
   registerTask('loaderimage-release', {
     clean: [ releaseBuild('loader-image.js') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('loader-image.js',['loader','loaderimage']),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -864,7 +866,7 @@ module.exports = function(grunt) {
 
   registerTask('ng_wineight-release', {
     clean: [ releaseBuild('libs/ng_wineight/') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('libs/ng_wineight/wineight.js','ng_wineight'),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -933,7 +935,7 @@ module.exports = function(grunt) {
 
   registerTask('ng_winxp-release', {
     clean: [ releaseBuild('libs/ng_winxp/') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('libs/ng_winxp/winxp.js','ng_winxp'),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -1002,7 +1004,7 @@ module.exports = function(grunt) {
 
   registerTask('ng_wireframe-release', {
     clean: [ releaseBuild('libs/ng_wireframe/') ],
-    closurecompiler: {
+    "closure-compiler": {
       files: compilerfiles('libs/ng_wireframe/wireframe.js','ng_wireframe'),
       options: {
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
@@ -1106,7 +1108,6 @@ module.exports = function(grunt) {
 
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-closurecompiler');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-banner');

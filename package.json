@@ -9,14 +9,14 @@
    "url" : "https://github.com/controlsjs/controls.js.git"
   },
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.6.3",
-    "grunt-closurecompiler": "~0.9.9",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-clean": "~0.5.0",
+    "grunt": "~1.6.1",
+    "grunt-contrib-jshint": "~3.2.0",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-concat": "~2.1.0",
+    "grunt-contrib-clean": "~2.0.1",
     "grunt-banner": "~0.6.0",
-    "grunt-contrib-cssmin": "~0.12.3"
+    "grunt-contrib-cssmin": "~5.0.0",
+    "google-closure-compiler": "~20250709.0.0"
   },
   "license": "GPL-3.0",
   "licenses": [
