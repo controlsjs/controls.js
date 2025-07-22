@@ -200,13 +200,17 @@ ngUserControls['dragndrop'] = {
         var se=di.DragSourceElement;
         if(se) {
           se.style.visibility=di.DragSourceElementVisibility;
+          se.style.display=di.DragSourceElementDisplay;
           pi.TargetEvent=null;// force reevaluate target
         }
       }
       if(typeof dt==='undefined') dt=pi.GetTargetControl();
 
       if(de) de.style.display=dstyle;
-      if(('DragSourceElementVisibility' in di)&&(se)) se.style.visibility='hidden';
+      if(('DragSourceElementVisibility' in di)&&(se)) {
+        se.style.visibility='hidden';
+        se.style.display='none';
+      }
       if(dh)
       {
         if(ng_IsArrayVar(dh)) {
@@ -406,12 +410,16 @@ ngUserControls['dragndrop'] = {
         if(o) {
           if(!di.DragSourceElementVisible) {
             di.DragSourceElementVisibility=ngVal(o.style.visibility,'visible');
+            di.DragSourceElementDisplay=ngVal(o.style.display,'block');
             o.style.visibility='hidden';
+            o.style.display='none';
           }
           else 
           {
             o.style.visibility=di.DragSourceElementVisibility;
+            o.style.display=di.DragSourceElementDisplay;
             delete di.DragSourceElementVisibility;
+            delete di.DragSourceElementDisplay;
           }
           ng_IE7RedrawFix(o);
         }
@@ -451,9 +459,13 @@ ngUserControls['dragndrop'] = {
               sc=sc.ParentControl;
             }
           }
-          if(visible) o.style.visibility=di.DragSourceElementVisibility;
+          if(visible) {
+            o.style.visibility=di.DragSourceElementVisibility;
+            o.style.display=di.DragSourceElementDisplay;
+          }
         }
         delete di.DragSourceElementVisibility;
+        delete di.DragSourceElementDisplay;
       }
       if(di.OnDragEnd) di.OnDragEnd(di,pi);
       if(ds) {
@@ -706,9 +718,14 @@ ngUserControls['dragndrop'] = {
                   }
                   if(!di.DragSourceElementVisible) {
                     di.DragSourceElementVisibility=ngVal(o.style.visibility,'visible');
+                    di.DragSourceElementDisplay=ngVal(o.style.display,'block');
                     o.style.visibility='hidden';
+                    o.style.display='none';
                     ng_IE7RedrawFix(o);
-                  } else delete di.DragSourceElementVisibility;
+                  } else {
+                    delete di.DragSourceElementVisibility;
+                    delete di.DragSourceElementDisplay;
+                  }
                 }
                 if(typeof di.DragElementX==='undefined') di.DragElementX=(di.DragAxis==='vertical' ? di.DragStartX : pi.X)-di.DragSourceX;
                 if(typeof di.DragElementY==='undefined') di.DragElementY=(di.DragAxis==='horizontal' ? di.DragStartY : pi.Y)-di.DragSourceY;
