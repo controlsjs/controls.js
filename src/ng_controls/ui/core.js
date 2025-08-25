@@ -2558,7 +2558,7 @@ function nge_SuggestionSearch(txt, forcerequery)
 
     lst=this.DoGetSuggestionList();
     var dd=this.DropDownControl;
-    if(!ngVal(this.OnSuggestionSearch(this,txt,res,lst,dd),false)) return;
+    if(!ngVal(this.OnSuggestionSearch(this,txt,res,lst,dd,forcerequery),false)) return;
 
     this.SuggestionFound=res.found;
     this.SuggestionLastSearch=(typeof res.lastsearch!=='undefined' ? res.lastsearch : txt);
