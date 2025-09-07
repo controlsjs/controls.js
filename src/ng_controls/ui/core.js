@@ -4702,12 +4702,17 @@ function ngEditNum_Create(def, ref, parent)
   c.TextAlign=(align=='both' ? 'center' : 'right');
   c.OnGetText = ngedn_GetText;
 
-  function roundByNum(num, refnum)
+  function numDec(num)
   {
     if(typeof num!=='number') num=parseFloat(num);
-    if(typeof refnum!=='number') refnum=parseFloat(refnum);
-    var parts = (''+refnum).split('.');
-    var mul=Math.pow(10, parts.length === 2 ? parts[1].length : 0);
+    var parts = (''+num).split('.');
+    return parts.length === 2 ? parts[1].length : 0;
+  }
+  
+  function roundDec(num, numdec)
+  {
+    if(typeof num!=='number') num=parseFloat(num);
+    var mul=Math.pow(10, numdec);
     return Math.round((num + ngVal(Number.EPSILON,0)) * mul) / mul;
   }
 
@@ -4771,14 +4776,15 @@ function ngEditNum_Create(def, ref, parent)
     var n=this.GetNum();
     if(typeof n!=='undefined')
     {
+      var dec=Math.max(numDec(n),numDec(this.Step));
       var nn=n;
       if(ngVal(this.StepRound,false)) {
         nn=Math.ceil(n/this.Step)*this.Step;
-        nn=roundByNum(nn,n);
+        nn=roundDec(nn,dec);
       }
       if(n==nn) {
         n+=this.Step;
-        n=roundByNum(n,nn);
+        n=roundDec(n,dec);
       }
       else n=nn;
     }
@@ -4799,14 +4805,15 @@ function ngEditNum_Create(def, ref, parent)
     var n=this.GetNum();
     if(typeof n!=='undefined')
     {
+      var dec=Math.max(numDec(n),numDec(this.Step));
       var nn=n;
       if(ngVal(this.StepRound,false)) {
         nn=Math.floor(n/this.Step)*this.Step;
-        nn=roundByNum(nn,n);
+        nn=roundDec(nn,dec);
       }        
       if(n==nn) {
         n-=this.Step;
-        n=roundByNum(n,nn);
+        n=roundDec(n,dec);
       }
       else n=nn;
     }

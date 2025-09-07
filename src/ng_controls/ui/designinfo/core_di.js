@@ -1134,11 +1134,11 @@ return {
           "ArrowsAlign": ng_diStringValues('right', ['left','right','both'], { Level: 'basic' }),
           "Arrows": ng_diStringValues('leftright', ['none','leftright','updown'], { Level: 'basic' }),
           "Data": {
-            "Step": ng_diInteger(1, { Level: 'basic' }),
+            "Step": ng_diFloat(1, { Level: 'basic' }),
             "StepRound": ng_diBoolean(false, { Level: 'basic' }),
-            "MinNum": ng_diInteger(0, { Level: 'basic' }),
-            "MaxNum": ng_diInteger(0, { Level: 'basic' }),
-            "DefaultNum": ng_diInteger(0, { Level: 'basic' })
+            "MinNum": ng_diFloat(0, { Level: 'basic' }),
+            "MaxNum": ng_diFloat(0, { Level: 'basic' }),
+            "DefaultNum": ng_diFloat(0, { Level: 'basic' })
           },
           "Methods": {
             "DoDown": ng_diFunction('function() { ng_CallParent(this, "DoDown", arguments); }', { Level: 'advanced' }),
