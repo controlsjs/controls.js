@@ -4653,7 +4653,7 @@ function ngDropDown_Create(def, ref, parent,basetype,dropdownlist)
 
 function ngedn_GetText(e)
 {
-  var n=parseInt(e.Text,10);
+  var n=parseFloat(e.Text);
   if((e.Text=='')||(isNaN(n)))
   {
     if(typeof e.DefaultNum!=='undefined')
@@ -4701,6 +4701,15 @@ function ngEditNum_Create(def, ref, parent)
   if(!c) return c;
   c.TextAlign=(align=='both' ? 'center' : 'right');
   c.OnGetText = ngedn_GetText;
+
+  function roundByNum(num, refnum)
+  {
+    if(typeof num!=='number') num=parseFloat(num);
+    if(typeof refnum!=='number') refnum=parseFloat(refnum);
+    var parts = (''+refnum).split('.');
+    var mul=Math.pow(10, parts.length === 2 ? parts[1].length : 0);
+    return Math.round((num + ngVal(Number.EPSILON,0)) * mul) / mul;
+  }
 
   c.AddEvent('OnKeyUp',function(e,elm) {
     switch(e.keyCode)
@@ -4763,8 +4772,14 @@ function ngEditNum_Create(def, ref, parent)
     if(typeof n!=='undefined')
     {
       var nn=n;
-      if(ngVal(this.StepRound,false)) nn=Math.ceil(n/this.Step)*this.Step;
-      if(n==nn) n+=this.Step;
+      if(ngVal(this.StepRound,false)) {
+        nn=Math.ceil(n/this.Step)*this.Step;
+        nn=roundByNum(nn,n);
+      }
+      if(n==nn) {
+        n+=this.Step;
+        n=roundByNum(n,nn);
+      }
       else n=nn;
     }
     this.SetNum(n);
@@ -4785,8 +4800,14 @@ function ngEditNum_Create(def, ref, parent)
     if(typeof n!=='undefined')
     {
       var nn=n;
-      if(ngVal(this.StepRound,false))  nn=Math.floor(n/this.Step)*this.Step;
-      if(n==nn) n-=this.Step;
+      if(ngVal(this.StepRound,false)) {
+        nn=Math.floor(n/this.Step)*this.Step;
+        nn=roundByNum(nn,n);
+      }        
+      if(n==nn) {
+        n-=this.Step;
+        n=roundByNum(n,nn);
+      }
       else n=nn;
     }
     this.SetNum(n);
@@ -4804,7 +4825,7 @@ function ngEditNum_Create(def, ref, parent)
    */
   c.GetNum = function() {
     if(this.OnGetNum) return this.OnGetNum(this);
-    var n=parseInt(this.GetText(),10);
+    var n=parseFloat(this.GetText());
     if(isNaN(n)) return;// undefined;
     if((typeof this.MinNum !== 'undefined')&&(n<this.MinNum)) n=this.MinNum;
     if((typeof this.MaxNum !== 'undefined')&&(n>this.MaxNum)) n=this.MaxNum;
