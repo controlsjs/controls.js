@@ -496,6 +496,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         attrsprops["PrimaryKey"]=ng_diBoolean(false, { Level: 'basic' });
         attrsprops["ReadOnly"]=ng_diBoolean(false, { Level: 'basic' });
         attrsprops["DBField"]=ng_diMixed(['boolean','string'], { Level: 'basic' });
+        attrsprops["IgnoreChanges"]=ng_diBoolean(false, { Level: 'basic' });
       }
       if(typeof ngUserControls['viewmodel_dataset'] === 'object')
       {

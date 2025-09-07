@@ -200,12 +200,12 @@ ngUserControls['dbviewmodel'] = {
           _OriginalValue: oval
         };
     
-        var privatefld=false;
+        var ignorechanges=false;
         if(ko.isObservable(val)) val=val();
         if(ngIsFieldDef(instance))
         {
           chinfo.FieldDef = instance;
-          if(instance.PrivateField) privatefld=true;
+          if((instance.PrivateField)||(ngVal(instance.Attrs['IgnoreChanges'],false))) ignorechanges=true;
           try {
             val=instance.TypedValue(val);
           } catch(e) { }
@@ -216,7 +216,7 @@ ngUserControls['dbviewmodel'] = {
         chinfo.Value=val;
         chinfo.OriginalValue=oval;
     
-        if(!privatefld) {
+        if(!ignorechanges) {
           if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
           if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
           chinfo.Changed=(!ng_VarEquals(val,oval));
