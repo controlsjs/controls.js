@@ -437,7 +437,12 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         case 'BOOL':          r=ng_toBool(v,null); break;
         // numeric
         case 'INTEGER':       r=ng_toInteger(v,null); break;
-        case 'FLOAT':         r=ng_toFloat(v,null); break;
+        case 'FLOAT':         r=ng_toFloat(v,null); 
+                              if(ngVal(this.Precision,-1)>=0) { 
+                                var mul=Math.pow(10, this.Precision);
+                                r=Math.round((r+ngVal(Number.EPSILON,0))*mul)/mul;
+                              }
+                              break;
         case 'SBYTE':         r=cast_numberwithlimit(this,v,SBYTE_MIN,SBYTE_MAX); break;
         case 'BYTE':          r=cast_numberwithlimit(this,v,BYTE_MIN,BYTE_MAX); break;
         case 'SHORT':         r=cast_numberwithlimit(this,v,SHORT_MIN,SHORT_MAX); break;
