@@ -2,7 +2,7 @@
  * Controls.js
  * http://controlsjs.com/
  *
- * Copyright (c) 2014 Position s.r.o.  All rights reserved.
+ * Copyright (c) 2014-2025 Position s.r.o.  All rights reserved.
  *
  * This version of Controls.js is licensed under the terms of GNU General Public License v3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -687,17 +687,25 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           break;
         case 'TIMESTAMP':
         case 'DATETIME':
-          r=ng_FormatDateTime(ng_toDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
+          var fmt=ngVal(this.Attrs['DateTimeFormat'],'');
+          if((fmt=='')&&(this.Attrs['ShortDateTimeFormat'])) fmt=ng_DateTimeFormat(false, true);
+          r=ng_FormatDateTime(ng_toDate(v),fmt,null);
           break;
         case 'DATE':
-          r=ng_FormatDate(ng_toDate(v),ngVal(this.Attrs['DateFormat'],''),null);
+          var fmt=ngVal(this.Attrs['DateFormat'],'');
+          if((fmt=='')&&(this.Attrs['ShortDateFormat'])) fmt=ng_DateFormat(false, true);
+          r=ng_FormatDate(ng_toDate(v),fmt,null);
           break;
         case 'TIME':
-          r=ng_FormatTime(ng_toDate(v),ngVal(this.Attrs['TimeFormat'],''),null);
+          var fmt=ngVal(this.Attrs['TimeFormat'],'');
+          if((fmt=='')&&(this.Attrs['ShortTimeFormat'])) fmt=ng_TimeFormat(false, true);
+          r=ng_FormatTime(ng_toDate(v),fmt,null);
           break;
         case 'UTCTIMESTAMP':
         case 'UTCDATETIME':
-          r=ng_FormatDateTime(ng_fromUTCDate(v),ngVal(this.Attrs['DateTimeFormat'],''),null);
+          var fmt=ngVal(this.Attrs['DateTimeFormat'],'');
+          if((fmt=='')&&(this.Attrs['ShortDateTimeFormat'])) fmt=ng_DateTimeFormat(false, true);
+          r=ng_FormatDateTime(ng_fromUTCDate(v),fmt,null);
           break;
         case 'ARRAY':
           if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
