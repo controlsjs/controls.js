@@ -73,10 +73,10 @@ ngUserControls['dbviewmodel'] = {
 
   OnInit: function() {
 
-    function ngdbvm_ResetRecord() 
+    function ngdbvm_ResetRecord(recState) 
     {
-      this.Reset(); 
-      this.ViewModel._RecordState(recStateNone);
+      this.Reset(function(vm,val,instance,valpath,defaultval){return valpath !== '_RecordState';}); 
+      this.ViewModel._RecordState(ngVal(recState,recStateNone));
     }
     
     function ngdbvm_EnterEditMode()
@@ -504,8 +504,7 @@ ngUserControls['dbviewmodel'] = {
         switch(cmd)
         {
           case 'new':
-            vm.ResetRecord();
-            vm.ViewModel._RecordState(recStateNewRecord);
+            vm.ResetRecord(recStateNewRecord);
             if(vm.OnNewRecord) vm.OnNewRecord(vm,options);
             return true;
           case 'cancel':
