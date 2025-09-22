@@ -505,6 +505,7 @@ ngUserControls['dbviewmodel'] = {
         {
           case 'new':
             vm.ResetRecord(recStateNewRecord);
+            vm.ViewModel._RecordState(recStateNewRecord);
             if(vm.OnNewRecord) vm.OnNewRecord(vm,options);
             return true;
           case 'cancel':
