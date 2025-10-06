@@ -2088,7 +2088,7 @@ function ngCreateControls(defs,ref,parent,options)
               if((!oldmodify)&&(options.ModifyControls)&&(ngHASDEBUG()))
               {
                 for(var q in options.ModifyControls) {
-                  if(options.ModifyControls[q].IgnoreModifyIfMissing) continue;
+                  if(options.ModifyControls[q] && options.ModifyControls[q].IgnoreModifyIfMissing) continue;
                   ngDEBUGWARN('Component referenced by "%s" doesn\'t have an subcomponent "%s" which should be modified.',i,q,ref);
                 }
               }
