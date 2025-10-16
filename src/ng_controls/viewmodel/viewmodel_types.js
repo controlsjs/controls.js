@@ -422,11 +422,19 @@
             fd=this.PropsFieldDefs[k];
             if(ngIsFieldDef(val))
             {
-              if(val.PrivateField) continue;
-              val=val.Value;
+              if(val.PrivateField) {
+                if(this.__Saving) continue;
+                if(this.__Loading) val=val.DefaultValue;
+                else val=val.Value;
+              }
+              else val=val.Value;
             }
             val=ko.ng_getvalue(val);
             if(ngIsFieldDef(fd)) {
+              if(fd.PrivateField) {
+                if(this.__Saving) continue;
+                if(this.__Loading) val=fd.DefaultValue;
+              }
               switch(op)
               {
                 case 0: val=fd.TypedValue(val); break;
