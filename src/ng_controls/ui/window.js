@@ -88,13 +88,14 @@
     }
     if(c.Modal)
     {
-      if(c.Visible) ngStartModalControl();
-      else ngStopModalControl();
+      if(c.Visible) ngStartModalControl(c.ID);
+      else ngStopModalControl(c.ID);
       var o=c.Elm();
       if(o)
       {
-        if(c.Visible) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta)+1;
-        else          o.style.zIndex=Math.round((ngModalCnt+0.5)*ngModalZIndexDelta);
+        var lvl=ngGetModalControlLevel(c.ID);
+        if(c.Visible) o.style.zIndex=(lvl*ngModalZIndexDelta)+1;
+        else          o.style.zIndex=Math.round((lvl+0.5)*ngModalZIndexDelta);
       }
     }
   }
@@ -1041,7 +1042,8 @@
 
     if(typeof this.FormID === 'undefined') this.FormID = this.ID; // Windows are forms as default
 
-    elm.style.zIndex=Math.round((ngModalCnt+0.5)*ngModalZIndexDelta);
+    var lvl=ngGetModalControlLevel(this.ID);
+    elm.style.zIndex=Math.round((lvl+0.5)*ngModalZIndexDelta);
 
     var nd=document.createElement('div');
     nd.id=this.ID+'_F';
@@ -1984,7 +1986,8 @@
     delete def.Controls;
     delete def.ModifyControls;
 
-    elm.style.zIndex=Math.round((ngModalCnt+0.6)*ngModalZIndexDelta);
+    var lvl=ngGetModalControlLevel(this.ID);
+    elm.style.zIndex=Math.round((lvl+0.6)*ngModalZIndexDelta);
 
     this.SetScrollBars(ssDefault);
 

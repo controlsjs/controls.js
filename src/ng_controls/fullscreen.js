@@ -244,7 +244,7 @@ ngUserControls['fullscreen'] = {
       var oldanim=ngANIM;
       ngANIM=0;
       try {
-        ngStartModalControl();
+        ngStartModalControl('#FULLSCREEN');
       } finally {
         ngANIM=oldanim;
       }
@@ -301,7 +301,7 @@ ngUserControls['fullscreen'] = {
       var oldanim=ngANIM;
       ngANIM=0;
       try {
-        ngStopModalControl();
+        ngStopModalControl('#FULLSCREEN');
       } finally {
         ngANIM=oldanim;
       }
