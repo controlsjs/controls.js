@@ -674,18 +674,22 @@ var ngAnimatedModalClasses = {
 var ngModalZIndexDelta = 10000;
 var ngModalCnt=0;
 var ngModalTimer = null;
+var ngModalActiveIds=[];
 
 /**
  *  Function: ngStartModalControl
  *  Shows modal window curtain.
  *
  *  Syntax:
- *    void *ngStartModalControl* ()
+ *    void *ngStartModalControl* ([string ctrlid=''])
+ *
+ *  Parameters:
+ *    ctrlid - Control identificator for ngStopModelControl pairing.
  *
  *  Returns:
  *    -
  */
-function ngStartModalControl()
+function ngStartModalControl(ctrlid)
 {
   if(!ngModalCnt)
   {
@@ -739,6 +743,7 @@ function ngStartModalControl()
       }
     }
   }
+  ngModalActiveIds.push(ngNullVal(ctrlid,''));
   ngModalCnt++;
   var o = document.getElementById('NGMODALWINDOW_CURTAIN');
   if(ngModalCnt>1)
@@ -754,14 +759,32 @@ function ngStartModalControl()
  *  Hides modal window curtain.
  *
  *  Syntax:
- *    void *ngStopModalControl* ()
+ *    void *ngStopModalControl* ([string ctrlid=''])
+ * 
+ *  Parameters:
+ *    ctrlid - Control identificator for ngStartModelControl pairing.
  *
  *  Returns:
  *    -
  */
-function ngStopModalControl()
+function ngStopModalControl(ctrlid)
 {
-  ngModalCnt--;
+  ctrlid=ngNullVal(ctrlid,'');
+  for(var i=ngModalActiveIds.length-1;i>=0;i--) {
+    if(ngModalActiveIds[i]===ctrlid) {
+      ngModalActiveIds[i]=null;
+      break;
+    }
+  }
+  if(i<0) {
+    if(ngModalCnt>0) ngDEBUGERROR('ngStopModalControl: Missing ngStartModalControl('+ctrlid+')!');
+    return;
+  }
+  for(var i=ngModalActiveIds.length-1;i>=0;i--) {
+    if(ngModalActiveIds[i]!==null) break;
+    ngModalCnt--;
+    ngModalActiveIds.splice(i,1);  
+  }
   var o = document.getElementById('NGMODALWINDOW_CURTAIN');
   if(ngModalCnt<=0)
   {
@@ -787,6 +810,28 @@ function ngStopModalControl()
     if(o) o.style.zIndex=(ngModalCnt*ngModalZIndexDelta);
   }
   if(OnModalChanged) OnModalChanged(o,false);
+}
+
+/**
+ *  Function: ngGetModalControlLevel
+ *  Hides modal window curtain.
+ *
+ *  Syntax:
+ *    int *ngGetModalControlLevel* ([string ctrlid=''])
+ * 
+ *  Parameters:
+ *    ctrlid - Modal control identificator
+ *
+ *  Returns:
+ *    -
+ */
+function ngGetModalControlLevel(ctrlid)
+{
+  ctrlid=ngNullVal(ctrlid,'');
+  for(var i=ngModalActiveIds.length-1;i>=0;i--) {
+    if(ngModalActiveIds[i]===ctrlid) return i+1;
+  }
+  return 0;
 }
 
 /**
