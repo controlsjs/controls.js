@@ -4382,10 +4382,10 @@ ngUserControls['viewmodel'] = {
             return 0;
           },vm);
 
-        fd.Value.valueWillMutate = function() {
+        if(typeof val.valueWillMutate === 'function') fd.Value.valueWillMutate = function() {
           val.valueWillMutate();
         }
-        fd.Value.valueHasMutated = function() {
+        if(typeof val.valueHasMutated === 'function') fd.Value.valueHasMutated = function() {
           val.valueHasMutated();
         }
 
