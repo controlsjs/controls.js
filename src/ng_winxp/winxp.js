@@ -722,6 +722,7 @@ var WinXPControls = {
             }
             b.OnClick = clearbtn_click;
             b.Visible=(!readonly)&&(c.Text!=='');
+            b.Default=false;
             b.Owner=c;
             c.Buttons.push(b);
             c.AddEvent('OnTextChanged', clearbtn_textchanged);
