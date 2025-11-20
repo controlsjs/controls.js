@@ -429,7 +429,7 @@ var ngcalSelectRange = 4;
     var o=this.Elm();
     if(!o) return;
     var cclass=this.BaseClassName;
-    var now_date = ng_ExtractDate(new Date());
+    var now_date = ng_ExtractDate(this.GetNow());
     var cur_month = this.CurrentDate.getMonth()+1;
     var cur_year = this.CurrentDate.getFullYear();
     var daysinmonth = new Array(0,31,28,31,30,31,30,31,31,30,31,30,31);
@@ -840,6 +840,11 @@ var ngcalSelectRange = 4;
     this.SetFocus();
   }
 
+  function ngcal_GetNow()
+  {
+    return new Date();
+  }
+
   function ngcal_FormatDate(d)
   {
     if(this.OnFormatDate) return this.OnFormatDate(this, d);
@@ -995,9 +1000,9 @@ var ngcalSelectRange = 4;
     /*  Variable: CurrentDate
     *  ...
     *  Type: date
-    *  Default value: *new Date()*   
+    *  Default value: *GetNow()*   
     */
-    this.CurrentDate = new Date();
+    // this.CurrentDate = null;
 
     /*  Variable: WeekStartDay
     *  ...
@@ -1091,7 +1096,7 @@ var ngcalSelectRange = 4;
     b=new ngButton();
     b.Text = ngTxt('calendar_today');
     b.Alt = ngTxt('calendar_today');
-    b.OnClick = function(e) { var d=new Date(); if(e.Owner.Parent) { e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d); } };
+    b.OnClick = function(e) { if(e.Owner.Parent) { var d=e.Owner.Parent.GetNow(); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d); } };
     /*  Variable: TodayBtn
     *  ...
     *  Type: object
@@ -1101,7 +1106,7 @@ var ngcalSelectRange = 4;
     b=new ngButton();
     b.Text = ngTxt('calendar_tomorrow');
     b.Alt = ngTxt('calendar_tomorrow_alt');
-    b.OnClick = function(e) { if(e.Owner.Parent) { var d=new Date(); d.setDate(d.getDate()+1); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d); } };
+    b.OnClick = function(e) { if(e.Owner.Parent) { var d=e.Owner.Parent.GetNow(); d.setDate(d.getDate()+1); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d); } };
     /*  Variable: TomorrowBtn
     *  ...
     *  Type: object
@@ -1111,7 +1116,7 @@ var ngcalSelectRange = 4;
     b=new ngButton();
     b.Text = ngTxt('calendar_nextweek');
     b.Alt = ngTxt('calendar_nextweek_alt');
-    b.OnClick = function(e) { if(e.Owner.Parent) { var d=new Date(); d.setDate(d.getDate()+7); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d);  } };
+    b.OnClick = function(e) { if(e.Owner.Parent) { var d=e.Owner.Parent.GetNow(); d.setDate(d.getDate()+7); e.Owner.Parent.SelectDate(d); e.Owner.Parent.SetMonth(d);  } };
     /*  Variable: NextWeekBtn
     *  ...
     *  Type: object
@@ -1174,15 +1179,15 @@ var ngcalSelectRange = 4;
     /*  Variable: SelectFrom
     *  ...
     *  Type: date
-    *  Default value: *new Date()*   
+    *  Default value: *GetNow()*   
     */
-    this.SelectFrom = new Date();
+    // this.SelectFrom = null;
     /*  Variable: SelectTo
     *  ...
     *  Type: date
-    *  Default value: *new Date()*   
+    *  Default value: *GetNow()*   
     */
-    this.SelectTo = new Date();
+    // this.SelectTo = null;
 
     /*  Variable: BlockedDates
     *  ...
@@ -1217,6 +1222,18 @@ var ngcalSelectRange = 4;
     /*
     *  Group: Methods
     */
+    /*  Function: GetNow
+    *  Gets current date.
+    *   
+    *  Syntax:
+    *    date *GetNow* ()
+    *     
+    *  Parameters:
+    *   
+    *  Returns:
+    *    -
+    */              
+    this.GetNow = ngcal_GetNow;
     /*  Function: FormatDate
     *  Formats date to string.   
     *   
@@ -1505,6 +1522,11 @@ var ngcalSelectRange = 4;
     */     
     this.OnMouseLeave = null;
   
+
+    this.CurrentDate = this.GetNow();
+    this.SelectFrom = this.GetNow();
+    this.SelectTo = this.GetNow();
+
     ngControlCreated(this);
   }
 })(window);

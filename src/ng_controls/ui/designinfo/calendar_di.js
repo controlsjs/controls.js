@@ -87,6 +87,9 @@ ngUserControls['calendar_designinfo'] = {
             "MaxDate": ng_diType('date', { Level: 'advanced' }),
             "Frame": ng_diType('img_frame', { Level: 'advanced' })
           },
+          "Methods": {
+            "GetNow": ng_diFunction('function() { ng_CallParent(this, "GetNow", arguments); }', { Level: 'advanced' })
+          },
           "Events": {
             "OnDayClick": ng_diEvent('function(e) { return true; }', { Level: 'basic' }),
             "OnSelectChanged": ng_diEvent('function(c) {}', { Level: 'basic' })
@@ -98,9 +101,10 @@ ngUserControls['calendar_designinfo'] = {
             "OnGetWeekDayImg": ng_diEvent('function(c, wday) { return null; }', { Level: 'advanced' }),
             "OnGetWeekDayText": ng_diEvent('function(c, wday) { return ""; }', { Level: 'advanced' }),
             "OnGetWeekDayAlt": ng_diEvent('function(c, wday) { return ""; }', { Level: 'advanced' }),
+            "OnGetDayClassName": ng_diEvent('function(c, date, col, row, now, enabled, selected) { return ""; }', { Level: 'advanced' }),
             "OnGetDayImg": ng_diEvent('function(c, display_date, col, row) { return null; }', { Level: 'advanced' }),
-            "OnGetDayText": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'advanced' }),
-            "OnGetDayAlt": ng_diEvent('function(c, display_date, col, row) { return ""; }', { Level: 'advanced' })
+            "OnGetDayText": ng_diEvent('function(c, display_date, col, row, now, enabled, selected) { return ""; }', { Level: 'advanced' }),
+            "OnGetDayAlt": ng_diEvent('function(c, display_date, col, row, now, enabled, selected) { return ""; }', { Level: 'advanced' })
           }
         })
       };
