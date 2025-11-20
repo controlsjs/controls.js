@@ -93,6 +93,19 @@ var ngcalSelectRange = 4;
     return enabled;
   }
 
+  function ngcal_GetDayClassName(date, col, row, now, enabled, selected)
+  {
+    var cclass=this.BaseClassName;
+    var cn=cclass+'Days '+cclass;
+
+    if(this.OnGetDayClassName) cn=this.OnGetDayClassName(this, date, col, row, now, enabled, selected);
+
+    cn+=(now ? 'Now' : 'Day');
+    if(selected) cn+='Selected';
+    if(!enabled) cn+='Disabled';
+    return cn;
+  }
+
   var ngcal_CurrentDay='';
 
   function ngcal_DE(e, elm)
@@ -565,19 +578,18 @@ var ngcalSelectRange = 4;
           selected=(typeof this.SelectedDates[ngcal_DateStrKey(display_date)]!=='undefined');
         if((!this.Enabled)||((!this.ClickAllDays)&&(display_month != cur_month))) enabled=false;
         else enabled=this.IsDayEnabled(display_date);
+
         now=((display_date-now_date)==0);
-        cn=cclass+'Days '+cclass+(now ? 'Now' : 'Day');
-        if(selected) cn+='Selected';
-        if(!enabled) cn+='Disabled';
+        cn=this.GetDayClassName(display_date, col, row, now, enabled, selected);
         if(ngcal_CurrentDay==cid) cn+='_Focus';
         
         if(this.OnGetDayImg) image=this.OnGetDayImg(this, display_date, col, row);
         else image=(now && this.ImgNow ? this.ImgNow : this.ImgDay);
         if(image) ngc_ChangeImage(ngcal_DayImgDrawProps(cid+'I', (selected ? 1 : 0), enabled, image));
 
-        if(this.OnGetDayAlt) alt=ngVal(this.OnGetDayAlt(this, display_date, col, row),'');
+        if(this.OnGetDayAlt) alt=ngVal(this.OnGetDayAlt(this, display_date, col, row, now, enabled, selected),'');
         else alt=this.FormatDate(display_date);
-        if(this.OnGetDayText) text=ngVal(this.OnGetDayText(this, display_date, col, row),'');
+        if(this.OnGetDayText) text=ngVal(this.OnGetDayText(this, display_date, col, row, now, enabled, selected),'');
         else text=display_day;
 
         ng_SetInnerHTML(od,text);
@@ -1362,6 +1374,19 @@ var ngcalSelectRange = 4;
     *    -     
     */
     this.IsDayEnabled=ngcal_IsDayEnabled;
+
+    /*  Function: GetDayClassName
+    *  Determines if specified date is available for selection.     
+    *   
+    *  Syntax:
+    *    string *GetDayClassName* (date d, int col, int row, bool now, bool enabled, bool selected)
+    *     
+    *  Parameters:
+    *   
+    *  Returns:
+    *    -     
+    */
+    this.GetDayClassName=ngcal_GetDayClassName;
         
     this.DoCreate = ngcal_DoCreate;
     this.DoUpdate = ngcal_DoUpdate;
@@ -1454,6 +1479,10 @@ var ngcalSelectRange = 4;
     */     
     this.OnGetWeekDayAlt = null;
 
+    /*
+    *  Event: OnGetDayClassName
+    */     
+    this.OnGetDayClassName = null;
     /*
     *  Event: OnGetDayImg
     */     
