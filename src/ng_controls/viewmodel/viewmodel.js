@@ -4177,7 +4177,6 @@ ngUserControls['viewmodel'] = {
                   pfd=fd.PropsFieldDefs[k];
                   if(ngIsFieldDef(pfd))
                   {
-                    if(pfd.PrivateField) continue;
                     if(typeof pfd.TypedValue === 'function')
                     {
                       try {
