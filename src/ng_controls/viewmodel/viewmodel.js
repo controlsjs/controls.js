@@ -152,8 +152,10 @@ function ng_ViewModelFormatError(err)
         case 'DATETIME':
         case 'UTCTIMESTAMP':
         case 'UTCDATETIME':   msg.push(ngTxt('viewmodel_err_type_datetime')); break;
-        case 'DATE':          msg.push(ngTxt('viewmodel_err_type_date')); break;
-        case 'TIME':          msg.push(ngTxt('viewmodel_err_type_time')); break;
+        case 'DATE':
+        case 'UTCDATE':       msg.push(ngTxt('viewmodel_err_type_date')); break;
+        case 'TIME':
+        case 'UTCTIME':       msg.push(ngTxt('viewmodel_err_type_time')); break;
         case 'ARRAY':         msg.push(ngTxt('viewmodel_err_type_array')); break;
         default:              msg.push(ngTxt('viewmodel_err_type')); break;
       }
@@ -468,6 +470,8 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         case 'TIME':          r=ng_toDate(v,null); break;
         case 'UTCTIMESTAMP':
         case 'UTCDATETIME':   r=ng_toDate(v,null); break;
+        case 'UTCDATE':       r=ng_toDateOnly(v,null); break;
+        case 'UTCTIME':       r=ng_toDate(v,null); break;
         // array
         case 'ARRAY':         if(ng_typeArray(v)) r=(origv===v ? ng_CopyVar(v) : v);
                               else
@@ -549,6 +553,14 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           typefnc=ng_toDate;
           if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
           break;
+        case 'UTCDATE':
+          typefnc=ng_toDateOnly;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          break;
+        case 'UTCTIME':
+          typefnc=ng_toDate;
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          break;
         case 'ARRAY':
           if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
 
@@ -624,6 +636,8 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       case 'TIME':
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
+      case 'UTCDATE':
+      case 'UTCTIME':
         r=ng_toUnixTimestamp(r);
         break;
     }
@@ -645,6 +659,8 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       case 'TIME':
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
+      case 'UTCDATE':
+      case 'UTCTIME':
         r=ng_toDate(r,r);
         break;
     }
@@ -711,6 +727,16 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           var fmt=ngVal(this.Attrs['DateTimeFormat'],'');
           if((fmt=='')&&(this.Attrs['ShortDateTimeFormat'])) fmt=ng_DateTimeFormat(false, true);
           r=ng_FormatDateTime(ng_fromUTCDate(v),fmt,null);
+          break;
+        case 'UTCDATE':
+          var fmt=ngVal(this.Attrs['DateFormat'],'');
+          if((fmt=='')&&(this.Attrs['ShortDateFormat'])) fmt=ng_DateFormat(false, true);
+          r=ng_FormatDate(ng_fromUTCDate(v),fmt,null);
+          break;
+        case 'UTCTIME':
+          var fmt=ngVal(this.Attrs['TimeFormat'],'');
+          if((fmt=='')&&(this.Attrs['ShortTimeFormat'])) fmt=ng_TimeFormat(false, true);
+          r=ng_FormatTime(ng_fromUTCDate(v),fmt,null);
           break;
         case 'ARRAY':
           if((v)&&(typeof v==='object')&&(typeof v.join==='function'))
@@ -800,11 +826,13 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               r=ng_ParseDateTime(v,fmt,null);
               break;
             case 'DATE':
+            case 'UTCDATE':
               var fmt=this.Attrs['ParseDateFormat'];
               if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['DateFormat'],'');
               r=ng_ParseDate(v,fmt,null);
               break;
             case 'TIME':
+            case 'UTCTIME':
               var fmt=this.Attrs['ParseTimeFormat'];
               if(typeof fmt==='undefined') fmt=ngVal(this.Attrs['TimeFormat'],'');
               r=ng_ParseTime(v,fmt,null);
@@ -824,6 +852,8 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               break;
             case 'UTCTIMESTAMP':
             case 'UTCDATETIME':
+            case 'UTCDATE':
+            case 'UTCTIME':
               if(r!==null) v=ng_toUTCDate(r);
               break;
           }
@@ -1011,6 +1041,8 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     *    'TIME' - time only type
     *    'UTCTIMESTAMP' - date and time type (UTC)
     *    'UTCDATETIME' - date and time type (UTC)
+    *    'UTCDATE' - date only type (UTC)
+    *    'UTCTIME' - time only type (UTC)
     *    'ARRAY' - array type
     */
     this.Type     = ngVal(this.Type, type);
