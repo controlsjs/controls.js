@@ -250,34 +250,6 @@
     ngFieldDefCreateAs(this,id,'UTCDATETIME',attrs);
   }
 
-  /*  Class: ngFieldDef_UTCDate
-  *  <ngViewModel> UTC date field (based on <ngFieldDef> UTCDATE).
-  *
-  *  Syntax:
-  *    new *ngFieldDef_UTCDate* ([string id ='', object attrs={}])
-  *
-  *  Parameters:
-  *    id - field id
-  *    attrs - field attributes
-  */
-  window.ngFieldDef_UTCDate = function(id, attrs) {
-    ngFieldDefCreateAs(this,id,'UTCDATE',attrs);
-  }
-
-  /*  Class: ngFieldDef_UTCTime
-  *  <ngViewModel> UTC time field (based on <ngFieldDef> UTCTIME).
-  *
-  *  Syntax:
-  *    new *ngFieldDef_UTCTime* ([string id ='', object attrs={}])
-  *
-  *  Parameters:
-  *    id - field id
-  *    attrs - field attributes
-  */
-  window.ngFieldDef_UTCTime = function(id, attrs) {
-    ngFieldDefCreateAs(this,id,'UTCTIME',attrs);
-  }
-
   function ngfd_ArrayInternalTypedValue(v, op)
   {
     if((this.__arraytypingvalue)||(v===null)) return v;
