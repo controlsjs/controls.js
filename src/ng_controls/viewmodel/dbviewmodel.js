@@ -296,6 +296,7 @@ ngUserControls['dbviewmodel'] = {
                   {
                     // keep original, dont propagate errors on _OriginalRecord
                   }
+                  if(ko.isObservable(instance.OriginalValue)) instance.OriginalValue(setval);
                   delete instance.__Loading;
                 }
               }
@@ -524,30 +525,59 @@ ngUserControls['dbviewmodel'] = {
       c.OnCheckFieldChanged = null;
     
       c.AddEvent('OnViewModelChanged', function(vm) {
-        if(ng_typeObject(vm.ViewModel._OriginalRecord))
+        vm.ScanValues(function(vmodel,val,instance,path,userdata)
         {
-          vm.ScanValues(function(vmodel,val,instance,path,userdata)
+          if(path.substring(0,15)=='_OriginalRecord') return true;
+          if((!ko.isObservable(val))||(val.monrecchanges)) return true;
+          
+          if(ngIsFieldDef(instance))
           {
-            if(path.substring(0,15)=='_OriginalRecord') return true;
-            if((!ko.isObservable(val))||(val.monrecchanges)) return true;
-            
-            if(ngIsFieldDef(instance))
-            {
-              if(instance.PrivateField) return true;
+            if(instance.PrivateField) return true;
+
+            if(typeof instance.OriginalValue==='undefined') {
+              var fdval=instance.Value;
+              instance.Value=void 0;
+              ko.ng_fielddef(vmodel,instance);
+              var originalvalue=instance.Value;
+              originalvalue(vm.GetFieldValueByID('_OriginalRecord.'+path));
+              instance.OriginalValue = ko.computed({
+                read: function() {
+                  return originalvalue();
+                },
+                write: function(v) {
+                  if(ngVal(instance.__Loading,false)) {
+                    originalvalue(v);
+                  }
+                },                  
+                vmodel
+              });
+              instance.Value=fdval;
             }
             
-            var orig=vm.GetFieldByID('_OriginalRecord.'+path);
-            if(ng_isEmpty(orig)) return true;
-             
-            val.monrecchanges=true;
-            val.subscribe(function(newval) {
-              if(!c.recordchangesupdate) {
-                vm.ViewModel._RecordChanged(vm.IsChanged());
-              }
-            });
-            return true;
+            if((typeof instance.IsChanged==='undefined')&&(typeof instance.OriginalValue==='function')) {
+              instance.IsChanged = ko.computed(function() {
+                var val=instance.Value();
+                var oval=instance.OriginalValue();
+                try { val=instance.TypedValue(val) } catch(e) { }
+                try { oval=instance.TypedValue(oval) } catch(e) { }
+                if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
+                if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
+                return !ng_VarEquals(val,oval);
+              }, vmodel).extend({ rateLimit: 1 });
+            }
+          }
+          
+          var orig=vm.GetFieldByID('_OriginalRecord.'+path);
+          if(ng_isEmpty(orig)) return true;
+            
+          val.monrecchanges=true;
+          val.subscribe(function(newval) {
+            if(!c.recordchangesupdate) {
+              vm.ViewModel._RecordChanged(vm.IsChanged());
+            }
           });
-        }
+          return true;
+        });
       });
     
       c.SetViewModel({
