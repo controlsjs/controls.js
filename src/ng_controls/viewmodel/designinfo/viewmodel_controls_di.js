@@ -477,6 +477,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         "Value": ng_diMixed(['kotypes','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
         "RemoveEmptyItems": ng_diBoolean(false, { Level: 'optional' }),
         "Serialize": ng_diBoolean(true, { Level: 'advanced' }),
+        "IgnoreTimezone": ng_diBoolean(false { Level: 'basic' }),
         "DateTimeFormat": ng_diString('', { Level: 'basic' }),
         "DateFormat": ng_diString('', { Level: 'basic' }),
         "TimeFormat": ng_diString('', { Level: 'basic' }),
@@ -916,6 +917,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         // ngFieldDef_Timestamp
         fdtype('ngFieldDef_Timestamp', 'TS', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "IgnoreTimezone": { Level: 'basic' },
             "DateTimeFormat": { Level: 'basic' }
           }))
         ]),
@@ -923,6 +925,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         // ngFieldDef_DateTime
         fdtype('ngFieldDef_DateTime', 'DT', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "IgnoreTimezone": { Level: 'basic' },
             "DateTimeFormat": { Level: 'basic' }
           }))
         ]),
@@ -944,6 +947,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         // ngFieldDef_UTCTimestamp
         fdtype('ngFieldDef_UTCTimestamp', 'UTS', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "IgnoreTimezone": { Level: 'basic' },
             "DateTimeFormat": { Level: 'basic' }
           }))
         ]),
@@ -951,6 +955,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         // ngFieldDef_UTCDateTime
         fdtype('ngFieldDef_UTCDateTime', 'UDT', [
           ng_diType('ngFieldDefAttrs', { DisplayName: 'Attrs', Level: 'basic' }, fdattrvaltype('datetime', {
+            "IgnoreTimezone": { Level: 'basic' },
             "DateTimeFormat": { Level: 'basic' }
           }))
         ]),

@@ -618,13 +618,18 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       case 'INTEGER':
         if(!ng_isEmpty(r)) r=ng_toString(r); // PHP doesn't support unsigned longs and JavaScript big integers, pass it as string
         break;
+      case 'DATE':
+        r=ng_FormatDateTime(r,'yyyy-MM-dd',r);
+        break;
+      case 'TIME':
+        r=ng_FormatDateTime(r,'HH:mm:ss.u',r);
+        break;
       case 'TIMESTAMP':
       case 'DATETIME':
-      case 'DATE':
-      case 'TIME':
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
-        r=ng_toUnixTimestamp(r);
+        if(this.Attrs['IgnoreTimezone']) r=ng_FormatDateTime(r,'yyyy-MM-dd HH:mm:ss.u',r);
+        else r=ng_toUnixTimestamp(r);
         break;
     }
     return r;
@@ -639,13 +644,18 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     if(ng_isEmpty(r)) r=v;
     switch(this.DataType)
     {
+      case 'DATE':
+        r=ng_ParseDateTime(r,'yyyy-MM-dd',r);
+        break;
+      case 'TIME':
+        r=ng_ParseDateTime(r,'HH:mm:ss.u',r);
+        break;
       case 'TIMESTAMP':
       case 'DATETIME':
-      case 'DATE':
-      case 'TIME':
       case 'UTCTIMESTAMP':
       case 'UTCDATETIME':
-        r=ng_toDate(r,r);
+        if(this.Attrs['IgnoreTimezone']) r=ng_ParseDateTime(r,'yyyy-MM-dd HH:mm:ss.u',r);
+        else r=ng_toDate(r,r);
         break;
     }
     r=this.TypedValue(r);
@@ -1483,7 +1493,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               try
               {
                 setval=d[i];
-                if(this.OnSetValue) setval=this.OnSetValue(this,setval,instance, valpath);
+                if(self.OnSetValue) setval=self.OnSetValue(self,setval,instance, valpath);
                 if((deserialize)&&(typeof instance.Deserialize === 'function')) {
                   setval=instance.Deserialize(setval);
                 }
@@ -1531,9 +1541,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           {
             if((cansetvalue(valpath))&&(d.hasOwnProperty(i))) {
               setval=d[i];
-              if(this.OnSetValue) {
+              if(self.OnSetValue) {
                 try {
-                  setval=this.OnSetValue(this,setval,instance, valpath);
+                  setval=self.OnSetValue(self,setval,instance, valpath);
                 }
                 catch(e) {
                   errors[valpath]=e;
@@ -1559,9 +1569,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           else {
             if(cansetvalue(valpath)) {
               setval=d[i];
-              if(this.OnSetValue) {
+              if(self.OnSetValue) {
                 try {
-                  setval=this.OnSetValue(this,setval,instance, valpath);
+                  setval=self.OnSetValue(self,setval,instance, valpath);
                 }
                 catch(e) {
                   errors[valpath]=e;
