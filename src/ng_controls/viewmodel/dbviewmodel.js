@@ -264,16 +264,95 @@ ngUserControls['dbviewmodel'] = {
       return ret;
     }
     
-    function ngdbvm_SetValues(values,deserialize)
+    function ngdbvm_SetValues(values,deserialize, valuenames, errors, strictvaluenames)
     {
       var ret;
       this.BeginRecordUpdate();
       try {
-        ret=ng_CallParent(this,'SetValues',arguments);
+        if((ng_IsObjVar(values))&&(ng_IsObjVar(values._OriginalRecord))) {
+          var origonsetvalue=this.OnSetValue;
+          try {
+            var self=this;
+            this.OnSetValue=function(c,setval,instance, valpath)
+            {
+              if(origonsetvalue) val=origonsetvalue.apply(self, arguments);
+              if(valpath.substring(0,16)==='_OriginalRecord.') {
+                var instance=self.GetFieldByID(valpath.substring(16));
+                if(ngIsFieldDef(instance))
+                {
+                  instance.__Loading=true;
+                  try
+                  {
+                    if((deserialize)&&(typeof instance.Deserialize === 'function')) {
+                      setval=instance.Deserialize(setval);
+                    }
+                    else
+                    {
+                      if(typeof instance.TypedValue === 'function')
+                        setval=instance.TypedValue(setval);
+                    }
+                  }
+                  catch(e)
+                  {
+                    // keep original, dont propagate errors on _OriginalRecord
+                  }
+                  delete instance.__Loading;
+                }
+              }
+              return setval;
+            }
+            ret=ng_CallParent(this,'SetValues',arguments);
+          } finally {
+            this.OnSetValue=origonsetvalue;
+          }
+        }
+        else ret=ng_CallParent(this,'SetValues',arguments);
       } 
       finally {
         this.EndRecordUpdate();
       }
+      return ret;
+    }
+
+    function ngdbvm_GetValues(writableonly, valuenames, errors, convtimestamps, serialize)
+    {
+      var ret;      
+      if((ng_IsObjVar(this.ViewModel))&&(ng_IsObjVar(this.ViewModel._OriginalRecord))) {
+        var origongetvalue=this.OnGetValue;
+        try {
+          var self=this;
+          this.OnGetValue=function(c,val,instance, valpath, errors)
+          {
+            if(origongetvalue) val=origongetvalue.apply(self, arguments);
+            if(valpath.substring(0,16)==='_OriginalRecord.') {
+              var instance=self.GetFieldByID(valpath.substring(16));
+              if(ngIsFieldDef(instance))
+              {
+                instance.__Saving=true;
+                try
+                {
+                  if((serialize)&&(typeof instance.Serialize === 'function'))
+                    val=instance.Serialize(val);
+                  else
+                  {
+                    if(typeof instance.TypedValue === 'function')
+                      val=instance.TypedValue(val);
+                  }
+                }
+                catch(e)
+                {
+                  // keep original, dont propagate errors on _OriginalRecord
+                }
+                delete instance.__Saving;
+              }
+            }
+            return val;
+          }
+          ret=ng_CallParent(this,'GetValues',arguments);
+        } finally {
+          this.OnGetValue=origongetvalue;
+        }
+      } else ret=ng_CallParent(this,'GetValues',arguments);
       return ret;
     }
       
@@ -412,6 +491,7 @@ ngUserControls['dbviewmodel'] = {
     
       ng_OverrideMethod(c,'Reset',ngdbvm_Reset);
       ng_OverrideMethod(c,'SetValues',ngdbvm_SetValues);
+      ng_OverrideMethod(c,'GetValues',ngdbvm_GetValues);
     
       c.DBFieldNames = ngdbvm_DBFieldNames;
       c.AllDBFields = ngdbvm_AllDBFields;
