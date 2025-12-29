@@ -22,6 +22,7 @@ ngc_Lang['ro']['dbviewmodel_err_deletefailed'] = 'Eroare: Ștergerea înregistr�
 ngc_Lang['ro']['dbviewmodel_err_invalidargs'] = 'Eroare: Argumente nevalide.';
 ngc_Lang['ro']['dbviewmodel_err_accessdenied'] = 'Eroare: Acces refuzat.';
 ngc_Lang['ro']['dbviewmodel_err_notexists'] = 'Eroare: Înregistrarea nu a fost găsită.';
+ngc_Lang['ro']['dbviewmodel_err_exists'] = 'Eroare: Înregistrarea există deja.';
 ngc_Lang['ro']['dbviewmodel_err_datachanged'] =
     'Datele au fost modificate de la ultima actualizare. Refaceți modificările și salvați din nou.';
 ngc_Lang['ro']['dbviewmodel_err_internal'] = 'Eroare: Eroare internă.';

@@ -22,6 +22,7 @@ ngc_Lang['lt']['dbviewmodel_err_deletefailed'] = 'Klaida: nepavyko ištrinti įr
 ngc_Lang['lt']['dbviewmodel_err_invalidargs'] = 'Klaida: netinkami argumentai.';
 ngc_Lang['lt']['dbviewmodel_err_accessdenied'] = 'Klaida: prieiga uždrausta.';
 ngc_Lang['lt']['dbviewmodel_err_notexists'] = 'Klaida: įrašas nerastas.';
+ngc_Lang['lt']['dbviewmodel_err_exists'] = 'Klaida: įrašas jau egzistuoja.';
 ngc_Lang['lt']['dbviewmodel_err_datachanged'] =
     'Duomenys pasikeitė po paskutinio atnaujinimo. Iš naujo atlikite pakeitimus ir vėl įrašykite.';
 ngc_Lang['lt']['dbviewmodel_err_internal'] = 'Klaida: vidinė klaida.';

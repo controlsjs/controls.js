@@ -22,6 +22,7 @@ ngc_Lang['el']['dbviewmodel_err_deletefailed'] = 'Σφάλμα: Η διαγρα�
 ngc_Lang['el']['dbviewmodel_err_invalidargs'] = 'Σφάλμα: Μη έγκυρα ορίσματα.';
 ngc_Lang['el']['dbviewmodel_err_accessdenied'] = 'Σφάλμα: Η πρόσβαση απαγορεύεται.';
 ngc_Lang['el']['dbviewmodel_err_notexists'] = 'Σφάλμα: Δεν βρέθηκε η εγγραφή.';
+ngc_Lang['el']['dbviewmodel_err_exists'] = 'Σφάλμα: Η εγγραφή υπάρχει ήδη.';
 ngc_Lang['el']['dbviewmodel_err_datachanged'] =
     'Τα δεδομένα άλλαξαν από την τελευταία ενημέρωση. Επαναλάβετε τις αλλαγές και αποθηκεύστε ξανά.';
 ngc_Lang['el']['dbviewmodel_err_internal'] = 'Σφάλμα: Εσωτερικό σφάλμα.';

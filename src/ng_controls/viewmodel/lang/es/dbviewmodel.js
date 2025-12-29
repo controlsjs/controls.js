@@ -22,6 +22,7 @@ ngc_Lang['es']['dbviewmodel_err_deletefailed'] = 'Error: Error al eliminar el re
 ngc_Lang['es']['dbviewmodel_err_invalidargs'] = 'Error: Argumentos no válidos.';
 ngc_Lang['es']['dbviewmodel_err_accessdenied'] = 'Error: Acceso denegado.';
 ngc_Lang['es']['dbviewmodel_err_notexists'] = 'Error: Registro no encontrado.';
+ngc_Lang['es']['dbviewmodel_err_exists'] = 'Error: El registro ya existe.';
 ngc_Lang['es']['dbviewmodel_err_datachanged'] =
     'Los datos han cambiado desde la última actualización. Rehaga los cambios y guarde de nuevo.';
 ngc_Lang['es']['dbviewmodel_err_internal'] = 'Error: Error interno.';

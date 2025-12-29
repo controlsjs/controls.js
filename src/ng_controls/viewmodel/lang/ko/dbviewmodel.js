@@ -22,6 +22,7 @@ ngc_Lang['ko']['dbviewmodel_err_deletefailed'] = '오류: 레코드 삭제에 �
 ngc_Lang['ko']['dbviewmodel_err_invalidargs'] = '오류: 잘못된 인수입니다.';
 ngc_Lang['ko']['dbviewmodel_err_accessdenied'] = '오류: 액세스가 거부되었습니다.';
 ngc_Lang['ko']['dbviewmodel_err_notexists'] = '오류: 레코드를 찾을 수 없습니다.';
+ngc_Lang['ko']['dbviewmodel_err_exists'] = '오류: 레코드가 이미 존재합니다.';
 ngc_Lang['ko']['dbviewmodel_err_datachanged'] =
     '마지막 업데이트 이후 데이터가 변경되었습니다. 변경 사항을 다시 적용하고 다시 저장하십시오.';
 ngc_Lang['ko']['dbviewmodel_err_internal'] = '오류: 내부 오류입니다.';

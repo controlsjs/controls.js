@@ -22,6 +22,7 @@ ngc_Lang['no']['dbviewmodel_err_deletefailed'] = 'Feil: Sletting av post mislykt
 ngc_Lang['no']['dbviewmodel_err_invalidargs'] = 'Feil: Ugyldige argumenter.';
 ngc_Lang['no']['dbviewmodel_err_accessdenied'] = 'Feil: Ingen tilgang.';
 ngc_Lang['no']['dbviewmodel_err_notexists'] = 'Feil: Fant ikke posten.';
+ngc_Lang['no']['dbviewmodel_err_exists'] = 'Feil: Posten finnes allerede.';
 ngc_Lang['no']['dbviewmodel_err_datachanged'] =
     'Data er endret siden forrige oppdatering. Utfør endringene på nytt og lagre igjen.';
 ngc_Lang['no']['dbviewmodel_err_internal'] = 'Feil: Intern feil.';

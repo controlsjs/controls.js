@@ -22,6 +22,7 @@ ngc_Lang['it']['dbviewmodel_err_deletefailed'] = 'Errore: eliminazione del recor
 ngc_Lang['it']['dbviewmodel_err_invalidargs'] = 'Errore: argomenti non validi.';
 ngc_Lang['it']['dbviewmodel_err_accessdenied'] = 'Errore: accesso negato.';
 ngc_Lang['it']['dbviewmodel_err_notexists'] = 'Errore: record non trovato.';
+ngc_Lang['it']['dbviewmodel_err_exists'] = 'Errore: Il record esiste già.';
 ngc_Lang['it']['dbviewmodel_err_datachanged'] =
     "I dati sono stati modificati dall'ultimo aggiornamento. Eseguire di nuovo le modifiche e salvare.";
 ngc_Lang['it']['dbviewmodel_err_internal'] = 'Errore: errore interno.';

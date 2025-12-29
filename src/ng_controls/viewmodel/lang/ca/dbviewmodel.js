@@ -22,6 +22,7 @@ ngc_Lang['ca']['dbviewmodel_err_deletefailed'] = 'Error: Ha fallat la supressió
 ngc_Lang['ca']['dbviewmodel_err_invalidargs'] = 'Error: Arguments no vàlids.';
 ngc_Lang['ca']['dbviewmodel_err_accessdenied'] = 'Error: Accés denegat.';
 ngc_Lang['ca']['dbviewmodel_err_notexists'] = "Error: No s'ha trobat el registre.";
+ngc_Lang['ca']['dbviewmodel_err_exists'] = 'Error: El registre ja existeix.';
 ngc_Lang['ca']['dbviewmodel_err_datachanged'] =
     "Les dades han canviat des de l'última actualització. Refés els canvis i desa de nou.";
 ngc_Lang['ca']['dbviewmodel_err_internal'] = 'Error: Error intern.';

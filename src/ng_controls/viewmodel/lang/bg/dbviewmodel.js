@@ -22,6 +22,7 @@ ngc_Lang['bg']['dbviewmodel_err_deletefailed'] = 'Грешка: Неуспешн
 ngc_Lang['bg']['dbviewmodel_err_invalidargs'] = 'Грешка: Невалидни аргументи.';
 ngc_Lang['bg']['dbviewmodel_err_accessdenied'] = 'Грешка: Достъпът е отказан.';
 ngc_Lang['bg']['dbviewmodel_err_notexists'] = 'Грешка: Записът не е намерен.';
+ngc_Lang['bg']['dbviewmodel_err_exists'] = 'Грешка: Записът вече съществува.';
 ngc_Lang['bg']['dbviewmodel_err_datachanged'] =
     'Данните са променени след последната актуализация. Повторете промените и запазете отново.';
 ngc_Lang['bg']['dbviewmodel_err_internal'] = 'Грешка: Вътрешна грешка.';

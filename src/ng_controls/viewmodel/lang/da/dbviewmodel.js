@@ -22,6 +22,7 @@ ngc_Lang['da']['dbviewmodel_err_deletefailed'] = 'Fejl: Sletning af post mislykk
 ngc_Lang['da']['dbviewmodel_err_invalidargs'] = 'Fejl: Ugyldige argumenter.';
 ngc_Lang['da']['dbviewmodel_err_accessdenied'] = 'Fejl: Adgang nægtet.';
 ngc_Lang['da']['dbviewmodel_err_notexists'] = 'Fejl: Post ikke fundet.';
+ngc_Lang['da']['dbviewmodel_err_exists'] = 'Fejl: Posten eksisterer allerede.';
 ngc_Lang['da']['dbviewmodel_err_datachanged'] =
     'Data er ændret siden sidste opdatering. Udfør ændringerne igen, og gem igen.';
 ngc_Lang['da']['dbviewmodel_err_internal'] = 'Fejl: Intern fejl.';

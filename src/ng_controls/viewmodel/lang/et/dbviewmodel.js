@@ -22,6 +22,7 @@ ngc_Lang['et']['dbviewmodel_err_deletefailed'] = 'Viga: kirje kustutamine ebaõn
 ngc_Lang['et']['dbviewmodel_err_invalidargs'] = 'Viga: valed argumendid.';
 ngc_Lang['et']['dbviewmodel_err_accessdenied'] = 'Viga: juurdepääs keelatud.';
 ngc_Lang['et']['dbviewmodel_err_notexists'] = 'Viga: kirjet ei leitud.';
+ngc_Lang['et']['dbviewmodel_err_exists'] = 'Viga: Kirje on juba olemas.';
 ngc_Lang['et']['dbviewmodel_err_datachanged'] =
     'Andmed on pärast viimast värskendust muutunud. Tehke muudatused uuesti ja salvestage uuesti.';
 ngc_Lang['et']['dbviewmodel_err_internal'] = 'Viga: sisemine viga.';

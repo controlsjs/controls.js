@@ -22,6 +22,7 @@ ngc_Lang['de']['dbviewmodel_err_deletefailed'] = 'Fehler: Löschen der Aufzeichn
 ngc_Lang['de']['dbviewmodel_err_invalidargs'] = 'Fehler: Ungültige Argumente.';
 ngc_Lang['de']['dbviewmodel_err_accessdenied'] = 'Fehler: Zugriff verweigert.';
 ngc_Lang['de']['dbviewmodel_err_notexists'] = 'Fehler: Aufzeichnung nicht gefunden.';
+ngc_Lang['de']['dbviewmodel_err_exists'] = 'Fehler: Datensatz existiert bereits.';
 ngc_Lang['de']['dbviewmodel_err_datachanged'] =
     'Daten haben sich seit der letzten Aktualisierung geändert. Änderungen wiederholen und erneut speichern.';
 ngc_Lang['de']['dbviewmodel_err_internal'] = 'Fehler: Interner Fehler.';

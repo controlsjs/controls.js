@@ -22,6 +22,7 @@ ngc_Lang['pl']['dbviewmodel_err_deletefailed'] = 'Błąd: Usunięcie rekordu nie
 ngc_Lang['pl']['dbviewmodel_err_invalidargs'] = 'Błąd: Nieprawidłowe argumenty.';
 ngc_Lang['pl']['dbviewmodel_err_accessdenied'] = 'Błąd: Odmowa dostępu.';
 ngc_Lang['pl']['dbviewmodel_err_notexists'] = 'Błąd: Nie znaleziono rekordu.';
+ngc_Lang['pl']['dbviewmodel_err_exists'] = 'Błąd: Rekord już istnieje.';
 ngc_Lang['pl']['dbviewmodel_err_datachanged'] =
     'Dane zostały zmienione od czasu ostatniej aktualizacji. Ponownie wprowadź zmiany i zapisz.';
 ngc_Lang['pl']['dbviewmodel_err_internal'] = 'Błąd: Błąd wewnętrzny.';

@@ -22,6 +22,7 @@ ngc_Lang['ja']['dbviewmodel_err_deletefailed'] = 'エラー: レコードの削�
 ngc_Lang['ja']['dbviewmodel_err_invalidargs'] = 'エラー: 引数が無効です。';
 ngc_Lang['ja']['dbviewmodel_err_accessdenied'] = 'エラー: アクセスが拒否されました。';
 ngc_Lang['ja']['dbviewmodel_err_notexists'] = 'エラー: レコードが見つかりません。';
+ngc_Lang['ja']['dbviewmodel_err_exists'] = 'エラー: レコードが既に存在します。';
 ngc_Lang['ja']['dbviewmodel_err_datachanged'] =
     '前回の更新からデータが変更されています。変更をやり直して、再度保存してください。';
 ngc_Lang['ja']['dbviewmodel_err_internal'] = 'エラー: 内部エラーです。';

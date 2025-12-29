@@ -22,6 +22,7 @@ ngc_Lang['lv']['dbviewmodel_err_deletefailed'] = 'Kļūda: Ierakstu neizdevās i
 ngc_Lang['lv']['dbviewmodel_err_invalidargs'] = 'Kļūda: Nederīgi argumenti.';
 ngc_Lang['lv']['dbviewmodel_err_accessdenied'] = 'Kļūda: Piekļuve liegta.';
 ngc_Lang['lv']['dbviewmodel_err_notexists'] = 'Kļūda: Ieraksts nav atrasts.';
+ngc_Lang['lv']['dbviewmodel_err_exists'] = 'Kļūda: Ieraksts jau pastāv.';
 ngc_Lang['lv']['dbviewmodel_err_datachanged'] =
     'Dati ir mainīti kopš pēdējā atjauninājuma. Veiciet izmaiņas vēlreiz un saglabājiet.';
 ngc_Lang['lv']['dbviewmodel_err_internal'] = 'Kļūda: Iekšēja kļūda.';

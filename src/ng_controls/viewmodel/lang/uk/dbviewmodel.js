@@ -22,6 +22,7 @@ ngc_Lang['uk']['dbviewmodel_err_deletefailed'] = 'Помилка: Не вдал�
 ngc_Lang['uk']['dbviewmodel_err_invalidargs'] = 'Помилка: Недійсні аргументи.';
 ngc_Lang['uk']['dbviewmodel_err_accessdenied'] = 'Помилка: Доступ заборонено.';
 ngc_Lang['uk']['dbviewmodel_err_notexists'] = 'Помилка: Запис не знайдено.';
+ngc_Lang['uk']['dbviewmodel_err_exists'] = 'Помилка: Запис уже існує.';
 ngc_Lang['uk']['dbviewmodel_err_datachanged'] =
     'Дані змінено з часу останнього оновлення. Повторіть зміни та збережіть ще раз.';
 ngc_Lang['uk']['dbviewmodel_err_internal'] = 'Помилка: Внутрішня помилка.';

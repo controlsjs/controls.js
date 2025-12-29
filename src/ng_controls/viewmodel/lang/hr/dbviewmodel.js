@@ -22,6 +22,7 @@ ngc_Lang['hr']['dbviewmodel_err_deletefailed'] = 'Pogreška: Brisanje zapisa nij
 ngc_Lang['hr']['dbviewmodel_err_invalidargs'] = 'Pogreška: Neispravni argumenti.';
 ngc_Lang['hr']['dbviewmodel_err_accessdenied'] = 'Pogreška: Pristup odbijen.';
 ngc_Lang['hr']['dbviewmodel_err_notexists'] = 'Pogreška: Zapis nije pronađen.';
+ngc_Lang['hr']['dbviewmodel_err_exists'] = 'Pogreška: Zapis već postoji.';
 ngc_Lang['hr']['dbviewmodel_err_datachanged'] =
     'Podaci su promijenjeni od zadnje izmjene. Ponovite promjene i ponovno spremite.';
 ngc_Lang['hr']['dbviewmodel_err_internal'] = 'Pogreška: Interna pogreška.';

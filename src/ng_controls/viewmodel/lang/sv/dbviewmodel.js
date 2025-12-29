@@ -22,6 +22,7 @@ ngc_Lang['sv']['dbviewmodel_err_deletefailed'] = 'Fel: Det gick inte att ta bort
 ngc_Lang['sv']['dbviewmodel_err_invalidargs'] = 'Fel: Ogiltiga argument.';
 ngc_Lang['sv']['dbviewmodel_err_accessdenied'] = 'Fel: Åtkomst nekad.';
 ngc_Lang['sv']['dbviewmodel_err_notexists'] = 'Fel: Posten hittades inte.';
+ngc_Lang['sv']['dbviewmodel_err_exists'] = 'Fel: Posten finns redan.';
 ngc_Lang['sv']['dbviewmodel_err_datachanged'] =
     'Data har ändrats sedan senaste uppdateringen. Gör om ändringarna och spara igen.';
 ngc_Lang['sv']['dbviewmodel_err_internal'] = 'Fel: Internt fel.';

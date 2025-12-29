@@ -22,6 +22,7 @@ ngc_Lang['nl']['dbviewmodel_err_deletefailed'] = 'Fout: Verwijderen van record m
 ngc_Lang['nl']['dbviewmodel_err_invalidargs'] = 'Fout: Ongeldige argumenten';
 ngc_Lang['nl']['dbviewmodel_err_accessdenied'] = 'Fout: Toegang geweigerd';
 ngc_Lang['nl']['dbviewmodel_err_notexists'] = 'Fout: Record niet gevonden';
+ngc_Lang['nl']['dbviewmodel_err_exists'] = 'Fout: Record bestaat al.';
 ngc_Lang['nl']['dbviewmodel_err_datachanged'] =
     'Gegevens zijn gewijzigd sinds de laatste update. Wijzigingen opnieuw uitvoeren en opnieuw opslaan';
 ngc_Lang['nl']['dbviewmodel_err_internal'] = 'Fout: Interne fout';

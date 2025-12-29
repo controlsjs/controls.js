@@ -22,6 +22,7 @@ ngc_Lang['tr']['dbviewmodel_err_deletefailed'] = 'Hata: Kayıt silme başarısı
 ngc_Lang['tr']['dbviewmodel_err_invalidargs'] = 'Hata: Geçersiz argümanlar.';
 ngc_Lang['tr']['dbviewmodel_err_accessdenied'] = 'Hata: Erişim engellendi.';
 ngc_Lang['tr']['dbviewmodel_err_notexists'] = 'Hata: Kayıt bulunamadı.';
+ngc_Lang['tr']['dbviewmodel_err_exists'] = 'Hata: Kayıt zaten mevcut.';
 ngc_Lang['tr']['dbviewmodel_err_datachanged'] =
     'Veriler son güncellemeden beri değişti. Değişiklikleri yineleyin ve tekrar kaydedin.';
 ngc_Lang['tr']['dbviewmodel_err_internal'] = 'Hata: İç hata.';

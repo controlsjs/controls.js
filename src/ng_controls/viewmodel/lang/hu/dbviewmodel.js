@@ -22,6 +22,7 @@ ngc_Lang['hu']['dbviewmodel_err_deletefailed'] = 'Hiba: A rekord törlése siker
 ngc_Lang['hu']['dbviewmodel_err_invalidargs'] = 'Hiba: Érvénytelen argumentumok.';
 ngc_Lang['hu']['dbviewmodel_err_accessdenied'] = 'Hiba: Hozzáférés megtagadva.';
 ngc_Lang['hu']['dbviewmodel_err_notexists'] = 'Hiba: A rekord nem található.';
+ngc_Lang['hu']['dbviewmodel_err_exists'] = 'Hiba: A rekord már létezik.';
 ngc_Lang['hu']['dbviewmodel_err_datachanged'] =
     'Az adatok megváltoztak a legutóbbi frissítés óta. Ismételje meg a módosításokat, és mentse újra.';
 ngc_Lang['hu']['dbviewmodel_err_internal'] = 'Hiba: Belső hiba.';

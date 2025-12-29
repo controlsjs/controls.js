@@ -22,6 +22,7 @@ ngc_Lang['fi']['dbviewmodel_err_deletefailed'] = 'Virhe: Tietueen poistaminen ep
 ngc_Lang['fi']['dbviewmodel_err_invalidargs'] = 'Virhe: Virheelliset argumentit.';
 ngc_Lang['fi']['dbviewmodel_err_accessdenied'] = 'Virhe: Käyttö estetty.';
 ngc_Lang['fi']['dbviewmodel_err_notexists'] = 'Virhe: Tietuetta ei löydy.';
+ngc_Lang['fi']['dbviewmodel_err_exists'] = 'Virhe: Tietue on jo olemassa.';
 ngc_Lang['fi']['dbviewmodel_err_datachanged'] =
     'Tiedot ovat muuttuneet viimeisimmän päivityksen jälkeen. Tee muutokset uudelleen ja tallenna uudelleen.';
 ngc_Lang['fi']['dbviewmodel_err_internal'] = 'Virhe: Sisäinen virhe.';

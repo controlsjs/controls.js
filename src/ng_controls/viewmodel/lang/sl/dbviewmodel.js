@@ -22,6 +22,7 @@ ngc_Lang['sl']['dbviewmodel_err_deletefailed'] = 'Napaka: Brisanje zapisa ni usp
 ngc_Lang['sl']['dbviewmodel_err_invalidargs'] = 'Napaka: Napačni argumenti';
 ngc_Lang['sl']['dbviewmodel_err_accessdenied'] = 'Napaka: Dostop zavrnjen.';
 ngc_Lang['sl']['dbviewmodel_err_notexists'] = 'Napaka: Zapis ni najden';
+ngc_Lang['sl']['dbviewmodel_err_exists'] = 'Napaka: Zapis že obstaja.';
 ngc_Lang['sl']['dbviewmodel_err_datachanged'] =
     'Podatki so bili spremenjeni od zadnje posodobitve. Ponovite spremembe in znova shranite.';
 ngc_Lang['sl']['dbviewmodel_err_internal'] = 'Napaka: Notranja napaka.';

@@ -19,6 +19,7 @@ var DBVM_ERROR_NOTEXISTS=-4;
 var DBVM_ERROR_DATACHANGED=-5;
 var DBVM_ERROR_FAILED_SILENT=-6;
 var DBVM_ERROR_REQUEST_FAILED=-7;
+var DBVM_ERROR_EXISTS=-8;
 var DBVM_ERROR_INTERNAL=-101;
 
 var DBVM_COMMANDS = ['new','load','insert','update','delete','cancel'];  
@@ -59,6 +60,7 @@ function ng_ViewModelFormatDBError(err,cmd)
     case DBVM_ERROR_INVALIDARGS:  errmsg='dbviewmodel_err_invalidargs'; break;
     case DBVM_ERROR_ACCESSDENIED: errmsg='dbviewmodel_err_accessdenied'; break;
     case DBVM_ERROR_NOTEXISTS:    errmsg='dbviewmodel_err_notexists'; break;
+    case DBVM_ERROR_EXISTS:       errmsg='dbviewmodel_err_exists'; break;
     case DBVM_ERROR_DATACHANGED:  errmsg='dbviewmodel_err_datachanged'; break;
     case DBVM_ERROR_INTERNAL:     errmsg='dbviewmodel_err_internal'; break;
     default:                      errmsg='dbviewmodel_err_unknown'; break;    

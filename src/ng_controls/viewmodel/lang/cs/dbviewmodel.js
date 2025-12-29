@@ -20,6 +20,7 @@ ngc_Lang['cs']['dbviewmodel_err_deletefailed']='Chyba: Záznam se nepodařilo sm
 ngc_Lang['cs']['dbviewmodel_err_invalidargs']='Chyba: Chybné argumenty.';
 ngc_Lang['cs']['dbviewmodel_err_accessdenied']='Chyba: Přístup byl zamítnut.';
 ngc_Lang['cs']['dbviewmodel_err_notexists']='Chyba: Záznam nebyl nalezen.';
+ngc_Lang['cs']['dbviewmodel_err_exists']='Chyba: Záznam již existuje.';
 ngc_Lang['cs']['dbviewmodel_err_datachanged']='Od poslední aktualizace došlo ke změně dat. Opakujte změny, které jste provedli, a následně je uložte.';
 ngc_Lang['cs']['dbviewmodel_err_internal']='Chyba: Interní chyba.';
 ngc_Lang['cs']['dbviewmodel_err_unknown']='Chyba: Neznámá chyba.';
