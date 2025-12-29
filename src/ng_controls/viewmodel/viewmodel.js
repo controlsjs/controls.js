@@ -13,6 +13,7 @@
 var ngViewModels = {};
 
 var ngViewModelNamespaces = {};
+var ngDEBUGVM = (typeof ngDEBUGVM === 'undefined' ? 0 : ngDEBUGVM);
 
 var fdNoTrim=0;
 var fdTrim=1;
@@ -1801,6 +1802,15 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     if(vm.CommandTimer) clearTimeout(vm.CommandTimer);
     delete vm.CommandTimer;
 
+    var dbginfo;
+    if(vm.CommandDebugInfo) {
+      dbginfo=vm.CommandDebugInfo;
+      dbginfo.FinishTS=new Date();
+      dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+      dbginfo.Results=ng_CopyVar(results);
+      delete vm.CommandDebugInfo;
+    }
+
     var sresults;
     if(vm.OnResults)
     {
@@ -1821,6 +1831,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         ng_MergeVar(sresults.Values,vmodel);
         ngvm_makeobservable(vmodel,true);
       }
+      if(dbginfo) dbginfo.ViewModel=vmodel;
       vm.SetViewModel(vmodel);
     }
 
@@ -1849,10 +1860,16 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       }
       if(errors.length>0)
       {
-        if((vm.OnErrors)&&(!ngVal(vm.OnErrors(vm,errors),false))) return false;
-        if(!ng_EmptyVar(errors))
+        if(dbginfo) dbginfo.ValidationErrors=errors;
+        if((vm.OnErrors)&&(!ngVal(vm.OnErrors(vm,errors),false))) {
+          if(dbginfo) ngDEBUGWARN('VM '+vm.Namespace+' "'+vm.Command+'" ['+vm.ID+'] '+(ng_EmptyVar(errors) ? '' : 'SERVER VALIDATION ERRORS ')+'('+dbginfo.CommandTime+' ms)',dbginfo);
+          return;
+        }
+        if(dbginfo) ngDEBUGWARN('VM '+vm.Namespace+' "'+vm.Command+'" ['+vm.ID+'] '+(ng_EmptyVar(errors) ? '' : 'SERVER VALIDATION ERRORS ')+'('+dbginfo.CommandTime+' ms)',dbginfo);
+        if(!ng_EmptyVar(errors)) {
           vm.ShowErrors(errors);
-        return false;
+        }
+        return;
       }
     }
 
@@ -1886,6 +1903,12 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       vm.SetValues(sresults.Values,true);
     }
     if(vm.OnCommandData) vm.OnCommandData(vm,cmd,sresults);
+    
+    if(dbginfo) {
+      dbginfo.ValuesAfter=vm.GetValues();
+      dbginfo.Changes=ngvm_DebugChanges(dbginfo.ValuesBefore,dbginfo.ValuesAfter);
+      ngDEBUGLOG('VM '+vm.Namespace+' "'+dbginfo.Command+'" ['+vm.ID+'] ('+(dbginfo.CommandTime)+' ms)',dbginfo);
+    }
 
     // Fire callback
     if(typeof sresults.Callback === 'function') {
@@ -1942,7 +1965,19 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 
   function ngvm_DoCommandError(cmd, options, errinfo)
   {
-    ngDEBUGLOG('ViewModel: ['+this.ID+'] Command "'+cmd+'" failed!');
+    var logfailed=true;
+    if(this.CommandDebugInfo) {
+      var dbginfo=this.CommandDebugInfo;
+      if(dbginfo.Command===cmd) {
+        dbginfo.FinishTS=new Date();
+        dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+        dbginfo.CommandErrorInfo=errinfo;
+        ngDEBUGERROR('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] COMMAND FAILED ('+dbginfo.CommandTime+' ms)',dbginfo);
+        delete this.CommandDebugInfo;
+        logfailed=false;
+      }
+    }
+    if(logfailed) ngDEBUGERROR('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] COMMAND FAILED', errinfo);
 
     this.CancelCommand();
 
@@ -1985,10 +2020,41 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     var cmd=this.ActiveCommand;
     if(cmd!='')
     {
+      if(this.CommandDebugInfo) {
+        var dbginfo=this.CommandDebugInfo;
+        if(dbginfo.Command===cmd) {
+          dbginfo.FinishTS=new Date();
+          dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+          ngDEBUGWARN('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] CANCELED ('+(dbginfo.CommandTime)+' ms)',dbginfo);
+          delete this.CommandDebugInfo;
+        }
+      }
       this.ActiveCommand='';
       this.rpc_reqid++;
       if(this.OnCommandCancel) this.OnCommandCancel(this, cmd);
     }
+  }
+
+  function ngvm_DebugChanges(oldvalue, newvalue)
+  {
+    if(ng_VarEquals(oldvalue,newvalue)) return false;
+    if((ng_IsObjVar(oldvalue))&&(ng_IsObjVar(newvalue))) {
+      var isdate=ng_type_date(oldvalue) || ng_type_date(newvalue);
+      if((!isdate)&&(ng_IsArrayVar(oldvalue)===ng_IsArrayVar(newvalue))) {
+        var ch, ret={};
+        for(var i in oldvalue) {
+          if(i in newvalue) {
+            ch=ngvm_DebugChanges(oldvalue[i], newvalue[i]);
+            if(ch) ret[i]=ch;
+          } else ret[i]={ OldValue: oldvalue[i] };
+        }
+        for(var i in newvalue) {
+          if(!(i in oldvalue)) ret[i]={ NewValue: newvalue[i] };
+        }
+        return ret;
+      }
+    }
+    return { OldValue: oldvalue, NewValue: newvalue };
   }
 
   function ngvm_Command(cmd,options)
@@ -1997,6 +2063,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     if((this.OnCommand)&&(!ngVal(this.OnCommand(this,cmd,options),false))) return false;
 
     this.CancelCommand();
+    var debug=ngHASDEBUG() && ngVal(options.DebugVM, ngVal(this.DebugVM,ngDEBUGVM));
 
     var err={};
     var vals=options.Values;
@@ -2006,6 +2073,17 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       if(ng_isEmpty(valuenames)) valuenames=this.GetCommandValueNames(cmd,options);
       vals=this.GetValues(false,valuenames,err,true,true);
     }
+    var dbginfo;
+    if(debug) {
+      dbginfo = {
+        Command: cmd,
+        CommandOptions: ng_CopyVar(options),
+        CommandValues: ng_CopyVar(vals),
+        StartTS: new Date(),
+        ValuesBefore: this.GetValues()
+      };
+      this.CommandDebugInfo = dbginfo;
+    }
     if(ng_EmptyVar(err))
     {
       try
@@ -2013,7 +2091,17 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         if(this.OnDoCommand)
         {
           var ret=(ngVal(this.OnDoCommand(this,cmd,options,vals,err),true));
-          if((ret)&&(ng_EmptyVar(err))) return true;
+          if((ret)&&(ng_EmptyVar(err))) {
+            if(dbginfo) {
+              dbginfo.FinishTS=new Date();
+              dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+              dbginfo.ValuesAfter=this.GetValues();
+              dbginfo.Changes=ngvm_DebugChanges(dbginfo.ValuesBefore,dbginfo.ValuesAfter);
+              ngDEBUGLOG('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] ('+dbginfo.CommandTime+' ms)',dbginfo);
+              delete this.CommandDebugInfo;
+            }
+            return true;
+          }
         }
       }
       catch(e)
@@ -2024,19 +2112,52 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     }
     if(!ng_EmptyVar(err))
     {
-      if((this.OnErrors)&&(!ngVal(this.OnErrors(this,err),false))) return false;
+      if((this.OnErrors)&&(!ngVal(this.OnErrors(this,err),false))) {
+        if((dbginfo)&&(!ng_EmptyVar(err)))
+        {
+          dbginfo.FinishTS=new Date();
+          dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+          dbginfo.ValidationErrors=err;
+          ngDEBUGWARN('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] VALIDATION ERRORS',dbginfo);
+          delete this.CommandDebugInfo;
+        }
+        return false;
+      }
       if(!ng_EmptyVar(err))
       {
+        if(dbginfo) {
+          dbginfo.FinishTS=new Date();
+          dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+          dbginfo.ValidationErrors=err;
+          ngDEBUGWARN('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] VALIDATION ERRORS',dbginfo);
+          delete this.CommandDebugInfo;
+        }
         this.ShowErrors(err);
         return false;
       }
     }
 
     var url=ngVal(options.URL,this.ServerURL);
-    if(url=='') return false;
+    if(url=='') {
+      if(dbginfo) {
+        dbginfo.FinishTS=new Date();
+        dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+        ngDEBUGERROR('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] Missing ServerURL',dbginfo);
+        delete this.CommandDebugInfo;
+      }
+      return false;
+    }
 
     var rpc=this.GetRPC();
-    if(!rpc) return false;
+    if(!rpc) {
+      if(dbginfo) {
+        dbginfo.FinishTS=new Date();
+        dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
+        ngDEBUGERROR('VM '+this.Namespace+' "'+cmd+'" ['+this.ID+'] No RPC',dbginfo);
+        delete this.CommandDebugInfo;
+      }
+      return false;
+    }
 
     this.rpc_reqid++;
     rpc.clearParams();
@@ -2450,13 +2571,14 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     *  Gets values from ViewModel.
     *
     *  Syntax:
-    *    void *GetValues* ([bool writableonly=false, array valuenames=undefined, object errors={}, bool convtimestamps=false])
+    *    void *GetValues* ([bool writableonly=false, array valuenames=undefined, object errors={}, bool convtimestamps=false, bool serialize=false])
     *
     *  Parameters:
     *    writableonly - if TRUE, return only values of non-read-only properties
     *    valuenames - optional list of property names, returned values are only from properties specified on this list
     *    errors - all errors which occured during serialization (including type conversion erros) are recorded into this object as name-value pairs "property path":"exception"
     *    convtimestamps - if TRUE, values of type Date are returned as timestamps (integer)
+    *    serialize - returns serialized values
     *
     *  Returns:
     *    Object containing values.

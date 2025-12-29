@@ -477,7 +477,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
         "Value": ng_diMixed(['kotypes','jstypes'], { Level: 'basic', DefaultType: 'undefined' }),
         "RemoveEmptyItems": ng_diBoolean(false, { Level: 'optional' }),
         "Serialize": ng_diBoolean(true, { Level: 'advanced' }),
-        "IgnoreTimezone": ng_diBoolean(false { Level: 'basic' }),
+        "IgnoreTimezone": ng_diBoolean(false, { Level: 'basic' }),
         "DateTimeFormat": ng_diString('', { Level: 'basic' }),
         "DateFormat": ng_diString('', { Level: 'basic' }),
         "TimeFormat": ng_diString('', { Level: 'basic' }),
@@ -1186,6 +1186,10 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
               }
             }),
             "Data": {
+              "DebugVM": ng_diMixed([
+                 'undefined',                     
+                 ng_diBoolean(false)
+              ], { InitType: 'boolean', Level: 'advanced' }),
               "ViewModel": ng_diType('vmobject', { Level: 'basic' }),
               "DefaultValues": ng_diType('jsobject', { Level: 'basic' }),
               "ServerURL": ng_diType('url', {Level: 'basic' }),
