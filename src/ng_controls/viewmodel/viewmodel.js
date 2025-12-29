@@ -1831,7 +1831,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         ng_MergeVar(sresults.Values,vmodel);
         ngvm_makeobservable(vmodel,true);
       }
-      if(dbginfo) dbginfo.ViewModel=vmodel;
+      if(dbginfo) dbginfo.ResultsViewModel=vmodel;
       vm.SetViewModel(vmodel);
     }
 
@@ -2080,7 +2080,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         CommandOptions: ng_CopyVar(options),
         CommandValues: ng_CopyVar(vals),
         StartTS: new Date(),
-        ValuesBefore: this.GetValues()
+        Owner: this,
+        ValuesBefore: this.GetValues(),        
+        ViewModel: this.ViewModel
       };
       this.CommandDebugInfo = dbginfo;
     }
