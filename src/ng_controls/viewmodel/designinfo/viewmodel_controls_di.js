@@ -1217,7 +1217,8 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
             "OverrideEvents": {
               "OnSetValue": ng_diEvent('function(c, setval, instance, valpath) { return setval; }',{ Level: 'basic' }),
               "OnGetValue": ng_diEvent('function(c, val,instance, valpath, errors) { return val; }',{ Level: 'basic' }),
-              "OnGetCommandValueNames": ng_diEvent('function(c, cmd, options) { return []; }',{ Level: 'basic' }),
+              "OnGetCommandValueNames": ng_diEvent('function(c, cmd, options,exactmatch,undefinedifnotfound) { return []; }',{ Level: 'basic' }),
+              "OnGetCommandResponseValueNames": ng_diEvent('function(c, cmd, exactmatch,undefinedifnotfound) { return []; }',{ Level: 'basic' }),
               "OnSetViewModel": ng_diEvent('function(c, vmodel) { return vmodel; }',{ Level: 'basic' }),
               "OnResults": ng_diEvent('function(c, results) { return results; }',{ Level: 'basic' })
             }

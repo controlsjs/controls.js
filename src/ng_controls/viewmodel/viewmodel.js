@@ -1803,7 +1803,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     delete vm.CommandTimer;
 
     var dbginfo;
-    if(vm.CommandDebugInfo) {
+    if((vm.CommandDebugInfo)&&(vm.CommandDebugInfo.Command===vm.ActiveCommand)) {
       dbginfo=vm.CommandDebugInfo;
       dbginfo.FinishTS=new Date();
       dbginfo.CommandTime=dbginfo.FinishTS.getTime()-dbginfo.StartTS.getTime();
@@ -1862,10 +1862,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       {
         if(dbginfo) dbginfo.ValidationErrors=errors;
         if((vm.OnErrors)&&(!ngVal(vm.OnErrors(vm,errors),false))) {
-          if(dbginfo) ngDEBUGWARN('VM '+vm.Namespace+' "'+vm.Command+'" ['+vm.ID+'] '+(ng_EmptyVar(errors) ? '' : 'SERVER VALIDATION ERRORS ')+'('+dbginfo.CommandTime+' ms)',dbginfo);
+          if(dbginfo) ngDEBUGWARN('VM '+vm.Namespace+' "'+dbginfo.Command+'" ['+vm.ID+'] '+(ng_EmptyVar(errors) ? '' : 'SERVER VALIDATION ERRORS ')+'('+dbginfo.CommandTime+' ms)',dbginfo);
           return;
         }
-        if(dbginfo) ngDEBUGWARN('VM '+vm.Namespace+' "'+vm.Command+'" ['+vm.ID+'] '+(ng_EmptyVar(errors) ? '' : 'SERVER VALIDATION ERRORS ')+'('+dbginfo.CommandTime+' ms)',dbginfo);
+        if(dbginfo) ngDEBUGWARN('VM '+vm.Namespace+' "'+dbginfo.Command+'" ['+vm.ID+'] '+(ng_EmptyVar(errors) ? '' : 'SERVER VALIDATION ERRORS ')+'('+dbginfo.CommandTime+' ms)',dbginfo);
         if(!ng_EmptyVar(errors)) {
           vm.ShowErrors(errors);
         }
@@ -1922,15 +1922,17 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     }
   }
 
-  function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch)
+  function ngvm_GetCommandValueNamesByFieldAttrs(cmd,exactmatch,undefinedifnotfound,attr)
   {
     exactmatch=ngVal(exactmatch,false);
     var valuenames=[];
     var attrfound=false;
+    undefinedifnotfound=ngVal(undefinedifnotfound,true);
+    attr=ngVal(attr,'Command');
     this.ScanValues(function(vm,val,instance,valpath) {
       if(ngIsFieldDef(instance))
       {
-        var forcmd=instance.Attrs['Command'];
+        var forcmd=instance.Attrs[attr];
         if(forcmd!=='')
         {
           if(ng_isEmpty(forcmd))
@@ -1949,18 +1951,31 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       else if(!exactmatch) valuenames.push(valpath);
       return true;
     });
-    if(!attrfound) return; // undefined - no special values for command;
+    if((!attrfound)&&(undefinedifnotfound)) return; // undefined - no special values for command;
     return valuenames;
   }
 
-  function ngvm_GetCommandValueNames(cmd,options,exactmatch)
+  function ngvm_GetCommandValueNames(cmd,options,exactmatch,undefinedifnotfound)
   {
-    if(this.OnGetCommandValueNames)
+    if(this.OnGetCommandValueNames) 
     {
       if(typeof options === 'undefined') options={};
-      return this.OnGetCommandValueNames(this,cmd,options);
+      var ret=this.OnGetCommandValueNames(this,cmd,options,exactmatch,undefinedifnotfound);
+      if((typeof ret!=='undefined')||(ngVal(undefinedifnotfound,true))) return ret;
+      cmd='';  
     }
-    else return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch);
+    return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch,undefinedifnotfound,'Command');
+  }
+
+  function ngvm_GetCommandResponseValueNames(cmd,exactmatch,undefinedifnotfound)
+  {
+    if(this.OnGetCommandResponseValueNames) 
+    {
+      var ret=this.OnGetCommandResponseValueNames(this,cmd,exactmatch,undefinedifnotfound);
+      if((typeof ret!=='undefined')||(ngVal(undefinedifnotfound,true))) return ret;
+      cmd='';  
+    }
+    return this.GetCommandValueNamesByFieldAttrs(cmd,exactmatch,undefinedifnotfound,'CommandResponse');
   }
 
   function ngvm_DoCommandError(cmd, options, errinfo)
@@ -2795,6 +2810,22 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     this.GetCommandValueNames = ngvm_GetCommandValueNames;
 
     /**
+     *  Function: GetCommandResponseValueNames
+     *  Gets response value names for specified command.
+     *  
+     *  Syntax:
+     *    mixed *GetCommandResponseValueNames* (string cmd[, bool exactmatch=false])
+     *    
+     *  Parameters:
+     *    cmd - command id
+     *    exactmatch - return only value names which are exactly defined for specified command
+     *     
+     *  Returns:
+     *    Array of value names to be in respone of command or undefined if no specific value names defined for command (all values can be in result).
+     */
+    this.GetCommandResponseValueNames = ngvm_GetCommandResponseValueNames;
+  
+    /**
      *  Function: GetCommandValueNamesByFieldAttrs
      *  Gets value names for specified command based on field attribute 'Command'.
      *
@@ -2856,6 +2887,11 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     this.OnGetCommandValueNames = null;
 
     /*
+   *  Event: OnGetCommandResponseValueNames
+   */   
+  this.OnGetCommandResponseValueNames = null;
+  
+  /*
     *  Event: OnDoCommand
     */
     this.OnDoCommand = null;
