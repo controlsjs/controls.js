@@ -40,7 +40,7 @@ ngUserControls['viewmodel_dataset_designinfo'] = {
           },
           "Events": {
             "OnSetViewModel": ng_diEvent('function(c, vm, ovm) {}',{ Level: 'basic' }),
-            "OnReloadDataSet": ng_diEvent('function(c) { return true; }',{ Level: 'basic' }),
+            "OnReloadDataSet": ng_diEvent('function(c, invalidateds) { return true; }',{ Level: 'basic' }),
             "OnApplyFilters": ng_diEvent('function(c) { return true; }',{ Level: 'basic' }),
             "OnResetFilters": ng_diEvent('function(c) { return true; }',{ Level: 'basic' }),
             "OnSetSortBy": ng_diEvent('function(c, sortby) { return true; }',{ Level: 'basic' })

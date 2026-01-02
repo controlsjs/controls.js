@@ -368,9 +368,12 @@ ngUserControls['viewmodel_dataset'] = {
       if(ds) ds.UpdateDataSetColumns();
     }
     
-    function ngdsc_ReloadDataSet()
+    function ngdsc_ReloadDataSet(invalidateds)
     {
-      if((this.OnReloadDataSet)&&(!ngVal(this.OnReloadDataSet(this),false))) return;
+      if((ngVal(invalidateds,true))&&(this.ViewModel)
+        &&(typeof this.ViewModel.HasDataSet==='function')&&(this.ViewModel.HasDataSet())
+        &&(typeof this.ViewModel.InvalidateDataSet==='function')) this.ViewModel.InvalidateDataSet();
+      if((this.OnReloadDataSet)&&(!ngVal(this.OnReloadDataSet(this, invalidateds),false))) return;
       if(this.IsDynamicData()) this.Reset(true);
     }
     
@@ -411,7 +414,7 @@ ngUserControls['viewmodel_dataset'] = {
     function ngdscvm_ReloadDataSet()
     {
       var ds=this.Owner.DataSetControl;
-      if(ds) ds.ReloadDataSet();
+      if(ds) ds.ReloadDataSet(true);
     }
     
     function ngdscvm_ApplyFilters()
@@ -487,7 +490,7 @@ ngUserControls['viewmodel_dataset'] = {
                   updtimer=setTimeout(function() {
                     if(updtimer) clearTimeout(updtimer);
                     updtimer=null;
-                    if(typeof self.ReloadDataSet === 'function') self.ReloadDataSet();
+                    if(typeof self.ReloadDataSet === 'function') self.ReloadDataSet(false);
                   }, 1);
                 }
               });
