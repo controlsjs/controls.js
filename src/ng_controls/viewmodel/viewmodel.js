@@ -2096,7 +2096,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         CommandValues: ng_CopyVar(vals),
         StartTS: new Date(),
         Owner: this,
-        ValuesBefore: this.GetValues(),        
+        ValuesBefore: this.GetValues(),
         ViewModel: this.ViewModel
       };
       this.CommandDebugInfo = dbginfo;
@@ -2118,6 +2118,11 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               delete this.CommandDebugInfo;
             }
             return true;
+          }
+          if(dbginfo) {
+            // OnDoCommand can modify vaules
+            dbginfo.CommandValues=ng_CopyVar(vals);
+            dbginfo.ValuesBefore=this.GetValues();
           }
         }
       }
