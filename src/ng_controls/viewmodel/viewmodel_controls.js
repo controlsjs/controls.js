@@ -687,6 +687,23 @@ ngUserControls['viewmodel_controls'] = {
       return false;
     }
 
+    function ngdsvm_InvalidateDataSet() {
+      if(ng_IsArrayVar(this.DataSet)) return false;
+      var ds=this.ViewModel.DataSet;
+      if((ngIsFieldDef(ds))&&(typeof ds.InvalidateDataSet==='function')) {
+        ds.InvalidateDataSet();
+        return true;
+      }
+      return false;
+    }
+
+    function ngdsvm_DataSetNeedUpdate() {
+      if(ng_IsArrayVar(this.DataSet)) return;
+      var ds=this.ViewModel.DataSet;
+      if((ngIsFieldDef(ds))&&(typeof ds.DataSetNeedUpdate!=='undefined')) return ds.DataSetNeedUpdate;
+      return false;
+    }
+
     function ngdsvm_DoGetDataSet() {
       var ds=this.ViewModel.DataSet;
       if(ngIsFieldDef(ds)) {
@@ -806,6 +823,7 @@ ngUserControls['viewmodel_controls'] = {
     function ngdsvm_DoSortDataSet(ds, sortby) {
       if((ng_IsArrayVar(sortby))&&(sortby.length>0)&&(ng_IsArrayVar(ds))&&(typeof ds.sort==='function')) {
         var oncompare=this.OnSortCompare;
+        var casesensitive=this.DataSetSortCaseSensitive;
         ds.sort(function (a,b) {
           var v1,v2,f,d,r;
           for(var i=0;i<sortby.length;i++) {
@@ -828,6 +846,10 @@ ngUserControls['viewmodel_controls'] = {
               }
             }
             else {
+              if(!casesensitive) {
+                if(typeof v1 === 'string') v1=v1.toLowerCase();
+                if(typeof v2 === 'string') v2=v2.toLowerCase();
+              }
               if(v1<v2) return d ? 1 : -1;
               if(v1>v2) return d ? -1 : 1;
             }
@@ -926,7 +948,10 @@ ngUserControls['viewmodel_controls'] = {
         fd=filterfields[i];
         if(!fd) continue;
 
-        if((!ngIsFieldDef(fd))||(!fd.PrivateField)) val=vmGetFieldValueByID(vm,'_ActiveFilters.'+i);
+        if((!ngIsFieldDef(fd))||(!fd.PrivateField)) {
+          if(fd.Attrs['ServerFilter']===true) continue;
+          val=vmGetFieldValueByID(vm,'_ActiveFilters.'+i);
+        }
         else val=ko.ng_getvalue(fd);
 
         try
@@ -982,6 +1007,7 @@ ngUserControls['viewmodel_controls'] = {
 
       function applyfilters() {
         var activefilters={};
+        var dsinvalidate=false;
         c.ScanValues(function(vm,val,instance,valpath) {
           if(valpath.substr(0,8)==='Filters.') {
             valpath=valpath.substr(8);
@@ -991,6 +1017,12 @@ ngUserControls['viewmodel_controls'] = {
                 val=instance.GetTypedValue();
               } catch(e) {
                 val=instance.GetTypedDefaultValue();
+              }
+              if((instance.Attrs['ServerFilter']===true)&&(!dsinvalidate)) {
+                var oldval=vmGetFieldValueByID(c.ViewModel._ActiveFilters,valpath);
+                if(!ng_VarEquals(oldval,val)) {
+                  dsinvalidate=true;
+                }
               }
             }
             vmSetFieldValueByID(activefilters,valpath,val);
@@ -1002,8 +1034,10 @@ ngUserControls['viewmodel_controls'] = {
           if(ng_EmptyVar(activefilters)) delete vm._ActiveFilters;
           else vm._ActiveFilters=ko.ng_setvalue(vm._ActiveFilters, activefilters);
         }
+        if((dsinvalidate)&&(typeof c.InvalidateDataSet==='function')) c.InvalidateDataSet();
       }
-      var noserver=(ngVal(options.URL,this.ServerURL)=='') || c.HasDataSet(); // no server
+      var hasurl=(ngVal(options.URL,this.ServerURL)!='');
+      var noserver=(!hasurl) || (c.HasDataSet() && !c.DataSetNeedUpdate()); // no server command
       var cmderr;
       switch(cmd)
       {
@@ -1040,8 +1074,10 @@ ngUserControls['viewmodel_controls'] = {
           }
           if(noserver) {
             applyfilters();
-            getrecords();
-            return true;
+            if((!hasurl) || (c.HasDataSet() && !c.DataSetNeedUpdate())) {
+              getrecords();
+              return true;
+            }
           }
           cmderr='viewmodel_err_cmd_data';
           break;
@@ -1066,8 +1102,10 @@ ngUserControls['viewmodel_controls'] = {
               return true;
             });
             applyfilters();
-            getrecords();
-            return true;
+            if((!hasurl) || (c.HasDataSet() && !c.DataSetNeedUpdate())) {
+              getrecords();
+              return true;
+            }
           }
           cmderr='viewmodel_err_cmd_data';
           break;
@@ -1214,11 +1252,15 @@ ngUserControls['viewmodel_controls'] = {
       var fc=function(def, ref, parent) {
         ng_MergeDef(def, {
           Data: {
-            DataSet: void 0
+            DataSet: void 0,
+            DataSetSortCaseSensitive: false
           },
           Methods: {
             HasDataSet: ngdsvm_HasDataSet,
             DoGetDataSet: ngdsvm_DoGetDataSet,
+            InvalidateDataSet: ngdsvm_InvalidateDataSet,
+            DataSetNeedUpdate: ngdsvm_DataSetNeedUpdate,
+
             DoFilterDataSet: ngdsvm_DoFilterDataSet,
             DoFilterDataSetField: ngdsvm_DoFilterDataSetField,
             DoSortDataSet: ngdsvm_DoSortDataSet,

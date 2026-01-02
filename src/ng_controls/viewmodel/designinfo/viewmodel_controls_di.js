@@ -503,6 +503,7 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
       {
         attrsprops["DataSetColumnAlign"]=ng_diStringValues('left', ['left', 'center', 'right'], { Level: 'optional' });
         attrsprops["DataSetColumnWidth"]=ng_diMixed(['undefined',ng_diInteger(0, {}, { InitValue: 100 })], { Level: 'optional', InitType: 'integer' });
+        attrsprops["ServerFilter"]=ng_diBoolean(false, { Level: 'advanced' });
       }
 
       function fdtype(typename, shortname, args) {
@@ -1261,7 +1262,8 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
                     }
                   }
                 })
-              ], { InitType: 'array', Level: 'basic' })
+              ], { InitType: 'array', Level: 'basic' }),
+              "DataSetSortCaseSensitive": ng_diBoolean(false, { Level: 'basic' })
             },
             "Methods": {
               "DoGetDataSet": ng_diFunction('function() { return ng_CallParent(this,"DoGetDataSet",arguments,null); }', { Level: 'advanced' }),
