@@ -98,6 +98,7 @@ ngUserControls['viewmodel_dataset'] = {
       var ds=list.Owner.Owner;
       if(ds.ToggleColumnSortDir(list.Columns[colidx].ID, !ngVal(e.ctrlKey,false))) {
         if(ds.IsDynamicData()) ds.Reset(true);
+        else this.Update();
       }
     }
     
@@ -303,7 +304,7 @@ ngUserControls['viewmodel_dataset'] = {
               },1);
               return;
             } else {
-              var data=new Array();
+              var data=[];
               for(var i=0;i<records.length;i++)
                 data[i]= { Record: records[i] };
               return data;
@@ -316,6 +317,9 @@ ngUserControls['viewmodel_dataset'] = {
     
     function ngdsc_OnCommand(vm,cmd,options)
     {
+      if(vm._dataset_updtimer) clearTimeout(vm._dataset_updtimer);
+      delete vm._dataset_updtimer;
+
       if(typeof options.CommandErrorMessage==='undefined') {
         switch(cmd)
         {
@@ -332,6 +336,9 @@ ngUserControls['viewmodel_dataset'] = {
     
     function ngdsc_DataLoaded(vm,cmd)
     {
+      if(vm._dataset_updtimer) clearTimeout(vm._dataset_updtimer);
+      delete vm._dataset_updtimer;
+
       var ds=vm.DataSetControl;
       if(!ds) return;
     
@@ -354,7 +361,7 @@ ngUserControls['viewmodel_dataset'] = {
         ds.GetRecordsCommand = 'getrecords';
         var offset=vm.ViewModel.Offset.GetTypedValue(false);
         var records=vm.ViewModel.Records.GetTypedValue(false);
-        var data=new Array();
+        var data=[];
         if(ng_IsArrayVar(records))
           for(var i=0;i<records.length;i++)
             data[i]= { Record: records[i] };      
@@ -374,7 +381,11 @@ ngUserControls['viewmodel_dataset'] = {
         &&(typeof this.ViewModel.HasDataSet==='function')&&(this.ViewModel.HasDataSet())
         &&(typeof this.ViewModel.InvalidateDataSet==='function')) this.ViewModel.InvalidateDataSet();
       if((this.OnReloadDataSet)&&(!ngVal(this.OnReloadDataSet(this, invalidateds),false))) return;
-      if(this.IsDynamicData()) this.Reset(true);
+      if(this.IsDynamicData()) {
+        this.MaxLength=void 0;
+        this.InvalidateData();
+      }
+      else this.Update();
     }
     
     function ngdsc_ApplyFilters()
@@ -382,6 +393,7 @@ ngUserControls['viewmodel_dataset'] = {
       this.GetRecordsCommand='applyfilters';
       if((this.OnApplyFilters)&&(!ngVal(this.OnApplyFilters(this),false))) return;
       if(this.IsDynamicData()) this.Reset(true);
+      else this.Update();
     }
     
     function ngdsc_ResetFilters()
@@ -409,6 +421,7 @@ ngUserControls['viewmodel_dataset'] = {
       this.GetRecordsCommand='resetfilters';
       if((this.OnResetFilters)&&(!ngVal(this.OnResetFilters(this),false))) return;
       if(this.IsDynamicData()) this.Reset(true);
+      else this.Update();
     }
     
     function ngdscvm_ReloadDataSet()
@@ -480,16 +493,14 @@ ngUserControls['viewmodel_dataset'] = {
           if(ds) {
             if(ngIsFieldDef(ds)) ds=ds.Value;
             if(ko.isObservable(ds)) {
-              var self=this;
-              var updtimer=null;
-    
+              var self=this;    
               ds.subscribe(function(v) {
                 if(vm.DataSetControl!==self) return;
                 if((v)||(typeof self.GetLength !== 'function')||((!v)&&(self.GetLength()))) {
-                  if(updtimer) clearTimeout(updtimer);
-                  updtimer=setTimeout(function() {
-                    if(updtimer) clearTimeout(updtimer);
-                    updtimer=null;
+                  if(vm._dataset_updtimer) clearTimeout(vm._dataset_updtimer);
+                  vm._dataset_updtimer=setTimeout(function() {
+                    if(vm._dataset_updtimer) clearTimeout(vm._dataset_updtimer);
+                    delete vm._dataset_updtimer;
                     if(typeof self.ReloadDataSet === 'function') self.ReloadDataSet(false);
                   }, 1);
                 }
