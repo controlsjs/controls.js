@@ -1114,6 +1114,41 @@ ngUserControls['viewmodel_controls'] = {
       return ng_CallParent(c,'OnDoCommand',arguments,false);
     }
 
+    function ngdsvm_DataLoaded(c,cmd, sresults)
+    {
+      var vm=c.ViewModel;
+      if(!vm) return;
+      var records=ko.ng_getvalue(vm.Records);
+      if(((ng_IsArrayVar(records))&&(records.length))||(!c.HasDataSet())) return;
+
+      var offset=ko.ng_getvalue(vm.Offset);
+      var count=ko.ng_getvalue(vm.Count);
+      if((typeof offset!=='undefined')&&(typeof count!=='undefined')) {
+        // Fill records from client dataset
+        offset=ng_toNumber(offset,0);
+        if(offset<0)
+        {
+          if((count===null)||(count === void 0)) count+=offset;
+          offset=0;
+        }
+        if((count===null)||(count === void 0)) count=-1;
+        else {
+          count=ng_toNumber(count,0);
+          if(count<0) count=0;
+        }
+        var sortby=ko.ng_getvalue(vm.SortBy);
+        if(!c.IsAllowedSortBy(sortby))
+        {
+          if(ngIsFieldDef(vm.SortBy)) sortby=vm.SortBy.GetTypedDefaultValue();
+        }
+        var recs=c.DoGetRecords(offset, count, c.GetColumnDefs(), sortby);
+        if(ng_IsArrayVar(recs)) {
+          if(ngIsFieldDef(vm.Records)) recs=vm.Records.TypedValue(recs);
+          vm.Records=ko.ng_setvalue(vm.Records, recs);
+        }
+      }
+    }
+
     function ngdsvmm_GetRecords() {
       var c=this.Owner;
       if(c) c.Command('getrecords');
@@ -1277,6 +1312,7 @@ ngUserControls['viewmodel_controls'] = {
           },
           OverrideEvents: {
             OnDoCommand: ngdsvm_DoCommand,
+            OnCommandData: ngdsvm_DataLoaded,
             OnDoGetRecords: null,
             OnDoGetTotalCount: null
           },
