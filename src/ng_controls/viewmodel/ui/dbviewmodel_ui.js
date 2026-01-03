@@ -318,8 +318,13 @@ ngUserControls['dbviewmodel_ui'] = {
         }
         if(changetype!==dsdbNew)
         {
-          this.MaxLength=void 0;
-          this.InvalidateData();
+          if(typeof this.ReloadDataSet==='function') this.ReloadDataSet(true);
+          else {
+            if(this.IsDynamicData()) {
+              this.MaxLength=void 0;
+              this.InvalidateData();
+            }
+          }
         }
       }
       if(this.OnDBViewModelChanged) this.OnDBViewModelChanged(this, changetype, primarykey);
@@ -675,7 +680,7 @@ ngUserControls['dbviewmodel_ui'] = {
                     ngAltD: 'dbviewmodel_dataset_refresh'
                   },
                   Events: {
-                    OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.ApplyFilters(); }
+                    OnClick: function(e) { e.Owner/*button*/.Owner/*controls*/.Owner/*pagelist*/.ReloadDataSet(true); }
                   }
                 }
               }
