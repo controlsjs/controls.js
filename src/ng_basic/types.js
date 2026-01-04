@@ -74,7 +74,7 @@ var ng_SIUnits = ng_SIUnits || [
   { name: 'tebi',  prefix: 'Ti',  ex: 1099511627776,     binex: 1099511627776,       notcommon: true},
   { name: 'gibi',  prefix: 'Gi',  ex: 1073741824,        binex: 1073741824,          notcommon: true},
   { name: 'mebi',  prefix: 'Mi',  ex: 1048576,           binex: 1048576,             notcommon: true},
-  { name: 'kibi',  prefix: 'ki',  ex: 1024,              binex: 1024,                notcommon: true},
+  { name: 'kibi',  prefix: 'Ki',  ex: 1024,              binex: 1024,                notcommon: true},
     
   // JEDEC Binary
   { name: 'kilo',  prefix: 'K',  ex: 1e3,   binex: 1024, notcommon: true}  
@@ -840,8 +840,9 @@ function ng_isMinutes(v) {
  *    TRUE if variable can represent hexadecimal numbers.
  */       
 function ng_isHex(s) {
- return (/^([0-9]|A|B|C|D|E|F)+$/i).test(''+s);  
+ return ng_isHex.REGEXP.test(''+s);  
 }
+ng_isHex.REGEXP = /^([0-9]|A|B|C|D|E|F)+$/i;
 
 /**
  *  Function: ng_isDigits
@@ -857,8 +858,9 @@ function ng_isHex(s) {
  *    TRUE if value of variable contains only digits
  */       
 function ng_isDigits(s) {
- return /^[0-9]+$/.test(''+s);  
+ return ng_isDigits.REGEXP.test(''+s);  
 }
+ng_isDigits.REGEXP = /^[0-9]+$/;
 
 /**
  *  Function: ng_isEmail
@@ -875,9 +877,9 @@ function ng_isDigits(s) {
  */       
 function ng_isEmail(s)
 {
-  var regexp = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
-  return (new RegExp(regexp)).test((''+s).toLowerCase());
+  return ng_isEmail.REGEXP.test((''+s).toLowerCase());
 }
+ng_isEmail.REGEXP = new RegExp("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
 
 /**
  *  Function: ng_isURL
@@ -937,8 +939,9 @@ function ng_isWWW(s)
  *    TRUE if value is IP4 address
  */       
 function ng_isIP4(s) {
-  return (/^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/i).test(''+s)
+  return ng_isIP4.REGEXP.test(''+s)
 }
+ng_isIP4.REGEXP = /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/i;
 
 /**
  *  Function: ng_isIP6
@@ -955,9 +958,9 @@ function ng_isIP4(s) {
  */       
 function ng_isIP6(s)
 {
-  var regexp = "^\\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?\\s*$";
-  return (new RegExp(regexp)).test(s);
+  return ng_isIP6.REGEXP.test(s);
 }
+ng_isIP6.REGEXP = new RegExp("^\\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?\\s*$");
 
 /**
  *  Function: ng_isUnicode
@@ -1469,7 +1472,7 @@ function ng_toDECIMAL(v, digits, frac_digits, def)
       v=v.substr(i,v.length);
       if((i==l)||(v.charAt(0)=='.')) v='0'+v; // add leading zero
   
-      if(new RegExp("^-?(0|([1-9]\\d*))(\\.\\d+)?$").test(v))
+      if(ng_toDECIMAL.REGEXP.test(v))
       {
         var i=v.indexOf('.');
         var l=v.length;
@@ -1544,6 +1547,7 @@ function ng_toDECIMAL(v, digits, frac_digits, def)
   if(sgn<0) v='-'+v;
   return v;
 }
+ng_toDECIMAL.REGEXP = new RegExp("^-?(0|([1-9]\\d*))(\\.\\d+)?$");
 
 /**
  *  Function: ng_toUTCDate
@@ -1679,10 +1683,7 @@ function ng_formatDateISO8601(d,def) {
  */       
 function ng_parseDateISO8601(s,def) {
   s=''+s;
-  var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
-      "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?" +
-      "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
-  var d = s.match(new RegExp(regexp));
+  var d = s.match(ng_parseDateISO8601.REGEXP);
 
   function SLZ(s)
   {
@@ -1739,6 +1740,9 @@ function ng_parseDateISO8601(s,def) {
   date.setTime(Number(Number(date) + (offset * 60 * 1000)));
   return date;
 }
+ng_parseDateISO8601.REGEXP = new RegExp("([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
+      "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?" +
+      "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?");
 
 /**
  *  Function: ng_parseSIUnits
@@ -3036,12 +3040,10 @@ function ng_ParseDateTime(val, format, def)
  */       
 function ng_ParseJSONDateTime(val,def) 
 {
-  var ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/;
-  var a = ISO.exec(val);
+  var a = ng_ParseJSONDateTime.REGEXP_ISO.exec(val);
   if(a) return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
 
-  var MS = /^\/Date\(([+-]?[0-9]*)(([+-]?)([0-9]{2})([0-9]{2}))?\)\/$/;
-  a = MS.exec(val);
+  a = ng_ParseJSONDateTime.REGEXP_MS.exec(val);
   if(a) {
     var offset = 0;
     if (a[2]) {
@@ -3057,6 +3059,8 @@ function ng_ParseJSONDateTime(val,def)
   }
   return def;
 }
+ng_ParseJSONDateTime.REGEXP_ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/;
+ng_ParseJSONDateTime.REGEXP_MS = /^\/Date\(([+-]?[0-9]*)(([+-]?)([0-9]{2})([0-9]{2}))?\)\/$/;
     
 /**
  *  Function: ng_GetDateFormat
