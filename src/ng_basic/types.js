@@ -1123,7 +1123,6 @@ function ng_toObject(v,def)
       tzoffset: v.getTimezoneOffset()
     };
   }
-  if(typeof v==='object') return v;
   if(ng_typeString(v))
   {
     if((typeof JSON !== "undefined")&&(typeof JSON.parse === "function"))
@@ -1134,6 +1133,7 @@ function ng_toObject(v,def)
       catch(e) { }
     }
   }
+  else if((typeof v==='object')&&(v!==null)) return v;
   return ngVal(def,null);
 }
 
