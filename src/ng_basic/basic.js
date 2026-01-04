@@ -2731,42 +2731,31 @@ var merge_undefined;
  *  Returns:
  *    -
  */
-function ng_MergeVar(d,o,allowundefined,callback)
-{
-  if((!d)||(typeof d !== 'object')||(ng_type_date(d))||(typeof o!=='object')||(ng_type_date(o))) return;
-  if(!ngVal(allowundefined,false)) o=ng_CleanUndefined(ng_CopyVar(o));
+ function ng_MergeVar(d,o,allowundefined,callback)
+ {
+  if (!d || !o || typeof d !== 'object' || typeof o !== 'object' || ng_type_date(d) || ng_type_date(o) || ng_IsArrayVar(d)) return;
 
   if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return;
   if((typeof d.__merge === 'function')&&(!ngVal(d.__merge(o),true))) return;
 
-  var dref=d['_byRef'];
+  var dref = d['_byRef'];
+  var oref = o['_byRef'];
+  var hasOwn = Object.prototype.hasOwnProperty;
+  var key, val;
 
-  var ex={};
-  for(var i in d) ex[i]=true;
-  if((o)&&((dref)||o['_byRef']))
-  {
-    var oref=o['_byRef'];
-    for(var i in o) {
-      if(ex[i]!==true) {
-        if(((!oref)||(!oref[i]))
-         &&((!dref)||(!dref[i]))) d[i]=ng_CopyVar(o[i]);
-        else d[i]=o[i];
+  for (key in o) {
+    val = o[key];
+    if (!allowundefined && typeof val === 'undefined') continue;
+
+    if (!hasOwn.call(d, key)) {
+      if ((!oref || !oref[key]) && (!dref || !dref[key])) {
+        d[key] = ng_CopyVar(val);
+      } else {
+        d[key] = val;
       }
-      else
-      {
-        if(((!oref)||(!oref[i]))
-           &&((!dref)||(!dref[i]))&&(!ng_IsArrayVar(d[i]))) ng_MergeVar(d[i],o[i],true,callback);
-      }
-    }
-  }
-  else
-  {
-    for(var i in o)
-    {
-      if(ex[i]!==true) d[i]=ng_CopyVar(o[i]);
-      else
-      {
-        if(!ng_IsArrayVar(d[i])) ng_MergeVar(d[i],o[i],true,callback);
+    } else {
+      if ((!oref || !oref[key]) && (!dref || !dref[key])) {
+        ng_MergeVar(d[key], val, true, callback);
       }
     }
   }
@@ -2790,34 +2779,38 @@ function ng_MergeVar(d,o,allowundefined,callback)
  */
 function ng_MergeVarReplace(d,o,allowundefined,callback)
 {
-  if((!d)||(typeof d !== 'object')||(ng_type_date(d))||(typeof o!=='object')||(ng_type_date(o))) return;
+  if (!d || !o || typeof d !== 'object' || typeof o !== 'object' || ng_type_date(d) || ng_type_date(o)) return;
+  if ((typeof callback === 'function')&&(!ngVal(callback(d, o), true))) return;
+  if (typeof d.__mergereplace === 'function' && !ngVal(d.__mergereplace(o), true)) return;
 
-  if((typeof callback !== 'function')||(ngVal(callback(d,o),true))) {
-    if((typeof d.__mergereplace !== 'function')||(ngVal(d.__mergereplace(o),true))) {
-      var dref=d['_byRef'];
-      var oref=o ? o['_byRef'] : null;
-      for(var i in o)
-      {
-        if(((!oref)||(!oref[i]))&&(o[i])&&(typeof o[i] === 'object')&&(!ng_type_date(o[i]))&&(!ng_IsArrayVar(o[i])))
-        {
-          if((!d[i])||(typeof d[i]!=='object')||((dref)&&(dref[i]))) {
-            if(dref) delete dref[i];
-            d[i]={};
-          }
-          ng_MergeVarReplace(d[i],o[i],true,callback);
-        }
-        else
-        {
-          if((oref)&&(oref[i])) ng_SetByRef(d,i,o[i]);
-          else {
-            if(dref) delete dref[i];
-            d[i]=ng_CopyVar(o[i]);
-          }
-        }
+  var dref = d['_byRef'];
+  var oref = o['_byRef'];
+  var key, val, dKey, isObj;
+
+  for (key in o) {
+    val = o[key];
+    if (!allowundefined && typeof val === 'undefined') {
+      if (d[key]) delete d[key];
+      continue;
+    }
+
+    isObj = val && typeof val === 'object';
+    if (isObj && (!oref || !oref[key]) && !ng_type_date(val) && !ng_IsArrayVar(val)) {
+      dKey = d[key];
+      if (!dKey || typeof dKey !== 'object' || (dref && dref[key])) {
+        if (dref) delete dref[key];
+        d[key] = {};
+      }
+      ng_MergeVarReplace(d[key], val, true, callback);
+    } else {
+      if (oref && oref[key]) ng_SetByRef(d, key, val);
+      else {
+        if (dref) delete dref[key];
+        d[key] = ng_CopyVar(val);
       }
     }
   }
-  if(!ngVal(allowundefined,false)) ng_CleanUndefined(d);
+  if (!allowundefined) ng_CleanUndefined(d);
 }
 
 /**
@@ -2833,18 +2826,22 @@ function ng_MergeVarReplace(d,o,allowundefined,callback)
  *  Returns:
  *    Input obj parameter.
  */
-function ng_CleanUndefined(d)
-{
-  if((!d)||(typeof d !== 'object')||(ng_type_date(d))) return d;
+ function ng_CleanUndefined(d) {
+  if((!d)||(typeof d !== 'object')||(ng_type_date(d))||(ng_IsArrayVar(d))) return d;
   var dref=d['_byRef'];
-  var del=[];
-  for(var i in d)
-  {
-    if(typeof d[i]==='undefined') del.push(i); // don't delete in foreach
-    else if(((!dref)||(!dref[i]))&&(!ng_IsArrayVar(d[i]))) ng_CleanUndefined(d[i]);
+  var del;
+  for(var i in d) {
+    if (typeof d[i] === 'undefined') {
+      if(!del) del=[];
+      del.push(i);
+    } else if ((!dref || !dref[i]) && typeof d[i] === 'object') {
+      ng_CleanUndefined(d[i]);
+    }
   }
-  for(var i=del.length-1;i>=0;i--)
-    delete d[del[i]];
+  if(del) {
+    for(var i=del.length-1;i>=0;i--)
+      delete d[del[i]];
+  }
   return d;
 }
 
