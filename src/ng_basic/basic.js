@@ -2587,95 +2587,130 @@ function ng_SetByVal(obj,prop,val)
  *  Returns:
  *    New variable.
  */
-function ng_CopyVar(o)
+window.ng_CopyVar = (typeof Map !== 'undefined' ? 
+function(o)
 {
-  var ri={ cnt: 0, src: [], dst: [] };
-  var r=ng_copyvar_int(o,ri);
-  if((ri.cnt!=0)&&(ri.src.length))
-    ng_copyvar_fixref(r,ri);
-  return r;
-}
+  var visited = new Map();
+  var refsToFix = []; // Stores { p: parent, k: key, v: val }
 
+  function _copyMap(val) {
+    if (!val || typeof val !== 'object') return val;
+    switch(Object.prototype.toString.call(val))
+    {
+      case '[object Date]': return new Date(val.getTime());
+      case '[object Array]': var isArr=true;
+    }
+    var cached = visited.get(val);
+    if (cached) return cached;
+
+    var res = isArr ? [] : {};
+    visited.set(val, res);
+
+    if (isArr) {
+      for (var i = 0, len = val.length; i < len; i++) res[i] = _copyMap(val[i]);
+    } else {
+      var byRef = val['_byRef'];
+      for (var key in val) {
+        if (Object.prototype.hasOwnProperty.call(val, key)) {
+          // Handle _byRef: don't copy deep, just store for later fixing
+          if (byRef && byRef[key]) {
+            res[key] = val[key]; 
+            // Only add to fix list if it's an object
+            if (val[key] && typeof val[key] === 'object') {
+               refsToFix.push({ p: res, k: key, v: val[key] });
+            }
+          } else {
+            res[key] = _copyMap(val[key]);
+          }
+        }
+      }
+      if (typeof res.__clone === 'function') res.__clone(val);
+    }
+    return res;
+  }
+
+  var result = _copyMap(o);
+
+  // Fix _byRef items efficiently
+  for (var i = 0; i < refsToFix.length; i++) {
+    var item = refsToFix[i];
+    var deep = visited.get(item.v);
+    if (deep) item.p[item.k] = deep;
+  }
+  return result;
+}
+:
+function(o) {
+  // We use parallel arrays to avoid Object allocation overhead (GC pressure)
+  var hist_src = [];
+  var hist_dst = [];
+  
+  // The "To Do" list for _byRef items
+  var fix_parent = [];
+  var fix_key = [];
+  var fix_val = [];
+
+  function _copyLegacy(val) {
+    if (!val || typeof val !== 'object') return val;
+    switch(Object.prototype.toString.call(val))
+    {
+      case '[object Date]': return new Date(val.getTime());
+      case '[object Array]': var isArr=true;
+    }
+
+    var res;    
+    hist_src.push(val);
+    
+    if (isArr) {
+      res = [];
+      hist_dst.push(res);
+      for (var i = 0, len = val.length; i < len; i++) {
+        res[i] = _copyLegacy(val[i]);
+      }
+    } else {
+      res = {};
+      hist_dst.push(res);
+      var byRef = val['_byRef'];
+      
+      for (var key in val) {
+        if (Object.prototype.hasOwnProperty.call(val, key)) {
+          if (byRef && byRef[key]) {
+            // It is byRef. Just copy the pointer.
+            res[key] = val[key];
+            // Add to "To Do" list to link it up later
+            if (val[key] && typeof val[key] === 'object') {
+                fix_parent.push(res);
+                fix_key.push(key);
+                fix_val.push(val[key]);
+            }
+          } else {
+            res[key] = _copyLegacy(val[key]);
+          }
+        }
+      }
+      
+      if (typeof res.__clone === 'function') res.__clone(val);
+    }
+    return res;
+  }
+
+  var finalRes = _copyLegacy(o);
+  if (fix_parent.length > 0) {
+     for (var i = 0, len = fix_parent.length; i < len; i++) {
+        var v = fix_val[i];
+        for (var j = 0, hLen = hist_src.length; j < hLen; j++) {
+           if (hist_src[j] === v) {
+              fix_parent[i][fix_key[i]] = hist_dst[j];
+              break;
+           }
+        }
+     }
+  }
+  return finalRes;
+});
+ 
 function ng_type_date(d) {
   return Object.prototype.toString.call(d) === '[object Date]';
-}
-
-function ng_copyvar_int(o, ri)
-{
-  if((o)&&(typeof o === 'object'))
-  {
-    if(ng_type_date(o)) return new Date(o);
-
-    var r;
-    if(ng_IsArrayVar(o)) {
-      r=[];
-      for(var i in o)
-        r[i]=ng_copyvar_int(o[i],ri);
-      return r;
-    }
-    r=new Object;
-    ri.src[ri.src.length]=o;
-    ri.dst[ri.dst.length]=r;
-    var oref=o['_byRef'];
-    if(oref)
-    {
-      for(var i in o)
-        if(!oref[i]) r[i]=ng_copyvar_int(o[i],ri);
-        else { r[i]=o[i]; ri.cnt++; }
-    }
-    else for(var i in o) r[i]=ng_copyvar_int(o[i],ri);
-
-    if(typeof r.__clone === 'function') r.__clone(o);
-    return r;
-  }
-  return o;
-}
-
-function ng_copyvar_fixref(o, ri)
-{
-  if((!o)||(typeof o !== 'object')||(ng_type_date(o))) return;
-
-  if(typeof o.length === 'number') // array
-  {
-    var ix;
-    var arr=true;
-    for(var i in o)
-    {
-      if(!o.hasOwnProperty(i)) continue;
-      ix=(typeof i!=='number' ? parseInt(i) : i);
-      if((isNaN(ix))||(ix<0)||(ix>=o.length)) // probably not array at all
-      {
-        arr=false;
-        break;
-      }
-      ng_copyvar_fixref(o[i],ri);
-    }
-    if(arr) return;
-  }
-  var oref=o['_byRef'];
-  if(oref)
-  {
-    for(var i in o)
-    {
-      if(!oref[i]) ng_copyvar_fixref(o[i],ri);
-      else
-      {
-        for(var j=0;j<ri.src.length;j++)
-          if(o[i]==ri.src[j]) {
-            o[i]=ri.dst[j];
-            break;
-          }
-        ri.cnt--;
-      }
-      if(!ri.cnt) break;
-    }
-  }
-  else
-    for(var i in o)
-    {
-      ng_copyvar_fixref(o[i],ri);
-      if(!ri.cnt) break;
-    }
 }
 
 var merge_undefined;
