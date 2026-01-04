@@ -1031,13 +1031,26 @@ function ng_isASCII(s)
  */       
 function ng_toBool(v)
 {
-  if((ng_typeString(v))&&(v.length>0))
+  if(!v) return false;
+  if(v === true) return true;
+  if(ng_typeString(v))
   {
-    var c=v.toLowerCase();
-    if((c=='0')||(c=='false')||(c=='f')||(c=='n')||(c=='no')||(c=='off')||(c=='disabled')) return false;
+    if(v.length<=8) {
+      switch(v.toLowerCase())
+      {
+        case '0':
+        case 'false':
+        case 'f':
+        case 'n':
+        case 'no':
+        case 'off':
+        case 'disabled':
+          return false;
+      }
+    }
     return true;
   }  
-  return !!v;
+  return !ng_typeArray(v) || v.length>0;
 }
 
 /**
