@@ -2270,7 +2270,12 @@ function ng_Hex2Str(v,p,def)
  */       
 function ng_idxInArray(value, arr, fromidx, toidx, cmpfnc, userdata)
 {
-  if(typeof cmpfnc!=='function') cmpfnc=function(a,b) { return a===b; }
+  if(typeof cmpfnc!=='function') {
+    if (Array.prototype.indexOf && (typeof toidx==='undefined' || toidx===null || toidx>=arr.length)) {
+       return arr.indexOf(value, ngVal(fromidx, 0));
+    }
+    cmpfnc=function(a,b) { return a===b; }
+  }
   var t=ngVal(toidx,arr.length);
   if(t>arr.length) t=arr.length;
   for(var i=ngVal(fromidx,0);i<t;i++) 
