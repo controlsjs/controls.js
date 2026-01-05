@@ -2755,7 +2755,7 @@ var merge_undefined;
       }
     } else {
       if ((!oref || !oref[key]) && (!dref || !dref[key])) {
-        if(!ng_IsArrayVar(d)) {
+        if(!ng_IsArrayVar(d[key])) {
           ng_MergeVar(d[key], val, true, callback);
         }
       }
