@@ -2862,35 +2862,48 @@ function ng_MergeVarReplace(d,o,allowundefined,callback)
  *    TRUE if values of variables are equal.
  *
  */
-function ng_VarEquals(a,b,noobj)
-{
-  if(a===b) return true;
-  if(typeof a !== typeof b) return (a==b);
-  if(typeof a !=='object') return false;
+ function ng_VarEquals(a, b, noobj)
+ {
+  if (a === b) return true;
 
-  var adate=ng_type_date(a);
-  var bdate=ng_type_date(b);
-  if(adate || bdate)
-    return ((adate==bdate)&&(a.getTime() == b.getTime()));
+  var typeA = typeof a;
+  if (typeA !== typeof b) return (a == b);
+  if (typeA !== 'object' || !a || !b) return false;
 
-  if(a || b)
-  {
-    if((!a)||(!b)||(noobj)) return false;
-
-    if(typeof a.__equals === 'function') return ngVal(a.__equals(b),false);
-    if(typeof b.__equals === 'function') return ngVal(b.__equals(a),false);
-
-    var keys={};
-    for(var i in a) keys[i]=true;
-    for(var i in b) keys[i]=true;
-    delete keys._byRef;
-
-    var aref=a['_byRef'];
-    var bref=b['_byRef'];
-    for(var i in keys)
-      if(!ng_VarEquals(a[i],b[i],((aref)&&(aref[i]))||((bref)&&(bref[i])))) return false;
+  var adate = ng_type_date(a);
+  var bdate = ng_type_date(b);
+  if (adate || bdate) {
+    return (adate && bdate && a.getTime() == b.getTime());
   }
-  return true;
+  if (noobj) return false;
+  if (typeof a.__equals === 'function') return ngVal(a.__equals(b), false);
+  if (typeof b.__equals === 'function') return ngVal(b.__equals(a), false);
+
+  var countA = 0;
+  var countB = 0;
+  var key;
+  
+  var aref = a._byRef;
+  var bref = b._byRef;
+  var hasRef = aref || bref;
+
+  for (key in a) {
+    if (key === '_byRef') continue;
+    countA++;
+
+    var nextNoObj = false;
+    if (hasRef) {
+      nextNoObj = (aref && aref[key]) || (bref && bref[key]);
+    }
+    if (!ng_VarEquals(a[key], b[key], nextNoObj)) return false;
+  }
+
+  for (key in b) {
+    if (key === '_byRef') continue;
+    countB++;
+  }
+
+  return countA === countB;
 }
 
 // Array polyfill
