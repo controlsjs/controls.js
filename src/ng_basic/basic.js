@@ -2733,7 +2733,7 @@ var merge_undefined;
  */
  function ng_MergeVar(d,o,allowundefined,callback)
  {
-  if (!d || !o || typeof d !== 'object' || typeof o !== 'object' || ng_type_date(d) || ng_type_date(o) || ng_IsArrayVar(d)) return;
+  if (!d || !o || typeof d !== 'object' || typeof o !== 'object' || ng_type_date(d) || ng_type_date(o)) return;
 
   if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return;
   if((typeof d.__merge === 'function')&&(!ngVal(d.__merge(o),true))) return;
@@ -2755,7 +2755,9 @@ var merge_undefined;
       }
     } else {
       if ((!oref || !oref[key]) && (!dref || !dref[key])) {
-        ng_MergeVar(d[key], val, true, callback);
+        if(!ng_IsArrayVar(d)) {
+          ng_MergeVar(d[key], val, true, callback);
+        }
       }
     }
   }
