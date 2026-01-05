@@ -3197,6 +3197,7 @@ function ng_StripPrefix(v, pref, caseinsensitive)
 {
   v=''+v;
   pref=''+pref;
+  if(!pref.length) return v;
   var p=v.substring(0,pref.length);
   if(caseinsensitive) { p=p.toLowerCase(); pref=pref.toLowerCase(); }
   return (p==pref ? v.substring(pref.length,v.length) : v);
@@ -3221,7 +3222,7 @@ function ng_StripSuffix(v, suff, caseinsensitive)
 {
   v=''+v;
   suff=''+suff;
-  if(v.length<suff.length) return v;
+  if((v.length<suff.length)||(!suff.length)) return v;
   var s=v.substring(v.length-suff.length,v.length);
   if(caseinsensitive) { s=s.toLowerCase(); suff=suff.toLowerCase(); }
   return (s==suff ? v.substring(0,v.length-suff.length) : v);
