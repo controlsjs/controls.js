@@ -1694,7 +1694,7 @@ function ng_MergeDef(dst, def, allowundefined, callback) {
         }
       } else {
         if ((!oref || !oref[key]) && (!dref || !dref[key])) {
-          if(!ng_IsArrayVar(d)) {
+          if(!ng_IsArrayVar(d[key])) {
             recursive_merge(d[key], val);
           }
         }
