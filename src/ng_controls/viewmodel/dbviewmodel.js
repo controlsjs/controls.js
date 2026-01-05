@@ -537,23 +537,22 @@ ngUserControls['dbviewmodel'] = {
             if(instance.PrivateField) return true;
 
             if(typeof instance.OriginalValue==='undefined') {
-              var fdval=instance.Value;
-              instance.Value=void 0;
-              ko.ng_fielddef(vmodel,instance);
-              var originalvalue=instance.Value;
-              originalvalue(vm.GetFieldValueByID('_OriginalRecord.'+path));
-              instance.OriginalValue = ko.computed({
-                read: function() {
-                  return originalvalue();
-                },
-                write: function(v) {
-                  if(ngVal(instance.__Loading,false)) {
-                    originalvalue(v);
-                  }
-                },                  
-                vmodel
-              });
-              instance.Value=fdval;
+              var originalvalue=vm.GetFieldValueByID('_OriginalRecord.'+path);
+              originalvalue=(instance.DataType==='ARRAY' ? ko.observableArray(originalvalue) : ko.observable(originalvalue));
+              ko.ng_fielddef(vmodel,instance,
+                ko.computed({
+                  read: function() {
+                    return originalvalue();
+                  },
+                  write: function(v) {
+                    if(ngVal(instance.__Loading,false)) {
+                      originalvalue(v);
+                    }
+                  },                  
+                  vmodel
+                })
+                , 'Original'
+              );
             }
             
             if((typeof instance.IsChanged==='undefined')&&(typeof instance.OriginalValue==='function')) {
