@@ -4268,20 +4268,23 @@ ngUserControls['viewmodel'] = {
      *  Encapsulates <ngFieldDef> into viewmodel.
      *
      *  Syntax:
-     *    <ngFieldDef> *ko.ng_fielddef* (mixed viewmodel, <ngFieldDef> fielddef [, mixed value])
+     *    <ngFieldDef> *ko.ng_fielddef* (mixed viewmodel, <ngFieldDef> fielddef [, mixed value, string valnameprefix])
      *
      *  Parameters:
      *    viewmodel - instance of viewmodel
      *    fielddef - <ngFieldDef> which schould be part of the viewmodel
      *    value - optional initial value of <ngFieldDef>
+     *    valnameprefix - optional value property name prefix
      *
      *  Returns:
      *    Encapsulated <ngFieldDef> as viewmodel property.
      */
-    ko.ng_fielddef = function(vm,fd,value) {
+    ko.ng_fielddef = function(vm,fd,value,valnameprefix) {
 
       if((!ng_typeObject(vm))||(!ng_typeObject(fd))||(ngVal(fd.ID,'')=='')) return;
 
+      valnameprefix = ngVal(valnameprefix,'');
+      var valname=valnameprefix+'Value';
       var parent=vm;
       var p=vm;
       var pids=fd.ID.split('.');
@@ -4328,12 +4331,16 @@ ngUserControls['viewmodel'] = {
 
         val.subscribe(function(v) {
           if(writing_properties) return;
-          fd.Value(v);
+          fd[valname](v);
         });
         var objprops={},pv;
+        var propfdefs={};
         for(var k in fd.PropsFieldDefs) {
           pfd=fd.PropsFieldDefs[k];
           if(ngIsFieldDef(pfd)) {
+            pfd=ng_CopyVar(pfd);
+            ng_SetByRef(pfd,'Parent',fd);            
+            propfdefs[k]=pfd;
             pv=vmGetFieldByID(v,k);
             if(typeof pv==='undefined') pv=ko.observable(void 0);
             ko.ng_fielddef(objprops,pfd,pv);
@@ -4352,6 +4359,7 @@ ngUserControls['viewmodel'] = {
                   pfd=fd.PropsFieldDefs[k];
                   if(ngIsFieldDef(pfd))
                   {
+                    pfd=propfdefs[k];
                     if(typeof pfd.TypedValue === 'function')
                     {
                       try {
@@ -4382,11 +4390,11 @@ ngUserControls['viewmodel'] = {
       if(isarray) {
         var items_fd={};
 
-        fd.ClearFieldDefs=function() {
+        fd[valnameprefix+'ClearFieldDefs']=function() {
           for(var i in items_fd) delete items_fd[i];
           items_fd={};
         };
-        fd.Item=function(idx,create) {
+        fd[valnameprefix+'Item']=function(idx,create) {
 
           function arritem(idx, create) {
             if((typeof idx==='undefined')||(idx<0)) return;
@@ -4478,7 +4486,7 @@ ngUserControls['viewmodel'] = {
       }
 
       if(isobject) {
-        fd.Value=ko.computed({
+        fd[valname]=ko.computed({
           read: function() {
             return val();
           },
@@ -4499,6 +4507,7 @@ ngUserControls['viewmodel'] = {
                       pfd=fd.PropsFieldDefs[k];
                       pv=vmGetFieldByID(v,k);
                       if(ngIsFieldDef(pfd)) {
+                        pfd=propfdefs[k];
                         if(typeof pfd.TypedValue === 'function')
                         {
                           try {
@@ -4518,7 +4527,7 @@ ngUserControls['viewmodel'] = {
                   else {
                     for(var k in fd.PropsFieldDefs) {
                       pfd=fd.PropsFieldDefs[k];
-                      if(ngIsFieldDef(pfd)) pfd=pfd.Value;
+                      if(ngIsFieldDef(pfd)) pfd=propfdefs[k].Value;
                       if(ko.isObservable(pfd)) pfd(void 0);
                       else vmSetFieldValueByID(objprops,k,void 0);
                     }
@@ -4534,10 +4543,10 @@ ngUserControls['viewmodel'] = {
             }
           },
           owner: vm});
-        fd.Properties=objprops;
+        fd[valnameprefix+'Properties']=objprops;
       }
       else {
-        fd.Value=ko.computed({
+        fd[valname]=ko.computed({
           read: function() {
             return val();
           },
@@ -4547,68 +4556,68 @@ ngUserControls['viewmodel'] = {
           owner: vm});
       }
 
-      if(ngVal(fd.Attrs['Serialize'],true)) ko.ng_serialize(fd.Value);
+      if(ngVal(fd.Attrs['Serialize'],true)) ko.ng_serialize(fd[valname]);
       if(isarray)
       {
-        fd.Value.count= ko.computed(function() {
+        fd[valname].count= ko.computed(function() {
             var v=val();
             if(ng_typeArray(v)) return v.length;
             return 0;
           },vm);
 
-        if(typeof val.valueWillMutate === 'function') fd.Value.valueWillMutate = function() {
+        if(typeof val.valueWillMutate === 'function') fd[valname].valueWillMutate = function() {
           val.valueWillMutate();
         }
-        if(typeof val.valueHasMutated === 'function') fd.Value.valueHasMutated = function() {
+        if(typeof val.valueHasMutated === 'function') fd[valname].valueHasMutated = function() {
           val.valueHasMutated();
         }
 
-        fd.Value.remove= function() {
+        fd[valname].remove= function() {
           if(array_writeallowed(true)) return val.remove.apply(val,arguments);
           else return; // undefined
         }
-        fd.Value.removeAll= function() {
+        fd[valname].removeAll= function() {
           if(array_writeallowed(true)) return val.removeAll();
           else return [];
         }
 
-        fd.Value.indexOf = function(v) { return (ng_typeArray(val()) ? val.indexOf(v) : -1); }
-        fd.Value.lastIndexOf = function(v) { return (ng_typeArray(val()) ? val.lastIndexOf(v) : -1); }
+        fd[valname].indexOf = function(v) { return (ng_typeArray(val()) ? val.indexOf(v) : -1); }
+        fd[valname].lastIndexOf = function(v) { return (ng_typeArray(val()) ? val.lastIndexOf(v) : -1); }
 
-        fd.Value.pop= function() {
+        fd[valname].pop= function() {
           if(array_writeallowed()) return val.pop.apply(val,arguments);
           else return; // undefined
         }
-        fd.Value.push= function() {
+        fd[valname].push= function() {
           if(array_writeallowed(true)) return val.push.apply(val,arguments);
           else return (ng_typeArray(val()) ? val().length : 0);
         }
-        fd.Value.reverse= function() {
+        fd[valname].reverse= function() {
           if(array_writeallowed(true)) return val.reverse.apply(val,arguments);
           else return val();
         }
-        fd.Value.shift= function() {
+        fd[valname].shift= function() {
           if(array_writeallowed(true)) return val.shift.apply(val,arguments);
           else return; // undefined
         }
-        fd.Value.sort= function() {
+        fd[valname].sort= function() {
           if(array_writeallowed(true)) return val.sort.apply(val,arguments);
           else return val();
         }
-        fd.Value.unshift= function() {
+        fd[valname].unshift= function() {
           if(array_writeallowed(true)) return val.unshift.apply(val,arguments);
           else return (ng_typeArray(val()) ? val().length : 0);
         }
-        fd.Value.splice= function() {
+        fd[valname].splice= function() {
           if(array_writeallowed(true)) return val.splice.apply(val,arguments);
           else return [];
         }
-        fd.Value.slice= function() {
+        fd[valname].slice= function() {
           if(!ng_typeArray(val())) return [];
           return val.slice.apply(val,arguments);
         }
       }
-      fd.Value.FieldDef = fd;
+      fd[valname].FieldDef = fd;
 
       // Make description observable
       if(!ko.isObservable(fd.DisplayName))
@@ -4650,9 +4659,9 @@ ngUserControls['viewmodel'] = {
       var error = ko.ng_noserialize(
         ko.computed(function() { return ngVal(fd.FormatError(fd.Validate(val())),''); },vm)
       );
-      fd.Error=error;
-      fd.Error.FieldDef = fd;
-      fd.IsValid=ko.ng_noserialize(
+      fd[valnameprefix+'Error']=error;
+      fd[valnameprefix+'Error'].FieldDef = fd;
+      fd[valnameprefix+'IsValid']=ko.ng_noserialize(
         ko.computed(function() { return (error()===''); },vm)
       );
       return fd;
