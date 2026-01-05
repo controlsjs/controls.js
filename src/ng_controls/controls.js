@@ -1641,94 +1641,90 @@ function ngInitUserControls()
  *  Returns:
  *    -
  */
-function ng_MergeDef(dst,def,allowundefined,callback)
-{
-  function merge_events(d,o,before,override)
-  {
-    var isdarr,isoarr,j;
-    var isdfnc,isofnc;
+function ng_MergeDef(dst, def, allowundefined, callback) {
+  var hasCallback = typeof callback === 'function';
 
-    for(var i in o)
-    {
-      if((typeof d[i]==='undefined')||((!override)&&(d[i]===null))) { d[i]=o[i]; continue; }
-      isdarr=ng_IsArrayVar(d[i]);
-      isdfnc=(typeof d[i]==='function');
-      if((isdarr)||(isdfnc))
-      {
-        isoarr=ng_IsArrayVar(o[i]);
-        isofnc=(typeof o[i]==='function');
-        if((isoarr)||(isofnc))
-        {
-          if(isdfnc) d[i]=[d[i]];
-          if(isofnc)
-          {
-            if(!before) d[i].splice(0,0,o[i]);
-            else d[i].push(o[i]);
-          }
-          else
-          {
-            if(!before)
-            {
-              for(j=0;j<o[i].length;j++)
-                d[i].splice(j,0,o[i][j]);
-            }
-            else
-            {
-              for(j=0;j<o[i].length;j++)
-                d[i].push(o[i][j]);
-            }
+  function recursive_merge(d, o) {
+    if (!d || !o || typeof d !== 'object' || typeof o !== 'object' || ng_type_date(d) || ng_type_date(o)) return;
+    if (hasCallback && !ngVal(callback(d, o), true)) return;
+    if (d._noMerge === true) return;
+    if((typeof d.__merge === 'function')&&(!ngVal(d.__merge(o),true))) return;
+    
+    var skipKeys = null; 
+
+    if (d._noDef !== true) {
+      if (typeof d.OnCreating === 'function' && typeof o.OnCreating === 'function') {
+        d.OnCreating = ngAddEvent(d.OnCreating, o.OnCreating); (skipKeys || (skipKeys={})).OnCreating = true;
+      }
+      if (typeof d.OnCreated === 'function' && typeof o.OnCreated === 'function') {
+        d.OnCreated = ngAddEvent(d.OnCreated, o.OnCreated); (skipKeys || (skipKeys={})).OnCreated = true;
+      }
+      if (o.Methods && d.Methods && typeof o.Methods === 'object' && typeof d.Methods === 'object') { 
+        ng_MergeDef.MergeEvents(d.Methods, o.Methods, false, true); (skipKeys || (skipKeys={})).Methods = true; 
+      }
+      if (o.Events && d.Events && typeof o.Events === 'object' && typeof d.Events === 'object') { 
+        ng_MergeDef.MergeEvents(d.Events, o.Events, false, false); (skipKeys || (skipKeys={})).Events = true; 
+      }
+      if (o.AfterEvents && d.AfterEvents && typeof o.AfterEvents === 'object' && typeof d.AfterEvents === 'object') { 
+        ng_MergeDef.MergeEvents(d.AfterEvents, o.AfterEvents, false, false); (skipKeys || (skipKeys={})).AfterEvents = true; 
+      }
+      if (o.BeforeEvents && d.BeforeEvents && typeof o.BeforeEvents === 'object' && typeof d.BeforeEvents === 'object') { 
+        ng_MergeDef.MergeEvents(d.BeforeEvents, o.BeforeEvents, true, false); (skipKeys || (skipKeys={})).BeforeEvents = true; 
+      }
+      if (o.OverrideEvents && d.OverrideEvents && typeof o.OverrideEvents === 'object' && typeof d.OverrideEvents === 'object') { 
+        ng_MergeDef.MergeEvents(d.OverrideEvents, o.OverrideEvents, false, true); (skipKeys || (skipKeys={})).OverrideEvents = true; 
+      }
+    }
+
+    var dref = d['_byRef']; 
+    var oref = o['_byRef'];
+    var hasOwn = Object.prototype.hasOwnProperty;
+    var key, val;
+
+    for (key in o) {
+      if (skipKeys && skipKeys[key]) continue;
+      val = o[key];
+      if (!allowundefined && typeof val === 'undefined') continue;
+
+      if (!hasOwn.call(d, key)) {
+        if ((!oref || !oref[key]) && (!dref || !dref[key])) {
+          d[key] = ng_CopyVar(val);
+        } else {
+          d[key] = val;
+        }
+      } else {
+        if ((!oref || !oref[key]) && (!dref || !dref[key])) {
+          if(!ng_IsArrayVar(d)) {
+            recursive_merge(d[key], val);
           }
         }
       }
     }
   }
-
-  def=ng_CopyVar(def);
-  if(!ngVal(allowundefined,false)) def=ng_CleanUndefined(def);
-  ng_MergeVar(dst,def,true,function(d,o) {
-
-    if((typeof callback === 'function')&&(!ngVal(callback(d,o),true))) return false;
-    if(d._noMerge===true) return false;
-    if(d._noDef===true) return true;
-
-    if((typeof d.OnCreating === 'function')&&(typeof o.OnCreating === 'function')) {
-      d.OnCreating = ngAddEvent(d.OnCreating, o.OnCreating);
-      delete o.OnCreating;
-    }
-
-    if((typeof d.OnCreated === 'function')&&(typeof o.OnCreated === 'function')) {
-      d.OnCreated = ngAddEvent(d.OnCreated, o.OnCreated);
-      delete o.OnCreated;
-    }
-
-    if((typeof d.Methods === 'object')&&(typeof o.Methods === 'object')&&(d.Methods)&&(o.Methods))
-    {
-      merge_events(d.Methods,o.Methods,false,true);
-      delete o.Methods;
-    }
-    if((typeof d.Events === 'object')&&(typeof o.Events === 'object')&&(d.Events)&&(o.Events))
-    {
-      merge_events(d.Events,o.Events,false);
-      delete o.Events;
-    }
-    if((typeof d.AfterEvents === 'object')&&(typeof o.AfterEvents === 'object')&&(d.AfterEvents)&&(o.AfterEvents))
-    {
-      merge_events(d.AfterEvents,o.AfterEvents,false);
-      delete o.AfterEvents;
-    }
-    if((typeof d.BeforeEvents === 'object')&&(typeof o.BeforeEvents === 'object')&&(d.BeforeEvents)&&(o.BeforeEvents))
-    {
-      merge_events(d.BeforeEvents,o.BeforeEvents,true);
-      delete o.BeforeEvents;
-    }
-    if((typeof d.OverrideEvents === 'object')&&(typeof o.OverrideEvents === 'object')&&(d.OverrideEvents)&&(o.OverrideEvents))
-    {
-      merge_events(d.OverrideEvents,o.OverrideEvents,false,true);
-      delete o.OverrideEvents;
-    }
-    return true;
-  });
+  recursive_merge(dst, def);
 }
+
+ ng_MergeDef.MergeEvents = function(d, o, before, override)
+ {
+  var key, dVal, oVal, isDArr, isDFnc, isOArr, isOFnc;
+  for (key in o) {
+    dVal = d[key]; oVal = o[key];
+    if (typeof dVal === 'undefined' || (!override && dVal === null)) { d[key] = oVal; continue; }
+    isDArr = ng_IsArrayVar(dVal); isDFnc = typeof dVal === 'function';
+    if (isDArr || isDFnc) {
+      isOArr = ng_IsArrayVar(oVal); isOFnc = typeof oVal === 'function';
+      if (isOArr || isOFnc) {
+        if (isDFnc) { dVal = [dVal]; d[key] = dVal; }
+        if (isOFnc) {
+          if (!before) dVal.unshift(oVal); else dVal.push(oVal);
+        } else {
+          if (!before) d[key] = oVal.concat(dVal); else d[key] = dVal.concat(oVal);
+        }
+      }
+    }
+  }
+}
+
 
 /**
  *  Function: ng_MergeDI
