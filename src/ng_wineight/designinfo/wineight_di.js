@@ -805,7 +805,7 @@ return {
               "T": ng_diTypeVal('bounds', 8),
               "Data": {
                 "Visible": ng_diBoolean(false),
-                "AutoPos": ng_diBoolean(true, { Level: 'basic' })
+                "PosByHeader": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "NoData": ng_diControl('weText',ng_diProperties({
@@ -813,7 +813,7 @@ return {
               "T": ng_diTypeVal('bounds', 8),
               "Data": {
                 "Visible": ng_diBoolean(false),
-                "AutoPos": ng_diBoolean(true, { Level: 'basic' })
+                "PosByHeader": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {

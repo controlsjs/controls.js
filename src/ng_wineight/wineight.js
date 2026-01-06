@@ -1949,14 +1949,14 @@ var WinEightControls = {
       skinfnc.Create_wePageList=function(def,ref,parent,modtype,isdataset,listtype)
       {
         var iscompact=(listtype.toLowerCase().indexOf('compact')>=0);
+        var autopostop=iscompact ? 3 : 8;
 
         function getheaderheight(c)
         {
           var fhdr=document.getElementById(c.ID+'_FH');
           return fhdr ? ng_ClientHeight(fhdr) : 0;
         }
-        var autopostop=iscompact ? 3 : 8;
-        
+                        
         var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
           className: (th ? 'weListBoxLight' : 'weListBoxDark'),
@@ -1977,36 +1977,27 @@ var WinEightControls = {
                 OnUpdated: function(c,o) {
                   if(!c.Owner) return;
                   var hh,showheader=(c.Columns.length>0)&&(ngVal(c.ShowHeader,true));
-                  var nodata=c.Owner.NoData;
-                  if(nodata) {
-                    if(typeof nodata.AutoPos==='undefined') nodata.AutoPos=((typeof nodata.Bounds.T!=='string')||((''+nodata.Bounds.T).indexOf('%')<0))&&(nodata.Bounds.T==ngVal(nodata.AutoPosT,autopostop));
-                    if(nodata.AutoPos) {
-                      var t=ngVal(nodata.AutoPosT,autopostop);
+                  
+                  function adjustctrlbyheaderpos(cc)
+                  {
+                    if(!cc) return; 
+                    if(typeof cc.PosByHeader==='undefined') cc.PosByHeader=(cc.Bounds.T==autopostop);
+                    if(cc.PosByHeader) {
+                      if(typeof cc.PosByHeaderT==='undefined') cc.PosByHeaderT=ngVal(cc.Bounds.T,autopostop);
+                      var t=cc.PosByHeaderT;
                       if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
                         if(showheader) {
                           t=parseInt(t);
                           if(typeof hh==='undefined') hh=getheaderheight(c);
                           t+=hh;
                         }
-                        if(!isNaN(t)) nodata.UpdateBounds({T:t});                        
+                        if(!isNaN(t)) cc.UpdateBounds({T:t});                        
                       }
                     }
                   }
-                  var loading=c.Owner.Loading;
-                  if(loading) {
-                    if(typeof loading.AutoPos==='undefined') loading.AutoPos=((typeof loading.Bounds.T!=='string')||((''+loading.Bounds.T).indexOf('%')<0))&&(loading.Bounds.T==ngVal(loading.AutoPosT,autopostop));
-                    if(loading.AutoPos) {
-                      var t=ngVal(loading.AutoPosT,autopostop);
-                      if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
-                        if(showheader) {
-                          t=parseInt(t);
-                          if(typeof hh==='undefined') hh=getheaderheight(c);
-                          t+=hh;
-                        }
-                        if(!isNaN(t)) loading.UpdateBounds({T:t});
-                      }
-                    }
-                  }                    
+                  
+                  adjustctrlbyheaderpos(c.Owner.NoData);
+                  adjustctrlbyheaderpos(c.Owner.Loading);                  
                 }
               }
             },
@@ -2019,9 +2010,6 @@ var WinEightControls = {
               L: iscompact ? 5 : 15, T: autopostop,
               Data: {
                 Visible: false
-              },
-              OnCreated: function(c, ref) {
-                c.AutoPosT=c.Bounds.T;
               }
             },
             NoData: {
@@ -2030,9 +2018,6 @@ var WinEightControls = {
               L: iscompact ? 5 : 15, T: autopostop,
               Data: {
                 Visible: false
-              },
-              OnCreated: function(c, ref) {
-                c.AutoPosT=c.Bounds.T;
               }
             },
             /*  Object: Paging
