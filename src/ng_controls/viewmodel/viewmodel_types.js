@@ -1125,20 +1125,22 @@
   *  <ngViewModel> Percent field (based on <ngFieldDef> DECIMAL).
   *
   *  Syntax:
-  *    new *ngFieldDef_Percent* ([string id ='', object attrs={}])
+  *    new *ngFieldDef_Percent* ([string id ='', object attrs={}, string fieldtype = 'DECIMAL'])
   *
   *  Parameters:
   *    id - field id
   *    attrs - field attributes
+  *    fieldtype - optional base data type
   */
-  window.ngFieldDef_Percent = function(id, attrs)
+  window.ngFieldDef_Percent = function(id, attrs, fieldtype)
   {
     attrs=ngVal(attrs,{});
+    fieldtype=ngVal(fieldtype,'DECIMAL');
     attrs['Size'] = ngVal(attrs['Size'],3);
     attrs['Precision'] = ngVal(attrs['Precision'],0);
     attrs['MinValue'] = ngVal(attrs['MinValue'],0);
     attrs['MaxValue'] = ngVal(attrs['MaxValue'],100);
-    ngFieldDefCreateAs(this,id,'DECIMAL',attrs);
+    ngFieldDefCreateAs(this,id,fieldtype,attrs);
 
     this.DoFormatString = ngfd_PercentFormatString;
     this.DoParseString = ngfd_PercentParseString;

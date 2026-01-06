@@ -1086,7 +1086,8 @@ ngUserControls['viewmodel_controls_designinfo'] = (function()
             'Precision': ng_diInteger(0,{ Level: 'basic' }),
             'MinValue': ng_diInteger(0),
             'MaxValue': ng_diInteger(100)
-          }, true))
+          }, true)),
+          ng_diStringValues('DECIMAL', fdbasetypes, { DisplayName: 'FieldType', Level: 'basic' })
         ]),
 
         // ngFieldDef_MaskEdit
