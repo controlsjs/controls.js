@@ -477,14 +477,16 @@ var WinXP_DesignInfo = {
               "L": ng_diTypeVal('bounds', 10),
               "T": ng_diTypeVal('bounds', 10),
               "Data": {
-                "Visible": ng_diBoolean(false)
+                "Visible": ng_diBoolean(false),
+                "AutoPos": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "NoData": ng_diControl('stdText',ng_diProperties({
               "L": ng_diTypeVal('bounds', 10),
               "T": ng_diTypeVal('bounds', 10),
               "Data": {
-                "Visible": ng_diBoolean(false)
+                "Visible": ng_diBoolean(false),
+                "AutoPos": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {

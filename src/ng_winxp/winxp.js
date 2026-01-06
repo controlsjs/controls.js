@@ -1342,6 +1342,13 @@ var WinXPControls = {
 
       skinfnc.Create_stdPageList=function(def,ref,parent,modtype,isdataset, listtype)
       {
+        function getheaderheight(c)
+        {
+          var fhdr=document.getElementById(c.ID+'_FH');
+          return fhdr ? ng_ClientHeight(fhdr) : 0;
+        }
+        var autopostop=5;        
+        
         ng_MergeDef(def, {
           className: 'wxpListBox',
           Data: {
@@ -1356,23 +1363,59 @@ var WinXPControls = {
              */
             List: {
               Type: ngVal(listtype,'stdList'),
-              style: { border: '0px' }
+              style: { border: '0px' },
+              Events: {
+                OnUpdated: function(c,o) {
+                  if(!c.Owner) return;
+                  var hh,showheader=(c.Columns.length>0)&&(ngVal(c.ShowHeader,true));
+                  var nodata=c.Owner.NoData;
+                  if(nodata) {
+                    if(typeof nodata.AutoPos==='undefined') nodata.AutoPos=(nodata.Bounds.T==ngVal(nodata.AutoPosT,autopostop));
+                    if(nodata.AutoPos) {
+                      var t=ngVal(nodata.AutoPosT,autopostop);
+                      if(showheader) {
+                        if(typeof hh==='undefined') hh=getheaderheight(c);
+                        t+=hh;
+                      }
+                      nodata.SetBounds({T:t});
+                    }
+                  }
+                  var loading=c.Owner.Loading;
+                  if(loading) {
+                    if(typeof loading.AutoPos==='undefined') loading.AutoPos=(loading.Bounds.T==ngVal(loading.AutoPosT,autopostop));
+                    if(loading.AutoPos) {
+                      var t=ngVal(loading.AutoPosT,autopostop);
+                      if(showheader) {
+                        if(typeof hh==='undefined') hh=getheaderheight(c);
+                        t+=hh;
+                      }
+                      loading.SetBounds({T:t});
+                    }
+                  }                    
+                }
+              }              
             },
             /*  Object: Loading
              *  <stdProgressDot>
              */
             Loading: {
               Type: 'stdProgressDot',
-              L: 10, T: (isdataset || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
+              L: 6, T: autopostop,
               Data: {
                 Visible: false
+              },
+              OnCreated: function(c, ref) {
+                c.AutoPosT=c.Bounds.T;
               }
             },
             NoData: {
               Type: 'stdText',
-              L: 10, T: (isdataset || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 31 : 10),
+              L: 6, T: autopostop,
               Data: {
                 Visible: false
+              },
+              OnCreated: function(c, ref) {
+                c.AutoPosT=c.Bounds.T;
               }
             },
             /*  Object: Paging
