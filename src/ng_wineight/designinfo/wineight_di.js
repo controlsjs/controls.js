@@ -804,14 +804,16 @@ return {
               "L": ng_diTypeVal('bounds', 10),
               "T": ng_diTypeVal('bounds', 8),
               "Data": {
-                "Visible": ng_diBoolean(false)
+                "Visible": ng_diBoolean(false),
+                "AutoPos": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "NoData": ng_diControl('weText',ng_diProperties({
               "L": ng_diTypeVal('bounds', 10),
               "T": ng_diTypeVal('bounds', 8),
               "Data": {
-                "Visible": ng_diBoolean(false)
+                "Visible": ng_diBoolean(false),
+                "AutoPos": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {
