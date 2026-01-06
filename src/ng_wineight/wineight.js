@@ -1986,7 +1986,7 @@ var WinEightControls = {
                         if(typeof hh==='undefined') hh=getheaderheight(c);
                         t+=hh;
                       }
-                      nodata.SetBounds({T:t});
+                      nodata.UpdateBounds({T:t});
                     }
                   }
                   var loading=c.Owner.Loading;
@@ -1998,7 +1998,7 @@ var WinEightControls = {
                         if(typeof hh==='undefined') hh=getheaderheight(c);
                         t+=hh;
                       }
-                      loading.SetBounds({T:t});
+                      loading.UpdateBounds({T:t});
                     }
                   }                    
                 }
