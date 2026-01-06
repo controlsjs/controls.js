@@ -1370,26 +1370,32 @@ var WinXPControls = {
                   var hh,showheader=(c.Columns.length>0)&&(ngVal(c.ShowHeader,true));
                   var nodata=c.Owner.NoData;
                   if(nodata) {
-                    if(typeof nodata.AutoPos==='undefined') nodata.AutoPos=(nodata.Bounds.T==ngVal(nodata.AutoPosT,autopostop));
+                    if(typeof nodata.AutoPos==='undefined') nodata.AutoPos=((typeof nodata.Bounds.T!=='string')||((''+nodata.Bounds.T).indexOf('%')<0))&&(nodata.Bounds.T==ngVal(nodata.AutoPosT,autopostop));
                     if(nodata.AutoPos) {
                       var t=ngVal(nodata.AutoPosT,autopostop);
-                      if(showheader) {
-                        if(typeof hh==='undefined') hh=getheaderheight(c);
-                        t+=hh;
+                      if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
+                        if(showheader) {
+                          t=parseInt(t);
+                          if(typeof hh==='undefined') hh=getheaderheight(c);
+                          t+=hh;
+                        }
+                        if(!isNaN(t)) nodata.UpdateBounds({T:t});                        
                       }
-                      nodata.UpdateBounds({T:t});
                     }
                   }
                   var loading=c.Owner.Loading;
                   if(loading) {
-                    if(typeof loading.AutoPos==='undefined') loading.AutoPos=(loading.Bounds.T==ngVal(loading.AutoPosT,autopostop));
+                    if(typeof loading.AutoPos==='undefined') loading.AutoPos=((typeof loading.Bounds.T!=='string')||((''+loading.Bounds.T).indexOf('%')<0))&&(loading.Bounds.T==ngVal(loading.AutoPosT,autopostop));
                     if(loading.AutoPos) {
                       var t=ngVal(loading.AutoPosT,autopostop);
-                      if(showheader) {
-                        if(typeof hh==='undefined') hh=getheaderheight(c);
-                        t+=hh;
+                      if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
+                        if(showheader) {
+                          t=parseInt(t);
+                          if(typeof hh==='undefined') hh=getheaderheight(c);
+                          t+=hh;
+                        }
+                        if(!isNaN(t)) loading.UpdateBounds({T:t});
                       }
-                      loading.UpdateBounds({T:t});
                     }
                   }                    
                 }
