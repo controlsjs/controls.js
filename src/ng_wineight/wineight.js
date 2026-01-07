@@ -1951,12 +1951,6 @@ var WinEightControls = {
         var iscompact=(listtype.toLowerCase().indexOf('compact')>=0);
         var autopostop=iscompact ? 3 : 8;
 
-        function getheaderheight(c)
-        {
-          var fhdr=document.getElementById(c.ID+'_FH');
-          return fhdr ? ng_ClientHeight(fhdr) : 0;
-        }
-                        
         var th=wineight.DefTheme(def);
         ng_MergeDef(def, {
           className: (th ? 'weListBoxLight' : 'weListBoxDark'),
@@ -1974,9 +1968,8 @@ var WinEightControls = {
               Type: listtype,
               Theme: th,
               Events: {
-                OnUpdated: function(c,o) {
+                OnHeaderHeightChanged: function(c,hh,lasthh) {
                   if(!c.Owner) return;
-                  var hh,showheader=(c.Columns.length>0)&&(ngVal(c.ShowHeader,true));
                   
                   function adjustctrlbyheaderpos(cc)
                   {
@@ -1986,9 +1979,8 @@ var WinEightControls = {
                       if(typeof cc.PosByHeaderT==='undefined') cc.PosByHeaderT=ngVal(cc.Bounds.T,autopostop);
                       var t=cc.PosByHeaderT;
                       if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
-                        if(showheader) {
+                        if(hh) {
                           t=parseInt(t);
-                          if(typeof hh==='undefined') hh=getheaderheight(c);
                           t+=hh;
                         }
                         if(!isNaN(t)) cc.UpdateBounds({T:t});                        

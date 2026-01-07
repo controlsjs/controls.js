@@ -1342,11 +1342,6 @@ var WinXPControls = {
 
       skinfnc.Create_stdPageList=function(def,ref,parent,modtype,isdataset, listtype)
       {
-        function getheaderheight(c)
-        {
-          var fhdr=document.getElementById(c.ID+'_FH');
-          return fhdr ? ng_ClientHeight(fhdr) : 0;
-        }
         var autopostop=5;        
         
         ng_MergeDef(def, {
@@ -1365,9 +1360,8 @@ var WinXPControls = {
               Type: ngVal(listtype,'stdList'),
               style: { border: '0px' },
               Events: {
-                OnUpdated: function(c,o) {
+                OnHeaderHeightChanged: function(c,hh,lasthh) {
                   if(!c.Owner) return;
-                  var hh,showheader=(c.Columns.length>0)&&(ngVal(c.ShowHeader,true));
 
                   function adjustctrlbyheaderpos(cc)
                   {
@@ -1377,9 +1371,8 @@ var WinXPControls = {
                       if(typeof cc.PosByHeaderT==='undefined') cc.PosByHeaderT=ngVal(cc.Bounds.T,autopostop);
                       var t=cc.PosByHeaderT;
                       if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
-                        if(showheader) {
+                        if(hh) {
                           t=parseInt(t);
-                          if(typeof hh==='undefined') hh=getheaderheight(c);
                           t+=hh;
                         }
                         if(!isNaN(t)) cc.UpdateBounds({T:t});                        
