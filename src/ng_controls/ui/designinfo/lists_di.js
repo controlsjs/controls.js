@@ -730,7 +730,8 @@ return {
             "OnGetCheckImg": ng_diEvent('function(c, it, id) { return null; }', { Level: 'basic' }),
             "OnGetTreeImg": ng_diEvent('function(c, it, id) { return null; }', { Level: 'basic' }),
             "OnGetColumnCaption": ng_diEvent('function(c, col, i) { return "Column"+(i+1); }', { Level: 'basic' }),
-            "OnGetColumnWidth": ng_diEvent('function(c, col, i, caption) { return 0; }', { Level: 'basic' })
+            "OnGetColumnWidth": ng_diEvent('function(c, col, i, caption) { return 0; }', { Level: 'basic' }),
+            "OnHeaderHeightChanged": ng_diEvent('function(c, height, previousheight) { }', { Level: 'basic' })
           }
         })
       };

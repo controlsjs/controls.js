@@ -1183,9 +1183,7 @@ function ngl_SetItemFocus(it)
     {
       var oh=ng_ClientHeight(o);
       var loh=ng_ClientHeight(lo);
-      var hh=0;
-      var fhdr=document.getElementById(this.ID+'_FH');
-      if(fhdr) hh=ng_ClientHeight(fhdr);
+      var hh=this.GetHeaderHeight();
 
       if((o.offsetTop<lo.scrollTop+hh)||(o.offsetTop+oh>lo.scrollTop+loh))
       {
@@ -2920,6 +2918,20 @@ function ngl_DoUpdate(o)
   }
   catch(e) { }
 
+  if(this.OnHeaderHeightChanged) {
+    var hh=this.GetHeaderHeight();
+    if(this.last_header_height!=hh) {
+      var lasthh=this.last_header_height;
+      this.last_header_height=hh;
+      if(this.header_height_timer) clearTimeout(this.header_height_timer);
+      var self=this;
+      this.header_height_timer=setTimeout(function() {
+        if(self.header_height_timer) clearTimeout(self.header_height_timer);
+        self.header_height_timer=null;
+        self.OnHeaderHeightChanged.apply(self, [self, hh, lasthh]);
+      },1);
+    }
+  }
   return true;
 }
 
@@ -2949,6 +2961,28 @@ function ngl_UpdateColumns()
     origf=origf.nextSibling;
     newf=newf.nextSibling;
   }
+  if((this.OnHeaderHeightChanged)&&(this.Visible)) {
+    var p=this.ParentControl;
+    while(p)
+    {
+      if(!p.Visible) break;
+      p=p.ParentControl;
+    }
+    if(!p) {
+      var hh=this.GetHeaderHeight();
+      if(this.last_header_height!=hh) {
+        var lasthh=this.last_header_height;
+        this.last_header_height=hh;
+        if(this.header_height_timer) clearTimeout(this.header_height_timer);
+        var self=this;
+        this.header_height_timer=setTimeout(function() {
+          if(self.header_height_timer) clearTimeout(self.header_height_timer);
+          self.header_height_timer=null;
+          self.OnHeaderHeightChanged.apply(self, [self, hh, lasthh]);
+        },1);
+      }
+    }
+  }
 }
 
 function ngl_UpdateFrame()
@@ -2965,6 +2999,12 @@ function ngl_UpdateFrame()
   var html=new ngStringBuilder;
   ngc_ImgBox(html, this.ID, 'ngList', 0, this.Enabled, 0,0,w,h,false, this.Frame, '', '');
   ng_SetInnerHTML(frame,html.toString());
+}
+
+function ngl_GetHeaderHeight()
+{
+  var fhdr=document.getElementById(this.ID+'_FH');
+  return fhdr ? ng_ClientHeight(fhdr) : 0;
 }
 
 function ngl_AddItemControl(obj)
@@ -3140,6 +3180,16 @@ function ngl_DoAttach(o)
 
 function ngl_DoDispose()
 {
+  if(this.ActionUpdateTimer) clearTimeout(this.ActionUpdateTimer);
+  this.ActionUpdateTimer=null;
+
+  if(this.header_height_timer) clearTimeout(this.header_height_timer);
+  this.header_height_timer=null;
+  if(this.checked_changed_timer) clearTimeout(this.checked_changed_timer);
+  this.checked_changed_timer=null;
+  if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+  this.async_datatimeout_timer=null;
+
   if(this.leave_timer) clearTimeout(this.leave_timer);
   delete this.leave_timer;
   var ii=ngl_ItemById(ngl_CurrentRowId);
@@ -4113,6 +4163,9 @@ function ngList(id)
   this.DoUpdate = ngl_DoUpdate;
   this.UpdateColumns = ngl_UpdateColumns;
   this.UpdateFrame = ngl_UpdateFrame;
+  this.GetHeaderHeight = ngl_GetHeaderHeight;
+
+  this.last_header_height = 0;
 
   this.ActionUpdateTimer = null;
   this.SetItemAction = ngl_SetItemAction;
@@ -4350,6 +4403,10 @@ function ngList(id)
    *  Event: OnGetColumnWidth
    */
   this.OnGetColumnWidth = null;
+  /*
+   *  Event: OnHeaderHeightChanged
+   */
+  this.OnHeaderHeightChanged = null;
   /*
    *  Event: OnSetReadOnly
    */
