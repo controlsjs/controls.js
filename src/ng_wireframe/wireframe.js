@@ -1144,6 +1144,8 @@ var WireframeControls = {
 
       skinfnc.Create_wfrPageList=function(def,ref,parent,modtype,istree,isdataset)
       {
+        var autopostop=4; 
+        
         ng_MergeDef(def, {
           className: 'wfrListBox',
           Data: {
@@ -1151,18 +1153,46 @@ var WireframeControls = {
           },
           Controls: {
             List: {
-              Type: istree ? 'wfrTreeList' : 'wfrList'
+              Type: istree ? 'wfrTreeList' : 'wfrList',
+              Events: {
+                OnHeaderHeightChanged: function(c,hh,lasthh) {
+                  if(!c.Owner) return;
+
+                  function adjustctrlbyheaderpos(cc)
+                  {
+                    if(!cc) return; 
+                    if(typeof cc.PosByHeader==='undefined') cc.PosByHeader=(cc.Bounds.T==autopostop);
+                    if(cc.PosByHeader) {
+                      if(typeof cc.PosByHeaderT==='undefined') cc.PosByHeaderT=ngVal(cc.Bounds.T,autopostop);
+                      var t=cc.PosByHeaderT;
+                      if((typeof t!=='string')||((''+t).indexOf('%')<0)) {
+                        if(hh) {
+                          t=parseInt(t);
+                          t+=hh;
+                        }
+                        if(!isNaN(t)) cc.UpdateBounds({T:t});                        
+                      }
+                    }
+                  }
+                  
+                  adjustctrlbyheaderpos(c.Owner.NoData);
+                  adjustctrlbyheaderpos(c.Owner.Loading);                  
+                }
+              }              
             },
             Loading: {
               Type: 'wfrProgressDot',
-              L: 15, T: (isdataset || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 43 : 15),
+              L: 5, T: autopostop,
               Data: {
                 Visible: false
               }
             },
             NoData: {
               Type: 'wfrText',
-              L: 15, T: (isdataset || (def.Controls && def.Controls.List && def.Controls.List.Data && def.Controls.List.Data.Columns && def.Controls.List.Data.Columns.length>0) ? 43 : 15),
+              L: 5, T: autopostop,
+              style: {
+                fontSize: '12px'
+              },
               Data: {
                 Visible: false
               }

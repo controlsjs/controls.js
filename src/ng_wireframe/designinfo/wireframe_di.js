@@ -382,14 +382,16 @@ var WireframeControls_DesignInfo = {
               "L": ng_diTypeVal('bounds', 15),
               "T": ng_diTypeVal('bounds', 15),
               "Data": {
-                "Visible": ng_diBoolean(false)
+                "Visible": ng_diBoolean(false),
+                "PosByHeader": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "NoData": ng_diControl('wfrText', ng_diProperties({
               "L": ng_diTypeVal('bounds', 15),
               "T": ng_diTypeVal('bounds', 15),
               "Data": {
-                "Visible": ng_diBoolean(false)
+                "Visible": ng_diBoolean(false),
+                "PosByHeader": ng_diBoolean(true, { Level: 'basic' })
               }
             }), { Level: 'basic' }),
             "Paging": ng_diControl(undefined, {
