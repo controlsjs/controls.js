@@ -112,22 +112,99 @@ ngUserControls['coreextui'] = {
             if(typeof ishtml==='undefined') ishtml=(this.HTMLEncode!==ngHtmlEncode);
             return ngTextEllipsis(text, ishtml, maxTextLength, maxWordLength, '');
           },
+          GetVisibleCharCount: function(text, ishtml, nocache) {
+            var o=this.Elm();
+            if(!o) return;
+            var o2=document.getElementById(this.ID+'_T');
+            if(!o2) {
+              ng_CallParent(this, 'DoUpdate', [o]);
+              o2=document.getElementById(this.ID+'_T');
+              if(!o2) return;
+            }
+            if(typeof ishtml==='undefined') ishtml=(this.HTMLEncode!==ngHtmlEncode);
+            if(typeof text==='undefined') text=this.GetText();
+
+            var oldcontent=o2.innerHTML;
+            var oldwidth=o2.style.width;
+            var oldheight=o2.style.height;
+
+            var low = 0;            
+            var high = text.length;
+            var bestFit = 0;
+            var bestFitHTML = '';
+            var mid;
+            var subHTML;
+            ng_BeginMeasureElement(o);
+            var cw=ng_ClientWidth(o);
+            var ch=ng_ClientHeight(o);
+            if((!nocache)&&(this.cache_cw===cw)&&(this.cache_ch===ch)&&(this.cache_txt===text)) {
+              return this.cache_visiblechars;
+            }
+            o2.style.width=cw+'px';
+            o2.style.height='';
+
+            var ellipsis=ngVal(this.GetEllipsisText(),'');
+            try {
+              while (low <= high) {
+                mid = Math.floor((low + high) / 2);
+                subHTML = text.substring(0, mid);
+                if(ishtml) {
+                  var lastOpen = subHTML.lastIndexOf('<');
+                  var lastClose = subHTML.lastIndexOf('>');                  
+                  if (lastOpen > lastClose) {
+                    subHTML = subHTML.substring(0, lastOpen);
+                  }                  
+                }
+                o2.innerHTML = subHTML+ellipsis;
+                if(o.scrollHeight > ch) {
+                  // isOverflowing
+                  high = mid - 1;
+                } else {
+                  bestFit = mid;
+                  bestFitHTML = subHTML;
+                  low = mid + 1;
+                }
+              }
+              if(ishtml) {
+                o2.innerHTML = bestFitHTML;
+                var textProp = 'textContent' in document.body ? 'textContent' : 'innerText';
+                bestFit = o2[textProp].length;
+              }
+            } finally {
+              ng_EndMeasureElement(o);
+              o2.style.width=oldwidth;
+              o2.style.height=oldheight;
+              o2.innerHTML=oldcontent;
+            }
+            if(!nocache) {
+              this.cache_cw=cw;
+              this.cache_ch=ch;
+              this.cache_txt=text;
+              this.cache_visiblechars=bestFit;
+            }
+            return bestFit;
+          },
           DoUpdate: function(o) {
+            var text;
+            var htmlencode=this.HTMLEncode;
+            var ishtml=(htmlencode!==ngHtmlEncode);
             this.Truncated=false;
-            var maxlen=ngNullVal(this.LengthLimit,0);
+            var maxlen=this.LengthLimit;
+            if((typeof maxlen==='undefined')&&(!this.AutoSize)) {
+              text=this.GetText();
+              maxlen=this.GetVisibleCharCount(text,ishtml);
+            }
+            maxlen=ngNullVal(maxlen,0);
             if(maxlen<=0) return ng_CallParent(this, 'DoUpdate', arguments,true);
 
             var ret;
             var orig_gettext=this.GetText;
             var orig_getalt=this.GetAlt;
-            var htmlencode=this.HTMLEncode;
-            this.HTMLEncode=false;
             try {
               var alt;
-              var text=this.GetText();
-              var ishtml=(htmlencode!==ngHtmlEncode);
+              if(typeof text==='undefined') text=this.GetText();
               var newtext=this.TruncateText(text, maxlen, ngNullVal(this.MaxWordLength,0), ishtml);
-              if(text!==newtext) { // not truncated
+              if(text!==newtext) { // truncated
                 this.Truncated=true;
                 alt=this.GetAlt();
                 if(!this.Expanded) {
@@ -141,18 +218,21 @@ ngUserControls['coreextui'] = {
               this.GetAlt=function() { return alt; };
               this.GetText=function() {
                 var ret=ngHtmlVal(text, true, htmlencode);
-                var t=ngVal(self.Expanded ? (self.ShowLess ? self.GetShowLessText() :'') : (self.ShowMore ? self.GetShowMoreText() : ''),'');
-                if(t!='') {
-                  t=ngHtmlVal(t, true, ngVal(self.Expanded ? self.ShowLessHTMLEncode : self.ShowMoreHTMLEncode, self.HTMLEncode));
-                  var align=(self.Expanded ? self.ShowLessAlign : self.ShowMoreAlign);
-                  if((align!=='after')&&(align!=='before')) align='after';
-                  align=align.substr(0,1).toUpperCase()+align.substr(1).toLowerCase();
-                  var btn='<span id="'+self.ID+'_MORE" class="'+self.BaseClassName+(self.Expanded ? 'ShowLess' : 'ShowMore')+align+'" '+ ngc_PtrEventsHTML(self, 'expandtoggle', 'tap drag') +'>'+t+'</span>';
-                  if(align==='Before') ret=btn+ret;
-                  else ret+=btn;
+                if(self.AutoSize) {
+                  var t=ngVal(self.Expanded ? (self.ShowLess ? self.GetShowLessText() :'') : (self.ShowMore ? self.GetShowMoreText() : ''),'');
+                  if(t!='') {
+                    t=ngHtmlVal(t, true, ngVal(self.Expanded ? self.ShowLessHTMLEncode : self.ShowMoreHTMLEncode, self.HTMLEncode));
+                    var align=(self.Expanded ? self.ShowLessAlign : self.ShowMoreAlign);
+                    if((align!=='after')&&(align!=='before')) align='after';
+                    align=align.substr(0,1).toUpperCase()+align.substr(1).toLowerCase();
+                    var btn='<span id="'+self.ID+'_MORE" class="'+self.BaseClassName+(self.Expanded ? 'ShowLess' : 'ShowMore')+align+'" '+ ngc_PtrEventsHTML(self, 'expandtoggle', 'tap drag') +'>'+t+'</span>';
+                    if(align==='Before') ret=btn+ret;
+                    else ret+=btn;
+                  }
                 }
                 return ret;
               };
+              this.HTMLEncode=false;
               ret=ng_CallParent(this, 'DoUpdate', arguments,true);
             } finally {
               this.HTMLEncode=htmlencode;
