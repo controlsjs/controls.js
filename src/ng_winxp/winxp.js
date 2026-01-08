@@ -1167,12 +1167,6 @@ var WinXPControls = {
       return ngCreateControlAsType(def, modtype, ref, parent);
     });
 
-    /*  Class: stdWebBrowser
-     *  Standard web browser control (based on <ngWebBrowser>).
-     */
-    /*<>*/
-    ngRegisterControlSkin('stdWebBrowser','ngWebBrowser', function(def,ref,parent,modtype) { return ngCreateControlAsType(def, modtype, ref, parent); });
-
     /*  Class: stdProgressBar
      *  Standard progress bar control (based on <ngProgressBar>).
      */
@@ -1213,6 +1207,23 @@ var WinXPControls = {
       }
       return c;
     });
+
+    if(ngUserControls['coreextui'])
+    {
+      /*  Class: stdTextEllipsis
+       *  Standard text control (based on <ngTextEllipsis>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('stdTextEllipsis','ngTextEllipsis', function(def,ref,parent,modtype) {
+        if(typeof def.className === 'undefined') def.className='wxpTextEllipsis';
+        return ngCreateControlAsType(def, modtype, ref, parent);
+      });
+      /*  Class: stdWebBrowser
+       *  Standard web browser control (based on <ngWebBrowser>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('stdWebBrowser','ngWebBrowser', function(def,ref,parent,modtype) { return ngCreateControlAsType(def, modtype, ref, parent); });
+    }
 
     /**
      * List Controls

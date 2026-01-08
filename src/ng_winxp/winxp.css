@@ -35,6 +35,7 @@
 /* wxpControls ****************************************************************/
 
 .wxpText,
+.wxpTextEllipsis,
 .wxpButton,
 .wxpRadio,
 .wxpCheckBox,
@@ -58,6 +59,29 @@
 .wxpTextTextDisabled
 {
   color: #a0a0a0;
+}
+
+/* wxpTextEllipsis ************************************************************/
+
+.wxpTextEllipsisTextDisabled
+{
+  color: #a0a0a0;
+}
+
+.wxpTextEllipsisShowMoreBefore,
+.wxpTextEllipsisShowLessBefore
+{
+  cursor: pointer;
+  text-decoration: underline;
+  padding-right: 8px;
+}
+
+.wxpTextEllipsisShowMoreAfter,
+.wxpTextEllipsisShowLessAfter
+{
+  cursor: pointer;
+  text-decoration: underline;
+  padding-left: 8px;
 }
 
 /* wxpGroupBox ****************************************************************/

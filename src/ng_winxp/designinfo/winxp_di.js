@@ -390,9 +390,18 @@ var WinXP_DesignInfo = {
         }
       };
     });
-    
+        
+    ngRegisterControlDesignInfo('stdTextEllipsis',function(d,c,ref) {
+      return {
+        ControlCategory: 'Label',
+        Properties: {
+          "className": ng_diString('wxpTextEllipsis')
+        }
+      };
+    });
+
     ngRegisterControlDesignInfo('stdWebBrowser', 'ngWebBrowser');
-    
+
     ngRegisterControlDesignInfo('stdProgressBar',function(d,c,ref) {
       return {
         ControlCategory: 'Progress',
