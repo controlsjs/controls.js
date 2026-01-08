@@ -226,36 +226,6 @@ return {
       };
     });
 
-    ngRegisterControlDesignInfo('ngImageMap',function(d,c,ref) {
-      return {
-        ControlCategory: 'Misc',
-        IsBasic: true,
-        Properties: ng_diProperties({
-          "Data": {
-            "ngAlt":  { Level: 'advanced' },
-            "ngAltD": { Level: 'basic' },
-            "Alt": ng_diString('', { Level: 'basic' }),
-            "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
-            "Img": ng_diType('image', { Level: 'basic' }),
-            "Cursor": ng_diType('css_cursor', { Level: 'basic' }),
-            "Shapes": ng_diArrayOf('ngImageShape', { Level: 'basic' })
-          },
-          "Events": {
-            "OnShapeClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
-            "OnMouseEnter":  { },
-            "OnMouseLeave":  { },
-            "OnMouseShapeEnter": ng_diEvent('function(c, shapeidx) { }', { Level: 'advanced' }),
-            "OnMouseShapeLeave": ng_diEvent('function(c, shapeidx) { }', { Level: 'advanced' })
-          },
-          "OverrideEvents": {
-            "OnGetImg": ng_diEvent('function(c) { return null; }', { Level: 'basic' }),
-            "OnGetAlt": ng_diEvent('function(c) { return ""; }', { Level: 'basic' }),
-            "OnGetShapeAlt": ng_diEvent('function(c, shapeidx) { return ""; }', { Level: 'basic' })
-          }
-        })
-      }
-    });
-
     ngRegisterControlDesignInfo('ngButton',function(d,c,ref) {
       return {
         ControlCategory: 'Button',
@@ -970,35 +940,6 @@ return {
               }
             })
           }
-        })
-      };
-    });
-
-    ngRegisterControlDesignInfo('ngWebBrowser',function(d,c,ref) {
-      return {
-        ControlCategory: 'Misc',
-        IsBasic: true,
-        NewControl: {
-          Default: {
-            Properties: {
-              "W": { Value: 100 },
-              "H": { Value: 100 }
-            }
-          }
-        },
-        Properties: ng_diProperties({
-          "Data": {
-            "URL": ng_diType('url', { Level: 'basic' }),
-            "DesignLive": ng_diBoolean(false, { Level: 'basic', Order: 0.95 })
-          },
-          "OverrideEvents": {
-            "OnGetURL": ng_diEvent('function(c, url) { return url; }', { Level: 'basic' }),
-            "OnSetHTML": ng_diEvent('function(c, html) { return html; }', { Level: 'basic' })
-          },
-          "Events": {
-            "OnSetURL": ng_diEvent('function(c, url) { return true; }', { Level: 'basic' })
-          }
-
         })
       };
     });
