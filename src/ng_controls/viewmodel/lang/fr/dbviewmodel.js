@@ -17,8 +17,7 @@ if (typeof ngc_Lang['fr'] === 'undefined') ngc_Lang['fr'] = {};
 ngc_Lang['fr']['dbviewmodel_err_failed'] = 'Erreur : l’opération a échoué.';
 ngc_Lang['fr']['dbviewmodel_err_loadfailed'] = 'Erreur : impossible d’obtenir les données de l’enregistrement.';
 ngc_Lang['fr']['dbviewmodel_err_insertfailed'] = 'Erreur : impossible d’insérer un nouvel enregistrement.';
-ngc_Lang['fr']['dbviewmodel_err_updatefailed'] =
-    'Erreur : impossible d’enregistrer les données de l’enregistrement.';
+ngc_Lang['fr']['dbviewmodel_err_updatefailed'] = 'Erreur : impossible d’enregistrer les données de l’enregistrement.';
 ngc_Lang['fr']['dbviewmodel_err_deletefailed'] = 'Erreur : échec de la suppression de l’enregistrement.';
 ngc_Lang['fr']['dbviewmodel_err_invalidargs'] = 'Erreur : arguments non valides.';
 ngc_Lang['fr']['dbviewmodel_err_accessdenied'] = 'Erreur : accès refusé.';
