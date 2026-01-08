@@ -45,6 +45,13 @@ ngUserControls['coreextui'] = {
           Expanded: false
         },
         Methods: {
+          DoRelease: function(o) {
+            delete this.cache_cw;
+            delete this.cache_ch;
+            delete this.cache_txt;
+            delete this.cache_visiblechars;
+            ng_CallParent(this, 'DoRelease', arguments);
+          },
           DoExpand: function() {
             this.Expanded=true;
             this.Update();
@@ -164,6 +171,10 @@ ngUserControls['coreextui'] = {
                   bestFitHTML = subHTML;
                   low = mid + 1;
                 }
+              }
+              if(bestFitHTML===text) {
+                bestFit=void 0;
+                ishtml=false;
               }
               if(ishtml) {
                 o2.innerHTML = bestFitHTML;
