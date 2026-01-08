@@ -452,6 +452,14 @@ var WireframeControls_DesignInfo = {
         })
       };
     }
+    ngRegisterControlDesignInfo('wfrTextEllipsis',function(d,c,ref) {
+      return {
+        ControlCategory: 'Label',
+        Properties: {
+          "className": ng_diString('wfrTextEllipsis')
+        }
+      };
+    });
     ngRegisterControlDesignInfo('wfrPageList',wfrPageListDI);
     ngRegisterControlDesignInfo('wfrPageTreeList',function(d,c,ref) {
       var di={

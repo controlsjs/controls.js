@@ -997,6 +997,17 @@ var WireframeControls = {
 
     ngRegisterControlSkin('wfrSearchBox','wfrEdit', skinfnc.Create_wfrSearchBox);
 
+    if(ngUserControls['coreextui'])
+    {
+      /** Class: wfrTextEllipsis
+       *  "Wireframe" skin text control (based on <ngTextEllipsis>).
+       */
+      ngRegisterControlSkin('wfrTextEllipsis','ngTextEllipsis', function(def,ref,parent,modtype) {
+        if(typeof def.className === 'undefined') def.className='wfrTextEllipsis';
+        return ngCreateControlAsType(def, modtype, ref, parent);
+      });
+    }
+
     /**
      * List Controls
      */
