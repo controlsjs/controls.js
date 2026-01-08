@@ -691,7 +691,25 @@ return {
         })
       });
     });
-    
+
+    ngRegisterControlDesignInfo('weTextEllipsis',function(d,c,ref) {
+      return themeSchemeDI({
+        ControlCategory: 'Label',
+        Properties: {
+          "className": defThemeClassName('TextEllipsis')
+        }
+      });
+    });
+
+    ngRegisterControlDesignInfo('weSmallTextEllipsis',function(d,c,ref) {
+      return themeSchemeDI({
+        ControlCategory: 'Label',
+        Properties: {
+          "className": defThemeClassName('SmallTextEllipsis')
+        }
+      });
+    });
+
     ngRegisterControlDesignInfo('weProgressBar',function(d,c,ref) {
       return themeSchemeDI({
         ControlCategory: 'Progress',

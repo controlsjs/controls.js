@@ -403,17 +403,28 @@
 }
 .weLtBlueDragHint .weLayoutDnDLightDragHintL, .weLtBlueDragHint .weLayoutDnDLightDragHintT, .weLtBlueDragHint .weLayoutDnDLightDragHintR, .weLtBlueDragHint .weLayoutDnDLightDragHintB { border-color:#2D89EF; }
 .wePanel { background-color:inherit; }
-.weTextLight, .weCheckBoxLight, .weRadioLight, .weEditLight, .weToolBarLight, .wePagesLight, .wePgListLight, .weCalendarLight {
+.weTextLight, .weTextEllipsisLight, .weCheckBoxLight, .weRadioLight, .weEditLight, .weToolBarLight, .wePagesLight, .wePgListLight, .weCalendarLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#1F1F1F;
 }
-.weTextDark, .weCheckBoxDark, .weRadioDark, .wePagesDark, .wePgListDark, .weCalendarDark {
+.weTextDark, .weTextEllipsisDark, .weCheckBoxDark, .weRadioDark, .wePagesDark, .wePgListDark, .weCalendarDark {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:15px;
   color:#FFFFFF;
 }
 .weTextLightTextDisabled, .weTextDarkTextDisabled { color:#BABABA; }
+.weTextEllipsisLightTextDisabled, .weTextEllipsisDarkTextDisabled { color:#BABABA; }
+.weTextEllipsisLightShowMoreBefore, .weTextEllipsisDarkShowMoreBefore, .weTextEllipsisLightShowLessBefore, .weTextEllipsisDarkShowLessBefore {
+  cursor:pointer;
+  text-decoration:underline;
+  padding-right:10px;
+}
+.weTextEllipsisLightShowMoreAfter, .weTextEllipsisDarkShowMoreAfter, .weTextEllipsisLightShowLessAfter, .weTextEllipsisDarkShowLessAfter {
+  cursor:pointer;
+  text-decoration:underline;
+  padding-left:10px;
+}
 .weSmallTextLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:10px;
@@ -425,6 +436,27 @@
   color:#FFFFFF;
 }
 .weSmallTextLightTextDisabled, .weSmallTextDarkTextDisabled { color:#BABABA; }
+.weSmallTextEllipsisLight {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:10px;
+  color:#1F1F1F;
+}
+.weSmallTextEllipsisDark {
+  font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
+  font-size:10px;
+  color:#FFFFFF;
+}
+.weSmallTextEllipsisLightTextDisabled, .weSmallTextEllipsisDarkTextDisabled { color:#BABABA; }
+.weSmallTextEllipsisLightShowMoreBefore, .weSmallTextEllipsisDarkShowMoreBefore, .weSmallTextEllipsisLightShowLessBefore, .weSmallTextEllipsisDarkShowLessBefore {
+  cursor:pointer;
+  text-decoration:underline;
+  padding-right:5px;
+}
+.weSmallTextEllipsisLightShowMoreAfter, .weSmallTextEllipsisDarkShowMoreAfter, .weSmallTextEllipsisLightShowLessAfter, .weSmallTextEllipsisDarkShowLessAfter {
+  cursor:pointer;
+  text-decoration:underline;
+  padding-left:5px;
+}
 .weCaptionLight {
   font-family:Arial CE, Helvetica CE, Arial, Helvetica, sans-serif;
   font-size:20px;

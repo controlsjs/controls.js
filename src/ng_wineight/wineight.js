@@ -1739,6 +1739,26 @@ var WinEightControls = {
       return skinfnc.Create_weProgressImg(def,ref,parent,modtype,img,40,th);
     });
 
+    if(ngUserControls['coreextui'])
+    {
+      /*  Class: weTextEllipsis
+       *  Standard text control (based on <ngTextEllipsis>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('weTextEllipsis','ngTextEllipsis', function(def,ref,parent,modtype) {
+        if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weTextEllipsisLight' : 'weTextEllipsisDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'TextEllipsis' : '');
+        return ngCreateControlAsType(def, modtype, ref, parent);
+      });
+      /*  Class: weSmallTextEllipsis
+       *  Standard text control (based on <ngTextEllipsis>).
+       */
+      /*<>*/
+      ngRegisterControlSkin('weSmallTextEllipsis','ngTextEllipsis', function(def,ref,parent,modtype) {
+        if(typeof def.className === 'undefined') def.className=(wineight.DefTheme(def) ? 'weSmallTextEllipsisLight' : 'weSmallTextEllipsisDark') + (typeof def.ColorScheme !== 'undefined' ? ' we'+def.ColorScheme+'SmallTextEllipsis' : '');
+        return ngCreateControlAsType(def, modtype, ref, parent);
+      });      
+    }
+
     /**
      * List Controls
      */
