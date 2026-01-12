@@ -155,13 +155,14 @@ ngUserControls['viewmodel_ui_designinfo'] = (function()
         break;
       case 'ngButton':
       case 'ngSysAction':
-        props["Value"] = ng_diType('vm_databind_field', { Level: 'optional', DisplayName: 'Check (Value)' });
+        var ischeckbox=c.CtrlInheritsFrom('ngCheckBox');
+        props["Value"] = ng_diType('vm_databind_field', { Level: 'optional', DisplayName: 'Value (Check)' });
         props["Checked"] = ng_diType('vm_databind_field', { Level: 'basic' });
-        props["Command"] = ng_diType('databind_string', { Level: 'basic' });
+        props["Command"] = ng_diType('databind_string', { Level: ischeckbox ? 'optional' : 'basic' });
         props["ValueNames"] = ng_diMixed([
           ng_diArrayOf(ng_diMixed(['databind_string','vm_databind_field'], { Level: 'basic' })),
           'vm_databind_field'
-        ], { Level: 'basic' });
+        ], { Level: ischeckbox ? 'optional' : 'basic' });
         break;
 
       case 'ngPages':
