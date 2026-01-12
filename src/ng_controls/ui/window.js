@@ -1986,8 +1986,7 @@
     delete def.Controls;
     delete def.ModifyControls;
 
-    var lvl=ngGetModalControlLevel(this.ID);
-    elm.style.zIndex=Math.round((lvl+0.6)*ngModalZIndexDelta);
+    elm.style.zIndex=Math.round((ngModalCnt+0.6)*ngModalZIndexDelta);
 
     this.SetScrollBars(ssDefault);
 
