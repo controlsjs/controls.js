@@ -4342,7 +4342,7 @@ ngUserControls['viewmodel'] = {
             ng_SetByRef(pfd,'Parent',fd);            
             propfdefs[k]=pfd;
             pv=vmGetFieldByID(v,k);
-            if(typeof pv==='undefined') pv=ko.observable(void 0);
+            if(typeof pv==='undefined') pv=(pfd.DataType==='ARRAY') ? ko.observableArray(void 0) : ko.observable(void 0);
             ko.ng_fielddef(objprops,pfd,pv);
             pfd=pfd.Value;
           }
@@ -4571,50 +4571,66 @@ ngUserControls['viewmodel'] = {
         if(typeof val.valueHasMutated === 'function') fd[valname].valueHasMutated = function() {
           val.valueHasMutated();
         }
+        
+        function array_op(fnc, args, readonlyval, reqarray)
+        {
+          if(array_writeallowed(ngVal(reqarray,true))) {
+            if(typeof val[fnc]==='function') {
+              return val[fnc].apply(val, args);
+            }
+            var v=val();
+            if(typeof v[fnc]==='function') {
+              var ret;
+              if(typeof val.valueWillMutate === 'function') val.valueWillMutate();                
+              ret=v[fnc].apply(v, args);
+              if(typeof val.valueHasMutated === 'function') val.valueHasMutated();
+              else val(v);
+              return ret;                        
+            }
+          }
+          if(typeof readonlyval==='function') readonlyval=readonlyval();
+          return readonlyval;
+        }
 
         fd[valname].remove= function() {
-          if(array_writeallowed(true)) return val.remove.apply(val,arguments);
-          else return; // undefined
-        }
+          return array_op('remove',arguments,[], false);
+        };
         fd[valname].removeAll= function() {
-          if(array_writeallowed(true)) return val.removeAll();
-          else return [];
-        }
+          return array_op('removeAll',arguments, [], false);
+        };
 
-        fd[valname].indexOf = function(v) { return (ng_typeArray(val()) ? val.indexOf(v) : -1); }
-        fd[valname].lastIndexOf = function(v) { return (ng_typeArray(val()) ? val.lastIndexOf(v) : -1); }
+        fd[valname].indexOf = function(v) { 
+          var valarr=val();
+          return (ng_typeArray(valarr) ? valarr.indexOf(v) : -1);
+        }
+        fd[valname].lastIndexOf = function(v) { 
+          var valarr=val();
+          return (ng_typeArray(valarr) ? valarr.lastIndexOf(v) : -1); 
+        }
 
         fd[valname].pop= function() {
-          if(array_writeallowed()) return val.pop.apply(val,arguments);
-          else return; // undefined
-        }
+          return array_op('pop',arguments,void 0,false);
+        };
         fd[valname].push= function() {
-          if(array_writeallowed(true)) return val.push.apply(val,arguments);
-          else return (ng_typeArray(val()) ? val().length : 0);
+          return array_op('push',arguments,function() { var v=val(); return (ng_typeArray(v) ? v.length : 0); }, false);
         }
         fd[valname].reverse= function() {
-          if(array_writeallowed(true)) return val.reverse.apply(val,arguments);
-          else return val();
+          return array_op('reverse',arguments,val);
         }
         fd[valname].shift= function() {
-          if(array_writeallowed(true)) return val.shift.apply(val,arguments);
-          else return; // undefined
-        }
+          return array_op('shift',arguments,void 0,false);
+        }        
         fd[valname].sort= function() {
-          if(array_writeallowed(true)) return val.sort.apply(val,arguments);
-          else return val();
+          return array_op('sort',arguments,val);
         }
         fd[valname].unshift= function() {
-          if(array_writeallowed(true)) return val.unshift.apply(val,arguments);
-          else return (ng_typeArray(val()) ? val().length : 0);
+          return array_op('unshift',arguments,function() { var v=val(); return (ng_typeArray(v) ? v.length : 0); }, false);
         }
         fd[valname].splice= function() {
-          if(array_writeallowed(true)) return val.splice.apply(val,arguments);
-          else return [];
+          return array_op('splice',arguments,[], false);
         }
         fd[valname].slice= function() {
-          if(!ng_typeArray(val())) return [];
-          return val.slice.apply(val,arguments);
+          return array_op('slice',arguments,[],false);
         }
       }
       fd[valname].FieldDef = fd;
