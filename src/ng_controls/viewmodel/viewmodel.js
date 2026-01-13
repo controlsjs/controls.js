@@ -1942,7 +1942,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           else
           {
             attrfound=true;
-            if((forcmd===cmd)||(ng_inArray(cmd,forcmd)))
+            if((forcmd===cmd)||((ng_IsArrayVar(forcmd))&&(ng_inArray(cmd,forcmd))))
               valuenames.push(valpath);
           }
         }
