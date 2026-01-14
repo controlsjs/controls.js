@@ -4391,8 +4391,14 @@ ngUserControls['viewmodel'] = {
         var items_fd={};
 
         fd[valnameprefix+'ClearFieldDefs']=function() {
-          for(var i in items_fd) delete items_fd[i];
-          items_fd={};
+          var fditems=items_fd;
+          items_fd={};          
+          var ondelete=fd['On'+valnameprefix+'ItemFieldDeleted'];
+          if(typeof ondelete==='function') {
+            for(var i in fditems) {
+              if(ondelete) ondelete(fd,i,fditems[i]);
+            }
+          }
         };
         fd[valnameprefix+'Item']=function(idx,create) {
 
@@ -4450,6 +4456,8 @@ ngUserControls['viewmodel'] = {
                 ko.ng_fielddef(items_fd,ifd,valAccessor);
               }
               else items_fd[sidx]=valAccessor;
+              var oncreated=fd['On'+valnameprefix+'ItemFieldCreated'];
+              if(typeof oncreated==='function') oncreated(fd,idx,items_fd[sidx]);
             }
             return items_fd[sidx];
           }
