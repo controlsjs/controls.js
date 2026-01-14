@@ -3254,6 +3254,7 @@ function nge_SetDropDownControl(l)
 
     if(typeof ol.SetDropDownOwner === 'function') ol.SetDropDownOwner(null);
     delete ol.DropDownOwner;
+    if(ol.ParentControl===this) delete ol.ParentControl;
   }
   this.DropDownControl=l;
   if(l)
@@ -3264,6 +3265,7 @@ function nge_SetDropDownControl(l)
     l.AddEvent('IsInsidePopup',nge_IsInsidePopup);
 
     if(typeof l.SetDropDownOwner === 'function') l.SetDropDownOwner(this);
+    if(!l.ParentControl) l.ParentControl=this;
   }
 }
 
