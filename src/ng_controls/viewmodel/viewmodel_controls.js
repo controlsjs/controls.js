@@ -602,24 +602,14 @@ ngUserControls['viewmodel_controls'] = {
         var vm=new ngSysViewModel;
         if(!vm) return vm;
         vm.SetNamespace(ngVal(def.Namespace,vm.Namespace));
-        if((ng_typeArray(def.FieldDefs))&&(def.FieldDefs.length>0))
-        {
-          function setfielddefs()
+        var initvm=function() {
+          vm.SetFieldDefs(def.FieldDefs);
+          if((typeof def.ViewModel === 'object')||(typeof def.ViewModel === 'function')) vm.SetViewModel(def.ViewModel);
+          if((typeof def.Data === 'object')&&(typeof def.Data.ViewModel === 'object'))
           {
-            var fd;
-            for(var i=0;i<def.FieldDefs.length;i++)
-            {
-              fd=def.FieldDefs[i];
-              if((ngIsFieldDef(fd))&&(fd.ID!='')) ko.ng_fielddef(this,fd);
-            }
+            vm.SetValues(def.Data.ViewModel);
+            delete def.Data.ViewModel;
           }
-          vm.SetViewModel(setfielddefs);
-        }
-        if((typeof def.ViewModel === 'object')||(typeof def.ViewModel === 'function')) vm.SetViewModel(def.ViewModel);
-        if((typeof def.Data === 'object')&&(typeof def.Data.ViewModel === 'object'))
-        {
-          vm.SetValues(def.Data.ViewModel);
-          delete def.Data.ViewModel;
         }
 
         if(typeof def.RefViewModel !== 'undefined')
@@ -630,6 +620,8 @@ ngUserControls['viewmodel_controls'] = {
             if(refvm) vm.Assign(refvm);
           });
         }
+        if(typeof def.InitizalizeViewModel==='function') def.InitizalizeViewModel(initvm);
+        else initvm();
         return vm;
       };
       fc.ControlsGroup='System';
@@ -1365,7 +1357,9 @@ ngUserControls['viewmodel_controls'] = {
             if(((ng_typeArray(def.ColumnFieldDefs))&&(def.ColumnFieldDefs.length>0))
              ||((ng_typeArray(def.FilterFieldDefs))&&(def.FilterFieldDefs.length>0)))
             {
-              function addfielddefs(vm,fdefs,prefix) {
+              var fielddefs=[];
+              
+              function addfielddefs(fdefs,prefix) {
                 if(!ng_typeArray(fdefs)) return;
 
                 var fd;
@@ -1374,17 +1368,15 @@ ngUserControls['viewmodel_controls'] = {
                   fd=fdefs[i];
                   if((ngIsFieldDef(fd))&&(fd.ID!='')) {
                     if(fd.ID.substr(0,prefix.length)!==prefix) fd.ID=prefix+fd.ID;
-                    ko.ng_fielddef(vm,fd);
+                    fielddefs.push(fd);
                   }
                 }
               }
 
-              function setfielddefs()
-              {
-                addfielddefs(this,def.ColumnFieldDefs,"Columns.");
-                addfielddefs(this,def.FilterFieldDefs,"Filters.");
-              }
-              c.SetViewModel(setfielddefs);
+              addfielddefs(def.ColumnFieldDefs,"Columns.");
+              addfielddefs(def.FilterFieldDefs,"Filters.");
+
+              c.SetFieldDefs(fielddefs);
             }
 
             if(typeof vmdata!=='undefined') c.SetValues(vmdata);
