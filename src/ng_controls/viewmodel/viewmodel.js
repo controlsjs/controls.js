@@ -2238,6 +2238,22 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     this.ViewModel.Owner=this;
     if(this.OnViewModelChanged) this.OnViewModelChanged(this);
   }
+  
+  function ngvm_SetFieldDefs(fielddefs)
+  {
+    if((!ng_EmptyVar(fielddefs))&&(ng_IsObjVar(fielddefs)))
+    {
+      this.SetViewModel(function ()
+      {
+        var fd;
+        for(var i in fielddefs)
+        {
+          fd=fielddefs[i];
+          if((ngIsFieldDef(fd))&&(fd.ID!='')) ko.ng_fielddef(this,fd);
+        }
+      });
+    }    
+  }
 
   function ngvm_ScanValues(callback)
   {
@@ -2574,6 +2590,20 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
     *    -
     */
     this.SetViewModel = ngvm_SetViewModel;
+    
+    /*  Function: SetFieldDefs
+    *  Sets ViewModel *modification* by list of fielddefs.
+    *
+    *  Syntax:
+    *    void *SetFieldDefs* (mixed fielddefs)
+    *
+    *  Parameters:
+    *    fielddefs - array or object containing new properties of viewmodel
+    *
+    *  Returns:
+    *    -
+    */
+    this.SetFieldDefs = ngvm_SetFieldDefs;
 
     /*  Function: SetValues
     *  Sets values to ViewModel.
