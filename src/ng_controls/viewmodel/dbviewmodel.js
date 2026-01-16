@@ -438,6 +438,44 @@ ngUserControls['dbviewmodel'] = {
       return dbfields;
     }
     
+    function ngdbvm_CreateDBFieldOriginalValue(instance, writeable, originalvalue)
+    {
+      if(!ngIsFieldDef(instance)) return;
+      
+      var vmodel=this.ViewModel;      
+      if(typeof instance.OriginalValue==='undefined') {
+        if(typeof writeable!=='undefined') instance.Attrs['WriteableOriginalValue']=writeable;
+        if((arguments.length<3)&&(typeof instance.Value==='function')) originalvalue=instance.Value();
+        originalvalue=(instance.DataType==='ARRAY' ? ko.observableArray(originalvalue) : ko.observable(originalvalue));
+        ko.ng_fielddef(vmodel,instance,
+          ko.computed({
+            read: function() {
+              return originalvalue();
+            },
+            write: function(v) {
+              if((ngVal(instance.__Loading,false))||(instance.Attrs['WriteableOriginalValue'])) {
+                originalvalue(v);
+              }
+            },                  
+            vmodel
+          })
+          , 'Original'
+        );
+      }
+      
+      if((typeof instance.IsChanged==='undefined')&&(typeof instance.OriginalValue==='function')) {
+        instance.IsChanged = ko.computed(function() {
+          var val=instance.Value();
+          var oval=instance.OriginalValue();
+          try { val=instance.TypedValue(val) } catch(e) { }
+          try { oval=instance.TypedValue(oval) } catch(e) { }
+          if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
+          if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
+          return !ng_VarEquals(val,oval);
+        }, vmodel).extend({ rateLimit: 1 });
+      }
+    }
+    
     /*  Class: ngSysDBViewModel
      *  This class implements non-visual <ngSysDBViewModel> control (based on <ngSysViewModel>).
      */
@@ -453,7 +491,14 @@ ngUserControls['dbviewmodel'] = {
           }
         }
       });
-    
+
+
+      var initvmfnc;
+      if(typeof def.InitizalizeViewModel!=='function') {
+        def.InitizalizeViewModel=function(initvm) {
+          initvmfnc=initvm;
+        }
+      }
       var c=ngCreateControlAsType(def, 'ngSysViewModel', ref, parent);
       if(!c) return c; 
       /*
@@ -500,6 +545,7 @@ ngUserControls['dbviewmodel'] = {
       c.AllDBFields = ngdbvm_AllDBFields;
       c.GetDBValues = ngdbvm_GetDBValues;
       c.GetOriginalDBValues = ngdbvm_GetOriginalDBValues;
+      c.CreateDBFieldOriginalValue = ngdbvm_CreateDBFieldOriginalValue;
     
       /*
        *  Group: Events
@@ -535,37 +581,7 @@ ngUserControls['dbviewmodel'] = {
           if(ngIsFieldDef(instance))
           {
             if(instance.PrivateField) return true;
-
-            if(typeof instance.OriginalValue==='undefined') {
-              var originalvalue=vm.GetFieldValueByID('_OriginalRecord.'+path);
-              originalvalue=(instance.DataType==='ARRAY' ? ko.observableArray(originalvalue) : ko.observable(originalvalue));
-              ko.ng_fielddef(vmodel,instance,
-                ko.computed({
-                  read: function() {
-                    return originalvalue();
-                  },
-                  write: function(v) {
-                    if(ngVal(instance.__Loading,false)) {
-                      originalvalue(v);
-                    }
-                  },                  
-                  vmodel
-                })
-                , 'Original'
-              );
-            }
-            
-            if((typeof instance.IsChanged==='undefined')&&(typeof instance.OriginalValue==='function')) {
-              instance.IsChanged = ko.computed(function() {
-                var val=instance.Value();
-                var oval=instance.OriginalValue();
-                try { val=instance.TypedValue(val) } catch(e) { }
-                try { oval=instance.TypedValue(oval) } catch(e) { }
-                if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
-                if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
-                return !ng_VarEquals(val,oval);
-              }, vmodel).extend({ rateLimit: 1 });
-            }
+            vm.CreateDBFieldOriginalValue(instance, void 0, vm.GetFieldValueByID('_OriginalRecord.'+path));
           }
           
           var orig=vm.GetFieldByID('_OriginalRecord.'+path);
@@ -817,7 +833,7 @@ ngUserControls['dbviewmodel'] = {
           case 'delete': if(vm.OnDeleteFailed) vm.OnDeleteFailed(vm,sresults); break;
         }
       });
-    
+      if(typeof initvmfnc==='function') initvmfnc();
       return c;
     }    
     ngRegisterControlType('ngSysDBViewModel',(function() { var def=Create_ngSysDBViewModel; def.ControlsGroup='System'; return def; })());
