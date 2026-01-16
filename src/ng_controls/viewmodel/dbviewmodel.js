@@ -472,7 +472,7 @@ ngUserControls['dbviewmodel'] = {
           if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
           if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
           return !ng_VarEquals(val,oval);
-        }, vmodel).extend({ rateLimit: 1 });
+        }, vmodel).extend({ rateLimit: 1, notify: 'always' });
       }
     }
     
