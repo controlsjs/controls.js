@@ -292,11 +292,9 @@
           }
           catch(e)
           {
-            if(typeof this.Item === 'function') {
-              e.FieldDef=this.Item(k,false); // Get ngFieldDef for item (if available)
-              if(!ngIsFieldDef(e.FieldDef)) e.FieldDef=this.ValueFieldDef;
-            }
-            else {
+            if(typeof this.Item === 'function') e.FieldDef=this.Item(k,false); // Get ngFieldDef for item (if available)
+            else e.FieldDef=null;
+            if(!ngIsFieldDef(e.FieldDef)) {
               e.FieldDef=ng_CopyVar(this.ValueFieldDef);
               e.FieldDef.ID=k;
             }
@@ -414,12 +412,17 @@
         r={};
         var isempty=this.NullIfEmpty ? true : false;
         var fd,errs=null;
+        var hasproperties=ng_IsObjVar(this.Properties);
         for(var k in this.PropsFieldDefs)
         {
           try
           {
             var val=vmGetFieldByID(v,k);
-            fd=this.PropsFieldDefs[k];
+            if(hasproperties) {
+              fd=this.Properties[k];
+              if(!ngIsFieldDef(fd)) fd=this.PropsFieldDefs[k];
+            }
+            else fd=this.PropsFieldDefs[k];
             if(ngIsFieldDef(val))
             {
               if(val.PrivateField) {
@@ -447,6 +450,9 @@
           }
           catch(e)
           {
+            if(hasproperties) e.FieldDef=this.Properties[k];
+            else e.FieldDef=null;
+            if(!ngIsFieldDef(e.FieldDef)) e.FieldDef=this.PropsFieldDefs[k];
             if(errs===null) errs={};
             errs[k]=e;
           }
