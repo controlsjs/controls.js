@@ -453,8 +453,10 @@ ngUserControls['dbviewmodel'] = {
               return originalvalue();
             },
             write: function(v) {
-              if((ngVal(instance.__Loading,false))||(instance.Attrs['WriteableOriginalValue'])) {
+              var isloading=ngVal(instance.__Loading,false);
+              if((isloading)||(instance.Attrs['WriteableOriginalValue'])) {
                 originalvalue(v);
+                if(!isloading) vmSetFieldValueByID(vmodel,'_OriginalRecord.'+instance.ID,v);
               }
             },                  
             vmodel
