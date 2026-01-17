@@ -514,9 +514,12 @@
   {
     if(ng_typeObject(this.PropsFieldDefs)) {
       var p,i,pid='';
-
+      var hasproperties=ng_IsObjVar(this.Properties);
       while(propid!='') {
-        p=this.PropsFieldDefs[propid];
+        if(hasproperties) {
+          p=this.Properties[propid];
+          if(!ngIsFieldDef(p)) p=this.PropsFieldDefs[propid];
+        } else p=this.PropsFieldDefs[propid];
         if(typeof p!=='undefined') {
           if(pid!='') p=vmGetFieldByID(p,pid);
           return p;
