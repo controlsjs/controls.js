@@ -157,93 +157,172 @@ function ngHtmlSanitize(s, nocache, purifycfg) {
   return ngHtmlVal(s, false, 0 /*ngHtmlPurify*/, nocache, true, purifycfg);
 }
 
-function ngTextEllipsis(text, ishtml, maxTextLength, maxWordLength, ellipsis)
-{
-  ellipsis=ngVal(ellipsis,'…');
-  maxWordLength=ngVal(maxWordLength,10);
-  if(maxWordLength<0) maxWordLength=0;
-  if((!maxTextLength)||(maxTextLength<0)) return text;
-  if(!ishtml) {
-    if(text.length>maxTextLength) {
-      text=text.substring(0,maxTextLength);
-      var texttrim=text.replace(/\s+$/,"");
-      if(text!=texttrim) text=texttrim;
-      else {
-        var idx=text.lastIndexOf(' ');
-        if(idx>maxTextLength-maxWordLength) {
-          text=text.substring(0,idx);
-          text=text.replace(/\s+$/,"");
-        }
+function ngTextEllipsis(text, ishtml, maxTextLength, trimpos, maxWordLength, ellipsis, wordseparators)
+{ 
+  if((maxTextLength <= 0)||(!text)) return text;
+  maxWordLength = ngVal(maxWordLength, 10);
+  if (maxWordLength < 0) maxWordLength = 0;
+  if(typeof wordseparators==='undefined') wordseparators = ' .,;:()[]{}!"\'|!?'+"\n\r\t";
+  function isSep(c) { return c ? wordseparators.indexOf(c) !== -1 : false; }
+  function lastSepIdx(s) {
+    for (var i = s.length - 1; i >= 0; i--) if (isSep(s.charAt(i))) return i;
+    return -1;
+  }
+  function firstSepIdx(s) {
+    for (var i = 0; i < s.length; i++) if (isSep(s.charAt(i))) return i;
+    return -1;
+  }
+
+  if(typeof trimpos!=='number') {
+    trimpos=''+ngVal(trimpos, 'right');
+    switch(trimpos)
+    {
+      case 'left':trimpos=0;break;
+      case 'middle': trimpos=50;break;
+      case 'right':trimpos=100;break;
+      default:  
+        trimpos=parseInt(trimpos,10);
+        if(isNaN(trimpos)) trimpos=100;
+        break;
+    }    
+  }
+
+  function getTruncated(inputText, limit, currentTrimLeft) {
+    if (inputText.length <= limit) return inputText;
+    
+    if (!ishtml) {
+      var result = "";
+      if (!currentTrimLeft) {
+        result = inputText.substring(0, limit);
+        var trimmed = result.replace(/\s+$/, ""); // Trim whitespace for ellipsis aesthetics
+        if (result === trimmed) {
+          var idx = lastSepIdx(result);
+          if (idx > limit - maxWordLength) result = result.substring(0, idx).replace(/\s+$/, "");
+        } else result = trimmed;
+      } else {
+        var startPos = inputText.length - limit;
+        result = inputText.substring(startPos);
+        var trimmed = result.replace(/^\s+/, "");
+        if (result === trimmed) {
+          var idx = firstSepIdx(result);
+          if (idx !== -1 && idx < maxWordLength) result = result.substring(idx + 1).replace(/^\s+/, "");
+        } else result = trimmed;
       }
-      text=text+ellipsis;
-    }
-    return text;
-  } else {
-    var tempDiv = document.createElement('div');
-    tempDiv.innerHTML = text;
+      return result;
+    } else {
+      var tempDiv = document.createElement('div');
+      tempDiv.innerHTML = inputText;
+      var currentLength = 0;
+      var finished = false;
 
-    var currentLength = 0;
-    var finished = false;
+      function traverse(node) {
+        if (finished) return null;
+        if (node.nodeType === 3) {
+          var val = node.nodeValue;
+          var remainingSpace = limit - currentLength;
+          if (val.length <= remainingSpace) {
+            currentLength += val.length;
+            return node.cloneNode(true);
+          }
+          
+          var rawCut;
+          if (!currentTrimLeft) {
+            rawCut = val.substring(0, remainingSpace);
+            var nextChar = val.charAt(remainingSpace);
+            var isWordBoundary = isSep(nextChar) || isSep(rawCut.charAt(rawCut.length - 1));
 
-    function traverse(node) {
-      if (finished) return null;
-      if (node.nodeType === 3) {
-        var text = node.nodeValue;
-        var textLen = text ? text.length : 0;
-        var remainingSpace = maxTextLength - currentLength;
-        if (textLen <= remainingSpace) {
-          currentLength += textLen;
-          return node.cloneNode(true);
-        } 
-        var rawCut = text.substring(0, remainingSpace);
-        var nextChar = text.charAt(remainingSpace);
-        var isWordBoundary = (/\s/.test(nextChar) || /\s$/.test(rawCut));
+            if (!isWordBoundary) {
+              var lastIdx = lastSepIdx(rawCut);
+              if (maxWordLength && (rawCut.length - (lastIdx + 1) <= maxWordLength)) {
+                rawCut = lastIdx > -1 ? rawCut.substring(0, lastIdx).replace(/\s+$/, "") : "";
+              }
+            }
+          } else {
+            var start = val.length - remainingSpace;
+            rawCut = val.substring(start);
+            var prevChar = val.charAt(start - 1);
+            var isWordBoundary = isSep(prevChar) || isSep(rawCut.charAt(0));
 
-        if (!isWordBoundary) {
-          var lastSpaceIndex = -1;
-          for (var k = rawCut.length - 1; k >= 0; k--) {
-            if (/\s/.test(rawCut.charAt(k))) {
-              lastSpaceIndex = k;
-              break;
+            if (!isWordBoundary) {
+              var firstIdx = firstSepIdx(rawCut);
+              if (maxWordLength && (firstIdx !== -1 && firstIdx <= maxWordLength)) {
+                rawCut = rawCut.substring(firstIdx + 1).replace(/^\s+/, "");
+              }
             }
           }
-          var fragmentLength = (lastSpaceIndex > -1) 
-              ? rawCut.length - (lastSpaceIndex + 1)
-              : rawCut.length;
-
-          if ((maxWordLength)&&(fragmentLength <= maxWordLength)) {
-            if (lastSpaceIndex > -1) rawCut = rawCut.substring(0, lastSpaceIndex);
-            else rawCut = "";
-          }
+          currentLength += rawCut.length;
+          finished = true;
+          return document.createTextNode(rawCut);
         }
-        currentLength += rawCut.length;
-        finished = true;
-        return document.createTextNode(rawCut);
+        if (node.nodeType === 1) {
+          var newNode = node.cloneNode(false);
+          var children = node.childNodes;
+          if (!currentTrimLeft) {
+            for (var i = 0; i < children.length; i++) {
+              var child = traverse(children[i]);
+              if (child) newNode.appendChild(child);
+              if (finished) break;
+            }
+          } else {
+            for (var i = children.length - 1; i >= 0; i--) {
+              var child = traverse(children[i]);
+              if (child) newNode.insertBefore(child, newNode.firstChild);
+              if (finished) break;
+            }
+          }
+          return newNode;
+        }
+        return null;
       }
-      if (node.nodeType === 1) {
-        var newNode = node.cloneNode(false);
-        var children = node.childNodes;
-        for (var i = 0; i < children.length; i++) {
-          var newChild = traverse(children[i]);
-          if (newChild) newNode.appendChild(newChild);
+
+      var resultDiv = document.createElement('div');
+      var nodes = tempDiv.childNodes;
+      if (!currentTrimLeft) {
+        for (var i = 0; i < nodes.length; i++) {
+          var p = traverse(nodes[i]);
+          if (p) resultDiv.appendChild(p);
           if (finished) break;
         }
-        return newNode;
+      } else {
+        for (var i = nodes.length - 1; i >= 0; i--) {
+          var p = traverse(nodes[i]);
+          if (p) resultDiv.insertBefore(p, resultDiv.firstChild);
+          if (finished) break;
+        }
       }
-      return finished ? node.cloneNode(true) + ellipsis : text;
+      return resultDiv.innerHTML;
     }
-
-    var resultDiv = document.createElement('div');
-    var childNodes = tempDiv.childNodes;
-
-    for (var i = 0; i < childNodes.length; i++) {
-      var processedNode = traverse(childNodes[i]);
-      if (processedNode) resultDiv.appendChild(processedNode);
-      if (finished) break;
-    }
-    return resultDiv.innerHTML;
   }
-};
+
+  var plainText = ishtml ? ng_htmlDecode(text) : text;
+  if (plainText.length <= maxTextLength) return text;
+
+  if((trimpos>0)&&(trimpos<100)) {
+    var leftLimit = Math.round(maxTextLength * (trimpos / 100));
+    var leftPart = leftLimit > 0 ? getTruncated(text, leftLimit, false) : "";
+    var rightLimit = maxTextLength - (ishtml ? ng_htmlDecode(leftPart).length : leftPart.length);
+    var rightPart = rightLimit > 0 ? getTruncated(text, rightLimit, true) : "";
+    
+    if(rightPart.length<3) trimpos=100;
+    else {
+      if(leftPart.length<3) trimpos=0;
+      else {
+        if(ng_IsObjVar(ellipsis)) ellipsis=ellipsis[1];
+        ellipsis = ngNullVal(ellipsis, '…');
+        return leftPart + ellipsis + rightPart;
+      }
+    }
+  }
+
+  if(trimpos <= 0) {
+    if(ng_IsObjVar(ellipsis)) ellipsis=ellipsis[0];
+    ellipsis = ngVal(ellipsis, '…');
+    return ellipsis + getTruncated(text, maxTextLength, true);
+  }
+  if(ng_IsObjVar(ellipsis)) ellipsis=ellipsis[2];
+  ellipsis = ngVal(ellipsis, '…');
+  return getTruncated(text, maxTextLength, false) + ellipsis;
+}
 
 function ng_Expand2Id(eid)
 {

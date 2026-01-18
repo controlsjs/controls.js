@@ -28,7 +28,9 @@ ngUserControls['coreextui'] = {
         Data: {
           HTMLEncode: ngVal(ngDefaultHTMLEncoding,false),
           LengthLimit: void 0,
+          TrimPos: 'right',
           MaxWordLength: 10,
+          WordSeparators: void 0,
           EllipsisText: '…',
           EllipsisLangRes: true,
           ShowMore: true,
@@ -115,83 +117,87 @@ ngUserControls['coreextui'] = {
             if(this.ShowLessLangRes) return ngTxt(this.ShowLessText, this.ShowLessText);
             return this.ShowLessText;
           },
-          TruncateText: function(text, maxTextLength, maxWordLength, ishtml) {
+          TruncateText: function(text, maxTextLength, trimpos, maxWordLength, ishtml, ellipsis, wordseparators) {
             if(typeof ishtml==='undefined') ishtml=(this.HTMLEncode!==ngHtmlEncode);
-            return ngTextEllipsis(text, ishtml, maxTextLength, maxWordLength, '');
+            if(typeof maxTextLength==='undefined')  maxTextLength=this.maxTextLength;
+            if(typeof trimpos==='undefined') trimpos=this.TrimPos;
+            if(typeof maxWordLength==='undefined') maxWordLength=this.MaxWordLength;
+            if(typeof ellipsis==='undefined') ellipsis=this.GetEllipsisText();
+            if(typeof wordseparators==='undefined') wordseparators=this.WordSeparators;
+            return ngTextEllipsis(text, ishtml, maxTextLength, trimpos, maxWordLength, ellipsis,wordseparators);
           },
           GetVisibleCharCount: function(text, ishtml, nocache) {
-            var o=this.Elm();
-            if(!o) return;
-            var o2=document.getElementById(this.ID+'_T');
-            if(!o2) {
+            var o = this.Elm();
+            if (!o) return;
+            var o2 = document.getElementById(this.ID + '_T');
+            if (!o2) {
               ng_CallParent(this, 'DoUpdate', [o]);
-              o2=document.getElementById(this.ID+'_T');
-              if(!o2) return;
+              o2 = document.getElementById(this.ID + '_T');
+              if (!o2) return;
             }
-            if(typeof ishtml==='undefined') ishtml=(this.HTMLEncode!==ngHtmlEncode);
-            if(typeof text==='undefined') text=this.GetText();
 
-            var oldcontent=o2.innerHTML;
-            var oldwidth=o2.style.width;
-            var oldheight=o2.style.height;
+            if (typeof ishtml === 'undefined') ishtml = (this.HTMLEncode !== ngHtmlEncode);
+            if (typeof text === 'undefined') text = this.GetText();
+            
+            var maxWordLength=ngVal(this.MaxWordLength,10);
+            var wordseparators=this.WordSeparators;
+            var trimpos = this.TrimPos;
+            if (typeof trimpos !== 'number') {
+              trimpos = '' + ngVal(trimpos, 'right');
+              if (trimpos === 'left') trimpos = 0;
+              else if (trimpos === 'middle') trimpos = 50;
+              else if (trimpos === 'right') trimpos = 100;
+              else trimpos = parseInt(trimpos, 10) || 100;
+            }
 
-            var low = 0;            
-            var high = text.length;
-            var bestFit = 0;
-            var bestFitHTML = '';
-            var mid;
-            var subHTML;
+            var oldcontent = o2.innerHTML;
+            var oldwidth = o2.style.width;
+            var oldheight = o2.style.height;
+
             ng_BeginMeasureElement(o);
-            var cw=ng_ClientWidth(o);
-            var ch=ng_ClientHeight(o);
-            if((!nocache)&&(this.cache_cw===cw)&&(this.cache_ch===ch)&&(this.cache_txt===text)) {
+            var cw = ng_ClientWidth(o);
+            var ch = ng_ClientHeight(o);
+
+            if ((!nocache) && (this.cache_cw === cw) && (this.cache_ch === ch) && 
+                (this.cache_txt === text) && (this.cache_trimpos === trimpos) && 
+                (this.cache_mwl === maxWordLength)) {
               return this.cache_visiblechars;
             }
-            o2.style.width=cw+'px';
-            o2.style.height='';
 
-            var ellipsis=ngVal(this.GetEllipsisText(),'');
+            o2.style.width = cw + 'px';
+            o2.style.height = '';
+
+            var ellipsisRaw = this.GetEllipsisText();
+            var low = 0;
+            var high = ishtml ? ng_htmlDecode(text).length : text.length;
+            var bestFit = 0;
+
             try {
               while (low <= high) {
-                mid = Math.floor((low + high) / 2);
-                subHTML = text.substring(0, mid);
-                if(ishtml) {
-                  var lastOpen = subHTML.lastIndexOf('<');
-                  var lastClose = subHTML.lastIndexOf('>');                  
-                  if (lastOpen > lastClose) {
-                    subHTML = subHTML.substring(0, lastOpen);
-                  }                  
-                }
-                o2.innerHTML = subHTML+ellipsis;
-                if(o.scrollHeight > ch) {
-                  // isOverflowing
+                var mid = Math.floor((low + high) / 2);
+                o2.innerHTML = ngTextEllipsis(text, ishtml, mid, trimpos, maxWordLength, ellipsisRaw, wordseparators);
+
+                if (o2.scrollHeight > ch) {
                   high = mid - 1;
                 } else {
                   bestFit = mid;
-                  bestFitHTML = subHTML;
                   low = mid + 1;
                 }
               }
-              if(bestFitHTML===text) {
-                bestFit=void 0;
-                ishtml=false;
-              }
-              if(ishtml) {
-                o2.innerHTML = bestFitHTML;
-                var textProp = 'textContent' in document.body ? 'textContent' : 'innerText';
-                bestFit = o2[textProp].length;
-              }
             } finally {
               ng_EndMeasureElement(o);
-              o2.style.width=oldwidth;
-              o2.style.height=oldheight;
-              o2.innerHTML=oldcontent;
+              o2.style.width = oldwidth;
+              o2.style.height = oldheight;
+              o2.innerHTML = oldcontent;
             }
-            if(!nocache) {
-              this.cache_cw=cw;
-              this.cache_ch=ch;
-              this.cache_txt=text;
-              this.cache_visiblechars=bestFit;
+
+            if (!nocache) {
+              this.cache_cw = cw;
+              this.cache_ch = ch;
+              this.cache_txt = text;
+              this.cache_trimpos = trimpos;
+              this.cache_mwl = maxWordLength;
+              this.cache_visiblechars = bestFit;
             }
             return bestFit;
           },
@@ -214,13 +220,13 @@ ngUserControls['coreextui'] = {
             try {
               var alt;
               if(typeof text==='undefined') text=this.GetText();
-              var newtext=this.TruncateText(text, maxlen, ngNullVal(this.MaxWordLength,0), ishtml);
+              var newtext=this.TruncateText(text, maxlen, ngNullVal(this.TrimPos,100), ngNullVal(this.MaxWordLength,0), ishtml, this.GetEllipsisText(), this.WordSeparators);
               if(text!==newtext) { // truncated
                 this.Truncated=true;
                 alt=this.GetAlt();
                 if(!this.Expanded) {
                   if(alt=='') alt=(ishtml ? ng_htmlDecode(text) : text);
-                  text=newtext+ngVal(this.GetEllipsisText(),'');
+                  text=newtext;
                 }
               } else {
                 return ng_CallParent(this, 'DoUpdate', arguments,true);

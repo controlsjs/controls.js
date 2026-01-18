@@ -36,6 +36,11 @@ ngUserControls['coreextui_designinfo'] = {
           "Data": {
             "LengthLimit": ng_diInteger(1000, { Level: 'basic' }),
             "MaxWordLength": ng_diInteger(10, { Level: 'basic' }),
+            "WordSeparators": ng_diString(' .,;:()[]{}!"\'|!?', { Level: 'basic', Editor: 'ngfeEditor_Lang' }),
+            "TrimPos": ng_diMixed([
+              ng_diStringValues('right', ['left','middle','right'], { Level: 'basic' }),
+              ng_diInteger(50, { Level: 'basic' })
+            ],{ Level: 'basic' }),
             "EllipsisText": ng_diString('…', { Level: 'basic', Editor: 'ngfeEditor_Lang' }),
             "EllipsisLangRes": ng_diBoolean(true, { Level: 'advanced' }),
 
