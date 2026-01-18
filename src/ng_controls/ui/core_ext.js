@@ -28,6 +28,7 @@ ngUserControls['coreextui'] = {
         Data: {
           HTMLEncode: ngVal(ngDefaultHTMLEncoding,false),
           LengthLimit: void 0,
+          MaxTextHeight: void 0,
           TrimPos: 'right',
           MaxWordLength: 10,
           WordSeparators: void 0,
@@ -151,16 +152,23 @@ ngUserControls['coreextui'] = {
             }
 
             var oldcontent = o2.innerHTML;
-            var oldwidth = o2.style.width;
-            var oldheight = o2.style.height;
+            var oldwidth2 = o2.style.width;
+            var oldheight2 = o2.style.height;
+            var oldheight = o.style.height;
 
             ng_BeginMeasureElement(o);
             var cw = ng_ClientWidth(o);
             var ch = ng_ClientHeight(o);
 
+            if(this.MaxTextHeight!=='undefined') {
+              ng_SetStyleHeight(o,this.MaxTextHeight);
+              ch = ng_ClientHeight(o);
+            }
+
             if ((!nocache) && (this.cache_cw === cw) && (this.cache_ch === ch) && 
                 (this.cache_txt === text) && (this.cache_trimpos === trimpos) && 
                 (this.cache_mwl === maxWordLength)) {
+              o.style.height = oldheight;
               return this.cache_visiblechars;
             }
 
@@ -172,10 +180,18 @@ ngUserControls['coreextui'] = {
             var high = ishtml ? ng_htmlDecode(text).length : text.length;
             var bestFit = 0;
 
+            var align,btn=this.GetButtonHTML(false);
+            if(btn!=='') align=(''+this.ShowMoreAlign).toLowerCase();
+
             try {
               while (low <= high) {
                 var mid = Math.floor((low + high) / 2);
-                o2.innerHTML = ngTextEllipsis(text, ishtml, mid, trimpos, maxWordLength, ellipsisRaw, wordseparators);
+                t = ngTextEllipsis(text, ishtml, mid, trimpos, maxWordLength, ellipsisRaw, wordseparators);
+                if(btn!=='') {
+                  if(align==='before') t=btn+t;
+                  else t=t+btn;
+                }
+                o2.innerHTML = t;
 
                 if (o2.scrollHeight > ch) {
                   high = mid - 1;
@@ -186,8 +202,9 @@ ngUserControls['coreextui'] = {
               }
             } finally {
               ng_EndMeasureElement(o);
-              o2.style.width = oldwidth;
-              o2.style.height = oldheight;
+              o.style.height = oldheight;
+              o2.style.width = oldwidth2;
+              o2.style.height = oldheight2;
               o2.innerHTML = oldcontent;
             }
 
@@ -201,13 +218,25 @@ ngUserControls['coreextui'] = {
             }
             return bestFit;
           },
+          GetButtonHTML: function(expanded) {
+            expanded=ngVal(expanded,this.Expanded);
+            var t=ngVal(expanded ? (this.ShowLess ? this.GetShowLessText() :'') : (this.ShowMore ? this.GetShowMoreText() : ''),'');
+            if(t!='') {
+              t=ngHtmlVal(t, true, ngVal(expanded ? this.ShowLessHTMLEncode : this.ShowMoreHTMLEncode, this.HTMLEncode));
+              var align=(expanded ? this.ShowLessAlign : this.ShowMoreAlign);
+              if((align!=='after')&&(align!=='before')) align='after';
+              align=align.substr(0,1).toUpperCase()+align.substr(1).toLowerCase();
+              return '<span id="'+this.ID+'_MORE" class="'+this.BaseClassName+(expanded ? 'ShowLess' : 'ShowMore')+align+'" '+ ngc_PtrEventsHTML(self, 'expandtoggle', 'tap drag') +'>'+t+'</span>';
+            }
+            return '';
+          },
           DoUpdate: function(o) {
             var text;
             var htmlencode=this.HTMLEncode;
             var ishtml=(htmlencode!==ngHtmlEncode);
             this.Truncated=false;
             var maxlen=this.LengthLimit;
-            if((typeof maxlen==='undefined')&&(!this.AutoSize)) {
+            if((typeof maxlen==='undefined')&&((!this.AutoSize)||(typeof this.MaxTextHeight!=='undefined'))) {
               text=this.GetText();
               maxlen=this.GetVisibleCharCount(text,ishtml);
             }
@@ -236,14 +265,10 @@ ngUserControls['coreextui'] = {
               this.GetText=function() {
                 var ret=ngHtmlVal(text, true, htmlencode);
                 if(self.AutoSize) {
-                  var t=ngVal(self.Expanded ? (self.ShowLess ? self.GetShowLessText() :'') : (self.ShowMore ? self.GetShowMoreText() : ''),'');
-                  if(t!='') {
-                    t=ngHtmlVal(t, true, ngVal(self.Expanded ? self.ShowLessHTMLEncode : self.ShowMoreHTMLEncode, self.HTMLEncode));
-                    var align=(self.Expanded ? self.ShowLessAlign : self.ShowMoreAlign);
-                    if((align!=='after')&&(align!=='before')) align='after';
-                    align=align.substr(0,1).toUpperCase()+align.substr(1).toLowerCase();
-                    var btn='<span id="'+self.ID+'_MORE" class="'+self.BaseClassName+(self.Expanded ? 'ShowLess' : 'ShowMore')+align+'" '+ ngc_PtrEventsHTML(self, 'expandtoggle', 'tap drag') +'>'+t+'</span>';
-                    if(align==='Before') ret=btn+ret;
+                  var btn=self.GetButtonHTML();
+                  if(btn!=='') {
+                    var align=(this.Expanded ? this.ShowLessAlign : this.ShowMoreAlign);
+                    if((''+align).toLowerCase()==='before') ret=btn+ret;
                     else ret+=btn;
                   }
                 }

@@ -35,6 +35,7 @@ ngUserControls['coreextui_designinfo'] = {
         Properties: ng_diProperties({
           "Data": {
             "LengthLimit": ng_diInteger(1000, { Level: 'basic' }),
+            "MaxTextHeight": ng_diMixed(['undefined', 'integer'], { InitType: 'integer', Level: 'basic' }),
             "MaxWordLength": ng_diInteger(10, { Level: 'basic' }),
             "WordSeparators": ng_diString(' .,;:()[]{}!"\'|!?', { Level: 'basic', Editor: 'ngfeEditor_Lang' }),
             "TrimPos": ng_diMixed([
