@@ -1540,6 +1540,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                   errors[valpath]=e;
                 }
                 if(setval==d[i]) setvalues(val,d[i],valpath);
+                else val=setval;
               }              
               else setvalues(val,d[i],valpath);
               if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
@@ -1581,6 +1582,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 errors[valpath]=e;
               }
               if(setval==d[i]) setvalues(val,d[i],valpath);
+              else val=setval;
             }              
             else setvalues(val,d[i],valpath);
             if((cansetvalue(valpath))||(!ng_EmptyVar(val))) {
