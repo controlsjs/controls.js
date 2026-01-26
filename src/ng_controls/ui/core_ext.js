@@ -175,7 +175,7 @@ ngUserControls['coreextui'] = {
             o2.style.width = cw + 'px';
             o2.style.height = '';
 
-            var ellipsisRaw = this.GetEllipsisText();
+            var t,ellipsisRaw = this.GetEllipsisText();
             var low = 0;
             var high = ishtml ? ng_htmlDecode(text).length : text.length;
             var bestFit = 0;
@@ -226,7 +226,7 @@ ngUserControls['coreextui'] = {
               var align=(expanded ? this.ShowLessAlign : this.ShowMoreAlign);
               if((align!=='after')&&(align!=='before')) align='after';
               align=align.substr(0,1).toUpperCase()+align.substr(1).toLowerCase();
-              return '<span id="'+this.ID+'_MORE" class="'+this.BaseClassName+(expanded ? 'ShowLess' : 'ShowMore')+align+'" '+ ngc_PtrEventsHTML(self, 'expandtoggle', 'tap drag') +'>'+t+'</span>';
+              return '<span id="'+this.ID+'_MORE" class="'+this.BaseClassName+(expanded ? 'ShowLess' : 'ShowMore')+align+'" '+ ngc_PtrEventsHTML(this, 'expandtoggle', 'tap drag') +'>'+t+'</span>';
             }
             return '';
           },
