@@ -1532,7 +1532,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
             if((!ng_typeObject(o[i]))||(ng_typeDate(o[i]))||(ng_IsArrayVar(o[i]))) {
               val={};
               if(self.OnSetValue) {
-                var setval=d[i];
+                setval=d[i];
                 try {
                   setval=self.OnSetValue(self,setval,instance, valpath);
                 }
@@ -1547,7 +1547,20 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 o[i]=val;
               }
             }
-            else setvalues(val,d[i],valpath);
+            else {
+              if(self.OnSetValue) {
+                setval=d[i];
+                try {
+                  setval=self.OnSetValue(self,setval,instance, valpath);
+                }
+                catch(e) {
+                  errors[valpath]=e;
+                }
+                if(setval==d[i]) setvalues(val,d[i],valpath);
+                else if(cansetvalue(valpath)) o[i]=setval;
+              }              
+              else setvalues(val,d[i],valpath);
+            }
           }
           else
           {
@@ -1574,7 +1587,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           if((ng_typeObject(d[i]))&&(!ng_typeDate(d[i]))&&(!ng_IsArrayVar(d[i]))) {
             val={};
             if(self.OnSetValue) {
-              var setval=d[i];
+              setval=d[i];
               try {
                 setval=self.OnSetValue(self,setval,instance, valpath);
               }
