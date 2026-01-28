@@ -72,7 +72,7 @@ ngUserControls['mods'] = {
   OnInit: function() {
     var mods=this;
 
-    ngRegisterControlMod('modCenter', function text(def, ref, parent, modtype) {
+    ngRegisterControlMod('modCenter', function(def, ref, parent, modtype) {
       ng_MergeDef(def, {
         Data: {
           VCenter: true,
