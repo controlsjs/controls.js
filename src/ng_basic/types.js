@@ -1664,20 +1664,32 @@ function ng_fromUnixTimestamp(d,def)
  *  Parameters:
  *    var - variable to convert
  *    def - default value, used if conversion fails      
+ *    ms - include miliseconds
  *  
  *  Returns:
  *    Converted value or default value if conversion fails.
  */       
-function ng_formatDateISO8601(d,def) { 
+function ng_formatDateISO8601(d,def,ms) { 
   function LZ(x) { return(x<10 ? '0'+x : x); }
+  
   d=ng_toDate(d);  
   if(ng_isInvalid(d)) return ngVal(def,'');
-  return d.getUTCFullYear()+'-'
+  var ret=d.getUTCFullYear()+'-'
   + LZ(d.getUTCMonth()+1)+'-'
   + LZ(d.getUTCDate())+'T'
   + LZ(d.getUTCHours())+':'
   + LZ(d.getUTCMinutes())+':'
-  + LZ(d.getUTCSeconds())+'Z';
+  + LZ(d.getUTCSeconds());
+  
+  if(ms) {
+    function LMS(n) {
+      if((n < 10)) return '00' + n;
+      if((n < 100)) return '0' + n;
+      return n;
+    }
+    ret+='.'+LMS(d.getUTCMilliseconds())
+  }
+  return ret+'Z';
 } 
 
 /**
@@ -1694,67 +1706,65 @@ function ng_formatDateISO8601(d,def) {
  *  Returns:
  *    Converted value or default value if conversion fails.
  */       
-function ng_parseDateISO8601(s,def) {
-  s=''+s;
+function ng_parseDateISO8601(s, def)
+{
+  s = '' + s;
   var d = s.match(ng_parseDateISO8601.REGEXP);
-
-  function SLZ(s)
-  {
-    s=''+s;
-    for(var i=0;i<s.length;i++)
-      if(s.charAt(i)!='0')
-      {
-        s=s.substring(i,s.length);
-        break;
-      }
-    return s;
-  }
-
-  if(d===null) return ngVal(def,null);
+  if(d === null) return ngVal(def, null);
   
-  var offset = 0;
   var date = new Date(0, 0, 1);
-
-  var y=parseInt(d[1],10);
-  var m=parseInt(SLZ(d[3]),10);
-  var day=parseInt(SLZ(d[5]),10);
+  var y = parseInt(d[1], 10);
+  var m = parseInt(d[3], 10);
+  var day = parseInt(d[5], 10);
   
-  if((isNaN(y))||(isNaN(m))||(isNaN(day))||(y<1000)||(m<1)||(m>12)||(day<1)||(day>ng_DaysInMonth(m,y)))
-    return ngVal(def,null);
+  if((isNaN(y))||(isNaN(m))||(isNaN(day))||(y < 1000)||(m < 1)||(m > 12)||(day < 1)||(day > ng_DaysInMonth(m, y)))
+    return ngVal(def, null);
     
   date.setFullYear(y);
   date.setMonth(m - 1);   
   date.setDate(day);
+  date.setHours(0, 0, 0, 0);
   
-  var hh=parseInt(SLZ(d[7]),10); 
-  var mm=parseInt(SLZ(d[8]),10); 
-  var ss=parseInt(SLZ(d[10]),10); 
-  var uu=parseInt(SLZ(d[12]),10);
+  var hh = parseInt(d[7], 10); 
+  var mm = parseInt(d[8], 10); 
+  var ss = parseInt(d[10], 10); 
+  var uu = d[12];
+  var hasTime = (!isNaN(hh));
+  var tzInfo = d[13]; // Z or +HH:mm
 
-  if((!isNaN(hh))||(!isNaN(mm))||(!isNaN(ss))||(!isNaN(uu))||(d[14]))
+  if(hasTime)
   {
-    if(isNaN(hh)) hh=0;
-    else if((hh<0)||(hh>23)) return ngVal(def,null);
-    if(isNaN(mm)) mm=0;
-    else if((mm<0)||(mm>59)) return ngVal(def,null);
-    if(isNaN(ss)) ss=0;
-    else if((ss<0)||(ss>59)) return ngVal(def,null);
+    if((hh < 0)||(hh > 23)) return ngVal(def, null);
+    if(!isNaN(mm)&&((mm < 0)||(mm > 59))) return ngVal(def, null);
+    if(!isNaN(ss)&&((ss < 0)||(ss > 59))) return ngVal(def, null);
     
     date.setHours(hh); 
-    date.setMinutes(mm); 
-    date.setSeconds(ss); 
-    if(!isNaN(uu)) date.setMilliseconds(ng_toNumber("0." + d[12]) * 1000); 
-    if (d[14]) {
-        offset = (ng_toNumber(d[16]) * 60) + ng_toNumber(d[17]);
-        offset *= ((d[15] == '-') ? 1 : -1);
-    }  
+    date.setMinutes(isNaN(mm) ? 0 : mm); 
+    date.setSeconds(isNaN(ss) ? 0 : ss); 
+    if(uu) date.setMilliseconds(Math.round(ng_toNumber("0." + uu) * 1000));
   }
-  offset -= date.getTimezoneOffset();
-  date.setTime(Number(Number(date) + (offset * 60 * 1000)));
+
+  if(tzInfo)
+  {
+    var offset = 0;
+    if(d[14]) // +HH:mm
+    {
+      offset = (parseInt(d[16], 10) * 60) + parseInt(d[17], 10);
+      offset *= ((d[15] == '-') ? 1 : -1);
+    }
+    // Move to UTC then substract local offset
+    offset -= date.getTimezoneOffset();
+    date.setTime(Number(date) + (offset * 60 * 1000));
+  }
+  else if(!hasTime) {
+    // Date without time should be UTC
+    date.setTime(Number(date) - (date.getTimezoneOffset() * 60 * 1000));
+  }
+
   return date;
 }
 ng_parseDateISO8601.REGEXP = new RegExp("([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
-      "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?" +
+      "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})([.,]([0-9]+))?)?" +
       "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?");
 
 /**
