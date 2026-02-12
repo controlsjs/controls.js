@@ -1694,6 +1694,7 @@ function ng_MergeDef(dst, def, allowundefined, callback) {
       if (!hasOwn.call(d, key)) {
         if ((!oref || !oref[key]) && (!dref || !dref[key])) {
           d[key] = ng_CopyVar(val);
+          if(!allowundefined) d[key]=ng_CleanUndefined(d[key]);
         } else {
           d[key] = val;
         }
