@@ -1659,20 +1659,25 @@ function ng_MergeDef(dst, def, allowundefined, callback) {
       if (typeof d.OnCreated === 'function' && typeof o.OnCreated === 'function') {
         d.OnCreated = ngAddEvent(d.OnCreated, o.OnCreated); (skipKeys || (skipKeys={})).OnCreated = true;
       }
-      if (o.Methods && d.Methods && typeof o.Methods === 'object' && typeof d.Methods === 'object') { 
-        ng_MergeDef.MergeEvents(d.Methods, o.Methods, false, true); (skipKeys || (skipKeys={})).Methods = true; 
+      if (o.Methods && typeof o.Methods === 'object') { 
+        if(typeof d.Methods === 'undefined') d.Methods = {};
+        ng_MergeDef.MergeEvents(d.Methods, o.Methods, false, true, allowundefined); (skipKeys || (skipKeys={})).Methods = true; 
       }
-      if (o.Events && d.Events && typeof o.Events === 'object' && typeof d.Events === 'object') { 
-        ng_MergeDef.MergeEvents(d.Events, o.Events, false, false); (skipKeys || (skipKeys={})).Events = true; 
+      if (o.Events && typeof o.Events === 'object') { 
+        if(typeof d.Events === 'undefined') d.Events = {};
+        ng_MergeDef.MergeEvents(d.Events, o.Events, false, false, allowundefined); (skipKeys || (skipKeys={})).Events = true; 
       }
-      if (o.AfterEvents && d.AfterEvents && typeof o.AfterEvents === 'object' && typeof d.AfterEvents === 'object') { 
-        ng_MergeDef.MergeEvents(d.AfterEvents, o.AfterEvents, false, false); (skipKeys || (skipKeys={})).AfterEvents = true; 
+      if (o.AfterEvents && typeof o.AfterEvents === 'object') { 
+        if(typeof d.AfterEvents === 'undefined') d.AfterEvents = {};
+        ng_MergeDef.MergeEvents(d.AfterEvents, o.AfterEvents, false, false, allowundefined); (skipKeys || (skipKeys={})).AfterEvents = true; 
       }
-      if (o.BeforeEvents && d.BeforeEvents && typeof o.BeforeEvents === 'object' && typeof d.BeforeEvents === 'object') { 
-        ng_MergeDef.MergeEvents(d.BeforeEvents, o.BeforeEvents, true, false); (skipKeys || (skipKeys={})).BeforeEvents = true; 
+      if (o.BeforeEvents && typeof o.BeforeEvents === 'object') { 
+        if(typeof d.BeforeEvents === 'undefined') d.BeforeEvents = {};
+        ng_MergeDef.MergeEvents(d.BeforeEvents, o.BeforeEvents, true, false, allowundefined); (skipKeys || (skipKeys={})).BeforeEvents = true; 
       }
-      if (o.OverrideEvents && d.OverrideEvents && typeof o.OverrideEvents === 'object' && typeof d.OverrideEvents === 'object') { 
-        ng_MergeDef.MergeEvents(d.OverrideEvents, o.OverrideEvents, false, true); (skipKeys || (skipKeys={})).OverrideEvents = true; 
+      if (o.OverrideEvents && typeof o.OverrideEvents === 'object') { 
+        if(typeof d.OverrideEvents === 'undefined') d.OverrideEvents = {};
+        ng_MergeDef.MergeEvents(d.OverrideEvents, o.OverrideEvents, false, true, allowundefined); (skipKeys || (skipKeys={})).OverrideEvents = true; 
       }
     }
 
@@ -1684,7 +1689,7 @@ function ng_MergeDef(dst, def, allowundefined, callback) {
     for (key in o) {
       if (skipKeys && skipKeys[key]) continue;
       val = o[key];
-      if (!allowundefined && typeof val === 'undefined') continue;
+      if ((typeof val === 'undefined')&&(!allowundefined)) continue;
 
       if (!hasOwn.call(d, key)) {
         if ((!oref || !oref[key]) && (!dref || !dref[key])) {
@@ -1704,11 +1709,13 @@ function ng_MergeDef(dst, def, allowundefined, callback) {
   recursive_merge(dst, def);
 }
 
- ng_MergeDef.MergeEvents = function(d, o, before, override)
- {
+ng_MergeDef.MergeEvents = function(d, o, before, override, allowundefined)
+{
   var key, dVal, oVal, isDArr, isDFnc, isOArr, isOFnc;
   for (key in o) {
-    dVal = d[key]; oVal = o[key];
+    oVal = o[key];
+    if ((typeof oVal === 'undefined')&&(!allowundefined)) continue;
+    dVal = d[key]; 
     if (typeof dVal === 'undefined' || (!override && dVal === null)) { d[key] = oVal; continue; }
     isDArr = ng_IsArrayVar(dVal); isDFnc = typeof dVal === 'function';
     if (isDArr || isDFnc) {
