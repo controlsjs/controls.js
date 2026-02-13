@@ -459,7 +459,7 @@ ngUserControls['dbviewmodel'] = {
                 if(!isloading) vmSetFieldValueByID(vmodel,'_OriginalRecord.'+instance.ID,v);
               }
             },                  
-            vmodel
+            owner: vmodel
           })
           , 'Original'
         );
