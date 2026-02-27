@@ -93,15 +93,15 @@ ngUserControls['maskedit'] = {
             if((c.TextAlign=='right')&&(lh))
             {
               if(lh.SetBounds({W: mw-rw})) lh.Update();
-            } else
+            } 
+            else if((c.TextAlign=='center')&&(lh)&&(rh))
             {
-              if((c.TextAlign=='center')&&(lh)&&(rh))
-              {
-                var mw2=Math.round(mw/2);
-                if(lh.SetBounds({W: mw2-rw})) lh.Update();
-                if(rh.SetBounds({W: (mw-mw2)-lw})) rh.Update();
-              } else if((rh)&&(rh.SetBounds({W: mw-lw}))) rh.Update();
+              var mw2=Math.round(mw/2);
+              if(lh.SetBounds({W: mw2})) lh.Update();
+              if(rh.SetBounds({W: (mw-mw2)})) rh.Update();
             }
+            else if((rh)&&(rh.SetBounds({W: mw-lw}))) rh.Update();
+
           } finally { ng_EndMeasureElement(o); }
         } else
         {
