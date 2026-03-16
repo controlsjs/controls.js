@@ -277,7 +277,7 @@ ngUserControls['dbviewmodel'] = {
             var self=this;
             this.OnSetValue=function(c,setval,instance, valpath)
             {
-              if(origonsetvalue) val=origonsetvalue.apply(self, arguments);
+              if(origonsetvalue) setval=origonsetvalue.apply(self, arguments);
               if(valpath.substring(0,16)==='_OriginalRecord.') {
                 var instance=self.GetFieldByID(valpath.substring(16));
                 if(ngIsFieldDef(instance))
