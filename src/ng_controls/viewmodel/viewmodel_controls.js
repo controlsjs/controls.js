@@ -768,6 +768,9 @@ ngUserControls['viewmodel_controls'] = {
                 try {
                   aval=afd.TypedValue(aval);
                 } catch(e) {
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    aval = e.Value;
+                  }                                    
                 }
               }
               if(val==aval) return true;
@@ -949,14 +952,17 @@ ngUserControls['viewmodel_controls'] = {
         try
         {
           if(ngIsFieldDef(fd)) val=fd.TypedValue(val);
-          if((includenull)||(val!==null)) {
-            if(asarray) vals[i]=val;
-            else vmSetFieldValueByID(vals,i,val);
-          }
         }
         catch(e)
         {
+          if((e instanceof ngFieldDefException)&&('Value' in e)) {
+            val = e.Value;
+          }                            
         }
+        if((includenull)||(val!==null)) {
+          if(asarray) vals[i]=val;
+          else vmSetFieldValueByID(vals,i,val);
+        }        
       }
       return vals;
     }
@@ -1219,6 +1225,9 @@ ngUserControls['viewmodel_controls'] = {
                 catch(e)
                 {
                   // keep original, dont propagate errors on _ActiveFilters
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    setval = e.Value;
+                  }                                                      
                 }
                 delete instance.__Loading;
               }
@@ -1262,6 +1271,9 @@ ngUserControls['viewmodel_controls'] = {
                 catch(e)
                 {
                   // keep original, dont propagate errors on _ActiveFilters
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    val = e.Value;
+                  }                                    
                 }
                 delete instance.__Saving;
               }

@@ -265,33 +265,31 @@
       {
         var errs=null;
         var fd=this.ValueFieldDef;
+        var val;
         r=[];
         for(var k in v)
         {
           try
           {
+            val=v[k];
+            if(ngIsFieldDef(val)) val=val.Value;
+            if(ko.isObservable(val)) val=val();
             if(typeof this.Item === 'function') {
               fd=this.Item(k,false);
               if(!ngIsFieldDef(fd)) fd=this.ValueFieldDef;
             }
-            var val=v[k];
-            if(ngIsFieldDef(val)) val=val.Value;
-            if(ko.isObservable(val)) val=val();
             switch(op)
             {
               case 0: val=fd.TypedValue(val); break;
               case 1: val=fd.Serialize(val); break;
               case 2: val=fd.Deserialize(val); break;
             }
-
-            if(pack) {
-              if(ng_isEmptyOrNull(val)) continue;
-              r.push(val);
-            }
-            else r[k]=val;
           }
           catch(e)
           {
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              val = e.Value;
+            }      	            
             if(typeof this.Item === 'function') e.FieldDef=this.Item(k,false); // Get ngFieldDef for item (if available)
             else e.FieldDef=null;
             if(!ngIsFieldDef(e.FieldDef)) {
@@ -301,10 +299,15 @@
             if(errs===null) errs={};
             errs[k]=e;
           }
+          if(pack) {
+            if(ng_isEmptyOrNull(val)) continue;
+            r.push(val);
+          }
+          else r[k]=val;          
         }
         if(errs!==null)
         {
-          throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs); // type error
+          throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs,r); // type error
         }
       }
       else {
@@ -411,13 +414,13 @@
       {
         r={};
         var isempty=this.NullIfEmpty ? true : false;
-        var fd,errs=null;
+        var fd,val,errs=null;
         var hasproperties=ng_IsObjVar(this.Properties);
         for(var k in this.PropsFieldDefs)
         {
           try
           {
-            var val=vmGetFieldByID(v,k);
+            val=vmGetFieldByID(v,k);
             if(hasproperties) {
               fd=this.Properties[k];
               if(!ngIsFieldDef(fd)) fd=this.PropsFieldDefs[k];
@@ -445,21 +448,24 @@
                 case 2: val=fd.Deserialize(val); break;
               }
             }
-            if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
-            vmSetFieldValueByID(r,k,val);
           }
           catch(e)
           {
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              val = e.Value;
+            }      	            
             if(hasproperties) e.FieldDef=this.Properties[k];
             else e.FieldDef=null;
             if(!ngIsFieldDef(e.FieldDef)) e.FieldDef=this.PropsFieldDefs[k];
             if(errs===null) errs={};
             errs[k]=e;
           }
+          if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
+          vmSetFieldValueByID(r,k,val);
         }
         if(errs!==null)
         {
-          throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs); // type error
+          throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs,r); // type error
         }
         if(isempty) r=null;
       }
@@ -593,8 +599,8 @@
     var s=ng_toString(v);
     if(s!='')
     {
-      v=ng_formatWWW(v,null);
-      if(v===null) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_www');
+      v=ng_formatWWW(s,null);
+      if(v===null) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_www', null, null, s);
     }
     return v;
   }
@@ -644,7 +650,7 @@
   function ngfd_EmailDoTypedValue(v)
   {
     var s=ng_toString(v);
-    if((s!='')&&(!ng_isEmail(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_email');
+    if((s!='')&&(!ng_isEmail(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_email', null, null, s);
     return s;
   }
 
@@ -672,7 +678,7 @@
   function ngfd_IP4DoTypedValue(v)
   {
     var s=ng_toString(v);
-    if((s!='')&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip4');
+    if((s!='')&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip4', null, null, s);
     return v;
   }
 
@@ -695,7 +701,7 @@
   function ngfd_IP6DoTypedValue(v)
   {
     var s=ng_toString(v);
-    if((s!='')&&(!ng_isIP6(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip6');
+    if((s!='')&&(!ng_isIP6(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip6', null, null, s);
     return v;
   }
 
@@ -718,7 +724,7 @@
   function ngfd_IP46DoTypedValue(v)
   {
     var s=ng_toString(v);
-    if((s!='')&&(!ng_isIP6(s))&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip46');
+    if((s!='')&&(!ng_isIP6(s))&&(!ng_isIP4(s))) throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_ip46', null, null, s);
     return v;
   }
 
@@ -1043,14 +1049,14 @@
 
       var n=ng_NormalizePhone(s,op,prefix);
       if((n===false)||(!ng_isPhone(n,!ng_isEmpty(allowed) ? false : true,allowscode,this.Attrs['PhoneAllowedShortcodes'])))
-        throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_notphone');
+        throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_notphone', null, null, s);
 
       if(!ng_isEmpty(allowed))
       {
         if((!allowscode)||(!ng_isShortCode(n)))
         {
           if(!ng_hasPhoneValidPrefix(n, false, allowed))
-            throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_invalidphoneprefix');
+            throw new ngFieldDefException(this, FIELDDEF_ERR, 'viewmodel_err_invalidphoneprefix', null, null, n);
         }
       }
       v=n;
@@ -1089,7 +1095,7 @@
     {
       var re     = new RegExp(this.Attrs['RegExp'], ngVal(this.Attrs['RegExpMods'], ''));
       var result = re.exec(s);
-      if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR, ngVal(this.Attrs['RegExpError'], 'viewmodel_err_format'));
+      if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR, ngVal(this.Attrs['RegExpError'], 'viewmodel_err_format'), null, null, s);
 
       if (result.length>1)
       {
@@ -1163,7 +1169,7 @@
       if ((s!='') && (this.Attrs['Mask']!=''))
       {
         var result = ngUserControls['maskedit'].ValidateText(s,this.Attrs['Mask']);
-        if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR,ngVal(this.Attrs['MaskEditError'],'viewmodel_err_format'));
+        if (!result) throw new ngFieldDefException(this, FIELDDEF_ERR,ngVal(this.Attrs['MaskEditError'],'viewmodel_err_format'), null, null, s);
       }
 
       return v;

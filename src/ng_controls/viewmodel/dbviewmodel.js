@@ -210,10 +210,18 @@ ngUserControls['dbviewmodel'] = {
           if((instance.PrivateField)||(ngVal(instance.Attrs['IgnoreChanges'],false))) ignorechanges=true;
           try {
             val=instance.TypedValue(val);
-          } catch(e) { }
+          } catch(e) { 
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              val = e.Value;
+            }          
+          }
           try {
             oval=instance.TypedValue(oval);
-          } catch(e) { }
+          } catch(e) {
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              oval = e.Value;
+            }      	                        
+          }
         }
         chinfo.Value=val;
         chinfo.OriginalValue=oval;
@@ -297,6 +305,9 @@ ngUserControls['dbviewmodel'] = {
                   catch(e)
                   {
                     // keep original, dont propagate errors on _OriginalRecord
+                    if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                      setval = e.Value;
+                    }                    
                   }
                   if(ko.isObservable(instance.OriginalValue)) instance.OriginalValue(setval);
                   delete instance.__Loading;
@@ -345,6 +356,9 @@ ngUserControls['dbviewmodel'] = {
                 catch(e)
                 {
                   // keep original, dont propagate errors on _OriginalRecord
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    val = e.Value;
+                  }
                 }
                 delete instance.__Saving;
               }
@@ -432,6 +446,9 @@ ngUserControls['dbviewmodel'] = {
           val=fd.TypedValue(val);
         }
         catch(e) {
+          if((e instanceof ngFieldDefException)&&('Value' in e)) {
+            val = e.Value;
+          }
         }
         dbf.OriginalValue=val;
       }
@@ -469,8 +486,20 @@ ngUserControls['dbviewmodel'] = {
         instance.IsChanged = ko.computed(function() {
           var val=instance.Value();
           var oval=instance.OriginalValue();
-          try { val=instance.TypedValue(val) } catch(e) { }
-          try { oval=instance.TypedValue(oval) } catch(e) { }
+          try {
+            val=instance.TypedValue(val) 
+          } catch(e) { 
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              val = e.Value;
+            }
+          }
+          try { 
+            oval=instance.TypedValue(oval)
+          } catch(e) { 
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              oval = e.Value;
+            }
+          }
           if(ng_typeDate(val)) val=ng_toUnixTimestamp(val);
           if(ng_typeDate(oval)) oval=ng_toUnixTimestamp(oval);
           return !ng_VarEquals(val,oval);
@@ -727,12 +756,15 @@ ngUserControls['dbviewmodel'] = {
                 fd=this.GetFieldByID(pk[i]);
                 try {
                   if(fd) v=fd.Serialize(v);
-                  vmSetFieldValueByID(typedpkvals,pk[i],v);
                 }
                 catch(e)
                 {
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    v = e.Value;
+                  }                  
                   err[pk[i]]=e;
                 }
+                vmSetFieldValueByID(typedpkvals,pk[i],v);
               }
               pkvals=typedpkvals;
               options.PrimaryKeyValues = typedpkvals;

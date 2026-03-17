@@ -232,7 +232,7 @@ var FIELDDEF_ERR_ENUM   = 32;
 var FIELDDEF_ERR_LEN    = 64;
 var FIELDDEF_ERR_MINLEN = 128;
 
-function ngFieldDefException(fd, err, msg, extinfo, childerrors)
+function ngFieldDefException(fd, err, msg, extinfo, childerrors, value)
 {
   /*
    *  Group: Properties
@@ -281,6 +281,15 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
   if(ng_typeObject(this.ChildErrors)) {
     for(var i in this.ChildErrors)
       this.ChildErrors[i].Parent=this;
+  }
+  
+  if(arguments.length>5) 
+  {
+    /*  Variable: Value
+     *  Related value.
+     *  Type: mixed
+     */
+    this.Value = value;
   }
 }
 
@@ -418,7 +427,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
 
       if(ng_isEmptyOrNull(v))
       {
-        if(this.Required) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+        if(this.Required) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, v); // required
         return v;
       }
 
@@ -439,7 +448,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         // numeric
         case 'INTEGER':       r=ng_toInteger(v,null); break;
         case 'FLOAT':         r=ng_toFloat(v,null); 
-                              if(ngVal(this.Precision,-1)>=0) { 
+                              if((ngVal(this.Precision,-1)>=0)&&(r!==null)) { 
                                 var mul=Math.pow(10, this.Precision);
                                 r=Math.round((r+ngVal(Number.EPSILON,0))*mul)/mul;
                               }
@@ -453,14 +462,14 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
         case 'DECIMAL':       r=ng_toDECIMAL(v,this.Size,this.Precision,null);
                               if(r===null) {
                                 r=ng_toDECIMAL(v,1000,this.Precision,null);
-                                if(r!==null) throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
+                                if(r!==null) throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN, '', null, null, r);
                               }
                               break;
         // string
         case 'STRING':        r=ng_toString(v,null); break;
         case 'NVARCHAR':      r=ng_toNVARCHAR(v,void 0,null);
                               if((r!==null)&&(!ng_isEmpty(this.Size))&&(r.length>this.Size))
-                                throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN);
+                                throw new ngFieldDefException(this, err|FIELDDEF_ERR_LEN, '', null, null, r);
                               break;
         // date
         case 'TIMESTAMP':
@@ -517,41 +526,41 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           if(r!='')
           {
             if((this.Attrs['UTF8mb3'])&&(!ng_IsUTF8mb3(r))) {
-              throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+              throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars', null, null, r);
             }
             if(typeof this.Attrs['ValidChars']!=='undefined') {
-              if((this.Attrs['ValidChars']=='')||(new RegExp('[^'+this.Attrs['ValidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+              if((this.Attrs['ValidChars']=='')||(new RegExp('[^'+this.Attrs['ValidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars', null, null, r);
             }
             if(typeof this.Attrs['InvalidChars']!=='undefined') {
-              if((this.Attrs['InvalidChars']!='')&&(new RegExp('['+this.Attrs['InvalidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars');
+              if((this.Attrs['InvalidChars']!='')&&(new RegExp('['+this.Attrs['InvalidChars']+']+')).exec(r)) throw new ngFieldDefException(this, err, 'viewmodel_err_type_invalidchars', null, null, r);
             }
           }
           typefnc=ng_toString;
-          if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, c); // required
           if((typeof this.Attrs['MinSize']!=='undefined')&&(c.length<this.Attrs['MinSize'])) {
-            throw new ngFieldDefException(this, err|FIELDDEF_ERR_MINLEN);
+            throw new ngFieldDefException(this, err|FIELDDEF_ERR_MINLEN, '', null, null, c);
           }
           break;
         case 'TIMESTAMP':
         case 'DATETIME':
           typefnc=ng_toDate;
-          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, c); // required
           break;
         case 'DATE':
           typefnc=ng_toDateOnly;
-          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, c); // required
           break;
         case 'TIME':
           typefnc=ng_toDate;
-          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, c); // required
           break;
         case 'UTCTIMESTAMP':
         case 'UTCDATETIME':
           typefnc=ng_toDate;
-          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((this.Required)&&(!this.AllowEmpty)&&(c.getTime()==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, c); // required
           break;
         case 'ARRAY':
-          if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY); // required
+          if((this.Required)&&(!this.AllowEmpty)&&(c.length==0)) throw new ngFieldDefException(this, err|FIELDDEF_ERR_EMPTY, '', null, null, c); // required
 
           checkminmax=false;
           if((!ng_isEmpty(this.MinValue))&&(c.length<parseInt(this.MinValue,10))) err|=FIELDDEF_ERR_MIN;
@@ -583,7 +592,7 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           if(i>=this.Enum.length) err|=FIELDDEF_ERR_ENUM;
         }
       }
-      if(err) throw new ngFieldDefException(this, err);
+      if(err) throw new ngFieldDefException(this, err, '', null, null, c);
     }
     finally
     {
@@ -675,6 +684,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       }
       catch(e)
       {
+        if((e instanceof ngFieldDefException)&&('Value' in e)) {
+          v = e.Value;
+        }      	
       }
       var s;
       if(this.OnFormatString) s=this.OnFormatString(this,v);
@@ -846,6 +858,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
       }
       catch(e)
       {
+        if((e instanceof ngFieldDefException)&&('Value' in e)) {
+          v = e.Value;
+        }      	
       }
     }
     finally
@@ -1507,6 +1522,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               catch(e)
               {
                 errors[valpath]=e;
+
+                if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                  setval = e.Value;
+                }
               }
               ko.ng_setvalue(val,setval);
             }
@@ -1519,6 +1538,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 }
                 catch(e) {
                   errors[valpath]=e;
+
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    setval = e.Value;
+                  }                  
                 }
               }
             }
@@ -1538,6 +1561,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 }
                 catch(e) {
                   errors[valpath]=e;
+                  
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    setval = e.Value;
+                  }
                 }
                 if(setval==d[i]) setvalues(val,d[i],valpath);
                 else val=setval;
@@ -1555,6 +1582,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 }
                 catch(e) {
                   errors[valpath]=e;
+
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    setval = e.Value;
+                  }                  
                 }
                 if(setval==d[i]) setvalues(val,d[i],valpath);
                 else if(cansetvalue(valpath)) o[i]=setval;
@@ -1572,6 +1603,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 }
                 catch(e) {
                   errors[valpath]=e;
+                  
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    setval = e.Value;
+                  }
                 }
               }
               o[i]=setval;
@@ -1593,6 +1628,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               }
               catch(e) {
                 errors[valpath]=e;
+
+                if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                  setval = e.Value;
+                }                
               }
               if(setval==d[i]) setvalues(val,d[i],valpath);
               else val=setval;
@@ -1611,6 +1650,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 }
                 catch(e) {
                   errors[valpath]=e;
+
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    setval = e.Value;
+                  }                  
                 }
               }
               o[i]=setval;
@@ -1689,7 +1732,10 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
               }
             }
             catch(e)
-            {
+            {            	
+              if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                val = e.Value;
+              }
               d[i]=val;
               errors[valpath]=e;
             }
@@ -1716,6 +1762,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
                 }
                 catch(e) {
                   errors[valpath]=e;
+                  if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                    val = e.Value;
+                  }                  
                 }
               }
               if((convtimestamps)&&(ng_typeDate(val))) val=ng_toUnixTimestamp(val);
@@ -1881,7 +1930,9 @@ function ngFieldDefException(fd, err, msg, extinfo, childerrors)
           err.childerrs[k] = create_exceptions(err.childerrs[k]);
 
       var fd=vm.GetFieldByID(err.field);
-      return new ngFieldDefException(ngIsFieldDef(fd) ? fd : ngTxt('VM.'+vm.Namespace+'.'+err.field,err.field), err.err, err.errmsg, err.errext, err.childerrs);
+      fd = ngIsFieldDef(fd) ? fd : ngTxt('VM.'+vm.Namespace+'.'+err.field,err.field);
+      if('value' in err) return new ngFieldDefException(fd, err.err, err.errmsg, err.errext, err.childerrs, err.value);
+      return new ngFieldDefException(fd, err.err, err.errmsg, err.errext, err.childerrs);
     }
 
     if(sresults.Errors)
@@ -4588,6 +4639,9 @@ ngUserControls['viewmodel'] = {
                           }
                           catch(e)
                           {
+                          	if((e instanceof ngFieldDefException)&&('Value' in e)) {
+                              pv = e.Value;
+                            }      	
                           }
                         }
                         pfd=pfd.Value;
