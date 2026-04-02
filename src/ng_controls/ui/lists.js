@@ -598,7 +598,10 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
 
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
-    if(image) ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, this.Enabled, image));
+    if(image){
+      var itenabled=ngVal(it.Enabled,true);
+      ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
+    }
 
     if(list!=this) id+='_';
 
@@ -623,7 +626,10 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
 
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
-    if(image) ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), this.Enabled, image));
+    if(image){
+      var itenabled=ngVal(it.Enabled,true);
+      ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), (this.Enabled)&&(itenabled), image));
+    }
     if(list!=this) id+='_';
     if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
       for(var i=0;i<items.length;i++)
@@ -836,7 +842,8 @@ function ngl_UpdateChecked(it,recursion,setall,visibleonly,id,level)
       else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
       if(image)
       {
-        ngc_ChangeImage(this.CheckImgDrawProps(this.ID+'_'+id+'C', state, this.Enabled, image));
+        var itenabled=ngVal(it.Enabled,true);
+        ngc_ChangeImage(this.CheckImgDrawProps(this.ID+'_'+id+'C', state, (this.Enabled)&&(itenabled), image));
       }
 
       if(!level)
@@ -6602,7 +6609,8 @@ ngUserControls['list'] = {
         else image=(typeof it.Checked === 'undefined' && (!this.ShowCheckboxes) ? null : this.CheckImg);
         if(image)
         {
-          ngc_ChangeImage(this.CheckImgDrawProps(this.ID+'_CAIC', it.Checked, this.Enabled, image));
+          var itenabled=ngVal(it.Enabled,true);
+          ngc_ChangeImage(this.CheckImgDrawProps(this.ID+'_CAIC', it.Checked, (this.Enabled)&&(itenabled), image));
         }
       }
       return ret;
