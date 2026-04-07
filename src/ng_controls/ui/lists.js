@@ -456,8 +456,10 @@ function ngl_Clear(parent)
   {
     list=this;
     this.ClearSelected();
-    this.ItemsControls = void 0;
-    if((typeof list.Items === 'object')&&(!list.Items.length)) return;
+    if((typeof list.Items === 'object')&&(!list.Items.length)) {
+      this.ItemsControls = void 0;
+      return;
+    }
   }
   if(typeof list.Items !== 'undefined')
   {
@@ -470,7 +472,10 @@ function ngl_Clear(parent)
     }
     delete list.Items;
   }
-  if(list==this) this.Items=new Array();
+  if(list==this) {
+    this.ItemsControls = void 0;
+    this.Items=new Array();
+  }
 
   this.DoItemsChanged();
 }
