@@ -975,6 +975,26 @@ var ngcalSelectRange = 4;
     if((this.NextYearBtn)&&(this.NextYearBtn.ID=='')) this.NextYearBtn.Attach(this.ID+'_B'+(this.button_id++));
   }
 
+  function ngcal_DoDispose()
+  {
+    function disposebtn(b) {
+      if((b)&&(typeof b.Dispose==='function')) b.Dispose();
+    }
+    
+    if((this.FastButtons)&&(this.FastButtons.length>0))
+    {
+      for(var i=0;i<this.FastButtons.length;i++)
+      {
+        disposebtn(this.FastButtons[i]);
+      }
+    }  
+    disposebtn(this.PrevMonBtn); 
+    disposebtn(this.NextMonBtn);
+    disposebtn(this.PrevYearBtn);
+    disposebtn(this.NextYearBtn);    
+    return true;
+  }
+
   /**
    *  Class: ngCalendar
    *  This class implements a generic calendar control. 
@@ -1406,6 +1426,7 @@ var ngcalSelectRange = 4;
     this.GetDayClassName=ngcal_GetDayClassName;
         
     this.DoCreate = ngcal_DoCreate;
+    this.DoDispose = ngcal_DoDispose;
     this.DoUpdate = ngcal_DoUpdate;
 
     this.need_update=false;
