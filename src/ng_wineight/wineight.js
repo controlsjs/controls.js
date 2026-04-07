@@ -35,7 +35,7 @@ var WinEightControls = {
   },
 
   ControlImages: [
-    'img/we_base.png?6',
+    'img/we_base.png?7',
     'img/we_hbox.png?3',
     'img/we_vbox.png?4',
     'img/we_icons.png?14',
@@ -62,6 +62,16 @@ var WinEightControls = {
     ListCheckBoxDark: { L: 224, T: 4, W: 27, H: 34, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 0, oSL: 64, oGL: 160 },
     CompactListCheckBoxLight: { L: 0, T: 7, W: 27, H: 28, SL: 64, DL: 0, DSL: 128, GL: 160 },
     CompactListCheckBoxDark: { L: 224, T: 7, W: 27, H: 28, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 0, oSL: 64, oGL: 160 },
+
+    CheckBoxLeftLight2: { L: 0, T: 5, W: 31, H: 32, SL: 64, DL: 0, DSL: 128, GL: 160, oL: 32, oSL: 96, oGL: 193, DGL: 385, DGT: 36 },
+    CheckBoxLeftDark2: { L: 224, T: 5, W: 31, H: 32, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 256, oSL: 320, oGL: 417, DGL: 417, DGT: 36 },
+    CheckBoxRightLight2: { L: -10, T: 5, W: 31, H: 32, SL: 54, DL: -10, DSL: 118, GL: 150, oL: 22, oSL: 86, oGL: 183, DGL: 375, DGT: 36 },
+    CheckBoxRightDark2: { L: 214, T: 5, W: 31, H: 32, SL: 278, DL: 214, DSL: 343, GL: 375, oL: 246, oSL: 310, oGL: 407, DGL: 407, DGT: 36 },
+    ListCheckBoxLight2: { L: 0, T: 4, W: 27, H: 34, SL: 64, DL: 0, DSL: 128, GL: 160, DGL: 385, DGT: 35 },
+    ListCheckBoxDark2: { L: 224, T: 4, W: 27, H: 34, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 0, oSL: 64, oGL: 160, DGL: 417, DGT: 35 },
+    CompactListCheckBoxLight2: { L: 0, T: 7, W: 27, H: 28, SL: 64, DL: 0, DSL: 128, GL: 160, DGL: 385, DGT: 38 },
+    CompactListCheckBoxDark2: { L: 224, T: 7, W: 27, H: 28, SL: 288, DL: 224, DSL: 353, GL: 385, oL: 0, oSL: 64, oGL: 160, DGL: 417, DGT: 38 },
+
     RadioLeftLight: { L: 0, T: 39, W: 32, H: 32, SL: 68, DL: 0, DSL: 136, oL: 34, oSL: 102 },
     RadioLeftDark: { L: 170, T: 39, W: 32, H: 32, SL: 238, DL: 170, DSL: 306, oL: 204, oSL: 272 },
     RadioRightLight: { L: -9, T: 39, W: 32, H: 32, SL: 59, DL: -9, DSL: 127, oL: 25, oSL: 93 },
