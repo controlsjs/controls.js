@@ -3653,6 +3653,15 @@ function nge_DoDispose()
 {
   this.HideDropDown();
   if(this.DropDownControl) this.DropDownControl.Dispose();
+  if((this.Buttons)&&(this.Buttons.length>0))
+  {
+    var b;
+    for(var i=0;i<this.Buttons.length;i++)
+    {
+      b=this.Buttons[i];
+      if((b)&&(typeof b.Dispose==='function')) b.Dispose();
+    }
+  }  
   return true;
 }
 
