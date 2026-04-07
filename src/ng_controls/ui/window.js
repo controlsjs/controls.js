@@ -971,6 +971,20 @@
     var frame=document.getElementById(this.ID+'_F');
     if(frame) ng_SetInnerHTML(frame,'');
   }
+  
+  function ngw_DoDispose()
+  {
+    if((this.Buttons)&&(this.Buttons.length>0))
+    {
+      var b;
+      for(var i=0;i<this.Buttons.length;i++)
+      {
+        b=this.Buttons[i];
+        if((b)&&(typeof b.Dispose==='function')) b.Dispose();
+      }
+    }  
+    return true;
+  }  
 
   function ngw_DoCreate(def, ref, elm, parent)
   {
@@ -986,7 +1000,7 @@
       if(this.SetClientRect({W: def.CW, H: def.CH}))
         this.SetBounds();
     }
-    if(typeof def.Buttons === 'object')
+    if((typeof def.Buttons === 'object')&&(def.Buttons))
     {
       var ldefs=new Object;
       var b;
@@ -1087,6 +1101,7 @@
     this.DoResize = ngw_DoResize;
     this.DoAttach = ngw_DoAttach;
     this.DoRelease = ngw_DoRelease;
+    this.DoDispose = ngw_DoDispose;
     this.DoUpdate = ngw_DoUpdate;
     this.DoPtrClick = ngw_DoPtrClick;
     this.DoPtrDblClick = ngw_DoPtrDblClick;
