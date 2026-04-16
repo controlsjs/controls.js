@@ -287,9 +287,6 @@
           }
           catch(e)
           {
-            if((e instanceof ngFieldDefException)&&('Value' in e)) {
-              val = e.Value;
-            }      	            
             if(typeof this.Item === 'function') e.FieldDef=this.Item(k,false); // Get ngFieldDef for item (if available)
             else e.FieldDef=null;
             if(!ngIsFieldDef(e.FieldDef)) {
@@ -298,6 +295,9 @@
             }
             if(errs===null) errs={};
             errs[k]=e;
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              val = e.Value;
+            } else continue;
           }
           if(pack) {
             if(ng_isEmptyOrNull(val)) continue;
@@ -451,14 +451,14 @@
           }
           catch(e)
           {
-            if((e instanceof ngFieldDefException)&&('Value' in e)) {
-              val = e.Value;
-            }      	            
             if(hasproperties) e.FieldDef=this.Properties[k];
             else e.FieldDef=null;
             if(!ngIsFieldDef(e.FieldDef)) e.FieldDef=this.PropsFieldDefs[k];
             if(errs===null) errs={};
             errs[k]=e;
+            if((e instanceof ngFieldDefException)&&('Value' in e)) {
+              val = e.Value;
+            } else continue;
           }
           if((isempty)&&(!ng_isEmptyObject(val))) isempty=false;
           vmSetFieldValueByID(r,k,val);
