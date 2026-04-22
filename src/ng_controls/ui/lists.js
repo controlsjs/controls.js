@@ -604,7 +604,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
     if(image){
-      var itenabled=ngVal(it.Enabled,true);
+      var itenabled=(it ? ngVal(it.Enabled,true) : true);
       ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
     }
 
@@ -632,7 +632,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
     else image=this.TreeImg;
     if(image){
-      var itenabled=ngVal(it.Enabled,true);
+      var itenabled=(it ? ngVal(it.Enabled,true) : true);
       ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), (this.Enabled)&&(itenabled), image));
     }
     if(list!=this) id+='_';
