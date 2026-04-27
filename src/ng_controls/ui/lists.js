@@ -610,6 +610,7 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
       if(image){
         var itenabled=(it ? ngVal(it.Enabled,true) : true);
         ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
+      }
 
       if(list!=this) id+='_';
 
@@ -645,7 +646,6 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
           if(typeof items[i]==='undefined') continue;
           this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
         }
-      }
     }
   }
   if(statechanged)
