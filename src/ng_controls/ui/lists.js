@@ -585,68 +585,71 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
   if((typeof id==='undefined')||(id=='')) id=(list==this ? '' : this.ItemId(it));
 
   var l=level;
-
-  if(id!='')
+  if(this.Columns.length>0)
   {
-    if(this.Columns.length>0)
+    if(typeof collapsed === 'undefined')
     {
-      if(typeof collapsed === 'undefined')
+      collapsed=false;
+      var p=list;
+      while((!collapsed)&&(p))
       {
-        collapsed=false;
-        var p=list;
-        while((!collapsed)&&(p))
-        {
-          collapsed=ngVal(p.Collapsed,false);
-          p=p.Parent;
-        }
+        collapsed=ngVal(p.Collapsed,false);
+        p=p.Parent;
       }
-      collapsed=((collapsed)||(ngVal(list.Collapsed,false)));
+    }
+    collapsed=((collapsed)||(ngVal(list.Collapsed,false)));
 
-      var o=document.getElementById(this.ID+'_G'+id+'_0');
-      if(o) o.style.display=(collapsed ? 'none' : '');
+    var o=document.getElementById(this.ID+'_G'+id+'_0');
+    if(o) o.style.display=(collapsed ? 'none' : '');
 
+    if(id!='')
+    {
       if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
       else image=this.TreeImg;
       if(image){
         var itenabled=(it ? ngVal(it.Enabled,true) : true);
         ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
       }
+    }
 
-      if(list!=this) id+='_';
+    if(list!=this) id+='_';
 
-      for(var i=0;i<items.length;i++)
+    for(var i=0;i<items.length;i++)
+    {
+      if(typeof items[i]==='undefined') continue;
+      l=this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
+      if(l>level+1)
       {
-        if(typeof items[i]==='undefined') continue;
-        l=this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
-        if(l>level+1)
+        if((i+1)<items.length)
         {
-          if((i+1)<items.length)
-          {
-            var o=document.getElementById(this.ID+'_G'+id+(i+1));
-            if(o) o.style.display=(collapsed ? 'none' : '');
-          }
+          var o=document.getElementById(this.ID+'_G'+id+(i+1));
+          if(o) o.style.display=(collapsed ? 'none' : '');
         }
       }
     }
-    else
-    {
-      var o=document.getElementById(this.ID+'_G'+id);
-      if(o) o.style.display=(ngVal(list.Collapsed,false) ? 'none' : 'block');
+  }
+  else
+  {
+    var o=document.getElementById(this.ID+'_G'+id);
+    if(o) o.style.display=(ngVal(list.Collapsed,false) ? 'none' : 'block');
 
+    if(id!='')
+    {
       if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
       else image=this.TreeImg;
       if(image){
         var itenabled=(it ? ngVal(it.Enabled,true) : true);
         ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), (this.Enabled)&&(itenabled), image));
       }
-      if(list!=this) id+='_';
-      if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
-        for(var i=0;i<items.length;i++)
-        {
-          if(typeof items[i]==='undefined') continue;
-          this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
-        }
     }
+
+    if(list!=this) id+='_';
+    if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
+      for(var i=0;i<items.length;i++)
+      {
+        if(typeof items[i]==='undefined') continue;
+        this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
+      }
   }
   if(statechanged)
   {
