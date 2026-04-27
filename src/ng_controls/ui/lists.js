@@ -582,66 +582,71 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
       }
     return level;
   }
-  if(typeof id==='undefined') id=(list==this ? '' : this.ItemId(it));
+  if((typeof id==='undefined')||(id=='')) id=(list==this ? '' : this.ItemId(it));
 
   var l=level;
-  if(this.Columns.length>0)
+
+  if(id!='')
   {
-    if(typeof collapsed === 'undefined')
+    if(this.Columns.length>0)
     {
-      collapsed=false;
-      var p=list;
-      while((!collapsed)&&(p))
+      if(typeof collapsed === 'undefined')
       {
-        collapsed=ngVal(p.Collapsed,false);
-        p=p.Parent;
-      }
-    }
-    collapsed=((collapsed)||(ngVal(list.Collapsed,false)));
-    var o=document.getElementById(this.ID+'_G'+id+'_0');
-    if(o) o.style.display=(collapsed ? 'none' : '');
-
-    if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
-    else image=this.TreeImg;
-    if(image){
-      var itenabled=(it ? ngVal(it.Enabled,true) : true);
-      ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
-    }
-
-    if(list!=this) id+='_';
-
-    for(var i=0;i<items.length;i++)
-    {
-      if(typeof items[i]==='undefined') continue;
-      l=this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
-      if(l>level+1)
-      {
-        if((i+1)<items.length)
+        collapsed=false;
+        var p=list;
+        while((!collapsed)&&(p))
         {
-          var o=document.getElementById(this.ID+'_G'+id+(i+1));
-          if(o) o.style.display=(collapsed ? 'none' : '');
+          collapsed=ngVal(p.Collapsed,false);
+          p=p.Parent;
         }
       }
-    }
-  }
-  else
-  {
-    var o=document.getElementById(this.ID+'_G'+id);
-    if(o) o.style.display=(ngVal(list.Collapsed,false) ? 'none' : 'block');
+      collapsed=((collapsed)||(ngVal(list.Collapsed,false)));
 
-    if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
-    else image=this.TreeImg;
-    if(image){
-      var itenabled=(it ? ngVal(it.Enabled,true) : true);
-      ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), (this.Enabled)&&(itenabled), image));
-    }
-    if(list!=this) id+='_';
-    if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
+      var o=document.getElementById(this.ID+'_G'+id+'_0');
+      if(o) o.style.display=(collapsed ? 'none' : '');
+
+      if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
+      else image=this.TreeImg;
+      if(image){
+        var itenabled=(it ? ngVal(it.Enabled,true) : true);
+        ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
+
+      if(list!=this) id+='_';
+
       for(var i=0;i<items.length;i++)
       {
         if(typeof items[i]==='undefined') continue;
-        this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
+        l=this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
+        if(l>level+1)
+        {
+          if((i+1)<items.length)
+          {
+            var o=document.getElementById(this.ID+'_G'+id+(i+1));
+            if(o) o.style.display=(collapsed ? 'none' : '');
+          }
+        }
       }
+    }
+    else
+    {
+      var o=document.getElementById(this.ID+'_G'+id);
+      if(o) o.style.display=(ngVal(list.Collapsed,false) ? 'none' : 'block');
+
+      if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
+      else image=this.TreeImg;
+      if(image){
+        var itenabled=(it ? ngVal(it.Enabled,true) : true);
+        ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), (this.Enabled)&&(itenabled), image));
+      }
+      if(list!=this) id+='_';
+      if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
+        for(var i=0;i<items.length;i++)
+        {
+          if(typeof items[i]==='undefined') continue;
+          this.UpdateCollapsed(items[i], true, setall, id+i, level+1, collapsed);
+        }
+      }
+    }
   }
   if(statechanged)
   {
