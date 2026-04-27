@@ -4683,6 +4683,13 @@ ngUserControls['viewmodel'] = {
           owner: vm});
       }
 
+      if((typeof val.valueWillMutate === 'function')&&(typeof fd[valname].valueWillMutate === 'undefined')) fd[valname].valueWillMutate = function() {
+        val.valueWillMutate();
+      }
+      if((typeof val.valueHasMutated === 'function')&&(typeof fd[valname].valueHasMutated === 'undefined')) fd[valname].valueHasMutated = function() {
+        val.valueHasMutated();
+      }
+
       if(ngVal(fd.Attrs['Serialize'],true)) ko.ng_serialize(fd[valname]);
       if(isarray)
       {
@@ -4691,13 +4698,6 @@ ngUserControls['viewmodel'] = {
             if(ng_typeArray(v)) return v.length;
             return 0;
           },vm);
-
-        if(typeof val.valueWillMutate === 'function') fd[valname].valueWillMutate = function() {
-          val.valueWillMutate();
-        }
-        if(typeof val.valueHasMutated === 'function') fd[valname].valueHasMutated = function() {
-          val.valueHasMutated();
-        }
         
         function array_op(fnc, args, readonlyval, reqarray)
         {
