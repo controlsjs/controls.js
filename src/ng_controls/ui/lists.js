@@ -599,20 +599,20 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
     }
     collapsed=((collapsed)||(ngVal(list.Collapsed,false)));
 
-    var o=document.getElementById(this.ID+'_G'+id+'_0');
-    if(o) o.style.display=(collapsed ? 'none' : '');
-
     if(id!='')
     {
+      var o=document.getElementById(this.ID+'_G'+id+'_0');
+      if(o) o.style.display=(collapsed ? 'none' : '');
+
       if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
       else image=this.TreeImg;
       if(image){
         var itenabled=(it ? ngVal(it.Enabled,true) : true);
         ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', collapsed, (this.Enabled)&&(itenabled), image));
       }
-    }
 
-    if(list!=this) id+='_';
+      if((list!=this)) id+='_';
+    }
 
     for(var i=0;i<items.length;i++)
     {
@@ -630,20 +630,21 @@ function ngl_UpdateCollapsed(it,recursion,setall,id,level,collapsed)
   }
   else
   {
-    var o=document.getElementById(this.ID+'_G'+id);
-    if(o) o.style.display=(ngVal(list.Collapsed,false) ? 'none' : 'block');
-
     if(id!='')
     {
+      var o=document.getElementById(this.ID+'_G'+id);
+      if(o) o.style.display=(ngVal(list.Collapsed,false) ? 'none' : 'block');
+
       if(this.OnGetTreeImg) image=this.OnGetTreeImg(this, list, id);
       else image=this.TreeImg;
       if(image){
         var itenabled=(it ? ngVal(it.Enabled,true) : true);
         ngc_ChangeImage(this.TreeImgDrawProps(this.ID+'_'+id+'T', ngVal(list.Collapsed,false), (this.Enabled)&&(itenabled), image));
       }
+
+      if(list!=this) id+='_';
     }
 
-    if(list!=this) id+='_';
     if((ngVal(recursion,false))||(typeof setall !== 'undefined'))
       for(var i=0;i<items.length;i++)
       {
