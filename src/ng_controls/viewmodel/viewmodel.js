@@ -4720,10 +4720,10 @@ ngUserControls['viewmodel'] = {
         }
 
         fd[valname].remove= function() {
-          return array_op('remove',arguments,[], false);
+          return array_op('remove',arguments,[]);
         };
         fd[valname].removeAll= function() {
-          return array_op('removeAll',arguments, [], false);
+          return array_op('removeAll',arguments, []);
         };
 
         fd[valname].indexOf = function(v) { 
@@ -4736,28 +4736,28 @@ ngUserControls['viewmodel'] = {
         }
 
         fd[valname].pop= function() {
-          return array_op('pop',arguments,void 0,false);
+          return array_op('pop',arguments,void 0);
         };
         fd[valname].push= function() {
-          return array_op('push',arguments,function() { var v=val(); return (ng_typeArray(v) ? v.length : 0); }, false);
+          return array_op('push',arguments,function() { var v=val(); return (ng_typeArray(v) ? v.length : 0); });
         }
         fd[valname].reverse= function() {
           return array_op('reverse',arguments,val);
         }
         fd[valname].shift= function() {
-          return array_op('shift',arguments,void 0,false);
+          return array_op('shift',arguments,void 0);
         }        
         fd[valname].sort= function() {
           return array_op('sort',arguments,val);
         }
         fd[valname].unshift= function() {
-          return array_op('unshift',arguments,function() { var v=val(); return (ng_typeArray(v) ? v.length : 0); }, false);
+          return array_op('unshift',arguments,function() { var v=val(); return (ng_typeArray(v) ? v.length : 0); });
         }
         fd[valname].splice= function() {
-          return array_op('splice',arguments,[], false);
+          return array_op('splice',arguments,[]);
         }
         fd[valname].slice= function() {
-          return array_op('slice',arguments,[],false);
+          return array_op('slice',arguments,[]);
         }
       }
       fd[valname].FieldDef = fd;
