@@ -1165,7 +1165,7 @@ ngUserControls['viewmodel_ui'] = {
       {
         ngCtrlBindingRead('Text',c,valueAccessor,function(val) {
           var txt=ngCtrlBindingFormatString(valueAccessor,val);
-          if(ngtxt) txt=ngTxt(txt);
+          if((ngtxt)&&(txt!=='')) txt=ngTxt(txt);
           c.SetText(txt);
         });
       }
@@ -1192,7 +1192,7 @@ ngUserControls['viewmodel_ui'] = {
       if(typeof c[propid] === 'undefined') return;
       var val=ng_toString(ko.utils.unwrapObservable(valueAccessor()));
       var txt=ngCtrlBindingFormatString(valueAccessor,val);
-      if(ngtxt) txt=ngTxt(txt);
+      if((ngtxt)&&(txt!=='')) txt=ngTxt(txt);
       if(txt!=c[propid])
       {
         c[propid]=txt;
