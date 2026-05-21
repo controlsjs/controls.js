@@ -252,6 +252,11 @@ var FileUploaderControl = {
           ){
             accept = '.'+uploader.AllowedExtensions.join(',.');
           }
+          
+          var alt=this.GetAlt();
+          if(ngVal(alt,'')!=='') input.title = alt;
+          else input.removeAttribute("title");
+          
           input.accept = accept;
           input.multiple = !(uploader.MaxFilesCount == 1);
         }
