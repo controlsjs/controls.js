@@ -2795,12 +2795,12 @@ function ngl_DoUpdate(o)
     html.append('<div id="'+this.ID+'_CB" class="'+cclass+'Back" style="position:relative;left:0px;top:0px;width:'+w+';height:'+h+';');
     switch((w=='auto')&&(h=='auto') ? ssNone : ngVal(this.ScrollBars, ssNone))
     {
-      case ssNone:       html.append('overflow:hidden;overflowX:hidden;overflowY:hidden;'); break;
-      case ssAuto:       html.append('overflow:auto;  overflowX:auto;  overflowY:auto;');   break;
-      case ssBoth:       html.append('overflow:scroll;overflowX:scroll;overflowY:scroll;'); break;
-      case ssHorizontal: html.append('overflow:scroll;overflowX:scroll;overflowY:hidden;'); break;
-      case ssVertical:   html.append('overflow:scroll;overflowX:hidden;overflowY:scroll;'); break;
-      case ssDefault:    html.append('overflow:visible;overflowX:visible;overflowY:visible;'); break;
+      case ssNone:       html.append('overflow:hidden;overflow-x:hidden;overflow-y:hidden;'); break;
+      case ssAuto:       html.append('overflow:auto;  overflow-x:auto;  overflow-y:auto;');   break;
+      case ssBoth:       html.append('overflow:scroll;overflow-x:scroll;overflow-y:scroll;'); break;
+      case ssHorizontal: html.append('overflow:scroll;overflow-x:scroll;overflow-y:hidden;'); break;
+      case ssVertical:   html.append('overflow:scroll;overflow-x:hidden;overflow-y:scroll;'); break;
+      case ssDefault:    html.append('overflow:visible;overflow-x:visible;overflow-y:visible;'); break;
     }
     html.append('">');
   }
