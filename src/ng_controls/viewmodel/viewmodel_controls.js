@@ -1199,11 +1199,11 @@ ngUserControls['viewmodel_controls'] = {
     function ngdsvm_SetValues(values,deserialize, valuenames, errors, strictvaluenames)
     {
       var ret;
-      if((ng_IsObjVar(values))&&(ng_IsObjVar(values._ActiveFilters))) {
+      if(ng_IsObjVar(values)) {
         var origonsetvalue=this.OnSetValue;
         try {
           var self=this;
-          this.OnSetValue=function(c,setval,instance, valpath)
+          this.OnSetValue=function(c,val,instance, valpath)
           {
             if(origonsetvalue) val=origonsetvalue.apply(self, arguments);
             if(valpath.substring(0,15)==='_ActiveFilters.') {
@@ -1214,25 +1214,28 @@ ngUserControls['viewmodel_controls'] = {
                 try
                 {
                   if((deserialize)&&(typeof instance.Deserialize === 'function')) {
-                    setval=instance.Deserialize(setval);
+                    val=instance.Deserialize(val);
                   }
                   else
                   {
                     if(typeof instance.TypedValue === 'function')
-                      setval=instance.TypedValue(setval);
+                      val=instance.TypedValue(val);
                   }
                 }
                 catch(e)
                 {
                   // keep original, dont propagate errors on _ActiveFilters
                   if((e instanceof ngFieldDefException)&&('Value' in e)) {
-                    setval = e.Value;
+                    val = e.Value;
                   }                                                      
                 }
                 delete instance.__Loading;
               }
             }
-            return setval;
+            else if(valpath==='Records'){
+              return this.GetSetRecords(val,true,deserialize);
+            }
+            return val;
           }
           ret=ng_CallParent(this,'SetValues',arguments);
         } finally {
@@ -1246,7 +1249,7 @@ ngUserControls['viewmodel_controls'] = {
     function ngdsvm_GetValues(writableonly, valuenames, errors, convtimestamps, serialize)
     {
       var ret;      
-      if((ng_IsObjVar(this.ViewModel))&&(ng_IsObjVar(this.ViewModel._ActiveFilters))) {
+      if(ng_IsObjVar(this.ViewModel)) {
         var origongetvalue=this.OnGetValue;
         try {
           var self=this;
@@ -1278,6 +1281,9 @@ ngUserControls['viewmodel_controls'] = {
                 delete instance.__Saving;
               }
             }
+            else if(valpath==='Records'){
+              return this.GetSetRecords(val,false,serialize);
+            }
             return val;
           }
           ret=ng_CallParent(this,'GetValues',arguments);
@@ -1286,6 +1292,68 @@ ngUserControls['viewmodel_controls'] = {
         }
       } else ret=ng_CallParent(this,'GetValues',arguments);
       return ret;
+    }
+
+    function ngdsvm_GetSetRecords(v, setval, de_serialize)
+    {
+      if(!ng_typeArray(v)) return v;
+      var errs=null;
+
+      for(var k in v){
+        var it=v[k];
+
+        var it_errs=null;
+
+        if(ng_typeObject(it)){
+          for(var p in it){
+            if(!Object.prototype.hasOwnProperty.call(it,p)) continue;
+
+            var val=it[p];
+            var colpath='Columns.'+p;
+            var instance=self.GetFieldByID(colpath);
+
+            if(ngIsFieldDef(instance))
+            {
+              if(setval) instance.__Loading=true;
+              else instance.__Saving=true;
+
+              try
+              {
+                if(setval)
+                {
+                  if((de_serialize)&&(typeof instance.Deserialize === 'function')) it[p]=instance.Deserialize(pv);
+                  else if(typeof instance.TypedValue === 'function') it[p]=instance.TypedValue(pv);
+                }
+                else
+                {
+                  if((de_serialize)&&(typeof instance.Serialize === 'function')) it[p]=instance.Serialize(pv);
+                  else if(typeof instance.TypedValue === 'function') it[p]=instance.TypedValue(pv);
+                }
+              }
+              catch(e)
+              {
+                if(it_errs===null) it_errs={};
+                it_errs[p]=e;
+
+                if((e instanceof ngFieldDefException)&&('Value' in e)) v=e.Value;
+                else continue;
+              }
+
+              if(setval) delete instance.__Loading;
+              else delete instance.__Saving;
+            }
+          }
+
+          if(it_errs!==null){
+            if(errs===null) errs=array();
+            throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs);
+          }
+        }
+      }
+      
+      if(errs!==null){
+        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs);
+      }
     }
 
     ngRegisterControlType('ngSysDataSetViewModel',(function()
@@ -1314,7 +1382,8 @@ ngUserControls['viewmodel_controls'] = {
             GetActiveFilterValues: ngdsvm_GetActiveFilterValues,
 
             SetValues: ngdsvm_SetValues,
-            GetValues: ngdsvm_GetValues
+            GetValues: ngdsvm_GetValues,
+            GetSetRecords: ngdsvm_GetSetRecords
           },
           OverrideEvents: {
             OnDoCommand: ngdsvm_DoCommand,
