@@ -1322,17 +1322,18 @@ ngUserControls['viewmodel_controls'] = {
               {
                 if(setval)
                 {
-                  if((de_serialize)&&(typeof instance.Deserialize === 'function')) it[p]=instance.Deserialize(pv);
-                  else if(typeof instance.TypedValue === 'function') it[p]=instance.TypedValue(pv);
+                  if((de_serialize)&&(typeof instance.Deserialize === 'function')) it[p]=instance.Deserialize(val);
+                  else if(typeof instance.TypedValue === 'function') it[p]=instance.TypedValue(val);
                 }
                 else
                 {
-                  if((de_serialize)&&(typeof instance.Serialize === 'function')) it[p]=instance.Serialize(pv);
-                  else if(typeof instance.TypedValue === 'function') it[p]=instance.TypedValue(pv);
+                  if((de_serialize)&&(typeof instance.Serialize === 'function')) it[p]=instance.Serialize(val);
+                  else if(typeof instance.TypedValue === 'function') it[p]=instance.TypedValue(val);
                 }
               }
               catch(e)
               {
+                e.FieldDef=instance;
                 if(it_errs===null) it_errs={};
                 it_errs[p]=e;
 
@@ -1347,7 +1348,7 @@ ngUserControls['viewmodel_controls'] = {
 
           if(it_errs!==null){
             if(errs===null) errs=[];
-            throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs);
+            errs[k]=new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,it_errs);
           }
         }
       }
@@ -1355,6 +1356,8 @@ ngUserControls['viewmodel_controls'] = {
       if(errs!==null){
         throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs);
       }
+
+      return v;
     }
 
     ngRegisterControlType('ngSysDataSetViewModel',(function()
