@@ -1335,7 +1335,7 @@ ngUserControls['viewmodel_controls'] = {
                 if(it_errs===null) it_errs={};
                 it_errs[p]=e;
 
-                if((e instanceof ngFieldDefException)&&('Value' in e)) v=e.Value;
+                if((e instanceof ngFieldDefException)&&('Value' in e)) it[p]=e.Value;
                 else continue;
               }
 
