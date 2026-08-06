@@ -1299,6 +1299,7 @@ ngUserControls['viewmodel_controls'] = {
       if(!ng_typeArray(v)) return v;
       var errs=null;
 
+      var self=this;
       for(var k in v){
         var it=v[k];
 
@@ -1345,7 +1346,7 @@ ngUserControls['viewmodel_controls'] = {
           }
 
           if(it_errs!==null){
-            if(errs===null) errs=array();
+            if(errs===null) errs=[];
             throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,errs);
           }
         }
