@@ -1348,13 +1348,20 @@ ngUserControls['viewmodel_controls'] = {
 
           if(it_errs!==null){
             if(errs===null) errs=[];
-            errs[k]=new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,it_errs);
+            errs[k]=new ngFieldDefException(
+              new ngFieldDef_Object('Record'),
+              FIELDDEF_ERR_TYPE,'viewmodel_err_objproperty',null,it_errs
+            );
           }
         }
       }
       
       if(errs!==null){
-        throw new ngFieldDefException(this, FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs);
+        var fd = self.GetFieldByID('Records');
+        throw new ngFieldDefException(
+          new ngFieldDef_Array('Records'),
+          FIELDDEF_ERR_TYPE,'viewmodel_err_arrayitem',null,errs
+        );
       }
 
       return v;
