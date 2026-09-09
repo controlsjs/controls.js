@@ -1108,6 +1108,7 @@ var WinEightControls = {
             b.Visible=(!readonly)&&(c.Text!=='');
             b.Default=false;
             b.Owner=c;
+            if(b.ID=='') b.Attach(c.ID+'_B'+(c.button_id++));
             c.Buttons.push(b);
             c.AddEvent('OnTextChanged', clearbtn_textchanged);
             c.AddEvent('OnReadOnlyChanged', clearbtn_textchanged);
@@ -2201,108 +2202,116 @@ var WinEightControls = {
           c.Sizeable=false;
           c.Centered=true;
         }
+
         /*
          *  Group: Definition
          */
-        /*
-         *  Variable: CloseBtn
-         *  ...
-         *  Type: bool
-         */
-        /*<>*/
-        var b;
-        if(closebtn)
-        {
-          b=new ngButton;
-          c.CloseButton=b;
-          b.LeftImg=(th ? winimages.WinCloseBtnLight : winimages.WinCloseBtnDark);
-          b.OnClick = function(ci)
-          {
-            var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
-            if((e)&&(e.Close)) e.Close(e);
+        def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
+
+          var addButton = function(button){
+            if(button.ID=='') button.Attach(c.ID+'_B'+(c.button_id++));
+            if(!c.Buttons){c.Buttons = new Array();}
+            c.Buttons[c.Buttons.length] = button;
           };
-          if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;
-        }
-        /*
-         *  Variable: MaxBtn
-         *  ...
-         *  Type: bool
-         */
-        /*<>*/
-        if(ngVal(def.MaxBtn,false))
-        {
-          b=new ngButton;
-          c.MaxButton=b;
-          c.OnDblClick = function(e)
+
+          /*
+           *  Variable: CloseBtn
+           *  ...
+           *  Type: bool
+           */
+          /*<>*/
+          var b;
+          if(closebtn)
           {
-            if(e.win)
+            b=new ngButton;
+            c.CloseButton=b;
+            b.LeftImg=(th ? winimages.WinCloseBtnLight : winimages.WinCloseBtnDark);
+            b.OnClick = function(ci)
             {
-              if(e.win.MaxButton) e.win.MaxButton.Click();
-            }
-          };
-          c.AddEvent(function(o) {
-            // update button state before update
-            var s=(c.IsMaximized() ? 1 : 0);
-            if((c.MaxButton)&&(c.MaxButton.Checked!=s)) c.MaxButton.Check(s);
-            return true;
-          }, 'DoUpdate');
-          b.LeftImg=(th ? winimages.WinMaxBtnLight : winimages.WinMaxBtnDark);
-          b.OnClick = function(ci)
+              var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
+              if((e)&&(e.Close)) e.Close(e);
+            };
+            addButton(b);
+          }
+          /*
+           *  Variable: MaxBtn
+           *  ...
+           *  Type: bool
+           */
+          /*<>*/
+          if(ngVal(def.MaxBtn,false))
           {
-            var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
-            if(e)
+            b=new ngButton;
+            c.MaxButton=b;
+            c.OnDblClick = function(e)
             {
-              ci.Owner.Check(e.IsMaximized() ? 0 : 1);
-              if(ci.Owner.Checked)
+              if(e.win)
               {
-                if(e.Maximize) e.Maximize(e);
+                if(e.win.MaxButton) e.win.MaxButton.Click();
               }
-              else
+            };
+            c.AddEvent(function(o) {
+              // update button state before update
+              var s=(c.IsMaximized() ? 1 : 0);
+              if((c.MaxButton)&&(c.MaxButton.Checked!=s)) c.MaxButton.Check(s);
+              return true;
+            }, 'DoUpdate');
+            b.LeftImg=(th ? winimages.WinMaxBtnLight : winimages.WinMaxBtnDark);
+            b.OnClick = function(ci)
+            {
+              var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
+              if(e)
               {
-                if(e.Restore) e.Restore(e);
+                ci.Owner.Check(e.IsMaximized() ? 0 : 1);
+                if(ci.Owner.Checked)
+                {
+                  if(e.Maximize) e.Maximize(e);
+                }
+                else
+                {
+                  if(e.Restore) e.Restore(e);
+                }
               }
-            }
-          };
-          if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;
-        }
-        /*
-         *  Variable: MinBtn
-         *  ...
-         *  Type: bool
-         */
-        /*<>*/
-        if(ngVal(def.MinBtn,false))
-        {
-          b=new ngButton;
-          c.MinButton=b;
-          b.LeftImg=(th ? winimages.WinMinBtnLight : winimages.WinMinBtnDark);
-          c.AddEvent(function(o) {
-            // update button state before update
-            var s=(c.IsMinimized() ? 1 : 0);
-            if((c.MinButton)&&(c.MinButton.Checked!=s)) c.MinButton.Check(s);
-            return true;
-          }, 'DoUpdate');
-          b.OnClick = function(ci)
+            };
+            addButton(b);
+          }
+          /*
+           *  Variable: MinBtn
+           *  ...
+           *  Type: bool
+           */
+          /*<>*/
+          if(ngVal(def.MinBtn,false))
           {
-            var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
-            if(e)
+            b=new ngButton;
+            c.MinButton=b;
+            b.LeftImg=(th ? winimages.WinMinBtnLight : winimages.WinMinBtnDark);
+            c.AddEvent(function(o) {
+              // update button state before update
+              var s=(c.IsMinimized() ? 1 : 0);
+              if((c.MinButton)&&(c.MinButton.Checked!=s)) c.MinButton.Check(s);
+              return true;
+            }, 'DoUpdate');
+            b.OnClick = function(ci)
             {
-              ci.Owner.Check(e.IsMinimized() ? 0 : 1);
-              if(ci.Owner.Checked)
+              var e=(ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
+              if(e)
               {
-                if(e.Minimize) e.Minimize(e);
+                ci.Owner.Check(e.IsMinimized() ? 0 : 1);
+                if(ci.Owner.Checked)
+                {
+                  if(e.Minimize) e.Minimize(e);
+                }
+                else
+                {
+                  if(e.Restore) e.Restore(e);
+                }
               }
-              else
-              {
-                if(e.Restore) e.Restore(e);
-              }
-            }
-          };
-          if(!c.Buttons) c.Buttons=new Array();
-          c.Buttons[c.Buttons.length]=b;
-        }
+            };
+            addButton(b);
+          }
+        });
+
         return c;
       };
       ngRegisterControlSkin('weWindow','ngWindow', function(def,ref,parent,modtype) { return skinfnc.Create_weWindow(def,ref,parent,modtype,false); });

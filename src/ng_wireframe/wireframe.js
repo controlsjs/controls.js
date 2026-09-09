@@ -1294,104 +1294,105 @@ var WireframeControls = {
         /**
          *  Group: Definition
          */
+        def.OnCreated=ngAddEvent(def.OnCreated, function (c, ref) {
 
-        /**
-         *  Variable: CloseBtn
-         *  ...
-         *  Type: bool
-         */
-        var b;
-        if(ngVal(def.CloseBtn,(dialog ? true : false)))
-        {
-          b = new ngButton;
-          c.CloseButton = b;
-          b.LeftImg = WFRImages.Window.Buttons.Close;
-          b.OnClick = function(ci){
-            var e = (ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
-            if((e)&&(e.Close)){e.Close(e);}
-          }
-          if(!c.Buttons){c.Buttons = new Array();}
-          c.Buttons[c.Buttons.length] = b;
-        }
+          var addButton = function(button){
+            if(button.ID=='') button.Attach(c.ID+'_B'+(c.button_id++));
+            if(!c.Buttons){c.Buttons = new Array();}
+            c.Buttons[c.Buttons.length] = button;
+          };
 
-        /**
-         *  Variable: MaxBtn
-         *  ...
-         *  Type: bool
-         */
-        if(ngVal(def.MaxBtn,false)){
-          b = new ngButton;
-          c.MaxButton = b;
-          c.OnDblClick = function(e){
-            if(e.win){
-              if(e.win.MaxButton){
-                e.win.MaxButton.Click();
-              }
-            }
-          }
-          c.AddEvent(function(o){
-            // update button state before update
-            var s = (c.IsMaximized() ? 1 : 0);
-            if((c.MaxButton)&&(c.MaxButton.Checked!=s)){
-              c.MaxButton.Check(s);
-            }
-            return true;
-          }, 'DoUpdate');
-          b.LeftImg = WFRImages.Window.Buttons.Maximize;
-          b.OnClick = function(ci)
+          /**
+           *  Variable: CloseBtn
+           *  ...
+           *  Type: bool
+           */
+          var b;
+          if(ngVal(def.CloseBtn,(dialog ? true : false)))
           {
-            var e = (ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
-            if(e){
-              ci.Owner.Check(e.IsMaximized() ? 0 : 1);
-              if(ci.Owner.Checked){
-                if(e.Maximize) e.Maximize(e);
-              }
-              else{
-                if(e.Restore) e.Restore(e);
-              }
+            b = new ngButton;
+            c.CloseButton = b;
+            b.LeftImg = WFRImages.Window.Buttons.Close;
+            b.OnClick = function(ci){
+              var e = (ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
+              if((e)&&(e.Close)){e.Close(e);}
             }
+            addButton(b);
           }
-          if(!c.Buttons){
-            c.Buttons = new Array();
-          }
-          c.Buttons[c.Buttons.length] = b;
-        }
 
-        /**
-         *  Variable: MinBtn
-         *  ...
-         *  Type: bool
-         */
-        if(ngVal(def.MinBtn,false))
-        {
-          b = new ngButton;
-          c.MinButton = b;
-          b.LeftImg = WFRImages.Window.Buttons.Minimize;
-          c.AddEvent(function(o){
-            // update button state before update
-            var s = (c.IsMinimized() ? 1 : 0);
-            if((c.MinButton)&&(c.MinButton.Checked!=s)){
-              c.MinButton.Check(s);
-            }
-            return true;
-          }, 'DoUpdate');
-          b.OnClick = function(ci){
-            var e = (ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
-            if(e){
-              ci.Owner.Check(e.IsMinimized() ? 0 : 1);
-              if(ci.Owner.Checked){
-                if(e.Minimize){e.Minimize(e);}
-              }
-              else{
-                if(e.Restore){e.Restore(e);}
+          /**
+           *  Variable: MaxBtn
+           *  ...
+           *  Type: bool
+           */
+          if(ngVal(def.MaxBtn,false)){
+            b = new ngButton;
+            c.MaxButton = b;
+            c.OnDblClick = function(e){
+              if(e.win){
+                if(e.win.MaxButton){
+                  e.win.MaxButton.Click();
+                }
               }
             }
+            c.AddEvent(function(o){
+              // update button state before update
+              var s = (c.IsMaximized() ? 1 : 0);
+              if((c.MaxButton)&&(c.MaxButton.Checked!=s)){
+                c.MaxButton.Check(s);
+              }
+              return true;
+            }, 'DoUpdate');
+            b.LeftImg = WFRImages.Window.Buttons.Maximize;
+            b.OnClick = function(ci)
+            {
+              var e = (ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
+              if(e){
+                ci.Owner.Check(e.IsMaximized() ? 0 : 1);
+                if(ci.Owner.Checked){
+                  if(e.Maximize) e.Maximize(e);
+                }
+                else{
+                  if(e.Restore) e.Restore(e);
+                }
+              }
+            }
+            addButton(b);
           }
-          if(!c.Buttons){
-            c.Buttons = new Array();
+
+          /**
+           *  Variable: MinBtn
+           *  ...
+           *  Type: bool
+           */
+          if(ngVal(def.MinBtn,false))
+          {
+            b = new ngButton;
+            c.MinButton = b;
+            b.LeftImg = WFRImages.Window.Buttons.Minimize;
+            c.AddEvent(function(o){
+              // update button state before update
+              var s = (c.IsMinimized() ? 1 : 0);
+              if((c.MinButton)&&(c.MinButton.Checked!=s)){
+                c.MinButton.Check(s);
+              }
+              return true;
+            }, 'DoUpdate');
+            b.OnClick = function(ci){
+              var e = (ci.Owner ? ngVal(ci.Owner.Parent,null) : null);
+              if(e){
+                ci.Owner.Check(e.IsMinimized() ? 0 : 1);
+                if(ci.Owner.Checked){
+                  if(e.Minimize){e.Minimize(e);}
+                }
+                else{
+                  if(e.Restore){e.Restore(e);}
+                }
+              }
+            }
+            addButton(b);
           }
-          c.Buttons[c.Buttons.length] = b;
-        }
+        });
 
         return c;
       }
