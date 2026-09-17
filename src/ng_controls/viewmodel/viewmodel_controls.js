@@ -968,9 +968,6 @@ ngUserControls['viewmodel_controls'] = {
     }
 
     function ngdsvm_DoCommand(c,cmd,options,vals,err) {
-
-      if(!options.DataSetRecords) delete vals['Records'];
-
       var offset=ko.ng_getvalue(c.ViewModel.Offset);
       var count=ko.ng_getvalue(c.ViewModel.Count);
       offset=ng_toNumber(offset,0);
@@ -1418,7 +1415,7 @@ ngUserControls['viewmodel_controls'] = {
             if(!ngIsFieldDef(fd)) continue;
             fd.ReadOnly=void 0;
             fd.Required=false;
-            fd.Attrs['Serialize']=false;
+            fd.Attrs['Command']='';
           }
         });
         var vmdata;
@@ -1441,8 +1438,10 @@ ngUserControls['viewmodel_controls'] = {
             }
             if(typeof vm.SortBy==='undefined')        ko.ng_fielddef(vm, new ngFieldDef('SortBy', 'ARRAY'));
             if(typeof vm.AllowedSortBy==='undefined') ko.ng_fielddef(vm, new ngLookupFieldDef('AllowedSortBy'));
-            if(typeof vm.Records==='undefined')       ko.ng_fielddef(vm, new ngFieldDef('Records', 'ARRAY', { NullIfEmpty: false }));
-            if(typeof vm.TotalCount==='undefined')    ko.ng_fielddef(vm, new ngFieldDef('TotalCount', 'INTEGER'));
+            if(typeof vm.Records==='undefined')       ko.ng_fielddef(vm, new ngFieldDef('Records', 'ARRAY', { NullIfEmpty: false, Command: '' }));
+            else if((ngIsFieldDef(vm.Records))&&(!'Command' in vm.Records.Attrs)) vm.Records.Attrs.Command='';
+            if(typeof vm.TotalCount==='undefined')    ko.ng_fielddef(vm, new ngFieldDef('TotalCount', 'INTEGER', { Command: '' }));
+            else if((ngIsFieldDef(vm.TotalCount))&&(!'Command' in vm.TotalCount.Attrs)) vm.Records.TotalCount.Command='';
             if(typeof vm.GetRecords==='undefined')    vm.GetRecords=ngdsvmm_GetRecords;
             if(typeof vm.GetTotalCount==='undefined') vm.GetTotalCount=ngdsvmm_GetTotalCount;
             if(typeof vm.ApplyFilters==='undefined')  vm.ApplyFilters=ngdsvmm_ApplyFilters;
