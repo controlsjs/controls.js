@@ -690,19 +690,20 @@ ngUserControls['viewmodel_controls'] = {
     }
 
     function ngdsvm_DataSetNeedUpdate() {
-      if(ng_IsArrayVar(this.DataSet)) return;
+      if(ng_IsArrayVar(this.DataSet)) return false;
       var ds=this.ViewModel.DataSet;
       if((ngIsFieldDef(ds))&&(typeof ds.DataSetNeedUpdate!=='undefined')) return ds.DataSetNeedUpdate;
       return false;
     }
 
     function ngdsvm_DoGetDataSet() {
+      if(ng_IsArrayVar(this.DataSet)) return ng_CopyVar(this.DataSet);
       var ds=this.ViewModel.DataSet;
       if(ngIsFieldDef(ds)) {
         ds=ds.GetTypedValue(false);
         if(ng_IsArrayVar(ds)) return ng_CopyVar(ds);
       }
-      return ng_CopyVar(this.DataSet);
+      return null;
     }
 
     window.DBVM_FILTERTYPE_IGNORE=     'IGNORE';
