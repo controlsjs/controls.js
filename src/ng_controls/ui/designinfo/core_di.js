@@ -148,7 +148,15 @@ return {
           "ModifyControls": { Level: 'basic' },
           "Data": ng_diObject({
             "ChildHandling": { Level: 'basic' },
-            "FormID": ng_diString('', { Level: 'basic' })
+            "FormID": ng_diString('', { Level: 'basic' }),
+            "SmoothScroll": ng_diMixed([
+              ng_diBoolean(true, { Level: 'basic' }),
+              ng_diObject({
+                "Duration":{ Level: 'basic' },
+                "Factor": { Level: 'basic' }
+              }, { Level: 'basic' }),
+              ng_diInteger(500, { Level: 'basic' })
+            ], { Level: 'basic' })
           })
         }
       };

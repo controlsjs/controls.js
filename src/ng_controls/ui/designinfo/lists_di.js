@@ -675,7 +675,15 @@ return {
             "ItemsControls": ng_diArrayOfControls(void 0, { Level: 'hidden' }),
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
             "Frame": ng_diType( 'img_frame', { Level: 'advanced' }),
-            "CanSelectText": ng_diBoolean(false, { Level: 'basic' })
+            "CanSelectText": ng_diBoolean(false, { Level: 'basic' }),
+            "SmoothScroll": ng_diMixed([
+              ng_diBoolean(true, { Level: 'basic' }),
+              ng_diObject({
+                "Duration":{ Level: 'basic' },
+                "Factor": { Level: 'basic' }
+              }, { Level: 'basic' }),
+              ng_diInteger(500, { Level: 'basic' })
+            ], { Level: 'basic' })
           },
           "Methods": {
             "DoItemsChanged": ng_diFunction('function() { ng_CallParent(this, "DoLoadData", arguments); }', { Level: 'advanced' }),

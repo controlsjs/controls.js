@@ -967,6 +967,14 @@ function ng_diProperties(props,data) {
         "W": ng_diType('bounds', { DisplayName: "Width (W)", Level: 'basic', Order: 0.13 }),
         "H": ng_diType('bounds', { DisplayName: "Height (H)", Level: 'basic', Order: 0.14 }),
         "ScrollBars": ng_diIntegerIdentifiers('ssNone',['ssNone','ssDefault','ssAuto','ssBoth','ssHorizontal','ssVertical'],{ Level: 'optional', Order: 0.301 }),
+        "SmoothScroll": ng_diMixed([
+          ng_diBoolean(false, { Level: 'optional' }),
+          ng_diObject({
+            "Duration": ng_diInteger(500, { Level: 'optional' }),
+            "Factor": ng_diFloat(0.5, { Level: 'optional' })
+          }, { Level: 'optional' }, { DestroyIfEmpty: true }),
+          ng_diInteger(500, { Level: 'optional' })
+        ], { InitType: 'boolean', Level: 'optional', Order: 0.3015 }),
         "style": ng_diObject({
           "background": ng_diString('', { Level: 'optional' }),
           "backgroundColor": ng_diType('css_colors', { Level: 'optional' }),
@@ -1070,7 +1078,10 @@ function ng_diProperties(props,data) {
           "OnPtrStart": ng_diEvent('function(c, pi) {}', { Level: 'advanced' }),
           "OnPtrEnd": ng_diEvent('function(c, pi) {}', { Level: 'advanced' }),
           "OnGesture": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
-          "OnPtrDrag": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' })
+          "OnPtrDrag": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
+          "OnSmoothScrollStart": ng_diEvent('function(c, elm, dx, dy, duration) { return true; }', { Level: 'advanced' }),
+          "OnSmoothScrolling": ng_diEvent('function(c, elm, x, y, progress) { return true; }', { Level: 'advanced' }),
+          "OnSmoothScrollFinished": ng_diEvent('function(c, elm, stopped) {}', { Level: 'advanced' })
         }),
 
         "Methods": ng_diObject({
@@ -1095,6 +1106,12 @@ function ng_diProperties(props,data) {
           "SetBounds": ng_diFunction('function(props) { return ng_CallParent(this, "SetBounds", arguments, false); }', { Level: 'optional' }),
           "UpdateBounds": ng_diFunction('function(props, recursive) { return ng_CallParent(this, "UpdateBounds", arguments, false); }', { Level: 'optional' }),
           "SetScrollBars": ng_diFunction('function(v) { ng_CallParent(this, "SetScrollBars", arguments); }', { Level: 'optional' }),
+          "SmoothScrollBy": ng_diFunction('function(dx, dy, duration, onfinish) { return ng_CallParent(this, "SmoothScrollBy", arguments); }', { Level: 'optional' }),
+          "SmoothScrollTo": ng_diFunction('function(x, y, duration, onfinish) { return ng_CallParent(this, "SmoothScrollTo", arguments); }', { Level: 'optional' }),
+          "StopSmoothScroll": ng_diFunction('function() { return ng_CallParent(this, "StopSmoothScroll", arguments); }', { Level: 'optional' }),
+          "DoSmoothScrollStart": ng_diFunction('function(elm, dx, dy, duration) { return ng_CallParent(this, "DoSmoothScrollStart", arguments, true); }', { Level: 'advanced' }),
+          "DoSmoothScrolling": ng_diFunction('function(elm, x, y, progress) { return ng_CallParent(this, "DoSmoothScrolling", arguments, true); }', { Level: 'advanced' }),
+          "DoSmoothScrollFinished": ng_diFunction('function(elm, stopped) { ng_CallParent(this, "DoSmoothScrollFinished", arguments); }', { Level: 'advanced' }),
           "SetPopup": ng_diFunction('function(p) { ng_CallParent(this, "SetPopup", arguments); }', { Level: 'optional' }),
           "SetOpacity": ng_diFunction('function(v) { ng_CallParent(this, "SetOpacity", arguments); }', { Level: 'optional' }),
           "Align": ng_diFunction('function(o) { return ng_CallParent(this, "Align", arguments, 0); }', { Level: 'optional' }),

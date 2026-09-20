@@ -51,6 +51,7 @@ function ngPanel(id)
 {
   ngControl(this, id, 'ngPanel');
   this.DoRelease = ngp_DoRelease;
+  this.SmoothScroll = true;
   ngControlCreated(this);
 }
 

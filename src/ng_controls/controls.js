@@ -29,7 +29,7 @@ var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
  *  Variable: ngControlsAPICopyright
  *  Controls framework copyright information.
  */
-var ngControlsCopyright = 'Copyright &copy 2008-2025 Position s.r.o.';
+var ngControlsCopyright = 'Copyright &copy 2008-2026 Position s.r.o.';
 
 /**
  *  Variable: ngApp
@@ -934,6 +934,123 @@ function ng_GetScrollBars(o)
     }
   }
   return sb;
+}
+
+function ng_StopSmoothScroll(target)
+{
+  if(!target) return;
+  if(typeof target==='string') target=document.getElementById(target);
+  var elm=(target.Elm ? target.Elm() : target);
+  if((!elm)||(typeof elm!=='object')) return;
+  var state=elm.ngSmoothScroll;
+  if(state)
+  {
+    delete elm.ngSmoothScroll;
+    if(state.Timer)
+    {
+      if(window.cancelAnimationFrame)
+        window.cancelAnimationFrame(state.Timer);
+      else
+        clearTimeout(state.Timer);
+      state.Timer=null;
+    }
+    var c=state.Control;
+    if(!c) c=ngGetControlByElement(elm);
+    if(state.OnFinish) state.OnFinish(true, elm);
+    if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, true);
+  }
+}
+
+function ng_SmoothScroll(target, dx, dy, duration, onfinish)
+{
+  if(!target) return;
+  if(typeof target==='string') target=document.getElementById(target);
+  var elm=(target.Elm ? target.Elm() : target);
+  if((!elm)||(typeof elm!=='object')) return;
+
+  var c=(target.Elm ? target : ngGetControlByElement(elm));
+
+  ng_StopSmoothScroll(elm);
+
+  dx=Math.round(ngVal(dx,0));
+  dy=Math.round(ngVal(dy,0));
+  if((!dx)&&(!dy))
+  {
+    if(onfinish) onfinish(false, elm);
+    return;
+  }
+
+  duration=ngVal(duration,500);
+  if((c)&&(c.DoSmoothScrollStart)&&(!c.DoSmoothScrollStart(elm, dx, dy, duration))) return;
+
+  if((ngANIMPROHIBITED())||(duration<=0))
+  {
+    elm.scrollLeft+=dx;
+    elm.scrollTop+=dy;
+    var timer=setTimeout(function () {
+      clearTimeout(timer);
+      if(onfinish) onfinish(false, elm);
+      if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, false);
+    },1);
+    return;
+  }
+
+  var startLeft=elm.scrollLeft;
+  var startTop=elm.scrollTop;
+  var startTime=new Date().getTime();
+
+  var raf=window.requestAnimationFrame || function(cb) {
+    return setTimeout(cb, 16);
+  };
+
+  var state={
+    Timer: null,
+    OnFinish: onfinish,
+    Control: c
+  };
+  elm.ngSmoothScroll=state;
+
+  function step()
+  {
+    if(elm.ngSmoothScroll!==state) return;
+    var now=new Date().getTime();
+    var elapsed=now-startTime;
+    var t=elapsed/duration;
+    if(t>=1)
+    {
+      elm.scrollLeft=startLeft+dx;
+      elm.scrollTop=startTop+dy;
+      delete elm.ngSmoothScroll;
+      if(onfinish) onfinish(false, elm);
+      if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, false);
+      return;
+    }
+
+    var p=1-Math.pow(1-t,2);
+    elm.scrollLeft=Math.round(startLeft+dx*p);
+    elm.scrollTop=Math.round(startTop+dy*p);
+
+    if((c)&&(c.DoSmoothScrolling)&&(!c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, p)))
+    {
+      ng_StopSmoothScroll(elm);
+      return;
+    }
+    state.Timer=raf(step);
+  }
+
+  state.Timer=raf(step);
+}
+
+function ng_SmoothScrollTo(target, x, y, duration, onfinish)
+{
+  if(!target) return;
+  if(typeof target==='string') target=document.getElementById(target);
+  var elm=(target.Elm ? target.Elm() : target);
+  if((!elm)||(typeof elm!=='object')) return;
+
+  var dx=(typeof x!=='undefined' ? x-elm.scrollLeft : 0);
+  var dy=(typeof y!=='undefined' ? y-elm.scrollTop : 0);
+  ng_SmoothScroll(target, dx, dy, duration, onfinish);
 }
 
 function ng_ToAbsPath(path,lib)
@@ -2563,6 +2680,41 @@ function ngc_SetScrollBars(v)
   ng_SetScrollBars(this.Elm(),v);
 }
 
+function ngc_SmoothScrollBy(dx, dy, duration, onfinish)
+{
+  return ng_SmoothScroll(this, dx, dy, duration, onfinish);
+}
+
+function ngc_SmoothScrollTo(x, y, duration, onfinish)
+{
+  return ng_SmoothScrollTo(this, x, y, duration, onfinish);
+}
+
+function ngc_StopSmoothScroll()
+{
+  return ng_StopSmoothScroll(this);
+}
+
+function ngc_DoSmoothScrollStart(elm, dx, dy, duration)
+{
+  if(this.OnSmoothScrollStart)
+    return this.OnSmoothScrollStart(this, elm, dx, dy, duration);
+  return true;
+}
+
+function ngc_DoSmoothScrolling(elm, x, y, progress)
+{
+  if(this.OnSmoothScrolling)
+    return this.OnSmoothScrolling(this, elm, x, y, progress);
+  return true;
+}
+
+function ngc_DoSmoothScrollFinished(elm, stopped)
+{
+  if(this.OnSmoothScrollFinished)
+    this.OnSmoothScrollFinished(this, elm, stopped);
+}
+
 function ngc_SetPopup(p)
 {
   if(this.IsPopup!=p)
@@ -2658,6 +2810,7 @@ function ngc_Release()
   var o=this.Elm();
   if(o)
   {
+    ng_StopSmoothScroll(o);
     var mi = ngMouseInControls[this.ID];
     if((typeof mi !== 'undefined')&&(mi.Object==this)) ngc_Leave(null, mi.Element, this.CtrlType);
     if(this.DoRelease) this.DoRelease(o);
@@ -2690,6 +2843,7 @@ function ngc_Dispose()
     var o=this.Elm();
     if(o)
     {
+      ng_StopSmoothScroll(o);
       o.style.display='none';
       ng_SetInnerHTML(o,'');
       if(o.parentNode) o.parentNode.removeChild(o);
@@ -3538,6 +3692,14 @@ function ngControl(obj, id, type)
    */
   //obj.HiResControl = undefined;
 
+  /*  Variable: SmoothScroll
+   *  If TRUE, dragging content by touch or mouse has dynamic smooth gravity
+   *  scrolling (inertial momentum) effect. Can also be an object with options
+   *  (e.g. { Duration: 500, Factor: 0.5 }).
+   *  Type: bool|object|number
+   */
+  //obj.SmoothScroll = undefined;
+
 
   /*
    *  Group: Methods
@@ -3750,6 +3912,54 @@ function ngControl(obj, id, type)
    *    -
    */
   obj.SetScrollBars = ngc_SetScrollBars;
+
+  /*  Function: SmoothScrollBy
+   *  Scrolls control smoothly by relative offset with gravity deceleration.
+   *
+   *  Syntax:
+   *    void *SmoothScrollBy* (integer dx, integer dy, integer duration, function onfinish)
+   */
+  obj.SmoothScrollBy = ngc_SmoothScrollBy;
+
+  /*  Function: SmoothScrollTo
+   *  Scrolls control smoothly to absolute offset with gravity deceleration.
+   *
+   *  Syntax:
+   *    void *SmoothScrollTo* (integer x, integer y, integer duration, function onfinish)
+   */
+  obj.SmoothScrollTo = ngc_SmoothScrollTo;
+
+  /*  Function: StopSmoothScroll
+   *  Stops any active smooth scrolling animation.
+   *
+   *  Syntax:
+   *    void *StopSmoothScroll* ()
+   */
+  obj.StopSmoothScroll = ngc_StopSmoothScroll;
+
+  /*  Function: DoSmoothScrollStart
+   *  Called when smooth scroll begins.
+   *
+   *  Syntax:
+   *    bool *DoSmoothScrollStart* (Element elm, integer dx, integer dy, integer duration)
+   */
+  obj.DoSmoothScrollStart = ngc_DoSmoothScrollStart;
+
+  /*  Function: DoSmoothScrolling
+   *  Called during progress of smooth scroll.
+   *
+   *  Syntax:
+   *    bool *DoSmoothScrolling* (Element elm, integer x, integer y, float progress)
+   */
+  obj.DoSmoothScrolling = ngc_DoSmoothScrolling;
+
+  /*  Function: DoSmoothScrollFinished
+   *  Called when smooth scroll finishes or is stopped.
+   *
+   *  Syntax:
+   *    void *DoSmoothScrollFinished* (Element elm, bool stopped)
+   */
+  obj.DoSmoothScrollFinished = ngc_DoSmoothScrollFinished;
   /*  Function: SetPopup
    *  Sets if control work as popup.
    *
@@ -3944,6 +4154,21 @@ function ngControl(obj, id, type)
    *  Event: OnMouseLeave
    */
   obj.OnMouseLeave     = null;
+
+  /*
+   *  Event: OnSmoothScrollStart
+   */
+  obj.OnSmoothScrollStart = null;
+
+  /*
+   *  Event: OnSmoothScrolling
+   */
+  obj.OnSmoothScrolling = null;
+
+  /*
+   *  Event: OnSmoothScrollFinished
+   */
+  obj.OnSmoothScrollFinished = null;
 
   if ((ngHASDESIGNINFO())&&(typeof ngControlDesignInfo === 'function')) ngControlDesignInfo(obj);
 }
@@ -4738,8 +4963,20 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
     if(pi.StopPropagation) ngc_ptrevignore(e);
     return;
   }
+  if(elm) ng_StopSmoothScroll(elm);
   if(c)
   {
+    var sc=c;
+    while(sc)
+    {
+      if(sc.SmoothScroll)
+      {
+        ng_StopSmoothScroll(sc);
+        break;
+      }
+      sc=sc.ParentControl;
+    }
+
     var dci=c.DblClickInfo;
     if(dci)
     {
@@ -4956,6 +5193,70 @@ function ngc_ptrend(e)
   return ret;
 }
 
+function ngc_DoSmoothScrollGesture(c, pi)
+{
+  if((!c)||(!pi)||(pi.ScrollControl!==c)) return;
+  var elm=pi.ScrollElm;
+  if(!elm) return;
+
+  var trace=pi.ScrollTrace;
+  delete pi.ScrollTrace;
+  if((!trace)||(trace.length<2)||(ngANIMPROHIBITED())) return;
+
+  var now=new Date().getTime();
+  var lenti=trace.length;
+  var lastPt=trace[lenti-1];
+  // If user stopped moving for > 80ms before release, no fling
+  if(now-lastPt.T>80) return;
+
+  // Window of last 200ms
+  var gtime=now-200;
+  var firstPt=lastPt;
+  for(var i=lenti-2;i>=0;i--)
+  {
+    firstPt=trace[i];
+    if(firstPt.T<gtime) break;
+  }
+
+  var dt=lastPt.T-firstPt.T;
+  if(dt<10) return;
+
+  var vx=(lastPt.X-firstPt.X)/dt;
+  var vy=(lastPt.Y-firstPt.Y)/dt;
+
+  var duration=500;
+  var factor=0.5;
+  if(typeof c.SmoothScroll==='object')
+  {
+    if(c.SmoothScroll.Duration) duration=c.SmoothScroll.Duration;
+    if(c.SmoothScroll.Factor) factor=c.SmoothScroll.Factor;
+  }
+  else if(typeof c.SmoothScroll==='number')
+    duration=c.SmoothScroll;
+
+  // Distance = v0 * duration * factor
+  // Minus sign because dragging down (vy > 0) scrolls content up (-scrollTop)
+  var scrollDX=Math.round(-vx*duration*factor);
+  var scrollDY=Math.round(-vy*duration*factor);
+
+  var st=pi.ScrollType;
+  if((st!==ssAuto)&&(st!==ssBoth))
+  {
+    if(st===ssVertical) scrollDX=0;
+    if(st===ssHorizontal) scrollDY=0;
+  }
+
+  if((Math.abs(scrollDX)<10)&&(Math.abs(scrollDY)<10)) return;
+
+  if(pi.ScrollTimer)
+  {
+    clearTimeout(pi.ScrollTimer);
+    pi.ScrollTimer=null;
+  }
+
+  ng_SmoothScroll(elm, scrollDX, scrollDY, duration);
+}
+
 function ngc_HandleScrollGesture(c,pi,elm)
 {
   if(pi.Gesture==='drag')
@@ -5009,6 +5310,8 @@ function ngc_HandleScrollGesture(c,pi,elm)
 
         if((e.scrollHeight > e.clientHeight)||(e.scrollWidth > e.clientWidth)) // has overflow content
         {
+          if(c.SmoothScroll) ng_StopSmoothScroll(e);
+
           var ost=e.scrollTop;
           var osl=e.scrollLeft;
 
@@ -5022,6 +5325,19 @@ function ngc_HandleScrollGesture(c,pi,elm)
           pi.ScrollTop  = ost;
           pi.ScrollLeft = osl;
           pi.ScrollType=st;
+          if((c.SmoothScroll)&&(!ngANIMPROHIBITED()))
+          {
+            pi.ScrollTrace=[{X: pi.X, Y: pi.Y, T: new Date().getTime()}];
+            if(!pi.ScrollSmoothHooked)
+            {
+              pi.ScrollSmoothHooked=true;
+              var oup=pi.OnPointerUp;
+              pi.OnPointerUp=function(pinfo) {
+                if(oup) oup(pinfo);
+                ngc_DoSmoothScrollGesture(c, pinfo);
+              };
+            }
+          }
           if(pi.DragSelect===false) ng_DocumentDeselect();
           return true;
         }
@@ -5050,6 +5366,24 @@ function ngc_HandleScrollGesture(c,pi,elm)
               if(typeof stop!=='undefined') pi.ScrollElm.scrollTop=stop;
               if(typeof sleft!=='undefined') pi.ScrollElm.scrollLeft=sleft;
             },1);
+          }
+
+          if((c.SmoothScroll)&&(!ngANIMPROHIBITED()))
+          {
+            var now=new Date().getTime();
+            if(!pi.ScrollTrace) pi.ScrollTrace=[];
+            pi.ScrollTrace.push({X: pi.X, Y: pi.Y, T: now});
+            while((pi.ScrollTrace.length>1)&&(now-pi.ScrollTrace[0].T>300))
+              pi.ScrollTrace.shift();
+            if(!pi.ScrollSmoothHooked)
+            {
+              pi.ScrollSmoothHooked=true;
+              var oup=pi.OnPointerUp;
+              pi.OnPointerUp=function(pinfo) {
+                if(oup) oup(pinfo);
+                ngc_DoSmoothScrollGesture(c, pinfo);
+              };
+            }
           }
 
           if(scroll)

@@ -3237,6 +3237,21 @@ function ngl_DoItemsChanged()
   else if(this.OnItemsChanged) this.OnItemsChanged(this,this.Items);
 }
 
+function ngl_SmoothScrollBy(dx, dy, duration, onfinish)
+{
+  return ng_SmoothScroll(this.ContentElm ? this.ContentElm : this, dx, dy, duration, onfinish);
+}
+
+function ngl_SmoothScrollTo(x, y, duration, onfinish)
+{
+  return ng_SmoothScrollTo(this.ContentElm ? this.ContentElm : this, x, y, duration, onfinish);
+}
+
+function ngl_StopSmoothScroll()
+{
+  return ng_StopSmoothScroll(this.ContentElm ? this.ContentElm : this);
+}
+
 /**
  *  Class: ngListItem
  *  This class implements <ngList> item.
@@ -3452,7 +3467,12 @@ function ngList(id)
   this.DoDispose = ngl_DoDispose;
   this.ItemsChanged = ngl_ItemsChanged;
   this.DoItemsChanged = ngl_DoItemsChanged;
+  this.SmoothScrollBy = ngl_SmoothScrollBy;
+  this.SmoothScrollTo = ngl_SmoothScrollTo;
+  this.StopSmoothScroll = ngl_StopSmoothScroll;
+
   this.ignore_select = 0;
+  this.SmoothScroll = true;
 
   /*
    *  Group: Properties
