@@ -989,6 +989,12 @@ function ng_SmoothScroll(target, dx, dy, duration, onfinish)
     elm.scrollTop+=dy;
     var timer=setTimeout(function () {
       clearTimeout(timer);
+      if((c)&&(c.DoSmoothScrolling)&&(!c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, 1.0)))
+      {
+        ng_StopSmoothScroll(elm);
+        return;
+      }
+
       if(onfinish) onfinish(false, elm);
       if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, false);
     },1);
@@ -1020,6 +1026,12 @@ function ng_SmoothScroll(target, dx, dy, duration, onfinish)
     {
       elm.scrollLeft=startLeft+dx;
       elm.scrollTop=startTop+dy;
+      if((c)&&(c.DoSmoothScrolling)&&(!c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, 1.0)))
+      {
+        ng_StopSmoothScroll(elm);
+        return;
+      }
+
       delete elm.ngSmoothScroll;
       if(onfinish) onfinish(false, elm);
       if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, false);
