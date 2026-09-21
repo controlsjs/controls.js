@@ -39,7 +39,7 @@ var ua=navigator.userAgent.toLowerCase();
  *  Variable: ngOpera
  *  TRUE if user is using the Opera browser.
  */
-var ngOpera = (ua.indexOf("opera") != -1);
+var ngOpera = (ua.indexOf("opera") !== -1);
 
 /**
  *  Variable: ngOperaVersion
@@ -56,18 +56,7 @@ var ngIExplorer = eval("/*@cc_on!@*/false");
  *  Variable: ngIExplorerVersion
  *  Version of the Internet Explorer browser.
  */
-var ngIExplorerVersion = (ngIExplorer ? parseInt( ua.match( /msie (\d+)/ )[1] ) : void 0);
-
-if((!ngIExplorer)&&(ua.match(/trident/))) // IE>=11 detection
-{
-  var v=ua.match( /rv\:(\d+)/ );
-  if(!v) v=ua.match( /msie (\d+)/ );
-  if(v)
-  {
-    ngIExplorer = true;
-    ngIExplorerVersion = parseInt(v[1]);
-  }
-}
+var ngIExplorerVersion = (ngIExplorer ? parseInt((ua.match(/msie (\d+)/) || [])[1], 10) || void 0 : void 0);
 
 /**
  *  Variable: ngIExplorer6
@@ -79,75 +68,87 @@ var ngIExplorer6 = ngIExplorer && ( ngIExplorerVersion < 7 );
  *  Variable: ngEdge
  *  TRUE if user is using the Microsoft Edge browser.
  */
-var ngEdge = (ua.indexOf("edge") != -1);
+var ngEdge = (ua.indexOf("edge") !== -1);
 
 /**
  *  Variable: ngEdgeVersion
  *  Version of the Microsoft Edge browser.
  */
-var ngEdgeVersion = (ngEdge ? parseInt( ua.match( /edge\/(.*)$/ )[1] ) : void 0);
+var ngEdgeVersion = (ngEdge ? parseInt((ua.match(/edge\/(\d+)/) || [])[1], 10) || void 0 : void 0);
 
 /**
  *  Variable: ngFireFox
  *  TRUE if user is using the Firefox browser.
  */
-var ngFireFox = (ua.indexOf("firefox") != -1);
+var ngFireFox = (ua.indexOf("firefox") !== -1);
 /**
  *  Variable: ngFireFoxVersion
  *  Version of the Firefox browser.
  */
-var ngFireFoxVersion = (ngFireFox ? parseInt( ua.match( /firefox\/(.*)$/ )[1] ) : void 0);
+var ngFireFoxVersion = (ngFireFox ? parseInt((ua.match(/firefox\/(\d+)/) || [])[1], 10) || void 0 : void 0);
 
 /**
  *  Variable: ngFireFox1x
  *  TRUE if user is using the Firefox browser version 1.x.
  */
-var ngFireFox1x = ((ngFireFox)&&(ua.indexOf("firefox/1.")!=-1));
+var ngFireFox1x = ((ngFireFox)&&(ua.indexOf("firefox/1.")!==-1));
 /**
  *  Variable: ngFireFox2x
  *  TRUE if user is using the Firefox browser version 2.x.
  */
-var ngFireFox2x = ((ngFireFox)&&(ua.indexOf("firefox/2.")!=-1));
+var ngFireFox2x = ((ngFireFox)&&(ua.indexOf("firefox/2.")!==-1));
 /**
  *  Variable: ngChrome
  *  TRUE if user is using the Chrome browser.
  */
-var ngChrome = (ua.indexOf("chrome") != -1);
+var ngChrome = (ua.indexOf("chrome") !== -1);
 /**
  *  Variable: ngChromeVersion
  *  Version of the Chrome browser.
  */
-var ngChromeVersion = (ngChrome ? parseInt( ua.match( /chrome\/(.*)$/ )[1] ) : void 0);
-/**
- *  Variable: ngSafari
- *  TRUE if user is using the Safari browser.
- */
-var ngSafari = !!ua.match(/Version\/[\d\.]+.*Safari/);
-/**
- *  Variable: ngSafariVersion
- *  Version of the Safari browser.
- */
-var ngSafariVersion = (ngSafari ? parseInt( ua.match( /Version\/(.*)$/ )[1] ) : void 0);
+var ngChromeVersion = (ngChrome ? parseInt((ua.match(/chrome\/(\d+)/) || [])[1], 10) || void 0 : void 0);
 /**
  *  Variable: ngAndroid
  *  TRUE if device uses Android OS.
  */
-var ngAndroid = (ua.indexOf("android") != -1);
+var ngAndroid = (ua.indexOf("android") !== -1);
 /**
  *  Variable: ngiOS
  *  TRUE if device uses Apple iOS.
  */
 var ngiOS = ( ua.match(/(ipad|iphone|ipod)/g) ? true : false );
 /**
+ *  Variable: ngSafari
+ *  TRUE if user is using the Safari browser.
+ */
+var ngSafari = !!((ua.indexOf('safari') !== -1) && (ua.indexOf('version/') !== -1) && (!ngChrome) && (!ngAndroid));
+/**
+ *  Variable: ngSafariVersion
+ *  Version of the Safari browser.
+ */
+var ngSafariVersion = (ngSafari ? parseInt((ua.match(/version\/(\d+)/) || [])[1], 10) || void 0 : void 0); 
+
+if((!ngChrome)&&(!ngEdge)&&(!ngFireFox)&&(!ngOpera)&&(!ngSafari)&&(!ngIExplorer)&&(ua.match(/trident/))) // IE>=11 detection
+{
+  var v=ua.match( /rv\:(\d+)/ );
+  if(!v) v=ua.match( /msie (\d+)/ );
+  if(v)
+  {
+    ngIExplorer = true;
+    ngIExplorerVersion = parseInt(v[1], 10);
+  }
+}
+
+/**
  *  Variable: ngWindowsPhone
  *  TRUE if device uses Windows Phone OS.
  */
-var ngWindowsPhone = (ua.indexOf("windows phone") != -1);
+var ngWindowsPhone = (ua.indexOf("windows phone") !== -1);
 /**
  *  Variable: ngFireFoxOS
  *  TRUE if device uses FireFox OS.
  */
-var ngFireFoxOS = ngFireFox && (ua.indexOf("mobile") != -1);
+var ngFireFoxOS = ngFireFox && (ua.indexOf("mobile") !== -1);
 /**
  *  Variable: ngCordova
  *  TRUE if running inside Apache Cordova (PhoneGap)
@@ -167,7 +168,7 @@ var ngSupportsTouch = ('ontouchstart' in window || (window.DocumentTouch && docu
  *  Variable: ngUsingTouch
  *  TRUE if user uses touch as a primary input.
  */
-var ngUsingTouch = (ngSupportsTouch)&&(ngAndroid || ngiOS || ngWindowsPhone || (ua.indexOf("mobile") != -1) || (ua.indexOf("tablet") != -1));
+var ngUsingTouch = (ngSupportsTouch)&&(ngAndroid || ngiOS || ngWindowsPhone || (ua.indexOf("mobile") !== -1) || (ua.indexOf("tablet") !== -1));
 /**
  *  Variable: ngSupportsHiResImages
  *  TRUE if browser supports CSS style background-size and SVG images as CSS background images.
@@ -1076,20 +1077,20 @@ function ng_sprintf()
       var justifyRight = true;
       if (pJustify && pJustify === '-') justifyRight = false;
       var minLength = -1;
-      if (pMinLength) minLength = parseInt(pMinLength);
+      if (pMinLength) minLength = parseInt(pMinLength, 10);
       var precision = -1;
-      if (pPrecision && pType == 'f') precision = parseInt(pPrecision.substring(1));
+      if (pPrecision && pType == 'f') precision = parseInt(pPrecision.substring(1), 10);
       var subst = param;
       switch (pType)
       {
-        case 'b': subst = parseInt(param).toString(2); break;
-        case 'c': subst = String.fromCharCode(parseInt(param)); break;
-        case 'd': subst = parseInt(param) ? parseInt(param) : 0; break;
+        case 'b': subst = parseInt(param, 10).toString(2); break;
+        case 'c': subst = String.fromCharCode(parseInt(param, 10)); break;
+        case 'd': subst = parseInt(param, 10) ? parseInt(param, 10) : 0; break;
         case 'u': subst = Math.abs(param); break;
-        case 'o': subst = parseInt(param).toString(8); break;
+        case 'o': subst = parseInt(param, 10).toString(8); break;
         case 's': subst = ('' + param).replace(/%/g, '%%'); break;
-        case 'x': subst = ('' + parseInt(param).toString(16)).toLowerCase(); break;
-        case 'X': subst = ('' + parseInt(param).toString(16)).toUpperCase(); break;
+        case 'x': subst = ('' + parseInt(param, 10).toString(16)).toLowerCase(); break;
+        case 'X': subst = ('' + parseInt(param, 10).toString(16)).toUpperCase(); break;
         case 'f':
           param=parseFloat(param);
           if(isNaN(param)) param=0;
@@ -2467,7 +2468,7 @@ function ng_GetURLSafeCharsEncoded()
   {
     ngURLSafeCharsEncoded = {};
     for(var k in ngURLSafeChars)
-      ngURLSafeCharsEncoded['%' + parseInt(k).toString(16)] = String.fromCharCode(k);
+      ngURLSafeCharsEncoded['%' + parseInt(k, 10).toString(16)] = String.fromCharCode(k);
   }
   return ngURLSafeCharsEncoded;
 }
