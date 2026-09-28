@@ -2632,6 +2632,8 @@ function ngc_Create(props, ref)
   if(this.DoCreate) this.DoCreate(props, ref, nd,parent);
 
   if(props.OnCreated) props.OnCreated(this, ref);
+  if(((typeof this.DoClickOutside==='function')||(typeof OnClickOutside!=='undefined'))
+    &&(typeof this.IsPopup==='undefined')) ngc_RegisterOutsideClick(this);
   return nd;
 }
 
@@ -2772,6 +2774,7 @@ function ngc_Attach(o)
   {
     if(this.ID!='') {
       if(ngControlsIDs[this.ID]===this) delete ngControlsIDs[this.ID];
+      if(ngc_OutsideClickControls[this.ID]===this) delete ngc_OutsideClickControls[this.ID];
     }
     if(id!='') {
       if(ngHASDEBUG()) {
@@ -2779,6 +2782,7 @@ function ngc_Attach(o)
         if((oc)&&(oc!==this)) ngDEBUGWARN('Control overrides the ID "%s" which was already used. New control: %o, Previous control: %o',id,this, oc);
       }
       ngControlsIDs[id]=this;
+      if(this._outsideclick) ngc_OutsideClickControls[id]=this;
     }
     this.ID=id;
   }
@@ -2862,6 +2866,7 @@ function ngc_Dispose()
 
   var id=this.ID;
   ngc_DeactivatePopup(this);
+  ngc_UnregisterOutsideClick(this);
   if((!this.DoDispose)||(ngVal(this.DoDispose(),false)))
   {
     ngRemoveChildControl(this.ParentControl,this);
@@ -4548,40 +4553,188 @@ function ngcReattachChildren(c)
   }
 }
 
-// --- ngControl - popups ------------------------------------------------------
+// --- ngControl - outside click & popups ---------------------------------------
 
+var ngc_OutsideClickControls = {};
 var ngc_ActivePopups = {};
-var ngc_PopupsInitialized = false;
+
+function ngc_InitOutsideClick()
+{
+  if(ngc_RegisterOutsideClick.Initialized) return;
+  ngc_RegisterOutsideClick.Initialized = true;
+
+  function onmousewheel(e)
+  {
+    if(!e) e = window.event;
+    var target = e.target || e.srcElement || e.originalTarget;
+    ngc_ProcessOutsideClick(target, 1, null, e);
+  }
+
+  function onpointerdown(pi)
+  {
+    var target = pi.GetTarget();
+    return ngc_ProcessOutsideClick(target, 0, pi, pi.StartEvent);
+  }
+
+  document.onmousewheel = ngAddEvent(document.onmousewheel, onmousewheel);
+  if(window.addEventListener)
+    window.addEventListener('DOMMouseScroll', onmousewheel, false);
+  ngOnPointerDown = ngAddEvent(ngOnPointerDown, onpointerdown);
+}
+
+function ngc_RegisterOutsideClick(ctrl, wheel)
+{
+  if((typeof ctrl === 'string')&&(ctrl)) ctrl = ngGetControlById(ctrl);
+  if(!ctrl) return;
+  var id = ctrl.ID;
+  if((id)&&(id !== '')) {
+    ctrl._outsideclick = wheel ? 2 : 1;
+    ngc_InitOutsideClick();
+    ngc_OutsideClickControls[id] = ctrl;
+  }
+}
+
+function ngc_UnregisterOutsideClick(ctrl)
+{
+  if(!ctrl) return;
+  if(typeof ctrl === 'object') delete ctrl._outsideclick;
+  var id = ctrl.ID;
+  if((id)&&(id !== '')&&(typeof ngc_OutsideClickControls[id] !== 'undefined'))
+    delete ngc_OutsideClickControls[id];
+}
+
+function ngc_ProcessOutsideClick(target, eventType, pi, ev)
+{
+  var ret = true;
+  if(!target) return ret;
+
+  for(var id in ngc_OutsideClickControls)
+  {
+    var c = ngc_OutsideClickControls[id];
+    if(!c) continue;
+
+    if((!c.Visible)||((eventType === 1)&&(c._outsideclick!=2))) continue;
+
+    var co = (typeof c.Elm === 'function' ? c.Elm() : null);
+    if(!co) continue;
+    if((co.style.display === 'none')||(co.style.visibility === 'hidden'))
+      continue;
+
+    if(ng_IsInactiveModalElm(co)) continue;
+    
+    var t = target;
+    if(t)
+    {
+      var piorevent=pi ? pi : ev;
+      if((!c.OnIsInsideClick)||(!ngVal(c.OnIsInsideClick(c, t, eventType, piorevent), true)))
+      {
+        if(typeof c.IsInsideClick === 'function')
+        {
+          if(!ngVal(c.IsInsideClick(t, eventType, piorevent), true)) t = null;
+        }
+        else if((!c.OnIsInsidePopup)
+        ||(!ngVal(c.OnIsInsidePopup(c, t, eventType, piorevent), true)))
+        {
+          if(typeof c.IsInsidePopup === 'function')
+          {
+            if(!ngVal(c.IsInsidePopup(t, eventType, piorevent), true)) t = null;
+          }
+          else
+          {
+            while(t)
+            {
+              if(t === co) break;
+              t = t.parentNode;
+            }
+          }
+        }
+      }
+    }
+    if(!t)
+    {
+      if(eventType === 1) // mousewheel
+      {
+        if((typeof c.DoClickOutside === 'function')||(c.OnClickOutside)) {
+          debugger;
+          var pi = {
+            Owner: ngGetControlByElement(target),
+            X: ev.x,
+            Y: ev.y,
+            StartX: ev.x,
+            StartY: ev.y,
+            StartElement: target,
+            StartTime: new Date().getTime(),
+            StartEvent: ngc_eventref(ev),
+            StartEventID: 'mousewheel',
+            Event: ev,
+            EventID: 'mousewheel',
+            Touch: false,
+            PointerType: 'mouse',
+            SrcTarget: target,
+            SrcElement: ev.srcElement || target,
+            DstElement: target
+          };
+          if(typeof c.DoClickOutside === 'function') c.DoClickOutside(pi);
+          else if(c.OnClickOutside) c.OnClickOutside(c, pi);
+        }
+        ngc_HidePopup(c);
+      }
+      else // pointerdown
+      {
+        var outside=false;
+        if(typeof c.DoClickOutside === 'function')
+        {
+          if(ngVal(c.DoClickOutside(pi), false)) outside=true;
+        }
+        else if((!c.OnClickOutside)||(ngVal(c.OnClickOutside(c, pi), false)))
+        {
+          outside=true;
+        }
+
+        if((outside)&&(ret))
+        {
+          ngc_HidePopup(c);
+          ng_DocumentDeselect();
+          pi.EventPreventDefault();
+          pi.StopPropagation = true;
+          ngc_disabledocselect(pi.StartElement);
+          ret = false;
+        }
+      }
+    }
+  }
+  return ret;
+}
 
 function ngc_HidePopups()
 {
   for(var popupgrp in ngc_ActivePopups)
   {
-    var dd=ngc_ActivePopups[popupgrp];
+    var dd = ngc_ActivePopups[popupgrp];
     if(dd) ngc_HidePopup(dd);
   }
 }
 
 function ngc_GetPopupGroup(ctrl)
 {
-  var popupgrp=ctrl.PopupGroup;
-  if((typeof popupgrp==='undefined')||(popupgrp=='')) popupgrp='default';
+  var popupgrp = ctrl.PopupGroup;
+  if((typeof popupgrp === 'undefined')||(popupgrp == '')) popupgrp = 'default';
   return popupgrp;
 }
 
 function ngc_HidePopup(ctrl)
 {
   if(!ctrl) return false;
-  var popupgrp=ngc_GetPopupGroup(ctrl);
+  var popupgrp = ngc_GetPopupGroup(ctrl);
 
-  var ret=false;
-  var dd=ngc_ActivePopups[popupgrp];
-  if(dd===ctrl)
+  var ret = false;
+  var dd = ngc_ActivePopups[popupgrp];
+  if(dd === ctrl)
   {
     ctrl.SetVisible(false);
-    if(!ctrl.Visible) ret=true;
+    if(!ctrl.Visible) ret = true;
     if((ret)&&(ngc_ActivePopups[popupgrp]===ctrl)) // safe check if SetVisible don't call ngc_DeactivatePopup
-      ngc_ActivePopups[popupgrp]=null;
+      ngc_ActivePopups[popupgrp]=null;    
   }
   return ret;
 }
@@ -4589,144 +4742,37 @@ function ngc_HidePopup(ctrl)
 function ngc_DeactivatePopup(ctrl)
 {
   if(!ctrl) return;
-  var popupgrp=ngc_GetPopupGroup(ctrl);
+  var popupgrp = ngc_GetPopupGroup(ctrl);
 
-  var dd=ngc_ActivePopups[popupgrp];
-  if(dd===ctrl) ngc_ActivePopups[popupgrp]=null;
+  var dd = ngc_ActivePopups[popupgrp];
+  if(dd === ctrl) ngc_ActivePopups[popupgrp] = null;
 }
 
 function ngc_IsActivePopup(ctrl)
 {
   if(!ctrl) return false;
-  var popupgrp=ngc_GetPopupGroup(ctrl);
-  var dd=ngc_ActivePopups[popupgrp];
-  return(dd===ctrl);
+  var popupgrp = ngc_GetPopupGroup(ctrl);
+  var dd = ngc_ActivePopups[popupgrp];
+  return (dd === ctrl);
 }
 
 function ngc_ActivatePopup(ctrl)
 {
-  if(!ctrl) return;
-  var popupgrp=ngc_GetPopupGroup(ctrl);
+  if(!ctrl) return false;
+  var popupgrp = ngc_GetPopupGroup(ctrl);
 
-  if(!ngc_PopupsInitialized)
+  ngc_RegisterOutsideClick(ctrl, true);
+
+  var dd = ngc_ActivePopups[popupgrp];
+  if(typeof dd === 'undefined') // not initialized
   {
-    ngc_PopupsInitialized=true;
-
-    function onmousewheel(e)
-    {
-      if (!e) e = window.event;
-      var target = e.target || e.srcElement || e.originalTarget;
-
-      for(var popupgrp in ngc_ActivePopups)
-      {
-        var dd=ngc_ActivePopups[popupgrp];
-        if(dd)
-        {
-          if(ngModalCnt) {
-            var ddo=dd.Elm();
-            if(ng_IsInactiveModalElm(ddo)) continue;
-          }
-
-          var t = target;
-          if(t)
-          {
-            if((!dd.OnIsInsidePopup)||(!ngVal(dd.OnIsInsidePopup(dd,t,1,e),true)))
-            {
-              if(typeof dd.IsInsidePopup === 'function')
-              {
-                if(!ngVal(dd.IsInsidePopup(t,1,e),true)) t=null;
-              }
-              else
-              {
-                var ad=(dd ? dd.Elm() : null);
-                while(t)
-                {
-                  if(t===ad) break;
-                  t=t.parentNode;
-                }
-              }
-            }
-          }
-          if(!t) ngc_HidePopup(dd);
-        }
-      }
-    }
-
-    function onpointerdown(pi)
-    {
-      var ret=true;
-      var target = pi.GetTarget();
-      for(var popupgrp in ngc_ActivePopups)
-      {
-        var dd=ngc_ActivePopups[popupgrp];
-        if(dd)
-        {
-          if(ngModalCnt) {
-            var ddo=dd.Elm();
-            if(ng_IsInactiveModalElm(ddo)) continue;
-          }
-
-          var t = target;
-          if(t)
-          {
-            if(t)
-            {
-              if((!dd.OnIsInsidePopup)||(!ngVal(dd.OnIsInsidePopup(dd,t,0,pi),true)))
-              {
-                if(typeof dd.IsInsidePopup === 'function')
-                {
-                  if(!ngVal(dd.IsInsidePopup(t,0,pi),true)) t=null;
-                }
-                else
-                {
-                  var ad=(dd ? dd.Elm() : null);
-                  while(t)
-                  {
-                    if(t===ad) break;
-                    t=t.parentNode;
-                  }
-                }
-              }
-            }
-            if(!t)
-            {
-              if(typeof dd.DoClickOutside === 'function')
-              {
-                if(ngVal(dd.DoClickOutside(pi),false)) ngc_HidePopup(dd);
-              }
-              else if((!dd.OnClickOutside)||(ngVal(dd.OnClickOutside(dd,pi),false)))
-                ngc_HidePopup(dd);
-
-              if(ret) {
-                ng_DocumentDeselect();
-                pi.EventPreventDefault();
-                pi.StopPropagation=true;
-                ngc_disabledocselect(pi.StartElement);
-                ret=false;
-              }
-            }
-          }
-        }
-      }
-      return ret;
-    }
-
-    document.onmousewheel = ngAddEvent(document.onmousewheel, onmousewheel);
-    if (window.addEventListener)
-      window.addEventListener('DOMMouseScroll', onmousewheel, false);
-    ngOnPointerDown = ngAddEvent(ngOnPointerDown,onpointerdown);
+    ngc_ActivePopups[popupgrp] = null;
+    dd = null;
   }
+  if(dd !== ctrl) ngc_HidePopup(dd);
+  if(ngc_ActivePopups[popupgrp] !== null) return false; // cannot hide previous Popup
 
-  var dd=ngc_ActivePopups[popupgrp];
-  if(typeof dd==='undefined') // not initialized
-  {
-    ngc_ActivePopups[popupgrp]=null;
-    dd=null;
-  }
-  if(dd!==ctrl) ngc_HidePopup(dd);
-  if(ngc_ActivePopups[popupgrp]!==null) return false; // cannot hide previous Popup
-
-  ngc_ActivePopups[popupgrp]=ctrl;
+  ngc_ActivePopups[popupgrp] = ctrl;
   return true;
 }
 

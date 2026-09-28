@@ -1071,7 +1071,8 @@ function ng_diProperties(props,data) {
           "OnUpdateLater": ng_diEvent('function(c, s) {}', { Level: 'advanced' }),
           "OnMouseEnter": ng_diEvent('function(c) {}', { Level: 'advanced' }),
           "OnMouseLeave": ng_diEvent('function(c) {}', { Level: 'advanced' }),
-          "OnIsInsidePopup": ng_diEvent('function(c, target, intype, e) { return false; }', { Level: 'advanced' }),
+          "OnIsInsidePopup": ng_diEvent('function(c, target, intype, pi) { return false; }', { Level: 'advanced' }),
+          "OnIsInsideClick": ng_diEvent('function(c, target, intype, pi, ev) { return false; }', { Level: 'advanced' }),
           "OnClickOutside": ng_diEvent('function(c, pi) { return false; }', { Level: 'advanced' }),
           "OnPointerDown": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
           "OnPointerUp": ng_diEvent('function(c, pi) { return true; }', { Level: 'advanced' }),
@@ -1088,7 +1089,8 @@ function ng_diProperties(props,data) {
           "DoMouseEnter": ng_diFunction('function(e, mi, elm) { ng_CallParent(this, "DoMouseEnter", arguments); }', { Level: 'optional' }),
           "DoMouseLeave": ng_diFunction('function(e, mi, elm) { ng_CallParent(this, "DoMouseLeave", arguments); }', { Level: 'optional' }),
           "DoClickOutside": ng_diFunction('function(pi) { return ng_CallParent(this, "DoClickOutside", arguments, false); }', { Level: 'optional' }),
-          "IsInsidePopup": ng_diFunction('function(target, intype, e) { return ng_CallParent(this, "IsInsidePopup", arguments, false); }', { Level: 'optional' }),
+          "IsInsidePopup": ng_diFunction('function(target, intype, pi) { return ng_CallParent(this, "IsInsidePopup", arguments, false); }', { Level: 'optional' }),
+          "IsInsideClick": ng_diFunction('function(target, intype, pi) { return ng_CallParent(this, "IsInsideClick", arguments, false); }', { Level: 'optional' }),
 
           "DoAcceptGestures": ng_diFunction('function(elm, gestures) { ng_CallParent(this, "DoAcceptGestures", arguments); }', { Level: 'advanced' }),
 
