@@ -1542,6 +1542,7 @@ function ngl_DoPtrStart(pi)
     var cid=parseInt(eid.substring(4,eid.length),10);
     ngl_GetClickInfo(pi.StartEvent,pi.StartElement,cid);
     pi.SrcElement=pi.StartEvent.listRowObj;
+    if(this.SelectType) pi.ImmediateClick=true;
 
     if(pi.Touch)
     {
