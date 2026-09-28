@@ -160,9 +160,14 @@ ngUserControls['window_designinfo'] = {
             }, { Level: 'advanced' }, { Add: false }),
             "IgnoreDefFormBtn": ng_diBoolean(false, { Level: 'basic' })
           },
+          "Methods": ng_diObject({
+            "DoClickOutside": { Level: 'advanced' },
+            "IsInsideClick": { Level: 'advanced' }
+          }),
           "Events": {
             "OnClick": ng_diEvent('function(e) {}', { Level: 'basic' }),
             "OnDblClick": ng_diEvent('function(e) {}', { Level: 'basic' }),
+            "OnClickOutside": { Level: 'basic' },
             "OnMinimize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
             "OnMaximize": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
             "OnRestore": ng_diEvent('function(c) { return true; }', { Level: 'basic' }),
@@ -170,7 +175,7 @@ ngUserControls['window_designinfo'] = {
             "OnMouseMoving": ng_diEvent('function(c, pos) {}', { Level: 'basic' }),
             "OnMouseMove": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnMouseResizing": ng_diEvent('function(c, rect) {}', { Level: 'basic' }),
-            "OnMouseResize": ng_diEvent('function(c) {}', { Level: 'basic' })
+            "OnMouseResize": ng_diEvent('function(c) {}', { Level: 'basic' })            
           },
           "OverrideEvents": {
             "OnGetText": ng_diEvent('function(c) { return ""; }',{ Level: 'basic' }),

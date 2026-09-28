@@ -382,6 +382,12 @@
     }
   }
 
+  function ngw_DoClickOutside(pi)
+  {
+    if(this.OnClickOutside) return ngVal(this.OnClickOutside(this, pi), false);
+    return false;
+  }
+
   function ngw_IsDragEvent(eid)
   {
     switch(eid)
@@ -1105,6 +1111,7 @@
     this.DoUpdate = ngw_DoUpdate;
     this.DoPtrClick = ngw_DoPtrClick;
     this.DoPtrDblClick = ngw_DoPtrDblClick;
+    this.DoClickOutside = ngw_DoClickOutside;
     this.DoPtrStart = ngw_DoPtrStart;
     this.DoPtrDrag = ngw_DoPtrDrag;
     this.DoPtrEnd = ngw_DoPtrEnd;
@@ -1445,7 +1452,7 @@
     *    The image.     
     */
     this.GetImg=ngc_GetImg;
-    
+
     this.IsDragEvent = ngw_IsDragEvent;
     this.CheckBounds = ngw_CheckBounds;
     this.MouseType=-1;
@@ -1469,6 +1476,10 @@
     *  Event: OnDblClick
     */     
     this.OnDblClick = null;
+    /*
+    *  Event: OnClickOutside
+    */     
+    this.OnClickOutside = null;
     
     /*
     *  Event: OnMinimize
