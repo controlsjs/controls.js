@@ -325,7 +325,7 @@ ngUserControls['dialogs'] = {
         }
         return false;
       }
-      return ng_CallParent(c,'DoClickOutside',arguments);
+      return ng_CallParent(this,'DoClickOutside',arguments);
     }
         
     /*  Class: ngMessageDlg
