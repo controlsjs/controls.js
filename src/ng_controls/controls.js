@@ -2723,14 +2723,14 @@ function ngc_StopSmoothScroll()
 function ngc_DoSmoothScrollStart(elm, dx, dy, duration)
 {
   if(this.OnSmoothScrollStart)
-    return this.OnSmoothScrollStart(this, elm, dx, dy, duration);
+    return ngVal(this.OnSmoothScrollStart(this, elm, dx, dy, duration), false);
   return true;
 }
 
 function ngc_DoSmoothScrolling(elm, x, y, progress)
 {
   if(this.OnSmoothScrolling)
-    return this.OnSmoothScrolling(this, elm, x, y, progress);
+    return ngVal(this.OnSmoothScrolling(this, elm, x, y, progress), false);
   return true;
 }
 
@@ -4734,9 +4734,11 @@ function ngc_ActivatePopup(ctrl)
 
 var ngOnPointerDown = ngOnPointerDown || null;
 
-var ngDblClickMouseTimeout = 500;
+var ngDblClickMouseTimeout = 400;
+var ngDblClickMouseWaitTimeout = 175;
 var ngDblClickMouseThreshold = 10;
 var ngDblClickTouchTimeout = 500;
+var ngDblClickTouchWaitTimeout = 220;
 var ngDblClickTouchThreshold = 20;
 
 var ngCurrentPtrControl = null;
@@ -4948,6 +4950,7 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
       Event: e,
       EventID: eid,
       CanFocus: true,
+      ImmediateClick: false,
       Gestures: ng_CopyVar(gestures),
       Touch: touch,
       PointerType: (e.gesture ? e.gesture.pointerType : 'mouse'),
@@ -5029,7 +5032,16 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
     }
     pi.PreventDefault=true;
     pi.PreventSelect=true;
-    if(c) delete c.DblClickInfo;
+    if(c)
+    {
+      if(c.DblClickInfo)
+      {
+        if(c.DblClickInfo.ClickTimer) clearTimeout(c.DblClickInfo.ClickTimer);
+        if(c.DblClickInfo.ExpireTimer) clearTimeout(c.DblClickInfo.ExpireTimer);
+        if(c.DblClickInfo.Timer) clearTimeout(c.DblClickInfo.Timer);
+        delete c.DblClickInfo;
+      }
+    }
 
     var preventClick=function(e) {
       if(!e) e=window.event;
@@ -5063,11 +5075,20 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
     var dci=c.DblClickInfo;
     if(dci)
     {
-      var threshold = (pi.Touch ? ngDblClickTouchThreshold : ngDblClickMouseThreshold);
+      var threshold=(pi.Touch ? ngDblClickTouchThreshold : ngDblClickMouseThreshold);
       if((Math.abs(pi.X-dci.X)<threshold)&&(Math.abs(pi.Y-dci.Y)<threshold))
       {
+        if(dci.ClickTimer) clearTimeout(dci.ClickTimer);
+        if(dci.ExpireTimer) clearTimeout(dci.ExpireTimer);
         if(dci.Timer) clearTimeout(dci.Timer);
         pi.DblClickInfo=dci;
+        if(dci.ClickExecuted) pi.ClickAlreadyExecuted=true;
+      }
+      else
+      {
+        if(dci.ClickTimer) clearTimeout(dci.ClickTimer);
+        if(dci.ExpireTimer) clearTimeout(dci.ExpireTimer);
+        if(dci.Timer) clearTimeout(dci.Timer);
       }
       delete c.DblClickInfo;
     }
@@ -5227,6 +5248,8 @@ function ngc_ptrend(e)
           else
           {
             ngCurrentPtrDblClick=null;
+            if(dci.ClickTimer) clearTimeout(dci.ClickTimer);
+            if(dci.ExpireTimer) clearTimeout(dci.ExpireTimer);
             if(dci.Timer) clearTimeout(dci.Timer);
 
             pi.DblClickStartTime=dci.StartTime;
@@ -5253,12 +5276,25 @@ function ngc_ptrend(e)
     {
       ngCurrentPtrDblClick=c;
       c.DblClickInfo=dci;
-      dci.Timer=setTimeout(function () {
-        clearTimeout(dci.Timer);
-        delete c.DblClickInfo;
-        ngCurrentPtrDblClick=null;
+
+      var dblTimeout=(pi.Touch ? ngDblClickTouchTimeout : ngDblClickMouseTimeout);
+      dci.ExpireTimer=setTimeout(function () {
+        clearTimeout(dci.ExpireTimer);
+        if(c.DblClickInfo===dci)
+        {
+          delete c.DblClickInfo;
+          if(ngCurrentPtrDblClick===c) ngCurrentPtrDblClick=null;
+        }
+      }, dblTimeout);
+
+      var clickDelay=(pi.ImmediateClick ? 1 : 
+        (pi.Touch ? ngDblClickTouchWaitTimeout : ngDblClickMouseWaitTimeout));
+      dci.ClickTimer=setTimeout(function () {
+        clearTimeout(dci.ClickTimer);
+        dci.ClickTimer=null;
+        dci.ClickExecuted=true;
         if((doclick)&&(c.DoPtrClick)) c.DoPtrClick(pi);
-      },Math.round((pi.Touch ? ngDblClickTouchTimeout : ngDblClickMouseTimeout)/2));
+      }, clickDelay);
     }
     else
     {
