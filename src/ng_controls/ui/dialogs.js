@@ -299,6 +299,34 @@ ngUserControls['dialogs'] = {
       this.SetBounds();
       this.Update();
     }
+
+    function dlgbx_DoClickOutside(pi)
+    {
+      if((!this.OnClickOutside)&&(this.CloseByClickOutside)) {
+        var btns=ngVal(this.Controls.Buttons,null);
+        if((btns)&&(btns.Visible)) {
+          var cc=btns.ChildControls;
+          if((typeof cc !== 'undefined')&&(cc.length>0))
+          {
+            var c,okbtn=null;
+            for(var i=0;i<cc.length;i++) {
+              c=cc[i];
+              if((c)&&(typeof c.DialogResult!=='undefined'))
+              {
+                if(okbtn) return false;
+                okbtn=c;
+              }
+            }
+            if((okbtn)&&(typeof okbtn.Click==='function')) {
+              okbtn.Click();
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+      return ng_CallParent(c,'DoClickOutside',arguments);
+    }
         
     /*  Class: ngMessageDlg
      *  Basic message dialog (based on <ngWindow>).
@@ -347,6 +375,9 @@ ngUserControls['dialogs'] = {
           // override standard dialog functions
           Center: dlgbx_Center,            
           CalcAutoSize: dlgbx_CalcAutoSize
+        },
+        Methods: {
+          DoClickOutside: dlgbx_DoClickOutside
         },
         /*
          *  Group: Controls
