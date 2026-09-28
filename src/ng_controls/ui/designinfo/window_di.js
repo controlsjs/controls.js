@@ -129,6 +129,7 @@ ngUserControls['window_designinfo'] = {
             "Moveable": ng_diBoolean(true, { Level: 'basic' }),
             "Modal": ng_diBoolean(false, { Level: 'basic' }),
             "DisposeOnClose": ng_diBoolean(false, { Level: 'basic' }),
+            "CloseByClickOutside": ng_diBoolean(false, { Level: 'basic' }),
             "AutoSize": ng_diBoolean(true, { Level: 'advanced' }),
             "Centered": ng_diBoolean(false, { Level: 'basic' }),
             "MinimizedBounds": ng_diMixed([

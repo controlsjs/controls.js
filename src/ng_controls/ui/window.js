@@ -385,6 +385,10 @@
   function ngw_DoClickOutside(pi)
   {
     if(this.OnClickOutside) return ngVal(this.OnClickOutside(this, pi), false);
+    if(this.CloseByClickOutside) {
+      if(typeof this.Close==='function') this.Close();
+      return true;
+    }
     return false;
   }
 
@@ -1199,6 +1203,12 @@
     *  Default value: *false*   
     */
     this.DisposeOnClose = false;
+    /*  Variable: CloseByClickOutside
+    *  ...
+    *  Type: bool
+    *  Default value: *false*   
+    */
+    this.CloseByClickOutside = false;
     /*  Variable: AutoSize
     *  ...
     *  Type: bool
