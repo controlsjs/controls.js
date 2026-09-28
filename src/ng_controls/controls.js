@@ -938,10 +938,10 @@ function ng_GetScrollBars(o)
 
 function ng_StopSmoothScroll(target)
 {
-  if(!target) return;
+  if(!target) return false;
   if(typeof target==='string') target=document.getElementById(target);
   var elm=(target.Elm ? target.Elm() : target);
-  if((!elm)||(typeof elm!=='object')) return;
+  if((!elm)||(typeof elm!=='object')) return false;
   var state=elm.ngSmoothScroll;
   if(state)
   {
@@ -958,7 +958,9 @@ function ng_StopSmoothScroll(target)
     if(!c) c=ngGetControlByElement(elm);
     if(state.OnFinish) state.OnFinish(true, elm);
     if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, true);
+    return true;
   }
+  return false;
 }
 
 function ng_SmoothScroll(target, dx, dy, duration, onfinish)
@@ -983,21 +985,32 @@ function ng_SmoothScroll(target, dx, dy, duration, onfinish)
   duration=ngVal(duration,500);
   if((c)&&(c.DoSmoothScrollStart)&&(!c.DoSmoothScrollStart(elm, dx, dy, duration))) return;
 
+  function doScroll(p)
+  {
+    if((c)&&(c.DoSmoothScrolling)) return ngVal(c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, p), true);
+    return true;
+  }
+
+  function doFinish(stopped)
+  {
+    if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, stopped);
+  }
+
   if((ngANIMPROHIBITED())||(duration<=0))
   {
-    elm.scrollLeft+=dx;
-    elm.scrollTop+=dy;
     var timer=setTimeout(function () {
       clearTimeout(timer);
-      if((c)&&(c.DoSmoothScrolling)&&(!c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, 1.0)))
+      elm.scrollLeft+=dx;
+      elm.scrollTop+=dy;
+      if(!doScroll(1.0))
       {
         ng_StopSmoothScroll(elm);
         return;
       }
 
       if(onfinish) onfinish(false, elm);
-      if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, false);
-    },1);
+      doFinish(false);
+    },1);      
     return;
   }
 
@@ -1026,7 +1039,7 @@ function ng_SmoothScroll(target, dx, dy, duration, onfinish)
     {
       elm.scrollLeft=startLeft+dx;
       elm.scrollTop=startTop+dy;
-      if((c)&&(c.DoSmoothScrolling)&&(!c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, 1.0)))
+      if(!doScroll(1.0))
       {
         ng_StopSmoothScroll(elm);
         return;
@@ -1034,7 +1047,7 @@ function ng_SmoothScroll(target, dx, dy, duration, onfinish)
 
       delete elm.ngSmoothScroll;
       if(onfinish) onfinish(false, elm);
-      if((c)&&(c.DoSmoothScrollFinished)) c.DoSmoothScrollFinished(elm, false);
+      doFinish(false);
       return;
     }
 
@@ -1042,7 +1055,7 @@ function ng_SmoothScroll(target, dx, dy, duration, onfinish)
     elm.scrollLeft=Math.round(startLeft+dx*p);
     elm.scrollTop=Math.round(startTop+dy*p);
 
-    if((c)&&(c.DoSmoothScrolling)&&(!c.DoSmoothScrolling(elm, elm.scrollLeft, elm.scrollTop, p)))
+    if(!doScroll(p))
     {
       ng_StopSmoothScroll(elm);
       return;
@@ -4975,19 +4988,77 @@ function ngc_ptrstart(c, eid, elm, e, gestures)
     if(pi.StopPropagation) ngc_ptrevignore(e);
     return;
   }
-  if(elm) ng_StopSmoothScroll(elm);
-  if(c)
+  var stopped=false;
+  if(elm)
+  {
+    var eelm=elm;
+    while(eelm)
+    {
+      if(eelm.ngSmoothScroll)
+      {
+        if(ng_StopSmoothScroll(eelm)) stopped=true;
+      }
+      eelm=eelm.parentNode;
+    }
+  }
+  if((!stopped)&&(c))
   {
     var sc=c;
     while(sc)
     {
       if(sc.SmoothScroll)
       {
-        ng_StopSmoothScroll(sc);
-        break;
+        if(ng_StopSmoothScroll(sc))
+        {
+          stopped=true;
+          break;
+        }
       }
       sc=sc.ParentControl;
     }
+  }
+  if(stopped)
+  {
+    pi.ScrollStopped=true;
+    pi.Click=false;
+    pi.DblClick=false;
+    if(pi.Gestures)
+    {
+      delete pi.Gestures.tap;
+      delete pi.Gestures.doubletap;
+    }
+    pi.PreventDefault=true;
+    pi.PreventSelect=true;
+    if(c) delete c.DblClickInfo;
+
+    var preventClick=function(e) {
+      if(!e) e=window.event;
+      if(e)
+      {
+        if(e.stopPropagation) e.stopPropagation();
+        if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+        if(e.preventDefault) e.preventDefault();
+        e.cancelBubble=true;
+        e.returnValue=false;
+      }
+      if(window.removeEventListener)
+        window.removeEventListener('click', preventClick, true);
+      else if(document.detachEvent)
+        document.detachEvent('onclick', preventClick);
+    };
+    if(window.addEventListener)
+      window.addEventListener('click', preventClick, true);
+    else if(document.attachEvent)
+      document.attachEvent('onclick', preventClick);
+    setTimeout(function() {
+      if(window.removeEventListener)
+        window.removeEventListener('click', preventClick, true);
+      else if(document.detachEvent)
+        document.detachEvent('onclick', preventClick);
+    }, 400);
+  }
+  if(c)
+  {
 
     var dci=c.DblClickInfo;
     if(dci)
@@ -5127,7 +5198,12 @@ function ngc_ptrend(e)
   {
     ret=true;
 
-    if((pi)&&((pi.Gestures.tap)||(pi.Gestures.doubletap)))
+    if((pi)&&(pi.ScrollStopped))
+    {
+      pi.Click=false;
+      pi.DblClick=false;
+    }
+    else if((pi)&&((pi.Gestures.tap)||(pi.Gestures.doubletap)))
     {
       if((pi.GetTargetControl()==c)||(pi.EndTime-pi.StartTime<200))
       {
