@@ -360,7 +360,6 @@ ngUserControls['dialogs'] = {
       ng_MergeDef(def, {
         DialogType: 'ngWindow',
         W: 200, H: 150,
-        CloseBtn: false,
         Data: {          
           DialogResult: mbNone,
           
@@ -501,7 +500,6 @@ ngUserControls['dialogs'] = {
         default:           defbtn=-1; break;
       }
       var defresult=void 0;
-      var cancel=false;
       bcnt=0;
       for(var i in btns)
       {
@@ -522,7 +520,7 @@ ngUserControls['dialogs'] = {
           if(b.Data.DialogResult == mbCancel) // cancel found, assign close btn
           {
             def.Data.DialogResult=mbCancel;
-            def.CloseBtn=true;
+            if(typeof def.CloseBtn==='undefined') def.CloseBtn=true;
             defresult=mbNone;
           }
           if(typeof defresult==='undefined') defresult=b.Data.DialogResult;
@@ -541,8 +539,9 @@ ngUserControls['dialogs'] = {
       if(ngVal(defresult,mbNone)!=mbNone) // one action, assign close btn
       {
         def.Data.DialogResult=defresult;
-        def.CloseBtn=true;
+       if(typeof def.CloseBtn==='undefined') def.CloseBtn=true;
       }
+      if(typeof def.CloseBtn==='undefined') def.CloseBtn=false;
       if(def.DialogType == 'ngMessageDlg') def.DialogType='ngWindow';
 
       var c=ngCreateControlAsType(def, def.DialogType, ref, parent);
