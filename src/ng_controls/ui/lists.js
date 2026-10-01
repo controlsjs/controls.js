@@ -4543,7 +4543,11 @@ ngUserControls['list'] = {
           if(ngIExplorer6) bounds.R=2;
           pl.Controls.Paging.SetBounds(bounds);
           pl.Controls.List.SetBounds({B: 0});
-          this.draw_paging_height=pgheight;
+          var pgvisible=pl.IsPagingVisible();
+          if((pl.Controls.Paging)&&(pl.Controls.Paging.Visible!=pgvisible))
+            pl.Controls.List.paging_needs_update=true;
+          this.draw_paging_height=(pgvisible ? pgheight : 0);
+          this.draw_paging_visible=pgvisible;
         }
         else
         {
@@ -4574,7 +4578,7 @@ ngUserControls['list'] = {
         ncnt=Math.max(this.max_displayed_items,ncnt);
         var aih=ngVal(pl.GetAverageItemHeight(),0);
         if(aih>0) {
-          var gcnt = Math.floor((ng_ClientHeight(o)-1)/aih);
+          var gcnt = Math.floor(ng_ClientHeight(o)/aih);
           if(gcnt>ncnt) ncnt=gcnt;
         }
         ncnt+=2;
@@ -4664,7 +4668,7 @@ ngUserControls['list'] = {
         }
         if(o)
         {
-          var maxh = ng_ClientHeight(o)-1;
+          var maxh = ng_ClientHeight(o);
 
           var hheight = 0, io;
           var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) maxh-=p;
@@ -4743,7 +4747,7 @@ ngUserControls['list'] = {
               else h=0;
 
               maxh-=h;
-              if(maxh<0) break;
+              if(maxh<-1) break;
 
               ih+=h;
               cnt++;
@@ -4754,17 +4758,19 @@ ngUserControls['list'] = {
             list.in_measure=false;
             ng_SetInnerHTML(o,'');
           }
-          if(i<list.Items.length) {
-            pl.DisplayedItems=cnt;
-            if(pl.DisplayedItems>this.max_displayed_items) this.max_displayed_items=pl.DisplayedItems;
-          }
+          if(i<list.Items.length) pl.DisplayedItems=cnt;
           else
           {
             if((cnt)&&(ih)) {
-              var aih=ngVal(pl.GetAverageItemHeight(),0);
-              if(aih<=0) aih=(ih/cnt);
-              pl.DisplayedItems=cnt+Math.floor(maxh/aih); // guess displayed items
+              var aih=(ih/cnt);
+              if(aih<=0) aih=ngVal(pl.GetAverageItemHeight(),0);
+              if(aih>0) {
+                pl.DisplayedItems=cnt+Math.floor((maxh+1)/aih);
+              }
             }
+          }
+          if(pl.DisplayedItems>this.max_displayed_items) {
+            this.max_displayed_items=pl.DisplayedItems;
           }
           if(pl.DisplayedItems<=0) pl.DisplayedItems=1;
 
@@ -4898,7 +4904,15 @@ ngUserControls['list'] = {
         }
         this.draw_paging_elm=null;
       }
-      if((pl.PagingInside)&&(pl.Controls.Paging)) pl.Controls.Paging.SetVisible(!this.Loading && pl.IsPagingVisible());
+      if((pl.PagingInside)&&(pl.Controls.Paging))
+      {
+        var newvis=(!this.Loading && pl.IsPagingVisible());
+        if(pl.Controls.Paging.Visible!=newvis)
+        {
+          pl.Controls.Paging.SetVisible(newvis);
+          this.paging_needs_update=true;
+        }
+      }
       if(this.paging_needs_update)
       {
         this.paging_needs_update=false;
@@ -4909,7 +4923,23 @@ ngUserControls['list'] = {
       this.draw_length=this.Items.length;
       this.displayed_items=pl.DisplayedItems;
       this.display_mode=pl.DisplayMode;
+
+      var pchanged=((pl.PagingInside)&&(pl.DisplayMode==plDisplayFit)&&
+        (!this.Loading)&&(typeof this.draw_paging_visible!=='undefined')&&
+        (this.draw_paging_visible!=pl.IsPagingVisible()));
+
       delete this.draw_paging_height;
+      delete this.draw_paging_visible;
+
+      if((pchanged)&&(!this.in_paging_reupdate))
+      {
+        this.in_paging_reupdate=true;
+        try {
+          this.Update();
+        } finally {
+          this.in_paging_reupdate=false;
+        }
+      }
 
       if((this.init_page>0)&&((pl.DisplayMode==plDisplayFixed)||(!this.Loading)))
       {
