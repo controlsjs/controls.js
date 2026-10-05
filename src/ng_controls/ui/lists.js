@@ -2819,7 +2819,7 @@ function ngl_DoUpdate(o)
 
     var thead=(showheader ? new ngStringBuilder : html);
     var col,text;
-    th_append('<thead>');
+    th_append('<thead class="'+cclass+'Header">');
     th_append('<tr>');
     var cw;
     for(var i=0;i<this.Columns.length;i++)
