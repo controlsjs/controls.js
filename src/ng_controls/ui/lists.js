@@ -4484,6 +4484,7 @@ ngUserControls['list'] = {
 
     function npgl_ListPagingChanged()
     {
+      delete this.measured_avg_item_height;
       this.page_start=new Array();
       this.page_start[0]=0;
     }
@@ -4533,9 +4534,10 @@ ngUserControls['list'] = {
       }
 
       var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
-      if((to)&&(to.parentNode))
+      if(to)
       {
         var pgheight=ng_OuterHeight(to);
+        if(!pgheight && pl.Controls.Paging.Bounds && pl.Controls.Paging.Bounds.H) pgheight=pl.Controls.Paging.Bounds.H;
         if(pl.PagingInside)
         {
           to.style.position='relative';
@@ -4548,6 +4550,8 @@ ngUserControls['list'] = {
             pl.Controls.List.paging_needs_update=true;
           this.draw_paging_height=(pgvisible ? pgheight : 0);
           this.draw_paging_visible=pgvisible;
+          if(to.parentNode) to.parentNode.removeChild(to);
+          this.draw_paging_elm=to;
         }
         else
         {
@@ -4559,10 +4563,8 @@ ngUserControls['list'] = {
           pl.Controls.List.SetBounds({B: (pgvisible ? pgheight /*  pl.Controls.Paging.Bounds.H*/ : 0) });
           if(to.parentNode == pl.Elm()) to=null;
           this.draw_paging_height=0;
-        }
-        if(to)
-        {
-          this.draw_paging_elm=to.parentNode.removeChild(to);
+          if(to && to.parentNode) this.draw_paging_elm=to.parentNode.removeChild(to);
+          else if(to) this.draw_paging_elm=to;
         }
       }
       else
@@ -4605,10 +4607,11 @@ ngUserControls['list'] = {
       var ih,mih;
       var list=this.Controls.List;
       if(list) {
-        ih=list.ItemHeight;
+        ih=list.measured_avg_item_height;
+        if(typeof ih==='undefined'||!ih) ih=list.ItemHeight;
         mih=list.MinItemHeight;
       }
-      if(typeof ih==='undefined') ih=this.AverageItemHeight;
+      if(typeof ih==='undefined'||!ih) ih=this.AverageItemHeight;
       if((typeof mih!=='undefined')&&(ngVal(ih,0)<mih)) ih=mih;
       return ih;
     }
@@ -4629,7 +4632,7 @@ ngUserControls['list'] = {
                 var lo=list.Elm();
                 if(lo) maxh=ng_ClientHeight(lo);
               }
-              if(maxh>0) ncnt=Math.floor(maxh/aih);
+              if((maxh>0)&&((max)||(!ncnt))) ncnt=Math.floor(maxh/aih);
             }
           }
           if((max)&&(list.max_displayed_items)) ncnt=Math.max(list.max_displayed_items, ncnt);
@@ -4646,6 +4649,185 @@ ngUserControls['list'] = {
     function npgl_DataRequestPerPage()
     {
       return this.getitemsperpage(true)+(this.DisplayMode==plDisplayFit ? 2 : 1);
+    }
+
+    function npgl_MeasureItemHeight(o, html, it, i, list)
+    {
+      if((typeof o==='object')&&(o)&&(typeof o.DrawItem==='function'))
+      {
+        var tmp=o; o=html; html=it; it=i; i=list; list=tmp;
+      }
+      if(!list) list=this.Controls.List;
+      if(!list) return 0;
+      if(typeof it === 'undefined') it=list.Items[i];
+      if(typeof it === 'undefined') it=new Object;
+
+      var tmp_html=new ngStringBuilder(html);
+      var items=it.Items;
+      it.Items=void 0;
+      var l=list.DrawItem(tmp_html, it, i, 0, false);
+      it.Items=items;
+
+      if(l.l>0) tmp_html.append('</tbody>');
+      if(list.Columns.length>0) tmp_html.append('</table>');
+      ng_SetInnerHTML(o,tmp_html.toString());
+
+      var io=(o.querySelector ? o.querySelector('#'+list.ID+'_'+i) : null);
+      if(!io) io=document.getElementById(list.ID+'_'+i);
+      var h=0;
+      if(io)
+      {
+        if(o.id!=list.ID+'_MO')
+        {
+          o.style.display='block';
+          h=ng_OuterHeight(io);
+          o.style.display=(list.Visible ? 'block' : 'none');
+        }
+        else h=ng_OuterHeight(io);
+      }
+      return h;
+    }
+
+    function npgl_GetMeasureContext(list)
+    {
+      if(!list) list=this.Controls.List;
+      if((!list)||(!list.Items)||(!list.Items.length)) return null;
+      var maxh=ngVal(list.list_maxheight,0);
+      if(maxh<=0) return null;
+      var parent=(list.ContentElm ? list.ContentElm : (list.HasEmbededContent ? document.getElementById(list.ID+'_CB') : list.Elm()));
+      if(!parent) return null;
+
+      var mo=document.getElementById(list.ID+'_MO');
+      if(!mo)
+      {
+        mo=document.createElement('div');
+        mo.id=list.ID+'_MO';
+        mo.style.position='absolute';
+        mo.style.left='-10000px';
+        mo.style.top='-10000px';
+        mo.style.visibility='hidden';
+        mo.style.margin='0px';
+        mo.style.padding='0px';
+        mo.style.border='0px';
+        parent.appendChild(mo);
+      }
+      else if(mo.parentNode!==parent)
+      {
+        parent.appendChild(mo);
+      }
+      var w=ng_ClientWidth(parent);
+      if(w>0) mo.style.width=w+'px';
+      mo.className=parent.className;
+
+      var thtml='';
+      if(list.Columns.length>0)
+      {
+        var th=new ngStringBuilder;
+        th.append('<table cellspacing="0" cellpadding="0" border="0" style="position:relative;left:0px;right:0px;overflow:hidden;"><thead><tr>');
+        var col,cw;
+        for(var c=0;c<list.Columns.length;c++)
+        {
+          col=list.Columns[c];
+          if(!ngVal(col.Visible,true)) continue;
+          th.append('<td align="'+ngVal(col.Align,'left')+'">');
+          if(list.OnGetColumnWidth) cw=list.OnGetColumnWidth(list, col, c);
+          else cw=col.Width;
+          th.append('<div style="position:relative; font-size:0px; line-height:0px; height:0px; width:'+(typeof cw==='undefined' ? 0 : cw)+'px"></div>');
+          th.append('</td>');
+        }
+        th.append('</tr></thead><tbody>');
+        thtml=th.toString();
+      }
+
+      return {
+        o: mo,
+        maxh: maxh,
+        html: thtml
+      };
+    }
+
+    function npgl_MeasurePageCount(fromIndex, list)
+    {
+      if((typeof fromIndex==='object')&&(fromIndex)&&(typeof fromIndex.DrawItem==='function'))
+      {
+        var tmp=fromIndex; fromIndex=list; list=tmp;
+      }
+      if(!list) list=this.Controls.List;
+      if(!list) return 0;
+      fromIndex=ngVal(fromIndex, 0);
+
+      var ctx=this.GetMeasureContext(list);
+      if(!ctx) return 0;
+
+      var maxh=ctx.maxh,cnt=0,h;
+      list.in_measure=true;
+      try {
+        for(var i=fromIndex;i<list.Items.length;i++)
+        {
+          if(!this.IsDataLoaded(i)) break;
+          h=this.MeasureItemHeight(ctx.o, ctx.html, list.Items[i], i, list);
+          maxh-=h;
+          if(maxh<-1) break;
+          cnt++;
+        }
+      } finally {
+        list.in_measure=false;
+        if(ctx.o)
+        {
+          ng_SetInnerHTML(ctx.o,'');
+          if(ctx.o.parentNode) ctx.o.parentNode.removeChild(ctx.o);
+        }
+      }
+      return cnt;
+    }
+
+    function npgl_CalcPrevPageStart(toIndex, list)
+    {
+      if((typeof toIndex==='object')&&(toIndex)&&(typeof toIndex.DrawItem==='function'))
+      {
+        var tmp=toIndex; toIndex=list; list=tmp;
+      }
+      if(!list) list=this.Controls.List;
+      if(!list) return -1;
+      toIndex=ngVal(toIndex, 0);
+      if(toIndex<=0) return 0;
+
+      var ctx=this.GetMeasureContext(list);
+      if(!ctx) return -1;
+
+      if(toIndex>list.Items.length) toIndex=list.Items.length;
+
+      var aih=ngVal(this.GetAverageItemHeight(),0);
+      var est_cnt=(aih>0 ? Math.ceil(ctx.maxh/aih) : this.DisplayedItems);
+      var check_from=Math.max(0, toIndex-est_cnt-2);
+      for(var j=check_from;j<toIndex;j++)
+      {
+        if(!this.IsDataLoaded(j)) return -1;
+      }
+
+      var h,rem_h=ctx.maxh,start_idx=toIndex;
+      list.in_measure=true;
+      try {
+        for(var i=toIndex-1;i>=0;i--)
+        {
+          if(!this.IsDataLoaded(i)) break;
+          h=this.MeasureItemHeight(ctx.o, ctx.html, list.Items[i], i, list);
+          if(!h) h=aih;
+
+          rem_h-=h;
+          if(rem_h<-1) break;
+          start_idx=i;
+        }
+      } finally {
+        list.in_measure=false;
+        if(ctx.o)
+        {
+          ng_SetInnerHTML(ctx.o,'');
+          if(ctx.o.parentNode) ctx.o.parentNode.removeChild(ctx.o);
+        }
+      }
+
+      return (start_idx<toIndex ? start_idx : -1);
     }
 
     function npgl_OnDrawItem(list, ret, html, it, id, level, pcollapsed)
@@ -4696,13 +4878,11 @@ ngUserControls['list'] = {
           list.list_maxheight=maxh;
 
           var cnt=0;
-          var i,h,it,items,tmp_html,ih=0,l;
+          var i,h,it,ih=0;
           list.in_measure=true;
           try {
             for(i=pl.TopIndex;i<list.Items.length;i++)
             {
-              tmp_html=new ngStringBuilder(html);
-
               if(!pl.IsDataLoaded(i+1))
               {
                 var lfrom=i+1;
@@ -4726,32 +4906,14 @@ ngUserControls['list'] = {
               }
 
               it=list.Items[i];
-              if(typeof it === 'undefined') it=new Object;
-
-              items=it.Items;
-              it.Items=void 0;
-              l=list.DrawItem(tmp_html, it, i, 0, false);
-              it.Items=items;
-
-              if(l.l>0) tmp_html.append('</tbody>');
-              if(list.Columns.length>0) tmp_html.append('</table>');
-              ng_SetInnerHTML(o,tmp_html.toString());
-
-              io=document.getElementById(list.ID+'_'+i);
-              if(io)
-              {
-                o.style.display='block';
-                h=ng_OuterHeight(io);
-                o.style.display=(this.Visible ? 'block' : 'none');
-              }
-              else h=0;
+              h=pl.MeasureItemHeight(o, html, it, i, list);
 
               maxh-=h;
               if(maxh<-1) break;
 
               ih+=h;
               cnt++;
-              if((typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
+              if((it)&&(typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
             }
           } finally {
             delete list.measure_loadto;
@@ -4769,6 +4931,7 @@ ngUserControls['list'] = {
               }
             }
           }
+          if((cnt)&&(ih)) list.measured_avg_item_height=(ih/cnt);
           if(pl.DisplayedItems>this.max_displayed_items) {
             this.max_displayed_items=pl.DisplayedItems;
           }
@@ -4796,11 +4959,19 @@ ngUserControls['list'] = {
               list.paging_needs_update=true;
             }
           }
-          if((!pl.TopIndex)||((pl.Page>0)&&(typeof list.page_start[pl.Page] !== 'undefined')))
-          {
-            var nti = pl.TopIndex+pl.DisplayedItems;
-            if((typeof pl.MaxLength === 'undefined') || (nti <= pl.MaxLength)){
-              list.page_start[pl.Page+1]=nti;
+          list.page_start[pl.Page]=pl.TopIndex;
+          if(!pl.TopIndex) list.page_start[0]=0;
+          var nti = pl.TopIndex+pl.DisplayedItems;
+          if((typeof pl.MaxLength === 'undefined') || (nti <= pl.MaxLength)){
+            var old_nti = list.page_start[pl.Page+1];
+            list.page_start[pl.Page+1]=nti;
+            if((typeof old_nti!=='undefined')&&(old_nti!==nti))
+            {
+              for(var k in list.page_start)
+              {
+                var pi=parseInt(k,10);
+                if((!isNaN(pi))&&(pi>pl.Page+1)) delete list.page_start[pi];
+              }
             }
           }
 
@@ -4904,6 +5075,14 @@ ngUserControls['list'] = {
         }
         this.draw_paging_elm=null;
       }
+      else if(pl.PagingInside)
+      {
+        var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
+        if((to)&&(!to.parentNode)&&(this.ContentElm))
+        {
+          this.ContentElm.appendChild(to);
+        }
+      }
       if((pl.PagingInside)&&(pl.Controls.Paging))
       {
         var newvis=(!this.Loading && pl.IsPagingVisible());
@@ -4984,10 +5163,11 @@ ngUserControls['list'] = {
         var op=this.Page;
         var pti=this.TopIndex;
 
-        if(p==plFirstPage)
+        if((p==plFirstPage)||(p===0))
         {
           this.TopIndex=0;
           list.page_start[0]=0;
+          list.page_start_found=true;
           p=0;
         }
         else
@@ -4996,22 +5176,78 @@ ngUserControls['list'] = {
             case 1: // next page
               var ti=list.page_start[p];
               var oti=list.page_start[op];
-              if((list.page_start_found)&&(typeof ti!=='undefined')&&(typeof oti!=='undefined')) { this.TopIndex=ti; list.page_start_found=true; }
+              if(typeof oti==='undefined') oti=this.TopIndex;
+              var expected_ti = this.TopIndex + this.DisplayedItems;
+              if((typeof ti!=='undefined')&&(ti!==expected_ti)&&(this.DisplayMode==plDisplayFit))
+              {
+                ti=expected_ti;
+                list.page_start[p]=ti;
+                for(var k in list.page_start)
+                {
+                  var pi=parseInt(k,10);
+                  if((!isNaN(pi))&&(pi>p)) delete list.page_start[pi];
+                }
+              }
+              if(typeof ti!=='undefined')
+              {
+                this.TopIndex=ti;
+                list.page_start_found=true;
+              }
               else
               {
-                list.page_start_found=false;
-                this.TopIndex+=this.DisplayedItems;
-                if(oti != 'undefined') list.page_start[p]=this.TopIndex;
+                this.TopIndex=expected_ti;
+                list.page_start[p]=this.TopIndex;
+                list.page_start_found=true;
               }
               break;
             case -1: // prev page
-              var ti=list.page_start[p];
-              var oti=list.page_start[op];
-              if((list.page_start_found)&&(typeof ti!=='undefined')&&(typeof oti!=='undefined')) { this.TopIndex=ti; list.page_start_found=true; }
+              if(p===0)
+              {
+                this.TopIndex=0;
+                list.page_start[0]=0;
+                list.page_start_found=true;
+              }
               else
               {
-                list.page_start_found=false;
-                this.TopIndex-=this.ItemsPerPage();
+                var ti=list.page_start[p];
+                if((p===1)&&(typeof ti==='undefined'))
+                {
+                  var d0 = this.MeasurePageCount(0, list);
+                  if(d0>0)
+                  {
+                    needupdate=true;
+                    ti=d0;
+                    list.page_start[1]=ti;
+                    list.page_start[0]=0;
+                  }
+                }
+                if(typeof ti!=='undefined')
+                {
+                  this.TopIndex=ti;
+                  list.page_start_found=true;
+                }
+                else
+                {
+                  var prev_ti = -1;
+                  if((this.DisplayMode==plDisplayFit)&&(list.list_maxheight>0))
+                  {
+                    prev_ti = this.CalcPrevPageStart(pti, list);
+                  }
+                  if(prev_ti>=0)
+                  {
+                    needupdate=true;
+                    this.TopIndex=prev_ti;
+                    list.page_start[p]=prev_ti;
+                    list.page_start_found=true;
+                  }
+                  else
+                  {
+                    list.page_start_found=false;
+                    this.TopIndex-=this.ItemsPerPage();
+                    if(this.TopIndex<0) this.TopIndex=0;
+                    list.page_start[p]=this.TopIndex;
+                  }
+                }
               }
               if(this.TopIndex<0) this.TopIndex=0;
               break;
@@ -5030,58 +5266,63 @@ ngUserControls['list'] = {
                   else
                   {
                     var i=0,s=0;
-                    if(this.DisplayMode!=plDisplayFixed)
+                    var sp=-1;
+                    for(var k in list.page_start)
                     {
-                      var sp=-1;
-                      for(i in list.page_start)
-                      {
-                        if((i>sp)&&(i<=p)&&(typeof list.page_start[i] !== 'undefined')) sp=i;
-                      }
-                      if(sp>=0)
-                      {
-                        s=list.page_start[sp];
-                        i=sp;
-                      }
-                      else i=0;
-    /*                  for(i=p-1;i>0;i--)
-                      {
-                        if(typeof list.page_start[i] !== 'undefined')
-                        {
-                          s=list.page_start[i];
-                          break;
-                        }
-                      }*/
+                      var pi=parseInt(k,10);
+                      if((!isNaN(pi))&&(pi>sp)&&(pi<=p)&&(typeof list.page_start[pi] !== 'undefined')) sp=pi;
                     }
+                    if(sp>=0)
+                    {
+                      s=list.page_start[sp];
+                      i=sp;
+                    }
+                    else i=0;
                     var ap=(p-i);
 
                     this.TopIndex=s;
                     if(ap>0){this.TopIndex += ap*this.ItemsPerPage();}
+                    list.page_start[p]=this.TopIndex;
                     list.page_start_found=false;
                   }
                 }
                 else this.TopIndex=999999999; // dynamic data, determine items count
                 if((p==plLastPage)||((this.TopIndex>0)&&(this.TopIndex>=list.Items.length)))
                 {
-                  if(!this.AsyncWaiting()) this.async_datapage=(p==plLastPage ? op : p);
+                  if(!this.AsyncWaiting())
+                  {
+                    this.async_datapage=(p==plLastPage ? op : p);
+                    this.async_prevpage=op;
+                  }
                 }
                 this.NeedData(this.TopIndex,Math.max(list.max_displayed_items, this.DisplayedItems)+((this.DisplayMode==plDisplayFit) ? 2 : 1));
-                if(!this.AsyncWaiting()) delete this.async_datapage;
+                if(!this.AsyncWaiting())
+                {
+                  delete this.async_datapage;
+                  delete this.async_prevpage;
+                }
                 if(p==plLastPage) {
                   pti=999999999;
                   needupdate=true;
                   p=this.PageByIndex(len);
                   break;
                 }
-                if((this.TopIndex>0)&&(this.TopIndex>=len))
+                if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))&&(this.TopIndex>0)&&(this.TopIndex>=len))
+                {
+                  len=this.GetLength();
                   p=this.PageByIndex(len);
+                }
                 else break;
               }
               break;
           }
-        if(this.TopIndex>=list.Items.length) { this.TopIndex=pti; p=op; }
-        if(p<0) p=0;
-        if(!this.TopIndex) { list.page_start[0]=0; list.page_start_found=true; }
-        else if((!p)&&(this.TopIndex>0)) p=1;
+        if(this.IsDynamicData())
+        {
+          if((typeof this.MaxLength!=='undefined')&&(this.TopIndex>=this.MaxLength)) { this.TopIndex=pti; p=op; }
+        }
+        else if(this.TopIndex>=list.Items.length) { this.TopIndex=pti; p=op; }
+        if(p<=0) { p=0; this.TopIndex=0; list.page_start[0]=0; list.page_start_found=true; }
+        else if(!this.TopIndex) { list.page_start[0]=0; list.page_start_found=true; p=0; }
 
         this.Page=p;
         this.UpdatePaging();
@@ -5255,7 +5496,7 @@ ngUserControls['list'] = {
       if(c)
       {
         if(this.PagingType!=plPagingUser) c.SetVisible(c.InitVisible);
-        if(c.Text!=pginfo.PageNo) { c.Text=pginfo.PageNo; if(c.Visible) pginfo.Update=true; }
+        if(c.Text!=pginfo.PageNo) { c.SetText(pginfo.PageNo); if(c.Visible) pginfo.Update=true; }
       }
 
       // update paging
@@ -5307,18 +5548,35 @@ ngUserControls['list'] = {
       if(!list) return 0;
       if(idx<0) idx=0;
       var len=this.GetLength();
-      if(idx>=len) idx=len-1;
+      if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))&&(idx>=len)) idx=len-1;
       if(this.DisplayMode!=plDisplayFixed)
       {
-        var d,s,mind=100000;
-        for(var i in list.page_start)
+        var s,highest_p=-1,highest_s=0;
+        for(var k in list.page_start)
         {
-          s=list.page_start[i];
-          if(typeof s!=='undefined')
+          var pi=parseInt(k,10);
+          if(!isNaN(pi))
           {
-            d=Math.abs(s-idx);
-            if(d<mind) { mind=d; pg=parseInt(i,10); pgstart=parseInt(s,10); }
+            s=list.page_start[pi];
+            if(typeof s!=='undefined')
+            {
+              var next_s=list.page_start[pi+1];
+              if((s<=idx)&&(typeof next_s!=='undefined')&&(idx<next_s))
+              {
+                return pi;
+              }
+              if((s<=idx)&&(pi>highest_p))
+              {
+                highest_p=pi;
+                highest_s=s;
+              }
+            }
           }
+        }
+        if(highest_p>=0)
+        {
+          pg=highest_p;
+          pgstart=highest_s;
         }
       }
       var ni=(idx-pgstart);
@@ -5567,8 +5825,78 @@ ngUserControls['list'] = {
           },this.AsyncDataTimeout*1000);
       }
 
-      var data;
-      if(this.OnLoadData) data=this.OnLoadData(this,list,idx,cnt);
+      if(this.OnLoadData) {
+        var data=this.OnLoadData(this,list,idx,cnt);
+        if(this.AsyncData) {
+          if((typeof data==='object')&&(data))
+          {
+            var self=this;
+            var timeout=setTimeout(function() { clearTimeout(timeout); if(typeof self.SetAsyncData==='function') self.SetAsyncData(idx,data); },1);
+          }
+        } else {
+          this.async_dataindex = void 0;
+          this.async_datacount = void 0;          
+          if((typeof data==='object')&&(data))
+          {
+            if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+            this.async_datatimeout_timer=null;
+
+            if(idx!=999999999) {
+              var j;
+              if((data.length<cnt)&&((data.length>0)||(idx===0))) // trim length if not enough data
+              {
+                this.SetLength(idx+data.length);
+              }
+              for(var i=0;i<data.length;i++)
+              {
+                j=i+idx;
+                if(j>=list.Items.length)
+                {
+                  list.Items.length=j;
+                  if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
+                }
+                if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
+              }
+            }
+          }
+          if(typeof this.async_datapage!=='undefined') // request was beyond length
+          {
+            var p=this.async_datapage;
+            var len=this.GetLength();
+            var is_empty_beyond=((data)&&(data.length===0)&&(idx>0))||
+              ((idx>=len)&&(typeof this.MaxLength!=='undefined'));
+
+            if(is_empty_beyond)
+            {
+              if(typeof list.page_start[p]!=='undefined') delete list.page_start[p];
+              if((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))
+              {
+                p=this.PageByIndex(len);
+              }
+              else
+              {
+                delete this.async_datapage;
+                var prev=ngVal(this.async_prevpage, 0);
+                delete this.async_prevpage;
+                if(p!=plLastPage) this.SetPage(plLastPage);
+                else if(this.Page!=prev) this.SetPage(prev);
+                return false;
+              }
+            }
+            else if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))&&(idx>=len))
+            {
+              p=this.PageByIndex(len);
+            }
+            delete this.async_datapage;
+            delete this.async_prevpage;
+            if(this.Page!=p)
+            {
+              this.SetPage(p);
+              return false;
+            }
+          }
+        }
+      }
       else
       {
         var rpc=this.GetRPC();
@@ -5578,30 +5906,6 @@ ngUserControls['list'] = {
           if((typeof ngApp==='object')&&(ngApp)) url=ng_AddURLParam(url,'lang='+ngApp.Lang);
           if(this.OnAsyncURLRequest) url=this.OnAsyncURLRequest(this,url,idx,cnt);
           if(url!='') rpc.sendRequest(url);
-        }
-      }
-      if((typeof data==='object')&&(data))
-      {
-        this.async_dataindex = void 0;
-        this.async_datacount = void 0;
-
-        if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
-        this.async_datatimeout_timer=null;
-
-        var j;
-        if((data.length>=0)&&(data.length<cnt)) // trim length if not enough data
-        {
-          this.SetLength(idx+data.length);
-        }
-        for(var i=0;i<data.length;i++)
-        {
-          j=i+idx;
-          if(j>=list.Items.length)
-          {
-            list.Items.length=j;
-            if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
-          }
-          if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
         }
       }
       return true;
@@ -5636,7 +5940,7 @@ ngUserControls['list'] = {
         var asynclast=this.async_dataindex+this.async_datacount;
         list.BeginUpdate();
         try {
-          if((idx==this.async_dataindex)&&(data.length>=0)&&(data.length<this.async_datacount)) // loading current block, trim length if not enough data
+          if((idx==this.async_dataindex)&&(data.length<this.async_datacount)&&((data.length>0)||(idx===0))) // loading current block, trim length if not enough data
           {
             this.SetLength(idx+data.length);
             changed=true;
@@ -5687,8 +5991,32 @@ ngUserControls['list'] = {
       {
         var p=this.async_datapage;
         var len=this.GetLength();
-        if(idx>=len) p=this.PageByIndex(len);
+        var is_empty_beyond=((data)&&(data.length===0)&&(idx>0))||
+          ((idx>=len)&&(typeof this.MaxLength!=='undefined'));
+
+        if(is_empty_beyond)
+        {
+          if(typeof list.page_start[p]!=='undefined') delete list.page_start[p];
+          if((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))
+          {
+            p=this.PageByIndex(len);
+          }
+          else
+          {
+            delete this.async_datapage;
+            var prev=ngVal(this.async_prevpage, 0);
+            delete this.async_prevpage;
+            if(p!=plLastPage) this.SetPage(plLastPage);
+            else if(this.Page!=prev) this.SetPage(prev);
+            return;
+          }
+        }
+        else if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))&&(idx>=len))
+        {
+          p=this.PageByIndex(len);
+        }
         delete this.async_datapage;
+        delete this.async_prevpage;
         if(this.Page!=p)
         {
           this.SetPage(p);
@@ -6254,6 +6582,50 @@ ngUserControls['list'] = {
       *    Height of the item or undefined if cannot be determined.
       */
       c.GetAverageItemHeight = npgl_GetAverageItemHeight;
+
+      /*  Function: GetMeasureContext
+      *  Prepares and returns offscreen measurement context element and parameters for item measurement.
+      *
+      *  Syntax:
+      *    object *GetMeasureContext* ([ngList list])
+      *
+      *  Returns:
+      *    Object with {o, maxh, html} or null if measurement cannot be performed.
+      */
+      c.GetMeasureContext = npgl_GetMeasureContext;
+
+      /*  Function: MeasureItemHeight
+      *  Measures the rendered height of a list item using the measurement container.
+      *
+      *  Syntax:
+      *    int *MeasureItemHeight* (Element o, string html, object it, int i [, ngList list])
+      *
+      *  Returns:
+      *    Measured outer height in pixels.
+      */
+      c.MeasureItemHeight = npgl_MeasureItemHeight;
+
+      /*  Function: MeasurePageCount
+      *  Measures how many items fit into one page starting from fromIndex.
+      *
+      *  Syntax:
+      *    int *MeasurePageCount* (int fromIndex [, ngList list])
+      *
+      *  Returns:
+      *    Number of items that fit into the available height.
+      */
+      c.MeasurePageCount = npgl_MeasurePageCount;
+
+      /*  Function: CalcPrevPageStart
+      *  Calculates the starting item index of the previous page ending at toIndex.
+      *
+      *  Syntax:
+      *    int *CalcPrevPageStart* (int toIndex [, ngList list])
+      *
+      *  Returns:
+      *    Start index for previous page, or -1 if cannot be calculated.
+      */
+      c.CalcPrevPageStart = npgl_CalcPrevPageStart;
 
       c.IsPagingVisible = npgl_IsPagingVisible;
       c.UpdatePaging = npgl_UpdatePaging;
