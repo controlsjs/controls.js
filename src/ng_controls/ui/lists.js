@@ -4505,8 +4505,7 @@ ngUserControls['list'] = {
     function npgl_DoUpdateList(o)
     {
       var ret=false;
-      if((this.update_cnt>0)||(this.ID=='')) return ret;
-      if(this.in_update) { this.need_update=true; return ret; }
+      if((this.update_cnt>0)||(this.ID=='')||(this.in_update)) { this.need_update=true; return ret; }
       this.need_update=false;
 
       var pl=this.Owner.Owner;
