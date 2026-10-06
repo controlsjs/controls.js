@@ -2698,7 +2698,7 @@ function ngl_CalcItemIndent(item)
 
 function ngl_DoUpdate(o)
 {
-  if((this.update_cnt>0)||(this.ID=='')) { this.need_update=true; return; }
+  if((this.update_cnt>0)||(this.ID=='')) { this.need_update=true; return false; }
   this.need_update=false;
 
   if(this.ActionUpdateTimer) clearTimeout(this.ActionUpdateTimer); this.ActionUpdateTimer=null;
@@ -4502,13 +4502,15 @@ ngUserControls['list'] = {
       return true;
     }
 
-    function npgl_DoUpdateBefore(o)
+    function npgl_DoUpdateList(o)
     {
-      if((this.update_cnt>0)||(this.ID=='')) return;
+      var ret=false;
+      if((this.update_cnt>0)||(this.ID=='')) return ret;
+      if(this.in_update) { this.need_update=true; return ret; }
       this.need_update=false;
 
       var pl=this.Owner.Owner;
-      if(!pl) return false;
+      if(!pl) return ret;
 
       if((this.display_mode!=pl.DisplayMode) // Display mode changed
         ||(pl.DisplayMode==plDisplayFixed)&&(this.displayed_items!=pl.DisplayedItems))
@@ -4523,9 +4525,7 @@ ngUserControls['list'] = {
 
       if(pl.TopIndex>=this.Items.length)
       {
-    //  pl.LastPage();
         pl.SetPage(pl.PageByIndex(pl.GetLength()));
-
       }
 
       if(this.draw_page!=pl.Page) // page changed
@@ -4598,8 +4598,103 @@ ngUserControls['list'] = {
           this.measure_loadto=pl.TopIndex+ncnt;
         }
       }
+      this.in_update=true;
       this.draw_measure=fit;
-      return true;
+      try {
+        ret=ng_CallParent(this,'DoUpdate',arguments,true);
+      } finally {
+        this.draw_measure=false;
+        this.in_update=false;
+      }
+
+      if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems)) this.Loading=true;
+      if(pl.loading_displayed!=this.Loading)
+      {
+        pl.loading_displayed=this.Loading;
+        pl.ShowLoading(this.Loading ? true : false);
+      }
+      if(this.Loading)
+      {
+        pl.ShowNoData(false);
+        if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
+      }
+      else {
+        pl.ShowNoData(pl.IsDynamicData() ? (typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0) : (!this.Items.length));
+      }
+
+      if(this.draw_paging_elm)
+      {
+        if(pl.PagingInside)
+        {
+          if(this.ContentElm) this.ContentElm.appendChild(this.draw_paging_elm);
+        }
+        else
+        {
+          var io=pl.Elm();
+          if(io) io.appendChild(this.draw_paging_elm);
+        }
+        this.draw_paging_elm=null;
+      }
+      else if(pl.PagingInside)
+      {
+        var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
+        if((to)&&(!to.parentNode)&&(this.ContentElm))
+        {
+          this.ContentElm.appendChild(to);
+        }
+      }
+      if((pl.PagingInside)&&(pl.Controls.Paging))
+      {
+        var newvis=(!this.Loading && pl.IsPagingVisible());
+        if(pl.Controls.Paging.Visible!=newvis)
+        {
+          pl.Controls.Paging.SetVisible(newvis);
+          this.paging_needs_update=true;
+        }
+      }
+      if(this.paging_needs_update)
+      {
+        this.paging_needs_update=false;
+        pl.UpdatePaging();
+      }
+
+      this.draw_page=pl.Page;
+      this.draw_length=this.Items.length;
+      this.displayed_items=pl.DisplayedItems;
+      this.display_mode=pl.DisplayMode;
+
+      var pchanged=((pl.PagingInside)&&(pl.DisplayMode==plDisplayFit)&&
+        (!this.Loading)&&(typeof this.draw_paging_visible!=='undefined')&&
+        (this.draw_paging_visible!=pl.IsPagingVisible()));
+
+      delete this.draw_paging_height;
+      delete this.draw_paging_visible;
+
+      if(pchanged) this.need_update=true;
+
+      if((this.init_page>0)&&((pl.DisplayMode==plDisplayFixed)||(!this.Loading)))
+      {
+        var p=this.init_page;
+        this.init_page=0;
+        pl.SetPage(p);
+      }
+      if((pl.AutoSelectFirstItem)&&(!pl.firstitemselected)&&(this.SelCount==0)&&(pl.IsDataLoaded(0)))
+      {
+        pl.firstitemselected=true;
+        this.SelectItem(this.Items[0]);
+      }
+
+      if(this.need_update) {
+        if(!this.in_reupdate) {
+          this.in_reupdate=true;
+          try {
+            this.Update();
+          } finally {
+            this.in_reupdate=false;            
+          }
+        } else this.need_update=false;
+      }
+      return ret;
     }
 
     function npgl_GetAverageItemHeight()
@@ -5037,102 +5132,6 @@ ngUserControls['list'] = {
         return;
       }
       if((typeof this.Controls.Loading === 'object')&&(typeof this.Controls.Loading.SetVisible === 'function')) this.Controls.Loading.SetVisible(v);
-    }
-
-    function npgl_DoUpdateAfter(o)
-    {
-      if((this.update_cnt>0)||(this.ID=='')) return;
-
-      this.draw_measure=false;
-      var pl=this.Owner.Owner;
-      if(!pl) return true;
-
-      if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems)) this.Loading=true;
-      if(pl.loading_displayed!=this.Loading)
-      {
-        pl.loading_displayed=this.Loading;
-        pl.ShowLoading(this.Loading ? true : false);
-      }
-      if(this.Loading)
-      {
-        pl.ShowNoData(false);
-        if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
-      }
-      else {
-        pl.ShowNoData(pl.IsDynamicData() ? (typeof pl.MaxLength!=='undefined')&&(pl.MaxLength<=0) : (!this.Items.length));
-      }
-
-      if(this.draw_paging_elm)
-      {
-        if(pl.PagingInside)
-        {
-          if(this.ContentElm) this.ContentElm.appendChild(this.draw_paging_elm);
-        }
-        else
-        {
-          var io=pl.Elm();
-          if(io) io.appendChild(this.draw_paging_elm);
-        }
-        this.draw_paging_elm=null;
-      }
-      else if(pl.PagingInside)
-      {
-        var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
-        if((to)&&(!to.parentNode)&&(this.ContentElm))
-        {
-          this.ContentElm.appendChild(to);
-        }
-      }
-      if((pl.PagingInside)&&(pl.Controls.Paging))
-      {
-        var newvis=(!this.Loading && pl.IsPagingVisible());
-        if(pl.Controls.Paging.Visible!=newvis)
-        {
-          pl.Controls.Paging.SetVisible(newvis);
-          this.paging_needs_update=true;
-        }
-      }
-      if(this.paging_needs_update)
-      {
-        this.paging_needs_update=false;
-        pl.UpdatePaging();
-      }
-
-      this.draw_page=pl.Page;
-      this.draw_length=this.Items.length;
-      this.displayed_items=pl.DisplayedItems;
-      this.display_mode=pl.DisplayMode;
-
-      var pchanged=((pl.PagingInside)&&(pl.DisplayMode==plDisplayFit)&&
-        (!this.Loading)&&(typeof this.draw_paging_visible!=='undefined')&&
-        (this.draw_paging_visible!=pl.IsPagingVisible()));
-
-      delete this.draw_paging_height;
-      delete this.draw_paging_visible;
-
-      if((pchanged)&&(!this.in_paging_reupdate))
-      {
-        this.in_paging_reupdate=true;
-        try {
-          this.Update();
-        } finally {
-          this.in_paging_reupdate=false;
-        }
-      }
-
-      if((this.init_page>0)&&((pl.DisplayMode==plDisplayFixed)||(!this.Loading)))
-      {
-        var p=this.init_page;
-        this.init_page=0;
-        pl.SetPage(p);
-      }
-      if((pl.AutoSelectFirstItem)&&(!pl.firstitemselected)&&(this.SelCount==0)&&(pl.IsDataLoaded(0)))
-      {
-        pl.firstitemselected=true;
-        this.SelectItem(this.Items[0]);
-      }
-
-      return true;
     }
 
     function npgl_OnExpanding(l,it)
@@ -6981,10 +6980,8 @@ ngUserControls['list'] = {
           l.ListPagingChanged();
 
           ng_OverrideMethod(l,'IndexOf',npgl_IndexOf);
-
-          l.AddEvent(npgl_DoUpdateBefore,'DoUpdate');
+          ng_OverrideMethod(l,'DoUpdate',npgl_DoUpdateList);
           l.AddEvent('OnKeyDown', npgl_OnKeyDown);
-          l.AddEvent('DoUpdate',npgl_DoUpdateAfter);
           l.AddEvent('OnDrawItem', npgl_OnDrawItem);
           l.AddEvent('OnExpanding', npgl_OnExpanding);
           l.AddEvent('OnAdd', npgl_OnListChanged);
