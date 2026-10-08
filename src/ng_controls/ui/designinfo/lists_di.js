@@ -676,6 +676,10 @@ return {
             "ParentReferences": ng_diBoolean(true, { Level: 'advanced' }),
             "Frame": ng_diType( 'img_frame', { Level: 'advanced' }),
             "CanSelectText": ng_diBoolean(false, { Level: 'basic' }),
+            "ImmediateClick": ng_diMixed([
+              ng_diUndefined(),
+              ng_diBoolean(true, { Level: 'advanced' })
+            ], { InitType: 'boolean', Level: 'advanced' }),
             "SmoothScroll": ng_diMixed([
               ng_diBoolean(true, { Level: 'basic' }),
               ng_diObject({

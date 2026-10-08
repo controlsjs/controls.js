@@ -1542,7 +1542,8 @@ function ngl_DoPtrStart(pi)
     var cid=parseInt(eid.substring(4,eid.length),10);
     ngl_GetClickInfo(pi.StartEvent,pi.StartElement,cid);
     pi.SrcElement=pi.StartEvent.listRowObj;
-    if(this.SelectType) pi.ImmediateClick=true;
+    if(typeof this.ImmediateClick!=='undefined') pi.ImmediateClick=this.ImmediateClick;
+    else if((this.SelectType!=nglSelectNone)&&(this.SelectType!=nglSelectCheck)) pi.ImmediateClick=true;
 
     if(pi.Touch)
     {
@@ -3662,6 +3663,14 @@ function ngList(id)
    *  Default value: *false*
    */
   this.CanSelectText = false;
+
+  /*
+   *  Variable: ImmediateClick
+   *  ...
+   *  Type: bool
+   *  Default value: *undefined*
+   */
+  //this.ImmediateClick=void 0;
 
   this.do_add = ngl_do_add;
   this.do_remove = ngl_do_remove;
