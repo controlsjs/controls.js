@@ -4655,7 +4655,6 @@ function ngc_ProcessOutsideClick(target, eventType, pi, ev)
       if(eventType === 1) // mousewheel
       {
         if((typeof c.DoClickOutside === 'function')||(c.OnClickOutside)) {
-          debugger;
           var pi = {
             Owner: ngGetControlByElement(target),
             X: ev.x,
