@@ -5837,8 +5837,9 @@ ngUserControls['list'] = {
         if(this.AsyncData) {
           if((typeof data==='object')&&(data))
           {
-            var self=this;
-            var timeout=setTimeout(function() { clearTimeout(timeout); if(typeof self.SetAsyncData==='function') self.SetAsyncData(idx,data); },1);
+            //var self=this;
+            //var timeout=setTimeout(function() { clearTimeout(timeout); if(typeof self.SetAsyncData==='function') self.SetAsyncData(idx,data); },1);
+            this.SetAsyncData(idx,data);
           }
         } else {
           this.async_dataindex = void 0;
