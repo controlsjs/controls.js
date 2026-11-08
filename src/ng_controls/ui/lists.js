@@ -4538,8 +4538,11 @@ ngUserControls['list'] = {
 
       if(this.draw_page!=pl.Page) // page changed
       {
+        delete this.saved_scrolltop;
         if(this.ContentElm) this.ContentElm.scrollTop=0;
       }
+      var scroll=((!pl.loading_displayed)&&(this.ContentElm)
+        ? this.ContentElm.scrollTop : void 0);
 
       var to=(pl.Controls.Paging ? pl.Controls.Paging.Elm() : null);
       if(to)
@@ -4594,11 +4597,22 @@ ngUserControls['list'] = {
         ncnt+=2;
       }
       else ncnt++;
-      if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt)) { this.Loading=true; return false; }
+      if(pl.IsAsyncLoadingBlock(pl.TopIndex,ncnt))
+      {
+        this.Loading=true;
+        if((typeof this.saved_scrolltop==='undefined')&&(typeof scroll!=='undefined'))
+          this.saved_scrolltop=scroll;
+        return false;
+      }
       if(!this.draw_measure) {
         if(!pl.NeedData(pl.TopIndex,ncnt))
         {
-          if(pl.AsyncWaiting()) this.Loading=true;
+          if(pl.AsyncWaiting())
+          {
+            this.Loading=true;
+            if((typeof this.saved_scrolltop==='undefined')&&(typeof scroll!=='undefined'))
+              this.saved_scrolltop=scroll;
+          }
           return false;
         }
 
@@ -4623,6 +4637,8 @@ ngUserControls['list'] = {
       }
       if(this.Loading)
       {
+        if((typeof this.saved_scrolltop==='undefined')&&(typeof scroll!=='undefined'))
+          this.saved_scrolltop=scroll;
         pl.ShowNoData(false);
         if(this.ContentElm) ng_SetInnerHTML(this.ContentElm,'');
       }
@@ -4658,6 +4674,20 @@ ngUserControls['list'] = {
         {
           pl.Controls.Paging.SetVisible(newvis);
           this.paging_needs_update=true;
+        }
+      }
+      if(!this.Loading)
+      {
+        if(typeof this.saved_scrolltop!=='undefined')
+        {
+          if((this.ContentElm)&&(this.saved_scrolltop))
+          {
+            try {
+              this.ContentElm.scrollTop=this.saved_scrolltop;
+            }
+            catch(e) { }
+          }
+          delete this.saved_scrolltop;
         }
       }
       if(this.paging_needs_update)
@@ -5294,12 +5324,12 @@ ngUserControls['list'] = {
                   }
                 }
                 else this.TopIndex=999999999; // dynamic data, determine items count
-                if((p==plLastPage)||((this.TopIndex>0)&&(this.TopIndex>=list.Items.length)))
+                if((this.AsyncData)&&((p==plLastPage)||((this.TopIndex>0)&&(this.TopIndex>=list.Items.length))))
                 {
                   if(!this.AsyncWaiting())
                   {
-                    this.async_datapage=(p==plLastPage ? op : p);
-                    this.async_prevpage=op;
+                    this.async_datapage=p;
+                    if(typeof this.async_prevpage==='undefined') this.async_prevpage=op;
                   }
                 }
                 this.NeedData(this.TopIndex,Math.max(list.max_displayed_items, this.DisplayedItems)+((this.DisplayMode==plDisplayFit) ? 2 : 1));
@@ -5309,27 +5339,57 @@ ngUserControls['list'] = {
                   delete this.async_prevpage;
                 }
                 if(p==plLastPage) {
-                  pti=999999999;
-                  needupdate=true;
-                  p=this.PageByIndex(len);
+                  if(this.AsyncWaiting())
+                  {
+                    pti=999999999;
+                    needupdate=true;
+                    p=op;
+                    break;
+                  }
+                  if(typeof this.MaxLength!=='undefined')
+                  {
+                    len=this.GetLength();
+                    p=this.PageByIndex(len);
+                    continue;
+                  }
+                  this.TopIndex=pti;
+                  p=op;
                   break;
                 }
-                if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))&&(this.TopIndex>0)&&(this.TopIndex>=len))
+                if((!this.AsyncWaiting())&&(typeof this.MaxLength==='undefined')
+                  &&(this.TopIndex>0)&&(!this.IsDataLoaded(this.TopIndex)))
                 {
+                  if(typeof list.page_start[p]!=='undefined') delete list.page_start[p];
+                  this.NeedData(999999999,1);
+                }
+                if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))
+                  &&(this.TopIndex>0)&&(this.TopIndex>=this.GetLength()))
+                {
+                  if(typeof list.page_start[p]!=='undefined') delete list.page_start[p];
                   len=this.GetLength();
                   p=this.PageByIndex(len);
                 }
                 else break;
               }
+              if((this.IsDynamicData())&&(this.TopIndex!==999999999)
+                &&(!this.AsyncWaiting())&&(this.TopIndex>0)&&(!this.IsDataLoaded(this.TopIndex)))
+              {
+                this.TopIndex=pti;
+                p=op;
+              }
               break;
           }
         if(this.IsDynamicData())
         {
-          if((typeof this.MaxLength!=='undefined')&&(this.TopIndex>=this.MaxLength)) { this.TopIndex=pti; p=op; }
+          if((this.TopIndex!==999999999)&&(typeof this.MaxLength!=='undefined')&&(this.TopIndex>=this.MaxLength)) { this.TopIndex=pti; p=op; }
         }
         else if(this.TopIndex>=list.Items.length) { this.TopIndex=pti; p=op; }
-        if(p<=0) { p=0; this.TopIndex=0; list.page_start[0]=0; list.page_start_found=true; }
-        else if(!this.TopIndex) { list.page_start[0]=0; list.page_start_found=true; p=0; }
+        if(this.TopIndex!==999999999)
+        {
+          if(p<=0) { p=0; this.TopIndex=0; list.page_start[0]=0; list.page_start_found=true; }
+          else if(!this.TopIndex) { list.page_start[0]=0; list.page_start_found=true; p=0; }
+        }
+        else if(p<0) p=0;
 
         this.Page=p;
         this.UpdatePaging();
@@ -5704,6 +5764,7 @@ ngUserControls['list'] = {
       }
       if(typeof cnt==='undefined') return;
 
+      var to=idx+cnt;
       if(this.IsDynamicData())
       {
         if((!this.OnInvalidateData)||(ngVal(this.OnInvalidateData(this,idx,cnt),false)))
@@ -5716,22 +5777,22 @@ ngUserControls['list'] = {
             }
         }
 
-        if(!this.IsAsyncLoadingBlock(idx, cnt))
+        if(this.IsAsyncLoadingBlock(idx, cnt))
         {
-          var to=idx+cnt;
-          if(!this.AsyncWaiting())
+          this.CancelLoadData();
+        }
+        else if(!this.AsyncWaiting())
+        {
+          var lato=this.last_asyncdata_index+this.last_asyncdata_count;
+          if(!(((idx<this.last_asyncdata_index)&&(to<this.last_asyncdata_index))||((idx>=lato)&&(to>=lato))))
           {
-            var lato=this.last_asyncdata_index+this.last_asyncdata_count;
-            if(!((idx<this.last_asyncdata_index)&&(to<this.last_asyncdata_index))||((idx>=lato)&&(to>=lato)))
-            {
-              this.last_asyncdata_index=-1;
-              this.last_asyncdata_count=0;
-            }
+            this.last_asyncdata_index=-1;
+            this.last_asyncdata_count=0;
           }
         }
       }
       var ato=this.TopIndex+this.DisplayedItems;
-      if(!((idx<this.TopIndex)&&(to<this.TopIndex))||((idx>=ato)&&(to>=ato))) list.Update();
+      if(!(((idx<this.TopIndex)&&(to<this.TopIndex))||((idx>=ato)&&(to>=ato)))) list.Update();
     }
 
     function npgl_AsyncTimeout(lid)
@@ -5765,6 +5826,24 @@ ngUserControls['list'] = {
         this.async_rpc.nocache=true;
       }
       return this.async_rpc;
+    }
+
+    function npgl_CancelLoadData()
+    {
+      if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
+      this.async_datatimeout_timer=null;
+      if(this.async_loaddata_timer) clearTimeout(this.async_loaddata_timer);
+      this.async_loaddata_timer=null;
+      if(this.AsyncWaiting())
+      {
+        var idx=this.async_dataindex;
+        var cnt=this.async_datacount;
+        this.async_dataindex=void 0;
+        this.async_datacount=void 0;
+        delete this.async_datapage;
+        delete this.async_prevpage;
+        if(this.OnCancelLoadData) this.OnCancelLoadData(this,this.Controls.List,idx,cnt);
+      }
     }
 
     function npgl_DoLoadData(idx,cnt,retry)
@@ -5825,11 +5904,15 @@ ngUserControls['list'] = {
         // Set timeout timer
         if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
         this.async_datatimeout_timer=null;
+        if(this.async_loaddata_timer) clearTimeout(this.async_loaddata_timer);
+        this.async_loaddata_timer=null;
         if((this.AsyncDataTimeout>0)&&(this.async_datatimeout_retry>=0))
+        {
           var id=this.ID;
           this.async_datatimeout_timer=setTimeout(function() {
             npgl_AsyncTimeout(id);
           },this.AsyncDataTimeout*1000);
+        }
       }
 
       if(this.OnLoadData) {
@@ -5838,7 +5921,12 @@ ngUserControls['list'] = {
           if((typeof data==='object')&&(data))
           {
             var self=this;
-            var timeout=setTimeout(function() { clearTimeout(timeout); if(typeof self.SetAsyncData==='function') self.SetAsyncData(idx,data); },1);
+            if(this.async_loaddata_timer) clearTimeout(this.async_loaddata_timer);
+            this.async_loaddata_timer=setTimeout(function() {
+              if(self.async_loaddata_timer) clearTimeout(self.async_loaddata_timer);
+              self.async_loaddata_timer=null;
+              if(typeof self.SetAsyncData==='function') self.SetAsyncData(idx,data);
+            },1);
           }
         } else {
           this.async_dataindex = void 0;
@@ -5864,42 +5952,6 @@ ngUserControls['list'] = {
                 }
                 if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
               }
-            }
-          }
-          if(typeof this.async_datapage!=='undefined') // request was beyond length
-          {
-            var p=this.async_datapage;
-            var len=this.GetLength();
-            var is_empty_beyond=((data)&&(data.length===0)&&(idx>0))||
-              ((idx>=len)&&(typeof this.MaxLength!=='undefined'));
-
-            if(is_empty_beyond)
-            {
-              if(typeof list.page_start[p]!=='undefined') delete list.page_start[p];
-              if((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))
-              {
-                p=this.PageByIndex(len);
-              }
-              else
-              {
-                delete this.async_datapage;
-                var prev=ngVal(this.async_prevpage, 0);
-                delete this.async_prevpage;
-                if(p!=plLastPage) this.SetPage(plLastPage);
-                else if(this.Page!=prev) this.SetPage(prev);
-                return false;
-              }
-            }
-            else if(((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))&&(idx>=len))
-            {
-              p=this.PageByIndex(len);
-            }
-            delete this.async_datapage;
-            delete this.async_prevpage;
-            if(this.Page!=p)
-            {
-              this.SetPage(p);
-              return false;
             }
           }
         }
@@ -5976,8 +6028,9 @@ ngUserControls['list'] = {
       var cnt=this.async_datacount;
 
       // check if all required data are filled
-      if(!changed)
-        for(var i=0;(i<cnt)&&(idx+i<list.Items.length);i++)
+      if((!changed)&&(idx!=999999999)
+        &&(!((typeof data==='object')&&(data)&&(idx==this.async_dataindex)&&(data.length<cnt))))
+        for(var i=0;(i<cnt)&&((typeof this.MaxLength==='undefined')||(idx+i<this.MaxLength));i++)
         {
           if(!this.IsDataLoaded(idx+i)) return;
         }
@@ -5991,6 +6044,8 @@ ngUserControls['list'] = {
       // Clear timeout timer
       if(this.async_datatimeout_timer) clearTimeout(this.async_datatimeout_timer);
       this.async_datatimeout_timer=null;
+      if(this.async_loaddata_timer) clearTimeout(this.async_loaddata_timer);
+      this.async_loaddata_timer=null;
 
       this.async_dataindex=void 0;
       this.async_datacount=void 0;
@@ -5998,12 +6053,12 @@ ngUserControls['list'] = {
       {
         var p=this.async_datapage;
         var len=this.GetLength();
-        var is_empty_beyond=((data)&&(data.length===0)&&(idx>0))||
+        var is_empty_beyond=(idx==999999999)||((data)&&(data.length===0)&&(idx>0))||
           ((idx>=len)&&(typeof this.MaxLength!=='undefined'));
 
         if(is_empty_beyond)
         {
-          if(typeof list.page_start[p]!=='undefined') delete list.page_start[p];
+          if((p>=0)&&(typeof list.page_start[p]!=='undefined')) delete list.page_start[p];
           if((!this.IsDynamicData())||(typeof this.MaxLength!=='undefined'))
           {
             p=this.PageByIndex(len);
@@ -6013,8 +6068,12 @@ ngUserControls['list'] = {
             delete this.async_datapage;
             var prev=ngVal(this.async_prevpage, 0);
             delete this.async_prevpage;
-            if(p!=plLastPage) this.SetPage(plLastPage);
-            else if(this.Page!=prev) this.SetPage(prev);
+            if(p!=plLastPage)
+            {
+              this.async_prevpage=prev;
+              this.SetPage(plLastPage);
+            }
+            else if((this.Page!=prev)||(this.TopIndex===999999999)) this.SetPage(prev);
             return;
           }
         }
@@ -6024,7 +6083,7 @@ ngUserControls['list'] = {
         }
         delete this.async_datapage;
         delete this.async_prevpage;
-        if(this.Page!=p)
+        if((this.Page!=p)||(this.TopIndex===999999999))
         {
           this.SetPage(p);
           return;
@@ -6064,7 +6123,7 @@ ngUserControls['list'] = {
       if(!this.AsyncWaiting()) return false;
       var to=idx+cnt;
       var ato=this.async_dataindex+this.async_datacount;
-      return (!((idx<this.async_dataindex)&&(to<this.async_dataindex))||((idx>=ato)&&(to>=ato)));
+      return (!(((idx<this.async_dataindex)&&(to<this.async_dataindex))||((idx>=ato)&&(to>=ato))));
     }
 
     function npgl_IndexOf(it, parent)
@@ -6087,14 +6146,21 @@ ngUserControls['list'] = {
       var list=this.Controls.List;
       if(list) list.BeginUpdate();
       try {
+        this.CancelLoadData();
         delete this.firstitemselected;
         this.MaxLength = void 0;
         this.async_dataindex = void 0;
         this.async_datacount = void 0;
+        delete this.async_datapage;
+        delete this.async_prevpage;
         this.last_asyncdata_index=-1;
         this.last_asyncdata_count=0;
 
-        if(list) list.ClearSelected();
+        if(list)
+        {
+          delete list.saved_scrolltop;
+          list.ClearSelected();
+        }
         this.FirstPage();
         this.InvalidateData();
       }
@@ -6684,6 +6750,7 @@ ngUserControls['list'] = {
 
       c.IsDataLoaded = npgl_IsDataLoaded;
       c.DoLoadData = npgl_DoLoadData;
+      c.CancelLoadData = npgl_CancelLoadData;
       c.NeedData = npgl_NeedData;
 
       /*  Function: GetPageTopItems
@@ -6819,6 +6886,10 @@ ngUserControls['list'] = {
       *  Event: OnInvalidateData
       */
       c.OnInvalidateData = null;
+      /*
+      *  Event: OnCancelLoadData
+      */
+      c.OnCancelLoadData = null;
       /*
       *  Event: OnAsyncURLRequest
       */
@@ -6968,6 +7039,10 @@ ngUserControls['list'] = {
         c.SetPagingType(pt,false);
 
         c.AddEvent(npgl_DoUpdate,'DoUpdate');
+        c.AddEvent(function() {
+          c.CancelLoadData();
+          return true;
+        },'DoDispose');
         var l=c.Controls.List;
         c.List=ngVal(l,null);
         if(l)

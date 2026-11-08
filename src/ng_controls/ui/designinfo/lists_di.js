@@ -924,7 +924,8 @@ return {
             "DesignLive": ng_diBoolean(false, { Level: 'basic', Order: 0.95 })
           },
           "Methods": {
-            "DoLoadData": ng_diFunction('function(idx, cnt, retry) { return ng_CallParent(this, "DoLoadData", arguments, true); }', { Level: 'advanced' })
+            "DoLoadData": ng_diFunction('function(idx, cnt, retry) { return ng_CallParent(this, "DoLoadData", arguments, true); }', { Level: 'advanced' }),
+            "CancelLoadData": ng_diFunction('function() { ng_CallParent(this, "CancelLoadData", arguments); }', { Level: 'advanced' })
           },
           "Events": {
             "OnPageChanging": ng_diEvent('function(c, page) { return true; }', { Level: 'basic' }),
@@ -932,6 +933,7 @@ return {
             "OnPagingUpdating": ng_diEvent('function(c, pginfo) { return true; }', { Level: 'basic' }),
             "OnPagingUpdated": ng_diEvent('function(c, pginfo) { return true; }', { Level: 'basic' }),
             "OnInvalidateData": ng_diEvent('function(c, idx, cnt) { return true; }', { Level: 'basic' }),
+            "OnCancelLoadData": ng_diEvent('function(c, list, idx, cnt) {}', { Level: 'basic' }),
             "OnSetAsyncData": ng_diEvent('function(c, idx, data) { return true; }', { Level: 'basic' }),
             "OnShowLoading": ng_diEvent('function(c) {}', { Level: 'basic' }),
             "OnHideLoading": ng_diEvent('function(c) {}', { Level: 'basic' }),
