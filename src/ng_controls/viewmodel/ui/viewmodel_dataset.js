@@ -261,6 +261,13 @@ ngUserControls['viewmodel_dataset'] = {
       for(var r in remove) delete errors[remove[r]];
     }
     
+    function ngdsc_CancelLoadData(ds, list, idx, cnt)
+    {
+      if(ds.async_loaddata_timer) clearTimeout(ds.async_loaddata_timer);
+      delete ds.async_loaddata_timer;
+      if((ds.ViewModel)&&(typeof ds.ViewModel.CancelCommand==='function')) ds.ViewModel.CancelCommand();
+    }
+
     function ngdsc_LoadData(ds, list, idx, cnt)
     { 
       var vm=ds.ViewModel;
@@ -450,6 +457,7 @@ ngUserControls['viewmodel_dataset'] = {
       if(ovm)
       {
         this.RemoveEvent('OnLoadData',ngdsc_LoadData);
+        this.RemoveEvent('OnCancelLoadData',ngdsc_CancelLoadData);
         if(typeof ovm.RemoveEvent === 'function') {
           ovm.RemoveEvent('OnGetValues', ngdsc_GetValues);
           ovm.RemoveEvent('OnCommand', ngdsc_OnCommand);
@@ -480,7 +488,9 @@ ngUserControls['viewmodel_dataset'] = {
     
         if(!this.OnLoadData) {
           if((vm.ViewModel.Records)&&(ngIsFieldDef(vm.ViewModel.Offset))&&(ngIsFieldDef(vm.ViewModel.Count))) {
+            this.AsyncData=true;
             this.OnLoadData=ngdsc_LoadData;
+            this.AddEvent('OnCancelLoadData',ngdsc_CancelLoadData);
           }
         }
         vm.AddEvent('OnGetValues', ngdsc_GetValues);
