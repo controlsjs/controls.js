@@ -2698,44 +2698,85 @@ ngUserControls['viewmodel_ui'] = {
 
     function paging_recs(recs,isdataset) {
       recs=ko.ng_getvalue(recs);
-      if(isdataset) {
+      if((isdataset)&&(ng_IsArrayVar(recs))) {
         var data=new Array();
-        if(ng_IsArrayVar(recs))
-          for(var i=0;i<recs.length;i++)
-            data[i]={ Record: recs[i] };
+        for(var i=0;i<recs.length;i++)
+          data[i]={ Record: recs[i] };
         recs=data;
       }
       return recs;
     }
 
+    function paging_isobservable(v) {
+      if(ngIsFieldDef(v)) v=v.Value;
+      return (ko.isObservable(v) ? v : null);
+    }
+
+    function paging_clearval(obj,prop) {
+      var v=obj[prop];
+      if(ngIsFieldDef(v)) v.Clear();
+      else obj[prop]=ko.ng_setvalue(v,void 0);
+    }
+
+    function paging_endchanging(obs) {
+      if(!obs) return;
+      function dec() {
+        if(obs.PagingChanging>1) obs.PagingChanging--;
+        else delete obs.PagingChanging;
+      }
+      if((obs._deferUpdates)&&(ko.tasks)&&(typeof ko.tasks.schedule==='function'))
+        ko.tasks.schedule(dec);
+      else dec();
+    }
+
+    function paging_clear_timers(c) {
+      if(c.binding_records_timer) clearTimeout(c.binding_records_timer);
+      delete c.binding_records_timer;
+      if(c.binding_totalcount_timer) clearTimeout(c.binding_totalcount_timer);
+      delete c.binding_totalcount_timer;
+    }
+
     function paging_subscribe(c,val) {
       if(!ng_typeObject(val)) return;
-      if((ko.isObservable(val.Records))&&(!val.Records.PagingBindingRegistered)) {
-        val.Records.PagingBindingRegistered=true;
-        val.Records.subscribe(function(recs) {
-          if(val.Records.PagingChanging) return;
+      var recs_obs=paging_isobservable(val.Records);
+      if((recs_obs)&&(!recs_obs.PagingBindingRegistered)) {
+        recs_obs.PagingBindingRegistered=true;
+        recs_obs.subscribe(function(recs) {
+          if(recs_obs.PagingChanging) return;
+          recs=ko.ng_getvalue(recs);
+          if(!ng_IsArrayVar(recs)) return;
           recs=paging_recs(recs,c.CtrlInheritsFrom('ngDataSet'));
           var offset=ko.ng_getvalue(val.Offset);
-          var timer=setTimeout(function() {
-            clearTimeout(timer);
+          if(c.binding_records_timer) clearTimeout(c.binding_records_timer);
+          c.binding_records_timer=setTimeout(function() {
+            if(c.binding_records_timer) clearTimeout(c.binding_records_timer);
+            delete c.binding_records_timer;
+            var tc=ko.ng_getvalue(val.TotalCount);
+            if((typeof c.MaxLength==='undefined')&&(ng_typeNumber(tc))) c.SetLength(tc);
             c.SetAsyncData(offset, recs);
           },1);
         });
       }
-      if((ko.isObservable(val.TotalCount))&&(!val.TotalCount.PagingBindingRegistered)) {
-        val.TotalCount.PagingBindingRegistered=true;
-        val.TotalCount.subscribe(function(totalcount) {
-          if(val.TotalCount.PagingChanging) return;
-          var timer=setTimeout(function() {
-            clearTimeout(timer);
-            if(ng_typeNumber(totalcount)) {
-              if(!totalcount) {
+      var tc_obs=paging_isobservable(val.TotalCount);
+      if((tc_obs)&&(!tc_obs.PagingBindingRegistered)) {
+        tc_obs.PagingBindingRegistered=true;
+        tc_obs.subscribe(function(totalcount) {
+          if(tc_obs.PagingChanging) return;
+          totalcount=ko.ng_getvalue(totalcount);
+          if(!ng_typeNumber(totalcount)) return;
+          if(c.binding_totalcount_timer) clearTimeout(c.binding_totalcount_timer);
+          c.binding_totalcount_timer=setTimeout(function() {
+            if(c.binding_totalcount_timer) clearTimeout(c.binding_totalcount_timer);
+            delete c.binding_totalcount_timer;
+            if(!totalcount) {
+              if(!c.AsyncWaiting()) {
                 c.Reset(true);
                 return;
               }
-              c.SetLength(totalcount);
+              c.SetLength(0);
             }
-            c.SetAsyncData(999999999, null);
+            else c.SetLength(totalcount);
+            if(c.async_dataindex==999999999) c.SetAsyncData(999999999, null);
           },1);
         });
       }
@@ -2744,28 +2785,29 @@ ngUserControls['viewmodel_ui'] = {
     ngRegisterBindingHandler('Paging',
       function (c, valueAccessor, allBindingsAccessor, viewModel) {
         if(c.CtrlInheritsFrom('ngPageList')) {
-          var val=valueAccessor();
-          if(ko.isObservable(val)) val=val();
+          var val=ko.ng_getvalue(valueAccessor());
           if(c.binding_reset_timer) clearTimeout(c.binding_reset_timer);
           delete c.binding_reset_timer;
           if(ng_IsArrayVar(val)) {
+            if(typeof c._orig_asyncdata==='undefined') c._orig_asyncdata=c.AsyncData;
+            c.AsyncData=false;
             if(typeof c.BindingPagingVM === 'object') {
               c.BindingPagingVM.Value=val;
               c.binding_reset_timer=setTimeout(function() {
-                 if(c.binding_reset_timer) clearTimeout(c.binding_reset_timer);
-                 delete c.binding_reset_timer;
+                if(c.binding_reset_timer) clearTimeout(c.binding_reset_timer);
+                delete c.binding_reset_timer;
                 c.Reset(true);
               },1);
               return;
             }
             var paging={
               Value: val,
-              Offset: ko.observable(),
-              Count: ko.observable(),
-              Records: ko.observableArray(),
+              Offset: void 0,
+              Count: void 0,
+              Records: void 0,
               GetRecords: function() {
-                var offset=paging.Offset();
-                var cnt=paging.Count();
+                var offset=paging.Offset;
+                var cnt=paging.Count;
                 var recs=[];
 
                 if(ng_IsArrayVar(paging.Value)) {
@@ -2774,18 +2816,24 @@ ngUserControls['viewmodel_ui'] = {
                   for(var i=0;(i<cnt)&&(pidx<len);i++,pidx++)
                     recs.push(paging.Value[pidx]);
                 }
-                paging.Records(recs);
+                paging.Records=recs;
               },
-              TotalCount: ko.observable(),
+              TotalCount: void 0,
               GetTotalCount: function() {
-                paging.TotalCount(ng_IsArrayVar(paging.Value) ? paging.Value.length : 0);
+                paging.TotalCount=(ng_IsArrayVar(paging.Value) ? paging.Value.length : 0);
               }
             };
             c.BindingPagingVM = paging;
             c.Reset(true);
-            val=paging;
+            return;
           }
-          else delete c.BindingPagingVM;
+          else if(typeof c.BindingPagingVM === 'object') {
+            delete c.BindingPagingVM;
+            if(typeof c._orig_asyncdata!=='undefined') {
+              c.AsyncData=c._orig_asyncdata;
+              delete c._orig_asyncdata;
+            }
+          }
           paging_subscribe(c,val);
         }
       },
@@ -2795,27 +2843,46 @@ ngUserControls['viewmodel_ui'] = {
           ngBindingDeferUpdates('Paging',allBindingsAccessor,true);
           var isdataset=c.CtrlInheritsFrom('ngDataSet');
 
+          function cancelloaddata(ds, list, idx, cnt)
+          {
+            paging_clear_timers(c);
+            if(typeof c.BindingPagingVM === 'object') return true;
+            var val=ko.ng_getvalue(valueAccessor());
+            if(!ng_typeObject(val)) return true;
+            if(typeof val.CancelLoadData === 'function') val.CancelLoadData(idx,cnt);
+            else if(typeof val.CancelLoad === 'function') val.CancelLoad(idx,cnt);
+            else if(typeof val.CancelCommand === 'function') val.CancelCommand();
+            return true;
+          }
+
           function loaddata(ds, list, idx, cnt)
           {
+            paging_clear_timers(c);
             var val=valueAccessor();
             var recs;
             ngCtrlBindingLock('Paging',c,function() {
               if(typeof c.BindingPagingVM === 'object') val=c.BindingPagingVM;
-              else if(ko.isObservable(val)) val=val();
+              else val=ko.ng_getvalue(val);
               if(!ng_typeObject(val)) return;
-              var totalcount=(idx==999999999)&&((ko.isObservable(val.TotalCount))||(typeof val.GetTotalCount === 'function'));
-              if(val.Records) val.Records.PagingChanging=true;
-              if(val.TotalCount) val.TotalCount.PagingChanging=true;
+              var recs_obs=paging_isobservable(val.Records);
+              var tc_obs=paging_isobservable(val.TotalCount);
+              var totalcount=(idx==999999999)&&((tc_obs!==null)||(typeof val.GetTotalCount === 'function'));
+              var recs_ver=((recs_obs)&&(!ko.isWriteableObservable(recs_obs))&&(typeof recs_obs.getVersion==='function')
+                ? recs_obs.getVersion() : -1);
+              var tc_ver=((tc_obs)&&((!totalcount)||(!ko.isWriteableObservable(tc_obs)))&&(typeof tc_obs.getVersion==='function')
+                ? tc_obs.getVersion() : -1);
+              if(recs_obs) recs_obs.PagingChanging=ngVal(recs_obs.PagingChanging,0)+1;
+              if(tc_obs) tc_obs.PagingChanging=ngVal(tc_obs.PagingChanging,0)+1;
               try {
                 if(totalcount) {
-                  ko.ng_setvalue(val.TotalCount,void 0);
+                  paging_clearval(val,'TotalCount');
                 }
                 else {
-                  ko.ng_setvalue(val.Records,void 0);
+                  paging_clearval(val,'Records');
                 }
-                ko.ng_setvalue(val.Count,cnt);
-                ko.ng_setvalue(val.Offset,idx);
-                paging_subscribe(c,val);
+                val.Count=ko.ng_setvalue(val.Count,cnt);
+                val.Offset=ko.ng_setvalue(val.Offset,idx);
+                if(val!==c.BindingPagingVM) paging_subscribe(c,val);
                 var getrecs=true;
                 if(totalcount) {
                   if(typeof val.GetTotalCount === 'function') {
@@ -2842,31 +2909,51 @@ ngUserControls['viewmodel_ui'] = {
                   }
                   if((getrecs)&&(typeof val.GetRecords === 'function')) val.GetRecords();
                 }
-              }
-              finally {
-                if(val.TotalCount) delete val.TotalCount.PagingChanging;
-                if(val.Records) delete val.Records.PagingChanging;
-              }
-              if(totalcount) {
-                var tc=ko.ng_getvalue(val.TotalCount);
-                if((typeof tc!=='undefined')&&(ng_typeNumber(tc))) {
-                  var timer=setTimeout(function() {
-                    clearTimeout(timer);
-                    c.SetLength(tc);
-                    c.SetAsyncData(999999999, null);
-                  },1);
-                  recs=void 0;
+                if(totalcount) {
+                  var tc=((tc_ver>=0)&&(!tc_obs.hasChanged(tc_ver)) ? void 0 : ko.ng_getvalue(val.TotalCount));
+                  if((typeof tc!=='undefined')&&(ng_typeNumber(tc))) {
+                    if(c.AsyncData) {
+                      c.binding_totalcount_timer=setTimeout(function() {
+                        if(c.binding_totalcount_timer) clearTimeout(c.binding_totalcount_timer);
+                        delete c.binding_totalcount_timer;
+                        c.SetLength(tc);
+                        c.SetAsyncData(999999999, null);
+                      },1);
+                    }
+                    else {
+                      c.SetLength(tc);
+                      recs=[];
+                    }
+                  }
                   return;
                 }
+                var records=((recs_ver>=0)&&(!recs_obs.hasChanged(recs_ver)) ? void 0 : ko.ng_getvalue(val.Records));
+                var has_recs=ng_IsArrayVar(records);
+                if((tc_ver<0)||(tc_obs.hasChanged(tc_ver))||((has_recs)&&(typeof c.MaxLength==='undefined'))) {
+                  var tc=ko.ng_getvalue(val.TotalCount);
+                  if((typeof tc!=='undefined')&&(ng_typeNumber(tc))) {
+                    c.SetLength(tc);
+                  }
+                }
+                if(has_recs) {
+                  recs=paging_recs(records,isdataset);
+                }
               }
-              var records=ko.ng_getvalue(val.Records);
-              if(ng_IsArrayVar(records)) {
-                recs=paging_recs(records,isdataset);
+              finally {
+                paging_endchanging(tc_obs);
+                paging_endchanging(recs_obs);
               }
             });
             return recs;
           }
 
+          c.AddEvent('OnCancelLoadData',cancelloaddata);
+          c.AddEvent(function() {
+            paging_clear_timers(c);
+            if(c.binding_reset_timer) clearTimeout(c.binding_reset_timer);
+            delete c.binding_reset_timer;
+            return true;
+          },'DoDispose');
           ng_OverrideMethod(c,'OnLoadData',loaddata);
           return true;
         }
