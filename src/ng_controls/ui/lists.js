@@ -4494,6 +4494,9 @@ ngUserControls['list'] = {
     function npgl_ListPagingChanged()
     {
       delete this.measured_avg_item_height;
+      this.measured_total_ih=0;
+      this.measured_total_cnt=0;
+      this.measured_pages={};
       this.page_start=new Array();
       this.page_start[0]=0;
     }
@@ -4537,9 +4540,10 @@ ngUserControls['list'] = {
         if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssNone);
       }
 
-      if(pl.TopIndex>=this.Items.length)
+      var len=pl.GetLength();
+      if((pl.TopIndex!==999999999)&&((!pl.IsDynamicData())||(typeof pl.MaxLength!=='undefined'))&&(len>0)&&(pl.TopIndex>=len))
       {
-        pl.SetPage(pl.PageByIndex(pl.GetLength()));
+        pl.SetPage(pl.PageByIndex(len));
       }
 
       if(this.draw_page!=pl.Page) // page changed
@@ -5107,21 +5111,15 @@ ngUserControls['list'] = {
 
           var scrollbars=false;
 
-          var mhtml;
+          var mhtml,hstr='';
           if(list.Columns.length>0) // Measure header
           {
-            var hstr=html.toString();
+            hstr=html.toString();
             var tidx=(list.HasEmbededContent ? hstr.indexOf('<table') : -1);
             if(tidx>=0) hstr=hstr.substr(tidx);
-            mhtml=new ngStringBuilder(hstr);
             ng_SetInnerHTML(o,hstr+'</table>');
             io=document.getElementById(list.ID+'_TB');
             if(io) hheight=ng_OuterHeight(io);
-            mhtml._measure_th=hheight;
-          }
-          else
-          {
-            mhtml=new ngStringBuilder(list.HasEmbededContent ? '' : html);
           }
           maxh -= list.draw_paging_height;
           maxh -= hheight;
@@ -5131,66 +5129,120 @@ ngUserControls['list'] = {
           var i,h,it,ih=0,all_measured=true;
           list.in_measure=true;
           try {
-            for(i=pl.TopIndex;i<list.Items.length;i++)
+            while(true)
             {
-              if(!pl.IsDataLoaded(i))
+              cnt=0;
+              ih=0;
+              all_measured=true;
+              scrollbars=false;
+              maxh=list.list_maxheight;
+              if(list.Columns.length>0)
               {
-                all_measured=false;
-                break;
+                mhtml=new ngStringBuilder(hstr);
+                mhtml._measure_th=hheight;
               }
-              it=list.Items[i];
-              h=pl.MeasureItemHeight(o, mhtml, it, i, list, true);
-
-              maxh-=h;
-              if(maxh<-1) break;
-
-              ih+=h;
-              cnt++;
-              if((it)&&(typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
-
-              if(!pl.IsDataLoaded(i+1))
+              else
               {
-                var lfrom=i+1;
-                var aih=(cnt>0 && ih>0 ? (ih/cnt) : ngVal(pl.GetAverageItemHeight(),0));
-                var lcnt=(aih>0 ? Math.floor(maxh/aih) : 0);
-                var dcnt=Math.max(this.max_displayed_items, pl.DisplayedItems)-(i+1-pl.TopIndex);
-                if(dcnt>lcnt) lcnt=dcnt;
-                if(lcnt<1) lcnt=1;
-                lcnt+=2;
+                mhtml=new ngStringBuilder(list.HasEmbededContent ? '' : html);
+              }
 
-                if(pl.IsAsyncLoadingBlock(lfrom,lcnt)) list.Loading=true;
-                else {
-                  if(pl.LoadFullPage) {
-                    lcnt+=(lfrom-pl.TopIndex);
-                    lfrom=pl.TopIndex;
-                  }
-                  pl.DoLoadData(lfrom,lcnt);
-                }
-                if(lfrom+lcnt>list.measure_loadto) list.measure_loadto=lfrom+lcnt;
-                if(!pl.IsDataLoaded(i+1))
+              for(i=pl.TopIndex;i<list.Items.length;i++)
+              {
+                if(!pl.IsDataLoaded(i))
                 {
                   all_measured=false;
                   break;
                 }
+                it=list.Items[i];
+                h=pl.MeasureItemHeight(o, mhtml, it, i, list, true);
+
+                maxh-=h;
+                if(maxh<-1) break;
+
+                ih+=h;
+                cnt++;
+                if((it)&&(typeof it.Items === 'object')&&(!ngVal(it.Collapsed,false))) scrollbars=true; // have subitems
+
+                if(((typeof pl.MaxLength==='undefined')||(i+1<pl.MaxLength))&&(!pl.IsDataLoaded(i+1)))
+                {
+                  var lfrom=i+1;
+                  var aih=(cnt>0 && ih>0 ? (ih/cnt) : ngVal(pl.GetAverageItemHeight(),0));
+                  var lcnt=(aih>0 ? Math.floor(maxh/aih) : 0);
+                  var dcnt=Math.max(this.max_displayed_items, pl.DisplayedItems)-(i+1-pl.TopIndex);
+                  if(dcnt>lcnt) lcnt=dcnt;
+                  if(lcnt<1) lcnt=1;
+                  lcnt+=2;
+
+                  if(pl.IsAsyncLoadingBlock(lfrom,lcnt)) list.Loading=true;
+                  else {
+                    if(pl.LoadFullPage) {
+                      lcnt+=(lfrom-pl.TopIndex);
+                      lfrom=pl.TopIndex;
+                    }
+                    pl.DoLoadData(lfrom,lcnt);
+                  }
+                  if(lfrom+lcnt>list.measure_loadto) list.measure_loadto=lfrom+lcnt;
+                  if(!pl.IsDataLoaded(i+1))
+                  {
+                    all_measured=false;
+                    break;
+                  }
+                }
               }
+
+              if((list.seeking_last_page)&&(all_measured)&&(cnt>0)&&(i<list.Items.length))
+              {
+                list.page_start[pl.Page]=pl.TopIndex;
+                if(!pl.TopIndex) list.page_start[0]=0;
+                pl.TopIndex+=cnt;
+                pl.Page++;
+                list.page_start[pl.Page]=pl.TopIndex;
+                list.paging_needs_update=true;
+                if(!pl.IsDataLoaded(pl.TopIndex))
+                {
+                  pl.NeedData(pl.TopIndex,Math.max(this.max_displayed_items, pl.DisplayedItems)+2);
+                  if(!pl.IsDataLoaded(pl.TopIndex))
+                  {
+                    all_measured=false;
+                    break;
+                  }
+                }
+                continue;
+              }
+              if((list.seeking_last_page)&&(all_measured)) delete list.seeking_last_page;
+              break;
             }
           } finally {
             delete list.measure_loadto;
             list.in_measure=false;
             ng_SetInnerHTML(o,'');
           }
+          if((cnt)&&(ih))
+          {
+            if(!list.measured_pages) list.measured_pages={};
+            var prev_mp=list.measured_pages[pl.Page];
+            if(prev_mp)
+            {
+              list.measured_total_ih-=prev_mp.ih;
+              list.measured_total_cnt-=prev_mp.cnt;
+            }
+            list.measured_pages[pl.Page]={ ih: ih, cnt: cnt };
+            list.measured_total_ih=ngVal(list.measured_total_ih,0)+ih;
+            list.measured_total_cnt=ngVal(list.measured_total_cnt,0)+cnt;
+            if(list.measured_total_cnt>0) list.measured_avg_item_height=(list.measured_total_ih/list.measured_total_cnt);
+            else list.measured_avg_item_height=(ih/cnt);
+          }
           if((all_measured)&&(i<list.Items.length)) pl.DisplayedItems=cnt;
           else
           {
             if((cnt)&&(ih)) {
-              var aih=(ih/cnt);
-              if(aih<=0) aih=ngVal(pl.GetAverageItemHeight(),0);
+              var aih=ngVal(pl.GetAverageItemHeight(),0);
+              if(aih<=0) aih=(ih/cnt);
               if(aih>0) {
                 pl.DisplayedItems=cnt+(maxh>-1 ? Math.floor((maxh+1)/aih) : 0);
               }
             }
           }
-          if((cnt)&&(ih)) list.measured_avg_item_height=(ih/cnt);
           if(pl.DisplayedItems>this.max_displayed_items) {
             this.max_displayed_items=pl.DisplayedItems;
           }
@@ -5320,13 +5372,18 @@ ngUserControls['list'] = {
       if((p!=this.Page)||(this.TopIndex===999999999))
       {
         if((p===plFirstPage)&&(this.TopIndex===0)) return;
-        if(this.TopIndex===999999999) this.TopIndex=0;
-        var needupdate=false;
         var list=this.Controls.List;
+        if(this.TopIndex===999999999) this.TopIndex=(list ? ngVal(list.page_start[this.Page],0) : 0);
+        var needupdate=false;
         if((this.OnPageChanging)&&(!ngVal(this.OnPageChanging(this,p),false))) return;
 
         var op=this.Page;
         var pti=this.TopIndex;
+        if(list)
+        {
+          if(p==plLastPage) list.seeking_last_page=true;
+          else if(!list._keep_seeking_last_page) delete list.seeking_last_page;
+        }
 
         if((p==plFirstPage)||(p===0))
         {
@@ -6084,7 +6141,7 @@ ngUserControls['list'] = {
                   list.Items.length=j;
                   if((typeof this.MaxLength!=='undefined')&&(this.MaxLength<j)) this.SetLength(j);
                 }
-                if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
+                if(typeof data[i] !== 'undefined')  list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])),list);
               }
             }
           }
@@ -6148,7 +6205,7 @@ ngUserControls['list'] = {
             }
             if(typeof data[i] !== 'undefined')
             {
-              list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])));
+              list.Replace(j,(typeof data[i]==='string' ? {Text: data[i]} : ng_CopyVar(data[i])),list);
               if((j>=this.async_dataindex)&&(j<asynclast)) changed=true;
             }
           }
@@ -6207,7 +6264,11 @@ ngUserControls['list'] = {
               this.async_prevpage=prev;
               this.SetPage(plLastPage);
             }
-            else if((this.Page!=prev)||(this.TopIndex===999999999)) this.SetPage(prev);
+            else if((this.Page!=prev)||(this.TopIndex===999999999))
+            {
+              delete list.seeking_last_page;
+              this.SetPage(prev);
+            }
             return;
           }
         }
@@ -6219,7 +6280,12 @@ ngUserControls['list'] = {
         delete this.async_prevpage;
         if((this.Page!=p)||(this.TopIndex===999999999))
         {
-          this.SetPage(p);
+          if(list.seeking_last_page) list._keep_seeking_last_page=true;
+          try {
+            this.SetPage(p);
+          } finally {
+            delete list._keep_seeking_last_page;
+          }
           return;
         }
       }
@@ -6293,6 +6359,8 @@ ngUserControls['list'] = {
         if(list)
         {
           delete list.saved_scrolltop;
+          delete list.seeking_last_page;
+          if(typeof list.ListPagingChanged==='function') list.ListPagingChanged();
           list.ClearSelected();
         }
         this.FirstPage();
