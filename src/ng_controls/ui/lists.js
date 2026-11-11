@@ -4531,13 +4531,7 @@ ngUserControls['list'] = {
 
       if(pl.DisplayMode==plDisplayFixed)
       {
-        this.ScrollBars=ssAuto;
         if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssAuto);
-      }
-      else
-      {
-        this.ScrollBars=ssNone;
-        if(this.ContentElm) ng_SetScrollBars(this.ContentElm,ssNone);
       }
 
       var len=pl.GetLength();
@@ -4646,10 +4640,10 @@ ngUserControls['list'] = {
         this.draw_measure=false;
         this.in_update=false;
       }
-      if((fit)&&(typeof this.fit_scrollbars!=='undefined'))
+      if((fit)&&(this.ContentElm))
       {
-        if(this.ContentElm) ng_SetScrollBars(this.ContentElm,this.fit_scrollbars);
-        delete this.fit_scrollbars;
+        this.ContentElm.style.overflowX='auto';
+        this.ContentElm.style.overflowY=(this.has_tree_scrollbars ? 'auto' : 'hidden');
       }
 
       if(pl.IsAsyncLoadingBlock(pl.TopIndex,pl.DisplayedItems)) this.Loading=true;
@@ -5015,7 +5009,7 @@ ngUserControls['list'] = {
           if(!this.IsDataLoaded(i)) break;
           h=this.MeasureItemHeight(ctx.o, ctx.html, list.Items[i], i, list, true);
           maxh-=h;
-          if(maxh<-1) break;
+          if(maxh<0) break;
           cnt++;
         }
       } finally {
@@ -5057,7 +5051,7 @@ ngUserControls['list'] = {
           if(typeof h==='undefined') h=aih;
 
           rem_h-=h;
-          if(rem_h<-1) break;
+          if(rem_h<0) break;
           start_idx=i;
         }
       } finally {
@@ -5092,9 +5086,13 @@ ngUserControls['list'] = {
         }
         if(o)
         {
-          var maxh = ng_ClientHeight(o);
+          o.style.overflowX='auto';
+          o.style.overflowY='hidden';
+          ng_SetInnerHTML(o,'');
+          var empty_ch=ng_ClientHeight(o);
+          var maxh=empty_ch;
 
-          var hheight = 0, io;
+          var hheight=0, io;
           var p=ng_GetCurrentStylePx(o,'padding-top'); if(p>0) maxh-=p;
           p=ng_GetCurrentStylePx(o,'padding-bottom'); if(p>0) maxh-=p;
 
@@ -5108,6 +5106,7 @@ ngUserControls['list'] = {
           list.draw_height=maxh;
 
           var scrollbars=false;
+          var hsb_height=0;
 
           var mhtml,hstr='';
           if(list.Columns.length>0) // Measure header
@@ -5118,9 +5117,12 @@ ngUserControls['list'] = {
             ng_SetInnerHTML(o,hstr+'</table>');
             io=document.getElementById(list.ID+'_TB');
             if(io) hheight=ng_OuterHeight(io);
+            var cur_ch=ng_ClientHeight(o);
+            if(cur_ch<empty_ch) hsb_height=empty_ch-cur_ch;
           }
-          maxh -= list.draw_paging_height;
-          maxh -= hheight;
+          maxh-=list.draw_paging_height;
+          maxh-=hheight;
+          maxh-=hsb_height;
           list.list_maxheight=maxh;
 
           var cnt=0;
@@ -5173,8 +5175,18 @@ ngUserControls['list'] = {
                   }
                   it=list.Items[i];
                   h=pl.MeasureItemHeight(o, mhtml, it, i, list, true);
+                  if(!hsb_height)
+                  {
+                    var cur_ch=ng_ClientHeight(o);
+                    if(cur_ch<empty_ch)
+                    {
+                      hsb_height=empty_ch-cur_ch;
+                      maxh-=hsb_height;
+                      list.list_maxheight-=hsb_height;
+                    }
+                  }
                   maxh-=h;
-                  if(maxh<-1) break;
+                  if(maxh<0) break;
                   ih+=h;
                   cnt++;
                   b_start=i;
@@ -5215,9 +5227,18 @@ ngUserControls['list'] = {
                 }
                 it=list.Items[i];
                 h=pl.MeasureItemHeight(o, mhtml, it, i, list, true);
-
+                if(!hsb_height)
+                {
+                  var cur_ch=ng_ClientHeight(o);
+                  if(cur_ch<empty_ch)
+                  {
+                    hsb_height=empty_ch-cur_ch;
+                    maxh-=hsb_height;
+                    list.list_maxheight-=hsb_height;
+                  }
+                }
                 maxh-=h;
-                if(maxh<-1) break;
+                if(maxh<0) break;
 
                 ih+=h;
                 cnt++;
@@ -5315,7 +5336,7 @@ ngUserControls['list'] = {
               var aih=ngVal(pl.GetAverageItemHeight(),0);
               if(aih<=0) aih=(ih/cnt);
               if(aih>0) {
-                pl.DisplayedItems=cnt+(maxh>-1 ? Math.floor((maxh+1)/aih) : 0);
+                pl.DisplayedItems=cnt+(maxh>=0 ? Math.floor(maxh/aih) : 0);
               }
             }
           }
@@ -5362,9 +5383,12 @@ ngUserControls['list'] = {
             }
           }
 
-          list.fit_scrollbars=(scrollbars ? ssAuto : ssNone);
-          list.ScrollBars=list.fit_scrollbars;
-          if(list.ContentElm) ng_SetScrollBars(list.ContentElm,list.fit_scrollbars);
+          list.has_tree_scrollbars=scrollbars;
+          if(list.ContentElm)
+          {
+            list.ContentElm.style.overflowX='auto';
+            list.ContentElm.style.overflowY=(scrollbars ? 'auto' : 'hidden');
+          }
         }
       }
       if(!level)
