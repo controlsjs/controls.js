@@ -297,7 +297,7 @@ ngUserControls['viewmodel_dataset'] = {
         vm.ViewModel.Count.Value(cnt);
         if(!vm.Command(ds.GetRecordsCommand))
         {      
-          ds.SetAsyncData(999999999, null); // cancel load
+          ds.CancelLoadData();
         }
         else {
           var records=ko.ng_getvalue(vm.ViewModel.Records);
