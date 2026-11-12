@@ -1434,7 +1434,7 @@ ngUserControls['viewmodel_controls'] = {
             if(typeof vm.Offset==='undefined')        ko.ng_fielddef(vm, new ngFieldDef('Offset', 'INTEGER'));
             if(typeof vm.Count==='undefined')         ko.ng_fielddef(vm, new ngFieldDef('Count', 'INTEGER'));
             if(typeof vm.DataSet==='undefined')       {
-              ko.ng_fielddef(vm, new ngDataSetFieldDef('DataSet', { DefaultValue: null } ));
+              ko.ng_fielddef(vm, new ngDataSetFieldDef('DataSet', { DefaultValue: null, NullIfEmpty: false } ));
               vm.DataSet.Value(null); // Knockout workaround
             }
             if(typeof vm.SortBy==='undefined')        ko.ng_fielddef(vm, new ngFieldDef('SortBy', 'ARRAY'));
