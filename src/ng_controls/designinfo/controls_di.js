@@ -21,6 +21,7 @@
     ControlCategory: 'category',
     IsContainer: false,
     IsBasic: false,
+    IsMod: false,
     IsViewModel: false,
     NonVisual: false,
     GridSize: 20,

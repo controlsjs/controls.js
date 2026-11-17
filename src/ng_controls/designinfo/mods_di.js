@@ -63,6 +63,7 @@ ngUserControls['mods_designinfo'] = {
     ngRegisterControlDesignInfo('modCenter',function(d,c,ref) {
       return {
         ControlCategory: false,
+        IsMod: true,
         Properties: ng_diProperties({
           "L": { Level: 'optional' },
           "T": { Level: 'optional' },
@@ -81,6 +82,7 @@ ngUserControls['mods_designinfo'] = {
     ngRegisterControlDesignInfo('modSizeLimit',function(d,c,ref) {
       return {
         ControlCategory: false,
+        IsMod: true,
         Properties: ng_diProperties({
           "Data": {
             "SizeLimitWMin": ng_diInteger(0, { Level: 'basic' }),
@@ -98,6 +100,7 @@ ngUserControls['mods_designinfo'] = {
     ngRegisterControlDesignInfo('modClickable',function(d,c,ref) {
       return {
         ControlCategory: false,
+        IsMod: true,
         Properties: ng_diProperties({
           "Events": {
             "OnClick": ng_diEvent('function(e) { }', { Level: 'basic' }),
@@ -110,6 +113,7 @@ ngUserControls['mods_designinfo'] = {
     ngRegisterControlDesignInfo('modAlignTo',function(d,c,ref) {
       return {
         ControlCategory: false,
+        IsMod: true,
         Properties: ng_diProperties({
           "Data": {
             "AlignToControl": ng_diType('ngAlignToRef', { Level: 'basic'}),
