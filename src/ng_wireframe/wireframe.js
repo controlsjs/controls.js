@@ -890,32 +890,6 @@ var WireframeControls = {
     /** Class: wfrDropDown
      *  "Wireframe" skin drop down control (based on <ngDropDown>).
      */
-
-    /**
-     *  Group: Properties
-     */
-
-    /**  Variable: Invalid
-     *  ...
-     *  Type: boolean
-     *  Default value: *false*
-     */
-
-    /**
-     *  Group: Methods
-     */
-
-    /** Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (boolean r [,boolean update = true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_wfrDropDown=function(def,ref,parent,modtype,dropdownlist)
     {
       if(typeof def.className === 'undefined'){def.className = 'wfrEdit';}

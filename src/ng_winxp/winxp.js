@@ -858,29 +858,6 @@ var WinXPControls = {
      *    'leftright' - ...
      *    'updown' - ...
      */
-    /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_stdEditNum=function(def,ref,parent, modtype)
     {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
@@ -903,28 +880,6 @@ var WinXPControls = {
      *  Standard color edit control (based on <ngDropDown>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_stdColorEdit=function(def,ref,parent,modtype)
     {
       ng_MergeDef(def, {
@@ -1069,28 +1024,6 @@ var WinXPControls = {
      *  Standard drop down control (based on <ngDropDown>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_stdDropDown=function(def,ref,parent,modtype,dropdownlist) {
       if(typeof def.className === 'undefined') def.className='wxpEdit';
       skinfnc.stdEdit_AddClearBtn(def);
@@ -1107,28 +1040,6 @@ var WinXPControls = {
      *  Standard drop down list control (based on <ngDropDownList>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     ngRegisterControlSkin('stdDropDownList','ngDropDownList', function(def,ref,parent,modtype) { return skinfnc.Create_stdDropDown(def,ref,parent,modtype,true); });
 
 

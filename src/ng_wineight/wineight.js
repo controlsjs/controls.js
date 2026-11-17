@@ -1291,28 +1291,6 @@ var WinEightControls = {
      *  Standard edit number control with spin buttons (based on <ngEditNum>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_weEditNum=function(def,ref,parent,modtype)
     {
       var th=wineight.DefTheme(def);
@@ -1336,28 +1314,6 @@ var WinEightControls = {
      *  Standard color edit control (based on <ngDropDown>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_weColorEdit=function(def,ref,parent,modtype)
     {
       var th=wineight.DefTheme(def);
@@ -1506,28 +1462,6 @@ var WinEightControls = {
      *  Standard drop down control (based on <ngDropDown>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     skinfnc.Create_weDropDown=function(def,ref,parent,modtype,dropdownlist) {
       var th=wineight.DefTheme(def);
       if(typeof def.className === 'undefined') def.className=(th ? 'weEditLight' : 'weEditDark');
@@ -1544,28 +1478,6 @@ var WinEightControls = {
      *  Standard drop down list control (based on <ngDropDownList>).
      */
     /*<>*/
-    /*
-     *  Group: Properties
-     */
-    /*  Variable: Invalid
-     *  ...
-     *  Type: bool
-     *  Default value: *false*
-     */
-    /*
-     *  Group: Methods
-     */
-    /*  Function: SetInvalid
-     *  Sets (visual) invalid state of control.
-     *
-     *  Syntax:
-     *    void *SetInvalid* (bool r [,bool update=true])
-     *
-     *  Parameters:
-     *    -
-     *  Returns:
-     *    -
-     */
     ngRegisterControlSkin('weDropDownList','ngDropDownList', function(def,ref,parent,modtype) { return skinfnc.Create_weDropDown(def,ref,parent,modtype,true); });
 
     /*  Class: weMemo
