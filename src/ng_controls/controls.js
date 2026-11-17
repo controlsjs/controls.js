@@ -21,12 +21,12 @@ var ngControlsVer    = 5;
  */
 var ngControlsSubVer = 0;
 /**
- *  Variable: ngControlsAPIVersion
+ *  Variable: ngControlsVersion
  *  Version of the Controls framework evaluated as string.
  */
 var ngControlsVersion = ngControlsVer+'.'+ngControlsSubVer;
 /**
- *  Variable: ngControlsAPICopyright
+ *  Variable: ngControlsCopyright
  *  Controls framework copyright information.
  */
 var ngControlsCopyright = 'Copyright &copy 2008-2026 Position s.r.o.';

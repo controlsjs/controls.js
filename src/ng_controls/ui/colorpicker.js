@@ -617,7 +617,7 @@ ngUserControls['ngColorControls'] = {
          */
         Events: {
           /**
-           *  Function: OnColorChanging
+           *  Event: OnColorChanging
            *  -
            *
            *  Syntax:
@@ -631,7 +631,7 @@ ngUserControls['ngColorControls'] = {
            */
           OnColorChanging: null,
           /**
-           *  Function: OnColorChanged
+           *  Event: OnColorChanged
            *  -
            *
            *  Syntax:
@@ -3707,7 +3707,7 @@ ngUserControls['ngColorControls'] = {
         Events: {
           OnUpdated: ngcob_AddHTMLContent,
           /**
-           *  Function: OnColorChanging
+           *  Event: OnColorChanging
            *  -
            *
            *  Syntax:
@@ -3721,7 +3721,7 @@ ngUserControls['ngColorControls'] = {
            */
           OnColorChanging: null,
           /**
-           *  Function: OnColorChanged
+           *  Event: OnColorChanged
            *  -
            *
            *  Syntax:
@@ -4063,7 +4063,7 @@ ngUserControls['ngColorControls'] = {
           OnBlur: ngcopdd_OnBlur,
           OnKeyPress: ngcopdd_OnKeyPress,
           /**
-          *  Function: OnColorChanging
+          *  Event: OnColorChanging
           *  -
           *
           *  Syntax:
@@ -4077,7 +4077,7 @@ ngUserControls['ngColorControls'] = {
           */
           OnColorChanging: null,
           /**
-          *  Function: OnColorChanged
+          *  Event: OnColorChanged
           *  -
           *
           *  Syntax:
